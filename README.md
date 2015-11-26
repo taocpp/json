@@ -7,7 +7,7 @@
 
 The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object as well as conversions from and to JSON string representation. It uses `std::vector` for arrays, `std::map` for objects, and both `int64_t` and `double` for numbers.
 
-The [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL) is used for parsing. A slighty tuned portion of the [double-conversion library](https://github.com/google/double-conversion) is used for fast-and-correct string-to-double and double-to-string conversion. The [Sequences Library](https://github.com/taocpp/sequences) provides `make_index_sequence` when C++11, rather than C++14, is used.
+This library is designed for correctness and simplicity and as a real-world example application for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL) that is used for parsing.
 
 ## Status
 
@@ -64,7 +64,7 @@ The Art of C++ / JSON library contains portions of [the PEGTL library](https://g
 
 ### Sequences License
 
-The Art of C++ / JSON library contains portions of [the Art of C++ / Sequences](https://github.com/taocpp/sequences) whic is licensed as follows:
+The Art of C++ / JSON library contains portions of [the Art of C++ / Sequences](https://github.com/taocpp/sequences) which is licensed as follows:
 
 > Copyright (c) 2015 Daniel Frey
 >
