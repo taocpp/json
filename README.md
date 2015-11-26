@@ -52,7 +52,7 @@ This site and software is not affiliated with or endorsed by the Open Source Ini
 
 ### PEGTL License
 
-The Art of C++ / JSON library contains portions of [the PEGTL library](https://github.com/ColinH/PEGTL) which is licensed as follows:
+The Art of C++ / JSON library contains [the PEGTL library](https://github.com/ColinH/PEGTL) which is licensed as follows:
 
 > Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 >
@@ -76,7 +76,7 @@ The Art of C++ / JSON library contains portions of [the Art of C++ / Sequences](
 
 ### Double-Conversion License
 
-The Art of C++/ JSON library contains modified portions of the [double-conversion library](https://github.com/google/double-conversion) which is licensed as follows:
+The Art of C++ / JSON library contains slightly modified portions of the [double-conversion library](https://github.com/google/double-conversion) which is licensed as follows:
 
 > Copyright 2006-2011, the V8 project authors. All rights reserved. Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 >
