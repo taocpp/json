@@ -5,10 +5,16 @@
 [![TravisCI](https://travis-ci.org/taocpp/json.svg)](https://travis-ci.org/taocpp/json)
 [![Issues](https://img.shields.io/github/issues/taocpp/json.svg)](https://github.com/taocpp/json/issues)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object as well as conversions from and to JSON string representation. It uses `std::vector` for arrays, `std::map` for objects, and both `int64_t` and `double` for numbers.
+The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object as well as conversions from and to JSON string representation. It also serves as a fully functional real-world example application for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL).
 
-This library is designed for correctness and simplicity and as a real-world example application for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL) that is used for parsing.
+## Design
 
+This library is designed for correctness and simplicity, and strives for speed through minimalism rather than complicated optimisations.
+
+It uses `std::vector` for arrays, `std::map` for objects, `std::string` for strings, `bool` for Booleans, and both `int64_t` and `double` for numbers.
+
+The JSON value class contains a `union` of all of these types and does *not itself* perform any heap allocations (the wrapped `std::map`, `std::vector` and `std::string` *do* perform allocations normally).
+ 
 ## Status
 
 The core JSON value class is implemented and working.
@@ -17,22 +23,28 @@ The conversions from and to JSON string representation are finished and working:
 
 In internal tests we achieve a 100% score in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
 
-In a nutshell, that what is implemented works, but the API might still change before the 1.0 release.
+In a nutshell, that what is implemented works, but the API might still change (and be extended) before the 1.0 release.
 
 ## Documentation
 
-Proper documentation will be written once all interfaces are stable.
+The documentation will be written once all interfaces are stable...
 
 Until then, here are a few short indications on how to use this library:
 
 * Requires Clang or GCC with -std=c++11 (or other compiler with sufficient C++11 support).
 * The library is header-only, to install and use simply copy the directory `include/tao` to a convenient place and include the file `include/tao/json.hh`.
-* The generic JSON value class is in `include/tao/json/value.hh`, that's the main part of this library.
+* The generic JSON value class, the main part of this library, is in `include/tao/json/value.hh`.
 * The interface and functions of class `tao::json::value` are hopefully reasonably self-explanatory.
 * To parse a JSON string representation, use one of the functions in `include/tao/json/parse.hh`.
 * To produce a JSON string representation, use one of the appropriate functions in `include/tao/json/stream.hh`.
+* Operators to compare JSON value objects are provided, as are equality operators between JSON values and some other types.
 
 For questions and suggestions please contact the authors at **jsonl(at)colin-hirsch.net**.
+
+#### Thank You
+
+* Niels Lohmann and his [JSON library](https://github.com/nlohmann/json) for the inspiration.
+* Milo Yip and his [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) for a reference to measure progress against.
 
 ## License
 
