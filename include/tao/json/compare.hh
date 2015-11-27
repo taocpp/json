@@ -4,8 +4,6 @@
 #ifndef TAOCPP_JSON_INCLUDE_COMPARE_HH
 #define TAOCPP_JSON_INCLUDE_COMPARE_HH
 
-#include <algorithm>
-
 #include "internal/compare.hh"
 
 namespace tao

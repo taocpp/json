@@ -9,6 +9,10 @@
 #include "json/stream.hh"
 #include "json/compare.hh"
 
+// Include this if required to enable
+// C++11 user defined JSON literals that
+// can be used like "[null]"_json .
+//
 // #include "json/literal.hh"
 
 #endif

@@ -1,4 +1,4 @@
-// This header include/tao/json/internal/double.hh contains
+// This header include/tao/json/external/double.hh contains
 // modified portions of the double-conversion library from
 //   https://www.github.com/google/double-conversion
 // which is licensed as follows:
@@ -30,8 +30,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_DOUBLE_HH
-#define TAOCPP_JSON_INCLUDE_INTERNAL_DOUBLE_HH
+#ifndef TAOCPP_JSON_EMBEDDED_DOUBLE_CONVERSION_HH
+#define TAOCPP_JSON_EMBEDDED_DOUBLE_CONVERSION_HH
 
 #include <math.h>
 #include <assert.h>

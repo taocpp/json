@@ -8,9 +8,9 @@
 #include <sstream>
 #include <iomanip>
 
-#include "value.hh"
+#include "external/double.hh"
 
-#include "internal/double.hh"
+#include "value.hh"
 
 namespace tao
 {

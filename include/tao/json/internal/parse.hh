@@ -7,8 +7,8 @@
 #include "../external/pegtl.hh"
 #include "../external/pegtl/contrib/changes.hh"
 #include "../external/pegtl/contrib/unescape.hh"
+#include "../external/double.hh"
 
-#include "double.hh"
 #include "errors.hh"
 #include "grammar.hh"
 

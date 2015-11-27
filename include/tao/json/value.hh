@@ -337,7 +337,7 @@ namespace tao
          void operator= ( std::map< std::string, value > && o ) noexcept
          {
             destroy();
-            return unsafe_assign( std::move( o ) );
+            unsafe_assign( std::move( o ) );
          }
 
          void operator= ( const std::map< std::string, value > & o )

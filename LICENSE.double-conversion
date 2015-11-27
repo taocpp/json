@@ -1,4 +1,4 @@
-The header include/tao/json/internal/double.hh contains
+The header include/tao/json/external/double.hh contains
 modified portions of the double-conversion library from
   https://www.github.com/google/double-conversion
 which is licensed as follows:
