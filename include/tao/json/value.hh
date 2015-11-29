@@ -4,8 +4,10 @@
 #ifndef TAOCPP_JSON_INCLUDE_VALUE_HH
 #define TAOCPP_JSON_INCLUDE_VALUE_HH
 
+#include <cmath>
 #include <cassert>
 #include <utility>
+#include <stdexcept>
 
 #include "external/sequences/make_integer_sequence.hpp"
 
@@ -90,9 +92,10 @@ namespace tao
          }
 
          explicit
-         value( const double d ) noexcept
+         value( const double d )
                : m_type( json::type::DOUBLE )
          {
+            check_finite( d );
             m_union.d = d;
          }
 
@@ -287,8 +290,9 @@ namespace tao
             unsafe_assign( i );
          }
 
-         void operator= ( const double d ) noexcept
+         void operator= ( const double d )
          {
+            check_finite( d );
             destroy();
             unsafe_assign( d );
          }
@@ -920,7 +924,14 @@ namespace tao
             assert( false );
          }
 
-      protected:
+         static void check_finite( const double d )
+         {
+            if ( ! std::isfinite( d ) ) {
+               throw std::runtime_error( "non-finite double value illegal for json" );
+            }
+         }
+
+      private:
          internal::value_union< value > m_union;
          json::type m_type;
       };
