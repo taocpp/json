@@ -5,11 +5,11 @@
 #define TAOCPP_JSON_INCLUDE_LITERAL_HH
 
 #include "value.hh"
-#include "parse.hh"
+#include "from_string.hh"
 
 inline tao::json::value operator"" _json( const char * data, const std::size_t size )
 {
-   return tao::json::parse( data, size );
+   return tao::json::from_string( data, size, "literal" );
 }
 
 #endif

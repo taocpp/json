@@ -34,7 +34,6 @@
 #define TAOCPP_JSON_EMBEDDED_DOUBLE_CONVERSION_HH
 
 #include <math.h>
-#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
@@ -42,11 +41,8 @@
 
 #include <iostream>
 
-#define NDEBUG
-
 #ifndef ASSERT
-#define ASSERT(condition)                       \
-   assert(condition);
+#define ASSERT( eXPReSSioN ) ((void)0)
 #endif
 #ifndef UNIMPLEMENTED
 #define UNIMPLEMENTED() (abort())

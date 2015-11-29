@@ -25,7 +25,7 @@ namespace tao
 
       void test_double( const std::string & input, const double value )
       {
-         const double d = json::parse( input ).get_double();
+         const double d = json::from_string( input ).get_double();
          TEST_ASSERT( d2u( d ) == d2u( value ) );
       }
 

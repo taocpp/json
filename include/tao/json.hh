@@ -5,9 +5,12 @@
 #define TAOCPP_JSON_INCLUDE_JSON_HH
 
 #include "json/value.hh"
-#include "json/parse.hh"
-#include "json/stream.hh"
 #include "json/compare.hh"
+
+#include "json/stream.hh"
+#include "json/to_string.hh"
+#include "json/from_string.hh"
+#include "json/parse_file.hh"
 
 // Include this if required to enable
 // C++11 user defined JSON literals that

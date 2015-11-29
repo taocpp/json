@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_GRAMMAR_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_GRAMMAR_HH
 
+#include "../external/pegtl.hh"
 #include "../external/pegtl/contrib/abnf.hh"
 
 namespace tao
