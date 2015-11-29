@@ -14,7 +14,7 @@ This library is designed for correctness and simplicity, and strives for speed t
 It uses `std::vector` for arrays, `std::map` for objects, `std::string` for strings, `bool` for Booleans, and both `int64_t` and `double` for numbers.
 
 The JSON value class contains a `union` of all of these types and does *not itself* perform any heap allocations (the wrapped `std::map`, `std::vector` and `std::string` *do* perform allocations normally).
- 
+
 ## Status
 
 The core JSON value class is implemented and working.
@@ -32,12 +32,12 @@ The documentation will be written once all interfaces are stable...
 Until then, here are a few short indications on how to use this library:
 
 * Requires Clang or GCC with -std=c++11 (or other compiler with sufficient C++11 support).
-* The library is header-only, to install and use simply copy the directory `include/tao` to a convenient place and include the file `include/tao/json.hh`.
+* This library is header-only, to install and use simply copy the directory `include/tao` to a convenient place and include the file `include/tao/json.hh`.
 * The generic JSON value class, the main part of this library, is in `include/tao/json/value.hh`.
-* The interface and functions of class `tao::json::value` are hopefully reasonably self-explanatory.
-* To parse a JSON string representation, use one of the functions in `include/tao/json/parse.hh`.
-* To produce a JSON string representation, use one of the appropriate functions in `include/tao/json/stream.hh`.
-* Operators to compare JSON value objects are provided, as are equality operators between JSON values and some other types.
+* The interface and functions of class `tao::json::value` are hopefully sufficiently self-explanatory.
+* To parse a JSON string representation, use one of the functions in `include/tao/json/from_string.hh` or `include/tao/json/parse_file.hh`.
+* To produce a JSON string representation, use one of the appropriate functions in `include/tao/json/to_string.hh` or `include/tao/json/stream.hh`.
+* Operators to compare JSON value objects are provided, as are equality operators between JSON values and some other types, in `include/tao/json/compare.hh`.
 
 For questions and suggestions please contact the authors at **jsonl(at)colin-hirsch.net**.
 
