@@ -32,7 +32,7 @@ namespace tao
 
       inline bool operator== ( const value & l, const value & r )
       {
-         return ( & l == & r ) || ( ( l.type() == r.type() ) && internal::equal_value( l, r ) );
+         return ( l.type() == r.type() ) && internal::equal_value( l, r );
       }
 
       inline bool operator!= ( const value & l, const value & r )
@@ -45,9 +45,19 @@ namespace tao
          return l.is_null();
       }
 
-      inline bool operator== ( const std::nullptr_t t, const value & r )
+      inline bool operator== ( const std::nullptr_t, const value & r )
       {
-         return r == t;
+         return r.is_null();
+      }
+
+      inline bool operator!= ( const value & l, const std::nullptr_t )
+      {
+         return ! l.is_null();
+      }
+
+      inline bool operator!= ( const std::nullptr_t, const value & r )
+      {
+         return ! r.is_null();
       }
 
       inline bool operator== ( const value & l, const bool b )

@@ -31,7 +31,7 @@ namespace tao
                case type::OBJECT:
                   return l.unsafe_object() < r.unsafe_object();
             }
-            assert( false );
+            assert( false );  // LCOV_EXCL_LINE
          }
 
          inline bool equal_value( const value & l, const value & r )
@@ -52,7 +52,7 @@ namespace tao
                case type::OBJECT:
                   return l.unsafe_object() == r.unsafe_object();
             }
-            assert( false );
+            assert( false );  // LCOV_EXCL_LINE
          }
 
       } // internal
