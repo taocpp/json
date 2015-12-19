@@ -19,15 +19,13 @@ The JSON value class contains a `union` of all of these types and does *not itse
 
 The core JSON value class is implemented and working.
 
-The conversions from and to JSON string representation are finished and working:
+The conversions from and to JSON string representation are finished and achiev a 100% score in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
 
-In internal tests we achieve a 100% score in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
-
-In a nutshell, that what is implemented works, but the API might still change (and be extended) before the 1.0 release.
+Some parts of the API are still under discussion and development and might change and/or be extended before the first release.
 
 ## Documentation
 
-The documentation will be written once all interfaces are stable...
+The documentation will be finished once the functionality and interfaces are finalised.
 
 Until then, here are a few short indications on how to use this library:
 
