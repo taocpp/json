@@ -47,5 +47,19 @@ matrix:
       compiler: clang
       env: COMPILER=clang++
 
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-5']
+      env:
+        - COMPILER=g++-5
+        - TAOCPPJSON_CXXFLAGS="-O0 --coverage"
+      before_script:
+        - pip install --user cpp-coveralls
+      after_success:
+        - coveralls --gcov gcov-5 --gcov-options '\-lp' --exclude src
+
 script:
   make CXX=$COMPILER -j3
