@@ -59,7 +59,7 @@ matrix:
       before_script:
         - pip install --user cpp-coveralls
       after_success:
-        - coveralls --gcov gcov-5 --gcov-options '\-lp' --exclude src
+        - coveralls --gcov gcov-5 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
 
 script:
   make CXX=$COMPILER -j3
