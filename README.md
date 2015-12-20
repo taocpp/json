@@ -3,7 +3,7 @@
 [![Release](https://img.shields.io/github/release/taocpp/json.svg)](https://github.com/taocpp/json/releases/latest)
 [![License](https://img.shields.io/github/license/taocpp/json.svg)](#license)
 [![TravisCI](https://travis-ci.org/taocpp/json.svg)](https://travis-ci.org/taocpp/json)
-[![Coverage](https://img.shields.io/coveralls/ColinH/PEGTL.svg)](https://coveralls.io/github/taocpp/json)
+[![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 [![Issues](https://img.shields.io/github/issues/taocpp/json.svg)](https://github.com/taocpp/json/issues)
 
 The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object as well as conversions from and to JSON string representation. It also serves as a fully functional real-world example application for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL).
