@@ -67,10 +67,10 @@ namespace tao
          TEST_ASSERT( from_string( "true" ) == value( true ) );
          TEST_ASSERT( from_string( "false" ) == value( false ) );
 
+         // TODO: test_int64()
+         // TODO: test_string()
          test_array();
          test_object();
-
-         // More elaborate tests are performed by the "nativejson benchmarks".
       }
 
    } // json
