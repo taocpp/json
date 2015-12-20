@@ -71,11 +71,12 @@ namespace tao
          TEST_ASSERT( false == f );
       }
 
-      void test_int64()
+      template< typename N >
+      void test_number()
       {
-         value a( 42 );
-         value b( 43 );
-         value c( 43 );
+         value a( N( 42 ) );
+         value b( N( 43 ) );
+         value c( N( 43 ) );
 
          TEST_ASSERT( a < b );
          TEST_ASSERT( c > a );
@@ -95,8 +96,8 @@ namespace tao
          TEST_ASSERT( ! ( b <= a ) );
          TEST_ASSERT( ! ( a >= b ) );
 
-         TEST_ASSERT( a == 42 );
-         TEST_ASSERT( 42 == a );
+         TEST_ASSERT( a == N( 42 ) );
+         TEST_ASSERT( N( 42 ) == a );
 
          // TODO
       }
@@ -130,13 +131,38 @@ namespace tao
          TEST_ASSERT( "foo" == foo );
       }
 
+      void test_array()
+      {
+         value a = from_string( "[ 1, 2 ]" );
+         value b = from_string( "[ 1, 3 ]" );
+
+         TEST_ASSERT( a.type() == type::ARRAY );
+         TEST_ASSERT( b.type() == type::ARRAY );
+
+         TEST_ASSERT( a == a );
+         TEST_ASSERT( a != b );
+         TEST_ASSERT( a <= a );
+         TEST_ASSERT( a <= b );
+         TEST_ASSERT( a >= a );
+         TEST_ASSERT( b >= a );
+         TEST_ASSERT( a < b );
+         TEST_ASSERT( b > a );
+         TEST_ASSERT( ! ( a == b ) );
+         TEST_ASSERT( ! ( a != a ) );
+         TEST_ASSERT( ! ( a < a ) );
+         TEST_ASSERT( ! ( b < a ) );
+         TEST_ASSERT( ! ( a > a ) );
+         TEST_ASSERT( ! ( a > b ) );
+      }
+
       void unit_test()
       {
          test_null();
          test_bool();
-         test_int64();
+         test_number< int64_t >();
+         test_number< double >();
          test_string();
-         // TODO
+         test_array();
       }
 
    } // json

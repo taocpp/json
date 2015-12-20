@@ -7,6 +7,16 @@ namespace tao
 {
    namespace json
    {
+      void test_string()
+      {
+         TEST_ASSERT( from_string( "\"\"" ) == value( "" ) );
+
+         TEST_THROWS( from_string( "\"" ) );
+         TEST_THROWS( from_string( "\"\r\n\"" ) );
+
+         // TODO...
+      }
+
       void test_array()
       {
          const auto v = from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
@@ -68,7 +78,6 @@ namespace tao
          TEST_ASSERT( from_string( "false" ) == value( false ) );
 
          // TODO: test_int64()
-         // TODO: test_string()
          test_array();
          test_object();
       }
