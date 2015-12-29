@@ -80,6 +80,19 @@ namespace tao
          // TODO: test_int64()
          test_array();
          test_object();
+
+         TEST_THROWS( from_string( "" ) );
+         TEST_THROWS( from_string( "[" ) );
+         TEST_THROWS( from_string( "{" ) );
+         TEST_THROWS( from_string( "]" ) );
+         TEST_THROWS( from_string( "}" ) );
+         TEST_THROWS( from_string( "'" ) );
+         TEST_THROWS( from_string( "\"" ) );
+         TEST_THROWS( from_string( "..." ) );
+         TEST_THROWS( from_string( "\"\xfd\xbf\xbf\xbf\xbf" ) );
+         TEST_THROWS( from_string( "\"\xfd\xbf\xbf\xbf\xbf\"" ) );
+         TEST_THROWS( from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf" ) );
+         TEST_THROWS( from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf\"" ) );
       }
 
    } // json

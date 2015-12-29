@@ -257,6 +257,16 @@ namespace tao
          test_double( 0.0 );
          test_double( 42.0 );
 
+         value v;
+
+         const double a = std::numeric_limits< double >::infinity();
+         const double b = std::numeric_limits< double >::quiet_NaN();
+         const double c = std::numeric_limits< double >::signaling_NaN();
+
+         TEST_THROWS( v = a );
+         TEST_THROWS( v = b );
+         TEST_THROWS( v = c );
+
          test_string( "" );
          test_string( "foo" );
          test_string( "abcdefghijklmnpqrstuvwxyz" );
