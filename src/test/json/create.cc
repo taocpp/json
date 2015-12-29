@@ -267,6 +267,40 @@ namespace tao
          TEST_THROWS( v = b );
          TEST_THROWS( v = c );
 
+         v = nullptr;
+
+         TEST_ASSERT( v.type() == type::NULL_ );
+
+         v = true;
+
+         TEST_ASSERT( v.type() == type::BOOL_ );
+         TEST_ASSERT( v.get_bool() );
+
+         v = 1;
+
+         TEST_ASSERT( v.type() == type::INT64 );
+         TEST_ASSERT( v.get_int64() == 1 );
+
+         v = 2.0;
+
+         TEST_ASSERT( v.type() == type::DOUBLE );
+         TEST_ASSERT( v.get_double() == 2.0 );
+
+         v = "hallo";
+
+         TEST_ASSERT( v.type() == type::STRING );
+         TEST_ASSERT( v.get_string() == "hallo" );
+
+         v = std::vector< value >();
+
+         TEST_ASSERT( v.type() == type::ARRAY );
+         TEST_ASSERT( v.get_array().empty() );
+
+         v = std::map< std::string, value >();
+
+         TEST_ASSERT( v.type() == type::OBJECT );
+         TEST_ASSERT( v.get_object().empty() );
+
          test_string( "" );
          test_string( "foo" );
          test_string( "abcdefghijklmnpqrstuvwxyz" );

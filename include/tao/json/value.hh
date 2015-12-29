@@ -315,6 +315,13 @@ namespace tao
             destroy();
             unsafe_assign( t );
          }
+
+         void operator= ( const char * s )
+         {
+            destroy();
+            unsafe_assign( s );
+         }
+
          void operator= ( std::string && s ) noexcept
          {
             destroy();
@@ -758,6 +765,18 @@ namespace tao
             new ( & m_union.s ) std::string( std::move( s ) );
          }
 
+         void unsafe_assign( const char * s )
+         {
+            m_type = json::type::STRING;
+            new ( & m_union.s ) std::string( s );
+         }
+
+         void unsafe_assign( const char * s, const std::size_t l )
+         {
+            m_type = json::type::STRING;
+            new ( & m_union.s ) std::string( s, l );
+         }
+
          void unsafe_assign( const std::string & s )
          {
             m_type = json::type::STRING;
@@ -815,8 +834,6 @@ namespace tao
          //    new ( & m_union.o ) std::map< std::string, value >( begin, end );
          //    m_type = json::type::OBJECT;
          // }
-
-         
 
       private:
          value( const char ) = delete;
@@ -899,7 +916,7 @@ namespace tao
                   new ( & m_union.o ) std::map< std::string, value >( std::move( r.m_union.o ) );
                   return;
             }
-            assert( false );
+            assert( false );  // LCOV_EXCL_LINE
          }
 
          void embed( const value & r )
@@ -921,7 +938,7 @@ namespace tao
                   new ( & m_union.o ) std::map< std::string, value >( r.m_union.o );
                   return;
             }
-            assert( false );
+            assert( false );  // LCOV_EXCL_LINE
          }
 
          void destroy() noexcept
@@ -942,7 +959,7 @@ namespace tao
                   m_union.o.~map();
                   return;
             }
-            assert( false );
+            assert( false );  // LCOV_EXCL_LINE
          }
 
          static void check_finite( const double d )
