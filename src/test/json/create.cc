@@ -37,9 +37,6 @@ namespace tao
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
-
-         TEST_ASSERT( v == nullptr );
-         TEST_ASSERT( nullptr == v );
       }
 
       void test_bool( const bool b )
@@ -70,9 +67,6 @@ namespace tao
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
-
-         TEST_ASSERT( v == b );
-         TEST_ASSERT( b == v );
       }
 
       template< typename T >
@@ -100,9 +94,6 @@ namespace tao
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
-
-         TEST_ASSERT( v == t );
-         TEST_ASSERT( t == v );
       }
 
       template< typename T >
@@ -137,9 +128,6 @@ namespace tao
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
-
-         TEST_ASSERT( v == d );
-         TEST_ASSERT( d == v );
       }
 
       template< unsigned N >
@@ -174,11 +162,6 @@ namespace tao
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
-
-         TEST_ASSERT( v == s );
-         TEST_ASSERT( v == t );
-         TEST_ASSERT( s == v );
-         TEST_ASSERT( t == v );
       }
 
       void test_empty_array( const value v)
@@ -203,11 +186,6 @@ namespace tao
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
-
-         const std::vector< value > u;
-
-         TEST_ASSERT( v == u );
-         TEST_ASSERT( u == v );
       }
 
       void test_empty_object( const value v )
@@ -232,11 +210,6 @@ namespace tao
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
-
-         const std::map< std::string, value > m;
-
-         TEST_ASSERT( v == m );
-         TEST_ASSERT( m == v );
       }
 
       void test_array_1234()
@@ -248,20 +221,18 @@ namespace tao
 
          const std::vector< value > r = { value( 1 ), value( 2 ), value( 3 ), value( 4 ) };
 
-         TEST_ASSERT( v == r );
-         TEST_ASSERT( r == v );
          TEST_ASSERT( v == value( r ) );
          TEST_ASSERT( v.get_array() == r );
 
-         TEST_ASSERT( v[ 0 ] == 1 );
-         TEST_ASSERT( v[ 1 ] == 2 );
-         TEST_ASSERT( v[ 2 ] == 3 );
-         TEST_ASSERT( v[ 3 ] == 4 );
+         TEST_ASSERT( v[ 0 ].get_int64() == 1 );
+         TEST_ASSERT( v[ 1 ].get_int64() == 2 );
+         TEST_ASSERT( v[ 2 ].get_int64() == 3 );
+         TEST_ASSERT( v[ 3 ].get_int64() == 4 );
 
-         TEST_ASSERT( v( 0 ) == 1 );
-         TEST_ASSERT( v( 1 ) == 2 );
-         TEST_ASSERT( v( 2 ) == 3 );
-         TEST_ASSERT( v( 3 ) == 4 );
+         TEST_ASSERT( v( 0 ).get_int64() == 1 );
+         TEST_ASSERT( v( 1 ).get_int64() == 2 );
+         TEST_ASSERT( v( 2 ).get_int64() == 3 );
+         TEST_ASSERT( v( 3 ).get_int64() == 4 );
 
          TEST_THROWS( v[ 4 ] );
          TEST_THROWS( v[ "foo" ] );

@@ -39,8 +39,8 @@ namespace tao
          TEST_ASSERT( a[ 6 ].get_array()[ 2 ] == value( 3 ) );
          TEST_ASSERT( a[ 7 ].type() == type::OBJECT );
          TEST_ASSERT( a[ 7 ].get_object().size() == 2 );
-         TEST_ASSERT( a[ 7 ].get_object().at("a" ) == "b" );
-         TEST_ASSERT( a[ 7 ].get_object().at( "c" ) == "d" );
+         TEST_ASSERT( a[ 7 ].get_object().at( "a" ).get_string() == "b" );
+         TEST_ASSERT( a[ 7 ].get_object().at( "c" ).get_string() == "d" );
       }
 
       void test_object()
@@ -65,8 +65,8 @@ namespace tao
          TEST_ASSERT( o.at( "g" ).get_array()[ 2 ] == value( 3 ) );
          TEST_ASSERT( o.at( "h" ).type() == type::OBJECT );
          TEST_ASSERT( o.at( "h" ).get_object().size() == 2 );
-         TEST_ASSERT( o.at( "h" ).get_object().at("a" ) == "b" );
-         TEST_ASSERT( o.at( "h" ).get_object().at( "c" ) == "d" );
+         TEST_ASSERT( o.at( "h" ).get_object().at( "a" ).get_string() == "b" );
+         TEST_ASSERT( o.at( "h" ).get_object().at( "c" ).get_string() == "d" );
       }
 
       void unit_test()

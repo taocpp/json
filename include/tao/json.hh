@@ -12,6 +12,14 @@
 #include "json/from_string.hh"
 #include "json/parse_file.hh"
 
+#include "json/compare_null.hh"
+#include "json/compare_bool.hh"
+#include "json/compare_int64.hh"
+#include "json/compare_double.hh"
+#include "json/compare_string.hh"
+#include "json/compare_array.hh"
+#include "json/compare_object.hh"
+
 // Include this if required to enable
 // C++11 user defined JSON literals that
 // can be used like "[null]"_json .

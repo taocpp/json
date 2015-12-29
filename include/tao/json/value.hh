@@ -12,6 +12,7 @@
 #include "external/sequences/make_integer_sequence.hpp"
 
 #include "internal/value_union.hh"
+#include "internal/get_by_enum.hh"
 #include "internal/asserts.hh"
 #include "internal/throw.hh"
 
@@ -236,6 +237,12 @@ namespace tao
             embed( r );
          }
 
+         void operator= ( const std::nullptr_t t ) noexcept
+         {
+            destroy();
+            unsafe_assign( t );
+         }
+
          void operator= ( const bool b ) noexcept
          {
             destroy();
@@ -295,12 +302,6 @@ namespace tao
             check_finite( d );
             destroy();
             unsafe_assign( d );
-         }
-
-         void operator= ( const std::nullptr_t t ) noexcept
-         {
-            destroy();
-            unsafe_assign( t );
          }
 
          void operator= ( const empty_array_t t ) noexcept
@@ -448,6 +449,12 @@ namespace tao
             return m_type == json::type::OBJECT;
          }
 
+         std::nullptr_t get_null() const
+         {
+            CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
+            return unsafe_null();
+         }
+
          bool get_bool() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::BOOL_ );
@@ -515,9 +522,21 @@ namespace tao
             return unsafe_object();
          }
 
+         template< json::type E >
+         typename internal::get_by_enum< E >::type get_by_enum() const
+         {
+            CHECK_TYPE_ERROR( m_type, E );
+            return internal::get_by_enum< E >::get( m_union );
+         }
+
          // The unsafe_foo() accessor functions MUST NOT be
          // called when the type of the value is not the one
          // corresponding to the type of the accessor!
+
+         std::nullptr_t unsafe_null() const noexcept
+         {
+            return nullptr;
+         }
 
          bool unsafe_bool() const noexcept
          {
@@ -656,6 +675,11 @@ namespace tao
          // The unsafe_assign()-functions MUST NOT be called on a
          // value v when json::needs_destroy( v.type() ) is true!
 
+         void unsafe_assign( const std::nullptr_t ) noexcept
+         {
+            m_type = json::type::NULL_;
+         }
+
          void unsafe_assign( const bool b ) noexcept
          {
             m_type = json::type::BOOL_;
@@ -714,11 +738,6 @@ namespace tao
          {
             m_type = json::type::DOUBLE;
             m_union.d = d;
-         }
-
-         void unsafe_assign( const std::nullptr_t ) noexcept
-         {
-            m_type = json::type::NULL_;
          }
 
          void unsafe_assign( const empty_array_t ) noexcept
@@ -796,6 +815,8 @@ namespace tao
          //    new ( & m_union.o ) std::map< std::string, value >( begin, end );
          //    m_type = json::type::OBJECT;
          // }
+
+         
 
       private:
          value( const char ) = delete;
