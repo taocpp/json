@@ -20,7 +20,7 @@ The JSON value class contains a `union` of all of these types and does *not itse
 
 The core JSON value class is implemented and working.
 
-The conversions from and to JSON string representation are finished and achiev a 100% score in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
+The conversions from and to JSON string representation are finished and achieve a 100% score in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
 
 Some parts of the API are still under discussion and development and might change and/or be extended before the first release.
 
