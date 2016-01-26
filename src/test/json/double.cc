@@ -128,9 +128,24 @@ namespace tao
                       "e-308", 2.2250738585072014e-308 );
 
          test_double( "30e001", 300.0 );
+         test_double( std::string( 2000, '1' ), std::numeric_limits< double >::max() );
 
          TEST_THROWS( from_string( "1.0e1234567890" ) );
          TEST_THROWS( from_string( std::string( 1048577, '1' ) ) );
+
+         {
+            const auto a = from_string( "42.0" ).as_number< double >();
+            TEST_ASSERT( sizeof( a ) == sizeof( double ) );
+            TEST_ASSERT( a == 42.0 );
+         } {
+            const auto a = from_string( "42.3" ).as_number< short >();
+            TEST_ASSERT( sizeof( a ) == sizeof( short ) );
+            TEST_ASSERT( a == 42 );
+         } {
+            const auto a = from_string( "42" ).as_number< double >();
+            TEST_ASSERT( sizeof( a ) == sizeof( double ) );
+            TEST_ASSERT( a == 42.0 );
+         }
       }
 
    } // json

@@ -52,9 +52,6 @@ namespace tao
             struct escaped_char : one< '"', '\\', '/', 'b', 'f', 'n', 'r', 't' > {};
             struct escaped : sor< escaped_char, unicode > {};
 
-            //      struct unescaped : utf8::range< 0x20, 0x10FFFF > {};
-            //      struct unescaped : plus< not_at< one< '\\', '"' > >, utf8::range< 0x20, 0x10FFFF > > {};
-
             struct unescaped
             {
                using analyze_t = analysis::generic< analysis::rule_type::ANY >;
@@ -75,7 +72,7 @@ namespace tao
                      }
                      return result;
                   }
-                  return result;
+                  return result;  // LCOV_EXCL_LINE  -- The rest of the grammar prevents this line from ever being called.
                }
             };
 

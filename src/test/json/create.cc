@@ -100,6 +100,7 @@ namespace tao
       void test_int64()
       {
          test_int64< T >( 0 );
+         test_int64< T >( 42 );
          test_int64< T >( std::numeric_limits< T >::min() );
          test_int64< T >( std::numeric_limits< T >::max() );
       }
@@ -320,6 +321,28 @@ namespace tao
          test_array_1234();
 
          TEST_ASSERT( value( { "foo", "bar", "baz" } ).is_array() );
+
+         TEST_THROWS( from_string( "1" ).emplace_back( 2 ) );
+         TEST_THROWS( from_string( "1" ).emplace( "foo", value( 3 ) ) );
+         {
+            value a;
+            a.emplace_back( 4 );
+            TEST_ASSERT( a.type() == type::ARRAY );
+            TEST_ASSERT( a[ 0 ] == 4 );
+            value b( a );
+            TEST_ASSERT( a.get_array() == b.get_array() );
+         } {
+            value a;
+            a.emplace( "foo", value( 5 ) );
+            TEST_ASSERT( a.type() == type::OBJECT );
+            TEST_ASSERT( a[ "foo" ] == 5 );
+            value b( a );
+            TEST_ASSERT( a.get_object() == b.get_object() );
+         } {
+            const value a( "foo" );
+            const value b( a );
+            TEST_ASSERT( a.get_string() == b.get_string() );
+         }
       }
 
    } // json
