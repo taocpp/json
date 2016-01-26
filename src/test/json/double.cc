@@ -132,7 +132,6 @@ namespace tao
 
          TEST_THROWS( from_string( "1.0e1234567890" ) );
          TEST_THROWS( from_string( std::string( 1048577, '1' ) ) );
-
          {
             const auto a = from_string( "42.0" ).as_number< double >();
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
@@ -146,6 +145,8 @@ namespace tao
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          }
+         TEST_THROWS( value( "foo" ).as_number< double >() );
+         TEST_THROWS( value( "bar" ).as_number< int >() );
       }
 
    } // json

@@ -20,6 +20,7 @@ namespace tao
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_bool() );
          TEST_THROWS( v.get_int64() );
@@ -50,6 +51,7 @@ namespace tao
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_int64() );
          TEST_THROWS( v.get_double() );
@@ -81,6 +83,7 @@ namespace tao
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( v.is_number() );
 
          TEST_THROWS( v.get_bool() );
          TEST_THROWS( v.get_double() );
@@ -116,6 +119,7 @@ namespace tao
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( v.is_number() );
 
          TEST_THROWS( v.get_bool() );
          TEST_THROWS( v.get_int64() );
@@ -143,6 +147,7 @@ namespace tao
          TEST_ASSERT( v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_bool() );
          TEST_THROWS( v.get_int64() );
@@ -174,6 +179,7 @@ namespace tao
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_bool() );
          TEST_THROWS( v.get_int64() );
@@ -198,6 +204,7 @@ namespace tao
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( v.is_object() );
+         TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_bool() );
          TEST_THROWS( v.get_int64() );
@@ -218,6 +225,7 @@ namespace tao
          const value v{ 1, 2, 3, 4 };
 
          TEST_ASSERT( v.is_array() );
+         TEST_ASSERT( ! v.is_number() );
          TEST_ASSERT( v.type() == type::ARRAY );
 
          const std::vector< value > r = { value( 1 ), value( 2 ), value( 3 ), value( 4 ) };
