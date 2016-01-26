@@ -13,7 +13,6 @@
 
 #include "internal/value_union.hh"
 #include "internal/get_by_enum.hh"
-#include "internal/asserts.hh"
 #include "internal/throw.hh"
 
 #include "type.hh"
@@ -904,7 +903,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
-                  m_union.v = r.m_union.v;
+                  m_union.i = r.m_union.i;
                   return;
                case json::type::STRING:
                   new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
@@ -926,7 +925,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
-                  m_union.v = r.m_union.v;
+                  m_union.i = r.m_union.i;
                   return;
                case json::type::STRING:
                   new ( & m_union.s ) std::string( r.m_union.s );

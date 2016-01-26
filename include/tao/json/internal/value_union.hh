@@ -29,7 +29,6 @@ namespace tao
             bool b;
             int64_t i;
             double d;
-            void * v;
 
             std::string s;
             std::vector< Value > a;
