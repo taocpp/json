@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 namespace tao
@@ -42,27 +42,27 @@ namespace tao
 
       inline bool operator!= ( const TAOCPP_JSON_COMPARE_DATA_TYPE & l, const value & r )
       {
-         return ! ( r == l );
+         return ! ( l == r );
       }
 
       inline bool operator<= ( const value & l, const TAOCPP_JSON_COMPARE_DATA_TYPE & r )
       {
-         return ! ( r > l );
+         return ! ( l > r );
       }
 
       inline bool operator<= ( const TAOCPP_JSON_COMPARE_DATA_TYPE & l, const value & r )
       {
-         return ! ( r > l );
+         return ! ( l > r );
       }
 
       inline bool operator>= ( const value & l, const TAOCPP_JSON_COMPARE_DATA_TYPE & r )
       {
-         return ! ( r < l );
+         return ! ( l < r );
       }
 
       inline bool operator>= ( const TAOCPP_JSON_COMPARE_DATA_TYPE & l, const value & r )
       {
-         return ! ( r < l );
+         return ! ( l < r );
       }
 
    } // json
