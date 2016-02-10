@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_VALUE_HH
@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "external/sequences/make_integer_sequence.hpp"
+#include "external/operators.hpp"
 
 #include "internal/value_union.hh"
 #include "internal/get_by_enum.hh"
@@ -22,6 +23,21 @@ namespace tao
    namespace json
    {
       class value
+         : operators::totally_ordered< value >,
+           operators::totally_ordered< value, std::nullptr_t >, // null
+           operators::totally_ordered< value, bool >, // bool
+           operators::totally_ordered< value, signed char >, // int64
+           operators::totally_ordered< value, unsigned char >, // int64
+           operators::totally_ordered< value, signed short >, // int64
+           operators::totally_ordered< value, unsigned short >, // int64
+           operators::totally_ordered< value, signed int >, // int64
+           operators::totally_ordered< value, unsigned int >, // int64
+           operators::totally_ordered< value, signed long >, // int64
+           operators::totally_ordered< value, signed long long >, // int64
+           operators::totally_ordered< value, double >, // double
+           operators::totally_ordered< value, std::string >, // string
+           operators::totally_ordered< value, std::vector< value > >, // array
+           operators::totally_ordered< value, std::map< std::string, value > > // object
       {
       public:
          value() noexcept

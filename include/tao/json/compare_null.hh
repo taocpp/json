@@ -8,64 +8,19 @@ namespace tao
 {
    namespace json
    {
-      inline bool operator< ( const value & l, const std::nullptr_t )
-      {
-         return l.type() < type::NULL_;
-      }
-
-      inline bool operator< ( const std::nullptr_t, const value & r )
-      {
-         return type::NULL_ < r.type();
-      }
-
-      inline bool operator> ( const value & l, const std::nullptr_t )
-      {
-         return l.type() > type::NULL_;
-      }
-
-      inline bool operator> ( const std::nullptr_t, const value & r )
-      {
-         return type::NULL_ > r.type();
-      }
-
       inline bool operator== ( const value & l, const std::nullptr_t )
       {
          return l.type() == type::NULL_;
       }
 
-      inline bool operator== ( const std::nullptr_t, const value & r )
+      inline bool operator< ( const value & l, const std::nullptr_t )
       {
-         return r.type() == type::NULL_;
+         return l.type() < type::NULL_;
       }
 
-      inline bool operator!= ( const value & l, const std::nullptr_t )
+      inline bool operator> ( const value & l, const std::nullptr_t )
       {
-         return l.type() != type::NULL_;
-      }
-
-      inline bool operator!= ( const std::nullptr_t, const value & r )
-      {
-         return r.type() != type::NULL_;
-      }
-
-      inline bool operator<= ( const value & l, const std::nullptr_t )
-      {
-         return l.type() <= type::NULL_;
-      }
-
-      inline bool operator<= ( const std::nullptr_t, const value & r )
-      {
-         return r.type() <= type::NULL_;
-      }
-
-      inline bool operator>= ( const value & l, const std::nullptr_t )
-      {
-         return l.type() >= type::NULL_;
-      }
-
-      inline bool operator>= ( const std::nullptr_t, const value & r )
-      {
-         return r.type() >= type::NULL_;
+         return l.type() > type::NULL_;
       }
 
    } // json
