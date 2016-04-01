@@ -44,186 +44,72 @@ namespace tao
                : m_type( json::type::NULL_ )
          { }
 
-         explicit
-         value( const bool b ) noexcept
-               : m_type( json::type::BOOL_ )
+         value( value && r ) noexcept
+               : m_type( r.m_type )
          {
-            m_union.b = b;
+            seize( std::move( r ) );
+            r.m_type = json::type::NULL_;
          }
 
-         explicit
-         value( const signed char i ) noexcept
-               : m_type( json::type::INT64 )
+         value( const value & r )
+               : m_type( r.m_type )
          {
-            m_union.i = i;
+            embed( r );
          }
 
-         explicit
-         value( const unsigned char i ) noexcept
-               : m_type( json::type::INT64 )
+         value( value & r )
+               : m_type( r.m_type )
          {
-            m_union.i = i;
+            embed( r );
          }
 
-         explicit
-         value( const signed short i ) noexcept
-               : m_type( json::type::INT64 )
-         {
-            m_union.i = i;
-         }
-
-         explicit
-         value( const unsigned short i ) noexcept
-               : m_type( json::type::INT64 )
-         {
-            m_union.i = i;
-         }
-
-         explicit
-         value( const signed int i ) noexcept
-               : m_type( json::type::INT64 )
-         {
-            m_union.i = i;
-         }
-
-         explicit
-         value( const unsigned int i ) noexcept
-               : m_type( json::type::INT64 )
-         {
-            m_union.i = i;
-         }
-
-         explicit
-         value( const signed long i ) noexcept
-               : m_type( json::type::INT64 )
-         {
-            m_union.i = i;
-         }
-
-         explicit
-         value( const signed long long i ) noexcept
-               : m_type( json::type::INT64 )
-         {
-            m_union.i = i;
-         }
-
-         explicit
-         value( const double d )
-               : m_type( json::type::DOUBLE )
-         {
-            check_finite( d );
-            m_union.d = d;
-         }
-
-         explicit
-         value( const std::nullptr_t ) noexcept
+         template< typename... Ts >
+         value( Ts && ... ts ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
                : m_type( json::type::NULL_ )
-         { }
-
-         explicit
-         value( std::string && s )
-               : m_type( json::type::STRING )
          {
-            new ( & m_union.s ) std::string( std::move( s ) );
+            unsafe_assign( std::forward< Ts >( ts ) ... );
          }
 
-         explicit
-         value( const std::string & s )
-               : m_type( json::type::STRING )
+         value( std::initializer_list< std::pair< const std::string, value > > l )
+               : m_type( json::type::OBJECT )
          {
-            new ( & m_union.s ) std::string( s );
+            new ( & m_union.o ) std::map< std::string, value >( l );
+            assert( m_union.o.size() == l.size() ); // if this fires, we found duplicate keys
          }
 
-         explicit
-         value( const char * s )
-               : m_type( json::type::STRING )
+         template< typename... Ts >
+         static value array( Ts && ... ts )
          {
-            new ( & m_union.s ) std::string( s );
+            return std::vector< value >( { std::forward< Ts >( ts )... } );
          }
 
-         // template< unsigned N >
+         // template< typename T >
          // explicit
-         // value( const char ( & s )[ N ] )
-         //       : m_type( json::type::STRING )
+         // value( std::initializer_list< T > && l )
+         //       : m_type( json::type::ARRAY )
          // {
-         //    new ( & m_union.s ) std::string( s, N - 1 );
+         //    create_array( std::move( l ) );
          // }
 
-         value( const char * s, const std::size_t t )
-               : m_type( json::type::STRING )
-         {
-            new ( & m_union.s ) std::string( s, t );
-         }
+         // template< typename T >
+         // explicit
+         // value( const std::initializer_list< T > & l )
+         //       : m_type( json::type::ARRAY )
+         // {
+         //    create_array( l );
+         // }
 
-         explicit
-         value( const empty_array_t ) noexcept
-               : m_type( json::type::ARRAY )
-         {
-            new ( & m_union.a ) std::vector< value >();
-         }
+         // template< typename ... Ts >
+         // explicit
+         // value( std::tuple< Ts ... > && t )
+         //       : value( json_seq::index_sequence_for< Ts ... >(), std::move( t ) )
+         // { }
 
-         explicit
-         value( const empty_object_t ) noexcept
-               : m_type( json::type::OBJECT )
-         {
-            new ( & m_union.o ) std::map< std::string, value >();
-         }
-
-         explicit
-         value( std::vector< value > && v ) noexcept
-               : m_type( json::type::ARRAY )
-         {
-            new ( & m_union.a ) std::vector< value >( std::move( v ) );
-         }
-
-         explicit
-         value( const std::vector< value > & v )
-               : m_type( json::type::ARRAY )
-         {
-            new ( & m_union.a ) std::vector< value >( v );
-         }
-
-         explicit
-         value( std::map< std::string, value > && v ) noexcept
-               : m_type( json::type::OBJECT )
-         {
-            new ( & m_union.o ) std::map< std::string, value >( std::move( v ) );
-         }
-
-         explicit
-         value( const std::map< std::string, value > & v )
-               : m_type( json::type::OBJECT )
-         {
-            new ( & m_union.o ) std::map< std::string, value >( v );
-         }
-
-         template< typename T >
-         explicit
-         value( std::initializer_list< T > && l )
-               : m_type( json::type::ARRAY )
-         {
-            create_array( std::move( l ) );
-         }
-
-         template< typename T >
-         explicit
-         value( const std::initializer_list< T > & l )
-               : m_type( json::type::ARRAY )
-         {
-            create_array( l );
-         }
-
-         template< typename ... Ts >
-         explicit
-         value( std::tuple< Ts ... > && t )
-               : value( json_seq::index_sequence_for< Ts ... >(), std::move( t ) )
-         { }
-
-         template< typename ... Ts >
-         explicit
-         value( const std::tuple< Ts ... > & t )
-               : value( json_seq::index_sequence_for< Ts ... >(), t )
-         { }
+         // template< typename ... Ts >
+         // explicit
+         // value( const std::tuple< Ts ... > & t )
+         //       : value( json_seq::index_sequence_for< Ts ... >(), t )
+         // { }
 
          // template< typename I, typename = typename std::enable_if< std::is_constructible< value, decltype( * std::declval< I >() ) >::value >::type >
          // value( const I & begin, const I & end )
@@ -239,159 +125,37 @@ namespace tao
          //    new ( & m_union.o ) std::map< std::string, value >( begin, end );
          // }
 
-         value( value && r ) noexcept
-               : m_type( r.m_type )
-         {
-            seize( std::move( r ) );
-            r.m_type = json::type::NULL_;
-         }
-
-         value( const value & r )
-               : m_type( r.m_type )
-         {
-            embed( r );
-         }
-
-         void operator= ( const std::nullptr_t t ) noexcept
+         ~value() noexcept
          {
             destroy();
-            unsafe_assign( t );
          }
 
-         void operator= ( const bool b ) noexcept
+         template< typename T >
+         value& operator= ( T && v ) // noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
          {
-            destroy();
-            unsafe_assign( b );
+            assign( std::forward< T >( v ) );
+            return *this;
          }
 
-         void operator= ( const signed char i ) noexcept
+         value& operator= ( std::initializer_list< std::pair< const std::string, value > > l )
          {
-            destroy();
-            unsafe_assign( i );
+            value( l ).swap( *this );
+            return *this;
          }
 
-         void operator= ( const unsigned char i ) noexcept
-         {
-            destroy();
-            unsafe_assign( i );
-         }
+         // template< typename ... Ts >
+         // void operator= ( std::tuple< Ts ... > && t )
+         // {
+         //    destroy();
+         //    unsafe_assign( json_seq::index_sequence_for< Ts ... >(), std::move( t ) );
+         // }
 
-         void operator= ( const signed short i ) noexcept
-         {
-            destroy();
-            unsafe_assign( i );
-         }
-
-         void operator= ( const unsigned short i ) noexcept
-         {
-            destroy();
-            unsafe_assign( i );
-         }
-
-         void operator= ( const signed int i ) noexcept
-         {
-            destroy();
-            unsafe_assign( i );
-         }
-
-         void operator= ( const unsigned int i ) noexcept
-         {
-            destroy();
-            unsafe_assign( i );
-         }
-
-         void operator= ( const signed long i ) noexcept
-         {
-            destroy();
-            unsafe_assign( i );
-         }
-
-         void operator= ( const signed long long i ) noexcept
-         {
-            destroy();
-            unsafe_assign( i );
-         }
-
-         void operator= ( const double d )
-         {
-            check_finite( d );
-            destroy();
-            unsafe_assign( d );
-         }
-
-         void operator= ( const empty_array_t t ) noexcept
-         {
-            destroy();
-            unsafe_assign( t );
-         }
-
-         void operator= ( const empty_object_t t ) noexcept
-         {
-            destroy();
-            unsafe_assign( t );
-         }
-
-         void operator= ( const char * s )
-         {
-            destroy();
-            unsafe_assign( s );
-         }
-
-         void operator= ( std::string && s ) noexcept
-         {
-            destroy();
-            unsafe_assign( std::move( s ) );
-         }
-
-         void operator= ( const std::string & s )
-         {
-            destroy();
-            unsafe_assign( s );
-         }
-
-         void operator= ( std::vector< value > && a ) noexcept
-         {
-            destroy();
-            unsafe_assign( a );
-         }
-
-         void operator= ( const std::vector< value > & a )
-         {
-            destroy();
-            unsafe_assign( a );
-         }
-
-         void operator= ( std::map< std::string, value > && o ) noexcept
-         {
-            destroy();
-            unsafe_assign( std::move( o ) );
-         }
-
-         void operator= ( const std::map< std::string, value > & o )
-         {
-            destroy();
-            unsafe_assign( o );
-         }
-
-         void operator= ( const std::initializer_list< value > & l )
-         {
-            destroy();
-            unsafe_assign( l );
-         }
-
-         template< typename ... Ts >
-         void operator= ( std::tuple< Ts ... > && t )
-         {
-            destroy();
-            unsafe_assign( json_seq::index_sequence_for< Ts ... >(), std::move( t ) );
-         }
-
-         template< typename ... Ts >
-         void operator= ( const std::tuple< Ts ... > & t )
-         {
-            destroy();
-            unsafe_assign( json_seq::index_sequence_for< Ts ... >(), t );
-         }
+         // template< typename ... Ts >
+         // void operator= ( const std::tuple< Ts ... > & t )
+         // {
+         //    destroy();
+         //    unsafe_assign( json_seq::index_sequence_for< Ts ... >(), t );
+         // }
 
          const value & operator= ( value && r ) noexcept
          {
@@ -419,11 +183,6 @@ namespace tao
             value t( std::move( r ) );
             r = std::move( * this );
             ( * this ) = ( std::move( t ) );
-         }
-
-         ~value() noexcept
-         {
-            destroy();
          }
 
          json::type type() const noexcept
@@ -756,8 +515,9 @@ namespace tao
             m_union.i = i;
          }
 
-         void unsafe_assign( const double d ) noexcept
+         void unsafe_assign( const double d )
          {
+            check_finite( d );
             m_type = json::type::DOUBLE;
             m_union.d = d;
          }
@@ -822,20 +582,6 @@ namespace tao
             m_type = json::type::OBJECT;
          }
 
-         template< typename T >
-         void unsafe_assign( std::initializer_list< T > && l )
-         {
-            create_array( std::move( l ) );
-            m_type = json::type::ARRAY;
-         }
-
-         template< typename T >
-         void unsafe_assign( const std::initializer_list< T > & l )
-         {
-            create_array( l );
-            m_type = json::type::ARRAY;
-         }
-
          // template< typename I, std::enable_if< std::is_constructible< value, decltype( * std::declval< I >() ) >::value, int > = 0 >
          // void unsafe_assign( const I & begin, const I & end )
          // {
@@ -859,38 +605,38 @@ namespace tao
          void operator= ( const unsigned long ) = delete;
          void operator= ( const unsigned long long ) = delete;
 
-         explicit
-         value( const json::type t )
-               : m_type( t )
-         { }
+         // explicit
+         // value( const json::type t )
+         //       : m_type( t )
+         // { }
 
-         template< std::size_t ... Is, typename ... Ts >
-         value( json_seq::index_sequence< Is ... >, std::tuple< Ts ... > && t )
-               : m_type( json::type::ARRAY )
-         {
-            new ( & m_union.a ) std::vector< value >( { std::move( std::get< Is >( t ) ) ... } );
-         }
+         // template< std::size_t ... Is, typename ... Ts >
+         // value( json_seq::index_sequence< Is ... >, std::tuple< Ts ... > && t )
+         //       : m_type( json::type::ARRAY )
+         // {
+         //    new ( & m_union.a ) std::vector< value >( { std::move( std::get< Is >( t ) ) ... } );
+         // }
 
-         template< std::size_t ... Is, typename ... Ts >
-         value( json_seq::index_sequence< Is ... >, const std::tuple< Ts ... > & t )
-               : m_type( json::type::ARRAY )
-         {
-            new ( & m_union.a ) std::vector< value >( { std::get< Is >( t ) ... } );
-         }
+         // template< std::size_t ... Is, typename ... Ts >
+         // value( json_seq::index_sequence< Is ... >, const std::tuple< Ts ... > & t )
+         //       : m_type( json::type::ARRAY )
+         // {
+         //    new ( & m_union.a ) std::vector< value >( { std::get< Is >( t ) ... } );
+         // }
 
-         template< std::size_t ... Is, typename ... Ts >
-         void unsafe_assign( json_seq::index_sequence< Is ... >, std::tuple< Ts ... > && t )
-         {
-            new ( & m_union.a ) std::vector< value >( { std::move( std::get< Is >( t ) ) ... } );
-            m_type = json::type::ARRAY;
-         }
+         // template< std::size_t ... Is, typename ... Ts >
+         // void unsafe_assign( json_seq::index_sequence< Is ... >, std::tuple< Ts ... > && t )
+         // {
+         //    new ( & m_union.a ) std::vector< value >( { std::move( std::get< Is >( t ) ) ... } );
+         //    m_type = json::type::ARRAY;
+         // }
 
-         template< std::size_t ... Is, typename ... Ts >
-         void unsafe_assign( json_seq::index_sequence< Is ... >, const std::tuple< Ts ... > & t )
-         {
-            new ( & m_union.a ) std::vector< value >( { std::get< Is >( t ) ... } );
-            m_type = json::type::ARRAY;
-         }
+         // template< std::size_t ... Is, typename ... Ts >
+         // void unsafe_assign( json_seq::index_sequence< Is ... >, const std::tuple< Ts ... > & t )
+         // {
+         //    new ( & m_union.a ) std::vector< value >( { std::get< Is >( t ) ... } );
+         //    m_type = json::type::ARRAY;
+         // }
 
          template< typename T >
          void create_array( std::initializer_list< T > && l )

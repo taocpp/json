@@ -222,7 +222,7 @@ namespace tao
 
       void test_array_1234()
       {
-         const value v{ 1, 2, 3, 4 };
+         const value v = value::array( 1, 2, 3, 4 );
 
          TEST_ASSERT( v.is_array() );
          TEST_ASSERT( ! v.is_number() );
@@ -245,6 +245,13 @@ namespace tao
 
          TEST_THROWS( v[ 4 ] );
          TEST_THROWS( v[ "foo" ] );
+      }
+
+      void test_object_1234()
+      {
+        const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( true, false, 0 ) } } } };
+
+        // TODO: Add more tests
       }
 
       void unit_test()
@@ -327,8 +334,7 @@ namespace tao
          test_empty_object( value( std::map< std::string, value >() ) );
 
          test_array_1234();
-
-         TEST_ASSERT( value( { "foo", "bar", "baz" } ).is_array() );
+         test_object_1234();
 
          TEST_THROWS( from_string( "1" ).emplace_back( 2 ) );
          TEST_THROWS( from_string( "1" ).emplace( "foo", value( 3 ) ) );
