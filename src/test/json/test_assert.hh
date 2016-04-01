@@ -9,7 +9,7 @@
 #define TEST_ASSERT( eXPReSSioN )                       \
    do {                                                 \
    if ( ! ( eXPReSSioN ) ) {                            \
-      std::cerr << "json: unit test assert [ "         \
+      std::cerr << "json: unit test assert [ "          \
                 << ( # eXPReSSioN )                     \
                 << " ] failed in line [ "               \
                 << __LINE__                             \
@@ -23,7 +23,7 @@
    do {                                                 \
       try {                                             \
          STaTeMeNT;                                     \
-         std::cerr << "json: unit test assert [ "      \
+         std::cerr << "json: unit test assert [ "       \
                    << ( # STaTeMeNT )                   \
                    << " ] did not throw in line [ "     \
                    << __LINE__                          \
