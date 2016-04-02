@@ -163,14 +163,14 @@ namespace tao
 
          TEST_ASSERT( v.get_string() == value( t ).get_string() );
          TEST_ASSERT( v.get_string() == value( std::string( s ) ).get_string() );
-         TEST_ASSERT( v.get_string() == value( s, N - 1 ).get_string() );
-         TEST_ASSERT( v.get_string() == value( s + 0 ).get_string() );
+         TEST_ASSERT( v.get_string() == value( std::string( s, N - 1 ) ).get_string() );
+         TEST_ASSERT( v.get_string() == value( std::string( s + 0 ) ).get_string() );
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
       }
 
-      void test_empty_array( const value v)
+      void test_empty_array( const value v )
       {
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
@@ -324,8 +324,6 @@ namespace tao
          TEST_ASSERT( value( "\0" ).get_string().empty() );  // TODO?
 
          TEST_ASSERT( value( "baz" ).get_string().size() == 3 );
-         TEST_ASSERT( value( "baz", 2 ).get_string().size() == 2 );
-         TEST_ASSERT( value( "baz", 4 ).get_string().size() == 4 );
 
          test_empty_array( value( empty_array ) );
          test_empty_array( value( std::vector< value >() ) );
