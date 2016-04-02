@@ -71,15 +71,14 @@ namespace tao
 
          value( std::initializer_list< std::pair< const std::string, value > > l )
          {
-            unsafe_create_object( std::move( l ) );
-            assert( m_union.o.size() == l.size() ); // if this fires, we found duplicate keys
+            unsafe_assign( l );
          }
 
          template< typename... Ts >
          static value array( Ts && ... ts )
          {
             value v;
-            v.unsafe_create_array( std::vector< value >( { std::forward< Ts >( ts )... } ) );
+            v.unsafe_emplace_array( std::vector< value >( { std::forward< Ts >( ts )... } ) );
             return v;
          }
 
@@ -89,19 +88,19 @@ namespace tao
          }
 
          template< typename T >
-         value& operator= ( T && v ) // noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
+         value & operator= ( T && v ) // noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
          {
             assign( std::forward< T >( v ) );
             return *this;
          }
 
-         value& operator= ( std::initializer_list< std::pair< const std::string, value > > l )
+         value & operator= ( std::initializer_list< std::pair< const std::string, value > > l )
          {
-            value( l ).swap( *this );
+            assign( l );
             return *this;
          }
 
-         const value & operator= ( value && r ) noexcept
+         value & operator= ( value && r ) noexcept
          {
             if ( this != & r ) {
                destroy();
@@ -112,7 +111,7 @@ namespace tao
             return * this;
          }
 
-         const value & operator= ( const value & r )
+         value & operator= ( const value & r )
          {
             if ( this != & r ) {
                destroy();
@@ -120,6 +119,29 @@ namespace tao
                embed( r );
             }
             return * this;
+         }
+
+         value & operator= ( value & r )
+         {
+            if ( this != & r ) {
+               destroy();
+               m_type = r.m_type;
+               embed( r );
+            }
+            return * this;
+         }
+
+         template< typename T >
+         void assign( T && v )
+         {
+            destroy();
+            unsafe_assign( std::forward< T >( v ) );
+         }
+
+         void assign( std::initializer_list< std::pair< const std::string, value > > l )
+         {
+            destroy();
+            unsafe_assign( l );
          }
 
          void swap( value & r ) noexcept
@@ -390,11 +412,18 @@ namespace tao
             }
          }
 
-         template< typename T >
-         void assign( T && v )
+         template< typename ... Ts >
+         void emplace_array( Ts && ... ts )
          {
             destroy();
-            unsafe_assign( std::forward< T >( v ) );
+            unsafe_emplace_array( std::forward< Ts >( ts ) ... );
+         }
+
+         template< typename ... Ts >
+         void emplace_object( Ts && ... ts )
+         {
+            destroy();
+            unsafe_emplace_object( std::forward< Ts >( ts ) ... );
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
@@ -498,40 +527,41 @@ namespace tao
 
          void unsafe_assign( std::vector< value > && a ) noexcept
          {
-            new ( & m_union.a ) std::vector< value >( std::move( a ) );
-            m_type = json::type::ARRAY;
+            unsafe_emplace_array( std::move( a ) );
          }
 
          void unsafe_assign( const std::vector< value > & a )
          {
-            new ( & m_union.a ) std::vector< value >( a );
-            m_type = json::type::ARRAY;
+            unsafe_emplace_array( a );
          }
 
          void unsafe_assign( std::map< std::string, value > && o ) noexcept
          {
-            new ( & m_union.o ) std::map< std::string, value >( std::move( o ) );
-            m_type = json::type::OBJECT;
+            unsafe_emplace_object( std::move( o ) );
          }
 
          void unsafe_assign( const std::map< std::string, value > & o )
          {
-            new ( & m_union.o ) std::map< std::string, value >( o );
-            m_type = json::type::OBJECT;
+            unsafe_emplace_object( o );
          }
 
-         template< typename... Ts >
-         void unsafe_assign( Ts && ... ) = delete;
+         void unsafe_assign( std::initializer_list< std::pair< const std::string, value > > l )
+         {
+            unsafe_emplace_object( l );
+            if( m_union.o.size() != l.size() ) {
+              throw std::runtime_error( "duplicate key detected" );
+            }
+         }
 
          template< typename ... Ts >
-         void unsafe_create_array( Ts && ... ts )
+         void unsafe_emplace_array( Ts && ... ts )
          {
             new ( & m_union.a ) std::vector< value >( std::forward< Ts >( ts ) ... );
             m_type = json::type::ARRAY;
          }
 
          template< typename ... Ts >
-         void unsafe_create_object( Ts && ... ts )
+         void unsafe_emplace_object( Ts && ... ts )
          {
             new ( & m_union.o ) std::map< std::string, value >( std::forward< Ts >( ts ) ... );
             m_type = json::type::OBJECT;
