@@ -51,8 +51,23 @@ namespace tao
            operators::totally_ordered< value, std::map< std::string, value > > // object
       {
       public:
-         template< typename, typename >
-         friend struct traits;
+         friend struct traits< std::nullptr_t >;
+         friend struct traits< bool >;
+         friend struct traits< signed char >;
+         friend struct traits< unsigned char >;
+         friend struct traits< signed short >;
+         friend struct traits< unsigned short >;
+         friend struct traits< signed int >;
+         friend struct traits< unsigned int >;
+         friend struct traits< signed long >;
+         friend struct traits< signed long long >;
+         friend struct traits< double >;
+         friend struct traits< empty_array_t >;
+         friend struct traits< empty_object_t >;
+         friend struct traits< std::string >;
+         friend struct traits< const char* >;
+         friend struct traits< std::vector< value > >;
+         friend struct traits< std::map< std::string, value > >;
 
          value() noexcept
          { }
