@@ -251,7 +251,13 @@ namespace tao
       {
         const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( true, false, 0 ) } } } };
 
+        TEST_ASSERT( v.is_object() );
+        TEST_ASSERT( ! v.is_number() );
+        TEST_ASSERT( v.type() == type::OBJECT );
+
         // TODO: Add more tests
+
+        TEST_THROWS(( value { { "foo", 1 }, { "foo", 2 } } ));
       }
 
       void unit_test()
