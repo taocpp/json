@@ -22,6 +22,17 @@ namespace tao
 {
    namespace json
    {
+      class value;
+
+      template< typename T, typename = void >
+      struct traits
+      {
+         static_assert( sizeof( T ) == 0, "no traits specialization found" );
+
+         template< typename U >
+         static void assign( value &, U && );
+      };
+
       class value
          : operators::totally_ordered< value >,
            operators::totally_ordered< value, std::nullptr_t >, // null
@@ -40,6 +51,9 @@ namespace tao
            operators::totally_ordered< value, std::map< std::string, value > > // object
       {
       public:
+         template< typename T, typename U >
+         friend class json::traits;
+
          value() noexcept
          { }
 
@@ -62,7 +76,7 @@ namespace tao
          }
 
          template< typename T >
-         value( T && v ) // noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
+         value( T && v ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
          {
             unsafe_assign( std::forward< T >( v ) );
          }
@@ -426,120 +440,11 @@ namespace tao
          // The unsafe_assign()-functions MUST NOT be called on a
          // value v when json::needs_destroy( v.type() ) is true!
 
-         void unsafe_assign( const std::nullptr_t ) noexcept
+         template< typename T >
+         void unsafe_assign( T && v )
          {
-            m_type = json::type::NULL_;
-         }
-
-         void unsafe_assign( const bool b ) noexcept
-         {
-            m_type = json::type::BOOL_;
-            m_union.b = b;
-         }
-
-         void unsafe_assign( const signed char i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const unsigned char i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const signed short i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const unsigned short i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const signed int i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const unsigned int i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const signed long i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const signed long long i ) noexcept
-         {
-            m_type = json::type::INT64;
-            m_union.i = i;
-         }
-
-         void unsafe_assign( const double d )
-         {
-            check_finite( d );
-            m_type = json::type::DOUBLE;
-            m_union.d = d;
-         }
-
-         void unsafe_assign( const empty_array_t ) noexcept
-         {
-            m_type = json::type::ARRAY;
-            new ( & m_union.a ) std::vector< value >();
-         }
-
-         void unsafe_assign( const empty_object_t ) noexcept
-         {
-            m_type = json::type::OBJECT;
-            new ( & m_union.o ) std::map< std::string, value >();
-         }
-
-         void unsafe_assign( std::string && s ) noexcept
-         {
-            m_type = json::type::STRING;
-            new ( & m_union.s ) std::string( std::move( s ) );
-         }
-
-         void unsafe_assign( const char * s )
-         {
-            m_type = json::type::STRING;
-            new ( & m_union.s ) std::string( s );
-         }
-
-         void unsafe_assign( const std::string & s )
-         {
-            m_type = json::type::STRING;
-            new ( & m_union.s ) std::string( s );
-         }
-
-         void unsafe_assign( std::vector< value > && a ) noexcept
-         {
-            unsafe_emplace_array( std::move( a ) );
-         }
-
-         void unsafe_assign( const std::vector< value > & a )
-         {
-            unsafe_emplace_array( a );
-         }
-
-         void unsafe_assign( std::map< std::string, value > && o ) noexcept
-         {
-            unsafe_emplace_object( std::move( o ) );
-         }
-
-         void unsafe_assign( const std::map< std::string, value > & o )
-         {
-            unsafe_emplace_object( o );
+            using D = typename std::decay< T >::type;
+            traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
          void unsafe_assign( std::initializer_list< std::pair< const std::string, value > > l )
@@ -636,13 +541,6 @@ namespace tao
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
-         }
-
-         static void check_finite( const double d )
-         {
-            if ( ! std::isfinite( d ) ) {
-               throw std::runtime_error( "non-finite double value illegal for json" );
-            }
          }
 
       private:
