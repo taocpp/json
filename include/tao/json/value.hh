@@ -41,26 +41,24 @@ namespace tao
       {
       public:
          value() noexcept
-               : m_type( json::type::NULL_ )
          { }
 
          value( value && r ) noexcept
-               : m_type( r.m_type )
          {
             seize( std::move( r ) );
-            r.m_type = json::type::NULL_;
+            m_type = r.m_type;
          }
 
          value( const value & r )
-               : m_type( r.m_type )
          {
             embed( r );
+            m_type = r.m_type;
          }
 
          value( value & r )
-               : m_type( r.m_type )
          {
             embed( r );
+            m_type = r.m_type;
          }
 
          template< typename T >
@@ -84,7 +82,7 @@ namespace tao
 
          ~value() noexcept
          {
-            destroy();
+            unsafe_destroy();
          }
 
          template< typename T >
@@ -104,9 +102,8 @@ namespace tao
          {
             if ( this != & r ) {
                destroy();
-               m_type = r.m_type;
                seize( std::move( r ) );
-               r.m_type = json::type::NULL_;
+               m_type = r.m_type;
             }
             return * this;
          }
@@ -115,8 +112,8 @@ namespace tao
          {
             if ( this != & r ) {
                destroy();
-               m_type = r.m_type;
                embed( r );
+               m_type = r.m_type;
             }
             return * this;
          }
@@ -125,8 +122,8 @@ namespace tao
          {
             if ( this != & r ) {
                destroy();
-               m_type = r.m_type;
                embed( r );
+               m_type = r.m_type;
             }
             return * this;
          }
@@ -572,6 +569,7 @@ namespace tao
          {
             switch ( r.m_type ) {
                case json::type::NULL_:
+                  return;
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
@@ -594,6 +592,7 @@ namespace tao
          {
             switch ( r.m_type ) {
                case json::type::NULL_:
+                  return;
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
@@ -613,6 +612,12 @@ namespace tao
          }
 
          void destroy() noexcept
+         {
+            unsafe_destroy();
+            m_type = json::type::NULL_;
+         }
+
+         void unsafe_destroy() noexcept
          {
             switch ( m_type ) {
                case json::type::NULL_:
@@ -642,7 +647,7 @@ namespace tao
 
       private:
          internal::value_union< value > m_union;
-         json::type m_type;
+         json::type m_type = json::type::NULL_;
       };
 
    } // json
