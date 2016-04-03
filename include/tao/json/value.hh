@@ -51,8 +51,8 @@ namespace tao
            operators::totally_ordered< value, std::map< std::string, value > > // object
       {
       public:
-         template< typename T, typename U >
-         friend class json::traits;
+         template< typename, typename >
+         friend struct traits;
 
          value() noexcept
          { }
