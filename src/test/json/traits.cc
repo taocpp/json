@@ -11,6 +11,8 @@ namespace tao
    {
       struct my_data {};
 
+      template<> const char* default_key< my_data >::value = "my_data";
+
       template<>
       struct traits< my_data >
       {
@@ -26,7 +28,7 @@ namespace tao
 
       void unit_test()
       {
-         const value v { { "foo", my_data() } };
+         const value v { { "foo", my_data() }, my_data() };
          std::cout << to_string( v ) << std::endl;
       }
 

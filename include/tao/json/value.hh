@@ -33,6 +33,40 @@ namespace tao
          static void assign( value &, U && );
       };
 
+      namespace detail
+      {
+         template< typename T >
+         const char* no_automatic_key_defined()
+         {
+            static_assert( sizeof( T ) == 0, "no default key defined for T" );
+            return nullptr;
+         }
+      }
+
+      template< typename >
+      struct default_key
+      {
+        static const char* value;
+      };
+
+      template< typename T >
+      const char* default_key< T >::value = detail::no_automatic_key_defined< T >();
+
+      namespace detail
+      {
+         template< typename T >
+         struct pair
+         {
+            mutable std::pair< std::string, T > e;
+
+            template< typename U >
+            pair( U && v ) : e( default_key< typename std::decay< U >::type >::value, std::forward< U >( v ) ) {}
+
+            pair( std::string k, const T & v ) : e( std::move( k ), v ) {}
+            pair( std::string k, T && v ) : e( std::move( k ), std::move( v ) ) {}
+         };
+      }
+
       class value
          : operators::totally_ordered< value >,
            operators::totally_ordered< value, std::nullptr_t >, // null
@@ -96,9 +130,14 @@ namespace tao
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         value( std::initializer_list< std::pair< const std::string, value > > l )
+         value( const std::initializer_list< detail::pair< value > > & l )
          {
             unsafe_assign( l );
+         }
+
+         value( std::initializer_list< detail::pair< value > > && l )
+         {
+            unsafe_assign( std::move( l ) );
          }
 
          template< typename... Ts >
@@ -121,9 +160,15 @@ namespace tao
             return *this;
          }
 
-         value & operator= ( std::initializer_list< std::pair< const std::string, value > > l )
+         value & operator= ( const std::initializer_list< detail::pair< value > > & l )
          {
             assign( l );
+            return *this;
+         }
+
+         value & operator= ( std::initializer_list< detail::pair< value > > && l )
+         {
+            assign( std::move( l ) );
             return *this;
          }
 
@@ -164,10 +209,16 @@ namespace tao
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         void assign( std::initializer_list< std::pair< const std::string, value > > l )
+         void assign( const std::initializer_list< detail::pair< value > > & l )
          {
             destroy();
             unsafe_assign( l );
+         }
+
+         void assign( std::initializer_list< detail::pair< value > > && l )
+         {
+            destroy();
+            unsafe_assign( std::move( l ) );
          }
 
          void swap( value & r ) noexcept
@@ -428,8 +479,7 @@ namespace tao
          {
             switch ( m_type ) {
                case json::type::NULL_:
-                  new ( & m_union.o ) std::map< std::string, value >();
-                  m_type = json::type::OBJECT;
+                  unsafe_emplace_object();
                case json::type::OBJECT:
                   m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
                   break;
@@ -462,11 +512,25 @@ namespace tao
             traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( std::initializer_list< std::pair< const std::string, value > > l )
+         void unsafe_assign( const std::initializer_list< detail::pair< value > > & l )
          {
-            unsafe_emplace_object( l );
-            if( m_union.o.size() != l.size() ) {
-              throw std::runtime_error( "duplicate key detected" );
+            unsafe_emplace_object();
+            for( auto & e : l ) {
+              const auto r = m_union.o.emplace( e.e.first, e.e.second );
+              if( !r.second ) {
+                throw std::runtime_error( "duplicate key detected: " + r.first->first );
+              }
+            }
+         }
+
+         void unsafe_assign( std::initializer_list< detail::pair< value > > && l )
+         {
+            unsafe_emplace_object();
+            for( auto & e : l ) {
+              const auto r = m_union.o.emplace( std::move( e.e.first ), std::move( e.e.second ) );
+              if( !r.second ) {
+                throw std::runtime_error( "duplicate key detected: " + r.first->first );
+              }
             }
          }
 
