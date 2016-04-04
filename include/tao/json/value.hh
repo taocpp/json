@@ -46,7 +46,7 @@ namespace tao
       template< typename >
       struct default_key
       {
-        static const char* value;
+         static const char* value;
       };
 
       template< typename T >
