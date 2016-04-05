@@ -101,7 +101,7 @@ namespace tao
            detail::totally_ordered< value, signed long long, type::INT64 >, // int64
            detail::totally_ordered< value, double, type::DOUBLE >, // double
            detail::totally_ordered< value, std::string, type::STRING >, // string
-           // detail::totally_ordered< value, const char*, type::STRING >, // string
+           detail::totally_ordered< value, const char*, type::STRING >, // string
            detail::totally_ordered< value, std::vector< value >, type::ARRAY >, // array
            detail::totally_ordered< value, std::map< std::string, value >, type::OBJECT > // object
       {
@@ -224,7 +224,7 @@ namespace tao
          }
 
          template< typename T >
-         void assign( T && v )
+         void assign( T && v ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
          {
             destroy();
             unsafe_assign( std::forward< T >( v ) );
@@ -527,7 +527,7 @@ namespace tao
          // value v when json::needs_destroy( v.type() ) is true!
 
          template< typename T >
-         void unsafe_assign( T && v )
+         void unsafe_assign( T && v ) // TODO: noexcept( noexcept( traits< typename std::decay_t< T >::type >::assign( *this, std::forward< T >( v ) ) ) )
          {
             using D = typename std::decay< T >::type;
             traits< D >::assign( *this, std::forward< T >( v ) );
