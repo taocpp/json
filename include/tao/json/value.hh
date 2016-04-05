@@ -65,24 +65,45 @@ namespace tao
             pair( std::string k, const T & v ) : e( std::move( k ), v ) {}
             pair( std::string k, T && v ) : e( std::move( k ), std::move( v ) ) {}
          };
+
+        template< typename T, typename U, type E >
+        struct totally_ordered
+           : operators::totally_ordered< T, U >
+        {
+           friend bool operator==( const T& lhs, const U& rhs )
+           {
+              return ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() == rhs );
+           }
+
+           friend bool operator<( const T& lhs, const U& rhs )
+           {
+              return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() < rhs ) );
+           }
+
+           friend bool operator>( const T& lhs, const U& rhs )
+           {
+              return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() > rhs ) );
+           }
+        };
       }
 
       class value
          : operators::totally_ordered< value >,
-           operators::totally_ordered< value, std::nullptr_t >, // null
-           operators::totally_ordered< value, bool >, // bool
-           operators::totally_ordered< value, signed char >, // int64
-           operators::totally_ordered< value, unsigned char >, // int64
-           operators::totally_ordered< value, signed short >, // int64
-           operators::totally_ordered< value, unsigned short >, // int64
-           operators::totally_ordered< value, signed int >, // int64
-           operators::totally_ordered< value, unsigned int >, // int64
-           operators::totally_ordered< value, signed long >, // int64
-           operators::totally_ordered< value, signed long long >, // int64
-           operators::totally_ordered< value, double >, // double
-           operators::totally_ordered< value, std::string >, // string
-           operators::totally_ordered< value, std::vector< value > >, // array
-           operators::totally_ordered< value, std::map< std::string, value > > // object
+           detail::totally_ordered< value, std::nullptr_t, type::NULL_ >, // null
+           detail::totally_ordered< value, bool, type::BOOL_ >, // bool
+           detail::totally_ordered< value, signed char, type::INT64 >, // int64
+           detail::totally_ordered< value, unsigned char, type::INT64 >, // int64
+           detail::totally_ordered< value, signed short, type::INT64 >, // int64
+           detail::totally_ordered< value, unsigned short, type::INT64 >, // int64
+           detail::totally_ordered< value, signed int, type::INT64 >, // int64
+           detail::totally_ordered< value, unsigned int, type::INT64 >, // int64
+           detail::totally_ordered< value, signed long, type::INT64 >, // int64
+           detail::totally_ordered< value, signed long long, type::INT64 >, // int64
+           detail::totally_ordered< value, double, type::DOUBLE >, // double
+           detail::totally_ordered< value, std::string, type::STRING >, // string
+           // detail::totally_ordered< value, const char*, type::STRING >, // string
+           detail::totally_ordered< value, std::vector< value >, type::ARRAY >, // array
+           detail::totally_ordered< value, std::map< std::string, value >, type::OBJECT > // object
       {
       public:
          friend struct traits< std::nullptr_t >;
