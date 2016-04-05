@@ -489,30 +489,6 @@ namespace tao
             return m_union.o.at( index );
          }
 
-      private:
-         value & operator() ()
-         {
-            return * this;
-         }
-
-         const value & operator() () const
-         {
-            return * this;
-         }
-
-      public:
-         template< typename K, typename ... Ks >
-         value & operator() ( const K & k, const Ks & ... ks )
-         {
-            return ( this->operator[] ( k ) )( ks ... );
-         }
-
-         template< typename K, typename ... Ks >
-         const value & operator() ( const K & k, const Ks & ... ks ) const
-         {
-            return ( this->operator[] ( k ) )( ks ... );
-         }
-
          template< typename V >
          void emplace_back( V && v )
          {

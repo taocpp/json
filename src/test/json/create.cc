@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include <limits>
@@ -238,10 +238,10 @@ namespace tao
          TEST_ASSERT( v[ 2 ].get_int64() == 3 );
          TEST_ASSERT( v[ 3 ].get_int64() == 4 );
 
-         TEST_ASSERT( v( 0 ).get_int64() == 1 );
-         TEST_ASSERT( v( 1 ).get_int64() == 2 );
-         TEST_ASSERT( v( 2 ).get_int64() == 3 );
-         TEST_ASSERT( v( 3 ).get_int64() == 4 );
+         TEST_ASSERT( v[ 0 ].get_int64() == 1 );
+         TEST_ASSERT( v[ 1 ].get_int64() == 2 );
+         TEST_ASSERT( v[ 2 ].get_int64() == 3 );
+         TEST_ASSERT( v[ 3 ].get_int64() == 4 );
 
          TEST_THROWS( v[ 4 ] );
          TEST_THROWS( v[ "foo" ] );
