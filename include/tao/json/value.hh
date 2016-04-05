@@ -33,7 +33,7 @@ namespace tao
          static void assign( value &, U && );
       };
 
-      namespace detail
+      namespace internal
       {
          template< typename T >
          const char* no_automatic_key_defined()
@@ -50,9 +50,9 @@ namespace tao
       };
 
       template< typename T >
-      const char* default_key< T >::value = detail::no_automatic_key_defined< T >();
+      const char* default_key< T >::value = internal::no_automatic_key_defined< T >();
 
-      namespace detail
+      namespace internal
       {
          template< typename T >
          struct pair
@@ -75,7 +75,7 @@ namespace tao
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() == rhs;
                }
-               return ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() == rhs );
+               return ( lhs.type() == E ) && ( lhs.T::template get_by_enum< E >() == rhs );
             }
 
             friend bool operator<( const T& lhs, const U& rhs )
@@ -83,7 +83,7 @@ namespace tao
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() < rhs;
                }
-               return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() < rhs ) );
+               return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.T::template get_by_enum< E >() < rhs ) );
             }
 
             friend bool operator>( const T& lhs, const U& rhs )
@@ -91,28 +91,28 @@ namespace tao
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() > rhs;
                }
-               return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() > rhs ) );
+               return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.T::template get_by_enum< E >() > rhs ) );
             }
          };
       }
 
       class value
          : operators::totally_ordered< value >,
-           detail::totally_ordered< value, std::nullptr_t, type::NULL_ >, // null
-           detail::totally_ordered< value, bool, type::BOOL_ >, // bool
-           detail::totally_ordered< value, signed char, type::INT64 >, // int64
-           detail::totally_ordered< value, unsigned char, type::INT64 >, // int64
-           detail::totally_ordered< value, signed short, type::INT64 >, // int64
-           detail::totally_ordered< value, unsigned short, type::INT64 >, // int64
-           detail::totally_ordered< value, signed int, type::INT64 >, // int64
-           detail::totally_ordered< value, unsigned int, type::INT64 >, // int64
-           detail::totally_ordered< value, signed long, type::INT64 >, // int64
-           detail::totally_ordered< value, signed long long, type::INT64 >, // int64
-           detail::totally_ordered< value, double, type::DOUBLE >, // double
-           detail::totally_ordered< value, std::string, type::STRING >, // string
-           detail::totally_ordered< value, const char*, type::STRING >, // string
-           detail::totally_ordered< value, std::vector< value >, type::ARRAY >, // array
-           detail::totally_ordered< value, std::map< std::string, value >, type::OBJECT > // object
+           internal::totally_ordered< value, std::nullptr_t, type::NULL_ >, // null
+           internal::totally_ordered< value, bool, type::BOOL_ >, // bool
+           internal::totally_ordered< value, signed char, type::INT64 >, // int64
+           internal::totally_ordered< value, unsigned char, type::INT64 >, // int64
+           internal::totally_ordered< value, signed short, type::INT64 >, // int64
+           internal::totally_ordered< value, unsigned short, type::INT64 >, // int64
+           internal::totally_ordered< value, signed int, type::INT64 >, // int64
+           internal::totally_ordered< value, unsigned int, type::INT64 >, // int64
+           internal::totally_ordered< value, signed long, type::INT64 >, // int64
+           internal::totally_ordered< value, signed long long, type::INT64 >, // int64
+           internal::totally_ordered< value, double, type::DOUBLE >, // double
+           internal::totally_ordered< value, std::string, type::STRING >, // string
+           internal::totally_ordered< value, const char*, type::STRING >, // string
+           internal::totally_ordered< value, std::vector< value >, type::ARRAY >, // array
+           internal::totally_ordered< value, std::map< std::string, value >, type::OBJECT > // object
       {
       public:
          friend struct traits< std::nullptr_t >;
@@ -161,12 +161,12 @@ namespace tao
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         value( const std::initializer_list< detail::pair< value > > & l )
+         value( const std::initializer_list< internal::pair< value > > & l )
          {
             unsafe_assign( l );
          }
 
-         value( std::initializer_list< detail::pair< value > > && l )
+         value( std::initializer_list< internal::pair< value > > && l )
          {
             unsafe_assign( std::move( l ) );
          }
@@ -191,13 +191,13 @@ namespace tao
             return *this;
          }
 
-         value & operator= ( const std::initializer_list< detail::pair< value > > & l )
+         value & operator= ( const std::initializer_list< internal::pair< value > > & l )
          {
             assign( l );
             return *this;
          }
 
-         value & operator= ( std::initializer_list< detail::pair< value > > && l )
+         value & operator= ( std::initializer_list< internal::pair< value > > && l )
          {
             assign( std::move( l ) );
             return *this;
@@ -240,13 +240,13 @@ namespace tao
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         void assign( const std::initializer_list< detail::pair< value > > & l )
+         void assign( const std::initializer_list< internal::pair< value > > & l )
          {
             destroy();
             unsafe_assign( l );
          }
 
-         void assign( std::initializer_list< detail::pair< value > > && l )
+         void assign( std::initializer_list< internal::pair< value > > && l )
          {
             destroy();
             unsafe_assign( std::move( l ) );
@@ -541,7 +541,7 @@ namespace tao
             traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( const std::initializer_list< detail::pair< value > > & l )
+         void unsafe_assign( const std::initializer_list< internal::pair< value > > & l )
          {
             unsafe_emplace_object();
             for( auto & e : l ) {
@@ -552,7 +552,7 @@ namespace tao
             }
          }
 
-         void unsafe_assign( std::initializer_list< detail::pair< value > > && l )
+         void unsafe_assign( std::initializer_list< internal::pair< value > > && l )
          {
             unsafe_emplace_object();
             for( auto & e : l ) {
