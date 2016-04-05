@@ -184,13 +184,12 @@ namespace tao
      };
 
      template<>
-     struct traits< std::reference_wrapper< const value > >
+     struct traits< const value * >
      {
-        template< typename T >
-        static void assign( value & v, T && r )
+        static void assign( value & v, const value * p )
         {
-           v.m_union.p = &r;
-           v.m_type = json::type::REFERENCE;
+           v.m_union.p = p;
+           v.m_type = json::type::POINTER;
         }
      };
 

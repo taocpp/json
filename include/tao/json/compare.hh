@@ -12,11 +12,11 @@ namespace tao
    {
       inline bool operator< ( const value & lhs, const value & rhs )
       {
-         if ( lhs.type() == type::REFERENCE ) {
-           return lhs.unsafe_reference() < rhs;
+         if ( lhs.type() == type::POINTER ) {
+           return *lhs.unsafe_pointer() < rhs;
          }
-         if ( rhs.type() == type::REFERENCE ) {
-           return lhs < rhs.unsafe_reference();
+         if ( rhs.type() == type::POINTER ) {
+           return lhs < *rhs.unsafe_pointer();
          }
          if ( lhs.type() != rhs.type() ) {
             return lhs.type() < rhs.type();
@@ -36,7 +36,7 @@ namespace tao
                return lhs.unsafe_array() < rhs.unsafe_array();
             case type::OBJECT:
                return lhs.unsafe_object() < rhs.unsafe_object();
-            case type::REFERENCE:
+            case type::POINTER:
                break;
          }
          assert( false );  // LCOV_EXCL_LINE
@@ -44,11 +44,11 @@ namespace tao
 
       inline bool operator== ( const value & lhs, const value & rhs )
       {
-         if ( lhs.type() == type::REFERENCE ) {
-           return lhs.unsafe_reference() == rhs;
+         if ( lhs.type() == type::POINTER ) {
+           return *lhs.unsafe_pointer() == rhs;
          }
-         if ( rhs.type() == type::REFERENCE ) {
-           return lhs == rhs.unsafe_reference();
+         if ( rhs.type() == type::POINTER ) {
+           return lhs == *rhs.unsafe_pointer();
          }
          if ( lhs.type() != rhs.type() ) {
             return false;
@@ -68,7 +68,7 @@ namespace tao
                return lhs.unsafe_array() == rhs.unsafe_array();
             case type::OBJECT:
                return lhs.unsafe_object() == rhs.unsafe_object();
-            case type::REFERENCE:
+            case type::POINTER:
                break;
          }
          assert( false );  // LCOV_EXCL_LINE

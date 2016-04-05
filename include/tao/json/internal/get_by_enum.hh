@@ -88,13 +88,13 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::REFERENCE >
+         template<> struct get_by_enum< type::POINTER >
          {
-            using type = const value &;
+            using type = const value *;
 
-            static const value & get( const value_union< value > & u )
+            static const value * get( const value_union< value > & u )
             {
-               return * u.p;
+               return u.p;
             }
          };
 

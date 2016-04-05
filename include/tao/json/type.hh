@@ -17,7 +17,7 @@ namespace tao
          STRING,
          ARRAY,
          OBJECT,
-         REFERENCE
+         POINTER
       };
 
       inline bool needs_destroy( const type t )
@@ -49,8 +49,8 @@ namespace tao
                return "array";
             case type::OBJECT:
                return "object";
-            case type::REFERENCE:
-               return "reference";
+            case type::POINTER:
+               return "pointer";
          }
          return "unknown";
       }

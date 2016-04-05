@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_TO_STREAM_HH
@@ -132,8 +132,8 @@ namespace tao
                case type::OBJECT:
                   to_stream( o, v.unsafe_object() );
                   return;
-               case type::REFERENCE:
-                  to_stream( o, v.unsafe_reference() );
+               case type::POINTER:
+                  to_stream( o, *v.unsafe_pointer() );
                   return;
             }
             assert( false );
@@ -165,8 +165,8 @@ namespace tao
                case type::OBJECT:
                   to_stream( o, v.unsafe_object(), indent, current );
                   return;
-               case type::REFERENCE:
-                  to_stream( o, v.unsafe_reference(), indent, current );
+               case type::POINTER:
+                  to_stream( o, *v.unsafe_pointer(), indent, current );
                   return;
             }
             assert( false );

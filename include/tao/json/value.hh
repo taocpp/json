@@ -7,7 +7,6 @@
 #include <cmath>
 #include <cassert>
 #include <utility>
-#include <functional>
 #include <stdexcept>
 
 #include "external/sequences/make_integer_sequence.hpp"
@@ -73,24 +72,24 @@ namespace tao
          {
             friend bool operator==( const T& lhs, const U& rhs )
             {
-               if( lhs.type() == type::REFERENCE ) {
-                  return lhs.get_reference() == rhs;
+               if( lhs.type() == type::POINTER ) {
+                  return *lhs.get_pointer() == rhs;
                }
                return ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() == rhs );
             }
 
             friend bool operator<( const T& lhs, const U& rhs )
             {
-               if( lhs.type() == type::REFERENCE ) {
-                  return lhs.get_reference() < rhs;
+               if( lhs.type() == type::POINTER ) {
+                  return *lhs.get_pointer() < rhs;
                }
                return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() < rhs ) );
             }
 
             friend bool operator>( const T& lhs, const U& rhs )
             {
-               if( lhs.type() == type::REFERENCE ) {
-                  return lhs.get_reference() > rhs;
+               if( lhs.type() == type::POINTER ) {
+                  return *lhs.get_pointer() > rhs;
                }
                return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() > rhs ) );
             }
@@ -130,10 +129,10 @@ namespace tao
          friend struct traits< empty_array_t >;
          friend struct traits< empty_object_t >;
          friend struct traits< std::string >;
-         friend struct traits< const char* >;
+         friend struct traits< const char * >;
          friend struct traits< std::vector< value > >;
          friend struct traits< std::map< std::string, value > >;
-         friend struct traits< std::reference_wrapper< const value > >;
+         friend struct traits< const value * >;
 
          value() noexcept
          { }
@@ -305,9 +304,9 @@ namespace tao
             return m_type == json::type::OBJECT;
          }
 
-         bool is_reference() const noexcept
+         bool is_pointer() const noexcept
          {
-            return m_type == json::type::REFERENCE;
+            return m_type == json::type::POINTER;
          }
 
          std::nullptr_t get_null() const
@@ -383,10 +382,10 @@ namespace tao
             return unsafe_object();
          }
 
-         const value & get_reference() const noexcept
+         const value * get_pointer() const noexcept
          {
-            CHECK_TYPE_ERROR( m_type, json::type::REFERENCE );
-            return unsafe_reference();
+            CHECK_TYPE_ERROR( m_type, json::type::POINTER );
+            return unsafe_pointer();
          }
 
          template< json::type E >
@@ -450,9 +449,9 @@ namespace tao
             return m_union.o;
          }
 
-         const value & unsafe_reference() const noexcept
+         const value * unsafe_pointer() const noexcept
          {
-            return *m_union.p;
+            return m_union.p;
          }
 
          // The following convenience functions operate on
@@ -473,8 +472,8 @@ namespace tao
 
          const value & operator[] ( const size_t index ) const
          {
-            if( m_type == json::type::REFERENCE ) {
-               return unsafe_reference()[ index ];
+            if( m_type == json::type::POINTER ) {
+              return (*unsafe_pointer())[ index ];
             }
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
@@ -482,8 +481,8 @@ namespace tao
 
          const value & operator[] ( const std::string & index ) const
          {
-            if( m_type == json::type::REFERENCE ) {
-               return unsafe_reference()[ index ];
+            if( m_type == json::type::POINTER ) {
+              return (*unsafe_pointer())[ index ];
             }
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( index );
@@ -587,7 +586,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
-               case json::type::REFERENCE:
+               case json::type::POINTER:
                   m_union.i = r.m_union.i;
                   return;
                case json::type::STRING:
@@ -611,7 +610,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
-               case json::type::REFERENCE:
+               case json::type::POINTER:
                   m_union.i = r.m_union.i;
                   return;
                case json::type::STRING:
@@ -640,7 +639,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
-               case json::type::REFERENCE:
+               case json::type::POINTER:
                   return;
                case json::type::STRING:
                   m_union.s.~basic_string();
