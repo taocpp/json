@@ -12,7 +12,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 This library is designed for correctness and simplicity, and strives for speed through minimalism rather than complicated optimisations.
 
-It uses `std::vector` for arrays, `std::map` for objects, `std::string` for strings, `bool` for Booleans, and both `int64_t` and `double` for numbers.
+It uses `std::vector` for arrays, `std::map` for objects, `std::string` for strings, `bool` for booleans, and both `int64_t` and `double` for numbers.
 
 The JSON value class contains a `union` of all of these types and does *not itself* perform any heap allocations (the wrapped `std::map`, `std::vector` and `std::string` *do* perform allocations normally).
 
@@ -30,13 +30,11 @@ The documentation will be finished once the functionality and interfaces are fin
 
 Until then, here are a few short indications on how to use this library:
 
-* Requires Clang or GCC with -std=c++11 (or other compiler with sufficient C++11 support).
-* This library is header-only, to install and use simply copy the directory `include/tao` to a convenient place and include the file `include/tao/json.hh`.
-* The generic JSON value class, the main part of this library, is in `include/tao/json/value.hh`.
-* The interface and functions of class `tao::json::value` are hopefully sufficiently self-explanatory.
+* Requires Clang or GCC with `-std=c++11` (or other compiler with sufficient C++11 support).
+* The library is header-only, to install and use simply copy the directory `include/tao` to a convenient place and include the file `include/tao/json.hh`.
+* The generic JSON value class, the main part of this library, is in [`include/tao/json/value.hh`](include/tao/json/value.hh).
 * To parse a JSON string representation, use one of the functions in `include/tao/json/from_string.hh` or `include/tao/json/parse_file.hh`.
 * To produce a JSON string representation, use one of the appropriate functions in `include/tao/json/to_string.hh` or `include/tao/json/stream.hh`.
-* Operators to compare JSON value objects are provided, as are equality operators between JSON values and some other types, in `include/tao/json/compare.hh`.
 
 For questions and suggestions please contact the authors at **jsonl(at)colin-hirsch.net**.
 
@@ -49,9 +47,9 @@ For questions and suggestions please contact the authors at **jsonl(at)colin-hir
 
 <a href="http://www.opensource.org/"><img height="100" align="right" src="http://wiki.opensource.org/bin/download/OSI+Operations/Marketing+%26+Promotional+Collateral/OSI_certified_logo_vector.svg"></a>
 
-The Art of C++ / JSON is certified [Open Source](http://www.opensource.org/docs/definition.html) software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
+The Art of C++ is certified [Open Source](http://www.opensource.org/docs/definition.html) software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
 
-> Copyright (c) 2015 Dr. Colin Hirsch
+> Copyright (c) 2015-2016 Dr. Colin Hirsch
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 >
@@ -66,18 +64,6 @@ This site and software is not affiliated with or endorsed by the Open Source Ini
 The Art of C++ / JSON library contains [the PEGTL library](https://github.com/ColinH/PEGTL) which is licensed as follows:
 
 > Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
->
-> Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
->
-> The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
->
-> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-### Sequences License
-
-The Art of C++ / JSON library contains portions of [the Art of C++ / Sequences](https://github.com/taocpp/sequences) which is licensed as follows:
-
-> Copyright (c) 2015 Daniel Frey
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 >
