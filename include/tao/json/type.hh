@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_TYPE_HH
@@ -16,7 +16,8 @@ namespace tao
          DOUBLE,
          STRING,
          ARRAY,
-         OBJECT
+         OBJECT,
+         REFERENCE
       };
 
       inline bool needs_destroy( const type t )
@@ -48,6 +49,8 @@ namespace tao
                return "array";
             case type::OBJECT:
                return "object";
+            case type::REFERENCE:
+               return "reference";
          }
          return "unknown";
       }

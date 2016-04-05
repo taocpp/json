@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cassert>
 #include <utility>
+#include <functional>
 #include <stdexcept>
 
 #include "external/sequences/make_integer_sequence.hpp"
@@ -66,25 +67,34 @@ namespace tao
             pair( std::string k, T && v ) : e( std::move( k ), std::move( v ) ) {}
          };
 
-        template< typename T, typename U, type E >
-        struct totally_ordered
-           : operators::totally_ordered< T, U >
-        {
-           friend bool operator==( const T& lhs, const U& rhs )
-           {
-              return ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() == rhs );
-           }
+         template< typename T, typename U, type E >
+         struct totally_ordered
+            : operators::totally_ordered< T, U >
+         {
+            friend bool operator==( const T& lhs, const U& rhs )
+            {
+               if( lhs.type() == type::REFERENCE ) {
+                  return lhs.get_reference() == rhs;
+               }
+               return ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() == rhs );
+            }
 
-           friend bool operator<( const T& lhs, const U& rhs )
-           {
-              return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() < rhs ) );
-           }
+            friend bool operator<( const T& lhs, const U& rhs )
+            {
+               if( lhs.type() == type::REFERENCE ) {
+                  return lhs.get_reference() < rhs;
+               }
+               return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() < rhs ) );
+            }
 
-           friend bool operator>( const T& lhs, const U& rhs )
-           {
-              return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() > rhs ) );
-           }
-        };
+            friend bool operator>( const T& lhs, const U& rhs )
+            {
+               if( lhs.type() == type::REFERENCE ) {
+                  return lhs.get_reference() > rhs;
+               }
+               return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.template get_by_enum< E >() > rhs ) );
+            }
+         };
       }
 
       class value
@@ -123,6 +133,7 @@ namespace tao
          friend struct traits< const char* >;
          friend struct traits< std::vector< value > >;
          friend struct traits< std::map< std::string, value > >;
+         friend struct traits< std::reference_wrapper< const value > >;
 
          value() noexcept
          { }
@@ -175,7 +186,7 @@ namespace tao
          }
 
          template< typename T >
-         value & operator= ( T && v ) // noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
+         value & operator= ( T && v ) // TODO: noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
          {
             assign( std::forward< T >( v ) );
             return *this;
@@ -294,6 +305,11 @@ namespace tao
             return m_type == json::type::OBJECT;
          }
 
+         bool is_reference() const noexcept
+         {
+            return m_type == json::type::REFERENCE;
+         }
+
          std::nullptr_t get_null() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
@@ -367,6 +383,12 @@ namespace tao
             return unsafe_object();
          }
 
+         const value & get_reference() const noexcept
+         {
+            CHECK_TYPE_ERROR( m_type, json::type::REFERENCE );
+            return unsafe_reference();
+         }
+
          template< json::type E >
          typename internal::get_by_enum< E >::type get_by_enum() const
          {
@@ -426,6 +448,11 @@ namespace tao
          const std::map< std::string, value > & unsafe_object() const noexcept
          {
             return m_union.o;
+         }
+
+         const value & unsafe_reference() const noexcept
+         {
+            return *m_union.p;
          }
 
          // The following convenience functions operate on
@@ -578,6 +605,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
+               case json::type::REFERENCE:
                   m_union.i = r.m_union.i;
                   return;
                case json::type::STRING:
@@ -601,6 +629,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
+               case json::type::REFERENCE:
                   m_union.i = r.m_union.i;
                   return;
                case json::type::STRING:
@@ -629,6 +658,7 @@ namespace tao
                case json::type::BOOL_:
                case json::type::INT64:
                case json::type::DOUBLE:
+               case json::type::REFERENCE:
                   return;
                case json::type::STRING:
                   m_union.s.~basic_string();

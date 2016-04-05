@@ -10,50 +10,66 @@ namespace tao
 {
    namespace json
    {
-      inline bool operator< ( const value & l, const value & r )
+      inline bool operator< ( const value & lhs, const value & rhs )
       {
-         if ( l.type() != r.type() ) {
-            return l.type() < r.type();
+         if ( lhs.type() == type::REFERENCE ) {
+           return lhs.unsafe_reference() < rhs;
          }
-         switch ( l.type() ) {
+         if ( rhs.type() == type::REFERENCE ) {
+           return lhs < rhs.unsafe_reference();
+         }
+         if ( lhs.type() != rhs.type() ) {
+            return lhs.type() < rhs.type();
+         }
+         switch ( lhs.type() ) {
             case type::NULL_:
                return false;
             case type::BOOL_:
-               return l.unsafe_bool() < r.unsafe_bool();
+               return lhs.unsafe_bool() < rhs.unsafe_bool();
             case type::INT64:
-               return l.unsafe_int64() < r.unsafe_int64();
+               return lhs.unsafe_int64() < rhs.unsafe_int64();
             case type::DOUBLE:
-               return l.unsafe_double() < r.unsafe_double();
+               return lhs.unsafe_double() < rhs.unsafe_double();
             case type::STRING:
-               return l.unsafe_string() < r.unsafe_string();
+               return lhs.unsafe_string() < rhs.unsafe_string();
             case type::ARRAY:
-               return l.unsafe_array() < r.unsafe_array();
+               return lhs.unsafe_array() < rhs.unsafe_array();
             case type::OBJECT:
-               return l.unsafe_object() < r.unsafe_object();
+               return lhs.unsafe_object() < rhs.unsafe_object();
+            case type::REFERENCE:
+               break;
          }
          assert( false );  // LCOV_EXCL_LINE
       }
 
-      inline bool operator== ( const value & l, const value & r )
+      inline bool operator== ( const value & lhs, const value & rhs )
       {
-         if ( l.type() != r.type() ) {
+         if ( lhs.type() == type::REFERENCE ) {
+           return lhs.unsafe_reference() == rhs;
+         }
+         if ( rhs.type() == type::REFERENCE ) {
+           return lhs == rhs.unsafe_reference();
+         }
+         if ( lhs.type() != rhs.type() ) {
             return false;
          }
-         switch ( l.type() ) {
+         switch ( lhs.type() ) {
             case type::NULL_:
                return true;
             case type::BOOL_:
-               return l.unsafe_bool() == r.unsafe_bool();
+               return lhs.unsafe_bool() == rhs.unsafe_bool();
             case type::INT64:
-               return l.unsafe_int64() == r.unsafe_int64();
+               return lhs.unsafe_int64() == rhs.unsafe_int64();
             case type::DOUBLE:
-               return l.unsafe_double() == r.unsafe_double();
+               return lhs.unsafe_double() == rhs.unsafe_double();
             case type::STRING:
-               return l.unsafe_string() == r.unsafe_string();
+               return lhs.unsafe_string() == rhs.unsafe_string();
             case type::ARRAY:
-               return l.unsafe_array() == r.unsafe_array();
+               return lhs.unsafe_array() == rhs.unsafe_array();
             case type::OBJECT:
-               return l.unsafe_object() == r.unsafe_object();
+               return lhs.unsafe_object() == rhs.unsafe_object();
+            case type::REFERENCE:
+               break;
          }
          assert( false );  // LCOV_EXCL_LINE
       }

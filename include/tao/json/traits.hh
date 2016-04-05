@@ -183,6 +183,17 @@ namespace tao
         }
      };
 
+     template<>
+     struct traits< std::reference_wrapper< const value > >
+     {
+        template< typename T >
+        static void assign( value & v, T && r )
+        {
+           v.m_union.p = &r;
+           v.m_type = json::type::REFERENCE;
+        }
+     };
+
    } // json
 
 } // tao

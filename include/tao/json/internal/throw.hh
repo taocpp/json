@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_THROW_HH
@@ -14,7 +14,7 @@
       std::ostringstream oss;                                           \
       oss << "invalid json type '" << json::to_string( TyPe ) << "' for function '" << __PRETTY_FUNCTION__ << "'"; \
       throw std::runtime_error( oss.str() );                            \
-   } while ( true )
+   } while ( false )
 
 #define CHECK_TYPE_ERROR( HaVe, NeeD )          \
    do {                                         \

@@ -132,6 +132,9 @@ namespace tao
                case type::OBJECT:
                   to_stream( o, v.unsafe_object() );
                   return;
+               case type::REFERENCE:
+                  to_stream( o, v.unsafe_reference() );
+                  return;
             }
             assert( false );
          }
@@ -161,6 +164,9 @@ namespace tao
                   return;
                case type::OBJECT:
                   to_stream( o, v.unsafe_object(), indent, current );
+                  return;
+               case type::REFERENCE:
+                  to_stream( o, v.unsafe_reference(), indent, current );
                   return;
             }
             assert( false );

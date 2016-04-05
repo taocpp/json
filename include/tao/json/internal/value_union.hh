@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_UNION_HH
@@ -33,6 +33,8 @@ namespace tao
             std::string s;
             std::vector< Value > a;
             std::map< std::string, Value > o;
+
+            const Value * p;
          };
 
       } // internal

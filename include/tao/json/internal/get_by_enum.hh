@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_GET_BY_ENUM_HH
@@ -85,6 +85,16 @@ namespace tao
             static const std::map< std::string, value > & get( const value_union< value > & u )
             {
                return u.o;
+            }
+         };
+
+         template<> struct get_by_enum< type::REFERENCE >
+         {
+            using type = const value &;
+
+            static const value & get( const value_union< value > & u )
+            {
+               return * u.p;
             }
          };
 
