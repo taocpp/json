@@ -473,12 +473,18 @@ namespace tao
 
          const value & operator[] ( const size_t index ) const
          {
+            if( m_type == json::type::REFERENCE ) {
+               return unsafe_reference()[ index ];
+            }
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
          const value & operator[] ( const std::string & index ) const
          {
+            if( m_type == json::type::REFERENCE ) {
+               return unsafe_reference()[ index ];
+            }
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( index );
          }
