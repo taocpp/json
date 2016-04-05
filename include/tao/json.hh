@@ -5,7 +5,6 @@
 #define TAOCPP_JSON_INCLUDE_JSON_HH
 
 #include "json/value.hh"
-#include "json/traits.hh"
 
 #include "json/stream.hh"
 #include "json/to_string.hh"
