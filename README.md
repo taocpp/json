@@ -31,10 +31,10 @@ The documentation will be finished once the functionality and interfaces are fin
 Until then, here are a few short indications on how to use this library:
 
 * Requires Clang or GCC with `-std=c++11` (or other compiler with sufficient C++11 support).
-* The library is header-only, to install and use simply copy the directory `include/tao` to a convenient place and include the file `include/tao/json.hh`.
+* The library is header-only, to install and use simply copy the directory [`include/tao`](include/tao) to a convenient place and include the file [`include/tao/json.hh`](include/tao/json.hh).
 * The generic JSON value class, the main part of this library, is in [`include/tao/json/value.hh`](include/tao/json/value.hh).
-* To parse a JSON string representation, use one of the functions in `include/tao/json/from_string.hh` or `include/tao/json/parse_file.hh`.
-* To produce a JSON string representation, use one of the appropriate functions in `include/tao/json/to_string.hh` or `include/tao/json/stream.hh`.
+* To parse a JSON string representation, use one of the functions in [`include/tao/json/from_string.hh`](include/tao/json/from_string.hh) or [`include/tao/json/parse_file.hh`](include/tao/json/parse_file.hh).
+* To produce a JSON string representation, use one of the appropriate functions in [`include/tao/json/to_string.hh`](include/tao/json/to_string.hh) or [`include/tao/json/stream.hh`](include/tao/json/stream.hh).
 
 For questions and suggestions please contact the authors at **jsonl(at)colin-hirsch.net**.
 
