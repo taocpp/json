@@ -12,9 +12,10 @@ namespace tao
       void unit_test()
       {
          const value v { { "foo", 1 } };
-         const value v2 { { "bar", &v } }; // store a non-owning const pointer to v
+         const value v2 { { "bar", &v } };  // Store a non-owning const pointer to v.
          TEST_ASSERT( to_string( v ) == "{\"foo\":1}" );
          TEST_ASSERT( to_string( v2 ) == "{\"bar\":{\"foo\":1}}" );
+         TEST_ASSERT( to_string( v2[ "bar" ].type() ) == "pointer" );
       }
 
    } // json

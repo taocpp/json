@@ -136,7 +136,7 @@ namespace tao
                   to_stream( o, *v.unsafe_pointer() );
                   return;
             }
-            assert( false );
+            assert( false );  // LCOV_EXCL_LINE
          }
 
          template< typename Value >
@@ -169,7 +169,7 @@ namespace tao
                   to_stream( o, *v.unsafe_pointer(), indent, current );
                   return;
             }
-            assert( false );
+            assert( false );  // LCOV_EXCL_LINE
          }
 
       } // internal
