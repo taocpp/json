@@ -37,7 +37,7 @@ namespace tao
          test_simple( value( "foo" ), "\"foo\"" );
          test_simple( empty_array, "[]" );
          test_simple( value::array(), "[]" );
-         //         test_simple( value::array( 1 ), "[1]" );  // Thinks that 1 is the size of the vector?
+         test_simple( value::array( 1 ), "[1]" );  // Thinks that 1 is the size of the vector?
          test_simple( value::array( 1, 2, 3 ), "[1,2,3]" );
          test_simple( empty_object, "{}" );
          //         test_simple( {}, "{}" );  Producess null.
