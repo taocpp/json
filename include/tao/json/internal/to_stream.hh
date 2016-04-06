@@ -76,7 +76,7 @@ namespace tao
                   to_stream( o, i->first );
                   o << ':';
                   to_stream( o, i->second );
-            }
+               }
             }
             o << '}';
          }
