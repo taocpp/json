@@ -6,15 +6,16 @@
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 [![Issues](https://img.shields.io/github/issues/taocpp/json.svg)](https://github.com/taocpp/json/issues)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object as well as conversions from and to JSON string representation. It also serves as a fully functional real-world example application for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL).
+The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object as well as conversions from and to JSON string representation. It also serves as a fully functional real-world example application for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL). It is designed for correctness and simplicity, and strives for speed through minimalism (rather than complicated optimisations).
 
-## Design
+## Features
 
-This library is designed for correctness and simplicity, and strives for speed through minimalism rather than complicated optimisations.
-
-It uses `std::vector` for arrays, `std::map` for objects, `std::string` for strings, `bool` for booleans, and both `int64_t` and `double` for numbers.
-
-The JSON value class contains a `union` of all of these types and does *not itself* perform any heap allocations (the wrapped `std::map`, `std::vector` and `std::string` *do* perform allocations normally).
+* C++11 literal operator for JSON values.
+* Both `int64_t` and `double` for numeric values.
+* Indirect JSON values via non-owning pointers for object sharing.
+* Standard containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
+* Allows construction of JSON value objects from arbitrary user-defined data-types with specialised traits class template.
+* No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
 
 ## Status
 
