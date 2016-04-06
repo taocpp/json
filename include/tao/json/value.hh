@@ -503,18 +503,53 @@ namespace tao
             }
          }
 
-         template< typename K, typename V >
-         void emplace( K && k, V && v )
+         void unsafe_emplace_prepare()
          {
             switch ( m_type ) {
                case json::type::NULL_:
                   unsafe_emplace_object();
                case json::type::OBJECT:
-                  m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
                   break;
                default:
                   THROW_TYPE_ERROR( m_type );
             }
+         }
+
+         template< typename K, typename V >
+         std::pair< std::map< std::string, value >::iterator, bool > unsafe_emplace( K && k, V && v )
+         {
+            return m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
+         }
+
+         template< typename K, typename V >
+         std::pair< std::map< std::string, value >::iterator, bool > emplace( K && k, V && v )
+         {
+            unsafe_emplace_prepare();
+            return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
+         }
+
+         value & operator+= ( const std::initializer_list< internal::pair< value > > & l )
+         {
+            unsafe_emplace_prepare();
+            for( auto & e : l ) {
+               const auto r = unsafe_emplace( e.e.first, e.e.second );
+               if( !r.second ) {
+                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+               }
+            }
+            return *this;
+         }
+
+         value & operator+= ( std::initializer_list< internal::pair< value > > && l )
+         {
+            unsafe_emplace_prepare();
+            for( auto & e : l ) {
+               const auto r = emplace( std::move( e.e.first ), std::move( e.e.second ) );
+               if( !r.second ) {
+                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+               }
+            }
+            return *this;
          }
 
          template< typename ... Ts >
@@ -544,23 +579,13 @@ namespace tao
          void unsafe_assign( const std::initializer_list< internal::pair< value > > & l )
          {
             unsafe_emplace_object();
-            for( auto & e : l ) {
-              const auto r = m_union.o.emplace( e.e.first, e.e.second );
-              if( !r.second ) {
-                throw std::runtime_error( "duplicate key detected: " + r.first->first );
-              }
-            }
+            *this += l;
          }
 
          void unsafe_assign( std::initializer_list< internal::pair< value > > && l )
          {
             unsafe_emplace_object();
-            for( auto & e : l ) {
-              const auto r = m_union.o.emplace( std::move( e.e.first ), std::move( e.e.second ) );
-              if( !r.second ) {
-                throw std::runtime_error( "duplicate key detected: " + r.first->first );
-              }
-            }
+            *this += std::move( l );
          }
 
          template< typename ... Ts >

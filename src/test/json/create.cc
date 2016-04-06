@@ -351,11 +351,21 @@ namespace tao
             TEST_ASSERT( a.get_array() == b.get_array() );
          } {
             value a;
-            a.emplace( "foo", value( 5 ) );
+            a.emplace( "foo", 5 );
             TEST_ASSERT( a.type() == type::OBJECT );
             TEST_ASSERT( a[ "foo" ] == 5 );
             value b( a );
+            TEST_ASSERT( a == b );
             TEST_ASSERT( a.get_object() == b.get_object() );
+         } {
+            value a;
+            a += { { "foo", 5 } };
+            TEST_ASSERT( a.type() == type::OBJECT );
+            TEST_ASSERT( a[ "foo" ] == 5 );
+            value b( a );
+            TEST_ASSERT( a == b );
+            TEST_ASSERT( a.get_object() == b.get_object() );
+            TEST_THROWS(( a += { { "foo", value( 5 ) } } ));
          } {
             const value a( "foo" );
             const value b( a );
