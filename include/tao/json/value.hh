@@ -175,7 +175,7 @@ namespace tao
          static value array( Ts && ... ts )
          {
             value v;
-            v.unsafe_emplace_array( std::vector< value >( std::initializer_list< value >( { std::forward< Ts >( ts )... } ) ) );
+            v.unsafe_emplace_array( std::initializer_list< value >( { std::forward< Ts >( ts )... } ) );
             return v;
          }
 
