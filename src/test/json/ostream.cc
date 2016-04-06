@@ -11,7 +11,7 @@ namespace tao
 {
    namespace json
    {
-      void test_both( const value & v, const std::string & s )
+      void test_simple( const value & v, const std::string & s )
       {
          TEST_ASSERT( to_string( v ) == s );
          std::ostringstream oss;
@@ -19,16 +19,33 @@ namespace tao
          TEST_ASSERT( oss.str() == s );
       }
 
+      void test_pretty( const value & v, const std::string & s )
+      {
+         std::ostringstream oss;
+         oss << std::setw( 2 );
+         oss << v;
+         TEST_ASSERT( oss.str() == s );
+      }
+
       void unit_test()
       {
-         test_both( value( nullptr ), "null" );
-         test_both( value( true ), "true" );
-         test_both( value( false ), "false" );
-         test_both( value( 42 ), "42" );
-         test_both( value( 42.1 ), "42.1" );
-         test_both( value( "foo" ), "\"foo\"" );
-         test_both( value::array( 1, 2, 3 ), "[1,2,3]" );
-         test_both( { { "foo", 42 } }, "{\"foo\":42}" );
+         test_simple( value( nullptr ), "null" );
+         test_simple( value( true ), "true" );
+         test_simple( value( false ), "false" );
+         test_simple( value( 42 ), "42" );
+         test_simple( value( 42.1 ), "42.1" );
+         test_simple( value( "foo" ), "\"foo\"" );
+         test_simple( value::array( 1, 2, 3 ), "[1,2,3]" );
+         test_simple( { { "foo", 42 } }, "{\"foo\":42}" );
+
+         test_pretty( value( nullptr ), "null" );
+         test_pretty( value( true ), "true" );
+         test_pretty( value( false ), "false" );
+         test_pretty( value( 42 ), "42" );
+         test_pretty( value( 42.1 ), "42.1" );
+         test_pretty( value( "foo" ), "\"foo\"" );
+         test_pretty( value::array( 1, 2, 3 ), "[\n  1,\n  2,\n  3\n]" );
+         test_pretty( { { "foo", 42 } }, "{\n  \"foo\": 42\n}" );
       }
 
    } // json
