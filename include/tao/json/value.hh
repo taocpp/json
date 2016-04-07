@@ -73,7 +73,7 @@ namespace tao
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() == rhs;
                }
-               return ( lhs.type() == E ) && ( lhs.T::template get_by_enum< E >() == rhs );
+               return ( lhs.type() == E ) && ( lhs.T::template get< E >() == rhs );
             }
 
             friend bool operator<( const T& lhs, const U& rhs )
@@ -81,7 +81,7 @@ namespace tao
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() < rhs;
                }
-               return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.T::template get_by_enum< E >() < rhs ) );
+               return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.T::template get< E >() < rhs ) );
             }
 
             friend bool operator>( const T& lhs, const U& rhs )
@@ -89,7 +89,7 @@ namespace tao
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() > rhs;
                }
-               return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.T::template get_by_enum< E >() > rhs ) );
+               return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.T::template get< E >() > rhs ) );
             }
          };
       }
@@ -387,7 +387,7 @@ namespace tao
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > >() ) ) get_by_enum() const
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > >() ) ) get() const
          {
             CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
