@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch
+// Copyright (c) 2015-2016 Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_STREAM_HH
@@ -16,7 +16,8 @@ namespace tao
    {
       // Use ostream << std::setw( n ) for pretty-printing with indent n.
 
-      inline std::ostream & operator<< ( std::ostream & o, const value & v )
+      template< template< typename ... > class Traits >
+      std::ostream & operator<< ( std::ostream & o, const value_base< Traits > & v )
       {
          const auto w = o.width();
 

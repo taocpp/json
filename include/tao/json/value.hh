@@ -22,15 +22,13 @@ namespace tao
 {
    namespace json
    {
-      class value;
-
       template< typename T, typename = void >
       struct traits
       {
          static_assert( sizeof( T ) == 0, "no traits specialization found" );
 
-         template< typename U >
-         static void assign( value &, U && );
+         template< typename V, typename U >
+         static void assign( V &, U && );
       };
 
       namespace internal
@@ -96,114 +94,75 @@ namespace tao
          };
       }
 
-      class value
-         : operators::totally_ordered< value >,
-           internal::totally_ordered< value, std::nullptr_t, type::NULL_ >, // null
-           internal::totally_ordered< value, bool, type::BOOL_ >, // bool
-           internal::totally_ordered< value, signed char, type::INT64 >, // int64
-           internal::totally_ordered< value, unsigned char, type::INT64 >, // int64
-           internal::totally_ordered< value, signed short, type::INT64 >, // int64
-           internal::totally_ordered< value, unsigned short, type::INT64 >, // int64
-           internal::totally_ordered< value, signed int, type::INT64 >, // int64
-           internal::totally_ordered< value, unsigned int, type::INT64 >, // int64
-           internal::totally_ordered< value, signed long, type::INT64 >, // int64
-           internal::totally_ordered< value, signed long long, type::INT64 >, // int64
-           internal::totally_ordered< value, double, type::DOUBLE >, // double
-           internal::totally_ordered< value, std::string, type::STRING >, // string
-           internal::totally_ordered< value, const char*, type::STRING >, // string
-           internal::totally_ordered< value, std::vector< value >, type::ARRAY >, // array
-           internal::totally_ordered< value, std::map< std::string, value >, type::OBJECT > // object
+      template< template< typename ... > class Traits >
+      class value_base
+         : operators::totally_ordered< value_base< Traits > >,
+           internal::totally_ordered< value_base< Traits >, std::nullptr_t, type::NULL_ >,
+           internal::totally_ordered< value_base< Traits >, bool, type::BOOL_ >,
+           internal::totally_ordered< value_base< Traits >, signed char, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, unsigned char, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, signed short, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, unsigned short, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, signed int, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, unsigned int, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, signed long, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, signed long long, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, double, type::DOUBLE >,
+           internal::totally_ordered< value_base< Traits >, float, type::DOUBLE >,
+           internal::totally_ordered< value_base< Traits >, std::string, type::STRING >,
+           internal::totally_ordered< value_base< Traits >, const char*, type::STRING >,
+           internal::totally_ordered< value_base< Traits >, std::vector< value_base< Traits > >, type::ARRAY >,
+           internal::totally_ordered< value_base< Traits >, std::map< std::string, value_base< Traits > >, type::OBJECT >
       {
       public:
-         friend struct traits< std::nullptr_t >;
-         friend struct traits< bool >;
-         friend struct traits< signed char >;
-         friend struct traits< unsigned char >;
-         friend struct traits< signed short >;
-         friend struct traits< unsigned short >;
-         friend struct traits< signed int >;
-         friend struct traits< unsigned int >;
-         friend struct traits< signed long >;
-         friend struct traits< signed long long >;
-         friend struct traits< double >;
-         friend struct traits< empty_array_t >;
-         friend struct traits< empty_object_t >;
-         friend struct traits< std::string >;
-         friend struct traits< const char * >;
-         friend struct traits< std::vector< value > >;
-         friend struct traits< std::map< std::string, value > >;
-         friend struct traits< const value * >;
-
-         value() noexcept
+         value_base() noexcept
          { }
 
-         value( value && r ) noexcept
+         value_base( value_base && r ) noexcept
          {
             seize( std::move( r ) );
             m_type = r.m_type;
          }
 
-         value( const value & r )
+         value_base( const value_base & r )
          {
             embed( r );
             m_type = r.m_type;
          }
 
-         value( value & r )
+         value_base( value_base & r )
          {
             embed( r );
             m_type = r.m_type;
          }
 
          template< typename T >
-         value( T && v ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
+         value_base( T && v ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
          {
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         value( const std::initializer_list< internal::pair< value > > & l )
-         {
-            unsafe_assign( l );
-         }
-
-         value( std::initializer_list< internal::pair< value > > && l )
+         value_base( std::initializer_list< internal::pair< value_base > > && l )
          {
             unsafe_assign( std::move( l ) );
          }
 
-         template< typename... Ts >
-         static value array( Ts && ... ts )
+         value_base( const std::initializer_list< internal::pair< value_base > > & l )
          {
-            value v;
-            v.unsafe_emplace_array( std::initializer_list< value >( { std::forward< Ts >( ts )... } ) );
-            return v;
+            unsafe_assign( l );
          }
 
-         ~value() noexcept
+         value_base( std::initializer_list< internal::pair< value_base > > & l )
+         {
+            unsafe_assign( l );
+         }
+
+         ~value_base() noexcept
          {
             unsafe_destroy();
          }
 
-         template< typename T >
-         value & operator= ( T && v ) // TODO: noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
-         {
-            assign( std::forward< T >( v ) );
-            return *this;
-         }
-
-         value & operator= ( const std::initializer_list< internal::pair< value > > & l )
-         {
-            assign( l );
-            return *this;
-         }
-
-         value & operator= ( std::initializer_list< internal::pair< value > > && l )
-         {
-            assign( std::move( l ) );
-            return *this;
-         }
-
-         value & operator= ( value && r ) noexcept
+         value_base & operator= ( value_base && r ) noexcept
          {
             if ( this != & r ) {
                destroy();
@@ -213,7 +172,7 @@ namespace tao
             return * this;
          }
 
-         value & operator= ( const value & r )
+         value_base & operator= ( const value_base & r )
          {
             if ( this != & r ) {
                destroy();
@@ -223,7 +182,7 @@ namespace tao
             return * this;
          }
 
-         value & operator= ( value & r )
+         value_base & operator= ( value_base & r )
          {
             if ( this != & r ) {
                destroy();
@@ -234,29 +193,68 @@ namespace tao
          }
 
          template< typename T >
+         value_base & operator= ( T && v ) // TODO: noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
+         {
+            assign( std::forward< T >( v ) );
+            return *this;
+         }
+
+         value_base & operator= ( std::initializer_list< internal::pair< value_base > > && l )
+         {
+            assign( std::move( l ) );
+            return *this;
+         }
+
+         value_base & operator= ( const std::initializer_list< internal::pair< value_base > > & l )
+         {
+            assign( l );
+            return *this;
+         }
+
+         value_base & operator= ( std::initializer_list< internal::pair< value_base > > & l )
+         {
+            assign( l );
+            return *this;
+         }
+
+         template< typename T >
          void assign( T && v ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
          {
             destroy();
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         void assign( const std::initializer_list< internal::pair< value > > & l )
-         {
-            destroy();
-            unsafe_assign( l );
-         }
-
-         void assign( std::initializer_list< internal::pair< value > > && l )
+         void assign( std::initializer_list< internal::pair< value_base > > && l )
          {
             destroy();
             unsafe_assign( std::move( l ) );
          }
 
-         void swap( value & r ) noexcept
+         void assign( const std::initializer_list< internal::pair< value_base > > & l )
          {
-            value t( std::move( r ) );
+            destroy();
+            unsafe_assign( l );
+         }
+
+         void assign( std::initializer_list< internal::pair< value_base > > & l )
+         {
+            destroy();
+            unsafe_assign( l );
+         }
+
+         void swap( value_base & r ) noexcept
+         {
+            value_base t( std::move( r ) );
             r = std::move( * this );
             ( * this ) = ( std::move( t ) );
+         }
+
+         template< typename... Ts >
+         static value_base array( Ts && ... ts )
+         {
+            value_base v;
+            v.unsafe_emplace_array( std::initializer_list< value_base >( { std::forward< Ts >( ts )... } ) );
+            return v;
          }
 
          json::type type() const noexcept
@@ -358,38 +356,38 @@ namespace tao
             return unsafe_string();
          }
 
-         std::vector< value > & get_array()
+         std::vector< value_base > & get_array()
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_array();
          }
 
-         const std::vector< value > & get_array() const
+         const std::vector< value_base > & get_array() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_array();
          }
 
-         std::map< std::string, value > & get_object()
+         std::map< std::string, value_base > & get_object()
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_object();
          }
 
-         const std::map< std::string, value > & get_object() const
+         const std::map< std::string, value_base > & get_object() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_object();
          }
 
-         const value * get_pointer() const noexcept
+         const value_base * get_pointer() const noexcept
          {
             CHECK_TYPE_ERROR( m_type, json::type::POINTER );
             return unsafe_pointer();
          }
 
          template< json::type E >
-         typename internal::get_by_enum< E >::type get_by_enum() const
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > >() ) ) get_by_enum() const
          {
             CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
@@ -429,27 +427,27 @@ namespace tao
             return m_union.s;
          }
 
-         std::vector< value > & unsafe_array() noexcept
+         std::vector< value_base > & unsafe_array() noexcept
          {
             return m_union.a;
          }
 
-         const std::vector< value > & unsafe_array() const noexcept
+         const std::vector< value_base > & unsafe_array() const noexcept
          {
             return m_union.a;
          }
 
-         std::map< std::string, value > & unsafe_object() noexcept
+         std::map< std::string, value_base > & unsafe_object() noexcept
          {
             return m_union.o;
          }
 
-         const std::map< std::string, value > & unsafe_object() const noexcept
+         const std::map< std::string, value_base > & unsafe_object() const noexcept
          {
             return m_union.o;
          }
 
-         const value * unsafe_pointer() const noexcept
+         const value_base * unsafe_pointer() const noexcept
          {
             return m_union.p;
          }
@@ -458,19 +456,19 @@ namespace tao
          // the containers for arrays and objects and throw
          // an exception when the type of the value is wrong.
 
-         value & operator[] ( const size_t index )
+         value_base & operator[] ( const size_t index )
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
-         value & operator[] ( const std::string & index )
+         value_base & operator[] ( const std::string & index )
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( index );
          }
 
-         const value & operator[] ( const size_t index ) const
+         const value_base & operator[] ( const size_t index ) const
          {
             if( m_type == json::type::POINTER ) {
               return (*unsafe_pointer())[ index ];
@@ -479,28 +477,52 @@ namespace tao
             return m_union.a.at( index );
          }
 
-         const value & operator[] ( const std::string & index ) const
+         const value_base & operator[] ( const std::string & index ) const
          {
             if( m_type == json::type::POINTER ) {
               return (*unsafe_pointer())[ index ];
             }
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( index );
+         }
+
+         template< typename ... Ts >
+         void unsafe_emplace_array( Ts && ... ts )
+         {
+            new ( & m_union.a ) std::vector< value_base >( std::forward< Ts >( ts ) ... );
+            m_type = json::type::ARRAY;
+         }
+
+         void unsafe_emplace_back_prepare()
+         {
+            switch ( m_type ) {
+               case json::type::NULL_:
+                  unsafe_emplace_array();
+               case json::type::ARRAY:
+                  break;
+               default:
+                  THROW_TYPE_ERROR( m_type );
+            }
+         }
+
+         template< typename V >
+         void unsafe_emplace_back( V && v )
+         {
+            m_union.a.emplace_back( std::forward< V >( v ) );
          }
 
          template< typename V >
          void emplace_back( V && v )
          {
-            switch ( m_type ) {
-               case json::type::NULL_:
-                  new ( & m_union.a ) std::vector< value >();
-                  m_type = json::type::ARRAY;
-               case json::type::ARRAY:
-                  m_union.a.emplace_back( std::forward< V >( v ) );
-                  break;
-               default:
-                  THROW_TYPE_ERROR( m_type );
-            }
+            unsafe_emplace_back_prepare();
+            unsafe_emplace_back( std::forward< V >( v ) );
+         }
+
+         template< typename ... Ts >
+         void unsafe_emplace_object( Ts && ... ts )
+         {
+            new ( & m_union.o ) std::map< std::string, value_base >( std::forward< Ts >( ts ) ... );
+            m_type = json::type::OBJECT;
          }
 
          void unsafe_emplace_prepare()
@@ -516,23 +538,23 @@ namespace tao
          }
 
          template< typename K, typename V >
-         std::pair< std::map< std::string, value >::iterator, bool > unsafe_emplace( K && k, V && v )
+         std::pair< typename std::map< std::string, value_base >::iterator, bool > unsafe_emplace( K && k, V && v )
          {
             return m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
          template< typename K, typename V >
-         std::pair< std::map< std::string, value >::iterator, bool > emplace( K && k, V && v )
+         std::pair< typename std::map< std::string, value_base >::iterator, bool > emplace( K && k, V && v )
          {
             unsafe_emplace_prepare();
             return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
-         value & operator+= ( const std::initializer_list< internal::pair< value > > & l )
+         value_base & operator+= ( std::initializer_list< internal::pair< value_base > > && l )
          {
             unsafe_emplace_prepare();
             for( auto & e : l ) {
-               const auto r = unsafe_emplace( e.e.first, e.e.second );
+               const auto r = emplace( std::move( e.e.first ), std::move( e.e.second ) );
                if( !r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
                }
@@ -540,11 +562,11 @@ namespace tao
             return *this;
          }
 
-         value & operator+= ( std::initializer_list< internal::pair< value > > && l )
+         value_base & operator+= ( const std::initializer_list< internal::pair< value_base > > & l )
          {
             unsafe_emplace_prepare();
             for( auto & e : l ) {
-               const auto r = emplace( std::move( e.e.first ), std::move( e.e.second ) );
+               const auto r = unsafe_emplace( e.e.first, e.e.second );
                if( !r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
                }
@@ -570,40 +592,68 @@ namespace tao
          // value v when json::needs_destroy( v.type() ) is true!
 
          template< typename T >
-         void unsafe_assign( T && v ) // TODO: noexcept( noexcept( traits< typename std::decay_t< T >::type >::assign( *this, std::forward< T >( v ) ) ) )
+         void unsafe_assign( T && v ) // TODO: noexcept( noexcept( Traits< typename std::decay_t< T >::type >::assign( *this, std::forward< T >( v ) ) ) )
          {
             using D = typename std::decay< T >::type;
-            traits< D >::assign( *this, std::forward< T >( v ) );
+            Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( const std::initializer_list< internal::pair< value > > & l )
-         {
-            unsafe_emplace_object();
-            *this += l;
-         }
-
-         void unsafe_assign( std::initializer_list< internal::pair< value > > && l )
+         void unsafe_assign( std::initializer_list< internal::pair< value_base > > && l )
          {
             unsafe_emplace_object();
             *this += std::move( l );
          }
 
-         template< typename ... Ts >
-         void unsafe_emplace_array( Ts && ... ts )
+         void unsafe_assign( const std::initializer_list< internal::pair< value_base > > & l )
          {
-            new ( & m_union.a ) std::vector< value >( std::forward< Ts >( ts ) ... );
-            m_type = json::type::ARRAY;
+            unsafe_emplace_object();
+            *this += l;
+         }
+
+         void unsafe_assign( std::initializer_list< internal::pair< value_base > > & l )
+         {
+            unsafe_emplace_object();
+            *this += l;
+         }
+
+         void unsafe_assign_null()
+         {
+            m_type = json::type::NULL_;
+         }
+
+         void unsafe_assign_bool( const bool b )
+         {
+            m_union.b = b;
+            m_type = json::type::BOOL_;
+         }
+
+         void unsafe_assign_int64( const int64_t i )
+         {
+            m_union.i = i;
+            m_type = json::type::INT64;
+         }
+
+         void unsafe_assign_double( const double d )
+         {
+            m_union.d = d;
+            m_type = json::type::DOUBLE;
          }
 
          template< typename ... Ts >
-         void unsafe_emplace_object( Ts && ... ts )
+         void unsafe_assign_string( Ts && ... ts )
          {
-            new ( & m_union.o ) std::map< std::string, value >( std::forward< Ts >( ts ) ... );
-            m_type = json::type::OBJECT;
+            new ( & m_union.s ) std::string( std::forward< Ts >( ts ) ... );
+            m_type = json::type::STRING;
+         }
+
+         void unsafe_assign_pointer( const value_base * p )
+         {
+            m_union.p = p;
+            m_type = json::type::POINTER;
          }
 
       private:
-         void seize( value && r ) noexcept
+         void seize( value_base && r ) noexcept
          {
             switch ( r.m_type ) {
                case json::type::NULL_:
@@ -621,10 +671,10 @@ namespace tao
                   new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
                   return;
                case json::type::ARRAY:
-                  new ( & m_union.a ) std::vector< value >( std::move( r.m_union.a ) );
+                  new ( & m_union.a ) std::vector< value_base >( std::move( r.m_union.a ) );
                   return;
                case json::type::OBJECT:
-                  new ( & m_union.o ) std::map< std::string, value >( std::move( r.m_union.o ) );
+                  new ( & m_union.o ) std::map< std::string, value_base >( std::move( r.m_union.o ) );
                   return;
                case json::type::POINTER:
                   m_union.p = r.m_union.p;
@@ -633,7 +683,7 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         void embed( const value & r )
+         void embed( const value_base & r )
          {
             switch ( r.m_type ) {
                case json::type::NULL_:
@@ -651,10 +701,10 @@ namespace tao
                   new ( & m_union.s ) std::string( r.m_union.s );
                   return;
                case json::type::ARRAY:
-                  new ( & m_union.a ) std::vector< value >( r.m_union.a );
+                  new ( & m_union.a ) std::vector< value_base >( r.m_union.a );
                   return;
                case json::type::OBJECT:
-                  new ( & m_union.o ) std::map< std::string, value >( r.m_union.o );
+                  new ( & m_union.o ) std::map< std::string, value_base >( r.m_union.o );
                   return;
                case json::type::POINTER:
                   m_union.p = r.m_union.p;
@@ -692,11 +742,14 @@ namespace tao
          }
 
       private:
-         internal::value_union< value > m_union;
+         internal::value_union< value_base > m_union;
          json::type m_type = json::type::NULL_;
       };
 
-      inline bool operator< ( const value & lhs, const value & rhs )
+      using value = value_base< traits >;
+
+      template< template< typename ... > class Traits >
+      inline bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs )
       {
          if ( lhs.type() == type::POINTER ) {
             return *lhs.unsafe_pointer() < rhs;
@@ -728,7 +781,8 @@ namespace tao
          assert( false );  // LCOV_EXCL_LINE
       }
 
-      inline bool operator== ( const value & lhs, const value & rhs )
+      template< template< typename ... > class Traits >
+      inline bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs )
       {
          if ( lhs.type() == type::POINTER ) {
             return *lhs.unsafe_pointer() == rhs;
@@ -760,164 +814,166 @@ namespace tao
          assert( false );  // LCOV_EXCL_LINE
       }
 
+      // note: traits< ... >:: assign is always called with needs_destroy(v) == false
+
       template<>
       struct traits< std::nullptr_t >
       {
-         static void assign( value & v, std::nullptr_t )
+         template< typename V >
+         static void assign( V & v, std::nullptr_t )
          {
-            v.m_type = json::type::NULL_;
+            v.unsafe_assign_null();
          }
       };
 
       template<>
       struct traits< bool >
       {
-         static void assign( value & v, const bool b )
+         template< typename V >
+         static void assign( V & v, const bool b )
          {
-            v.m_union.b = b;
-            v.m_type = json::type::BOOL_;
+            v.unsafe_assign_bool( b );
          }
       };
 
       template<>
       struct traits< signed char >
       {
-         static void assign( value & v, const signed char i )
+         template< typename V >
+         static void assign( V & v, const signed char i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< unsigned char >
       {
-         static void assign( value & v, const unsigned char i )
+         template< typename V >
+         static void assign( V & v, const unsigned char i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< signed short >
       {
-         static void assign( value & v, const signed short i )
+         template< typename V >
+         static void assign( V & v, const signed short i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< unsigned short >
       {
-         static void assign( value & v, const unsigned short i )
+         template< typename V >
+         static void assign( V & v, const unsigned short i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< signed int >
       {
-         static void assign( value & v, const signed int i )
+         template< typename V >
+         static void assign( V & v, const signed int i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< unsigned int >
       {
-         static void assign( value & v, const unsigned int i )
+         template< typename V >
+         static void assign( V & v, const unsigned int i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< signed long >
       {
-         static void assign( value & v, const signed long i )
+         template< typename V >
+         static void assign( V & v, const signed long i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< signed long long >
       {
-         static void assign( value & v, const signed long long i )
+         template< typename V >
+         static void assign( V & v, const signed long long i )
          {
-            v.m_union.i = i;
-            v.m_type = json::type::INT64;
+            v.unsafe_assign_int64( i );
          }
       };
 
       template<>
       struct traits< double >
       {
-         static void assign( value & v, const double d )
+         template< typename V >
+         static void assign( V & v, const double d )
          {
             if ( ! std::isfinite( d ) ) {
                throw std::runtime_error( "non-finite double value illegal for json" );
             }
-            v.m_union.d = d;
-            v.m_type = json::type::DOUBLE;
+            v.unsafe_assign_double( d );
          }
       };
 
       template<>
       struct traits< empty_array_t >
       {
-         static void assign( value & v, empty_array_t )
+         template< typename V >
+         static void assign( V & v, empty_array_t )
          {
-            new ( & v.m_union.a ) std::vector< value >();
-            v.m_type = json::type::ARRAY;
+            v.unsafe_emplace_array();
          }
       };
 
       template<>
       struct traits< empty_object_t >
       {
-         static void assign( value & v, empty_object_t )
+         template< typename V >
+         static void assign( V & v, empty_object_t )
          {
-            new ( & v.m_union.o ) std::map< std::string, value >();
-            v.m_type = json::type::OBJECT;
+            v.unsafe_emplace_object();
          }
       };
 
       template<>
       struct traits< std::string >
       {
-         template< typename T >
-         static void assign( value & v, T && s )
+         template< typename V, typename T >
+         static void assign( V & v, T && s )
          {
-            new ( & v.m_union.s ) std::string( std::forward< T >( s ) );
-            v.m_type = json::type::STRING;
+            v.unsafe_assign_string( std::forward< T >( s ) );
          }
       };
 
       template<>
       struct traits< const char * >
       {
-         static void assign( value & v, const char * s )
+         template< typename V >
+         static void assign( V & v, const char * s )
          {
-            new ( & v.m_union.s ) std::string( s );
-            v.m_type = json::type::STRING;
+            v.unsafe_assign_string( s );
          }
       };
 
       template<>
       struct traits< std::vector< value > >
       {
-         template< typename T >
-         static void assign( value & v, T && a )
+         template< typename V, typename T >
+         static void assign( V & v, T && a )
          {
             v.unsafe_emplace_array( std::forward< T >( a ) );
          }
@@ -926,20 +982,20 @@ namespace tao
       template<>
       struct traits< std::map< std::string, value > >
       {
-         template< typename T >
-         static void assign( value & v, T && o )
+         template< typename V, typename T >
+         static void assign( V & v, T && o )
          {
             v.unsafe_emplace_object( std::forward< T >( o ) );
          }
       };
 
-      template<>
-      struct traits< const value * >
+      template< template< typename ... > class Traits >
+      struct traits< const value_base< Traits > * >
       {
-         static void assign( value & v, const value * p )
+         template< typename V >
+         static void assign( V & v, const value_base< Traits > * p )
          {
-            v.m_union.p = p;
-            v.m_type = json::type::POINTER;
+            v.unsafe_assign_pointer( p );
          }
       };
 
