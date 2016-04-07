@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_TO_STRING_HH
@@ -14,14 +14,16 @@ namespace tao
 {
    namespace json
    {
-      inline std::string to_string( const value & v )
+      template< template< typename ... > class Traits >
+      std::string to_string( const value_base< Traits > & v )
       {
          std::ostringstream o;
          internal::to_stream( o, v );
          return o.str();
       }
 
-      inline std::string to_string( const value & v, const unsigned indent, const unsigned current = 0 )
+      template< template< typename ... > class Traits >
+      std::string to_string( const value_base< Traits > & v, const unsigned indent, const unsigned current = 0 )
       {
          std::ostringstream o;
          internal::to_stream( o, v, indent, current );

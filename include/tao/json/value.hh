@@ -969,8 +969,8 @@ namespace tao
          }
       };
 
-      template<>
-      struct traits< std::vector< value > >
+      template< template< typename ... > class Traits >
+      struct traits< std::vector< value_base< Traits > > >
       {
          template< typename V, typename T >
          static void assign( V & v, T && a )
@@ -979,8 +979,8 @@ namespace tao
          }
       };
 
-      template<>
-      struct traits< std::map< std::string, value > >
+      template< template< typename ... > class Traits >
+      struct traits< std::map< std::string, value_base< Traits > > >
       {
          template< typename V, typename T >
          static void assign( V & v, T && o )
