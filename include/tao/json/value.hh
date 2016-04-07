@@ -609,10 +609,13 @@ namespace tao
                case json::type::NULL_:
                   return;
                case json::type::BOOL_:
+                  m_union.b = r.m_union.b;
+                  return;
                case json::type::INT64:
-               case json::type::DOUBLE:
-               case json::type::POINTER:
                   m_union.i = r.m_union.i;
+                  return;
+               case json::type::DOUBLE:
+                  m_union.d = r.m_union.d;
                   return;
                case json::type::STRING:
                   new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
@@ -622,6 +625,9 @@ namespace tao
                   return;
                case json::type::OBJECT:
                   new ( & m_union.o ) std::map< std::string, value >( std::move( r.m_union.o ) );
+                  return;
+               case json::type::POINTER:
+                  m_union.p = r.m_union.p;
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -633,10 +639,13 @@ namespace tao
                case json::type::NULL_:
                   return;
                case json::type::BOOL_:
+                  m_union.b = r.m_union.b;
+                  return;
                case json::type::INT64:
-               case json::type::DOUBLE:
-               case json::type::POINTER:
                   m_union.i = r.m_union.i;
+                  return;
+               case json::type::DOUBLE:
+                  m_union.d = r.m_union.d;
                   return;
                case json::type::STRING:
                   new ( & m_union.s ) std::string( r.m_union.s );
@@ -646,6 +655,9 @@ namespace tao
                   return;
                case json::type::OBJECT:
                   new ( & m_union.o ) std::map< std::string, value >( r.m_union.o );
+                  return;
+               case json::type::POINTER:
+                  m_union.p = r.m_union.p;
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -687,12 +699,12 @@ namespace tao
       inline bool operator< ( const value & lhs, const value & rhs )
       {
          if ( lhs.type() == type::POINTER ) {
-           return *lhs.unsafe_pointer() < rhs;
-         }
-         if ( rhs.type() == type::POINTER ) {
-           return lhs < *rhs.unsafe_pointer();
+            return *lhs.unsafe_pointer() < rhs;
          }
          if ( lhs.type() != rhs.type() ) {
+            if ( rhs.type() == type::POINTER ) {
+               return lhs < *rhs.unsafe_pointer();
+            }
             return lhs.type() < rhs.type();
          }
          switch ( lhs.type() ) {
@@ -719,12 +731,12 @@ namespace tao
       inline bool operator== ( const value & lhs, const value & rhs )
       {
          if ( lhs.type() == type::POINTER ) {
-           return *lhs.unsafe_pointer() == rhs;
-         }
-         if ( rhs.type() == type::POINTER ) {
-           return lhs == *rhs.unsafe_pointer();
+            return *lhs.unsafe_pointer() == rhs;
          }
          if ( lhs.type() != rhs.type() ) {
+            if ( rhs.type() == type::POINTER ) {
+               return lhs == *rhs.unsafe_pointer();
+            }
             return false;
          }
          switch ( lhs.type() ) {
