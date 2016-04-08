@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_STRING_STATE_HH
@@ -21,7 +21,8 @@ namespace tao
             string_state( const string_state & ) = delete;
             void operator= ( const string_state & ) = delete;
 
-            void success( result_state & result )
+            template< template< typename ... > class Traits >
+            void success( result_state< Traits > & result )
             {
                result.result.unsafe_assign( std::move( unescaped ) );
             }

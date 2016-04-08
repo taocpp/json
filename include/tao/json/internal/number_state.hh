@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_NUMBER_STATE_HH
@@ -34,7 +34,8 @@ namespace tao
             bool drop = false;
             char mantissa[ 1 + max_mantissa_digits + 1 ];
 
-            void success( result_state & result )
+            template< template< typename ... > class Traits >
+            void success( result_state< Traits > & result )
             {
                if ( ! isfp ) {
                   errno = 0;

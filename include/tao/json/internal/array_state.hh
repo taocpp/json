@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ARRAY_STATE_HH
@@ -16,10 +16,11 @@ namespace tao
    {
       namespace internal
       {
+         template< template< typename ... > class Traits >
          struct array_state
-               : public result_state
+               : public result_state< Traits >
          {
-            value array;
+            value_base< Traits > array;
 
             array_state()
                   : array( empty_array )
@@ -30,7 +31,7 @@ namespace tao
                array.emplace_back( std::move( this->result ) );
             }
 
-            void success( result_state & r )
+            void success( result_state< Traits > & r )
             {
                r.result = std::move( array );
             }

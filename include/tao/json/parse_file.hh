@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_PARSE_FILE_HH
@@ -13,17 +13,26 @@ namespace tao
 {
    namespace json
    {
-      inline void parse_file( value & output, const std::string & filename )
+      template< template< typename ... > class Traits >
+      void parse_file( value_base< Traits > & output, const std::string & filename )
       {
-         internal::result_state result;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control >( result );
+         internal::result_state< Traits > result;
+         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );
          output = std::move( result.result );
       }
 
-      inline value parse_file( const std::string & filename )
+      template< template< typename ... > class Traits >
+      value_base< Traits > parse_file( const std::string & filename )
       {
-         internal::result_state result;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control >( result );
+         internal::result_state< Traits > result;
+         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );
+         return std::move( result.result );
+      }
+
+      value parse_file( const std::string & filename )
+      {
+         internal::result_state< traits > result;
+         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< traits >::template control >( result );
          return std::move( result.result );
       }
 
