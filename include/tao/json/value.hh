@@ -930,6 +930,16 @@ namespace tao
       };
 
       template<>
+      struct traits< float >
+      {
+         template< typename V >
+         static void assign( V & v, const float f )
+         {
+            v = static_cast< double >( f );
+         }
+      };
+
+      template<>
       struct traits< empty_array_t >
       {
          template< typename V >
