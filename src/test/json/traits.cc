@@ -30,6 +30,14 @@ namespace tao
       {
          const value v { { "foo", my_data() }, my_data() };
          std::cout << to_string( v ) << std::endl;
+
+         std::string s2 = "bar";
+         const value v2 { { s2, my_data() }, my_data() };
+         std::cout << to_string( v2 ) << std::endl;
+
+         const std::string s3 = "baz";
+         const value v3 { { s3, my_data() }, my_data() };
+         std::cout << to_string( v3 ) << std::endl;
       }
 
    } // json

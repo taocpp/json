@@ -51,8 +51,12 @@ namespace tao
             template< typename U >
             pair( U && v ) : e( default_key< typename std::decay< U >::type >::value, std::forward< U >( v ) ) {}
 
-            pair( std::string k, const T & v ) : e( std::move( k ), v ) {}
-            pair( std::string k, T && v ) : e( std::move( k ), std::move( v ) ) {}
+            pair( std::string && k, T && v ) : e( std::move( k ), std::move( v ) ) {}
+            pair( std::string && k, const T & v ) : e( std::move( k ), v ) {}
+            pair( const std::string & k, T && v ) : e( k, std::move( v ) ) {}
+            pair( const std::string & k, const T & v ) : e( k, v ) {}
+            pair( const char * k, T && v ) : e( k, std::move( v ) ) {}
+            pair( const char * k, const T & v ) : e( k, v ) {}
          };
 
          template< typename T, typename U, type E >
