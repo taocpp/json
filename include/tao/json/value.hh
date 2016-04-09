@@ -153,6 +153,14 @@ namespace tao
             unsafe_destroy();
          }
 
+         template< typename... Ts >
+         static value_base array( Ts && ... ts )
+         {
+            value_base v;
+            v.unsafe_emplace_array( std::initializer_list< value_base >( { std::forward< Ts >( ts )... } ) );
+            return v;
+         }
+
          value_base & operator= ( value_base && r ) noexcept
          {
             if ( this != & r ) {
@@ -217,14 +225,6 @@ namespace tao
             value_base t( std::move( r ) );
             r = std::move( * this );
             ( * this ) = ( std::move( t ) );
-         }
-
-         template< typename... Ts >
-         static value_base array( Ts && ... ts )
-         {
-            value_base v;
-            v.unsafe_emplace_array( std::initializer_list< value_base >( { std::forward< Ts >( ts )... } ) );
-            return v;
          }
 
          json::type type() const noexcept
@@ -301,19 +301,6 @@ namespace tao
             return unsafe_double();
          }
 
-         template< typename T >
-         T as_number() const
-         {
-            switch ( m_type ) {
-               case json::type::INT64:
-                  return T( unsafe_int64() );
-               case json::type::DOUBLE:
-                  return T( unsafe_double() );
-               default:
-                  THROW_TYPE_ERROR( m_type );
-            }
-         }
-
          std::string & get_string()
          {
             CHECK_TYPE_ERROR( m_type, json::type::STRING );
@@ -361,6 +348,19 @@ namespace tao
          {
             CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
+         }
+
+         template< typename T >
+         T as_number() const
+         {
+            switch ( m_type ) {
+               case json::type::INT64:
+                  return T( unsafe_int64() );
+               case json::type::DOUBLE:
+                  return T( unsafe_double() );
+               default:
+                  THROW_TYPE_ERROR( m_type );
+            }
          }
 
          // The unsafe_foo() accessor functions MUST NOT be
@@ -463,6 +463,13 @@ namespace tao
             m_type = json::type::ARRAY;
          }
 
+         template< typename ... Ts >
+         void emplace_array( Ts && ... ts )
+         {
+            destroy();
+            unsafe_emplace_array( std::forward< Ts >( ts ) ... );
+         }
+
          void unsafe_emplace_back_prepare()
          {
             switch ( m_type ) {
@@ -493,6 +500,13 @@ namespace tao
          {
             new ( & m_union.o ) std::map< std::string, value_base >( std::forward< Ts >( ts ) ... );
             m_type = json::type::OBJECT;
+         }
+
+         template< typename ... Ts >
+         void emplace_object( Ts && ... ts )
+         {
+            destroy();
+            unsafe_emplace_object( std::forward< Ts >( ts ) ... );
          }
 
          void unsafe_emplace_prepare()
@@ -542,20 +556,6 @@ namespace tao
                }
             }
             return *this;
-         }
-
-         template< typename ... Ts >
-         void emplace_array( Ts && ... ts )
-         {
-            destroy();
-            unsafe_emplace_array( std::forward< Ts >( ts ) ... );
-         }
-
-         template< typename ... Ts >
-         void emplace_object( Ts && ... ts )
-         {
-            destroy();
-            unsafe_emplace_object( std::forward< Ts >( ts ) ... );
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
@@ -686,12 +686,6 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         void destroy() noexcept
-         {
-            unsafe_destroy();
-            m_type = json::type::NULL_;
-         }
-
          void unsafe_destroy() noexcept
          {
             switch ( m_type ) {
@@ -714,7 +708,12 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-      private:
+         void destroy() noexcept
+         {
+            unsafe_destroy();
+            m_type = json::type::NULL_;
+         }
+
          internal::value_union< value_base > m_union;
          json::type m_type = json::type::NULL_;
       };
