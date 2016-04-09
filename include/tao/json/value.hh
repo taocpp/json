@@ -612,7 +612,7 @@ namespace tao
          {
             unsafe_emplace_prepare();
             for( auto & e : l ) {
-               const auto r = emplace( std::move( e.e.first ), std::move( e.e.second ) );
+               const auto r = unsafe_emplace( std::move( e.e.first ), std::move( e.e.second ) );
                if( !r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
                }
