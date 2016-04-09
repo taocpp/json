@@ -623,7 +623,7 @@ namespace tao
          value_base & operator+= ( const std::initializer_list< internal::pair< value_base > > & l )
          {
             unsafe_emplace_prepare();
-            for( auto & e : l ) {
+            for( const auto & e : l ) {
                const auto r = unsafe_emplace( e.e.first, e.e.second );
                if( !r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
