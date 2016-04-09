@@ -430,19 +430,19 @@ namespace tao
          // the containers for arrays and objects and throw
          // an exception when the type of the value is wrong.
 
-         value_base & operator[] ( const size_t index )
+         value_base & operator[] ( const std::size_t index )
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
-         value_base & operator[] ( const std::string & index )
+         value_base & operator[] ( const std::string & key )
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            return m_union.o.at( index );
+            return m_union.o.at( key );
          }
 
-         const value_base & operator[] ( const size_t index ) const
+         const value_base & operator[] ( const std::size_t index ) const
          {
             if( m_type == json::type::POINTER ) {
               return (*unsafe_pointer())[ index ];
@@ -451,13 +451,13 @@ namespace tao
             return m_union.a.at( index );
          }
 
-         const value_base & operator[] ( const std::string & index ) const
+         const value_base & operator[] ( const std::string & key ) const
          {
             if( m_type == json::type::POINTER ) {
-              return (*unsafe_pointer())[ index ];
+              return (*unsafe_pointer())[ key ];
             }
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            return m_union.o.at( index );
+            return m_union.o.at( key );
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
