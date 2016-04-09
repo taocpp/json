@@ -34,7 +34,7 @@ namespace tao
             o << '[';
             if ( ! v.empty() ) {
                internal::to_stream( o, v[ 0 ] );
-               for ( size_t i = 1; i < v.size(); ++i ) {
+               for ( std::size_t i = 1; i < v.size(); ++i ) {
                   o << ',';
                   internal::to_stream( o, v[ i ] );
                }
@@ -52,7 +52,7 @@ namespace tao
                o << '\n';
                o << padding;
                internal::to_stream( o, v[ 0 ], indent, current );
-               for ( size_t i = 1; i < v.size(); ++i ) {
+               for ( std::size_t i = 1; i < v.size(); ++i ) {
                   o << ",\n";
                   o << padding;
                   internal::to_stream( o, v[ i ], indent, current );

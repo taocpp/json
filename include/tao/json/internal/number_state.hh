@@ -17,7 +17,7 @@ namespace tao
    {
       namespace internal
       {
-         static const size_t max_mantissa_digits = 772;
+         static const std::size_t max_mantissa_digits = 772;
 
          struct number_state
          {

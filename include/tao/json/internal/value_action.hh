@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_ACTION_HH
@@ -81,7 +81,7 @@ namespace tao
                result.exponent10 += in.size() - c;
                result.msize = c;
 
-               for ( size_t i = c; i < in.size(); ++i ) {
+               for ( std::size_t i = c; i < in.size(); ++i ) {
                   if ( in.peek_char( i ) != '0' ) {
                      result.drop = true;
                      return;
@@ -109,7 +109,7 @@ namespace tao
                      --result.exponent10;
                   }
                }
-               const auto c = std::min( size_t( e - b ), max_mantissa_digits - result.msize );
+               const auto c = std::min( std::size_t( e - b ), max_mantissa_digits - result.msize );
                std::memcpy( result.mantissa + 1 + result.msize, b, c );
                result.exponent10 -= c;
                result.msize += c;

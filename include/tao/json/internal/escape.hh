@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ESCAPE_HH
@@ -19,7 +19,7 @@ namespace tao
             static const char * h = "0123456789abcdef";
             const unsigned char * d = reinterpret_cast< const unsigned char * >( data.data() );
 
-            for ( size_t i = 0; i < data.size(); ++i ) {
+            for ( std::size_t i = 0; i < data.size(); ++i ) {
                switch ( const auto c = d[ i ] ) {
                   case '\b':
                      r += "\\b";
