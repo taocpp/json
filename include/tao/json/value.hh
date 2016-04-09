@@ -720,7 +720,7 @@ namespace tao
       };
 
       template< template< typename ... > class Traits >
-      inline bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
+      bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
             return *lhs.unsafe_pointer() == rhs;
@@ -753,7 +753,7 @@ namespace tao
       }
 
       template< template< typename ... > class Traits >
-      inline bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
+      bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
             return *lhs.unsafe_pointer() < rhs;
