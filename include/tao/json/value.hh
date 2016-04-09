@@ -456,6 +456,74 @@ namespace tao
             return m_union.o.at( index );
          }
 
+         // The unsafe_assign()-functions MUST NOT be called on a
+         // value v when json::needs_destroy( v.type() ) is true!
+
+         template< typename T >
+         void unsafe_assign( T && v ) // TODO: noexcept( noexcept( Traits< typename std::decay_t< T >::type >::assign( *this, std::forward< T >( v ) ) ) )
+         {
+            using D = typename std::decay< T >::type;
+            Traits< D >::assign( *this, std::forward< T >( v ) );
+         }
+
+         void unsafe_assign( std::initializer_list< internal::pair< value_base > > && l )
+         {
+            unsafe_emplace_object();
+            *this += std::move( l );
+         }
+
+         void unsafe_assign( const std::initializer_list< internal::pair< value_base > > & l )
+         {
+            unsafe_emplace_object();
+            *this += l;
+         }
+
+         void unsafe_assign( std::initializer_list< internal::pair< value_base > > & l )
+         {
+            unsafe_emplace_object();
+            *this += l;
+         }
+
+         void unsafe_assign_null() noexcept
+         {
+            m_type = json::type::NULL_;
+         }
+
+         void unsafe_assign_bool( const bool b ) noexcept
+         {
+            m_union.b = b;
+            m_type = json::type::BOOL_;
+         }
+
+         void unsafe_assign_int64( const int64_t i ) noexcept
+         {
+            m_union.i = i;
+            m_type = json::type::INT64;
+         }
+
+         void unsafe_assign_double( const double d )
+         {
+            if ( ! std::isfinite( d ) ) {
+               throw std::runtime_error( "non-finite double value illegal for json" );
+            }
+            m_union.d = d;
+            m_type = json::type::DOUBLE;
+         }
+
+         template< typename ... Ts >
+         void unsafe_emplace_string( Ts && ... ts )
+         {
+            new ( & m_union.s ) std::string( std::forward< Ts >( ts ) ... );
+            m_type = json::type::STRING;
+         }
+
+         template< typename ... Ts >
+         void emplace_string( Ts && ... ts )
+         {
+            destroy();
+            unsafe_emplace_string( std::forward< Ts >( ts ) ... );
+         }
+
          template< typename ... Ts >
          void unsafe_emplace_array( Ts && ... ts )
          {
@@ -534,6 +602,12 @@ namespace tao
             return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
+         void unsafe_assign_pointer( const value_base * p ) noexcept
+         {
+            m_union.p = p;
+            m_type = json::type::POINTER;
+         }
+
          value_base & operator+= ( std::initializer_list< internal::pair< value_base > > && l )
          {
             unsafe_emplace_prepare();
@@ -556,73 +630,6 @@ namespace tao
                }
             }
             return *this;
-         }
-
-         // The unsafe_assign()-functions MUST NOT be called on a
-         // value v when json::needs_destroy( v.type() ) is true!
-
-         template< typename T >
-         void unsafe_assign( T && v ) // TODO: noexcept( noexcept( Traits< typename std::decay_t< T >::type >::assign( *this, std::forward< T >( v ) ) ) )
-         {
-            using D = typename std::decay< T >::type;
-            Traits< D >::assign( *this, std::forward< T >( v ) );
-         }
-
-         void unsafe_assign( std::initializer_list< internal::pair< value_base > > && l )
-         {
-            unsafe_emplace_object();
-            *this += std::move( l );
-         }
-
-         void unsafe_assign( const std::initializer_list< internal::pair< value_base > > & l )
-         {
-            unsafe_emplace_object();
-            *this += l;
-         }
-
-         void unsafe_assign( std::initializer_list< internal::pair< value_base > > & l )
-         {
-            unsafe_emplace_object();
-            *this += l;
-         }
-
-         void unsafe_assign_null() noexcept
-         {
-            m_type = json::type::NULL_;
-         }
-
-         void unsafe_assign_bool( const bool b ) noexcept
-         {
-            m_union.b = b;
-            m_type = json::type::BOOL_;
-         }
-
-         void unsafe_assign_int64( const int64_t i ) noexcept
-         {
-            m_union.i = i;
-            m_type = json::type::INT64;
-         }
-
-         void unsafe_assign_double( const double d )
-         {
-            if ( ! std::isfinite( d ) ) {
-               throw std::runtime_error( "non-finite double value illegal for json" );
-            }
-            m_union.d = d;
-            m_type = json::type::DOUBLE;
-         }
-
-         template< typename ... Ts >
-         void unsafe_emplace_string( Ts && ... ts )
-         {
-            new ( & m_union.s ) std::string( std::forward< Ts >( ts ) ... );
-            m_type = json::type::STRING;
-         }
-
-         void unsafe_assign_pointer( const value_base * p ) noexcept
-         {
-            m_union.p = p;
-            m_type = json::type::POINTER;
          }
 
       private:
