@@ -344,7 +344,7 @@ namespace tao
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > >() ) ) get() const
+         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< value_base > & >() ) ) get() const
          {
             CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
