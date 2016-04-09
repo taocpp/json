@@ -25,7 +25,7 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         const char* no_automatic_key_defined()
+         const char* no_automatic_key_defined() noexcept
          {
             static_assert( sizeof( T ) == 0, "no default key defined for T" );
             return nullptr;
@@ -59,7 +59,7 @@ namespace tao
          struct totally_ordered
             : operators::totally_ordered< T, U >
          {
-            friend bool operator==( const T& lhs, const U& rhs )
+            friend bool operator==( const T& lhs, const U& rhs ) noexcept
             {
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() == rhs;
@@ -67,7 +67,7 @@ namespace tao
                return ( lhs.type() == E ) && ( lhs.T::template get< E >() == rhs );
             }
 
-            friend bool operator<( const T& lhs, const U& rhs )
+            friend bool operator<( const T& lhs, const U& rhs ) noexcept
             {
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() < rhs;
@@ -75,7 +75,7 @@ namespace tao
                return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.T::template get< E >() < rhs ) );
             }
 
-            friend bool operator>( const T& lhs, const U& rhs )
+            friend bool operator>( const T& lhs, const U& rhs ) noexcept
             {
                if( lhs.type() == type::POINTER ) {
                   return *lhs.get_pointer() > rhs;
@@ -371,7 +371,7 @@ namespace tao
             return unsafe_object();
          }
 
-         const value_base * get_pointer() const noexcept
+         const value_base * get_pointer() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::POINTER );
             return unsafe_pointer();
@@ -607,18 +607,18 @@ namespace tao
             *this += l;
          }
 
-         void unsafe_assign_null()
+         void unsafe_assign_null() noexcept
          {
             m_type = json::type::NULL_;
          }
 
-         void unsafe_assign_bool( const bool b )
+         void unsafe_assign_bool( const bool b ) noexcept
          {
             m_union.b = b;
             m_type = json::type::BOOL_;
          }
 
-         void unsafe_assign_int64( const int64_t i )
+         void unsafe_assign_int64( const int64_t i ) noexcept
          {
             m_union.i = i;
             m_type = json::type::INT64;
@@ -640,7 +640,7 @@ namespace tao
             m_type = json::type::STRING;
          }
 
-         void unsafe_assign_pointer( const value_base * p )
+         void unsafe_assign_pointer( const value_base * p ) noexcept
          {
             m_union.p = p;
             m_type = json::type::POINTER;
@@ -741,40 +741,7 @@ namespace tao
       };
 
       template< template< typename ... > class Traits >
-      inline bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs )
-      {
-         if ( lhs.type() == type::POINTER ) {
-            return *lhs.unsafe_pointer() < rhs;
-         }
-         if ( lhs.type() != rhs.type() ) {
-            if ( rhs.type() == type::POINTER ) {
-               return lhs < *rhs.unsafe_pointer();
-            }
-            return lhs.type() < rhs.type();
-         }
-         switch ( lhs.type() ) {
-            case type::NULL_:
-               return false;
-            case type::BOOL_:
-               return lhs.unsafe_bool() < rhs.unsafe_bool();
-            case type::INT64:
-               return lhs.unsafe_int64() < rhs.unsafe_int64();
-            case type::DOUBLE:
-               return lhs.unsafe_double() < rhs.unsafe_double();
-            case type::STRING:
-               return lhs.unsafe_string() < rhs.unsafe_string();
-            case type::ARRAY:
-               return lhs.unsafe_array() < rhs.unsafe_array();
-            case type::OBJECT:
-               return lhs.unsafe_object() < rhs.unsafe_object();
-            case type::POINTER:
-               break;
-         }
-         assert( false );  // LCOV_EXCL_LINE
-      }
-
-      template< template< typename ... > class Traits >
-      inline bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs )
+      inline bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
             return *lhs.unsafe_pointer() == rhs;
@@ -806,6 +773,39 @@ namespace tao
          assert( false );  // LCOV_EXCL_LINE
       }
 
+      template< template< typename ... > class Traits >
+      inline bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
+      {
+         if ( lhs.type() == type::POINTER ) {
+            return *lhs.unsafe_pointer() < rhs;
+         }
+         if ( lhs.type() != rhs.type() ) {
+            if ( rhs.type() == type::POINTER ) {
+               return lhs < *rhs.unsafe_pointer();
+            }
+            return lhs.type() < rhs.type();
+         }
+         switch ( lhs.type() ) {
+            case type::NULL_:
+               return false;
+            case type::BOOL_:
+               return lhs.unsafe_bool() < rhs.unsafe_bool();
+            case type::INT64:
+               return lhs.unsafe_int64() < rhs.unsafe_int64();
+            case type::DOUBLE:
+               return lhs.unsafe_double() < rhs.unsafe_double();
+            case type::STRING:
+               return lhs.unsafe_string() < rhs.unsafe_string();
+            case type::ARRAY:
+               return lhs.unsafe_array() < rhs.unsafe_array();
+            case type::OBJECT:
+               return lhs.unsafe_object() < rhs.unsafe_object();
+            case type::POINTER:
+               break;
+         }
+         assert( false );  // LCOV_EXCL_LINE
+      }
+
       // note: traits< ... >::assign() is always called with needs_destroy(v) == false
 
       template< typename T, typename = void >
@@ -820,8 +820,8 @@ namespace tao
       template<>
       struct traits< std::nullptr_t >
       {
-         template< typename V >
-         static void assign( V & v, std::nullptr_t )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, std::nullptr_t ) noexcept
          {
             v.unsafe_assign_null();
          }
@@ -830,8 +830,8 @@ namespace tao
       template<>
       struct traits< bool >
       {
-         template< typename V >
-         static void assign( V & v, const bool b )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const bool b ) noexcept
          {
             v.unsafe_assign_bool( b );
          }
@@ -840,8 +840,8 @@ namespace tao
       template<>
       struct traits< signed char >
       {
-         template< typename V >
-         static void assign( V & v, const signed char i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const signed char i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -850,8 +850,8 @@ namespace tao
       template<>
       struct traits< unsigned char >
       {
-         template< typename V >
-         static void assign( V & v, const unsigned char i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const unsigned char i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -860,8 +860,8 @@ namespace tao
       template<>
       struct traits< signed short >
       {
-         template< typename V >
-         static void assign( V & v, const signed short i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const signed short i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -870,8 +870,8 @@ namespace tao
       template<>
       struct traits< unsigned short >
       {
-         template< typename V >
-         static void assign( V & v, const unsigned short i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const unsigned short i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -880,8 +880,8 @@ namespace tao
       template<>
       struct traits< signed int >
       {
-         template< typename V >
-         static void assign( V & v, const signed int i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const signed int i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -890,8 +890,8 @@ namespace tao
       template<>
       struct traits< unsigned int >
       {
-         template< typename V >
-         static void assign( V & v, const unsigned int i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const unsigned int i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -900,8 +900,8 @@ namespace tao
       template<>
       struct traits< signed long >
       {
-         template< typename V >
-         static void assign( V & v, const signed long i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const signed long i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -910,8 +910,8 @@ namespace tao
       template<>
       struct traits< signed long long >
       {
-         template< typename V >
-         static void assign( V & v, const signed long long i )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const signed long long i ) noexcept
          {
             v.unsafe_assign_int64( i );
          }
@@ -920,8 +920,8 @@ namespace tao
       template<>
       struct traits< float >
       {
-         template< typename V >
-         static void assign( V & v, const float f )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const float f )
          {
             v.unsafe_assign_double( f );
          }
@@ -930,8 +930,8 @@ namespace tao
       template<>
       struct traits< double >
       {
-         template< typename V >
-         static void assign( V & v, const double d )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const double d )
          {
             v.unsafe_assign_double( d );
          }
@@ -940,8 +940,8 @@ namespace tao
       template<>
       struct traits< empty_array_t >
       {
-         template< typename V >
-         static void assign( V & v, empty_array_t )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, empty_array_t )
          {
             v.unsafe_emplace_array();
          }
@@ -950,8 +950,8 @@ namespace tao
       template<>
       struct traits< empty_object_t >
       {
-         template< typename V >
-         static void assign( V & v, empty_object_t )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, empty_object_t )
          {
             v.unsafe_emplace_object();
          }
@@ -960,8 +960,8 @@ namespace tao
       template<>
       struct traits< std::string >
       {
-         template< typename V, typename T >
-         static void assign( V & v, T && s )
+         template< template< typename ... > class Traits, typename T >
+         static void assign( value_base< Traits > & v, T && s )
          {
             v.unsafe_emplace_string( std::forward< T >( s ) );
          }
@@ -970,8 +970,8 @@ namespace tao
       template<>
       struct traits< const char * >
       {
-         template< typename V >
-         static void assign( V & v, const char * s )
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, const char * s )
          {
             v.unsafe_emplace_string( s );
          }
@@ -980,8 +980,8 @@ namespace tao
       template< template< typename ... > class Traits >
       struct traits< std::vector< value_base< Traits > > >
       {
-         template< typename V, typename T >
-         static void assign( V & v, T && a )
+         template< typename T >
+         static void assign( value_base< Traits > & v, T && a )
          {
             v.unsafe_emplace_array( std::forward< T >( a ) );
          }
@@ -990,8 +990,8 @@ namespace tao
       template< template< typename ... > class Traits >
       struct traits< std::map< std::string, value_base< Traits > > >
       {
-         template< typename V, typename T >
-         static void assign( V & v, T && o )
+         template< typename T >
+         static void assign( value_base< Traits > & v, T && o )
          {
             v.unsafe_emplace_object( std::forward< T >( o ) );
          }
@@ -1000,8 +1000,7 @@ namespace tao
       template< template< typename ... > class Traits >
       struct traits< const value_base< Traits > * >
       {
-         template< typename V >
-         static void assign( V & v, const value_base< Traits > * p )
+         static void assign( value_base< Traits > & v, const value_base< Traits > * p ) noexcept
          {
             v.unsafe_assign_pointer( p );
          }
