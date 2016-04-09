@@ -186,51 +186,30 @@ namespace tao
          template< typename T >
          value_base & operator= ( T && v ) // TODO: noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
          {
-            assign( std::forward< T >( v ) );
+            destroy();
+            unsafe_assign( std::forward< T >( v ) );
             return *this;
          }
 
          value_base & operator= ( std::initializer_list< internal::pair< value_base > > && l )
          {
-            assign( std::move( l ) );
+            destroy();
+            unsafe_assign( std::move( l ) );
             return *this;
          }
 
          value_base & operator= ( const std::initializer_list< internal::pair< value_base > > & l )
          {
-            assign( l );
+            destroy();
+            unsafe_assign( l );
             return *this;
          }
 
          value_base & operator= ( std::initializer_list< internal::pair< value_base > > & l )
          {
-            assign( l );
+            destroy();
+            unsafe_assign( l );
             return *this;
-         }
-
-         template< typename T >
-         void assign( T && v ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
-         {
-            destroy();
-            unsafe_assign( std::forward< T >( v ) );
-         }
-
-         void assign( std::initializer_list< internal::pair< value_base > > && l )
-         {
-            destroy();
-            unsafe_assign( std::move( l ) );
-         }
-
-         void assign( const std::initializer_list< internal::pair< value_base > > & l )
-         {
-            destroy();
-            unsafe_assign( l );
-         }
-
-         void assign( std::initializer_list< internal::pair< value_base > > & l )
-         {
-            destroy();
-            unsafe_assign( l );
          }
 
          void swap( value_base & r ) noexcept
