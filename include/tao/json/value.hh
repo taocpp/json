@@ -22,15 +22,6 @@ namespace tao
 {
    namespace json
    {
-      template< typename T, typename = void >
-      struct traits
-      {
-         static_assert( sizeof( T ) == 0, "no traits specialization found" );
-
-         template< typename V, typename U >
-         static void assign( V &, U && );
-      };
-
       namespace internal
       {
          template< typename T >
@@ -643,7 +634,7 @@ namespace tao
          }
 
          template< typename ... Ts >
-         void unsafe_assign_string( Ts && ... ts )
+         void unsafe_emplace_string( Ts && ... ts )
          {
             new ( & m_union.s ) std::string( std::forward< Ts >( ts ) ... );
             m_type = json::type::STRING;
@@ -749,8 +740,6 @@ namespace tao
          json::type m_type = json::type::NULL_;
       };
 
-      using value = value_base< traits >;
-
       template< template< typename ... > class Traits >
       inline bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs )
       {
@@ -817,7 +806,16 @@ namespace tao
          assert( false );  // LCOV_EXCL_LINE
       }
 
-      // note: traits< ... >:: assign is always called with needs_destroy(v) == false
+      // note: traits< ... >::assign() is always called with needs_destroy(v) == false
+
+      template< typename T, typename = void >
+      struct traits
+      {
+         static_assert( sizeof( T ) == 0, "no traits specialization found" );
+
+         template< typename V, typename U >
+         static void assign( V &, U && );
+      };
 
       template<>
       struct traits< std::nullptr_t >
@@ -920,22 +918,22 @@ namespace tao
       };
 
       template<>
+      struct traits< float >
+      {
+         template< typename V >
+         static void assign( V & v, const float f )
+         {
+            v.unsafe_assign_double( f );
+         }
+      };
+
+      template<>
       struct traits< double >
       {
          template< typename V >
          static void assign( V & v, const double d )
          {
             v.unsafe_assign_double( d );
-         }
-      };
-
-      template<>
-      struct traits< float >
-      {
-         template< typename V >
-         static void assign( V & v, const float f )
-         {
-            v = static_cast< double >( f );
          }
       };
 
@@ -965,7 +963,7 @@ namespace tao
          template< typename V, typename T >
          static void assign( V & v, T && s )
          {
-            v.unsafe_assign_string( std::forward< T >( s ) );
+            v.unsafe_emplace_string( std::forward< T >( s ) );
          }
       };
 
@@ -975,7 +973,7 @@ namespace tao
          template< typename V >
          static void assign( V & v, const char * s )
          {
-            v.unsafe_assign_string( s );
+            v.unsafe_emplace_string( s );
          }
       };
 
@@ -1008,6 +1006,8 @@ namespace tao
             v.unsafe_assign_pointer( p );
          }
       };
+
+      using value = value_base< traits >;
 
    } // json
 
