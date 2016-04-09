@@ -128,7 +128,7 @@ namespace tao
          }
 
          template< typename T >
-         value_base( T && v ) // TODO: noexcept( noexcept( unsafe_assign( std::forward< T >( v ) ) ) )
+         value_base( T && v ) noexcept( noexcept( std::declval< value_base & >().unsafe_assign( std::forward< T >( v ) ) ) )
          {
             unsafe_assign( std::forward< T >( v ) );
          }
@@ -192,7 +192,7 @@ namespace tao
          }
 
          template< typename T >
-         value_base & operator= ( T && v ) // TODO: noexcept( noexcept( assign( std::forward< T >( v ) ) ) )
+         value_base & operator= ( T && v ) noexcept( noexcept( std::declval< value_base & >().unsafe_assign( std::forward< T >( v ) ) ) )
          {
             destroy();
             unsafe_assign( std::forward< T >( v ) );
@@ -460,7 +460,7 @@ namespace tao
          // value v when json::needs_destroy( v.type() ) is true!
 
          template< typename T >
-         void unsafe_assign( T && v ) // TODO: noexcept( noexcept( Traits< typename std::decay_t< T >::type >::assign( *this, std::forward< T >( v ) ) ) )
+         void unsafe_assign( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< value_base & >(), std::forward< T >( v ) ) ) )
          {
             using D = typename std::decay< T >::type;
             Traits< D >::assign( *this, std::forward< T >( v ) );
