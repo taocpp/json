@@ -55,6 +55,12 @@ namespace tao
          template<> struct get_by_enum< type::STRING >
          {
             template< typename V >
+            static std::string & get( value_union< V > & u )
+            {
+               return u.s;
+            }
+
+            template< typename V >
             static const std::string & get( const value_union< V > & u )
             {
                return u.s;
@@ -64,6 +70,12 @@ namespace tao
          template<> struct get_by_enum< type::ARRAY >
          {
             template< typename V >
+            static std::vector< V > & get( value_union< V > & u )
+            {
+               return u.a;
+            }
+
+            template< typename V >
             static const std::vector< V > & get( const value_union< V > & u )
             {
                return u.a;
@@ -72,6 +84,12 @@ namespace tao
 
          template<> struct get_by_enum< type::OBJECT >
          {
+            template< typename V >
+            static std::map< std::string, V > & get( value_union< V > & u )
+            {
+               return u.o;
+            }
+
             template< typename V >
             static const std::map< std::string, V > & get( const value_union< V > & u )
             {

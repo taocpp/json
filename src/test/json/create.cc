@@ -61,7 +61,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::BOOL_ );
          TEST_ASSERT( v.get_bool() == b );
-         TEST_ASSERT( v.unsafe_bool() == b );
+         TEST_ASSERT( v.unsafe_get_bool() == b );
 
          TEST_ASSERT( v == v );
          TEST_ASSERT( value( b ) == v );
@@ -93,7 +93,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::INTEGER );
          TEST_ASSERT( v.get_integer() == t );
-         TEST_ASSERT( v.unsafe_integer() == t );
+         TEST_ASSERT( v.unsafe_get_integer() == t );
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
@@ -129,7 +129,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::DOUBLE );
          TEST_ASSERT( v.get_double() == d );
-         TEST_ASSERT( v.unsafe_double() == d );
+         TEST_ASSERT( v.unsafe_get_double() == d );
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
@@ -157,7 +157,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::STRING );
          TEST_ASSERT( v.get_string() == s );
-         TEST_ASSERT( v.unsafe_string() == s );
+         TEST_ASSERT( v.unsafe_get_string() == s );
 
          const std::string t = s;
 
@@ -189,7 +189,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::ARRAY );
          TEST_ASSERT( v.get_array().empty() );
-         TEST_ASSERT( v.unsafe_array().empty() );
+         TEST_ASSERT( v.unsafe_get_array().empty() );
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );
@@ -214,7 +214,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::OBJECT );
          TEST_ASSERT( v.get_object().empty() );
-         TEST_ASSERT( v.unsafe_object().empty() );
+         TEST_ASSERT( v.unsafe_get_object().empty() );
 
          TEST_THROWS( v[ 0 ] );
          TEST_THROWS( v[ "foo" ] );

@@ -284,67 +284,74 @@ namespace tao
          std::nullptr_t get_null() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
-            return unsafe_null();
+            return unsafe_get_null();
          }
 
          bool get_bool() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::BOOL_ );
-            return unsafe_bool();
+            return unsafe_get_bool();
          }
 
          int64_t get_integer() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::INTEGER );
-            return unsafe_integer();
+            return unsafe_get_integer();
          }
 
          double get_double() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::DOUBLE );
-            return unsafe_double();
+            return unsafe_get_double();
          }
 
          std::string & get_string()
          {
             CHECK_TYPE_ERROR( m_type, json::type::STRING );
-            return unsafe_string();
+            return unsafe_get_string();
          }
 
          const std::string & get_string() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::STRING );
-            return unsafe_string();
+            return unsafe_get_string();
          }
 
          std::vector< value_base > & get_array()
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
-            return unsafe_array();
+            return unsafe_get_array();
          }
 
          const std::vector< value_base > & get_array() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
-            return unsafe_array();
+            return unsafe_get_array();
          }
 
          std::map< std::string, value_base > & get_object()
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            return unsafe_object();
+            return unsafe_get_object();
          }
 
          const std::map< std::string, value_base > & get_object() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            return unsafe_object();
+            return unsafe_get_object();
          }
 
          const value_base * get_pointer() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::POINTER );
-            return unsafe_pointer();
+            return unsafe_get_pointer();
+         }
+
+         template< json::type E >
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > & >() ) ) get()
+         {
+            CHECK_TYPE_ERROR( m_type, E );
+            return internal::get_by_enum< E >::get( m_union );
          }
 
          template< json::type E >
@@ -359,71 +366,83 @@ namespace tao
          {
             switch ( m_type ) {
                case json::type::INTEGER:
-                  return T( unsafe_integer() );
+                  return T( unsafe_get_integer() );
                case json::type::DOUBLE:
-                  return T( unsafe_double() );
+                  return T( unsafe_get_double() );
                default:
                   THROW_TYPE_ERROR( m_type );
             }
          }
 
-         // The unsafe_foo() accessor functions MUST NOT be
+         // The unsafe_get_*() accessor functions MUST NOT be
          // called when the type of the value is not the one
          // corresponding to the type of the accessor!
 
-         std::nullptr_t unsafe_null() const noexcept
+         std::nullptr_t unsafe_get_null() const noexcept
          {
             return nullptr;
          }
 
-         bool unsafe_bool() const noexcept
+         bool unsafe_get_bool() const noexcept
          {
             return m_union.b;
          }
 
-         int64_t unsafe_integer() const noexcept
+         int64_t unsafe_get_integer() const noexcept
          {
             return m_union.i;
          }
 
-         double unsafe_double() const noexcept
+         double unsafe_get_double() const noexcept
          {
             return m_union.d;
          }
 
-         std::string & unsafe_string() noexcept
+         std::string & unsafe_get_string() noexcept
          {
             return m_union.s;
          }
 
-         const std::string & unsafe_string() const noexcept
+         const std::string & unsafe_get_string() const noexcept
          {
             return m_union.s;
          }
 
-         std::vector< value_base > & unsafe_array() noexcept
+         std::vector< value_base > & unsafe_get_array() noexcept
          {
             return m_union.a;
          }
 
-         const std::vector< value_base > & unsafe_array() const noexcept
+         const std::vector< value_base > & unsafe_get_array() const noexcept
          {
             return m_union.a;
          }
 
-         std::map< std::string, value_base > & unsafe_object() noexcept
+         std::map< std::string, value_base > & unsafe_get_object() noexcept
          {
             return m_union.o;
          }
 
-         const std::map< std::string, value_base > & unsafe_object() const noexcept
+         const std::map< std::string, value_base > & unsafe_get_object() const noexcept
          {
             return m_union.o;
          }
 
-         const value_base * unsafe_pointer() const noexcept
+         const value_base * unsafe_get_pointer() const noexcept
          {
             return m_union.p;
+         }
+
+         template< json::type E >
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > & >() ) ) unsafe_get()
+         {
+            return internal::get_by_enum< E >::get( m_union );
+         }
+
+         template< json::type E >
+         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< value_base > & >() ) ) unsafe_get() const
+         {
+            return internal::get_by_enum< E >::get( m_union );
          }
 
          // The following convenience functions operate on
@@ -445,7 +464,7 @@ namespace tao
          const value_base & operator[] ( const std::size_t index ) const
          {
             if( m_type == json::type::POINTER ) {
-              return (*unsafe_pointer())[ index ];
+              return (*unsafe_get_pointer())[ index ];
             }
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
@@ -454,7 +473,7 @@ namespace tao
          const value_base & operator[] ( const std::string & key ) const
          {
             if( m_type == json::type::POINTER ) {
-              return (*unsafe_pointer())[ key ];
+              return (*unsafe_get_pointer())[ key ];
             }
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
@@ -505,13 +524,19 @@ namespace tao
             m_type = json::type::INTEGER;
          }
 
+         void unsafe_assign_double_unchecked( const double d ) noexcept
+         {
+            // d must be a finite value!
+            m_union.d = d;
+            m_type = json::type::DOUBLE;
+         }
+
          void unsafe_assign_double( const double d )
          {
             if ( ! std::isfinite( d ) ) {
                throw std::runtime_error( "non-finite double value invalid for json" );
             }
-            m_union.d = d;
-            m_type = json::type::DOUBLE;
+            unsafe_assign_double_unchecked( d );
          }
 
          template< typename ... Ts >
@@ -733,11 +758,11 @@ namespace tao
       bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
-            return *lhs.unsafe_pointer() == rhs;
+            return *lhs.unsafe_get_pointer() == rhs;
          }
          if ( lhs.type() != rhs.type() ) {
             if ( rhs.type() == type::POINTER ) {
-               return lhs == *rhs.unsafe_pointer();
+               return lhs == *rhs.unsafe_get_pointer();
             }
             return false;
          }
@@ -745,17 +770,17 @@ namespace tao
             case type::NULL_:
                return true;
             case type::BOOL_:
-               return lhs.unsafe_bool() == rhs.unsafe_bool();
+               return lhs.unsafe_get_bool() == rhs.unsafe_get_bool();
             case type::INTEGER:
-               return lhs.unsafe_integer() == rhs.unsafe_integer();
+               return lhs.unsafe_get_integer() == rhs.unsafe_get_integer();
             case type::DOUBLE:
-               return lhs.unsafe_double() == rhs.unsafe_double();
+               return lhs.unsafe_get_double() == rhs.unsafe_get_double();
             case type::STRING:
-               return lhs.unsafe_string() == rhs.unsafe_string();
+               return lhs.unsafe_get_string() == rhs.unsafe_get_string();
             case type::ARRAY:
-               return lhs.unsafe_array() == rhs.unsafe_array();
+               return lhs.unsafe_get_array() == rhs.unsafe_get_array();
             case type::OBJECT:
-               return lhs.unsafe_object() == rhs.unsafe_object();
+               return lhs.unsafe_get_object() == rhs.unsafe_get_object();
             case type::POINTER:
                break;
          }
@@ -766,11 +791,11 @@ namespace tao
       bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
-            return *lhs.unsafe_pointer() < rhs;
+            return *lhs.unsafe_get_pointer() < rhs;
          }
          if ( lhs.type() != rhs.type() ) {
             if ( rhs.type() == type::POINTER ) {
-               return lhs < *rhs.unsafe_pointer();
+               return lhs < *rhs.unsafe_get_pointer();
             }
             return lhs.type() < rhs.type();
          }
@@ -778,17 +803,17 @@ namespace tao
             case type::NULL_:
                return false;
             case type::BOOL_:
-               return lhs.unsafe_bool() < rhs.unsafe_bool();
+               return lhs.unsafe_get_bool() < rhs.unsafe_get_bool();
             case type::INTEGER:
-               return lhs.unsafe_integer() < rhs.unsafe_integer();
+               return lhs.unsafe_get_integer() < rhs.unsafe_get_integer();
             case type::DOUBLE:
-               return lhs.unsafe_double() < rhs.unsafe_double();
+               return lhs.unsafe_get_double() < rhs.unsafe_get_double();
             case type::STRING:
-               return lhs.unsafe_string() < rhs.unsafe_string();
+               return lhs.unsafe_get_string() < rhs.unsafe_get_string();
             case type::ARRAY:
-               return lhs.unsafe_array() < rhs.unsafe_array();
+               return lhs.unsafe_get_array() < rhs.unsafe_get_array();
             case type::OBJECT:
-               return lhs.unsafe_object() < rhs.unsafe_object();
+               return lhs.unsafe_get_object() < rhs.unsafe_get_object();
             case type::POINTER:
                break;
          }

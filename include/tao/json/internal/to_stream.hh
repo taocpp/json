@@ -114,26 +114,26 @@ namespace tao
                   o << "null";
                   return;
                case type::BOOL_:
-                  o << ( v.unsafe_bool() ? "true" : "false" );
+                  o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
                case type::INTEGER:
-                  o << v.unsafe_integer();
+                  o << v.unsafe_get_integer();
                   return;
                case type::DOUBLE:
-                  // Assumes std::isfinite( v.unsafe_double() ).
-                  json_double_conversion::Dtostr( o, v.unsafe_double() );
+                  // Assumes std::isfinite( v.unsafe_get_double() ).
+                  json_double_conversion::Dtostr( o, v.unsafe_get_double() );
                   return;
                case type::STRING:
-                  internal::to_stream( o, v.unsafe_string() );
+                  internal::to_stream( o, v.unsafe_get_string() );
                   return;
                case type::ARRAY:
-                  internal::to_stream( o, v.unsafe_array() );
+                  internal::to_stream( o, v.unsafe_get_array() );
                   return;
                case type::OBJECT:
-                  internal::to_stream( o, v.unsafe_object() );
+                  internal::to_stream( o, v.unsafe_get_object() );
                   return;
                case type::POINTER:
-                  internal::to_stream( o, *v.unsafe_pointer() );
+                  internal::to_stream( o, *v.unsafe_get_pointer() );
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -147,26 +147,26 @@ namespace tao
                   o << "null";
                   return;
                case type::BOOL_:
-                  o << ( v.unsafe_bool() ? "true" : "false" );
+                  o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
                case type::INTEGER:
-                  o << v.unsafe_integer();
+                  o << v.unsafe_get_integer();
                   return;
                case type::DOUBLE:
-                  // Assumes std::isfinite( v.unsafe_double() ).
-                  json_double_conversion::Dtostr( o, v.unsafe_double() );
+                  // Assumes std::isfinite( v.unsafe_get_double() ).
+                  json_double_conversion::Dtostr( o, v.unsafe_get_double() );
                   return;
                case type::STRING:
-                  internal::to_stream( o, v.unsafe_string() );
+                  internal::to_stream( o, v.unsafe_get_string() );
                   return;
                case type::ARRAY:
-                  internal::to_stream( o, v.unsafe_array(), indent, current );
+                  internal::to_stream( o, v.unsafe_get_array(), indent, current );
                   return;
                case type::OBJECT:
-                  internal::to_stream( o, v.unsafe_object(), indent, current );
+                  internal::to_stream( o, v.unsafe_get_object(), indent, current );
                   return;
                case type::POINTER:
-                  internal::to_stream( o, *v.unsafe_pointer(), indent, current );
+                  internal::to_stream( o, *v.unsafe_get_pointer(), indent, current );
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
