@@ -63,28 +63,79 @@ namespace tao
          struct totally_ordered
             : operators::totally_ordered< T, U >
          {
-            friend bool operator==( const T& lhs, const U& rhs ) noexcept
+            friend bool operator==( const T & lhs, const U & rhs ) noexcept
             {
-               if( lhs.type() == type::POINTER ) {
-                  return *lhs.get_pointer() == rhs;
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p == rhs;
+                  }
+                  else {
+                     return false;
+                  }
                }
                return ( lhs.type() == E ) && ( lhs.T::template get< E >() == rhs );
             }
 
-            friend bool operator<( const T& lhs, const U& rhs ) noexcept
+            friend bool operator<( const T & lhs, const U & rhs ) noexcept
             {
-               if( lhs.type() == type::POINTER ) {
-                  return *lhs.get_pointer() < rhs;
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p < rhs;
+                  }
+                  else {
+                     return false;
+                  }
                }
                return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.T::template get< E >() < rhs ) );
             }
 
-            friend bool operator>( const T& lhs, const U& rhs ) noexcept
+            friend bool operator>( const T & lhs, const U & rhs ) noexcept
             {
-               if( lhs.type() == type::POINTER ) {
-                  return *lhs.get_pointer() > rhs;
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p > rhs;
+                  }
+                  else {
+                     return true;
+                  }
                }
                return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.T::template get< E >() > rhs ) );
+            }
+         };
+
+         template< typename T >
+         struct totally_ordered< T, std::nullptr_t, type::NULL_ >
+            : operators::totally_ordered< T, std::nullptr_t >
+         {
+            friend bool operator==( const T & lhs, std::nullptr_t ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p == nullptr;
+                  }
+                  else {
+                     return true;
+                  }
+               }
+               return lhs.type() == type::NULL_;
+            }
+
+            friend bool operator<( const T &, std::nullptr_t ) noexcept
+            {
+               return false;
+            }
+
+            friend bool operator>( const T & lhs, std::nullptr_t ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p > nullptr;
+                  }
+                  else {
+                     return false;
+                  }
+               }
+               return lhs.type() > type::NULL_;
             }
          };
       }
@@ -463,20 +514,19 @@ namespace tao
 
          const value_base & operator[] ( const std::size_t index ) const
          {
-            if( m_type == json::type::POINTER ) {
-              return (*unsafe_get_pointer())[ index ];
-            }
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
          const value_base & operator[] ( const std::string & key ) const
          {
-            if( m_type == json::type::POINTER ) {
-              return (*unsafe_get_pointer())[ key ];
-            }
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
+         }
+
+         const value_base & operator* () const
+         {
+            return * unsafe_get_pointer();
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
@@ -642,7 +692,7 @@ namespace tao
             unsafe_emplace_prepare();
             for( auto & e : l ) {
                const auto r = unsafe_emplace( std::move( e.e.first ), std::move( e.e.second ) );
-               if( !r.second ) {
+               if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
                }
             }
@@ -654,7 +704,7 @@ namespace tao
             unsafe_emplace_prepare();
             for( const auto & e : l ) {
                const auto r = unsafe_emplace( e.e.first, e.e.second );
-               if( !r.second ) {
+               if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
                }
             }
@@ -758,11 +808,21 @@ namespace tao
       bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
-            return *lhs.unsafe_get_pointer() == rhs;
+            if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               return * p == rhs;
+            }
+            else {
+               return nullptr == rhs;
+            }
          }
          if ( lhs.type() != rhs.type() ) {
             if ( rhs.type() == type::POINTER ) {
-               return lhs == *rhs.unsafe_get_pointer();
+               if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                  return lhs == * p;
+               }
+               else {
+                  return lhs == nullptr;
+               }
             }
             return false;
          }
@@ -791,11 +851,21 @@ namespace tao
       bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
-            return *lhs.unsafe_get_pointer() < rhs;
+            if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               return * p < rhs;
+            }
+            else {
+               return nullptr < rhs;
+            }
          }
          if ( lhs.type() != rhs.type() ) {
             if ( rhs.type() == type::POINTER ) {
-               return lhs < *rhs.unsafe_get_pointer();
+               if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                  return lhs < * p;
+               }
+               else {
+                  return lhs < nullptr;
+               }
             }
             return lhs.type() < rhs.type();
          }

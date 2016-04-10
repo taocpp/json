@@ -133,7 +133,12 @@ namespace tao
                   internal::to_stream( o, v.unsafe_get_object() );
                   return;
                case type::POINTER:
-                  internal::to_stream( o, *v.unsafe_get_pointer() );
+                  if ( const value_base< Traits > * p = v.unsafe_get_pointer() ) {
+                     internal::to_stream( o, * p );
+                  }
+                  else {
+                     o << "null";
+                  }
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -166,7 +171,12 @@ namespace tao
                   internal::to_stream( o, v.unsafe_get_object(), indent, current );
                   return;
                case type::POINTER:
-                  internal::to_stream( o, *v.unsafe_get_pointer(), indent, current );
+                  if ( const value_base< Traits > * p = v.unsafe_get_pointer() ) {
+                     internal::to_stream( o, * p, indent, current );
+                  }
+                  else {
+                     o << "null";
+                  }
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
