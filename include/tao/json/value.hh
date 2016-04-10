@@ -25,7 +25,7 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         const char* no_automatic_key_defined() noexcept
+         const char* no_default_key_defined() noexcept
          {
             static_assert( sizeof( T ) == 0, "no default key defined for T" );
             return nullptr;
@@ -39,7 +39,7 @@ namespace tao
       };
 
       template< typename T >
-      const char* default_key< T >::value = internal::no_automatic_key_defined< T >();
+      const char* default_key< T >::value = internal::no_default_key_defined< T >();
 
       namespace internal
       {
