@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include "test.hh"
@@ -13,7 +13,7 @@ namespace tao
 
          TEST_ASSERT( to_string( type::NULL_ ) == std::string( "null" ) );
          TEST_ASSERT( to_string( type::BOOL_ ) == std::string( "bool" ) );
-         TEST_ASSERT( to_string( type::INT64 ) == std::string( "int64" ) );
+         TEST_ASSERT( to_string( type::INTEGER ) == std::string( "integer" ) );
          TEST_ASSERT( to_string( type::DOUBLE ) == std::string( "double" ) );
 
          TEST_ASSERT( to_string( type::STRING ) == std::string( "string" ) );
@@ -24,7 +24,7 @@ namespace tao
 
          TEST_ASSERT( needs_destroy( type::NULL_ ) == false );
          TEST_ASSERT( needs_destroy( type::BOOL_ ) == false );
-         TEST_ASSERT( needs_destroy( type::INT64 ) == false );
+         TEST_ASSERT( needs_destroy( type::INTEGER ) == false );
          TEST_ASSERT( needs_destroy( type::DOUBLE ) == false );
 
          TEST_ASSERT( needs_destroy( type::STRING ) == true );

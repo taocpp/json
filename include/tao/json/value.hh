@@ -94,14 +94,14 @@ namespace tao
          : operators::totally_ordered< value_base< Traits > >,
            internal::totally_ordered< value_base< Traits >, std::nullptr_t, type::NULL_ >,
            internal::totally_ordered< value_base< Traits >, bool, type::BOOL_ >,
-           internal::totally_ordered< value_base< Traits >, signed char, type::INT64 >,
-           internal::totally_ordered< value_base< Traits >, unsigned char, type::INT64 >,
-           internal::totally_ordered< value_base< Traits >, signed short, type::INT64 >,
-           internal::totally_ordered< value_base< Traits >, unsigned short, type::INT64 >,
-           internal::totally_ordered< value_base< Traits >, signed int, type::INT64 >,
-           internal::totally_ordered< value_base< Traits >, unsigned int, type::INT64 >,
-           internal::totally_ordered< value_base< Traits >, signed long, type::INT64 >,
-           internal::totally_ordered< value_base< Traits >, signed long long, type::INT64 >,
+           internal::totally_ordered< value_base< Traits >, signed char, type::INTEGER >,
+           internal::totally_ordered< value_base< Traits >, unsigned char, type::INTEGER >,
+           internal::totally_ordered< value_base< Traits >, signed short, type::INTEGER >,
+           internal::totally_ordered< value_base< Traits >, unsigned short, type::INTEGER >,
+           internal::totally_ordered< value_base< Traits >, signed int, type::INTEGER >,
+           internal::totally_ordered< value_base< Traits >, unsigned int, type::INTEGER >,
+           internal::totally_ordered< value_base< Traits >, signed long, type::INTEGER >,
+           internal::totally_ordered< value_base< Traits >, signed long long, type::INTEGER >,
            internal::totally_ordered< value_base< Traits >, double, type::DOUBLE >,
            internal::totally_ordered< value_base< Traits >, float, type::DOUBLE >,
            internal::totally_ordered< value_base< Traits >, std::string, type::STRING >,
@@ -246,9 +246,9 @@ namespace tao
             return m_type == json::type::BOOL_;
          }
 
-         bool is_int64() const noexcept
+         bool is_integer() const noexcept
          {
-            return m_type == json::type::INT64;
+            return m_type == json::type::INTEGER;
          }
 
          bool is_double() const noexcept
@@ -258,7 +258,7 @@ namespace tao
 
          bool is_number() const noexcept
          {
-            return is_int64() || is_double();
+            return is_integer() || is_double();
          }
 
          bool is_string() const noexcept
@@ -293,10 +293,10 @@ namespace tao
             return unsafe_bool();
          }
 
-         int64_t get_int64() const
+         int64_t get_integer() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::INT64 );
-            return unsafe_int64();
+            CHECK_TYPE_ERROR( m_type, json::type::INTEGER );
+            return unsafe_integer();
          }
 
          double get_double() const
@@ -358,8 +358,8 @@ namespace tao
          T as_number() const
          {
             switch ( m_type ) {
-               case json::type::INT64:
-                  return T( unsafe_int64() );
+               case json::type::INTEGER:
+                  return T( unsafe_integer() );
                case json::type::DOUBLE:
                   return T( unsafe_double() );
                default:
@@ -381,7 +381,7 @@ namespace tao
             return m_union.b;
          }
 
-         int64_t unsafe_int64() const noexcept
+         int64_t unsafe_integer() const noexcept
          {
             return m_union.i;
          }
@@ -499,10 +499,10 @@ namespace tao
             m_type = json::type::BOOL_;
          }
 
-         void unsafe_assign_int64( const int64_t i ) noexcept
+         void unsafe_assign_integer( const int64_t i ) noexcept
          {
             m_union.i = i;
-            m_type = json::type::INT64;
+            m_type = json::type::INTEGER;
          }
 
          void unsafe_assign_double( const double d )
@@ -645,7 +645,7 @@ namespace tao
                case json::type::BOOL_:
                   m_union.b = r.m_union.b;
                   return;
-               case json::type::INT64:
+               case json::type::INTEGER:
                   m_union.i = r.m_union.i;
                   return;
                case json::type::DOUBLE:
@@ -675,7 +675,7 @@ namespace tao
                case json::type::BOOL_:
                   m_union.b = r.m_union.b;
                   return;
-               case json::type::INT64:
+               case json::type::INTEGER:
                   m_union.i = r.m_union.i;
                   return;
                case json::type::DOUBLE:
@@ -702,7 +702,7 @@ namespace tao
             switch ( m_type ) {
                case json::type::NULL_:
                case json::type::BOOL_:
-               case json::type::INT64:
+               case json::type::INTEGER:
                case json::type::DOUBLE:
                case json::type::POINTER:
                   return;
@@ -746,8 +746,8 @@ namespace tao
                return true;
             case type::BOOL_:
                return lhs.unsafe_bool() == rhs.unsafe_bool();
-            case type::INT64:
-               return lhs.unsafe_int64() == rhs.unsafe_int64();
+            case type::INTEGER:
+               return lhs.unsafe_integer() == rhs.unsafe_integer();
             case type::DOUBLE:
                return lhs.unsafe_double() == rhs.unsafe_double();
             case type::STRING:
@@ -779,8 +779,8 @@ namespace tao
                return false;
             case type::BOOL_:
                return lhs.unsafe_bool() < rhs.unsafe_bool();
-            case type::INT64:
-               return lhs.unsafe_int64() < rhs.unsafe_int64();
+            case type::INTEGER:
+               return lhs.unsafe_integer() < rhs.unsafe_integer();
             case type::DOUBLE:
                return lhs.unsafe_double() < rhs.unsafe_double();
             case type::STRING:
@@ -832,7 +832,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const signed char i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 
@@ -842,7 +842,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const unsigned char i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 
@@ -852,7 +852,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const signed short i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 
@@ -862,7 +862,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const unsigned short i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 
@@ -872,7 +872,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const signed int i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 
@@ -882,7 +882,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const unsigned int i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 
@@ -892,7 +892,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const signed long i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 
@@ -902,7 +902,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( value_base< Traits > & v, const signed long long i ) noexcept
          {
-            v.unsafe_assign_int64( i );
+            v.unsafe_assign_integer( i );
          }
       };
 

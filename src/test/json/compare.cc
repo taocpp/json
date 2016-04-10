@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include "test.hh"
@@ -147,7 +147,7 @@ namespace tao
 
          TEST_ASSERT( a.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::BOOL_ );
-         TEST_ASSERT( c.type() == type::INT64 );
+         TEST_ASSERT( c.type() == type::INTEGER );
          TEST_ASSERT( d.type() == type::DOUBLE );
          TEST_ASSERT( e.type() == type::STRING );
          TEST_ASSERT( f.type() == type::ARRAY );

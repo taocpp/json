@@ -12,7 +12,7 @@ namespace tao
       {
          NULL_,
          BOOL_,
-         INT64,
+         INTEGER,
          DOUBLE,
          STRING,
          ARRAY,
@@ -39,8 +39,8 @@ namespace tao
                return "null";
             case type::BOOL_:
                return "bool";
-            case type::INT64:
-               return "int64";
+            case type::INTEGER:
+               return "integer";
             case type::DOUBLE:
                return "double";
             case type::STRING:

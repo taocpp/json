@@ -34,7 +34,7 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::INT64 >
+         template<> struct get_by_enum< type::INTEGER >
          {
             template< typename V >
             static int64_t get( const value_union< V > & u )

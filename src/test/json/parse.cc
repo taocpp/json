@@ -77,7 +77,7 @@ namespace tao
          TEST_ASSERT( from_string( "true" ) == value( true ) );
          TEST_ASSERT( from_string( "false" ) == value( false ) );
 
-         // TODO: test_int64()
+         // TODO: test_integer()
          test_array();
          test_object();
 

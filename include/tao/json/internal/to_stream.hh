@@ -116,8 +116,8 @@ namespace tao
                case type::BOOL_:
                   o << ( v.unsafe_bool() ? "true" : "false" );
                   return;
-               case type::INT64:
-                  o << v.unsafe_int64();
+               case type::INTEGER:
+                  o << v.unsafe_integer();
                   return;
                case type::DOUBLE:
                   // Assumes std::isfinite( v.unsafe_double() ).
@@ -149,8 +149,8 @@ namespace tao
                case type::BOOL_:
                   o << ( v.unsafe_bool() ? "true" : "false" );
                   return;
-               case type::INT64:
-                  o << v.unsafe_int64();
+               case type::INTEGER:
+                  o << v.unsafe_integer();
                   return;
                case type::DOUBLE:
                   // Assumes std::isfinite( v.unsafe_double() ).
