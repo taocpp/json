@@ -500,28 +500,48 @@ namespace tao
          // the containers for arrays and objects and throw
          // an exception when the type of the value is wrong.
 
-         value_base & operator[] ( const std::size_t index )
+         value_base & at( const std::size_t index )
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
+         }
+
+         value_base & at( const std::string & key )
+         {
+            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            return m_union.o.at( key );
+         }
+
+         const value_base & at( const std::size_t index ) const
+         {
+            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            return m_union.a.at( index );
+         }
+
+         const value_base & at( const std::string & key ) const
+         {
+            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            return m_union.o.at( key );
+         }
+
+         value_base & operator[] ( const std::size_t index )
+         {
+            return m_union.a[ index ];
          }
 
          value_base & operator[] ( const std::string & key )
          {
-            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            return m_union.o.at( key );
+            return m_union.o[ key ];
          }
 
          const value_base & operator[] ( const std::size_t index ) const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
-            return m_union.a.at( index );
+            return m_union.a[ index ];
          }
 
          const value_base & operator[] ( const std::string & key ) const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            return m_union.o.at( key );
+            return m_union.o[ key ];
          }
 
          const value_base & operator* () const
