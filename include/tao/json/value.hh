@@ -541,7 +541,7 @@ namespace tao
 
          const value_base & operator[] ( const std::string & key ) const
          {
-            return m_union.o[ key ];
+           return m_union.o.at( key );
          }
 
          const value_base & operator* () const

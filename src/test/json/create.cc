@@ -36,8 +36,8 @@ namespace tao
          TEST_ASSERT( u.type() == type::NULL_ );
          TEST_ASSERT( u == v );
 
-         TEST_THROWS( v[ 0 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       void test_bool( const bool b )
@@ -67,8 +67,8 @@ namespace tao
          TEST_ASSERT( value( b ) == v );
          TEST_ASSERT( value( ! b ) != v );
 
-         TEST_THROWS( v[ 0 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       template< typename T >
@@ -95,8 +95,8 @@ namespace tao
          TEST_ASSERT( v.get_integer() == t );
          TEST_ASSERT( v.unsafe_get_integer() == t );
 
-         TEST_THROWS( v[ 0 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       template< typename T >
@@ -131,8 +131,8 @@ namespace tao
          TEST_ASSERT( v.get_double() == d );
          TEST_ASSERT( v.unsafe_get_double() == d );
 
-         TEST_THROWS( v[ 0 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       template< unsigned N >
@@ -166,8 +166,8 @@ namespace tao
          TEST_ASSERT( v.get_string() == value( std::string( s, N - 1 ) ).get_string() );
          TEST_ASSERT( v.get_string() == value( std::string( s + 0 ) ).get_string() );
 
-         TEST_THROWS( v[ 0 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       void test_empty_array( const value v )
@@ -191,8 +191,8 @@ namespace tao
          TEST_ASSERT( v.get_array().empty() );
          TEST_ASSERT( v.unsafe_get_array().empty() );
 
-         TEST_THROWS( v[ 0 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       void test_empty_object( const value v )
@@ -216,8 +216,8 @@ namespace tao
          TEST_ASSERT( v.get_object().empty() );
          TEST_ASSERT( v.unsafe_get_object().empty() );
 
-         TEST_THROWS( v[ 0 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       void test_array_1234()
@@ -243,8 +243,8 @@ namespace tao
          TEST_ASSERT( v[ 2 ].get_integer() == 3 );
          TEST_ASSERT( v[ 3 ].get_integer() == 4 );
 
-         TEST_THROWS( v[ 4 ] );
-         TEST_THROWS( v[ "foo" ] );
+         TEST_THROWS( v.at( 4 ) );
+         TEST_THROWS( v.at( "foo" ) );
       }
 
       void test_object_1234()
