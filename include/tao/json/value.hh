@@ -498,9 +498,16 @@ namespace tao
 
          // The following convenience functions operate on
          // the containers for arrays and objects and throw
-         // an exception when the type of the value is wrong.
+         // an exception when the type of the value is wrong
+         // or the index/key is out of range/not found.
 
          value_base & at( const std::size_t index )
+         {
+            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            return m_union.a.at( index );
+         }
+
+         const value_base & at( const std::size_t index ) const
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
@@ -512,39 +519,42 @@ namespace tao
             return m_union.o.at( key );
          }
 
-         const value_base & at( const std::size_t index ) const
-         {
-            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
-            return m_union.a.at( index );
-         }
-
          const value_base & at( const std::string & key ) const
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
          }
 
-         value_base & operator[] ( const std::size_t index )
+         // The following convenience functions operate on
+         // the containers for arrays and result in undefined
+         // behaviour when the type of the value is wrong or
+         // the index is out of range.
+
+         value_base & operator[] ( const std::size_t index ) noexcept
          {
             return m_union.a[ index ];
          }
+
+         const value_base & operator[] ( const std::size_t index ) const noexcept
+         {
+            return m_union.a[ index ];
+         }
+
+         // The following convenience functions operate on
+         // the containers for objects and insert a default-
+         // constructed value when the key is not found.
 
          value_base & operator[] ( const std::string & key )
          {
             return m_union.o[ key ];
          }
 
-         const value_base & operator[] ( const std::size_t index ) const
+         value_base & operator[] ( std::string && key )
          {
-            return m_union.a[ index ];
+            return m_union.o[ std::move( key ) ];
          }
 
-         const value_base & operator[] ( const std::string & key ) const
-         {
-           return m_union.o.at( key );
-         }
-
-         const value_base & operator* () const
+         const value_base & operator* () const noexcept
          {
             return * unsafe_get_pointer();
          }

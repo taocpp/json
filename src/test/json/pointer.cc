@@ -15,7 +15,7 @@ namespace tao
          const value v2 { { "bar", &v } };  // Store a non-owning const pointer to v.
          TEST_ASSERT( to_string( v ) == "{\"foo\":1}" );
          TEST_ASSERT( to_string( v2 ) == "{\"bar\":{\"foo\":1}}" );
-         TEST_ASSERT( to_string( v2[ "bar" ].type() ) == std::string( "pointer" ) );
+         TEST_ASSERT( to_string( v2.at( "bar" ).type() ) == std::string( "pointer" ) );
       }
 
    } // json
