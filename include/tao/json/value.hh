@@ -44,6 +44,15 @@ namespace tao
       namespace internal
       {
          template< typename T >
+         struct single
+         {
+            mutable T e;
+
+            template< typename U >
+            single( U && v ) : e( std::forward< U >( v ) ) {}
+         };
+
+         template< typename T >
          struct pair
          {
             mutable std::pair< std::string, T > e;
@@ -212,7 +221,7 @@ namespace tao
          static value_base array( Ts && ... ts )
          {
             value_base v;
-            v.unsafe_emplace_array( std::initializer_list< value_base >( { std::forward< Ts >( ts )... } ) );
+            v.append( std::initializer_list< internal::single< value_base > >( { std::forward< Ts >( ts )... } ) );
             return v;
          }
 
@@ -715,6 +724,26 @@ namespace tao
          {
             m_union.p = p;
             m_type = json::type::POINTER;
+         }
+
+         void append( std::initializer_list< internal::single< value_base > > && l )
+         {
+            unsafe_emplace_back_prepare();
+            auto & v = unsafe_get_array();
+            v.reserve( v.size() + l.size() );
+            for( auto & e : l ) {
+               unsafe_emplace_back( std::move( e.e ) );
+            }
+         }
+
+         void append( const std::initializer_list< internal::single< value_base > > & l )
+         {
+            unsafe_emplace_back_prepare();
+            auto & v = unsafe_get_array();
+            v.reserve( v.size() + l.size() );
+            for( const auto & e : l ) {
+               unsafe_emplace_back( e.e );
+            }
          }
 
          value_base & operator+= ( std::initializer_list< internal::pair< value_base > > && l )
