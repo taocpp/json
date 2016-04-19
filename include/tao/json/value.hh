@@ -770,6 +770,25 @@ namespace tao
             return *this;
          }
 
+         value_base & operator-= ( const std::string & k )
+         {
+            if ( get_object().erase( k ) == 0 ) {
+               throw std::runtime_error( "key not found: " + k );
+            }
+            return *this;
+         }
+
+         value_base & operator-= ( std::initializer_list< std::string > l )
+         {
+            auto & v = get_object();
+            for ( const auto & k : l ) {
+               if ( v.erase( k ) == 0 ) {
+                  throw std::runtime_error( "key not found: " + k );
+               }
+            }
+            return *this;
+         }
+
          bool empty() const noexcept
          {
             switch ( m_type ) {
