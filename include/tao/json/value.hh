@@ -1149,6 +1149,15 @@ namespace tao
          }
       };
 
+      template< template< typename ... > class Traits >
+      struct traits< value_base< Traits > * >
+      {
+         static void assign( value_base< Traits > & v, const value_base< Traits > * p ) noexcept
+         {
+            v.unsafe_assign_pointer( p );
+         }
+      };
+
       using value = value_base< traits >;
 
    } // json
