@@ -13,6 +13,8 @@ namespace tao
       {
          const value v;
 
+         TEST_ASSERT( v.empty() );
+
          TEST_ASSERT( v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
          TEST_ASSERT( ! v.is_integer() );
@@ -43,6 +45,8 @@ namespace tao
       void test_bool( const bool b )
       {
          const value v( b );
+
+         TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( v.is_bool() );
@@ -75,6 +79,8 @@ namespace tao
       void test_integer( const T t )
       {
          const value v( t );
+
+         TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
@@ -112,6 +118,8 @@ namespace tao
       {
          const value v( d );
 
+         TEST_ASSERT( ! v.empty() );
+
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
          TEST_ASSERT( ! v.is_integer() );
@@ -139,6 +147,8 @@ namespace tao
       void test_string( const char ( & s )[ N ] )
       {
          const value v( s );
+
+         TEST_ASSERT( v.empty() == ( N == 1 ) );
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
@@ -172,6 +182,8 @@ namespace tao
 
       void test_empty_array( const value v )
       {
+         TEST_ASSERT( v.empty() );
+
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
          TEST_ASSERT( ! v.is_integer() );
@@ -197,6 +209,8 @@ namespace tao
 
       void test_empty_object( const value v )
       {
+         TEST_ASSERT( v.empty() );
+
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
          TEST_ASSERT( ! v.is_integer() );
@@ -224,6 +238,8 @@ namespace tao
       {
          const value v = value::array( 1, 2, 3, 4 );
 
+         TEST_ASSERT( ! v.empty() );
+
          TEST_ASSERT( v.is_array() );
          TEST_ASSERT( ! v.is_number() );
          TEST_ASSERT( v.type() == type::ARRAY );
@@ -250,6 +266,8 @@ namespace tao
       void test_object_1234()
       {
         const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( true, false, 0 ) } } } };
+
+         TEST_ASSERT( ! v.empty() );
 
         TEST_ASSERT( v.is_object() );
         TEST_ASSERT( ! v.is_number() );
@@ -365,7 +383,16 @@ namespace tao
             value b( a );
             TEST_ASSERT( a == b );
             TEST_ASSERT( a.get_object() == b.get_object() );
-            TEST_THROWS(( a += { { "foo", value( 5 ) } } ));
+            a += { { "bar", 42 } };
+            TEST_ASSERT( a[ "bar" ] == 42 );
+            TEST_THROWS( a.at( "baz" ) );
+            a -= "bar";
+            TEST_THROWS( a.at( "bar" ) );
+            a += { { "bar", 42 } };
+            a -= { "bar", "foo" };
+            a += { { "foo", 5 } };
+            TEST_THROWS(( a += { { "foo", 5 } } ));
+            TEST_THROWS( a -= "bar" );
          } {
             const value a( "foo" );
             const value b( a );
