@@ -782,7 +782,7 @@ namespace tao
                case json::type::OBJECT:
                   return m_union.o.empty();
                case json::type::POINTER:
-                  return m_union.p;
+                  return !m_union.p;
                default:
                   return false;
             }
