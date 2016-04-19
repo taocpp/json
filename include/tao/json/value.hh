@@ -770,6 +770,24 @@ namespace tao
             return *this;
          }
 
+         bool empty() const noexcept
+         {
+            switch ( m_type ) {
+               case json::type::NULL_:
+                  return true;
+               case json::type::STRING:
+                  return m_union.s.empty();
+               case json::type::ARRAY:
+                  return m_union.a.empty();
+               case json::type::OBJECT:
+                  return m_union.o.empty();
+               case json::type::POINTER:
+                  return m_union.p;
+               default:
+                  return false;
+            }
+         }
+
       private:
          void seize( value_base && r ) noexcept
          {
