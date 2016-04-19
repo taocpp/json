@@ -775,6 +775,10 @@ namespace tao
             switch ( m_type ) {
                case json::type::NULL_:
                   return true;
+               case json::type::BOOL_:
+               case json::type::INTEGER:
+               case json::type::DOUBLE:
+                  return false;
                case json::type::STRING:
                   return m_union.s.empty();
                case json::type::ARRAY:
@@ -783,9 +787,8 @@ namespace tao
                   return m_union.o.empty();
                case json::type::POINTER:
                   return !m_union.p;
-               default:
-                  return false;
             }
+            assert( false );  // LCOV_EXCL_LINE
          }
 
       private:
