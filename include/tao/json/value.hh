@@ -922,7 +922,7 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() == rhs.unsafe_get_object();
             case type::POINTER:
-               break;
+               break;  // LCOV_EXCL_LINE
          }
          assert( false );  // LCOV_EXCL_LINE
       }
@@ -965,7 +965,7 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() < rhs.unsafe_get_object();
             case type::POINTER:
-               break;
+               break;  // LCOV_EXCL_LINE
          }
          assert( false );  // LCOV_EXCL_LINE
       }
