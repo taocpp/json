@@ -29,7 +29,7 @@ namespace tao
          return std::move( result.result );
       }
 
-      value parse_file( const std::string & filename )
+      inline value parse_file( const std::string & filename )
       {
          internal::result_state< traits > result;
          tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< traits >::template control >( result );
