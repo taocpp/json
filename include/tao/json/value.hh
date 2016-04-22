@@ -827,7 +827,7 @@ namespace tao
                   return;
                case json::type::OBJECT:
                   for( auto & e : m_union.o ) {
-                     e.flatten();
+                     e.second.flatten();
                   }
                   return;
                case json::type::POINTER:
