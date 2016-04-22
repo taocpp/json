@@ -810,6 +810,39 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
+         // removes all POINTER nodes, recursively, by copying their pointed-to content
+         void flatten()
+         {
+            switch ( m_type ) {
+               case json::type::NULL_:
+               case json::type::BOOL_:
+               case json::type::INTEGER:
+               case json::type::DOUBLE:
+               case json::type::STRING:
+                  return;
+               case json::type::ARRAY:
+                  for( auto & e : m_union.a ) {
+                     e.flatten();
+                  }
+                  return;
+               case json::type::OBJECT:
+                  for( auto & e : m_union.o ) {
+                     e.flatten();
+                  }
+                  return;
+               case json::type::POINTER:
+                  if ( m_union.p ) {
+                     * this = * m_union.p;
+                     flatten();
+                  }
+                  else {
+                     * this = nullptr;
+                  }
+                  return;
+            }
+            assert( false );  // LCOV_EXCL_LINE
+         }
+
       private:
          void seize( value_base && r ) noexcept
          {
