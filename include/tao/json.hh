@@ -10,6 +10,7 @@
 #include "json/to_string.hh"
 #include "json/from_string.hh"
 #include "json/parse_file.hh"
+#include "json/flatten.hh"
 
 // Include this if required to enable
 // C++11 user defined JSON literals that

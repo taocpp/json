@@ -20,7 +20,7 @@ namespace tao
          TEST_ASSERT( v2[ "baz" ][ 1 ].type() == type::POINTER );
          TEST_ASSERT( v3[ "bar" ].type() == type::OBJECT );
          TEST_ASSERT( v3[ "baz" ][ 1 ].type() == type::OBJECT );
-         v2.flatten();
+         flatten( v2 );
          TEST_ASSERT( v2 == v3 );
          TEST_ASSERT( v2[ "bar" ].type() == type::OBJECT );
          TEST_ASSERT( v2[ "baz" ][ 1 ].type() == type::OBJECT );
