@@ -92,7 +92,7 @@ namespace tao
                      return * p < rhs;
                   }
                   else {
-                     return false;
+                     return true;
                   }
                }
                return ( lhs.type() < E ) || ( ( lhs.type() == E ) && ( lhs.T::template get< E >() < rhs ) );
@@ -105,7 +105,7 @@ namespace tao
                      return * p > rhs;
                   }
                   else {
-                     return true;
+                     return false;
                   }
                }
                return ( lhs.type() > E ) || ( ( lhs.type() == E ) && ( lhs.T::template get< E >() > rhs ) );
@@ -916,7 +916,7 @@ namespace tao
          }
          if ( lhs.type() != rhs.type() ) {
             if ( rhs.type() == type::POINTER ) {
-               if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( const auto * p = rhs.unsafe_get_pointer() ) {
                   return lhs == * p;
                }
                else {
@@ -959,7 +959,7 @@ namespace tao
          }
          if ( lhs.type() != rhs.type() ) {
             if ( rhs.type() == type::POINTER ) {
-               if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( const auto * p = rhs.unsafe_get_pointer() ) {
                   return lhs < * p;
                }
                else {
