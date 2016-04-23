@@ -19,9 +19,9 @@ namespace tao
          template<> struct get_by_enum< type::NULL_ >
          {
             template< typename V >
-            static std::nullptr_t get( const value_union< V > & )
+            static null_t get( const value_union< V > & )
             {
-               return nullptr;
+               return null;
             }
          };
 

@@ -14,7 +14,7 @@ namespace tao
          value v { { "foo", 1 } };
          const value cv { { "fuu", 2 } };
 
-         const value v2 { { "bar", &v }, { "baz", static_cast< value* >( nullptr ) } };  // Store a non-owning const pointer to v.
+         const value v2 { { "bar", &v }, { "baz", nullptr } };  // Store a non-owning const pointer to v.
          const value cv2 { { "baz", &cv } };  // Store a non-owning const pointer to cv.
 
          TEST_ASSERT( to_string( v ) == "{\"foo\":1}" );

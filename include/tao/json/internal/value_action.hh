@@ -26,7 +26,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & result )
             {
-               result.result.unsafe_assign( nullptr );
+               result.result.unsafe_assign( null );
             }
          };
 

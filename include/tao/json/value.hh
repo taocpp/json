@@ -113,14 +113,14 @@ namespace tao
          };
 
          template< typename T >
-         struct totally_ordered< T, std::nullptr_t, type::NULL_ >
-            : operators::totally_ordered< T, std::nullptr_t >
+         struct totally_ordered< T, null_t, type::NULL_ >
+            : operators::totally_ordered< T, null_t >
          {
-            friend bool operator==( const T & lhs, std::nullptr_t ) noexcept
+            friend bool operator==( const T & lhs, null_t ) noexcept
             {
                if ( lhs.type() == type::POINTER ) {
                   if ( const auto * p = lhs.unsafe_get_pointer() ) {
-                     return * p == nullptr;
+                     return * p == null;
                   }
                   else {
                      return true;
@@ -129,16 +129,16 @@ namespace tao
                return lhs.type() == type::NULL_;
             }
 
-            friend bool operator<( const T &, std::nullptr_t ) noexcept
+            friend bool operator<( const T &, null_t ) noexcept
             {
                return false;
             }
 
-            friend bool operator>( const T & lhs, std::nullptr_t ) noexcept
+            friend bool operator>( const T & lhs, null_t ) noexcept
             {
                if ( lhs.type() == type::POINTER ) {
                   if ( const auto * p = lhs.unsafe_get_pointer() ) {
-                     return * p > nullptr;
+                     return * p > null;
                   }
                   else {
                      return false;
@@ -152,7 +152,7 @@ namespace tao
       template< template< typename ... > class Traits >
       class value_base
          : operators::totally_ordered< value_base< Traits > >,
-           internal::totally_ordered< value_base< Traits >, std::nullptr_t, type::NULL_ >,
+           internal::totally_ordered< value_base< Traits >, null_t, type::NULL_ >,
            internal::totally_ordered< value_base< Traits >, bool, type::BOOL_ >,
            internal::totally_ordered< value_base< Traits >, signed char, type::INTEGER >,
            internal::totally_ordered< value_base< Traits >, unsigned char, type::INTEGER >,
@@ -341,7 +341,7 @@ namespace tao
             return m_type == json::type::POINTER;
          }
 
-         std::nullptr_t get_null() const
+         null_t get_null() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
             return unsafe_get_null();
@@ -438,9 +438,9 @@ namespace tao
          // called when the type of the value is not the one
          // corresponding to the type of the accessor!
 
-         std::nullptr_t unsafe_get_null() const noexcept
+         null_t unsafe_get_null() const noexcept
          {
-            return nullptr;
+            return null;
          }
 
          bool unsafe_get_bool() const noexcept
@@ -911,7 +911,7 @@ namespace tao
                return * p == rhs;
             }
             else {
-               return nullptr == rhs;
+               return null == rhs;
             }
          }
          if ( lhs.type() != rhs.type() ) {
@@ -920,7 +920,7 @@ namespace tao
                   return lhs == * p;
                }
                else {
-                  return lhs == nullptr;
+                  return lhs == null;
                }
             }
             return false;
@@ -954,7 +954,7 @@ namespace tao
                return * p < rhs;
             }
             else {
-               return nullptr < rhs;
+               return null < rhs;
             }
          }
          if ( lhs.type() != rhs.type() ) {
@@ -963,7 +963,7 @@ namespace tao
                   return lhs < * p;
                }
                else {
-                  return lhs < nullptr;
+                  return lhs < null;
                }
             }
             return lhs.type() < rhs.type();
@@ -1001,10 +1001,10 @@ namespace tao
       };
 
       template<>
-      struct traits< std::nullptr_t >
+      struct traits< null_t >
       {
          template< template< typename ... > class Traits >
-         static void assign( value_base< Traits > & v, std::nullptr_t ) noexcept
+         static void assign( value_base< Traits > & v, null_t ) noexcept
          {
             v.unsafe_assign_null();
          }
@@ -1195,6 +1195,16 @@ namespace tao
          static void assign( value_base< Traits > & v, const value_base< Traits > * p ) noexcept
          {
             v.unsafe_assign_pointer( p );
+         }
+      };
+
+      template<>
+      struct traits< std::nullptr_t >
+      {
+         template< template< typename ... > class Traits >
+         static void assign( value_base< Traits > & v, std::nullptr_t ) noexcept
+         {
+            v.unsafe_assign_pointer( nullptr );
          }
       };
 

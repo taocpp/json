@@ -33,7 +33,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::NULL_ );
 
-         const value u( nullptr );
+         const value u( null );
 
          TEST_ASSERT( u.type() == type::NULL_ );
          TEST_ASSERT( u == v );
@@ -307,7 +307,7 @@ namespace tao
          TEST_THROWS( v = b );
          TEST_THROWS( v = c );
 
-         v = nullptr;
+         v = null;
 
          TEST_ASSERT( v.type() == type::NULL_ );
 

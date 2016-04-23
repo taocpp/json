@@ -29,7 +29,7 @@ namespace tao
 
       void unit_test()
       {
-         test_simple( value( nullptr ), "null" );
+         test_simple( value( null ), "null" );
          test_simple( value( true ), "true" );
          test_simple( value( false ), "false" );
          test_simple( value( 42 ), "42" );
@@ -44,7 +44,7 @@ namespace tao
          test_simple( { { "foo", 42 } }, "{\"foo\":42}" );
          test_simple( { { "foo", 42 }, { "bar", 43 } }, "{\"bar\":43,\"foo\":42}" );
 
-         test_pretty( value( nullptr ), "null" );
+         test_pretty( value( null ), "null" );
          test_pretty( value( true ), "true" );
          test_pretty( value( false ), "false" );
          test_pretty( value( 42 ), "42" );

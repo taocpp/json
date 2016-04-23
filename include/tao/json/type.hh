@@ -55,9 +55,11 @@ namespace tao
          return "unknown";
       }
 
+      struct null_t {};
       struct empty_array_t {};
       struct empty_object_t {};
 
+      static constexpr null_t null = null_t();
       static constexpr empty_array_t empty_array = empty_array_t();
       static constexpr empty_object_t empty_object = empty_object_t();
 

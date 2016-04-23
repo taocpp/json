@@ -26,7 +26,7 @@ namespace tao
          const auto & a = v.get_array();
 
          TEST_ASSERT( a.size() == 8 );
-         TEST_ASSERT( a[ 0 ] == value( nullptr ) );
+         TEST_ASSERT( a[ 0 ] == value( null ) );
          TEST_ASSERT( a[ 1 ] == value( true ) );
          TEST_ASSERT( a[ 2 ] == value( false ) );
          TEST_ASSERT( a[ 3 ] == value( 42 ) );
@@ -52,7 +52,7 @@ namespace tao
          const auto & o = v.get_object();
 
          TEST_ASSERT( o.size() == 8 );
-         TEST_ASSERT( o.at( "a" ) == value( nullptr ) );
+         TEST_ASSERT( o.at( "a" ) == value( null ) );
          TEST_ASSERT( o.at( "b" ) == value( true ) );
          TEST_ASSERT( o.at( "c" ) == value( false ) );
          TEST_ASSERT( o.at( "d" ) == value( 42 ) );
@@ -71,7 +71,7 @@ namespace tao
 
       void unit_test()
       {
-         TEST_ASSERT( from_string( "null" ) == value( nullptr ) );
+         TEST_ASSERT( from_string( "null" ) == value( null ) );
          TEST_ASSERT( from_string( "42" ) == value( 42 ) );
          TEST_ASSERT( from_string( "42.0" ) == value( 42.0 ) );
          TEST_ASSERT( from_string( "true" ) == value( true ) );

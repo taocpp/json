@@ -37,7 +37,7 @@ namespace tao
                   flatten( v );
                }
                else {
-                  v = nullptr;
+                  v = null;
                }
                return;
          }

@@ -40,7 +40,7 @@ namespace tao
       void test_null()
       {
          const value a;
-         const value b( nullptr );
+         const value b( null );
 
          TEST_ASSERT( a.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::NULL_ );
