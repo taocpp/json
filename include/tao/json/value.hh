@@ -112,6 +112,7 @@ namespace tao
             }
          };
 
+
          template< typename T >
          struct totally_ordered< T, null_t, type::NULL_ >
             : operators::totally_ordered< T, null_t >
@@ -147,6 +148,130 @@ namespace tao
                return lhs.type() > type::NULL_;
             }
          };
+
+         template< typename T, typename U >
+         struct totally_ordered< T, U, type::INTEGER >
+            : operators::totally_ordered< T, U >
+         {
+            friend bool operator==( const T & lhs, const U & rhs ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p == rhs;
+                  }
+                  else {
+                     return false;
+                  }
+               }
+               if ( lhs.type() == type::INTEGER ) {
+                  return lhs.unsafe_get_integer() == rhs;
+               }
+               if ( lhs.type() == type::DOUBLE ) {
+                  return lhs.unsafe_get_double() == rhs;
+               }
+               return false;
+            }
+
+            friend bool operator<( const T & lhs, const U & rhs ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p < rhs;
+                  }
+                  else {
+                     return true;
+                  }
+               }
+               if ( lhs.type() == type::INTEGER ) {
+                  return lhs.unsafe_get_integer() < rhs;
+               }
+               if ( lhs.type() == type::DOUBLE ) {
+                  return lhs.unsafe_get_double() < rhs;
+               }
+               return lhs.type() < type::INTEGER;
+            }
+
+            friend bool operator>( const T & lhs, const U & rhs ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p > rhs;
+                  }
+                  else {
+                     return false;
+                  }
+               }
+               if ( lhs.type() == type::INTEGER ) {
+                  return lhs.unsafe_get_integer() > rhs;
+               }
+               if ( lhs.type() == type::DOUBLE ) {
+                  return lhs.unsafe_get_double() > rhs;
+               }
+               return lhs.type() > type::INTEGER;
+            }
+         };
+
+         template< typename T, typename U >
+         struct totally_ordered< T, U, type::DOUBLE >
+            : operators::totally_ordered< T, U >
+         {
+            friend bool operator==( const T & lhs, const U & rhs ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p == rhs;
+                  }
+                  else {
+                     return false;
+                  }
+               }
+               if ( lhs.type() == type::INTEGER ) {
+                  return lhs.unsafe_get_integer() == rhs;
+               }
+               if ( lhs.type() == type::DOUBLE ) {
+                  return lhs.unsafe_get_double() == rhs;
+               }
+               return false;
+            }
+
+            friend bool operator<( const T & lhs, const U & rhs ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p < rhs;
+                  }
+                  else {
+                     return true;
+                  }
+               }
+               if ( lhs.type() == type::INTEGER ) {
+                  return lhs.unsafe_get_integer() < rhs;
+               }
+               if ( lhs.type() == type::DOUBLE ) {
+                  return lhs.unsafe_get_double() < rhs;
+               }
+               return lhs.type() < type::DOUBLE;
+            }
+
+            friend bool operator>( const T & lhs, const U & rhs ) noexcept
+            {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p > rhs;
+                  }
+                  else {
+                     return false;
+                  }
+               }
+               if ( lhs.type() == type::INTEGER ) {
+                  return lhs.unsafe_get_integer() > rhs;
+               }
+               if ( lhs.type() == type::DOUBLE ) {
+                  return lhs.unsafe_get_double() > rhs;
+               }
+               return lhs.type() > type::DOUBLE;
+            }
+         };
       }
 
       template< template< typename ... > class Traits >
@@ -162,8 +287,8 @@ namespace tao
            internal::totally_ordered< value_base< Traits >, unsigned int, type::INTEGER >,
            internal::totally_ordered< value_base< Traits >, signed long, type::INTEGER >,
            internal::totally_ordered< value_base< Traits >, signed long long, type::INTEGER >,
-           internal::totally_ordered< value_base< Traits >, double, type::DOUBLE >,
            internal::totally_ordered< value_base< Traits >, float, type::DOUBLE >,
+           internal::totally_ordered< value_base< Traits >, double, type::DOUBLE >,
            internal::totally_ordered< value_base< Traits >, std::string, type::STRING >,
            internal::totally_ordered< value_base< Traits >, const char*, type::STRING >,
            internal::totally_ordered< value_base< Traits >, std::vector< value_base< Traits > >, type::ARRAY >,
@@ -923,6 +1048,12 @@ namespace tao
                   return lhs == null;
                }
             }
+            if ( lhs.type() == type::INTEGER && rhs.type() == type::DOUBLE ) {
+               return lhs.unsafe_get_integer() == rhs.unsafe_get_double();
+            }
+            if ( lhs.type() == type::DOUBLE && rhs.type() == type::INTEGER ) {
+               return lhs.unsafe_get_double() == rhs.unsafe_get_integer();
+            }
             return false;
          }
          switch ( lhs.type() ) {
@@ -965,6 +1096,12 @@ namespace tao
                else {
                   return lhs < null;
                }
+            }
+            if ( lhs.type() == type::INTEGER && rhs.type() == type::DOUBLE ) {
+               return lhs.unsafe_get_integer() < rhs.unsafe_get_double();
+            }
+            if ( lhs.type() == type::DOUBLE && rhs.type() == type::INTEGER ) {
+               return lhs.unsafe_get_double() < rhs.unsafe_get_integer();
             }
             return lhs.type() < rhs.type();
          }
