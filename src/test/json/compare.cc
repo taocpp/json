@@ -147,7 +147,7 @@ namespace tao
 
          TEST_ASSERT( a.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::BOOL_ );
-         TEST_ASSERT( c.type() == type::INTEGER );
+         TEST_ASSERT( c.type() == type::SIGNED_INTEGER );
          TEST_ASSERT( d.type() == type::DOUBLE );
          TEST_ASSERT( e.type() == type::STRING );
          TEST_ASSERT( f.type() == type::ARRAY );

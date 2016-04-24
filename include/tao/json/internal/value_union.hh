@@ -28,6 +28,7 @@ namespace tao
 
             bool b;
             int64_t i;
+            uint64_t u;
             double d;
 
             std::string s;

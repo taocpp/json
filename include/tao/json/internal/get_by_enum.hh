@@ -34,12 +34,21 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::INTEGER >
+         template<> struct get_by_enum< type::SIGNED_INTEGER >
          {
             template< typename V >
             static int64_t get( const value_union< V > & u )
             {
                return u.i;
+            }
+         };
+
+         template<> struct get_by_enum< type::UNSIGNED_INTEGER >
+         {
+            template< typename V >
+            static uint64_t get( const value_union< V > & u )
+            {
+               return u.u;
             }
          };
 

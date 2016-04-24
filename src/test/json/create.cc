@@ -17,15 +17,19 @@ namespace tao
 
          TEST_ASSERT( v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
-         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( ! v.is_signed_integer() );
+         TEST_ASSERT( ! v.is_unsigned_integer() );
          TEST_ASSERT( ! v.is_double() );
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_pointer() );
+         TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_bool() );
-         TEST_THROWS( v.get_integer() );
+         TEST_THROWS( v.get_signed_integer() );
+         TEST_THROWS( v.get_unsigned_integer() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
@@ -50,18 +54,24 @@ namespace tao
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( v.is_bool() );
-         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( ! v.is_signed_integer() );
+         TEST_ASSERT( ! v.is_unsigned_integer() );
          TEST_ASSERT( ! v.is_double() );
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_pointer() );
+         TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
-         TEST_THROWS( v.get_integer() );
+         TEST_THROWS( v.get_null() );
+         TEST_THROWS( v.get_signed_integer() );
+         TEST_THROWS( v.get_unsigned_integer() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
+         TEST_THROWS( v.get_pointer() );
 
          TEST_ASSERT( v.type() == type::BOOL_ );
          TEST_ASSERT( v.get_bool() == b );
@@ -76,7 +86,7 @@ namespace tao
       }
 
       template< typename T >
-      void test_integer( const T t )
+      void test_signed_integer( const T t )
       {
          const value v( t );
 
@@ -84,34 +94,89 @@ namespace tao
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
-         TEST_ASSERT( v.is_integer() );
+         TEST_ASSERT( v.is_signed_integer() );
+         TEST_ASSERT( ! v.is_unsigned_integer() );
          TEST_ASSERT( ! v.is_double() );
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_pointer() );
+         TEST_ASSERT( v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
+         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_unsigned_integer() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
+         TEST_THROWS( v.get_pointer() );
 
-         TEST_ASSERT( v.type() == type::INTEGER );
-         TEST_ASSERT( v.get_integer() == t );
-         TEST_ASSERT( v.unsafe_get_integer() == t );
+         TEST_ASSERT( v.type() == type::SIGNED_INTEGER );
+         TEST_ASSERT( v.get_signed_integer() == t );
+         TEST_ASSERT( v.unsafe_get_signed_integer() == t );
 
          TEST_THROWS( v.at( 0 ) );
          TEST_THROWS( v.at( "foo" ) );
       }
 
       template< typename T >
-      void test_integer()
+      void test_signed_integer()
       {
-         test_integer< T >( 0 );
-         test_integer< T >( 42 );
-         test_integer< T >( std::numeric_limits< T >::min() );
-         test_integer< T >( std::numeric_limits< T >::max() );
+         test_signed_integer< T >( 0 );
+         test_signed_integer< T >( 1 );
+         test_signed_integer< T >( -1 );
+         test_signed_integer< T >( 42 );
+         test_signed_integer< T >( -42 );
+         test_signed_integer< T >( std::numeric_limits< T >::min() );
+         test_signed_integer< T >( std::numeric_limits< T >::max() );
+      }
+
+      template< typename T >
+      void test_unsigned_integer( const T t )
+      {
+         const value v( t );
+
+         TEST_ASSERT( ! v.empty() );
+
+         TEST_ASSERT( ! v.is_null() );
+         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_signed_integer() );
+         TEST_ASSERT( v.is_unsigned_integer() );
+         TEST_ASSERT( ! v.is_double() );
+         TEST_ASSERT( ! v.is_string() );
+         TEST_ASSERT( ! v.is_array() );
+         TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_pointer() );
+         TEST_ASSERT( v.is_integer() );
+         TEST_ASSERT( v.is_number() );
+
+         TEST_THROWS( v.get_null() );
+         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_signed_integer() );
+         TEST_THROWS( v.get_double() );
+         TEST_THROWS( v.get_string() );
+         TEST_THROWS( v.get_array() );
+         TEST_THROWS( v.get_object() );
+         TEST_THROWS( v.get_pointer() );
+
+         TEST_ASSERT( v.type() == type::UNSIGNED_INTEGER );
+         TEST_ASSERT( v.get_unsigned_integer() == t );
+         TEST_ASSERT( v.unsafe_get_unsigned_integer() == t );
+
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
+      }
+
+      template< typename T >
+      void test_unsigned_integer()
+      {
+         test_unsigned_integer< T >( 0 );
+         test_unsigned_integer< T >( 1 );
+         test_unsigned_integer< T >( 42 );
+         test_unsigned_integer< T >( std::numeric_limits< T >::min() );
+         test_unsigned_integer< T >( std::numeric_limits< T >::max() );
       }
 
       void test_double( const double d )
@@ -122,18 +187,23 @@ namespace tao
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
-         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( ! v.is_signed_integer() );
+         TEST_ASSERT( ! v.is_unsigned_integer() );
          TEST_ASSERT( v.is_double() );
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
+         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_bool() );
-         TEST_THROWS( v.get_integer() );
+         TEST_THROWS( v.get_signed_integer() );
+         TEST_THROWS( v.get_unsigned_integer() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
+         TEST_THROWS( v.get_pointer() );
 
          TEST_ASSERT( v.type() == type::DOUBLE );
          TEST_ASSERT( v.get_double() == d );
@@ -152,18 +222,23 @@ namespace tao
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
-         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( ! v.is_signed_integer() );
+         TEST_ASSERT( ! v.is_unsigned_integer() );
          TEST_ASSERT( ! v.is_double() );
          TEST_ASSERT( v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
+         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_bool() );
-         TEST_THROWS( v.get_integer() );
+         TEST_THROWS( v.get_signed_integer() );
+         TEST_THROWS( v.get_unsigned_integer() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
+         TEST_THROWS( v.get_pointer() );
 
          TEST_ASSERT( v.type() == type::STRING );
          TEST_ASSERT( v.get_string() == s );
@@ -186,18 +261,24 @@ namespace tao
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
-         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( ! v.is_signed_integer() );
+         TEST_ASSERT( ! v.is_unsigned_integer() );
          TEST_ASSERT( ! v.is_double() );
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( v.is_array() );
          TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_pointer() );
+         TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
+         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_bool() );
-         TEST_THROWS( v.get_integer() );
+         TEST_THROWS( v.get_signed_integer() );
+         TEST_THROWS( v.get_unsigned_integer() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_object() );
+         TEST_THROWS( v.get_pointer() );
 
          TEST_ASSERT( v.type() == type::ARRAY );
          TEST_ASSERT( v.get_array().empty() );
@@ -213,18 +294,23 @@ namespace tao
 
          TEST_ASSERT( ! v.is_null() );
          TEST_ASSERT( ! v.is_bool() );
-         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( ! v.is_signed_integer() );
+         TEST_ASSERT( ! v.is_unsigned_integer() );
          TEST_ASSERT( ! v.is_double() );
          TEST_ASSERT( ! v.is_string() );
          TEST_ASSERT( ! v.is_array() );
          TEST_ASSERT( v.is_object() );
+         TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
+         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_bool() );
-         TEST_THROWS( v.get_integer() );
+         TEST_THROWS( v.get_signed_integer() );
+         TEST_THROWS( v.get_unsigned_integer() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
+         TEST_THROWS( v.get_pointer() );
 
          TEST_ASSERT( v.type() == type::OBJECT );
          TEST_ASSERT( v.get_object().empty() );
@@ -249,15 +335,15 @@ namespace tao
          TEST_ASSERT( v == value( r ) );
          TEST_ASSERT( v.get_array() == r );
 
-         TEST_ASSERT( v[ 0 ].get_integer() == 1 );
-         TEST_ASSERT( v[ 1 ].get_integer() == 2 );
-         TEST_ASSERT( v[ 2 ].get_integer() == 3 );
-         TEST_ASSERT( v[ 3 ].get_integer() == 4 );
+         TEST_ASSERT( v[ 0 ].get_signed_integer() == 1 );
+         TEST_ASSERT( v[ 1 ].get_signed_integer() == 2 );
+         TEST_ASSERT( v[ 2 ].get_signed_integer() == 3 );
+         TEST_ASSERT( v[ 3 ].get_signed_integer() == 4 );
 
-         TEST_ASSERT( v[ 0 ].get_integer() == 1 );
-         TEST_ASSERT( v[ 1 ].get_integer() == 2 );
-         TEST_ASSERT( v[ 2 ].get_integer() == 3 );
-         TEST_ASSERT( v[ 3 ].get_integer() == 4 );
+         TEST_ASSERT( v[ 0 ].get_signed_integer() == 1 );
+         TEST_ASSERT( v[ 1 ].get_signed_integer() == 2 );
+         TEST_ASSERT( v[ 2 ].get_signed_integer() == 3 );
+         TEST_ASSERT( v[ 3 ].get_signed_integer() == 4 );
 
          TEST_THROWS( v.at( 4 ) );
          TEST_THROWS( v.at( "foo" ) );
@@ -265,17 +351,17 @@ namespace tao
 
       void test_object_1234()
       {
-        const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( true, false, 0 ) } } } };
+         const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( true, false, 0 ) } } } };
 
          TEST_ASSERT( ! v.empty() );
 
-        TEST_ASSERT( v.is_object() );
-        TEST_ASSERT( ! v.is_number() );
-        TEST_ASSERT( v.type() == type::OBJECT );
+         TEST_ASSERT( v.is_object() );
+         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( v.type() == type::OBJECT );
 
-        // TODO: Add more tests
+         // TODO: Add more tests
 
-        TEST_THROWS(( value { { "foo", 1 }, { "foo", 2 } } ));
+         TEST_THROWS(( value { { "foo", 1 }, { "foo", 2 } } ));
       }
 
       void unit_test()
@@ -285,14 +371,17 @@ namespace tao
          test_bool( true );
          test_bool( false );
 
-         test_integer< signed char >();
-         test_integer< unsigned char >();
-         test_integer< signed short >();
-         test_integer< unsigned short >();
-         test_integer< signed int >();
-         test_integer< unsigned int >();
-         test_integer< signed long >();
-         test_integer< signed long long >();
+         test_signed_integer< signed char >();
+         test_signed_integer< signed short >();
+         test_signed_integer< signed int >();
+         test_signed_integer< signed long >();
+         test_signed_integer< signed long long >();
+
+         test_unsigned_integer< unsigned char >();
+         test_unsigned_integer< unsigned short >();
+         test_unsigned_integer< unsigned int >();
+         test_unsigned_integer< unsigned long >();
+         test_unsigned_integer< unsigned long long >();
 
          test_double( 0.0 );
          test_double( 42.0 );
@@ -318,8 +407,13 @@ namespace tao
 
          v = 1;
 
-         TEST_ASSERT( v.type() == type::INTEGER );
-         TEST_ASSERT( v.get_integer() == 1 );
+         TEST_ASSERT( v.type() == type::SIGNED_INTEGER );
+         TEST_ASSERT( v.get_signed_integer() == 1 );
+
+         v = 1u;
+
+         TEST_ASSERT( v.type() == type::UNSIGNED_INTEGER );
+         TEST_ASSERT( v.get_unsigned_integer() == 1u );
 
          v = 2.0;
 

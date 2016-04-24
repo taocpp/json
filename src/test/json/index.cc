@@ -11,14 +11,14 @@ namespace tao
    {
       void unit_test()
       {
-         TEST_ASSERT( ( "[42]"_json )[ 0 ].get_integer() == 42 );
-         TEST_ASSERT( ( "[[42]]"_json )[ 0 ][ 0 ].get_integer() == 42 );
-         TEST_ASSERT( ( "[[[[42]]]]"_json )[ 0 ][ 0 ][ 0 ][ 0 ].get_integer() == 42 );
+         TEST_ASSERT( ( "[42]"_json )[ 0 ].get_signed_integer() == 42 );
+         TEST_ASSERT( ( "[[42]]"_json )[ 0 ][ 0 ].get_signed_integer() == 42 );
+         TEST_ASSERT( ( "[[[[42]]]]"_json )[ 0 ][ 0 ][ 0 ][ 0 ].get_signed_integer() == 42 );
 
-         TEST_ASSERT( ( "[1, 2, 3]"_json )[ 0 ].get_integer() == 1 );
-         TEST_ASSERT( ( "[1, 2, 3]"_json )[ 2 ].get_integer() == 3 );
+         TEST_ASSERT( ( "[1, 2, 3]"_json )[ 0 ].get_signed_integer() == 1 );
+         TEST_ASSERT( ( "[1, 2, 3]"_json )[ 2 ].get_signed_integer() == 3 );
 
-         TEST_ASSERT( ( "[1, [2, [3, [[[4]], 5, 6]]]]"_json )[ 1 ][ 1 ][ 1 ][ 1 ].get_integer() == 5 );
+         TEST_ASSERT( ( "[1, [2, [3, [[[4]], 5, 6]]]]"_json )[ 1 ][ 1 ][ 1 ][ 1 ].get_signed_integer() == 5 );
       }
 
    } // json
