@@ -398,8 +398,8 @@ namespace tao
             const value b( a );
             TEST_ASSERT( a.get_string() == b.get_string() );
          } {
-           const value a = 4;
-           const value b = 4.0;
+           const value a( 4 );
+           const value b( 4.0 );
            TEST_ASSERT( a == b );
            TEST_ASSERT( a == 4 );
            TEST_ASSERT( a == 4.0 );
