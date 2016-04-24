@@ -10,12 +10,13 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 ## Features
 
-* C++11 literal operator for JSON values.
-* Both `int64_t` and `double` for numeric values.
-* Indirect JSON values via non-owning pointers for object sharing.
+* Numeric values are stored as `int64_t`, `uint64_t` or `double` internally.
 * Standard containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
-* Allows construction of JSON value objects from arbitrary user-defined data-types with specialised traits class template.
+* Indirect JSON values via non-owning pointers for object sharing.
 * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
+* Allows construction of JSON value objects from arbitrary user-defined data-types with specialised traits class template.
+* Construction of objects and arrays via `std::initializer_list`.
+* C++11 literal operator for JSON values.
 
 ## Status
 
