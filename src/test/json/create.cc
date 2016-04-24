@@ -322,7 +322,7 @@ namespace tao
 
       void test_array_1234()
       {
-         const value v = value::array( 1, 2, 3, 4 );
+         const value v = value::array( { 1, 2, 3, 4 } );
 
          TEST_ASSERT( ! v.empty() );
 
@@ -351,7 +351,7 @@ namespace tao
 
       void test_object_1234()
       {
-         const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( true, false, 0 ) } } } };
+         const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
 
          TEST_ASSERT( ! v.empty() );
 

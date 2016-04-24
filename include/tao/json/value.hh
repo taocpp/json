@@ -44,15 +44,6 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         struct single
-         {
-            mutable T e;
-
-            template< typename U >
-            single( U && v ) : e( std::forward< U >( v ) ) {}
-         };
-
-         template< typename T >
          struct pair
          {
             mutable std::pair< std::string, T > e;
@@ -66,6 +57,19 @@ namespace tao
             pair( const std::string & k, const T & v ) : e( k, v ) {}
             pair( const char * k, T && v ) : e( k, std::move( v ) ) {}
             pair( const char * k, const T & v ) : e( k, v ) {}
+         };
+
+         template< typename T >
+         struct single
+         {
+            mutable T e;
+
+            template< typename U >
+            single( U && v ) : e( std::forward< U >( v ) ) {}
+
+            single( std::initializer_list< pair< T > > && l ) : e( std::move( l ) ) {}
+            single( const std::initializer_list< pair< T > > & l ) : e( l ) {}
+            single( std::initializer_list< pair< T > > & l ) : e( l ) {}
          };
 
          template< typename T, typename U, type E >
@@ -436,11 +440,17 @@ namespace tao
             unsafe_destroy();
          }
 
-         template< typename... Ts >
-         static value_base array( Ts && ... ts )
+         static value_base array( std::initializer_list< internal::single< value_base > > && l )
          {
             value_base v;
-            v.append( std::initializer_list< internal::single< value_base > >( { std::forward< Ts >( ts )... } ) );
+            v.append( std::move( l ) );
+            return v;
+         }
+
+         static value_base array( const std::initializer_list< internal::single< value_base > > & l )
+         {
+            value_base v;
+            v.append( l );
             return v;
          }
 
