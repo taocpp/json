@@ -11,7 +11,7 @@ namespace tao
    {
       void unit_test()
       {
-         TEST_ASSERT( ( "42"_json ).get_signed_integer() == 42 );
+         TEST_ASSERT( ( "42"_json ).get_unsigned_integer() == 42 );
       }
 
    } // json

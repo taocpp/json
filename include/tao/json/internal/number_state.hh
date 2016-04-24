@@ -41,10 +41,19 @@ namespace tao
                   errno = 0;
                   char * p;
                   mantissa[ msize + 1 ] = 0;
-                  const int64_t ll = std::strtoll( mantissa + 1 - mneg, & p, 10 );
-                  if ( ( errno != ERANGE ) && ( p == mantissa + msize + 1 ) ) {
-                     result.result.unsafe_assign( ll );
-                     return;
+                  if ( mneg ) {
+                    const int64_t ll = std::strtoll( mantissa, & p, 10 );
+                    if ( ( errno != ERANGE ) && ( p == mantissa + msize + 1 ) ) {
+                      result.result.unsafe_assign( ll );
+                      return;
+                    }
+                  }
+                  else {
+                    const uint64_t ull = std::strtoull( mantissa + 1, & p, 10 );
+                    if ( ( errno != ERANGE ) && ( p == mantissa + msize + 1 ) ) {
+                      result.result.unsafe_assign( ull );
+                      return;
+                    }
                   }
                }
                if ( drop ) {

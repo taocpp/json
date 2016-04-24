@@ -137,43 +137,51 @@ namespace tao
 
       void test_mixed()
       {
-         const value a;
+         const value n;
          const value b = from_string( "true" );
-         const value c = from_string( "42" );
+         const value i = from_string( "-42" );
+         const value u = from_string( "42" );
          const value d = from_string( "43.0" );
-         const value e = from_string( "\"string\"" );
-         const value f = from_string( "[]" );
-         const value g = from_string( "{}" );
+         const value s = from_string( "\"string\"" );
+         const value a = from_string( "[]" );
+         const value o = from_string( "{}" );
 
-         TEST_ASSERT( a.type() == type::NULL_ );
+         TEST_ASSERT( n.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::BOOL_ );
-         TEST_ASSERT( c.type() == type::SIGNED_INTEGER );
+         TEST_ASSERT( i.type() == type::SIGNED_INTEGER );
+         TEST_ASSERT( u.type() == type::UNSIGNED_INTEGER );
          TEST_ASSERT( d.type() == type::DOUBLE );
-         TEST_ASSERT( e.type() == type::STRING );
-         TEST_ASSERT( f.type() == type::ARRAY );
-         TEST_ASSERT( g.type() == type::OBJECT );
+         TEST_ASSERT( s.type() == type::STRING );
+         TEST_ASSERT( a.type() == type::ARRAY );
+         TEST_ASSERT( o.type() == type::OBJECT );
 
-         test_lt( a, b );
-         test_lt( a, c );
-         test_lt( a, d );
-         test_lt( a, e );
-         test_lt( a, f );
-         test_lt( a, g );
-         test_lt( b, c );
+         test_lt( n, b );
+         test_lt( n, i );
+         test_lt( n, u );
+         test_lt( n, d );
+         test_lt( n, s );
+         test_lt( n, a );
+         test_lt( n, o );
+
+         test_lt( b, i );
+         test_lt( b, u );
          test_lt( b, d );
-         test_lt( b, e );
-         test_lt( b, f );
-         test_lt( b, g );
-         test_lt( c, d );
-         test_lt( c, e );
-         test_lt( c, f );
-         test_lt( c, g );
-         test_lt( d, e );
-         test_lt( d, f );
-         test_lt( d, g );
-         test_lt( e, f );
-         test_lt( e, g );
-         test_lt( f, g );
+         test_lt( b, s );
+         test_lt( b, a );
+         test_lt( b, o );
+
+         test_lt( i, s );
+         test_lt( i, a );
+         test_lt( i, o );
+
+         test_lt( u, s );
+         test_lt( u, a );
+         test_lt( u, o );
+
+         test_lt( s, a );
+         test_lt( s, o );
+
+         test_lt( a, o );
       }
 
       void unit_test()
