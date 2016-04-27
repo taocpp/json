@@ -499,6 +499,13 @@ namespace tao
            TEST_ASSERT( a == 4.0 );
            TEST_ASSERT( b == 4 );
            TEST_ASSERT( b == 4.0 );
+         } {
+           value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].is_signed_integer() );
+           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].unsafe_get_signed_integer() == 42 );
+           v = v[ "foo" ][ "bar" ];
+           TEST_ASSERT( v[ "baz" ].is_signed_integer() );
+           TEST_ASSERT( v[ "baz" ].unsafe_get_signed_integer() == 42 );
          }
       }
 

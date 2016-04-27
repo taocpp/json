@@ -454,63 +454,12 @@ namespace tao
             return v;
          }
 
-         value_base & operator= ( value_base && r ) noexcept
+         value_base & operator= ( value_base v ) noexcept
          {
-            if ( this != & r ) {
-               destroy();
-               seize( std::move( r ) );
-               m_type = r.m_type;
-            }
+            destroy();
+            seize( std::move( v ) );
+            m_type = v.m_type;
             return * this;
-         }
-
-         value_base & operator= ( const value_base & r )
-         {
-            if ( this != & r ) {
-               destroy();
-               embed( r );
-               m_type = r.m_type;
-            }
-            return * this;
-         }
-
-         value_base & operator= ( value_base & r )
-         {
-            if ( this != & r ) {
-               destroy();
-               embed( r );
-               m_type = r.m_type;
-            }
-            return * this;
-         }
-
-         template< typename T >
-         value_base & operator= ( T && v ) noexcept( noexcept( std::declval< value_base & >().unsafe_assign( std::forward< T >( v ) ) ) )
-         {
-            destroy();
-            unsafe_assign( std::forward< T >( v ) );
-            return *this;
-         }
-
-         value_base & operator= ( std::initializer_list< internal::pair< value_base > > && l )
-         {
-            destroy();
-            unsafe_assign( std::move( l ) );
-            return *this;
-         }
-
-         value_base & operator= ( const std::initializer_list< internal::pair< value_base > > & l )
-         {
-            destroy();
-            unsafe_assign( l );
-            return *this;
-         }
-
-         value_base & operator= ( std::initializer_list< internal::pair< value_base > > & l )
-         {
-            destroy();
-            unsafe_assign( l );
-            return *this;
          }
 
          void swap( value_base & r ) noexcept
