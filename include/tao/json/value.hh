@@ -456,7 +456,7 @@ namespace tao
 
          value_base & operator= ( value_base v ) noexcept
          {
-            destroy();
+            unsafe_destroy();
             seize( std::move( v ) );
             m_type = v.m_type;
             return * this;
