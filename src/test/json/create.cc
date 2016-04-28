@@ -506,6 +506,13 @@ namespace tao
            v = v[ "foo" ][ "bar" ];
            TEST_ASSERT( v[ "baz" ].is_signed_integer() );
            TEST_ASSERT( v[ "baz" ].unsafe_get_signed_integer() == 42 );
+         } {
+           value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].is_signed_integer() );
+           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].unsafe_get_signed_integer() == 42 );
+           v = std::move( v[ "foo" ][ "bar" ] );
+           TEST_ASSERT( v[ "baz" ].is_signed_integer() );
+           TEST_ASSERT( v[ "baz" ].unsafe_get_signed_integer() == 42 );
          }
       }
 
