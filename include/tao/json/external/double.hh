@@ -30,8 +30,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef TAOCPP_JSON_EMBEDDED_DOUBLE_CONVERSION_HH
-#define TAOCPP_JSON_EMBEDDED_DOUBLE_CONVERSION_HH
+#ifndef TAOCPP_JSON_INCLUDE_EXTERNAL_DOUBLE_HH
+#define TAOCPP_JSON_INCLUDE_EXTERNAL_DOUBLE_HH
 
 #include <math.h>
 #include <stdlib.h>
@@ -39,7 +39,7 @@
 #include <stdarg.h>
 #include <limits.h>
 
-#include <iostream>
+#include <ostream>
 
 #ifndef ASSERT
 #define ASSERT( eXPReSSioN ) ((void)0)
