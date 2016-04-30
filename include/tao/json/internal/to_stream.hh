@@ -23,13 +23,13 @@ namespace tao
          }
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const value_base< Traits > & v );
+         void to_stream( std::ostream & o, const basic_value< Traits > & v );
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const value_base< Traits > & v, const unsigned indent, const unsigned current = 0 );
+         void to_stream( std::ostream & o, const basic_value< Traits > & v, const unsigned indent, const unsigned current = 0 );
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const std::vector< value_base< Traits > > & v )
+         void to_stream( std::ostream & o, const std::vector< basic_value< Traits > > & v )
          {
             o << '[';
             if ( ! v.empty() ) {
@@ -43,7 +43,7 @@ namespace tao
          }
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const std::vector< value_base< Traits > > & v, const unsigned indent, unsigned current = 0 )
+         void to_stream( std::ostream & o, const std::vector< basic_value< Traits > > & v, const unsigned indent, unsigned current = 0 )
          {
             o << '[';
             current += indent;
@@ -64,7 +64,7 @@ namespace tao
          }
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const std::map< std::string, value_base< Traits > > & v )
+         void to_stream( std::ostream & o, const std::map< std::string, basic_value< Traits > > & v )
          {
             o << '{';
             if ( ! v.empty() ) {
@@ -82,7 +82,7 @@ namespace tao
          }
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const std::map< std::string, value_base< Traits > > & v, const unsigned indent, unsigned current = 0 )
+         void to_stream( std::ostream & o, const std::map< std::string, basic_value< Traits > > & v, const unsigned indent, unsigned current = 0 )
          {
             o << '{';
             current += indent;
@@ -107,7 +107,7 @@ namespace tao
          }
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const value_base< Traits > & v )
+         void to_stream( std::ostream & o, const basic_value< Traits > & v )
          {
             switch ( v.type() ) {
                case type::NULL_:
@@ -136,7 +136,7 @@ namespace tao
                   internal::to_stream( o, v.unsafe_get_object() );
                   return;
                case type::POINTER:
-                  if ( const value_base< Traits > * p = v.unsafe_get_pointer() ) {
+                  if ( const basic_value< Traits > * p = v.unsafe_get_pointer() ) {
                      internal::to_stream( o, * p );
                   }
                   else {
@@ -148,7 +148,7 @@ namespace tao
          }
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const value_base< Traits > & v, const unsigned indent, const unsigned current )
+         void to_stream( std::ostream & o, const basic_value< Traits > & v, const unsigned indent, const unsigned current )
          {
             switch ( v.type() ) {
                case type::NULL_:
@@ -177,7 +177,7 @@ namespace tao
                   internal::to_stream( o, v.unsafe_get_object(), indent, current );
                   return;
                case type::POINTER:
-                  if ( const value_base< Traits > * p = v.unsafe_get_pointer() ) {
+                  if ( const basic_value< Traits > * p = v.unsafe_get_pointer() ) {
                      internal::to_stream( o, * p, indent, current );
                   }
                   else {

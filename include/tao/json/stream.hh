@@ -17,7 +17,7 @@ namespace tao
       // Use ostream << std::setw( n ) for pretty-printing with indent n.
 
       template< template< typename ... > class Traits >
-      std::ostream & operator<< ( std::ostream & o, const value_base< Traits > & v )
+      std::ostream & operator<< ( std::ostream & o, const basic_value< Traits > & v )
       {
          const auto w = o.width();
 

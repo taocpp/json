@@ -12,7 +12,7 @@ namespace tao
    {
       // removes all POINTER nodes, recursively, by copying their pointed-to content
       template< template< typename ... > class Traits >
-      void flatten( value_base< Traits > & v )
+      void flatten( basic_value< Traits > & v )
       {
          switch ( v.type() ) {
             case json::type::NULL_:

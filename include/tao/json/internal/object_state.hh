@@ -21,7 +21,7 @@ namespace tao
          struct object_state
                : public result_state< Traits >
          {
-            value_base< Traits > object;
+            basic_value< Traits > object;
 
             std::string unescaped;
 

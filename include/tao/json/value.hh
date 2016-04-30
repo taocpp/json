@@ -26,90 +26,90 @@ namespace tao
    namespace json
    {
       template< template< typename ... > class Traits >
-      class value_base
-         : operators::totally_ordered< value_base< Traits > >,
-           internal::totally_ordered< value_base< Traits >, null_t, type::NULL_ >,
-           internal::totally_ordered< value_base< Traits >, bool, type::BOOL_ >,
-           internal::totally_ordered< value_base< Traits >, signed char, type::SIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, unsigned char, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, signed short, type::SIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, unsigned short, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, signed int, type::SIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, unsigned int, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, signed long, type::SIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, unsigned long, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, signed long long, type::SIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, unsigned long long, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< value_base< Traits >, float, type::DOUBLE >,
-           internal::totally_ordered< value_base< Traits >, double, type::DOUBLE >,
-           internal::totally_ordered< value_base< Traits >, std::string, type::STRING >,
-           internal::totally_ordered< value_base< Traits >, const char *, type::STRING >,
-           internal::totally_ordered< value_base< Traits >, std::vector< value_base< Traits > >, type::ARRAY >,
-           internal::totally_ordered< value_base< Traits >, std::map< std::string, value_base< Traits > >, type::OBJECT >
+      class basic_value
+         : operators::totally_ordered< basic_value< Traits > >,
+           internal::totally_ordered< basic_value< Traits >, null_t, type::NULL_ >,
+           internal::totally_ordered< basic_value< Traits >, bool, type::BOOL_ >,
+           internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, unsigned short, type::UNSIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, signed int, type::SIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, unsigned int, type::UNSIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, signed long, type::SIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, unsigned long, type::UNSIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, signed long long, type::SIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, unsigned long long, type::UNSIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, float, type::DOUBLE >,
+           internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
+           internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
+           internal::totally_ordered< basic_value< Traits >, const char *, type::STRING >,
+           internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
+           internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >
       {
       public:
-         value_base() noexcept
+         basic_value() noexcept
          { }
 
-         value_base( value_base && r ) noexcept
+         basic_value( basic_value && r ) noexcept
          {
             seize( std::move( r ) );
             m_type = r.m_type;
          }
 
-         value_base( const value_base & r )
+         basic_value( const basic_value & r )
          {
             embed( r );
             m_type = r.m_type;
          }
 
-         value_base( value_base & r )
+         basic_value( basic_value & r )
          {
             embed( r );
             m_type = r.m_type;
          }
 
          template< typename T >
-         value_base( T && v ) noexcept( noexcept( std::declval< value_base & >().unsafe_assign( std::forward< T >( v ) ) ) )
+         basic_value( T && v ) noexcept( noexcept( std::declval< basic_value & >().unsafe_assign( std::forward< T >( v ) ) ) )
          {
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         value_base( std::initializer_list< internal::pair< value_base > > && l )
+         basic_value( std::initializer_list< internal::pair< basic_value > > && l )
          {
             unsafe_assign( std::move( l ) );
          }
 
-         value_base( const std::initializer_list< internal::pair< value_base > > & l )
+         basic_value( const std::initializer_list< internal::pair< basic_value > > & l )
          {
             unsafe_assign( l );
          }
 
-         value_base( std::initializer_list< internal::pair< value_base > > & l )
+         basic_value( std::initializer_list< internal::pair< basic_value > > & l )
          {
             unsafe_assign( l );
          }
 
-         ~value_base() noexcept
+         ~basic_value() noexcept
          {
             unsafe_destroy();
          }
 
-         static value_base array( std::initializer_list< internal::single< value_base > > && l )
+         static basic_value array( std::initializer_list< internal::single< basic_value > > && l )
          {
-            value_base v;
+            basic_value v;
             v.append( std::move( l ) );
             return v;
          }
 
-         static value_base array( const std::initializer_list< internal::single< value_base > > & l )
+         static basic_value array( const std::initializer_list< internal::single< basic_value > > & l )
          {
-            value_base v;
+            basic_value v;
             v.append( l );
             return v;
          }
 
-         value_base & operator= ( value_base v ) noexcept
+         basic_value & operator= ( basic_value v ) noexcept
          {
             unsafe_destroy();
             seize( std::move( v ) );
@@ -117,9 +117,9 @@ namespace tao
             return * this;
          }
 
-         void swap( value_base & r ) noexcept
+         void swap( basic_value & r ) noexcept
          {
-            value_base t( std::move( r ) );
+            basic_value t( std::move( r ) );
             r = std::move( * this );
             ( * this ) = ( std::move( t ) );
          }
@@ -226,45 +226,45 @@ namespace tao
             return unsafe_get_string();
          }
 
-         std::vector< value_base > & get_array()
+         std::vector< basic_value > & get_array()
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
-         const std::vector< value_base > & get_array() const
+         const std::vector< basic_value > & get_array() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
-         std::map< std::string, value_base > & get_object()
+         std::map< std::string, basic_value > & get_object()
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
          }
 
-         const std::map< std::string, value_base > & get_object() const
+         const std::map< std::string, basic_value > & get_object() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
          }
 
-         const value_base * get_pointer() const
+         const basic_value * get_pointer() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::POINTER );
             return unsafe_get_pointer();
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > & >() ) ) get()
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value > & >() ) ) get()
          {
             CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< value_base > & >() ) ) get() const
+         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value > & >() ) ) get() const
          {
             CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
@@ -324,39 +324,39 @@ namespace tao
             return m_union.s;
          }
 
-         std::vector< value_base > & unsafe_get_array() noexcept
+         std::vector< basic_value > & unsafe_get_array() noexcept
          {
             return m_union.a;
          }
 
-         const std::vector< value_base > & unsafe_get_array() const noexcept
+         const std::vector< basic_value > & unsafe_get_array() const noexcept
          {
             return m_union.a;
          }
 
-         std::map< std::string, value_base > & unsafe_get_object() noexcept
+         std::map< std::string, basic_value > & unsafe_get_object() noexcept
          {
             return m_union.o;
          }
 
-         const std::map< std::string, value_base > & unsafe_get_object() const noexcept
+         const std::map< std::string, basic_value > & unsafe_get_object() const noexcept
          {
             return m_union.o;
          }
 
-         const value_base * unsafe_get_pointer() const noexcept
+         const basic_value * unsafe_get_pointer() const noexcept
          {
             return m_union.p;
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< value_base > & >() ) ) unsafe_get()
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value > & >() ) ) unsafe_get()
          {
             return internal::get_by_enum< E >::get( m_union );
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< value_base > & >() ) ) unsafe_get() const
+         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value > & >() ) ) unsafe_get() const
          {
             return internal::get_by_enum< E >::get( m_union );
          }
@@ -366,25 +366,25 @@ namespace tao
          // an exception when the type of the value is wrong
          // or the index/key is out of range/not found.
 
-         value_base & at( const std::size_t index )
+         basic_value & at( const std::size_t index )
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
-         const value_base & at( const std::size_t index ) const
+         const basic_value & at( const std::size_t index ) const
          {
             CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
-         value_base & at( const std::string & key )
+         basic_value & at( const std::string & key )
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
          }
 
-         const value_base & at( const std::string & key ) const
+         const basic_value & at( const std::string & key ) const
          {
             CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
@@ -395,12 +395,12 @@ namespace tao
          // behaviour when the type of the value is wrong or
          // the index is out of range.
 
-         value_base & operator[] ( const std::size_t index ) noexcept
+         basic_value & operator[] ( const std::size_t index ) noexcept
          {
             return m_union.a[ index ];
          }
 
-         const value_base & operator[] ( const std::size_t index ) const noexcept
+         const basic_value & operator[] ( const std::size_t index ) const noexcept
          {
             return m_union.a[ index ];
          }
@@ -409,17 +409,17 @@ namespace tao
          // the containers for objects and insert a default-
          // constructed value when the key is not found.
 
-         value_base & operator[] ( const std::string & key )
+         basic_value & operator[] ( const std::string & key )
          {
             return m_union.o[ key ];
          }
 
-         value_base & operator[] ( std::string && key )
+         basic_value & operator[] ( std::string && key )
          {
             return m_union.o[ std::move( key ) ];
          }
 
-         const value_base & operator* () const noexcept
+         const basic_value & operator* () const noexcept
          {
             return * unsafe_get_pointer();
          }
@@ -428,25 +428,25 @@ namespace tao
          // value v when json::needs_destroy( v.type() ) is true!
 
          template< typename T >
-         void unsafe_assign( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< value_base & >(), std::forward< T >( v ) ) ) )
+         void unsafe_assign( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value & >(), std::forward< T >( v ) ) ) )
          {
             using D = typename std::decay< T >::type;
             Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( std::initializer_list< internal::pair< value_base > > && l )
+         void unsafe_assign( std::initializer_list< internal::pair< basic_value > > && l )
          {
             unsafe_emplace_object();
             *this += std::move( l );
          }
 
-         void unsafe_assign( const std::initializer_list< internal::pair< value_base > > & l )
+         void unsafe_assign( const std::initializer_list< internal::pair< basic_value > > & l )
          {
             unsafe_emplace_object();
             *this += l;
          }
 
-         void unsafe_assign( std::initializer_list< internal::pair< value_base > > & l )
+         void unsafe_assign( std::initializer_list< internal::pair< basic_value > > & l )
          {
             unsafe_emplace_object();
             *this += l;
@@ -507,7 +507,7 @@ namespace tao
          template< typename ... Ts >
          void unsafe_emplace_array( Ts && ... ts )
          {
-            new ( & m_union.a ) std::vector< value_base >( std::forward< Ts >( ts ) ... );
+            new ( & m_union.a ) std::vector< basic_value >( std::forward< Ts >( ts ) ... );
             m_type = json::type::ARRAY;
          }
 
@@ -546,7 +546,7 @@ namespace tao
          template< typename ... Ts >
          void unsafe_emplace_object( Ts && ... ts )
          {
-            new ( & m_union.o ) std::map< std::string, value_base >( std::forward< Ts >( ts ) ... );
+            new ( & m_union.o ) std::map< std::string, basic_value >( std::forward< Ts >( ts ) ... );
             m_type = json::type::OBJECT;
          }
 
@@ -570,25 +570,25 @@ namespace tao
          }
 
          template< typename K, typename V >
-         std::pair< typename std::map< std::string, value_base >::iterator, bool > unsafe_emplace( K && k, V && v )
+         std::pair< typename std::map< std::string, basic_value >::iterator, bool > unsafe_emplace( K && k, V && v )
          {
             return m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
          template< typename K, typename V >
-         std::pair< typename std::map< std::string, value_base >::iterator, bool > emplace( K && k, V && v )
+         std::pair< typename std::map< std::string, basic_value >::iterator, bool > emplace( K && k, V && v )
          {
             unsafe_emplace_prepare();
             return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
-         void unsafe_assign_pointer( const value_base * p ) noexcept
+         void unsafe_assign_pointer( const basic_value * p ) noexcept
          {
             m_union.p = p;
             m_type = json::type::POINTER;
          }
 
-         void append( std::initializer_list< internal::single< value_base > > && l )
+         void append( std::initializer_list< internal::single< basic_value > > && l )
          {
             unsafe_emplace_back_prepare();
             auto & v = unsafe_get_array();
@@ -598,7 +598,7 @@ namespace tao
             }
          }
 
-         void append( const std::initializer_list< internal::single< value_base > > & l )
+         void append( const std::initializer_list< internal::single< basic_value > > & l )
          {
             unsafe_emplace_back_prepare();
             auto & v = unsafe_get_array();
@@ -608,7 +608,7 @@ namespace tao
             }
          }
 
-         value_base & operator+= ( std::initializer_list< internal::pair< value_base > > && l )
+         basic_value & operator+= ( std::initializer_list< internal::pair< basic_value > > && l )
          {
             unsafe_emplace_prepare();
             for( auto & e : l ) {
@@ -620,7 +620,7 @@ namespace tao
             return *this;
          }
 
-         value_base & operator+= ( const std::initializer_list< internal::pair< value_base > > & l )
+         basic_value & operator+= ( const std::initializer_list< internal::pair< basic_value > > & l )
          {
             unsafe_emplace_prepare();
             for( const auto & e : l ) {
@@ -632,7 +632,7 @@ namespace tao
             return *this;
          }
 
-         value_base & operator-= ( const std::string & k )
+         basic_value & operator-= ( const std::string & k )
          {
             if ( get_object().erase( k ) == 0 ) {
                throw std::runtime_error( "key not found: " + k );
@@ -640,7 +640,7 @@ namespace tao
             return *this;
          }
 
-         value_base & operator-= ( std::initializer_list< std::string > l )
+         basic_value & operator-= ( std::initializer_list< std::string > l )
          {
             auto & v = get_object();
             for ( const auto & k : l ) {
@@ -674,7 +674,7 @@ namespace tao
          }
 
       private:
-         void seize( value_base && r ) noexcept
+         void seize( basic_value && r ) noexcept
          {
             switch ( r.m_type ) {
                case json::type::NULL_:
@@ -695,10 +695,10 @@ namespace tao
                   new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
                   return;
                case json::type::ARRAY:
-                  new ( & m_union.a ) std::vector< value_base >( std::move( r.m_union.a ) );
+                  new ( & m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
                   return;
                case json::type::OBJECT:
-                  new ( & m_union.o ) std::map< std::string, value_base >( std::move( r.m_union.o ) );
+                  new ( & m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
                   return;
                case json::type::POINTER:
                   m_union.p = r.m_union.p;
@@ -707,7 +707,7 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         void embed( const value_base & r )
+         void embed( const basic_value & r )
          {
             switch ( r.m_type ) {
                case json::type::NULL_:
@@ -728,10 +728,10 @@ namespace tao
                   new ( & m_union.s ) std::string( r.m_union.s );
                   return;
                case json::type::ARRAY:
-                  new ( & m_union.a ) std::vector< value_base >( r.m_union.a );
+                  new ( & m_union.a ) std::vector< basic_value >( r.m_union.a );
                   return;
                case json::type::OBJECT:
-                  new ( & m_union.o ) std::map< std::string, value_base >( r.m_union.o );
+                  new ( & m_union.o ) std::map< std::string, basic_value >( r.m_union.o );
                   return;
                case json::type::POINTER:
                   m_union.p = r.m_union.p;
@@ -769,12 +769,12 @@ namespace tao
             m_type = json::type::NULL_;
          }
 
-         internal::value_union< value_base > m_union;
+         internal::value_union< basic_value > m_union;
          json::type m_type = json::type::NULL_;
       };
 
       template< template< typename ... > class Traits >
-      bool operator== ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
+      bool operator== ( const basic_value< Traits > & lhs, const basic_value< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
             if ( const auto * p = lhs.unsafe_get_pointer() ) {
@@ -845,7 +845,7 @@ namespace tao
       }
 
       template< template< typename ... > class Traits >
-      bool operator< ( const value_base< Traits > & lhs, const value_base< Traits > & rhs ) noexcept
+      bool operator< ( const basic_value< Traits > & lhs, const basic_value< Traits > & rhs ) noexcept
       {
          if ( lhs.type() == type::POINTER ) {
             if ( const auto * p = lhs.unsafe_get_pointer() ) {
@@ -915,7 +915,7 @@ namespace tao
          assert( false );  // LCOV_EXCL_LINE
       }
 
-      using value = value_base< traits >;
+      using value = basic_value< traits >;
 
    } // json
 

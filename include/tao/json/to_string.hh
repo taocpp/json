@@ -15,7 +15,7 @@ namespace tao
    namespace json
    {
       template< template< typename ... > class Traits >
-      std::string to_string( const value_base< Traits > & v )
+      std::string to_string( const basic_value< Traits > & v )
       {
          std::ostringstream o;
          internal::to_stream( o, v );
@@ -23,7 +23,7 @@ namespace tao
       }
 
       template< template< typename ... > class Traits >
-      std::string to_string( const value_base< Traits > & v, const unsigned indent, const unsigned current = 0 )
+      std::string to_string( const basic_value< Traits > & v, const unsigned indent, const unsigned current = 0 )
       {
          std::ostringstream o;
          internal::to_stream( o, v, indent, current );

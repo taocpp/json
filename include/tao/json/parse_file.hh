@@ -14,7 +14,7 @@ namespace tao
    namespace json
    {
       template< template< typename ... > class Traits >
-      void parse_file( value_base< Traits > & output, const std::string & filename )
+      void parse_file( basic_value< Traits > & output, const std::string & filename )
       {
          internal::result_state< Traits > result;
          tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );
@@ -22,7 +22,7 @@ namespace tao
       }
 
       template< template< typename ... > class Traits >
-      value_base< Traits > parse_file( const std::string & filename )
+      basic_value< Traits > parse_file( const std::string & filename )
       {
          internal::result_state< Traits > result;
          tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );

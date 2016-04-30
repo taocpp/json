@@ -20,7 +20,7 @@ namespace tao
          struct array_state
                : public result_state< Traits >
          {
-            value_base< Traits > array;
+            basic_value< Traits > array;
 
             array_state()
                   : array( empty_array )

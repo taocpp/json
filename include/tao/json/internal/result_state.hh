@@ -19,7 +19,7 @@ namespace tao
             result_state( const result_state & ) = delete;
             void operator= ( const result_state & ) = delete;
 
-            value_base< Traits > result;
+            basic_value< Traits > result;
          };
 
       } // internal
