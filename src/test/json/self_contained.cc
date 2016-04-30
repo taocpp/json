@@ -23,7 +23,7 @@ namespace tao
          TEST_ASSERT( v3[ "bar" ].type() == type::OBJECT );
          TEST_ASSERT( v3[ "baz" ][ 1 ].type() == type::OBJECT );
 
-         flatten( v2 );
+         make_self_contained( v2 );
 
          TEST_ASSERT( v2 == v3 );
          TEST_ASSERT( v2[ "bar" ].type() == type::OBJECT );
