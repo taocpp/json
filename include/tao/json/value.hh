@@ -64,10 +64,8 @@ namespace tao
          }
 
          basic_value( basic_value & r )
-         {
-            embed( r );
-            m_type = r.m_type;
-         }
+              : basic_value( static_cast< const basic_value & >( r ) )
+         { }
 
          template< typename T >
          basic_value( T && v ) noexcept( noexcept( std::declval< basic_value & >().unsafe_assign( std::forward< T >( v ) ) ) )
@@ -86,9 +84,8 @@ namespace tao
          }
 
          basic_value( std::initializer_list< internal::pair< basic_value > > & l )
-         {
-            unsafe_assign( l );
-         }
+              : basic_value( static_cast< const std::initializer_list< internal::pair< basic_value > > & >( l ) )
+         { }
 
          ~basic_value() noexcept
          {
@@ -448,8 +445,7 @@ namespace tao
 
          void unsafe_assign( std::initializer_list< internal::pair< basic_value > > & l )
          {
-            unsafe_emplace_object();
-            *this += l;
+            unsafe_assign( static_cast< const std::initializer_list< internal::pair< basic_value > > & >( l ) );
          }
 
          void unsafe_assign_null() noexcept
