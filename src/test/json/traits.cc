@@ -11,11 +11,11 @@ namespace tao
    {
       struct my_data {};
 
-      template<> const char* default_key< my_data >::value = "my_data";
-
       template<>
       struct traits< my_data >
       {
+         static constexpr const char* default_key = "my_data";
+
          static void assign( value & v, const my_data & )
          {
             v = {

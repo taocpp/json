@@ -8,7 +8,7 @@
 #include <utility>
 #include <type_traits>
 
-#include "../default_key.hh"
+#include "../traits.hh"
 
 namespace tao
 {
@@ -22,7 +22,7 @@ namespace tao
             mutable std::pair< std::string, T > e;
 
             template< typename U >
-            pair( U && v ) : e( default_key< typename std::decay< U >::type >::value, std::forward< U >( v ) ) {}
+            pair( U && v ) : e( traits< typename std::decay< U >::type >::default_key, std::forward< U >( v ) ) {}
 
             pair( std::string && k, T && v ) : e( std::move( k ), std::move( v ) ) {}
             pair( std::string && k, const T & v ) : e( std::move( k ), v ) {}
