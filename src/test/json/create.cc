@@ -113,7 +113,7 @@ namespace tao
          TEST_THROWS( v.get_object() );
          TEST_THROWS( v.get_pointer() );
 
-         TEST_ASSERT( v.type() == type::SIGNED_INTEGER );
+         TEST_ASSERT( v.type() == type::SIGNED );
          TEST_ASSERT( v.get_signed_integer() == t );
          TEST_ASSERT( v.unsafe_get_signed_integer() == t );
 
@@ -161,7 +161,7 @@ namespace tao
          TEST_THROWS( v.get_object() );
          TEST_THROWS( v.get_pointer() );
 
-         TEST_ASSERT( v.type() == type::UNSIGNED_INTEGER );
+         TEST_ASSERT( v.type() == type::UNSIGNED );
          TEST_ASSERT( v.get_unsigned_integer() == t );
          TEST_ASSERT( v.unsafe_get_unsigned_integer() == t );
 
@@ -407,12 +407,12 @@ namespace tao
 
          v = 1;
 
-         TEST_ASSERT( v.type() == type::SIGNED_INTEGER );
+         TEST_ASSERT( v.type() == type::SIGNED );
          TEST_ASSERT( v.get_signed_integer() == 1 );
 
          v = 1u;
 
-         TEST_ASSERT( v.type() == type::UNSIGNED_INTEGER );
+         TEST_ASSERT( v.type() == type::UNSIGNED );
          TEST_ASSERT( v.get_unsigned_integer() == 1u );
 
          v = 2.0;

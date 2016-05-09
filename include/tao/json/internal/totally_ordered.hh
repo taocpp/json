@@ -98,7 +98,7 @@ namespace tao
          };
 
          template< typename T, typename U >
-         struct totally_ordered< T, U, type::SIGNED_INTEGER >
+         struct totally_ordered< T, U, type::SIGNED >
             : operators::totally_ordered< T, U >
          {
             friend bool operator==( const T & lhs, const U & rhs ) noexcept
@@ -111,10 +111,10 @@ namespace tao
                      return false;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_signed_integer() == rhs;
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return ( rhs >= 0 ) && ( lhs.unsafe_get_unsigned_integer() == static_cast< uint64_t >( rhs ) );
                }
                if ( lhs.type() == type::DOUBLE ) {
@@ -133,16 +133,16 @@ namespace tao
                      return true;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_signed_integer() < rhs;
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return ( rhs >= 0 ) && ( lhs.unsafe_get_unsigned_integer() < static_cast< uint64_t >( rhs ) );
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() < rhs;
                }
-               return lhs.type() < type::SIGNED_INTEGER;
+               return lhs.type() < type::SIGNED;
             }
 
             friend bool operator>( const T & lhs, const U & rhs ) noexcept
@@ -155,21 +155,21 @@ namespace tao
                      return false;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_signed_integer() > rhs;
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return ( rhs < 0 ) || ( lhs.unsafe_get_unsigned_integer() > static_cast< uint64_t >( rhs ) );
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() > rhs;
                }
-               return lhs.type() > type::SIGNED_INTEGER;
+               return lhs.type() > type::SIGNED;
             }
          };
 
          template< typename T, typename U >
-         struct totally_ordered< T, U, type::UNSIGNED_INTEGER >
+         struct totally_ordered< T, U, type::UNSIGNED >
             : operators::totally_ordered< T, U >
          {
             friend bool operator==( const T & lhs, const U & rhs ) noexcept
@@ -182,11 +182,11 @@ namespace tao
                      return false;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   const auto v = lhs.unsafe_get_signed_integer();
                   return ( v >= 0 ) && ( static_cast< uint64_t >( v ) == rhs );
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_unsigned_integer() == rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
@@ -205,17 +205,17 @@ namespace tao
                      return true;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   const auto v = lhs.unsafe_get_signed_integer();
                   return ( v < 0 ) || ( static_cast< uint64_t >( v ) < rhs );
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_unsigned_integer() < rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() < rhs;
                }
-               return lhs.type() < type::SIGNED_INTEGER;
+               return lhs.type() < type::SIGNED;
             }
 
             friend bool operator>( const T & lhs, const U & rhs ) noexcept
@@ -228,17 +228,17 @@ namespace tao
                      return false;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   const auto v = lhs.unsafe_get_signed_integer();
                   return ( v >= 0 ) && ( static_cast< uint64_t >( v ) > rhs );
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_unsigned_integer() > rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() > rhs;
                }
-               return lhs.type() > type::SIGNED_INTEGER;
+               return lhs.type() > type::SIGNED;
             }
          };
 
@@ -256,10 +256,10 @@ namespace tao
                      return false;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_signed_integer() == rhs;
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_unsigned_integer() == rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
@@ -278,10 +278,10 @@ namespace tao
                      return true;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_signed_integer() < rhs;
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_unsigned_integer() < rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
@@ -300,10 +300,10 @@ namespace tao
                      return false;
                   }
                }
-               if ( lhs.type() == type::SIGNED_INTEGER ) {
+               if ( lhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_signed_integer() > rhs;
                }
-               if ( lhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( lhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_unsigned_integer() > rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {

@@ -30,16 +30,16 @@ namespace tao
          : operators::totally_ordered< basic_value< Traits > >,
            internal::totally_ordered< basic_value< Traits >, null_t, type::NULL_ >,
            internal::totally_ordered< basic_value< Traits >, bool, type::BOOL_ >,
-           internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, unsigned short, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, signed int, type::SIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, unsigned int, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, signed long, type::SIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, unsigned long, type::UNSIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, signed long long, type::SIGNED_INTEGER >,
-           internal::totally_ordered< basic_value< Traits >, unsigned long long, type::UNSIGNED_INTEGER >,
+           internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned short, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed int, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned int, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed long, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned long, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed long long, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned long long, type::UNSIGNED >,
            internal::totally_ordered< basic_value< Traits >, float, type::DOUBLE >,
            internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
            internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
@@ -138,12 +138,12 @@ namespace tao
 
          bool is_signed_integer() const noexcept
          {
-            return m_type == json::type::SIGNED_INTEGER;
+            return m_type == json::type::SIGNED;
          }
 
          bool is_unsigned_integer() const noexcept
          {
-            return m_type == json::type::UNSIGNED_INTEGER;
+            return m_type == json::type::UNSIGNED;
          }
 
          bool is_integer() const noexcept
@@ -195,13 +195,13 @@ namespace tao
 
          int64_t get_signed_integer() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::SIGNED_INTEGER );
+            CHECK_TYPE_ERROR( m_type, json::type::SIGNED );
             return unsafe_get_signed_integer();
          }
 
          uint64_t get_unsigned_integer() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::UNSIGNED_INTEGER );
+            CHECK_TYPE_ERROR( m_type, json::type::UNSIGNED );
             return unsafe_get_unsigned_integer();
          }
 
@@ -271,9 +271,9 @@ namespace tao
          T as_number() const
          {
             switch ( m_type ) {
-               case json::type::SIGNED_INTEGER:
+               case json::type::SIGNED:
                   return T( unsafe_get_signed_integer() );
-               case json::type::UNSIGNED_INTEGER:
+               case json::type::UNSIGNED:
                   return T( unsafe_get_unsigned_integer() );
                case json::type::DOUBLE:
                   return T( unsafe_get_double() );
@@ -462,13 +462,13 @@ namespace tao
          void unsafe_assign_signed_integer( const int64_t i ) noexcept
          {
             m_union.i = i;
-            m_type = json::type::SIGNED_INTEGER;
+            m_type = json::type::SIGNED;
          }
 
          void unsafe_assign_unsigned_integer( const uint64_t u ) noexcept
          {
             m_union.u = u;
-            m_type = json::type::UNSIGNED_INTEGER;
+            m_type = json::type::UNSIGNED;
          }
 
          void unsafe_assign_double_unchecked( const double d ) noexcept
@@ -653,8 +653,8 @@ namespace tao
                case json::type::NULL_:
                   return true;
                case json::type::BOOL_:
-               case json::type::SIGNED_INTEGER:
-               case json::type::UNSIGNED_INTEGER:
+               case json::type::SIGNED:
+               case json::type::UNSIGNED:
                case json::type::DOUBLE:
                   return false;
                case json::type::STRING:
@@ -678,10 +678,10 @@ namespace tao
                case json::type::BOOL_:
                   m_union.b = r.m_union.b;
                   return;
-               case json::type::SIGNED_INTEGER:
+               case json::type::SIGNED:
                   m_union.i = r.m_union.i;
                   return;
-               case json::type::UNSIGNED_INTEGER:
+               case json::type::UNSIGNED:
                   m_union.u = r.m_union.u;
                   return;
                case json::type::DOUBLE:
@@ -711,10 +711,10 @@ namespace tao
                case json::type::BOOL_:
                   m_union.b = r.m_union.b;
                   return;
-               case json::type::SIGNED_INTEGER:
+               case json::type::SIGNED:
                   m_union.i = r.m_union.i;
                   return;
-               case json::type::UNSIGNED_INTEGER:
+               case json::type::UNSIGNED:
                   m_union.u = r.m_union.u;
                   return;
                case json::type::DOUBLE:
@@ -741,8 +741,8 @@ namespace tao
             switch ( m_type ) {
                case json::type::NULL_:
                case json::type::BOOL_:
-               case json::type::SIGNED_INTEGER:
-               case json::type::UNSIGNED_INTEGER:
+               case json::type::SIGNED:
+               case json::type::UNSIGNED:
                case json::type::DOUBLE:
                case json::type::POINTER:
                   return;
@@ -789,8 +789,8 @@ namespace tao
                   return lhs == null;
                }
             }
-            if ( lhs.type() == type::SIGNED_INTEGER ) {
-               if ( rhs.type() == type::UNSIGNED_INTEGER ) {
+            if ( lhs.type() == type::SIGNED ) {
+               if ( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed_integer();
                   return ( v >= 0 ) && ( static_cast< uint64_t >( v ) == rhs.unsafe_get_unsigned_integer() );
                }
@@ -798,8 +798,8 @@ namespace tao
                   return lhs.unsafe_get_signed_integer() == rhs.unsafe_get_double();
                }
             }
-            else if ( lhs.type() == type::UNSIGNED_INTEGER ) {
-               if ( rhs.type() == type::SIGNED_INTEGER ) {
+            else if ( lhs.type() == type::UNSIGNED ) {
+               if ( rhs.type() == type::SIGNED ) {
                   const auto v = rhs.unsafe_get_signed_integer();
                   return ( v >= 0 ) && ( lhs.unsafe_get_unsigned_integer() == static_cast< uint64_t >( v ) );
                }
@@ -808,10 +808,10 @@ namespace tao
                }
             }
             else if ( lhs.type() == type::DOUBLE ) {
-               if ( rhs.type() == type::SIGNED_INTEGER ) {
+               if ( rhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_double() == rhs.unsafe_get_signed_integer();
                }
-               if ( rhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( rhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned_integer();
                }
             }
@@ -822,9 +822,9 @@ namespace tao
                return true;
             case type::BOOL_:
                return lhs.unsafe_get_bool() == rhs.unsafe_get_bool();
-            case type::SIGNED_INTEGER:
+            case type::SIGNED:
                return lhs.unsafe_get_signed_integer() == rhs.unsafe_get_signed_integer();
-            case type::UNSIGNED_INTEGER:
+            case type::UNSIGNED:
                return lhs.unsafe_get_unsigned_integer() == rhs.unsafe_get_unsigned_integer();
             case type::DOUBLE:
                return lhs.unsafe_get_double() == rhs.unsafe_get_double();
@@ -860,8 +860,8 @@ namespace tao
                   return lhs < null;
                }
             }
-            if ( lhs.type() == type::SIGNED_INTEGER ) {
-               if ( rhs.type() == type::UNSIGNED_INTEGER ) {
+            if ( lhs.type() == type::SIGNED ) {
+               if ( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed_integer();
                   return ( v < 0 ) || ( static_cast< uint64_t >( v ) < rhs.unsafe_get_unsigned_integer() );
                }
@@ -869,8 +869,8 @@ namespace tao
                   return lhs.unsafe_get_signed_integer() < rhs.unsafe_get_double();
                }
             }
-            else if ( lhs.type() == type::UNSIGNED_INTEGER ) {
-               if ( rhs.type() == type::SIGNED_INTEGER ) {
+            else if ( lhs.type() == type::UNSIGNED ) {
+               if ( rhs.type() == type::SIGNED ) {
                   const auto v = rhs.unsafe_get_signed_integer();
                   return ( v >= 0 ) && ( lhs.unsafe_get_unsigned_integer() < static_cast< uint64_t >( v ) );
                }
@@ -879,10 +879,10 @@ namespace tao
                }
             }
             else if ( lhs.type() == type::DOUBLE ) {
-               if ( rhs.type() == type::SIGNED_INTEGER ) {
+               if ( rhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_double() < rhs.unsafe_get_signed_integer();
                }
-               if ( rhs.type() == type::UNSIGNED_INTEGER ) {
+               if ( rhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned_integer();
                }
             }
@@ -893,9 +893,9 @@ namespace tao
                return false;
             case type::BOOL_:
                return lhs.unsafe_get_bool() < rhs.unsafe_get_bool();
-            case type::SIGNED_INTEGER:
+            case type::SIGNED:
                return lhs.unsafe_get_signed_integer() < rhs.unsafe_get_signed_integer();
-            case type::UNSIGNED_INTEGER:
+            case type::UNSIGNED:
                return lhs.unsafe_get_unsigned_integer() < rhs.unsafe_get_unsigned_integer();
             case type::DOUBLE:
                return lhs.unsafe_get_double() < rhs.unsafe_get_double();

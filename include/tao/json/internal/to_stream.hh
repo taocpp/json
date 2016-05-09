@@ -116,10 +116,10 @@ namespace tao
                case type::BOOL_:
                   o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
-               case type::SIGNED_INTEGER:
+               case type::SIGNED:
                   o << v.unsafe_get_signed_integer();
                   return;
-               case type::UNSIGNED_INTEGER:
+               case type::UNSIGNED:
                   o << v.unsafe_get_unsigned_integer();
                   return;
                case type::DOUBLE:
@@ -157,10 +157,10 @@ namespace tao
                case type::BOOL_:
                   o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
-               case type::SIGNED_INTEGER:
+               case type::SIGNED:
                   o << v.unsafe_get_signed_integer();
                   return;
-               case type::UNSIGNED_INTEGER:
+               case type::UNSIGNED:
                   o << v.unsafe_get_unsigned_integer();
                   return;
                case type::DOUBLE:

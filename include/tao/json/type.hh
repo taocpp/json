@@ -12,8 +12,8 @@ namespace tao
       {
          NULL_,
          BOOL_,
-         SIGNED_INTEGER,
-         UNSIGNED_INTEGER,
+         SIGNED,
+         UNSIGNED,
          DOUBLE,
          STRING,
          ARRAY,
@@ -40,9 +40,9 @@ namespace tao
                return "null";
             case type::BOOL_:
                return "bool";
-            case type::SIGNED_INTEGER:
+            case type::SIGNED:
                return "signed_integer";
-            case type::UNSIGNED_INTEGER:
+            case type::UNSIGNED:
                return "unsigned_integer";
             case type::DOUBLE:
                return "double";

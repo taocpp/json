@@ -13,8 +13,8 @@ namespace tao
 
          TEST_ASSERT( to_string( type::NULL_ ) == std::string( "null" ) );
          TEST_ASSERT( to_string( type::BOOL_ ) == std::string( "bool" ) );
-         TEST_ASSERT( to_string( type::SIGNED_INTEGER ) == std::string( "signed_integer" ) );
-         TEST_ASSERT( to_string( type::UNSIGNED_INTEGER ) == std::string( "unsigned_integer" ) );
+         TEST_ASSERT( to_string( type::SIGNED ) == std::string( "signed_integer" ) );
+         TEST_ASSERT( to_string( type::UNSIGNED ) == std::string( "unsigned_integer" ) );
          TEST_ASSERT( to_string( type::DOUBLE ) == std::string( "double" ) );
 
          TEST_ASSERT( to_string( type::STRING ) == std::string( "string" ) );
@@ -25,8 +25,8 @@ namespace tao
 
          TEST_ASSERT( needs_destroy( type::NULL_ ) == false );
          TEST_ASSERT( needs_destroy( type::BOOL_ ) == false );
-         TEST_ASSERT( needs_destroy( type::SIGNED_INTEGER ) == false );
-         TEST_ASSERT( needs_destroy( type::UNSIGNED_INTEGER ) == false );
+         TEST_ASSERT( needs_destroy( type::SIGNED ) == false );
+         TEST_ASSERT( needs_destroy( type::UNSIGNED ) == false );
          TEST_ASSERT( needs_destroy( type::DOUBLE ) == false );
 
          TEST_ASSERT( needs_destroy( type::STRING ) == true );

@@ -34,7 +34,7 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::SIGNED_INTEGER >
+         template<> struct get_by_enum< type::SIGNED >
          {
             template< typename V >
             static int64_t get( const value_union< V > & u )
@@ -43,7 +43,7 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::UNSIGNED_INTEGER >
+         template<> struct get_by_enum< type::UNSIGNED >
          {
             template< typename V >
             static uint64_t get( const value_union< V > & u )
