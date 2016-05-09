@@ -14,7 +14,7 @@ namespace tao
       template<>
       struct traits< my_data >
       {
-         static constexpr const char* default_key = "my_data";
+         static const char* default_key;
 
          static void assign( value & v, const my_data & )
          {
@@ -25,6 +25,8 @@ namespace tao
             };
          }
       };
+
+      const char* traits< my_data >::default_key = "my_data";
 
       void unit_test()
       {
