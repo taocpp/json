@@ -112,10 +112,10 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_signed_integer() == rhs;
+                  return lhs.unsafe_get_signed() == rhs;
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return ( rhs >= 0 ) && ( lhs.unsafe_get_unsigned_integer() == static_cast< uint64_t >( rhs ) );
+                  return ( rhs >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< uint64_t >( rhs ) );
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() == rhs;
@@ -134,10 +134,10 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_signed_integer() < rhs;
+                  return lhs.unsafe_get_signed() < rhs;
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return ( rhs >= 0 ) && ( lhs.unsafe_get_unsigned_integer() < static_cast< uint64_t >( rhs ) );
+                  return ( rhs >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< uint64_t >( rhs ) );
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() < rhs;
@@ -156,10 +156,10 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_signed_integer() > rhs;
+                  return lhs.unsafe_get_signed() > rhs;
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return ( rhs < 0 ) || ( lhs.unsafe_get_unsigned_integer() > static_cast< uint64_t >( rhs ) );
+                  return ( rhs < 0 ) || ( lhs.unsafe_get_unsigned() > static_cast< uint64_t >( rhs ) );
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() > rhs;
@@ -183,11 +183,11 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  const auto v = lhs.unsafe_get_signed_integer();
+                  const auto v = lhs.unsafe_get_signed();
                   return ( v >= 0 ) && ( static_cast< uint64_t >( v ) == rhs );
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_unsigned_integer() == rhs;
+                  return lhs.unsafe_get_unsigned() == rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() == rhs;
@@ -206,11 +206,11 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  const auto v = lhs.unsafe_get_signed_integer();
+                  const auto v = lhs.unsafe_get_signed();
                   return ( v < 0 ) || ( static_cast< uint64_t >( v ) < rhs );
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_unsigned_integer() < rhs;
+                  return lhs.unsafe_get_unsigned() < rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() < rhs;
@@ -229,11 +229,11 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  const auto v = lhs.unsafe_get_signed_integer();
+                  const auto v = lhs.unsafe_get_signed();
                   return ( v >= 0 ) && ( static_cast< uint64_t >( v ) > rhs );
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_unsigned_integer() > rhs;
+                  return lhs.unsafe_get_unsigned() > rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() > rhs;
@@ -257,10 +257,10 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_signed_integer() == rhs;
+                  return lhs.unsafe_get_signed() == rhs;
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_unsigned_integer() == rhs;
+                  return lhs.unsafe_get_unsigned() == rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() == rhs;
@@ -279,10 +279,10 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_signed_integer() < rhs;
+                  return lhs.unsafe_get_signed() < rhs;
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_unsigned_integer() < rhs;
+                  return lhs.unsafe_get_unsigned() < rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() < rhs;
@@ -301,10 +301,10 @@ namespace tao
                   }
                }
                if ( lhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_signed_integer() > rhs;
+                  return lhs.unsafe_get_signed() > rhs;
                }
                if ( lhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_unsigned_integer() > rhs;
+                  return lhs.unsafe_get_unsigned() > rhs;
                }
                if ( lhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_double() > rhs;

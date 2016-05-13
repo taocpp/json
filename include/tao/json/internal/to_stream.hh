@@ -117,10 +117,10 @@ namespace tao
                   o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
                case type::SIGNED:
-                  o << v.unsafe_get_signed_integer();
+                  o << v.unsafe_get_signed();
                   return;
                case type::UNSIGNED:
-                  o << v.unsafe_get_unsigned_integer();
+                  o << v.unsafe_get_unsigned();
                   return;
                case type::DOUBLE:
                   // Assumes std::isfinite( v.unsafe_get_double() ).
@@ -158,10 +158,10 @@ namespace tao
                   o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
                case type::SIGNED:
-                  o << v.unsafe_get_signed_integer();
+                  o << v.unsafe_get_signed();
                   return;
                case type::UNSIGNED:
-                  o << v.unsafe_get_unsigned_integer();
+                  o << v.unsafe_get_unsigned();
                   return;
                case type::DOUBLE:
                   // Assumes std::isfinite( v.unsafe_get_double() ).

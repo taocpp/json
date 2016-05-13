@@ -13,8 +13,8 @@ namespace tao
 
          TEST_ASSERT( to_string( type::NULL_ ) == std::string( "null" ) );
          TEST_ASSERT( to_string( type::BOOL_ ) == std::string( "bool" ) );
-         TEST_ASSERT( to_string( type::SIGNED ) == std::string( "signed_integer" ) );
-         TEST_ASSERT( to_string( type::UNSIGNED ) == std::string( "unsigned_integer" ) );
+         TEST_ASSERT( to_string( type::SIGNED ) == std::string( "signed" ) );
+         TEST_ASSERT( to_string( type::UNSIGNED ) == std::string( "unsigned" ) );
          TEST_ASSERT( to_string( type::DOUBLE ) == std::string( "double" ) );
 
          TEST_ASSERT( to_string( type::STRING ) == std::string( "string" ) );

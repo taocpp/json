@@ -41,9 +41,9 @@ namespace tao
             case type::BOOL_:
                return "bool";
             case type::SIGNED:
-               return "signed_integer";
+               return "signed";
             case type::UNSIGNED:
-               return "unsigned_integer";
+               return "unsigned";
             case type::DOUBLE:
                return "double";
             case type::STRING:

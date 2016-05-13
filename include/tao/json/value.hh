@@ -136,19 +136,19 @@ namespace tao
             return m_type == json::type::BOOL_;
          }
 
-         bool is_signed_integer() const noexcept
+         bool is_signed() const noexcept
          {
             return m_type == json::type::SIGNED;
          }
 
-         bool is_unsigned_integer() const noexcept
+         bool is_unsigned() const noexcept
          {
             return m_type == json::type::UNSIGNED;
          }
 
          bool is_integer() const noexcept
          {
-            return is_signed_integer() || is_unsigned_integer();
+            return is_signed() || is_unsigned();
          }
 
          bool is_double() const noexcept
@@ -193,16 +193,16 @@ namespace tao
             return unsafe_get_bool();
          }
 
-         int64_t get_signed_integer() const
+         int64_t get_signed() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::SIGNED );
-            return unsafe_get_signed_integer();
+            return unsafe_get_signed();
          }
 
-         uint64_t get_unsigned_integer() const
+         uint64_t get_unsigned() const
          {
             CHECK_TYPE_ERROR( m_type, json::type::UNSIGNED );
-            return unsafe_get_unsigned_integer();
+            return unsafe_get_unsigned();
          }
 
          double get_double() const
@@ -272,9 +272,9 @@ namespace tao
          {
             switch ( m_type ) {
                case json::type::SIGNED:
-                  return T( unsafe_get_signed_integer() );
+                  return T( unsafe_get_signed() );
                case json::type::UNSIGNED:
-                  return T( unsafe_get_unsigned_integer() );
+                  return T( unsafe_get_unsigned() );
                case json::type::DOUBLE:
                   return T( unsafe_get_double() );
                default:
@@ -296,12 +296,12 @@ namespace tao
             return m_union.b;
          }
 
-         int64_t unsafe_get_signed_integer() const noexcept
+         int64_t unsafe_get_signed() const noexcept
          {
             return m_union.i;
          }
 
-         uint64_t unsafe_get_unsigned_integer() const noexcept
+         uint64_t unsafe_get_unsigned() const noexcept
          {
             return m_union.u;
          }
@@ -459,13 +459,13 @@ namespace tao
             m_type = json::type::BOOL_;
          }
 
-         void unsafe_assign_signed_integer( const int64_t i ) noexcept
+         void unsafe_assign_signed( const int64_t i ) noexcept
          {
             m_union.i = i;
             m_type = json::type::SIGNED;
          }
 
-         void unsafe_assign_unsigned_integer( const uint64_t u ) noexcept
+         void unsafe_assign_unsigned( const uint64_t u ) noexcept
          {
             m_union.u = u;
             m_type = json::type::UNSIGNED;
@@ -791,28 +791,28 @@ namespace tao
             }
             if ( lhs.type() == type::SIGNED ) {
                if ( rhs.type() == type::UNSIGNED ) {
-                  const auto v = lhs.unsafe_get_signed_integer();
-                  return ( v >= 0 ) && ( static_cast< uint64_t >( v ) == rhs.unsafe_get_unsigned_integer() );
+                  const auto v = lhs.unsafe_get_signed();
+                  return ( v >= 0 ) && ( static_cast< uint64_t >( v ) == rhs.unsafe_get_unsigned() );
                }
                if ( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_signed_integer() == rhs.unsafe_get_double();
+                  return lhs.unsafe_get_signed() == rhs.unsafe_get_double();
                }
             }
             else if ( lhs.type() == type::UNSIGNED ) {
                if ( rhs.type() == type::SIGNED ) {
-                  const auto v = rhs.unsafe_get_signed_integer();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned_integer() == static_cast< uint64_t >( v ) );
+                  const auto v = rhs.unsafe_get_signed();
+                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< uint64_t >( v ) );
                }
                if ( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_unsigned_integer() == rhs.unsafe_get_double();
+                  return lhs.unsafe_get_unsigned() == rhs.unsafe_get_double();
                }
             }
             else if ( lhs.type() == type::DOUBLE ) {
                if ( rhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_double() == rhs.unsafe_get_signed_integer();
+                  return lhs.unsafe_get_double() == rhs.unsafe_get_signed();
                }
                if ( rhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned_integer();
+                  return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned();
                }
             }
             return false;
@@ -823,9 +823,9 @@ namespace tao
             case type::BOOL_:
                return lhs.unsafe_get_bool() == rhs.unsafe_get_bool();
             case type::SIGNED:
-               return lhs.unsafe_get_signed_integer() == rhs.unsafe_get_signed_integer();
+               return lhs.unsafe_get_signed() == rhs.unsafe_get_signed();
             case type::UNSIGNED:
-               return lhs.unsafe_get_unsigned_integer() == rhs.unsafe_get_unsigned_integer();
+               return lhs.unsafe_get_unsigned() == rhs.unsafe_get_unsigned();
             case type::DOUBLE:
                return lhs.unsafe_get_double() == rhs.unsafe_get_double();
             case type::STRING:
@@ -862,28 +862,28 @@ namespace tao
             }
             if ( lhs.type() == type::SIGNED ) {
                if ( rhs.type() == type::UNSIGNED ) {
-                  const auto v = lhs.unsafe_get_signed_integer();
-                  return ( v < 0 ) || ( static_cast< uint64_t >( v ) < rhs.unsafe_get_unsigned_integer() );
+                  const auto v = lhs.unsafe_get_signed();
+                  return ( v < 0 ) || ( static_cast< uint64_t >( v ) < rhs.unsafe_get_unsigned() );
                }
                if ( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_signed_integer() < rhs.unsafe_get_double();
+                  return lhs.unsafe_get_signed() < rhs.unsafe_get_double();
                }
             }
             else if ( lhs.type() == type::UNSIGNED ) {
                if ( rhs.type() == type::SIGNED ) {
-                  const auto v = rhs.unsafe_get_signed_integer();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned_integer() < static_cast< uint64_t >( v ) );
+                  const auto v = rhs.unsafe_get_signed();
+                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< uint64_t >( v ) );
                }
                if ( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_unsigned_integer() < rhs.unsafe_get_double();
+                  return lhs.unsafe_get_unsigned() < rhs.unsafe_get_double();
                }
             }
             else if ( lhs.type() == type::DOUBLE ) {
                if ( rhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_double() < rhs.unsafe_get_signed_integer();
+                  return lhs.unsafe_get_double() < rhs.unsafe_get_signed();
                }
                if ( rhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned_integer();
+                  return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned();
                }
             }
             return lhs.type() < rhs.type();
@@ -894,9 +894,9 @@ namespace tao
             case type::BOOL_:
                return lhs.unsafe_get_bool() < rhs.unsafe_get_bool();
             case type::SIGNED:
-               return lhs.unsafe_get_signed_integer() < rhs.unsafe_get_signed_integer();
+               return lhs.unsafe_get_signed() < rhs.unsafe_get_signed();
             case type::UNSIGNED:
-               return lhs.unsafe_get_unsigned_integer() < rhs.unsafe_get_unsigned_integer();
+               return lhs.unsafe_get_unsigned() < rhs.unsafe_get_unsigned();
             case type::DOUBLE:
                return lhs.unsafe_get_double() < rhs.unsafe_get_double();
             case type::STRING:

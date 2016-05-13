@@ -77,14 +77,14 @@ namespace tao
          TEST_ASSERT( from_string( "true" ) == value( true ) );
          TEST_ASSERT( from_string( "false" ) == value( false ) );
 
-         TEST_ASSERT( from_string( "0" ).get_unsigned_integer() == 0 );
-         TEST_ASSERT( from_string( "1" ).get_unsigned_integer() == 1 );
-         TEST_ASSERT( from_string( "-1" ).get_signed_integer() == -1 );
+         TEST_ASSERT( from_string( "0" ).get_unsigned() == 0 );
+         TEST_ASSERT( from_string( "1" ).get_unsigned() == 1 );
+         TEST_ASSERT( from_string( "-1" ).get_signed() == -1 );
 
          // full signed and unsigned 64 bit integer range
-         TEST_ASSERT( from_string( "9223372036854775807" ).get_unsigned_integer() == 9223372036854775807 );
-         TEST_ASSERT( from_string( "-9223372036854775808" ).get_signed_integer() == -9223372036854775807ll - 1 );
-         TEST_ASSERT( from_string( "18446744073709551615" ).get_unsigned_integer() == 18446744073709551615ull );
+         TEST_ASSERT( from_string( "9223372036854775807" ).get_unsigned() == 9223372036854775807 );
+         TEST_ASSERT( from_string( "-9223372036854775808" ).get_signed() == -9223372036854775807ll - 1 );
+         TEST_ASSERT( from_string( "18446744073709551615" ).get_unsigned() == 18446744073709551615ull );
 
          // anything beyond is double
          TEST_ASSERT( from_string( "-9223372036854775809" ).is_double() );

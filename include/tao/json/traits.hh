@@ -54,7 +54,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const signed char i ) noexcept
          {
-            v.unsafe_assign_signed_integer( i );
+            v.unsafe_assign_signed( i );
          }
       };
 
@@ -64,7 +64,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const unsigned char i ) noexcept
          {
-            v.unsafe_assign_unsigned_integer( i );
+            v.unsafe_assign_unsigned( i );
          }
       };
 
@@ -74,7 +74,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const signed short i ) noexcept
          {
-            v.unsafe_assign_signed_integer( i );
+            v.unsafe_assign_signed( i );
          }
       };
 
@@ -84,7 +84,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const unsigned short i ) noexcept
          {
-            v.unsafe_assign_unsigned_integer( i );
+            v.unsafe_assign_unsigned( i );
          }
       };
 
@@ -94,7 +94,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const signed int i ) noexcept
          {
-            v.unsafe_assign_signed_integer( i );
+            v.unsafe_assign_signed( i );
          }
       };
 
@@ -104,7 +104,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const unsigned int i ) noexcept
          {
-            v.unsafe_assign_unsigned_integer( i );
+            v.unsafe_assign_unsigned( i );
          }
       };
 
@@ -114,7 +114,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const signed long i ) noexcept
          {
-            v.unsafe_assign_signed_integer( i );
+            v.unsafe_assign_signed( i );
          }
       };
 
@@ -124,7 +124,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const unsigned long i ) noexcept
          {
-            v.unsafe_assign_unsigned_integer( i );
+            v.unsafe_assign_unsigned( i );
          }
       };
 
@@ -134,7 +134,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const signed long long i ) noexcept
          {
-            v.unsafe_assign_signed_integer( i );
+            v.unsafe_assign_signed( i );
          }
       };
 
@@ -144,7 +144,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void assign( basic_value< Traits > & v, const unsigned long long i ) noexcept
          {
-            v.unsafe_assign_unsigned_integer( i );
+            v.unsafe_assign_unsigned( i );
          }
       };
 
