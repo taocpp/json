@@ -13,13 +13,13 @@
 
 #include "internal/totally_ordered.hh"
 #include "internal/value_union.hh"
-#include "internal/pair.hh"
-#include "internal/single.hh"
 #include "internal/get_by_enum.hh"
 #include "internal/throw.hh"
 
 #include "type.hh"
 #include "traits.hh"
+#include "pair.hh"
+#include "single.hh"
 
 namespace tao
 {
@@ -73,18 +73,18 @@ namespace tao
             unsafe_assign( std::forward< T >( v ) );
          }
 
-         basic_value( std::initializer_list< internal::pair< basic_value > > && l )
+         basic_value( std::initializer_list< pair< basic_value > > && l )
          {
             unsafe_assign( std::move( l ) );
          }
 
-         basic_value( const std::initializer_list< internal::pair< basic_value > > & l )
+         basic_value( const std::initializer_list< pair< basic_value > > & l )
          {
             unsafe_assign( l );
          }
 
-         basic_value( std::initializer_list< internal::pair< basic_value > > & l )
-              : basic_value( static_cast< const std::initializer_list< internal::pair< basic_value > > & >( l ) )
+         basic_value( std::initializer_list< pair< basic_value > > & l )
+              : basic_value( static_cast< const std::initializer_list< pair< basic_value > > & >( l ) )
          { }
 
          ~basic_value() noexcept
@@ -92,14 +92,14 @@ namespace tao
             unsafe_destroy();
          }
 
-         static basic_value array( std::initializer_list< internal::single< basic_value > > && l )
+         static basic_value array( std::initializer_list< single< basic_value > > && l )
          {
             basic_value v;
             v.append( std::move( l ) );
             return v;
          }
 
-         static basic_value array( const std::initializer_list< internal::single< basic_value > > & l )
+         static basic_value array( const std::initializer_list< single< basic_value > > & l )
          {
             basic_value v;
             v.append( l );
@@ -431,21 +431,31 @@ namespace tao
             Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( std::initializer_list< internal::pair< basic_value > > && l )
+         void unsafe_assign( std::initializer_list< pair< basic_value > > && l )
          {
             unsafe_emplace_object();
-            *this += std::move( l );
+            for( auto & e : l ) {
+               const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
+               if ( ! r.second ) {
+                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+               }
+            }
          }
 
-         void unsafe_assign( const std::initializer_list< internal::pair< basic_value > > & l )
+         void unsafe_assign( const std::initializer_list< pair< basic_value > > & l )
          {
             unsafe_emplace_object();
-            *this += l;
+            for( auto & e : l ) {
+               const auto r = unsafe_emplace( e.key, e.value );
+               if ( ! r.second ) {
+                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+               }
+            }
          }
 
-         void unsafe_assign( std::initializer_list< internal::pair< basic_value > > & l )
+         void unsafe_assign( std::initializer_list< pair< basic_value > > & l )
          {
-            unsafe_assign( static_cast< const std::initializer_list< internal::pair< basic_value > > & >( l ) );
+            unsafe_assign( static_cast< const std::initializer_list< pair< basic_value > > & >( l ) );
          }
 
          void unsafe_assign_null() noexcept
@@ -584,67 +594,24 @@ namespace tao
             m_type = json::type::POINTER;
          }
 
-         void append( std::initializer_list< internal::single< basic_value > > && l )
+         void append( std::initializer_list< single< basic_value > > && l )
          {
             unsafe_emplace_back_prepare();
             auto & v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
             for( auto & e : l ) {
-               unsafe_emplace_back( std::move( e.e ) );
+               unsafe_emplace_back( std::move( e.value ) );
             }
          }
 
-         void append( const std::initializer_list< internal::single< basic_value > > & l )
+         void append( const std::initializer_list< single< basic_value > > & l )
          {
             unsafe_emplace_back_prepare();
             auto & v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
             for( const auto & e : l ) {
-               unsafe_emplace_back( e.e );
+               unsafe_emplace_back( e.value );
             }
-         }
-
-         basic_value & operator+= ( std::initializer_list< internal::pair< basic_value > > && l )
-         {
-            unsafe_emplace_prepare();
-            for( auto & e : l ) {
-               const auto r = unsafe_emplace( std::move( e.e.first ), std::move( e.e.second ) );
-               if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
-               }
-            }
-            return *this;
-         }
-
-         basic_value & operator+= ( const std::initializer_list< internal::pair< basic_value > > & l )
-         {
-            unsafe_emplace_prepare();
-            for( const auto & e : l ) {
-               const auto r = unsafe_emplace( e.e.first, e.e.second );
-               if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
-               }
-            }
-            return *this;
-         }
-
-         basic_value & operator-= ( const std::string & k )
-         {
-            if ( get_object().erase( k ) == 0 ) {
-               throw std::runtime_error( "key not found: " + k );
-            }
-            return *this;
-         }
-
-         basic_value & operator-= ( std::initializer_list< std::string > l )
-         {
-            auto & v = get_object();
-            for ( const auto & k : l ) {
-               if ( v.erase( k ) == 0 ) {
-                  throw std::runtime_error( "key not found: " + k );
-               }
-            }
-            return *this;
          }
 
          bool empty() const noexcept
