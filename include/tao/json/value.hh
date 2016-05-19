@@ -68,9 +68,10 @@ namespace tao
          { }
 
          template< typename T >
-         basic_value( T && v ) noexcept( noexcept( std::declval< basic_value & >().unsafe_assign( std::forward< T >( v ) ) ) )
+         basic_value( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value & >(), std::forward< T >( v ) ) ) )
          {
-            unsafe_assign( std::forward< T >( v ) );
+            using D = typename std::decay< T >::type;
+            Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
          basic_value( std::initializer_list< pair< basic_value > > && l )
