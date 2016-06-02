@@ -335,15 +335,15 @@ namespace tao
          TEST_ASSERT( v == value( r ) );
          TEST_ASSERT( v.get_array() == r );
 
-         TEST_ASSERT( v[ 0 ].get_signed() == 1 );
-         TEST_ASSERT( v[ 1 ].get_signed() == 2 );
-         TEST_ASSERT( v[ 2 ].get_signed() == 3 );
-         TEST_ASSERT( v[ 3 ].get_signed() == 4 );
+         TEST_ASSERT( v.at( 0 ).get_signed() == 1 );
+         TEST_ASSERT( v.at( 1 ).get_signed() == 2 );
+         TEST_ASSERT( v.at( 2 ).get_signed() == 3 );
+         TEST_ASSERT( v.at( 3 ).get_signed() == 4 );
 
-         TEST_ASSERT( v[ 0 ].get_signed() == 1 );
-         TEST_ASSERT( v[ 1 ].get_signed() == 2 );
-         TEST_ASSERT( v[ 2 ].get_signed() == 3 );
-         TEST_ASSERT( v[ 3 ].get_signed() == 4 );
+         TEST_ASSERT( v.at( 0 ).get_signed() == 1 );
+         TEST_ASSERT( v.at( 1 ).get_signed() == 2 );
+         TEST_ASSERT( v.at( 2 ).get_signed() == 3 );
+         TEST_ASSERT( v.at( 3 ).get_signed() == 4 );
 
          TEST_THROWS( v.at( 4 ) );
          TEST_THROWS( v.at( "foo" ) );
@@ -458,14 +458,14 @@ namespace tao
             value a;
             a.emplace_back( 4 );
             TEST_ASSERT( a.type() == type::ARRAY );
-            TEST_ASSERT( a[ 0 ] == 4 );
+            TEST_ASSERT( a.at( 0 ) == 4 );
             value b( a );
             TEST_ASSERT( a.get_array() == b.get_array() );
          } {
             value a;
             a.emplace( "foo", 5 );
             TEST_ASSERT( a.type() == type::OBJECT );
-            TEST_ASSERT( a[ "foo" ] == 5 );
+            TEST_ASSERT( a.at( "foo" ) == 5 );
             value b( a );
             TEST_ASSERT( a == b );
             TEST_ASSERT( a.get_object() == b.get_object() );
@@ -483,18 +483,18 @@ namespace tao
            TEST_ASSERT( b == 4.0 );
          } {
            value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
-           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].is_signed() );
-           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].unsafe_get_signed() == 42 );
-           v = v[ "foo" ][ "bar" ];
-           TEST_ASSERT( v[ "baz" ].is_signed() );
-           TEST_ASSERT( v[ "baz" ].unsafe_get_signed() == 42 );
+           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
+           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
+           v = v.at( "foo" ).at( "bar" );
+           TEST_ASSERT( v.at( "baz" ).is_signed() );
+           TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
          } {
            value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
-           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].is_signed() );
-           TEST_ASSERT( v[ "foo" ][ "bar" ][ "baz" ].unsafe_get_signed() == 42 );
-           v = std::move( v[ "foo" ][ "bar" ] );
-           TEST_ASSERT( v[ "baz" ].is_signed() );
-           TEST_ASSERT( v[ "baz" ].unsafe_get_signed() == 42 );
+           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
+           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
+           v = std::move( v.at( "foo" ).at( "bar" ) );
+           TEST_ASSERT( v.at( "baz" ).is_signed() );
+           TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
          }
       }
 

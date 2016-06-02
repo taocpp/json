@@ -18,16 +18,16 @@ namespace tao
 
          TEST_ASSERT( v2 == v3 );
          TEST_ASSERT( v2 == v4 );
-         TEST_ASSERT( v2[ "bar" ].type() == type::POINTER );
-         TEST_ASSERT( v2[ "baz" ][ 1 ].type() == type::POINTER );
-         TEST_ASSERT( v3[ "bar" ].type() == type::OBJECT );
-         TEST_ASSERT( v3[ "baz" ][ 1 ].type() == type::OBJECT );
+         TEST_ASSERT( v2.at( "bar" ).type() == type::POINTER );
+         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::POINTER );
+         TEST_ASSERT( v3.at( "bar" ).type() == type::OBJECT );
+         TEST_ASSERT( v3.at( "baz" ).at( 1 ).type() == type::OBJECT );
 
          make_self_contained( v2 );
 
          TEST_ASSERT( v2 == v3 );
-         TEST_ASSERT( v2[ "bar" ].type() == type::OBJECT );
-         TEST_ASSERT( v2[ "baz" ][ 1 ].type() == type::OBJECT );
+         TEST_ASSERT( v2.at( "bar" ).type() == type::OBJECT );
+         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::OBJECT );
       }
 
    } // json

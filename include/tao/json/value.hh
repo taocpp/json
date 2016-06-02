@@ -395,35 +395,6 @@ namespace tao
             return m_union.o.at( key );
          }
 
-         // The following convenience functions operate on
-         // the containers for arrays and result in undefined
-         // behaviour when the type of the value is wrong or
-         // the index is out of range.
-
-         basic_value & operator[] ( const std::size_t index ) noexcept
-         {
-            return m_union.a[ index ];
-         }
-
-         const basic_value & operator[] ( const std::size_t index ) const noexcept
-         {
-            return m_union.a[ index ];
-         }
-
-         // The following convenience functions operate on
-         // the containers for objects and insert a default-
-         // constructed value when the key is not found.
-
-         basic_value & operator[] ( const std::string & key )
-         {
-            return m_union.o[ key ];
-         }
-
-         basic_value & operator[] ( std::string && key )
-         {
-            return m_union.o[ std::move( key ) ];
-         }
-
          const basic_value & operator* () const noexcept
          {
             return * unsafe_get_pointer();
