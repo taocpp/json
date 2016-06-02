@@ -21,7 +21,10 @@ namespace tao
          mutable T value;
 
          template< typename U >
-         pair( U && v ) : key( traits< typename std::decay< U >::type >::default_key ), value( std::forward< U >( v ) ) {}
+         pair( U && v )
+           : key( traits< typename std::decay< U >::type >::default_key ),
+             value( std::forward< U >( v ) )
+         { }
 
          pair( std::string && k, T && v ) : key( std::move( k ) ), value( std::move( v ) ) {}
          pair( std::string && k, const T & v ) : key( std::move( k ) ), value( v ) {}
