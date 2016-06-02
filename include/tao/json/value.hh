@@ -602,6 +602,26 @@ namespace tao
             m_type = json::type::POINTER;
          }
 
+         void append( std::initializer_list< single< basic_value > > && l )
+         {
+            prepare_array();
+            auto & v = unsafe_get_array();
+            v.reserve( v.size() + l.size() );
+            for( auto & e : l ) {
+               unsafe_emplace_back( std::move( e.value ) );
+            }
+         }
+
+         void append( const std::initializer_list< single< basic_value > > & l )
+         {
+            prepare_array();
+            auto & v = unsafe_get_array();
+            v.reserve( v.size() + l.size() );
+            for( const auto & e : l ) {
+               unsafe_emplace_back( e.value );
+            }
+         }
+
          void insert( std::initializer_list< pair< basic_value > > && l )
          {
             prepare_object();
@@ -621,26 +641,6 @@ namespace tao
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
                }
-            }
-         }
-
-         void append( std::initializer_list< single< basic_value > > && l )
-         {
-            prepare_array();
-            auto & v = unsafe_get_array();
-            v.reserve( v.size() + l.size() );
-            for( auto & e : l ) {
-               unsafe_emplace_back( std::move( e.value ) );
-            }
-         }
-
-         void append( const std::initializer_list< single< basic_value > > & l )
-         {
-            prepare_array();
-            auto & v = unsafe_get_array();
-            v.reserve( v.size() + l.size() );
-            for( const auto & e : l ) {
-               unsafe_emplace_back( e.value );
             }
          }
 
