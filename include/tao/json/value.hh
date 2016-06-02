@@ -185,7 +185,7 @@ namespace tao
 
          null_t get_null() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
             return unsafe_get_null();
          }
 
@@ -196,81 +196,81 @@ namespace tao
 
          bool get_bool() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::BOOL );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BOOL );
             return unsafe_get_bool();
          }
 
          int64_t get_signed() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::SIGNED );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::SIGNED );
             return unsafe_get_signed();
          }
 
          uint64_t get_unsigned() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::UNSIGNED );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::UNSIGNED );
             return unsafe_get_unsigned();
          }
 
          double get_double() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::DOUBLE );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::DOUBLE );
             return unsafe_get_double();
          }
 
          std::string & get_string()
          {
-            CHECK_TYPE_ERROR( m_type, json::type::STRING );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING );
             return unsafe_get_string();
          }
 
          const std::string & get_string() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::STRING );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING );
             return unsafe_get_string();
          }
 
          std::vector< basic_value > & get_array()
          {
-            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
          const std::vector< basic_value > & get_array() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
          std::map< std::string, basic_value > & get_object()
          {
-            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
          }
 
          const std::map< std::string, basic_value > & get_object() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
          }
 
          const basic_value * get_pointer() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::POINTER );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::POINTER );
             return unsafe_get_pointer();
          }
 
          template< json::type E >
          decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value > & >() ) ) get()
          {
-            CHECK_TYPE_ERROR( m_type, E );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
          }
 
          template< json::type E >
          decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value > & >() ) ) get() const
          {
-            CHECK_TYPE_ERROR( m_type, E );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
          }
 
@@ -285,7 +285,7 @@ namespace tao
                case json::type::DOUBLE:
                   return T( unsafe_get_double() );
                default:
-                  THROW_TYPE_ERROR( m_type );
+                  TAOCPP_JSON_THROW_TYPE_ERROR( m_type );
             }
          }
 
@@ -372,25 +372,25 @@ namespace tao
 
          basic_value & at( const std::size_t index )
          {
-            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
          const basic_value & at( const std::size_t index ) const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
          basic_value & at( const std::string & key )
          {
-            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
          }
 
          const basic_value & at( const std::string & key ) const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
          }
 
@@ -539,7 +539,7 @@ namespace tao
                case json::type::ARRAY:
                   break;
                default:
-                  THROW_TYPE_ERROR( m_type );
+                  TAOCPP_JSON_THROW_TYPE_ERROR( m_type );
             }
          }
 
@@ -578,7 +578,7 @@ namespace tao
                case json::type::OBJECT:
                   break;
                default:
-                  THROW_TYPE_ERROR( m_type );
+                  TAOCPP_JSON_THROW_TYPE_ERROR( m_type );
             }
          }
 

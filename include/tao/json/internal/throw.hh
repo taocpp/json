@@ -9,18 +9,18 @@
 
 #include "../type.hh"
 
-#define THROW_TYPE_ERROR( TyPe )                                        \
+#define TAOCPP_JSON_THROW_TYPE_ERROR( TyPe )                            \
    do {                                                                 \
       std::ostringstream oss;                                           \
       oss << "invalid json type '" << json::to_string( TyPe ) << "' for function '" << __PRETTY_FUNCTION__ << "'"; \
       throw std::runtime_error( oss.str() );                            \
    } while ( false )
 
-#define CHECK_TYPE_ERROR( HaVe, NeeD )          \
-   do {                                         \
-      if ( ( HaVe ) != ( NeeD ) ) {             \
-         THROW_TYPE_ERROR( HaVe );              \
-      }                                         \
+#define TAOCPP_JSON_CHECK_TYPE_ERROR( HaVe, NeeD )             \
+   do {                                                        \
+      if ( ( HaVe ) != ( NeeD ) ) {                            \
+         TAOCPP_JSON_THROW_TYPE_ERROR( HaVe );                 \
+      }                                                        \
    } while ( false )
 
 #endif
