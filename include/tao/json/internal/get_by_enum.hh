@@ -4,6 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_GET_BY_ENUM_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_GET_BY_ENUM_HH
 
+#include <cstdint>
+
 #include "../type.hh"
 
 #include "value_union.hh"
@@ -37,7 +39,7 @@ namespace tao
          template<> struct get_by_enum< type::SIGNED >
          {
             template< typename V >
-            static int64_t get( const value_union< V > & u )
+            static std::int64_t get( const value_union< V > & u )
             {
                return u.i;
             }
@@ -46,7 +48,7 @@ namespace tao
          template<> struct get_by_enum< type::UNSIGNED >
          {
             template< typename V >
-            static uint64_t get( const value_union< V > & u )
+            static std::uint64_t get( const value_union< V > & u )
             {
                return u.u;
             }

@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_VALUE_HH
 #define TAOCPP_JSON_INCLUDE_VALUE_HH
 
+#include <cstdint>
 #include <cmath>
 #include <cassert>
 #include <utility>
@@ -200,13 +201,13 @@ namespace tao
             return unsafe_get_bool();
          }
 
-         int64_t get_signed() const
+         std::int64_t get_signed() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::SIGNED );
             return unsafe_get_signed();
          }
 
-         uint64_t get_unsigned() const
+         std::uint64_t get_unsigned() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::UNSIGNED );
             return unsafe_get_unsigned();
@@ -303,12 +304,12 @@ namespace tao
             return m_union.b;
          }
 
-         int64_t unsafe_get_signed() const noexcept
+         std::int64_t unsafe_get_signed() const noexcept
          {
             return m_union.i;
          }
 
-         uint64_t unsafe_get_unsigned() const noexcept
+         std::uint64_t unsafe_get_unsigned() const noexcept
          {
             return m_union.u;
          }
@@ -476,13 +477,13 @@ namespace tao
             m_type = json::type::BOOL;
          }
 
-         void unsafe_assign_signed( const int64_t i ) noexcept
+         void unsafe_assign_signed( const std::int64_t i ) noexcept
          {
             m_union.i = i;
             m_type = json::type::SIGNED;
          }
 
-         void unsafe_assign_unsigned( const uint64_t u ) noexcept
+         void unsafe_assign_unsigned( const std::uint64_t u ) noexcept
          {
             m_union.u = u;
             m_type = json::type::UNSIGNED;
@@ -766,7 +767,7 @@ namespace tao
             if ( lhs.type() == type::SIGNED ) {
                if ( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( static_cast< uint64_t >( v ) == rhs.unsafe_get_unsigned() );
+                  return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs.unsafe_get_unsigned() );
                }
                if ( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_signed() == rhs.unsafe_get_double();
@@ -775,7 +776,7 @@ namespace tao
             else if ( lhs.type() == type::UNSIGNED ) {
                if ( rhs.type() == type::SIGNED ) {
                   const auto v = rhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< uint64_t >( v ) );
+                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< std::uint64_t >( v ) );
                }
                if ( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_unsigned() == rhs.unsafe_get_double();
@@ -837,7 +838,7 @@ namespace tao
             if ( lhs.type() == type::SIGNED ) {
                if ( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed();
-                  return ( v < 0 ) || ( static_cast< uint64_t >( v ) < rhs.unsafe_get_unsigned() );
+                  return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs.unsafe_get_unsigned() );
                }
                if ( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_signed() < rhs.unsafe_get_double();
@@ -846,7 +847,7 @@ namespace tao
             else if ( lhs.type() == type::UNSIGNED ) {
                if ( rhs.type() == type::SIGNED ) {
                   const auto v = rhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< uint64_t >( v ) );
+                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< std::uint64_t >( v ) );
                }
                if ( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_unsigned() < rhs.unsafe_get_double();

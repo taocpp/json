@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_NUMBER_STATE_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_NUMBER_STATE_HH
 
+#include <cstdint>
 #include <cstdlib>
 #include <inttypes.h>
 
@@ -42,14 +43,14 @@ namespace tao
                   char * p;
                   mantissa[ msize + 1 ] = 0;
                   if ( mneg ) {
-                    const int64_t ll = std::strtoll( mantissa, & p, 10 );
+                    const std::int64_t ll = std::strtoll( mantissa, & p, 10 );
                     if ( ( errno != ERANGE ) && ( p == mantissa + msize + 1 ) ) {
                       result.result.unsafe_assign( ll );
                       return;
                     }
                   }
                   else {
-                    const uint64_t ull = std::strtoull( mantissa + 1, & p, 10 );
+                    const std::uint64_t ull = std::strtoull( mantissa + 1, & p, 10 );
                     if ( ( errno != ERANGE ) && ( p == mantissa + msize + 1 ) ) {
                       result.result.unsafe_assign( ull );
                       return;
