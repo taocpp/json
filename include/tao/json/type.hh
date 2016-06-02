@@ -4,14 +4,16 @@
 #ifndef TAOCPP_JSON_INCLUDE_TYPE_HH
 #define TAOCPP_JSON_INCLUDE_TYPE_HH
 
+#include <cstdint>
+
 namespace tao
 {
    namespace json
    {
-      enum class type : uint8_t
+      enum class type : std::uint8_t
       {
          NULL_,
-         BOOL_,
+         BOOL,
          SIGNED,
          UNSIGNED,
          DOUBLE,
@@ -38,7 +40,7 @@ namespace tao
          switch ( t ) {
             case type::NULL_:
                return "null";
-            case type::BOOL_:
+            case type::BOOL:
                return "bool";
             case type::SIGNED:
                return "signed";
@@ -58,13 +60,9 @@ namespace tao
          return "unknown";
       }
 
-      struct null_t {};
-      struct empty_array_t {};
-      struct empty_object_t {};
-
-      static constexpr null_t null = null_t();
-      static constexpr empty_array_t empty_array = empty_array_t();
-      static constexpr empty_object_t empty_object = empty_object_t();
+      struct null_t {} constexpr null {};
+      struct empty_array_t {} constexpr empty_array {};
+      struct empty_object_t {} constexpr empty_object {};
 
    } // json
 

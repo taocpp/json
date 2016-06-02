@@ -4,9 +4,10 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_UNION_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_UNION_HH
 
-#include <map>
-#include <vector>
+#include <cstdint>
 #include <string>
+#include <vector>
+#include <map>
 
 namespace tao
 {
@@ -27,8 +28,8 @@ namespace tao
             { }
 
             bool b;
-            int64_t i;
-            uint64_t u;
+            std::int64_t i;
+            std::uint64_t u;
             double d;
 
             std::string s;

@@ -113,7 +113,7 @@ namespace tao
                case type::NULL_:
                   o << "null";
                   return;
-               case type::BOOL_:
+               case type::BOOL:
                   o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
                case type::SIGNED:
@@ -154,7 +154,7 @@ namespace tao
                case type::NULL_:
                   o << "null";
                   return;
-               case type::BOOL_:
+               case type::BOOL:
                   o << ( v.unsafe_get_bool() ? "true" : "false" );
                   return;
                case type::SIGNED:

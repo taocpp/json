@@ -73,7 +73,7 @@ namespace tao
          TEST_THROWS( v.get_object() );
          TEST_THROWS( v.get_pointer() );
 
-         TEST_ASSERT( v.type() == type::BOOL_ );
+         TEST_ASSERT( v.type() == type::BOOL );
          TEST_ASSERT( v.get_bool() == b );
          TEST_ASSERT( v.unsafe_get_bool() == b );
 
@@ -402,7 +402,7 @@ namespace tao
 
          v = true;
 
-         TEST_ASSERT( v.type() == type::BOOL_ );
+         TEST_ASSERT( v.type() == type::BOOL );
          TEST_ASSERT( v.get_bool() );
 
          v = 1;

@@ -14,7 +14,7 @@ namespace tao
    {
       namespace internal
       {
-         template< type > struct get_by_enum {};
+         template< type > struct get_by_enum;
 
          template<> struct get_by_enum< type::NULL_ >
          {
@@ -25,7 +25,7 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::BOOL_ >
+         template<> struct get_by_enum< type::BOOL >
          {
             template< typename V >
             static bool get( const value_union< V > & u )

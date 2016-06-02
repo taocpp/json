@@ -53,8 +53,8 @@ namespace tao
          const value t( true );
          const value f( false );
 
-         TEST_ASSERT( t.type() == type::BOOL_ );
-         TEST_ASSERT( f.type() == type::BOOL_ );
+         TEST_ASSERT( t.type() == type::BOOL );
+         TEST_ASSERT( f.type() == type::BOOL );
 
          test_lt( f, t );
       }
@@ -147,7 +147,7 @@ namespace tao
          const value o = from_string( "{}" );
 
          TEST_ASSERT( n.type() == type::NULL_ );
-         TEST_ASSERT( b.type() == type::BOOL_ );
+         TEST_ASSERT( b.type() == type::BOOL );
          TEST_ASSERT( i.type() == type::SIGNED );
          TEST_ASSERT( u.type() == type::UNSIGNED );
          TEST_ASSERT( d.type() == type::DOUBLE );

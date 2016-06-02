@@ -30,7 +30,7 @@ namespace tao
       class basic_value
          : operators::totally_ordered< basic_value< Traits > >,
            internal::totally_ordered< basic_value< Traits >, null_t, type::NULL_ >,
-           internal::totally_ordered< basic_value< Traits >, bool, type::BOOL_ >,
+           internal::totally_ordered< basic_value< Traits >, bool, type::BOOL >,
            internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED >,
            internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED >,
            internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED >,
@@ -135,7 +135,7 @@ namespace tao
 
          bool is_bool() const noexcept
          {
-            return m_type == json::type::BOOL_;
+            return m_type == json::type::BOOL;
          }
 
          bool is_signed() const noexcept
@@ -196,7 +196,7 @@ namespace tao
 
          bool get_bool() const
          {
-            CHECK_TYPE_ERROR( m_type, json::type::BOOL_ );
+            CHECK_TYPE_ERROR( m_type, json::type::BOOL );
             return unsafe_get_bool();
          }
 
@@ -473,7 +473,7 @@ namespace tao
          void unsafe_assign_bool( const bool b ) noexcept
          {
             m_union.b = b;
-            m_type = json::type::BOOL_;
+            m_type = json::type::BOOL;
          }
 
          void unsafe_assign_signed( const int64_t i ) noexcept
@@ -626,7 +626,7 @@ namespace tao
             switch ( m_type ) {
                case json::type::NULL_:
                   return true;
-               case json::type::BOOL_:
+               case json::type::BOOL:
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
@@ -649,7 +649,7 @@ namespace tao
             switch ( r.m_type ) {
                case json::type::NULL_:
                   return;
-               case json::type::BOOL_:
+               case json::type::BOOL:
                   m_union.b = r.m_union.b;
                   return;
                case json::type::SIGNED:
@@ -682,7 +682,7 @@ namespace tao
             switch ( r.m_type ) {
                case json::type::NULL_:
                   return;
-               case json::type::BOOL_:
+               case json::type::BOOL:
                   m_union.b = r.m_union.b;
                   return;
                case json::type::SIGNED:
@@ -714,7 +714,7 @@ namespace tao
          {
             switch ( m_type ) {
                case json::type::NULL_:
-               case json::type::BOOL_:
+               case json::type::BOOL:
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
@@ -794,7 +794,7 @@ namespace tao
          switch ( lhs.type() ) {
             case type::NULL_:
                return true;
-            case type::BOOL_:
+            case type::BOOL:
                return lhs.unsafe_get_bool() == rhs.unsafe_get_bool();
             case type::SIGNED:
                return lhs.unsafe_get_signed() == rhs.unsafe_get_signed();
@@ -865,7 +865,7 @@ namespace tao
          switch ( lhs.type() ) {
             case type::NULL_:
                return false;
-            case type::BOOL_:
+            case type::BOOL:
                return lhs.unsafe_get_bool() < rhs.unsafe_get_bool();
             case type::SIGNED:
                return lhs.unsafe_get_signed() < rhs.unsafe_get_signed();

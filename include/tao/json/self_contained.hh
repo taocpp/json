@@ -17,7 +17,7 @@ namespace tao
       {
          switch ( v.type() ) {
             case json::type::NULL_:
-            case json::type::BOOL_:
+            case json::type::BOOL:
             case json::type::SIGNED:
             case json::type::UNSIGNED:
             case json::type::DOUBLE:
@@ -50,7 +50,7 @@ namespace tao
       {
          switch ( v.type() ) {
             case json::type::NULL_:
-            case json::type::BOOL_:
+            case json::type::BOOL:
             case json::type::SIGNED:
             case json::type::UNSIGNED:
             case json::type::DOUBLE:
