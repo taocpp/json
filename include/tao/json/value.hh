@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "external/operators.hpp"
+#include "external/optional.hpp"
 
 #include "internal/totally_ordered.hh"
 #include "internal/value_union.hh"
@@ -186,6 +187,11 @@ namespace tao
          {
             CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
             return unsafe_get_null();
+         }
+
+         optional< null_t > optional_null() const
+         {
+            return m_type == json::type::NULL_ ? unsafe_get_null() : nullopt;
          }
 
          bool get_bool() const
