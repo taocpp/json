@@ -532,7 +532,7 @@ namespace tao
             unsafe_emplace_array( std::forward< Ts >( ts ) ... );
          }
 
-         void unsafe_emplace_back_prepare()
+         void prepare_array()
          {
             switch ( m_type ) {
                case json::type::NULL_:
@@ -553,7 +553,7 @@ namespace tao
          template< typename V >
          void emplace_back( V && v )
          {
-            unsafe_emplace_back_prepare();
+            prepare_array();
             unsafe_emplace_back( std::forward< V >( v ) );
          }
 
@@ -571,7 +571,7 @@ namespace tao
             unsafe_emplace_object( std::forward< Ts >( ts ) ... );
          }
 
-         void unsafe_emplace_prepare()
+         void prepare_object()
          {
             switch ( m_type ) {
                case json::type::NULL_:
@@ -592,7 +592,7 @@ namespace tao
          template< typename K, typename V >
          std::pair< typename std::map< std::string, basic_value >::iterator, bool > emplace( K && k, V && v )
          {
-            unsafe_emplace_prepare();
+            prepare_object();
             return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
@@ -604,7 +604,7 @@ namespace tao
 
          void append( std::initializer_list< single< basic_value > > && l )
          {
-            unsafe_emplace_back_prepare();
+            prepare_array();
             auto & v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
             for( auto & e : l ) {
@@ -614,7 +614,7 @@ namespace tao
 
          void append( const std::initializer_list< single< basic_value > > & l )
          {
-            unsafe_emplace_back_prepare();
+            prepare_array();
             auto & v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
             for( const auto & e : l ) {
