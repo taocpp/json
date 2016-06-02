@@ -53,15 +53,15 @@ namespace tao
          { }
 
          basic_value( basic_value && r ) noexcept
+              : m_type( r.m_type )
          {
             seize( std::move( r ) );
-            m_type = r.m_type;
          }
 
          basic_value( const basic_value & r )
+              : m_type( r.m_type )
          {
             embed( r );
-            m_type = r.m_type;
          }
 
          basic_value( basic_value & r )
