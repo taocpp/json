@@ -4,16 +4,14 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_THROW_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_THROW_HH
 
-#include <sstream>
 #include <stdexcept>
+#include <string>
 
 #include "../type.hh"
 
 #define TAOCPP_JSON_THROW_TYPE_ERROR( TyPe )                            \
    do {                                                                 \
-      std::ostringstream oss;                                           \
-      oss << "invalid json type '" << json::to_string( TyPe ) << "' for function '" << __PRETTY_FUNCTION__ << "'"; \
-      throw std::runtime_error( oss.str() );                            \
+      throw std::runtime_error( std::string( "invalid json type '" ) + to_string( TyPe ) + "' for function '" + __PRETTY_FUNCTION__ + '\'' ); \
    } while ( false )
 
 #define TAOCPP_JSON_CHECK_TYPE_ERROR( HaVe, NeeD )             \
