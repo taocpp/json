@@ -602,6 +602,28 @@ namespace tao
             m_type = json::type::POINTER;
          }
 
+         void insert( std::initializer_list< pair< basic_value > > && l )
+         {
+            prepare_object();
+            for( auto & e : l ) {
+               const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
+               if ( ! r.second ) {
+                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+               }
+            }
+         }
+
+         void insert( const std::initializer_list< pair< basic_value > > & l )
+         {
+            prepare_object();
+            for( auto & e : l ) {
+               const auto r = unsafe_emplace( e.key, e.value );
+               if ( ! r.second ) {
+                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+               }
+            }
+         }
+
          void append( std::initializer_list< single< basic_value > > && l )
          {
             prepare_array();
