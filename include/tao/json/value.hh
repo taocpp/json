@@ -395,11 +395,6 @@ namespace tao
             return m_union.o.at( key );
          }
 
-         const basic_value & operator* () const noexcept
-         {
-            return * unsafe_get_pointer();
-         }
-
          // The unsafe_assign()-functions MUST NOT be called on a
          // value v when json::needs_destroy( v.type() ) is true!
 
