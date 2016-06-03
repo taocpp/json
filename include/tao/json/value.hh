@@ -366,11 +366,6 @@ namespace tao
             return internal::get_by_enum< E >::get( m_union );
          }
 
-         // The following convenience functions operate on
-         // the containers for arrays and objects and throw
-         // an exception when the type of the value is wrong
-         // or the index/key is out of range/not found.
-
          basic_value & at( const std::size_t index )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
@@ -393,6 +388,26 @@ namespace tao
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
+         }
+
+         basic_value & unsafe_at( const std::size_t index )
+         {
+            return m_union.a[ index ];
+         }
+
+         const basic_value & unsafe_at( const std::size_t index ) const
+         {
+            return m_union.a[ index ];
+         }
+
+         basic_value & unsafe_at( const std::string & key )
+         {
+            return m_union.o.find( key )->second;
+         }
+
+         const basic_value & unsafe_at( const std::string & key ) const
+         {
+            return m_union.o.find( key )->second;
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
