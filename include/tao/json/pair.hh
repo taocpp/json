@@ -8,30 +8,34 @@
 #include <utility>
 #include <type_traits>
 
-#include "traits.hh"
-
 namespace tao
 {
    namespace json
    {
-      template< typename T >
-      struct pair
+      template< typename >
+      struct pair;
+
+      template< template< typename ... > class >
+      class basic_value;
+
+      template< template< typename ... > class Traits >
+      struct pair< basic_value< Traits > >
       {
          mutable std::string key;
-         mutable T value;
+         mutable basic_value< Traits > value;
 
          template< typename U >
          pair( U && v )
-           : key( traits< typename std::decay< U >::type >::default_key ),
+           : key( Traits< typename std::decay< U >::type >::default_key ),
              value( std::forward< U >( v ) )
          { }
 
-         pair( std::string && k, T && v ) : key( std::move( k ) ), value( std::move( v ) ) {}
-         pair( std::string && k, const T & v ) : key( std::move( k ) ), value( v ) {}
-         pair( const std::string & k, T && v ) : key( k ), value( std::move( v ) ) {}
-         pair( const std::string & k, const T & v ) : key( k ), value( v ) {}
-         pair( const char * k, T && v ) : key( k ), value( std::move( v ) ) {}
-         pair( const char * k, const T & v ) : key( k ), value( v ) {}
+         pair( std::string && k, basic_value< Traits > && v ) : key( std::move( k ) ), value( std::move( v ) ) {}
+         pair( std::string && k, const basic_value< Traits > & v ) : key( std::move( k ) ), value( v ) {}
+         pair( const std::string & k, basic_value< Traits > && v ) : key( k ), value( std::move( v ) ) {}
+         pair( const std::string & k, const basic_value< Traits > & v ) : key( k ), value( v ) {}
+         pair( const char * k, basic_value< Traits > && v ) : key( k ), value( std::move( v ) ) {}
+         pair( const char * k, const basic_value< Traits > & v ) : key( k ), value( v ) {}
       };
 
    } // json
