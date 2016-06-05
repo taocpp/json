@@ -12,17 +12,20 @@ namespace tao
 {
    namespace json
    {
-      template< typename T >
+      template< template< typename ... > class >
+      class basic_value;
+
+      template< template< typename ... > class Traits >
       struct single
       {
-         mutable T value;
+         mutable basic_value< Traits > value;
 
          template< typename U >
          single( U && v ) : value( std::forward< U >( v ) ) {}
 
-         single( std::initializer_list< pair< T > > && l ) : value( std::move( l ) ) {}
-         single( const std::initializer_list< pair< T > > & l ) : value( l ) {}
-         single( std::initializer_list< pair< T > > & l ) : value( l ) {}
+         single( std::initializer_list< pair< Traits > > && l ) : value( std::move( l ) ) {}
+         single( const std::initializer_list< pair< Traits > > & l ) : value( l ) {}
+         single( std::initializer_list< pair< Traits > > & l ) : value( l ) {}
       };
 
    } // json

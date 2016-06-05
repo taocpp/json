@@ -76,18 +76,18 @@ namespace tao
             Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         basic_value( std::initializer_list< pair< basic_value > > && l )
+         basic_value( std::initializer_list< pair< Traits > > && l )
          {
             unsafe_assign( std::move( l ) );
          }
 
-         basic_value( const std::initializer_list< pair< basic_value > > & l )
+         basic_value( const std::initializer_list< pair< Traits > > & l )
          {
             unsafe_assign( l );
          }
 
-         basic_value( std::initializer_list< pair< basic_value > > & l )
-              : basic_value( static_cast< const std::initializer_list< pair< basic_value > > & >( l ) )
+         basic_value( std::initializer_list< pair< Traits > > & l )
+              : basic_value( static_cast< const std::initializer_list< pair< Traits > > & >( l ) )
          { }
 
          ~basic_value() noexcept
@@ -95,14 +95,14 @@ namespace tao
             unsafe_destroy();
          }
 
-         static basic_value array( std::initializer_list< single< basic_value > > && l )
+         static basic_value array( std::initializer_list< single< Traits > > && l )
          {
             basic_value v;
             v.append( std::move( l ) );
             return v;
          }
 
-         static basic_value array( const std::initializer_list< single< basic_value > > & l )
+         static basic_value array( const std::initializer_list< single< Traits > > & l )
          {
             basic_value v;
             v.append( l );
@@ -420,7 +420,7 @@ namespace tao
             Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( std::initializer_list< pair< basic_value > > && l )
+         void unsafe_assign( std::initializer_list< pair< Traits > > && l )
          {
             unsafe_emplace_object();
             for( auto & e : l ) {
@@ -431,7 +431,7 @@ namespace tao
             }
          }
 
-         void unsafe_assign( const std::initializer_list< pair< basic_value > > & l )
+         void unsafe_assign( const std::initializer_list< pair< Traits > > & l )
          {
             unsafe_emplace_object();
             for( auto & e : l ) {
@@ -442,9 +442,9 @@ namespace tao
             }
          }
 
-         void unsafe_assign( std::initializer_list< pair< basic_value > > & l )
+         void unsafe_assign( std::initializer_list< pair< Traits > > & l )
          {
-            unsafe_assign( static_cast< const std::initializer_list< pair< basic_value > > & >( l ) );
+            unsafe_assign( static_cast< const std::initializer_list< pair< Traits > > & >( l ) );
          }
 
          void unsafe_assign_null() noexcept
@@ -583,7 +583,7 @@ namespace tao
             m_type = json::type::POINTER;
          }
 
-         void append( std::initializer_list< single< basic_value > > && l )
+         void append( std::initializer_list< single< Traits > > && l )
          {
             prepare_array();
             auto & v = unsafe_get_array();
@@ -593,7 +593,7 @@ namespace tao
             }
          }
 
-         void append( const std::initializer_list< single< basic_value > > & l )
+         void append( const std::initializer_list< single< Traits > > & l )
          {
             prepare_array();
             auto & v = unsafe_get_array();
@@ -603,7 +603,7 @@ namespace tao
             }
          }
 
-         void insert( std::initializer_list< pair< basic_value > > && l )
+         void insert( std::initializer_list< pair< Traits > > && l )
          {
             prepare_object();
             for( auto & e : l ) {
@@ -614,7 +614,7 @@ namespace tao
             }
          }
 
-         void insert( const std::initializer_list< pair< basic_value > > & l )
+         void insert( const std::initializer_list< pair< Traits > > & l )
          {
             prepare_object();
             for( auto & e : l ) {

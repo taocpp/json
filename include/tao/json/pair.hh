@@ -12,14 +12,11 @@ namespace tao
 {
    namespace json
    {
-      template< typename >
-      struct pair;
-
       template< template< typename ... > class >
       class basic_value;
 
       template< template< typename ... > class Traits >
-      struct pair< basic_value< Traits > >
+      struct pair
       {
          mutable std::string key;
          mutable basic_value< Traits > value;
