@@ -11,14 +11,14 @@ namespace tao
    namespace json
    {
       template< template< typename ... > class Traits >
-      basic_value< Traits > & operator+= ( basic_value< Traits > & v, std::initializer_list< pair< basic_value< Traits > > > && l )
+      basic_value< Traits > & operator+= ( basic_value< Traits > & v, std::initializer_list< pair< Traits > > && l )
       {
          v.insert( std::move( l ) );
          return v;
       }
 
       template< template< typename ... > class Traits >
-      basic_value< Traits > & operator+= ( basic_value< Traits > & v, const std::initializer_list< pair< basic_value< Traits > > > & l )
+      basic_value< Traits > & operator+= ( basic_value< Traits > & v, const std::initializer_list< pair< Traits > > & l )
       {
          v.insert( l );
          return v;
