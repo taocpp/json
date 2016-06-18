@@ -295,6 +295,22 @@ namespace tao
          {
             v.unsafe_emplace_string( std::forward< T >( s ) );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, std::string & s )
+         {
+            s = v.unsafe_get_string();
+         }
+      };
+
+      template<>
+      struct traits< const std::string & >
+      {
+         template< template< typename ... > class Traits >
+         static const std::string & extract( const basic_value< Traits > & v )
+         {
+            return v.unsafe_get_string();
+         }
       };
 
       template<>
@@ -304,6 +320,12 @@ namespace tao
          static void assign( basic_value< Traits > & v, const char * s )
          {
             v.unsafe_emplace_string( s );
+         }
+
+         template< template< typename ... > class Traits >
+         static const char * extract( const basic_value< Traits > & v )
+         {
+            return v.unsafe_get_string().c_str();
          }
       };
 
