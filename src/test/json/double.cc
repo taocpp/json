@@ -135,20 +135,20 @@ namespace tao
          TEST_THROWS( from_string( "1.0e1234567890" ) );
          TEST_THROWS( from_string( std::string( 1048577, '1' ) ) );
          {
-            const auto a = from_string( "42.0" ).as_number< double >();
+            const auto a = from_string( "42.0" ).as< double >();
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          } {
-            const auto a = from_string( "42.3" ).as_number< short >();
+            const auto a = from_string( "42.3" ).as< short >();
             TEST_ASSERT( sizeof( a ) == sizeof( short ) );
             TEST_ASSERT( a == 42 );
          } {
-            const auto a = from_string( "42" ).as_number< double >();
+            const auto a = from_string( "42" ).as< double >();
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          }
-         TEST_THROWS( value( "foo" ).as_number< double >() );
-         TEST_THROWS( value( "bar" ).as_number< int >() );
+         TEST_THROWS( value( "foo" ).as< double >() );
+         TEST_THROWS( value( "bar" ).as< int >() );
       }
 
    } // json

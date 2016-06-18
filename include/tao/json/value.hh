@@ -27,6 +27,12 @@ namespace tao
 {
    namespace json
    {
+      namespace internal
+      {
+         template< typename, typename, typename = void > struct has_extract : std::false_type {};
+         template< typename T, typename V > struct has_extract< T, V, decltype( T::extract( std::declval< const V & >() ), void() ) > : std::true_type {};
+      }
+
       template< template< typename ... > class Traits >
       class basic_value
          : operators::totally_ordered< basic_value< Traits > >,
@@ -276,18 +282,23 @@ namespace tao
          }
 
          template< typename T >
-         T as_number() const
+         void as( T& v ) const
          {
-            switch ( m_type ) {
-               case json::type::SIGNED:
-                  return T( unsafe_get_signed() );
-               case json::type::UNSIGNED:
-                  return T( unsafe_get_unsigned() );
-               case json::type::DOUBLE:
-                  return T( unsafe_get_double() );
-               default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( m_type );
-            }
+            Traits< typename std::decay< T >::type >::extract( * this, v );
+         }
+
+         template< typename T >
+         typename std::enable_if< internal::has_extract< Traits< T >, basic_value >::value, T >::type as() const
+         {
+            return Traits< T >::extract( * this );
+         }
+
+         template< typename T >
+         typename std::enable_if< !internal::has_extract< Traits< T >, basic_value >::value, T >::type as() const
+         {
+            T nrv;
+            as( nrv );
+            return nrv;
          }
 
          // The unsafe_get_*() accessor functions MUST NOT be

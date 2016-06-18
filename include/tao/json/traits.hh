@@ -46,7 +46,34 @@ namespace tao
          {
             v.unsafe_assign_bool( b );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, bool & b )
+         {
+            b = v.get_bool();
+         }
       };
+
+      namespace internal
+      {
+         template< template< typename ... > class Traits, typename T >
+         void unsafe_extract_number( const basic_value< Traits > & v, T & i )
+         {
+            switch( v.type() ) {
+               case type::SIGNED:
+                  i = v.unsafe_get_signed();
+                  break;
+               case type::UNSIGNED:
+                  i = v.unsafe_get_unsigned();
+                  break;
+               case type::DOUBLE:
+                  i = v.unsafe_get_double();
+                  break;
+               default:
+                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+            }
+         }
+      }
 
       template<>
       struct traits< signed char >
@@ -55,6 +82,12 @@ namespace tao
          static void assign( basic_value< Traits > & v, const signed char i ) noexcept
          {
             v.unsafe_assign_signed( i );
+         }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, signed char & i )
+         {
+            unsafe_extract_number( v, i );
          }
       };
 
@@ -66,6 +99,12 @@ namespace tao
          {
             v.unsafe_assign_unsigned( i );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, unsigned char & i )
+         {
+            unsafe_extract_number( v, i );
+         }
       };
 
       template<>
@@ -75,6 +114,12 @@ namespace tao
          static void assign( basic_value< Traits > & v, const signed short i ) noexcept
          {
             v.unsafe_assign_signed( i );
+         }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, signed short & i )
+         {
+            unsafe_extract_number( v, i );
          }
       };
 
@@ -86,6 +131,12 @@ namespace tao
          {
             v.unsafe_assign_unsigned( i );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, unsigned short & i )
+         {
+            unsafe_extract_number( v, i );
+         }
       };
 
       template<>
@@ -95,6 +146,12 @@ namespace tao
          static void assign( basic_value< Traits > & v, const signed int i ) noexcept
          {
             v.unsafe_assign_signed( i );
+         }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, signed int & i )
+         {
+            unsafe_extract_number( v, i );
          }
       };
 
@@ -106,6 +163,12 @@ namespace tao
          {
             v.unsafe_assign_unsigned( i );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, unsigned int & i )
+         {
+            unsafe_extract_number( v, i );
+         }
       };
 
       template<>
@@ -115,6 +178,12 @@ namespace tao
          static void assign( basic_value< Traits > & v, const signed long i ) noexcept
          {
             v.unsafe_assign_signed( i );
+         }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, signed long & i )
+         {
+            unsafe_extract_number( v, i );
          }
       };
 
@@ -126,6 +195,12 @@ namespace tao
          {
             v.unsafe_assign_unsigned( i );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, unsigned long & i )
+         {
+            unsafe_extract_number( v, i );
+         }
       };
 
       template<>
@@ -135,6 +210,12 @@ namespace tao
          static void assign( basic_value< Traits > & v, const signed long long i ) noexcept
          {
             v.unsafe_assign_signed( i );
+         }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, signed long long & i )
+         {
+            unsafe_extract_number( v, i );
          }
       };
 
@@ -146,6 +227,12 @@ namespace tao
          {
             v.unsafe_assign_unsigned( i );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, unsigned long long & i )
+         {
+            unsafe_extract_number( v, i );
+         }
       };
 
       template<>
@@ -156,6 +243,12 @@ namespace tao
          {
             v.unsafe_assign_double( f );
          }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, float & f )
+         {
+            unsafe_extract_number( v, f );
+         }
       };
 
       template<>
@@ -165,6 +258,12 @@ namespace tao
          static void assign( basic_value< Traits > & v, const double d )
          {
             v.unsafe_assign_double( d );
+         }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, double & f )
+         {
+            unsafe_extract_number( v, f );
          }
       };
 
