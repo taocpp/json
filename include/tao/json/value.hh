@@ -196,11 +196,6 @@ namespace tao
             return unsafe_get_null();
          }
 
-         optional< null_t > optional_null() const
-         {
-            return m_type == json::type::NULL_ ? unsafe_get_null() : nullopt;
-         }
-
          bool get_bool() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BOOL );
@@ -299,6 +294,17 @@ namespace tao
             T nrv;
             as( nrv );
             return nrv;
+         }
+
+         template< typename T >
+         tao::optional< T > optional() const
+         {
+           if( this->is_null() ) {
+              return tao::nullopt;
+           }
+           else {
+              return this->as< T >();
+           }
          }
 
          // The unsafe_get_*() accessor functions MUST NOT be
@@ -419,6 +425,19 @@ namespace tao
          const basic_value & unsafe_at( const std::string & key ) const
          {
             return m_union.o.find( key )->second;
+         }
+
+         template< typename T >
+         tao::optional< T > optional( const std::string & key ) const
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            const auto it = m_union.o.find( key );
+            if( it == m_union.o.end() ) {
+               return tao::nullopt;
+            }
+            else {
+               return it->second.as< T >();
+            }
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
