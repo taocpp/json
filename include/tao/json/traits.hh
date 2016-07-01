@@ -377,6 +377,32 @@ namespace tao
          }
       };
 
+      template< typename T >
+      struct traits< optional< T > >
+      {
+         template< template< typename ... > class Traits >
+         static void assign( basic_value< Traits > & v, const optional< T > & o ) noexcept
+         {
+            if( o ) {
+               v = * o;
+            }
+            else {
+               v = null;
+            }
+         }
+
+         template< template< typename ... > class Traits >
+         static void extract( const basic_value< Traits > & v, optional< T > & o )
+         {
+            if( v.is_null() ) {
+               o = nullopt;
+            }
+            else {
+               o = v.template as< T >();
+            }
+         }
+      };
+
    } // json
 
 } // tao
