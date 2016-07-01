@@ -436,7 +436,7 @@ namespace tao
                return tao::nullopt;
             }
             else {
-               return it->second.as< T >();
+               return it->second.template as< T >();
             }
          }
 
