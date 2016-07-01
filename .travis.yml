@@ -78,6 +78,11 @@ matrix:
       compiler: clang
       env: COMPILER=clang++
 
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+      env: COMPILER=clang++
+
     - os: linux
       compiler: gcc
       addons:
