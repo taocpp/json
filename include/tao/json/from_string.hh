@@ -18,7 +18,7 @@ namespace tao
       {
          internal::result_state< Traits > result;
          tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
-         tao_json_pegtl::parse_input< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::control >( input, result );
+         tao_json_pegtl::parse_input< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( input, result );
          output = std::move( result.result );
       }
 
@@ -27,7 +27,7 @@ namespace tao
       {
          internal::result_state< Traits > result;
          tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
-         tao_json_pegtl::parse_input< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::control >( input, result );
+         tao_json_pegtl::parse_input< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( input, result );
          return std::move( result.result );
       }
 

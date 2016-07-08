@@ -17,7 +17,7 @@ namespace tao
       void parse_file( basic_value< Traits > & output, const std::string & filename )
       {
          internal::result_state< Traits > result;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::control >( result );
+         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );
          output = std::move( result.result );
       }
 
@@ -25,7 +25,7 @@ namespace tao
       basic_value< Traits > parse_file( const std::string & filename )
       {
          internal::result_state< Traits > result;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::control >( result );
+         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );
          return std::move( result.result );
       }
 
