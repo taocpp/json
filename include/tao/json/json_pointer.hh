@@ -70,19 +70,28 @@ namespace tao
          std::string m_value;
 
       public:
-         json_pointer() noexcept = default;
+         json_pointer() noexcept
+         { }
 
          json_pointer( const json_pointer& ) = default;
-         json_pointer( json_pointer&& ) noexcept = default;
+
+         json_pointer( json_pointer&& p ) noexcept
+            : m_value( std::move( p.m_value ) )
+         { }
 
          explicit json_pointer( std::string v )
-           : m_value( std::move( v ) )
+            : m_value( std::move( v ) )
          {
             internal::validate_json_pointer( m_value );
          }
 
          json_pointer& operator=( const json_pointer& ) = default;
-         json_pointer& operator=( json_pointer&& ) noexcept = default;
+
+         json_pointer& operator=( json_pointer&& p ) noexcept
+         {
+            m_value = std::move( p.m_value );
+            return *this;
+         }
 
          json_pointer& operator=( std::string v )
          {
