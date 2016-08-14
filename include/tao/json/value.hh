@@ -22,6 +22,7 @@
 #include "traits.hh"
 #include "pair.hh"
 #include "single.hh"
+#include "json_pointer.hh"
 
 namespace tao
 {
@@ -405,6 +406,40 @@ namespace tao
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
+         }
+
+         // basic_value & at( const json_pointer & k )
+         // {
+         //   // TODO: Implement me!
+         // }
+
+         const basic_value & at( const json_pointer & k ) const
+         {
+            const basic_value * v = this;
+            const char * p = k.value().c_str();
+            const char * e = p + k.value().size();
+            while( p != e ) {
+               switch( v->m_type ) {
+                  case json::type::ARRAY:
+                     {
+                        const auto t = internal::next_json_pointer_token( ++p, e );
+                        if( t == "-" ) {
+                           throw std::out_of_range( "unable to resolve json_pointer" );
+                        }
+                        v = &v->at( std::stoull( t ) );
+                     }
+                     break;
+                  case json::type::OBJECT:
+                     v = &v->at( internal::next_json_pointer_token( ++p, e ) );
+                     break;
+                  case json::type::POINTER:
+                     v = v->unsafe_get_pointer();
+                     break;
+                  default:
+                     throw std::out_of_range( "unable to resolve json_pointer" );
+               }
+            }
+            return *v;
          }
 
          basic_value & unsafe_at( const std::size_t index )
