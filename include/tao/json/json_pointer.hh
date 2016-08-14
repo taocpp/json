@@ -37,12 +37,12 @@ namespace tao
          {
             std::string result;
             // TODO: Find next '/' first, call result.reserve( x )?
-            while( p != e ) {
-               switch( *p ) {
+            while ( p != e ) {
+               switch ( *p ) {
                   case '/':
                      return result;
                   case '~':
-                     switch( *++p ) {
+                     switch ( *++p ) {
                         case '0':
                            result += '~';
                            break;
@@ -70,30 +70,29 @@ namespace tao
          std::string m_value;
 
       public:
-         json_pointer() noexcept
-         { }
+         json_pointer() = default;
 
-         json_pointer( const json_pointer& ) = default;
+         json_pointer( const json_pointer & ) = default;
 
-         json_pointer( json_pointer&& p ) noexcept
-            : m_value( std::move( p.m_value ) )
+         json_pointer( json_pointer && p ) noexcept
+              : m_value( std::move( p.m_value ) )
          { }
 
          explicit json_pointer( std::string v )
-            : m_value( std::move( v ) )
+              : m_value( std::move( v ) )
          {
             internal::validate_json_pointer( m_value );
          }
 
-         json_pointer& operator=( const json_pointer& ) = default;
+         json_pointer & operator= ( const json_pointer & ) = default;
 
-         json_pointer& operator=( json_pointer&& p ) noexcept
+         json_pointer & operator= ( json_pointer && p ) noexcept
          {
             m_value = std::move( p.m_value );
             return *this;
          }
 
-         json_pointer& operator=( std::string v )
+         json_pointer & operator= ( std::string v )
          {
             internal::validate_json_pointer( v );
             m_value = std::move( v );
@@ -108,9 +107,9 @@ namespace tao
 
       inline namespace literals
       {
-         inline json_pointer operator "" _json_pointer( const char* p, const std::size_t s )
+         inline json_pointer operator"" _json_pointer( const char * data, const std::size_t size )
          {
-            return json_pointer( { p, s } );
+            return json_pointer( { data, size } );
          }
 
       } // literals

@@ -12,10 +12,4 @@
 #include "json/parse_file.hh"
 #include "json/self_contained.hh"
 
-// Include this if required to enable
-// C++11 user defined JSON literals that
-// can be used like "[null]"_json .
-//
-// #include "json/literal.hh"
-
 #endif

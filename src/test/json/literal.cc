@@ -3,7 +3,7 @@
 
 #include "test.hh"
 
-#include <tao/json/literal.hh>
+#include <tao/json/from_string.hh>
 
 namespace tao
 {
@@ -11,7 +11,7 @@ namespace tao
    {
       void unit_test()
       {
-         TEST_ASSERT( ( "42"_json ).get_unsigned() == 42 );
+         TEST_ASSERT( "42"_json.get_unsigned() == 42 );
       }
 
    } // json

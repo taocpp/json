@@ -3,7 +3,7 @@
 
 #include "test.hh"
 
-#include <tao/json/literal.hh>
+#include <tao/json/from_string.hh>
 
 namespace tao
 {
@@ -11,14 +11,14 @@ namespace tao
    {
       void unit_test()
       {
-         TEST_ASSERT( ( "[42]"_json ).at( 0 ).get_unsigned() == 42 );
-         TEST_ASSERT( ( "[[42]]"_json ).at( 0 ).at( 0 ).get_unsigned() == 42 );
-         TEST_ASSERT( ( "[[[[42]]]]"_json ).at( 0 ).at( 0 ).at( 0 ).at( 0 ).get_unsigned() == 42 );
+         TEST_ASSERT( "[42]"_json.at( 0 ).get_unsigned() == 42 );
+         TEST_ASSERT( "[[42]]"_json.at( 0 ).at( 0 ).get_unsigned() == 42 );
+         TEST_ASSERT( "[[[[42]]]]"_json.at( 0 ).at( 0 ).at( 0 ).at( 0 ).get_unsigned() == 42 );
 
-         TEST_ASSERT( ( "[1, 2, 3]"_json ).at( 0 ).get_unsigned() == 1 );
-         TEST_ASSERT( ( "[1, 2, 3]"_json ).at( 2 ).get_unsigned() == 3 );
+         TEST_ASSERT( "[1, 2, 3]"_json.at( 0 ).get_unsigned() == 1 );
+         TEST_ASSERT( "[1, 2, 3]"_json.at( 2 ).get_unsigned() == 3 );
 
-         TEST_ASSERT( ( "[1, [2, [3, [[[4]], 5, 6]]]]"_json ).at( 1 ).at( 1 ).at( 1 ).at( 1 ).get_unsigned() == 5 );
+         TEST_ASSERT( "[1, [2, [3, [[[4]], 5, 6]]]]"_json.at( 1 ).at( 1 ).at( 1 ).at( 1 ).get_unsigned() == 5 );
       }
 
    } // json

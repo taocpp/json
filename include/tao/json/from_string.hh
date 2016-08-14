@@ -90,6 +90,15 @@ namespace tao
          return from_string( data.data(), data.size(), source.c_str(), line, column );
       }
 
+      inline namespace literals
+      {
+         inline value operator"" _json( const char * data, const std::size_t size )
+         {
+            return from_string( data, size, "literal" );
+         }
+
+      } // literals
+
    } // json
 
 } // tao
