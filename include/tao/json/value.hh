@@ -418,13 +418,13 @@ namespace tao
             const basic_value * v = this;
             const char * p = k.value().c_str();
             const char * e = p + k.value().size();
-            while( p != e ) {
-               switch( v->m_type ) {
+            while ( p != e ) {
+               switch ( v->m_type ) {
                   case json::type::ARRAY:
                      {
                         const auto t = internal::next_json_pointer_token( ++p, e );
-                        if( t == "-" ) {
-                           throw std::out_of_range( "unable to resolve json_pointer" );
+                        if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
+                           throw std::out_of_range( "unable to resolve json_pointer, invalid token for const array access '" + t + '\'' );
                         }
                         v = &v->at( std::stoull( t ) );
                      }
