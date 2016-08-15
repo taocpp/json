@@ -21,13 +21,13 @@ namespace tao
                return;
             }
             if ( v[ 0 ] != '/' ) {
-               throw std::domain_error( "invalid json_pointer value, must be empty or begin with '/'" );
+               throw std::invalid_argument( "invalid json_pointer value, must be empty or begin with '/'" );
             }
             // TODO: Should we also check UTF-8 encoding and code-point range?
             for ( auto it = v.begin(); it != v.end(); ++it ) {
                if ( *it == '~' ) {
                   if ( ++it == v.end() || !( *it == '0' || *it == '1' ) ) {
-                     throw std::domain_error( "invalid json_pointer escape sequence, '~' must be followed by '0' or '1'" );
+                     throw std::invalid_argument( "invalid json_pointer escape sequence, '~' must be followed by '0' or '1'" );
                   }
                }
             }

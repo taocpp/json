@@ -300,7 +300,7 @@ namespace tao
          template< typename T >
          tao::optional< T > optional() const
          {
-           if( this->is_null() ) {
+           if ( this->is_null() ) {
               return tao::nullopt;
            }
            else {
@@ -408,11 +408,6 @@ namespace tao
             return m_union.o.at( key );
          }
 
-         // basic_value & at( const json_pointer & k )
-         // {
-         //   // TODO: Implement me!
-         // }
-
          const basic_value & at( const json_pointer & k ) const
          {
             const basic_value * v = this;
@@ -422,9 +417,12 @@ namespace tao
                switch ( v->m_type ) {
                   case json::type::ARRAY:
                      {
+                        const auto o = p;
                         const auto t = internal::next_json_pointer_token( ++p, e );
                         if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
-                           throw std::out_of_range( "unable to resolve json_pointer, invalid token for const array access '" + t + '\'' );
+                           throw std::invalid_argument( "unable to resolve json_pointer '" + k.value() + "', "
+                                                        "invalid token for const array access '" + t + "' "
+                                                        "at '" + std::string( k.value().c_str(), o ) + '\'' );
                         }
                         v = &v->at( std::stoull( t ) );
                      }
@@ -436,7 +434,69 @@ namespace tao
                      v = v->unsafe_get_pointer();
                      break;
                   default:
-                     throw std::out_of_range( "unable to resolve json_pointer" );
+                     throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "', "
+                                               "value at '" + std::string( k.value().c_str(), p ) + "' "
+                                               "is neither 'object', 'array' nor 'pointer', "
+                                               "but '" + to_string( v->m_type ) + "'" );
+               }
+            }
+            return *v;
+         }
+
+         // Unlike the above pure getter, this adds null elements when the leaf is a missing object key or '-' for an array.
+         // Note: Can not transcend a type::POINTER value as we would modify another value simultaneously.
+
+         basic_value & operator[] ( const json_pointer & k )
+         {
+            basic_value * v = this;
+            const char * p = k.value().c_str();
+            const char * e = p + k.value().size();
+            while ( p != e ) {
+               switch ( v->m_type ) {
+                  case json::type::ARRAY:
+                     {
+                        const auto o = p;
+                        const auto t = internal::next_json_pointer_token( ++p, e );
+                        if ( t == "-" ) {
+                           if ( p != e ) {
+                              throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "' "
+                                                        "at '" + std::string( k.value().c_str(), o ) + "', "
+                                                        "array access via '-'-token must occur as the last fragment" );
+                           }
+                           v->unsafe_emplace_back( null );
+                           return v->m_union.a.back();
+                        }
+                        if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
+                           throw std::invalid_argument( "unable to resolve json_pointer '" + k.value() + "', "
+                                                        "invalid token for array access '" + t + "' "
+                                                        "at '" + std::string( k.value().c_str(), o ) + '\'' );
+                        }
+                        v = &v->at( std::stoull( t ) );
+                     }
+                     break;
+                  case json::type::OBJECT:
+                     {
+                        auto t = internal::next_json_pointer_token( ++p, e );
+                        const auto it = v->m_union.o.find( t );
+                        if ( it != v->m_union.o.end() ) {
+                           v = & it->second;
+                        }
+                        else {
+                           if ( p != e ) {
+                              throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "' "
+                                                        "at '" + std::string( k.value().c_str(), p ) + '\'' );
+                           }
+                           const auto r = v->unsafe_emplace( std::move( t ), null );
+                           assert( r.second );
+                           return r.first->second;
+                        }
+                     }
+                     break;
+                  default:
+                     throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "', "
+                                               "value at '" + std::string( k.value().c_str(), p ) + "' "
+                                               "is neither 'object' nor 'array', "
+                                               "but '" + to_string( v->m_type ) + "'" );
                }
             }
             return *v;
@@ -467,7 +527,7 @@ namespace tao
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             const auto it = m_union.o.find( key );
-            if( it == m_union.o.end() ) {
+            if ( it == m_union.o.end() ) {
                return tao::nullopt;
             }
             else {
@@ -488,7 +548,7 @@ namespace tao
          void unsafe_assign( std::initializer_list< pair< Traits > > && l )
          {
             unsafe_emplace_object();
-            for( auto & e : l ) {
+            for ( auto & e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
@@ -499,7 +559,7 @@ namespace tao
          void unsafe_assign( const std::initializer_list< pair< Traits > > & l )
          {
             unsafe_emplace_object();
-            for( auto & e : l ) {
+            for ( auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
@@ -659,7 +719,7 @@ namespace tao
             prepare_array();
             auto & v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
-            for( auto & e : l ) {
+            for ( auto & e : l ) {
                unsafe_emplace_back( std::move( e.value ) );
             }
          }
@@ -669,7 +729,7 @@ namespace tao
             prepare_array();
             auto & v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
-            for( const auto & e : l ) {
+            for ( const auto & e : l ) {
                unsafe_emplace_back( e.value );
             }
          }
@@ -677,7 +737,7 @@ namespace tao
          void insert( std::initializer_list< pair< Traits > > && l )
          {
             prepare_object();
-            for( auto & e : l ) {
+            for ( auto & e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
@@ -688,7 +748,7 @@ namespace tao
          void insert( const std::initializer_list< pair< Traits > > & l )
          {
             prepare_object();
-            for( auto & e : l ) {
+            for ( auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
