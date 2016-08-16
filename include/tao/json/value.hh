@@ -417,12 +417,11 @@ namespace tao
                switch ( v->m_type ) {
                   case json::type::ARRAY:
                      {
-                        const auto o = p;
                         const auto t = internal::next_json_pointer_token( ++p, e );
                         if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
                            throw std::invalid_argument( "unable to resolve json_pointer '" + k.value() + "', "
                                                         "invalid token for const array access '" + t + "' "
-                                                        "at '" + std::string( k.value().c_str(), o ) + '\'' );
+                                                        "at '" + std::string( k.value().c_str(), p - t.size() - 1 ) + '\'' );
                         }
                         v = &v->at( std::stoull( t ) );
                      }
@@ -455,12 +454,11 @@ namespace tao
                switch ( v->m_type ) {
                   case json::type::ARRAY:
                      {
-                        const auto o = p;
                         const auto t = internal::next_json_pointer_token( ++p, e );
                         if ( t == "-" ) {
                            if ( p != e ) {
                               throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "' "
-                                                        "at '" + std::string( k.value().c_str(), o ) + "', "
+                                                        "at '" + std::string( k.value().c_str(), p - t.size() - 1 ) + "', "
                                                         "array access via '-'-token must occur as the last fragment" );
                            }
                            v->unsafe_emplace_back( null );
@@ -469,7 +467,7 @@ namespace tao
                         if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
                            throw std::invalid_argument( "unable to resolve json_pointer '" + k.value() + "', "
                                                         "invalid token for array access '" + t + "' "
-                                                        "at '" + std::string( k.value().c_str(), o ) + '\'' );
+                                                        "at '" + std::string( k.value().c_str(), p - t.size() - 1 ) + '\'' );
                         }
                         v = &v->at( std::stoull( t ) );
                      }
