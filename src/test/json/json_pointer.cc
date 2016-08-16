@@ -52,6 +52,7 @@ namespace tao
          TEST_ASSERT( v.at( "/foo/1"_json_pointer ) == "baz" );
          TEST_THROWS( v.at( "/foo/2"_json_pointer ) );
 
+         TEST_THROWS( v.at( "/foo/0/bar"_json_pointer ) );
          TEST_THROWS( v.at( "/foo/00"_json_pointer ) );
          TEST_THROWS( v.at( "/foo/01"_json_pointer ) );
          TEST_THROWS( v.at( "/foo/0 "_json_pointer ) );
@@ -91,6 +92,20 @@ namespace tao
          TEST_THROWS( v.at( "bar" ) );
          v[ "/bar"_json_pointer ] = 42;
          TEST_ASSERT( v.at( "bar" ) == 42 );
+
+         TEST_ASSERT( v[ "/foo/0"_json_pointer ] == "bar" );
+         TEST_ASSERT( v[ "/foo/1"_json_pointer ] == "baz" );
+         TEST_THROWS( v[ "/foo/4"_json_pointer ] );
+
+         TEST_THROWS( v[ "/foo/0/bar"_json_pointer ] );
+         TEST_THROWS( v[ "/foo/00"_json_pointer ] );
+         TEST_THROWS( v[ "/foo/01"_json_pointer ] );
+         TEST_THROWS( v[ "/foo/0 "_json_pointer ] );
+         TEST_THROWS( v[ "/foo/ 0"_json_pointer ] );
+         TEST_THROWS( v[ "/foo/1 "_json_pointer ] );
+         TEST_THROWS( v[ "/foo/ 1"_json_pointer ] );
+         TEST_THROWS( v[ "/foo/bar"_json_pointer ] );
+         TEST_THROWS( v[ "/foo/-/bar"_json_pointer ] );
       }
 
    } // json
