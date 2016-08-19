@@ -17,6 +17,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * Allows construction of JSON value objects from arbitrary user-defined data-types with specialised traits class template.
 * Construction of objects and arrays via `std::initializer_list`.
 * C++11 literal operator for JSON values.
+* RFC 6901: JavaScript Object Notation (JSON) Pointer
 
 ## Status
 
@@ -45,9 +46,11 @@ For questions and suggestions please contact the authors at **jsonl(at)colin-hir
 * Niels Lohmann and his [JSON library](https://github.com/nlohmann/json) for the inspiration.
 * Milo Yip and his [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) for a reference to measure progress against.
 
-## License
+## Contact
 
-<a href="http://www.opensource.org/"><img height="100" align="right" src="http://wiki.opensource.org/bin/download/OSI+Operations/Marketing+%26+Promotional+Collateral/OSI_certified_logo_vector.svg"></a>
+For questions and suggestions about the Art of C++ / JSON please contact the authors at `jsonl(at)colin-hirsch.net`.
+
+## License
 
 The Art of C++ is certified [Open Source](http://www.opensource.org/docs/definition.html) software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
 
@@ -58,8 +61,6 @@ The Art of C++ is certified [Open Source](http://www.opensource.org/docs/definit
 > The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 >
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-This site and software is not affiliated with or endorsed by the Open Source Initiative. For questions and suggestions about the Art of C++ / JSON please contact the authors at `jsonl(at)colin-hirsch.net`.
 
 ### PEGTL License
 
