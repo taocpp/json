@@ -65,7 +65,7 @@ For questions and suggestions about the Art of C++ / JSON please contact the aut
 
 ### PEGTL License
 
-The Art of C++ / JSON library contains the [PEGTL](https://github.com/ColinH/PEGTL) which is licensed as follows:
+The Art of C++ / JSON contains the [PEGTL](https://github.com/ColinH/PEGTL) which is licensed as follows:
 
 > Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 >
@@ -77,7 +77,7 @@ The Art of C++ / JSON library contains the [PEGTL](https://github.com/ColinH/PEG
 
 ### Double-Conversion License
 
-The Art of C++ / JSON library contains slightly modified portions of the [double-conversion library](https://github.com/google/double-conversion) which is licensed as follows:
+The Art of C++ / JSON contains slightly modified portions of the [double-conversion library](https://github.com/google/double-conversion) which is licensed as follows:
 
 > Copyright 2006-2011, the V8 project authors. All rights reserved. Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 >
