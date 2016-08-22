@@ -65,7 +65,7 @@ For questions and suggestions about the Art of C++ / JSON please contact the aut
 
 ### PEGTL License
 
-The Art of C++ / JSON library contains [the PEGTL library](https://github.com/ColinH/PEGTL) which is licensed as follows:
+The Art of C++ / JSON library contains the [PEGTL](https://github.com/ColinH/PEGTL) which is licensed as follows:
 
 > Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 >
