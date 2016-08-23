@@ -73,11 +73,8 @@ namespace tao
          TEST_ASSERT( v.at( "/k\"l"_json_pointer ) == 6 );
          TEST_ASSERT( v.at( "/ "_json_pointer ) == 7 );
          TEST_ASSERT( v.at( "/m~0n"_json_pointer ) == 8 );
-
          TEST_ASSERT( v.at( "/o\0p"_json_pointer ) == 9 );
          TEST_ASSERT( v.at( "/o\0q"_json_pointer ) == 10 );
-         TEST_THROWS( v.at( "/o\0r"_json_pointer ) );
-
          TEST_ASSERT( v.at( "/-"_json_pointer ) == 11 );
 
          // check modifications
@@ -115,9 +112,11 @@ namespace tao
          TEST_ASSERT( v[ "/k\"l"_json_pointer ] == 6 );
          TEST_ASSERT( v[ "/ "_json_pointer ] == 7 );
          TEST_ASSERT( v[ "/m~0n"_json_pointer ] == 8 );
-
          TEST_ASSERT( v[ "/o\0p"_json_pointer ] == 9 );
          TEST_ASSERT( v[ "/o\0q"_json_pointer ] == 10 );
+         TEST_ASSERT( v[ "/-"_json_pointer ] == 11 );
+
+         TEST_THROWS( v.at( "/o\0r"_json_pointer ) );
          TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_null() );
          TEST_ASSERT( v.at( "/o\0r"_json_pointer ).is_null() );
       }
