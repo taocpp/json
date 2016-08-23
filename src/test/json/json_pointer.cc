@@ -106,6 +106,20 @@ namespace tao
          TEST_THROWS( v[ "/foo/ 1"_json_pointer ] );
          TEST_THROWS( v[ "/foo/bar"_json_pointer ] );
          TEST_THROWS( v[ "/foo/-/bar"_json_pointer ] );
+
+         TEST_ASSERT( v[ "/a~1b"_json_pointer ] == 1 );
+         TEST_ASSERT( v[ "/c%d"_json_pointer ] == 2 );
+         TEST_ASSERT( v[ "/e^f"_json_pointer ] == 3 );
+         TEST_ASSERT( v[ "/g|h"_json_pointer ] == 4 );
+         TEST_ASSERT( v[ "/i\\j"_json_pointer ] == 5 );
+         TEST_ASSERT( v[ "/k\"l"_json_pointer ] == 6 );
+         TEST_ASSERT( v[ "/ "_json_pointer ] == 7 );
+         TEST_ASSERT( v[ "/m~0n"_json_pointer ] == 8 );
+
+         TEST_ASSERT( v[ "/o\0p"_json_pointer ] == 9 );
+         TEST_ASSERT( v[ "/o\0q"_json_pointer ] == 10 );
+         TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_null() );
+         TEST_ASSERT( v.at( "/o\0r"_json_pointer ).is_null() );
       }
 
    } // json

@@ -408,12 +408,12 @@ namespace tao
             return m_union.o.at( key );
          }
 
-         const basic_value & at( const json_pointer & k ) const
+         basic_value & at( const json_pointer & k )
          {
             return internal::json_pointer_at( this, k );
          }
 
-         basic_value & at( const json_pointer & k )
+         const basic_value & at( const json_pointer & k ) const
          {
             return internal::json_pointer_at( this, k );
          }

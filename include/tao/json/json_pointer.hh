@@ -35,6 +35,34 @@ namespace tao
             }
          }
 
+         inline std::string json_pointer_next_token( const char * & p, const char * e )
+         {
+            std::string result;
+            // TODO: Find next '/' first, call result.reserve( x )?
+            while ( p != e ) {
+               switch ( *p ) {
+                  case '/':
+                     return result;
+                  case '~':
+                     switch ( *++p ) {
+                        case '0':
+                           result += '~';
+                           break;
+                        case '1':
+                           result += '/';
+                           break;
+                        default:
+                           assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
+                     }
+                     ++p;
+                     break;
+                  default:
+                     result += *p++;
+               }
+            }
+            return result;
+         }
+
       } // internal
 
       // RFC 6901
@@ -86,40 +114,17 @@ namespace tao
          std::pair< json_pointer, std::string > split() const
          {
             const auto p = m_value.rfind( '/' );
-            return { json_pointer( m_value.substr( 0, p ) ), m_value.substr( p + 1 ) };
+            if( p == std::string::npos ) {
+               return { * this, "" };
+            }
+            const char * b = m_value.data() + p;
+            const char * e = m_value.data() + m_value.size();
+            return { json_pointer( m_value.substr( 0, p ) ), internal::json_pointer_next_token( ++b, e ) };
          }
       };
 
       namespace internal
       {
-         inline std::string json_pointer_next_token( const char * & p, const char * e )
-         {
-            std::string result;
-            // TODO: Find next '/' first, call result.reserve( x )?
-            while ( p != e ) {
-               switch ( *p ) {
-                  case '/':
-                     return result;
-                  case '~':
-                     switch ( *++p ) {
-                        case '0':
-                           result += '~';
-                           break;
-                        case '1':
-                           result += '/';
-                           break;
-                        default:
-                           assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
-                     }
-                     ++p;
-                     break;
-                  default:
-                     result += *p++;
-               }
-            }
-            return result;
-         }
-
          inline unsigned long long json_pointer_token_to_index( const std::string & t )
          {
             if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
@@ -131,7 +136,7 @@ namespace tao
          template< typename T >
          T & json_pointer_at( T * v, const json_pointer & k )
          {
-            const char * p = k.value().c_str();
+            const char * p = k.value().data();
             const char * e = p + k.value().size();
             while ( p != e ) {
                switch ( v->type() ) {
