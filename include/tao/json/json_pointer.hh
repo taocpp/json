@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include "type.hh"
+
 namespace tao
 {
    namespace json
@@ -31,34 +33,6 @@ namespace tao
                   }
                }
             }
-         }
-
-         inline std::string next_json_pointer_token( const char * & p, const char * e )
-         {
-            std::string result;
-            // TODO: Find next '/' first, call result.reserve( x )?
-            while ( p != e ) {
-               switch ( *p ) {
-                  case '/':
-                     return result;
-                  case '~':
-                     switch ( *++p ) {
-                        case '0':
-                           result += '~';
-                           break;
-                        case '1':
-                           result += '/';
-                           break;
-                        default:
-                           assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
-                     }
-                     ++p;
-                     break;
-                  default:
-                     result += *p++;
-               }
-            }
-            return result;
          }
 
       } // internal
@@ -99,11 +73,84 @@ namespace tao
             return *this;
          }
 
+         explicit operator bool() const noexcept
+         {
+            return ! m_value.empty();
+         }
+
          const std::string& value() const noexcept
          {
             return m_value;
          }
+
+         std::pair< json_pointer, std::string > split() const
+         {
+            const auto p = m_value.rfind( '/' );
+            return { json_pointer( m_value.substr( 0, p ) ), m_value.substr( p + 1 ) };
+         }
       };
+
+      namespace internal
+      {
+         inline std::string json_pointer_next_token( const char * & p, const char * e )
+         {
+            std::string result;
+            // TODO: Find next '/' first, call result.reserve( x )?
+            while ( p != e ) {
+               switch ( *p ) {
+                  case '/':
+                     return result;
+                  case '~':
+                     switch ( *++p ) {
+                        case '0':
+                           result += '~';
+                           break;
+                        case '1':
+                           result += '/';
+                           break;
+                        default:
+                           assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
+                     }
+                     ++p;
+                     break;
+                  default:
+                     result += *p++;
+               }
+            }
+            return result;
+         }
+
+         inline unsigned long long json_pointer_token_to_index( const std::string & t )
+         {
+            if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
+               throw std::invalid_argument( "unable to resolve json_pointer, invalid token for array access '" + t + '\'' );
+            }
+            return std::stoull( t );
+         }
+
+         template< typename T >
+         T & json_pointer_at( T * v, const json_pointer & k )
+         {
+            const char * p = k.value().c_str();
+            const char * e = p + k.value().size();
+            while ( p != e ) {
+               switch ( v->type() ) {
+                  case type::ARRAY:
+                     v = &v->at( json_pointer_token_to_index( json_pointer_next_token( ++p, e ) ) );
+                     break;
+                  case type::OBJECT:
+                     v = &v->at( json_pointer_next_token( ++p, e ) );
+                     break;
+                  default:
+                     throw std::runtime_error( "unable to resolve json_pointer, "
+                                               "value at '" + std::string( k.value().c_str(), p ) + "' "
+                                               "is neither 'object' nor 'array', "
+                                               "but '" + to_string( v->type() ) + "'" );
+               }
+            }
+            return * v;
+         }
+      }
 
       inline namespace literals
       {
