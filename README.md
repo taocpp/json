@@ -12,6 +12,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format
 * [RFC6901]: JavaScript Object Notation (JSON) Pointer
+* [RFC6902]: JavaScript Object Notation (JSON) Patch
 * Numeric values are stored as `int64_t`, `uint64_t` or `double` internally.
 * Standard containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
 * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
@@ -90,3 +91,4 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 [RFC7159]: http://www.ietf.org/rfc/rfc7159.txt
 [ECMA-404]: http://www.ecma-international.org/publications/standards/Ecma-404.htm
 [RFC6901]: http://www.ietf.org/rfc/rfc6901.txt
+[RFC6902]: http://www.ietf.org/rfc/rfc6902.txt

@@ -438,7 +438,85 @@ namespace tao
             return m_union.o.find( key )->second;
          }
 
-         // Unlike the above pure getter, this adds null elements when the leaf is a missing object key or '-' for an array.
+         void erase( const std::size_t index )
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            auto & a = m_union.a;
+            if ( index >= a.size() ) {
+               throw std::out_of_range( "array index too large" );
+            }
+            a.erase( a.begin() + index );
+         }
+
+         void erase( const std::string & key )
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            if ( m_union.o.erase( key ) == 0 ) {
+               throw std::out_of_range( "key not found: " + key );
+            }
+         }
+
+         void erase( const json_pointer & k )
+         {
+            if ( ! k ) {
+               throw "TODO: Clarify with RFC!!!";
+            }
+            const auto sp = k.split();
+            basic_value & v = internal::json_pointer_at( this, sp.first );
+            switch ( v.m_type ) {
+               case json::type::ARRAY:
+                  v.erase( internal::json_pointer_token_to_index( sp.second ) );
+                  break;
+               case json::type::OBJECT:
+                  v.erase( sp.second );
+                  break;
+               default:
+                  throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "', "
+                                            "value at '" + sp.first.value() + "' "
+                                            "is neither 'object' nor 'array', "
+                                            "but '" + to_string( v.m_type ) + "'" );
+            }
+         }
+
+         basic_value & add( const json_pointer & k )
+         {
+            if ( ! k ) {
+               return * this;
+            }
+            const auto sp = k.split();
+            basic_value & v = internal::json_pointer_at( this, sp.first );
+            switch ( v.m_type ) {
+               case json::type::ARRAY:
+                  {
+                     const auto & t = sp.second;
+                     if ( t == "-" ) {
+                        v.unsafe_emplace_back( null );
+                        return v.m_union.a.back();
+                     }
+                     const auto i = internal::json_pointer_token_to_index( t );
+                     v.m_union.a.insert( v.m_union.a.begin() + i, null );
+                     return v.m_union.a.at( i );
+                  }
+                  break;
+               case json::type::OBJECT:
+                  {
+                     auto & t = sp.second;
+                     const auto it = v.m_union.o.find( t );
+                     if ( it == v.m_union.o.end() ) {
+                        const auto r = v.unsafe_emplace( std::move( t ), null );
+                        assert( r.second );
+                        return r.first->second;
+                     }
+                     return it->second;
+                  }
+                  break;
+               default:
+                  throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "', "
+                                            "value at '" + sp.first.value() + "' "
+                                            "is neither 'object' nor 'array', "
+                                            "but '" + to_string( v.m_type ) + "'" );
+            }
+         }
 
          basic_value & operator[] ( const json_pointer & k )
          {

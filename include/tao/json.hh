@@ -12,4 +12,6 @@
 #include "json/parse_file.hh"
 #include "json/self_contained.hh"
 
+#include "json/patch.hh"
+
 #endif
