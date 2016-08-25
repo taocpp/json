@@ -104,8 +104,36 @@ namespace tao
         TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/2" }, { "path", "/a" } } } ) ) == value( { { "a", 3 }, { "b", value::array( { 1, 2, 4 } ) } } ) );
         TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/3" }, { "path", "/a" } } } ) ) == value( { { "a", 4 }, { "b", value::array( { 1, 2, 3 } ) } } ) );
 
-        // TODO: copy
-
+        TEST_THROWS( patch( a, value::array( { { { "op", "copy" }, { "from", "" }, { "path", "" } } } ) ) );
+        TEST_THROWS( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "" } } } ) ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "/a" } } } ) ) == a );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a/foo" }, { "path", "/a/foo" } } } ) ) == a );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "/b" } } } ) ) == value( { { "a", { { "foo", 1 } } }, { "b", { { "foo", 1 } } } } ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a/foo" }, { "path", "/b" } } } ) ) == value( { { "a", { { "foo", 1 } } }, { "b", 1 } } ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a/foo" }, { "path", "/a" } } } ) ) == value( { { "a", 1 } } ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "/a/foo" } } } ) ) == value( { { "a", { { "foo", { { "foo", 1 } } } } } } ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "/a/bar" } } } ) ) == value( { { "a", { { "foo", 1 }, { "bar", { { "foo", 1 } } } } } } ) );
+        TEST_THROWS( patch( a, value::array( { { { "op", "copy" }, { "from", "/b" }, { "path", "/a" } } } ) ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/0" }, { "path", "/b/0" } } } ) ) == value( { { "b", value::array( { 1, 1, 2, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/0" }, { "path", "/b/1" } } } ) ) == value( { { "b", value::array( { 1, 1, 2, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/0" }, { "path", "/b/2" } } } ) ) == value( { { "b", value::array( { 1, 2, 1, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/0" }, { "path", "/b/3" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 1, 4 } ) } } ) );
+        TEST_THROWS( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/0" }, { "path", "/b/4" } } } ) ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/0" }, { "path", "/b/-" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 4, 1 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/2" }, { "path", "/b/0" } } } ) ) == value( { { "b", value::array( { 3, 1, 2, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/2" }, { "path", "/b/1" } } } ) ) == value( { { "b", value::array( { 1, 3, 2, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/2" }, { "path", "/b/2" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/2" }, { "path", "/b/3" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 3, 4 } ) } } ) );
+        TEST_THROWS( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/2" }, { "path", "/b/4" } } } ) ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/2" }, { "path", "/b/-" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 4, 3 } ) } } ) );
+        TEST_THROWS( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/4" }, { "path", "/b/-" } } } ) ) );
+        TEST_THROWS( patch( b, value::array( { { { "op", "copy" }, { "from", "/b/-" }, { "path", "/b/-" } } } ) ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b" }, { "path", "/b/0" } } } ) ) == value( { { "b", value::array( { value::array( { 1, 2, 3, 4 } ), 1, 2, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b" }, { "path", "/b/2" } } } ) ) == value( { { "b", value::array( { 1, 2, value::array( { 1, 2, 3, 4 } ), 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "/b" }, { "path", "/b/-" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 4, value::array( { 1, 2, 3, 4 } ) } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "" }, { "path", "/b/0" } } } ) ) == value( { { "b", value::array( { { { "b", value::array( { 1, 2, 3, 4 } ) } }, 1, 2, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "" }, { "path", "/b/2" } } } ) ) == value( { { "b", value::array( { 1, 2, { { "b", value::array( { 1, 2, 3, 4 } ) } }, 3, 4 } ) } } ) );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "copy" }, { "from", "" }, { "path", "/b/-" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 4, { { "b", value::array( { 1, 2, 3, 4 } ) } } } ) } } ) );
       }
 
    } // json
