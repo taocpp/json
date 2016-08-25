@@ -13,16 +13,24 @@ namespace tao
    {
       void unit_test()
       {
+        const value n = null;
+        const value ea = empty_array;
+        const value eo = empty_object;
+
         const value a = { { "a", { { "foo", 1 } } } };
         const value b = { { "b", value::array( { 1, 2, 3, 4 } ) } };
+
         const value q = { { "q", { { "bar", 2 } } } };
 
-        TEST_ASSERT( patch( {}, value::array( {} ) ) == null );
-        TEST_ASSERT( patch( a, value::array( {} ) ) == a );
-        TEST_ASSERT( patch( q, value::array( {} ) ) == q );
+        TEST_ASSERT( patch( n, ea ) == n );
+        TEST_ASSERT( patch( ea, ea ) == ea );
+        TEST_ASSERT( patch( eo, ea ) == eo );
+        TEST_ASSERT( patch( a, ea ) == a );
+        TEST_ASSERT( patch( b, ea ) == b );
+        TEST_ASSERT( patch( q, ea ) == q );
 
-        TEST_ASSERT( patch( {}, value::array( { { { "op", "test" }, { "path", "" }, { "value", null } } } ) ) == null );
-        TEST_THROWS( patch( {}, value::array( { { { "op", "test" }, { "path", "" }, { "value", 42 } } } ) ) );
+        TEST_ASSERT( patch( n, value::array( { { { "op", "test" }, { "path", "" }, { "value", null } } } ) ) == null );
+        TEST_THROWS( patch( n, value::array( { { { "op", "test" }, { "path", "" }, { "value", 42 } } } ) ) );
 
         TEST_ASSERT( patch( a, value::array( { { { "op", "test" }, { "path", "/a" }, { "value", { { "foo", 1 } } } } } ) ) == a );
         TEST_ASSERT( patch( a, value::array( { { { "op", "test" }, { "path", "/a/foo" }, { "value", 1 } } } ) ) == a );
@@ -31,10 +39,12 @@ namespace tao
         TEST_THROWS( patch( a, value::array( { { { "op", "test" }, { "path", "/a" }, { "value", 42 } } } ) ) );
 
         TEST_ASSERT( patch( a, value::array( { { { "op", "remove" }, { "path", "/a" } } } ) ) == empty_object );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "remove" }, { "path", "/a" } } } ) ) == eo );
         TEST_ASSERT( patch( a, value::array( { { { "op", "remove" }, { "path", "/a/foo" } } } ) ) == value( { { "a", empty_object } } ) );
         TEST_THROWS( patch( a, value::array( { { { "op", "remove" }, { "path", "/q" } } } ) ) );
         TEST_THROWS( patch( a, value::array( { { { "op", "remove" }, { "path", "" } } } ) ) ); // TODO: clarify correctness
         TEST_ASSERT( patch( b, value::array( { { { "op", "remove" }, { "path", "/b" } } } ) ) == empty_object );
+        TEST_ASSERT( patch( b, value::array( { { { "op", "remove" }, { "path", "/b" } } } ) ) == eo );
         TEST_ASSERT( patch( b, value::array( { { { "op", "remove" }, { "path", "/b/0" } } } ) ) == value( { { "b", value::array( { 2, 3, 4 } ) } } ) );
         TEST_ASSERT( patch( b, value::array( { { { "op", "remove" }, { "path", "/b/1" } } } ) ) == value( { { "b", value::array( { 1, 3, 4 } ) } } ) );
         TEST_ASSERT( patch( b, value::array( { { { "op", "remove" }, { "path", "/b/2" } } } ) ) == value( { { "b", value::array( { 1, 2, 4 } ) } } ) );
