@@ -483,7 +483,8 @@ namespace tao
          basic_value & insert( const json_pointer & k, basic_value value )
          {
             if ( ! k ) {
-               throw "TODO: Clarify with RFC!!!";
+               * this = std::move( value );
+               return * this;
             }
             const auto sp = k.split();
             basic_value & v = internal::json_pointer_at( this, sp.first );

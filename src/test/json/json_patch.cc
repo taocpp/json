@@ -57,7 +57,7 @@ namespace tao
 
         TEST_ASSERT( patch( a, value::array( { { { "op", "add" }, { "path", "/b" }, { "value", 42 } } } ) ) == value( { { "a", { { "foo", 1 } } }, { "b", 42 } } ) );
         TEST_ASSERT( patch( a, value::array( { { { "op", "add" }, { "path", "/a/b" }, { "value", 42 } } } ) ) == value( { { "a", { { "foo", 1 }, { "b", 42 } } } } ) );
-        TEST_THROWS( patch( a, value::array( { { { "op", "add" }, { "path", "" }, { "value", 42 } } } ) ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "add" }, { "path", "" }, { "value", 42 } } } ) ) == 42 );
         TEST_ASSERT( patch( b, value::array( { { { "op", "add" }, { "path", "/b/0" }, { "value", 42 } } } ) ) == value( { { "b", value::array( { 42, 1, 2, 3, 4 } ) } } ) );
         TEST_ASSERT( patch( b, value::array( { { { "op", "add" }, { "path", "/b/1" }, { "value", 42 } } } ) ) == value( { { "b", value::array( { 1, 42, 2, 3, 4 } ) } } ) );
         TEST_ASSERT( patch( b, value::array( { { { "op", "add" }, { "path", "/b/2" }, { "value", 42 } } } ) ) == value( { { "b", value::array( { 1, 2, 42, 3, 4 } ) } } ) );
@@ -82,7 +82,7 @@ namespace tao
         TEST_THROWS( patch( q, value::array( { { { "op", "replace" }, { "path", "/a/foo" }, { "value", 42 } } } ) ) );
 
         TEST_THROWS( patch( a, value::array( { { { "op", "move" }, { "from", "" }, { "path", "" } } } ) ) );
-        TEST_THROWS( patch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "" } } } ) ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "" } } } ) ) == value( { { "foo", 1 } } ) );
         TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "/a" } } } ) ) == a );
         TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "/a/foo" }, { "path", "/a/foo" } } } ) ) == a );
         TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "/b" } } } ) ) == value( { { "b", { { "foo", 1 } } } } ) );
@@ -104,8 +104,8 @@ namespace tao
         TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/2" }, { "path", "/a" } } } ) ) == value( { { "a", 3 }, { "b", value::array( { 1, 2, 4 } ) } } ) );
         TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/3" }, { "path", "/a" } } } ) ) == value( { { "a", 4 }, { "b", value::array( { 1, 2, 3 } ) } } ) );
 
-        TEST_THROWS( patch( a, value::array( { { { "op", "copy" }, { "from", "" }, { "path", "" } } } ) ) );
-        TEST_THROWS( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "" } } } ) ) );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "" }, { "path", "" } } } ) ) == a );
+        TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "" } } } ) ) == value( { { "foo", 1 } } ) );
         TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "/a" } } } ) ) == a );
         TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a/foo" }, { "path", "/a/foo" } } } ) ) == a );
         TEST_ASSERT( patch( a, value::array( { { { "op", "copy" }, { "from", "/a" }, { "path", "/b" } } } ) ) == value( { { "a", { { "foo", 1 } } }, { "b", { { "foo", 1 } } } } ) );
