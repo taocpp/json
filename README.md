@@ -6,7 +6,7 @@
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 [![Issues](https://img.shields.io/github/issues/taocpp/json.svg)](https://github.com/taocpp/json/issues)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object, support for JSON Pointers as well as conversions from and to JSON string representation. It is designed for correctness and simplicity, and strives for speed through minimalism (rather than complicated optimisations).
+The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object, conversions from and to JSON string representation as well as support for JSON Pointer and JSON Patch. It is designed for correctness and simplicity, and strives for speed through minimalism (rather than complicated optimisations).
 
 ## Features
 
