@@ -26,7 +26,7 @@ namespace tao
             value.erase( path );
           }
           else if( op == "add" ) {
-            value.add( path ) = entry.at( "value" );
+            value.insert( path, entry.at( "value" ) );
           }
           else if( op == "replace" ) {
             value.at( path ) = entry.at( "value" );
@@ -35,12 +35,11 @@ namespace tao
             const json_pointer from( entry.at( "from" ).get_string() );
             auto v = std::move( value.at( from ) );
             value.erase( from );
-            value.add( path ) = std::move( v );
+            value.insert( path, std::move( v ) );
           }
           else if( op == "copy" ) {
             const json_pointer from( entry.at( "from" ).get_string() );
-            auto v = value.at( from );
-            value.add( path ) = std::move( v );
+            value.insert( path, value.at( from ) );
           }
           else {
             throw std::runtime_error( "unknown patch operation: '" + op + '\'' );

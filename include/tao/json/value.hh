@@ -478,10 +478,10 @@ namespace tao
             }
          }
 
-         basic_value & add( const json_pointer & k )
+         basic_value & insert( const json_pointer & k, basic_value value )
          {
             if ( ! k ) {
-               return * this;
+               throw "TODO: Clarify with RFC!!!";
             }
             const auto sp = k.split();
             basic_value & v = internal::json_pointer_at( this, sp.first );
@@ -490,11 +490,11 @@ namespace tao
                   {
                      const auto & t = sp.second;
                      if ( t == "-" ) {
-                        v.unsafe_emplace_back( null );
+                        v.unsafe_emplace_back( std::move( value ) );
                         return v.m_union.a.back();
                      }
                      const auto i = internal::json_pointer_token_to_index( t );
-                     v.m_union.a.insert( v.m_union.a.begin() + i, null );
+                     v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
                      return v.m_union.a.at( i );
                   }
                   break;
@@ -503,10 +503,11 @@ namespace tao
                      auto & t = sp.second;
                      const auto it = v.m_union.o.find( t );
                      if ( it == v.m_union.o.end() ) {
-                        const auto r = v.unsafe_emplace( std::move( t ), null );
+                        const auto r = v.unsafe_emplace( std::move( t ), std::move( value ) );
                         assert( r.second );
                         return r.first->second;
                      }
+                     it->second = std::move( value );
                      return it->second;
                   }
                   break;
