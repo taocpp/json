@@ -461,7 +461,7 @@ namespace tao
          void erase( const json_pointer & k )
          {
             if ( ! k ) {
-               throw "TODO: Clarify with RFC!!!";
+               throw std::runtime_error( "invalid json_pointer '' for erase" );
             }
             const auto sp = k.split();
             basic_value & v = internal::json_pointer_at( this, sp.first );
