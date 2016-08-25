@@ -62,7 +62,6 @@ namespace tao
             }
          };
 
-
          template< typename T >
          struct totally_ordered< T, null_t, type::NULL_ >
             : operators::totally_ordered< T, null_t >
@@ -312,6 +311,46 @@ namespace tao
                   return lhs.unsafe_get_double() > rhs;
                }
                return lhs.type() > type::DOUBLE;
+            }
+         };
+
+         template< typename T >
+         struct totally_ordered< T, empty_array_t, type::ARRAY >
+            : operators::totally_ordered< T, empty_array_t >
+         {
+            friend bool operator==( const T & lhs, empty_array_t rhs ) noexcept
+            {
+               return lhs == T( rhs );
+            }
+
+            friend bool operator<( const T & lhs, empty_array_t rhs ) noexcept
+            {
+               return lhs < T( rhs );
+            }
+
+            friend bool operator>( const T & lhs, empty_array_t rhs ) noexcept
+            {
+               return lhs > T( rhs );
+            }
+         };
+
+         template< typename T >
+         struct totally_ordered< T, empty_object_t, type::OBJECT >
+            : operators::totally_ordered< T, empty_object_t >
+         {
+            friend bool operator==( const T & lhs, empty_object_t rhs ) noexcept
+            {
+               return lhs == T( rhs );
+            }
+
+            friend bool operator<( const T & lhs, empty_object_t rhs ) noexcept
+            {
+               return lhs < T( rhs );
+            }
+
+            friend bool operator>( const T & lhs, empty_object_t rhs ) noexcept
+            {
+               return lhs > T( rhs );
             }
          };
 

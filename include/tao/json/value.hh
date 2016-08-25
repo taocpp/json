@@ -54,7 +54,9 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, const char *, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
-           internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >
+           internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
+           internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
+           internal::totally_ordered< basic_value< Traits >, empty_object_t, type::OBJECT >
       {
       public:
          basic_value() noexcept
@@ -494,6 +496,9 @@ namespace tao
                         return v.m_union.a.back();
                      }
                      const auto i = internal::json_pointer_token_to_index( t );
+                     if ( i >= v.m_union.a.size() ) {
+                        throw std::out_of_range( "array index too large" );
+                     }
                      v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
                      return v.m_union.a.at( i );
                   }
