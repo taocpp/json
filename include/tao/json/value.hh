@@ -68,6 +68,13 @@ namespace tao
             seize( std::move( r ) );
          }
 
+         // required work-around for a bug in older GCCs (<4.9)
+         basic_value( const basic_value && r )
+              : m_type( r.m_type )
+         {
+            embed( r );
+         }
+
          basic_value( const basic_value & r )
               : m_type( r.m_type )
          {
