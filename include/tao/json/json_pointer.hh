@@ -38,7 +38,6 @@ namespace tao
          inline std::string json_pointer_next_token( const char * & p, const char * e )
          {
             std::string result;
-            // TODO: Find next '/' first, call result.reserve( x )?
             while ( p != e ) {
                switch ( *p ) {
                   case '/':
