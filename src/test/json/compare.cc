@@ -257,21 +257,33 @@ namespace tao
          test_lt( 42, b );
          test_lt( 42u, b );
          test_lt( 42.0, b );
+         test_lt( value( 42 ), b );
+         test_lt( value( 42u ), b );
+         test_lt( value( 42.0 ), b );
 
          test_lt( N( 42 ), pb );
          test_lt( 42, pb );
          test_lt( 42u, pb );
          test_lt( 42.0, pb );
+         test_lt( value( 42 ), pb );
+         test_lt( value( 42u ), pb );
+         test_lt( value( 42.0 ), pb );
 
          test_lt( a, N( 43 ) );
          test_lt( a, 43 );
          test_lt( a, 43u );
          test_lt( a, 43.0 );
+         test_lt( a, value( 43 ) );
+         test_lt( a, value( 43u ) );
+         test_lt( a, value( 43.0 ) );
 
          test_lt( pa, N( 43 ) );
          test_lt( pa, 43 );
          test_lt( pa, 43u );
          test_lt( pa, 43.0 );
+         test_lt( pa, value( 43 ) );
+         test_lt( pa, value( 43u ) );
+         test_lt( pa, value( 43.0 ) );
       }
 
       void test_string()
