@@ -47,6 +47,8 @@ namespace tao
 
          TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz" } ) );
          TEST_THROWS( v.at( "/bar"_json_pointer ) );
+         TEST_THROWS( v.erase( "/foo/0/baz"_json_pointer ) );
+         TEST_THROWS( v.insert( "/foo/0/baz"_json_pointer, null ) );
 
          TEST_ASSERT( v.at( "/foo/0"_json_pointer ) == "bar" );
          TEST_ASSERT( v.at( "/foo/1"_json_pointer ) == "baz" );
@@ -90,6 +92,7 @@ namespace tao
          v[ "/bar"_json_pointer ] = 42;
          TEST_ASSERT( v.at( "bar" ) == 42 );
 
+         TEST_ASSERT( v[ ""_json_pointer ] == v );
          TEST_ASSERT( v[ "/foo/0"_json_pointer ] == "bar" );
          TEST_ASSERT( v[ "/foo/1"_json_pointer ] == "baz" );
          TEST_THROWS( v[ "/foo/4"_json_pointer ] );
