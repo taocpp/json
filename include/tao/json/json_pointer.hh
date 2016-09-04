@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "type.hh"
+#include "external/operators.hpp"
 
 namespace tao
 {
@@ -66,6 +67,7 @@ namespace tao
 
       // RFC 6901
       class json_pointer
+           : operators::totally_ordered< json_pointer >
       {
       private:
          std::string m_value;
@@ -121,6 +123,16 @@ namespace tao
             return { json_pointer( m_value.substr( 0, p ) ), internal::json_pointer_next_token( ++b, e ) };
          }
       };
+
+      inline bool operator== ( const json_pointer & lhs, const json_pointer & rhs ) noexcept
+      {
+         return lhs.value() == rhs.value();
+      }
+
+      inline bool operator< ( const json_pointer & lhs, const json_pointer & rhs ) noexcept
+      {
+         return lhs.value() < rhs.value();
+      }
 
       namespace internal
       {

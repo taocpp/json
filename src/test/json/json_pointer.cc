@@ -119,6 +119,39 @@ namespace tao
          TEST_THROWS( v.at( "/o\0r"_json_pointer ) );
          TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_null() );
          TEST_ASSERT( v.at( "/o\0r"_json_pointer ).is_null() );
+
+         const auto p1 = ""_json_pointer;
+         const auto p2 = "/a"_json_pointer;
+         const auto p3 = "/b"_json_pointer;
+         const auto p4 = p2;
+
+         TEST_ASSERT( !( p1 == p2 ) );
+         TEST_ASSERT( p1 != p2 );
+         TEST_ASSERT( p1 < p2 );
+         TEST_ASSERT( !( p1 > p2 ) );
+         TEST_ASSERT( p1 <= p2 );
+         TEST_ASSERT( !( p1 >= p2 ) );
+
+         TEST_ASSERT( !( p1 == p3 ) );
+         TEST_ASSERT( p1 != p3 );
+         TEST_ASSERT( p1 < p3 );
+         TEST_ASSERT( !( p1 > p3 ) );
+         TEST_ASSERT( p1 <= p3 );
+         TEST_ASSERT( !( p1 >= p3 ) );
+
+         TEST_ASSERT( !( p2 == p3 ) );
+         TEST_ASSERT( p2 != p3 );
+         TEST_ASSERT( p2 < p3 );
+         TEST_ASSERT( !( p2 > p3 ) );
+         TEST_ASSERT( p2 <= p3 );
+         TEST_ASSERT( !( p2 >= p3 ) );
+
+         TEST_ASSERT( !( p4 == p3 ) );
+         TEST_ASSERT( p4 != p3 );
+         TEST_ASSERT( p4 < p3 );
+         TEST_ASSERT( !( p4 > p3 ) );
+         TEST_ASSERT( p4 <= p3 );
+         TEST_ASSERT( !( p4 >= p3 ) );
       }
 
    } // json
