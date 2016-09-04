@@ -48,7 +48,7 @@ namespace tao
          test_simple( { { "foo", 42u } }, "{\"foo\":42}" );
          test_simple( { { "foo", 42 }, { "bar", 43 } }, "{\"bar\":43,\"foo\":42}" );
          test_simple( { { "foo", 42 }, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
-         // test_simple( { v, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
+         test_simple( { { "foo", v }, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
          test_simple( { { "foo", &v }, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
          test_simple( { { "foo", nullptr } }, "{\"foo\":null}" );
 
@@ -66,7 +66,6 @@ namespace tao
          test_pretty( {}, "null" );  // this is the default ctor
          test_pretty( { { "foo", 42 } }, "{\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", 42 }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
-         // test_pretty( { v, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", &v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", nullptr } }, "{\n  \"foo\": null\n}" );
