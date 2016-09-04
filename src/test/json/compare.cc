@@ -7,30 +7,25 @@ namespace tao
 {
    namespace json
    {
-      void test_lt( const value & a, const value & b )
+      template< typename T >
+      void test_lt( const value & a, const T & b )
       {
-         TEST_ASSERT( ! ( a < a ) );
-         TEST_ASSERT( ! ( b < b ) );
-         TEST_ASSERT( ! ( a > a ) );
-         TEST_ASSERT( ! ( b > b ) );
-         TEST_ASSERT( a < b );
-         TEST_ASSERT( b > a );
-         TEST_ASSERT( ! ( a > b ) );
-         TEST_ASSERT( ! ( b < a ) );
-
          TEST_ASSERT( a == a );
-         TEST_ASSERT( b == b );
          TEST_ASSERT( ! ( a != a ) );
-         TEST_ASSERT( ! ( b != b ) );
          TEST_ASSERT( a != b );
          TEST_ASSERT( b != a );
          TEST_ASSERT( ! ( a == b ) );
          TEST_ASSERT( ! ( b == a ) );
 
+         TEST_ASSERT( ! ( a < a ) );
+         TEST_ASSERT( ! ( a > a ) );
+         TEST_ASSERT( a < b );
+         TEST_ASSERT( b > a );
+         TEST_ASSERT( ! ( a > b ) );
+         TEST_ASSERT( ! ( b < a ) );
+
          TEST_ASSERT( a <= a );
-         TEST_ASSERT( b <= b );
          TEST_ASSERT( a >= a );
-         TEST_ASSERT( b >= b );
          TEST_ASSERT( a <= b );
          TEST_ASSERT( b >= a );
          TEST_ASSERT( ! ( a >= b ) );
@@ -57,6 +52,7 @@ namespace tao
          TEST_ASSERT( f.type() == type::BOOL );
 
          test_lt( f, t );
+         test_lt( f, true );
       }
 
       template< typename N >
@@ -66,6 +62,8 @@ namespace tao
          const value b( N( 43 ) );
 
          test_lt( a, b );
+         test_lt( a, N( 43 ) );
+         test_lt( a, 43 );
       }
 
       void test_string()
@@ -77,6 +75,8 @@ namespace tao
          TEST_ASSERT( b.type() == type::STRING );
 
          test_lt( a, b );
+         test_lt( a, "foo" );
+         test_lt( a, std::string( "foo" ) );
       }
 
       void test_array()
@@ -176,6 +176,16 @@ namespace tao
          test_lt( pn, a );
          test_lt( pn, o );
          test_lt( pn, p );
+
+         test_lt( n, true );
+         test_lt( n, -42 );
+         test_lt( n, 42u );
+         test_lt( n, 43.0 );
+         test_lt( n, "string" );
+         test_lt( n, std::string( "string" ) );
+         test_lt( n, empty_array );
+         test_lt( n, empty_object );
+         test_lt( n, &u );
 
          test_lt( b, i );
          test_lt( b, u );
