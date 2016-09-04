@@ -37,6 +37,8 @@ namespace tao
         TEST_ASSERT( patch( b, ea ) == b );
         TEST_ASSERT( patch( q, ea ) == q );
 
+        TEST_THROWS( patch( n, value::array( { { { "op", "foo" }, { "path", "" } } } ) ) );
+
         TEST_ASSERT( patch( n, value::array( { { { "op", "test" }, { "path", "" }, { "value", null } } } ) ) == null );
         TEST_THROWS( patch( n, value::array( { { { "op", "test" }, { "path", "" }, { "value", 42 } } } ) ) );
 
@@ -149,6 +151,8 @@ namespace tao
         TEST_ASSERT( cpatch( a, ea ) == a );
         TEST_ASSERT( cpatch( b, ea ) == b );
         TEST_ASSERT( cpatch( q, ea ) == q );
+
+        TEST_THROWS( cpatch( n, value::array( { { { "op", "foo" }, { "path", "" } } } ) ) );
 
         TEST_ASSERT( cpatch( n, value::array( { { { "op", "test" }, { "path", "" }, { "value", null } } } ) ) == null );
         TEST_THROWS( cpatch( n, value::array( { { { "op", "test" }, { "path", "" }, { "value", 42 } } } ) ) );
