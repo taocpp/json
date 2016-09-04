@@ -145,6 +145,8 @@ namespace tao
          const value s = from_string( "\"string\"" );
          const value a = from_string( "[]" );
          const value o = from_string( "{}" );
+         const value p = &u;
+         const value pn = nullptr;
 
          TEST_ASSERT( n.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::BOOL );
@@ -154,6 +156,8 @@ namespace tao
          TEST_ASSERT( s.type() == type::STRING );
          TEST_ASSERT( a.type() == type::ARRAY );
          TEST_ASSERT( o.type() == type::OBJECT );
+         TEST_ASSERT( p.type() == type::POINTER );
+         TEST_ASSERT( pn.type() == type::POINTER );
 
          test_lt( n, b );
          test_lt( n, i );
@@ -162,6 +166,16 @@ namespace tao
          test_lt( n, s );
          test_lt( n, a );
          test_lt( n, o );
+         test_lt( n, p );
+
+         test_lt( pn, b );
+         test_lt( pn, i );
+         test_lt( pn, u );
+         test_lt( pn, d );
+         test_lt( pn, s );
+         test_lt( pn, a );
+         test_lt( pn, o );
+         test_lt( pn, p );
 
          test_lt( b, i );
          test_lt( b, u );
@@ -169,6 +183,7 @@ namespace tao
          test_lt( b, s );
          test_lt( b, a );
          test_lt( b, o );
+         test_lt( b, p );
 
          test_lt( i, s );
          test_lt( i, a );
