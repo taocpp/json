@@ -12,6 +12,7 @@ namespace tao
       void test_null()
       {
          const value v;
+         const value v2( v );
 
          TEST_ASSERT( v.empty() );
 
@@ -49,6 +50,7 @@ namespace tao
       void test_bool( const bool b )
       {
          const value v( b );
+         const value v2( v );
 
          TEST_ASSERT( ! v.empty() );
 
@@ -89,6 +91,7 @@ namespace tao
       void test_signed( const T t )
       {
          const value v( t );
+         const value v2( v );
 
          TEST_ASSERT( ! v.empty() );
 
@@ -137,6 +140,7 @@ namespace tao
       void test_unsigned( const T t )
       {
          const value v( t );
+         const value v2( v );
 
          TEST_ASSERT( ! v.empty() );
 
@@ -182,6 +186,7 @@ namespace tao
       void test_double( const double d )
       {
          const value v( d );
+         const value v2( v );
 
          TEST_ASSERT( ! v.empty() );
 
@@ -217,6 +222,7 @@ namespace tao
       void test_string( const char ( & s )[ N ] )
       {
          const value v( s );
+         const value v2( v );
 
          TEST_ASSERT( v.empty() == ( N == 1 ) );
 
@@ -257,6 +263,8 @@ namespace tao
 
       void test_empty_array( const value v )
       {
+         const value v2( v );
+
          TEST_ASSERT( v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
@@ -290,6 +298,8 @@ namespace tao
 
       void test_empty_object( const value v )
       {
+         const value v2( v );
+
          TEST_ASSERT( v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
@@ -323,6 +333,7 @@ namespace tao
       void test_array_1234()
       {
          const value v = value::array( { 1, 2, 3, 4 } );
+         const value v2( v );
 
          TEST_ASSERT( ! v.empty() );
 
@@ -352,6 +363,7 @@ namespace tao
       void test_object_1234()
       {
          const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
+         const value v2( v );
 
          TEST_ASSERT( ! v.empty() );
 
@@ -434,6 +446,26 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::OBJECT );
          TEST_ASSERT( v.get_object().empty() );
+
+         v = nullptr;
+         {
+           value v2( v );
+           TEST_ASSERT( v2.type() == type::POINTER );
+           TEST_ASSERT( v2.get_pointer() == nullptr );
+           TEST_ASSERT( v2 == null );
+         }
+         {
+           value v2( &v );
+           TEST_ASSERT( v2.type() == type::POINTER );
+           TEST_ASSERT( v2.get_pointer() != nullptr );
+           TEST_ASSERT( v2.get_pointer()->type() == type::POINTER );
+           TEST_ASSERT( v2.get_pointer()->get_pointer() == nullptr );
+           TEST_ASSERT( v2 == null );
+         }
+
+         TEST_ASSERT( v.type() == type::POINTER );
+         TEST_ASSERT( v.get_pointer() == nullptr );
+
 
          test_string( "" );
          test_string( "foo" );
