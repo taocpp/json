@@ -44,6 +44,7 @@ namespace tao
       {
          const value a;
          const value b( null );
+         const value * p = nullptr;
 
          const value pa( &a );
          const value pb( &b );
@@ -52,13 +53,19 @@ namespace tao
          TEST_ASSERT( a.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::NULL_ );
 
+         TEST_ASSERT( a == a );
          TEST_ASSERT( a == b );
+         TEST_ASSERT( a == p );
+         TEST_ASSERT( a == pa );
          TEST_ASSERT( a == pb );
          TEST_ASSERT( a == pz );
          TEST_ASSERT( a == null );
          TEST_ASSERT( a == nullptr );
 
+         TEST_ASSERT( pa == a );
          TEST_ASSERT( pa == b );
+         TEST_ASSERT( pa == p );
+         TEST_ASSERT( pa == pa );
          TEST_ASSERT( pa == pb );
          TEST_ASSERT( pa == pz );
          TEST_ASSERT( pa == null );
@@ -66,19 +73,32 @@ namespace tao
 
          TEST_ASSERT( pz == a );
          TEST_ASSERT( pz == b );
+         TEST_ASSERT( pz == p );
          TEST_ASSERT( pz == pa );
          TEST_ASSERT( pz == pb );
          TEST_ASSERT( pz == pz );
          TEST_ASSERT( pz == null );
          TEST_ASSERT( pz == nullptr );
 
+         TEST_ASSERT( p == a );
+         TEST_ASSERT( p == b );
+         TEST_ASSERT( p == pa );
+         TEST_ASSERT( p == pb );
+         TEST_ASSERT( p == pz );
+
+         TEST_ASSERT( ! ( a < a ) );
          TEST_ASSERT( ! ( a < b ) );
+         TEST_ASSERT( ! ( a < p ) );
+         TEST_ASSERT( ! ( a < pa ) );
          TEST_ASSERT( ! ( a < pb ) );
          TEST_ASSERT( ! ( a < pz ) );
          TEST_ASSERT( ! ( a < null ) );
          TEST_ASSERT( ! ( a < nullptr ) );
 
+         TEST_ASSERT( ! ( pa < a ) );
          TEST_ASSERT( ! ( pa < b ) );
+         TEST_ASSERT( ! ( pa < p ) );
+         TEST_ASSERT( ! ( pa < pa ) );
          TEST_ASSERT( ! ( pa < pb ) );
          TEST_ASSERT( ! ( pa < pz ) );
          TEST_ASSERT( ! ( pa < null ) );
@@ -86,19 +106,32 @@ namespace tao
 
          TEST_ASSERT( ! ( pz < a ) );
          TEST_ASSERT( ! ( pz < b ) );
+         TEST_ASSERT( ! ( pz < p ) );
          TEST_ASSERT( ! ( pz < pa ) );
          TEST_ASSERT( ! ( pz < pb ) );
          TEST_ASSERT( ! ( pz < pz ) );
          TEST_ASSERT( ! ( pz < null ) );
          TEST_ASSERT( ! ( pz < nullptr ) );
 
+         TEST_ASSERT( ! ( p < a ) );
+         TEST_ASSERT( ! ( p < b ) );
+         TEST_ASSERT( ! ( p < pa ) );
+         TEST_ASSERT( ! ( p < pb ) );
+         TEST_ASSERT( ! ( p < pz ) );
+
+         TEST_ASSERT( ! ( a > a ) );
          TEST_ASSERT( ! ( a > b ) );
+         TEST_ASSERT( ! ( a > p ) );
+         TEST_ASSERT( ! ( a > pa ) );
          TEST_ASSERT( ! ( a > pb ) );
          TEST_ASSERT( ! ( a > pz ) );
          TEST_ASSERT( ! ( a > null ) );
          TEST_ASSERT( ! ( a > nullptr ) );
 
+         TEST_ASSERT( ! ( pa > a ) );
          TEST_ASSERT( ! ( pa > b ) );
+         TEST_ASSERT( ! ( pa > p ) );
+         TEST_ASSERT( ! ( pa > pa ) );
          TEST_ASSERT( ! ( pa > pb ) );
          TEST_ASSERT( ! ( pa > pz ) );
          TEST_ASSERT( ! ( pa > null ) );
@@ -106,19 +139,32 @@ namespace tao
 
          TEST_ASSERT( ! ( pz > a ) );
          TEST_ASSERT( ! ( pz > b ) );
+         TEST_ASSERT( ! ( pz > p ) );
          TEST_ASSERT( ! ( pz > pa ) );
          TEST_ASSERT( ! ( pz > pb ) );
          TEST_ASSERT( ! ( pz > pz ) );
          TEST_ASSERT( ! ( pz > null ) );
          TEST_ASSERT( ! ( pz > nullptr ) );
 
+         TEST_ASSERT( ! ( p > a ) );
+         TEST_ASSERT( ! ( p > b ) );
+         TEST_ASSERT( ! ( p > pa ) );
+         TEST_ASSERT( ! ( p > pb ) );
+         TEST_ASSERT( ! ( p > pz ) );
+
+         TEST_ASSERT( a <= a );
          TEST_ASSERT( a <= b );
+         TEST_ASSERT( a <= p );
+         TEST_ASSERT( a <= pa );
          TEST_ASSERT( a <= pb );
          TEST_ASSERT( a <= pz );
          TEST_ASSERT( a <= null );
          TEST_ASSERT( a <= nullptr );
 
+         TEST_ASSERT( pa <= a );
          TEST_ASSERT( pa <= b );
+         TEST_ASSERT( pa <= p );
+         TEST_ASSERT( pa <= pa );
          TEST_ASSERT( pa <= pb );
          TEST_ASSERT( pa <= pz );
          TEST_ASSERT( pa <= null );
@@ -126,19 +172,32 @@ namespace tao
 
          TEST_ASSERT( pz <= a );
          TEST_ASSERT( pz <= b );
+         TEST_ASSERT( pz <= p );
          TEST_ASSERT( pz <= pa );
          TEST_ASSERT( pz <= pb );
          TEST_ASSERT( pz <= pz );
          TEST_ASSERT( pz <= null );
          TEST_ASSERT( pz <= nullptr );
 
+         TEST_ASSERT( p <= a );
+         TEST_ASSERT( p <= b );
+         TEST_ASSERT( p <= pa );
+         TEST_ASSERT( p <= pb );
+         TEST_ASSERT( p <= pz );
+
+         TEST_ASSERT( a >= a );
          TEST_ASSERT( a >= b );
+         TEST_ASSERT( a >= p );
+         TEST_ASSERT( a >= pa );
          TEST_ASSERT( a >= pb );
          TEST_ASSERT( a >= pz );
          TEST_ASSERT( a >= null );
          TEST_ASSERT( a >= nullptr );
 
+         TEST_ASSERT( pa >= a );
          TEST_ASSERT( pa >= b );
+         TEST_ASSERT( pa >= p );
+         TEST_ASSERT( pa >= pa );
          TEST_ASSERT( pa >= pb );
          TEST_ASSERT( pa >= pz );
          TEST_ASSERT( pa >= null );
@@ -146,11 +205,18 @@ namespace tao
 
          TEST_ASSERT( pz >= a );
          TEST_ASSERT( pz >= b );
+         TEST_ASSERT( pz >= p );
          TEST_ASSERT( pz >= pa );
          TEST_ASSERT( pz >= pb );
          TEST_ASSERT( pz >= pz );
          TEST_ASSERT( pz >= null );
          TEST_ASSERT( pz >= nullptr );
+
+         TEST_ASSERT( p >= a );
+         TEST_ASSERT( p >= b );
+         TEST_ASSERT( p >= pa );
+         TEST_ASSERT( p >= pb );
+         TEST_ASSERT( p >= pz );
       }
 
       void test_bool()
