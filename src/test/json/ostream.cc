@@ -67,6 +67,7 @@ namespace tao
          test_pretty( { { "foo", 42 } }, "{\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", 42 }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          // test_pretty( { v, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
+         test_pretty( { { "foo", v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", &v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", nullptr } }, "{\n  \"foo\": null\n}" );
       }
