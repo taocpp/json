@@ -448,24 +448,29 @@ namespace tao
          TEST_ASSERT( v.get_object().empty() );
 
          v = nullptr;
+
+         TEST_ASSERT( v.type() == type::POINTER );
+         TEST_ASSERT( v.get_pointer() == nullptr );
+         TEST_ASSERT( v.empty() );
+         TEST_ASSERT( v == null );
+
          {
            value v2( v );
            TEST_ASSERT( v2.type() == type::POINTER );
            TEST_ASSERT( v2.get_pointer() == nullptr );
+           TEST_ASSERT( v2.empty() );
            TEST_ASSERT( v2 == null );
          }
+
          {
            value v2( &v );
            TEST_ASSERT( v2.type() == type::POINTER );
            TEST_ASSERT( v2.get_pointer() != nullptr );
            TEST_ASSERT( v2.get_pointer()->type() == type::POINTER );
            TEST_ASSERT( v2.get_pointer()->get_pointer() == nullptr );
+           TEST_ASSERT( v2.empty() );
            TEST_ASSERT( v2 == null );
          }
-
-         TEST_ASSERT( v.type() == type::POINTER );
-         TEST_ASSERT( v.get_pointer() == nullptr );
-
 
          test_string( "" );
          test_string( "foo" );
