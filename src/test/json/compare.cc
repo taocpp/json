@@ -7,25 +7,33 @@ namespace tao
 {
    namespace json
    {
-      template< typename T >
-      void test_lt( const value & a, const T & b )
+     template< typename T, typename U >
+      void test_lt( const T & a, const U & b )
       {
          TEST_ASSERT( a == a );
          TEST_ASSERT( ! ( a != a ) );
-         TEST_ASSERT( a != b );
-         TEST_ASSERT( b != a );
-         TEST_ASSERT( ! ( a == b ) );
-         TEST_ASSERT( ! ( b == a ) );
-
          TEST_ASSERT( ! ( a < a ) );
          TEST_ASSERT( ! ( a > a ) );
+         TEST_ASSERT( a <= a );
+         TEST_ASSERT( a >= a );
+
+         TEST_ASSERT( b == b );
+         TEST_ASSERT( ! ( b != b ) );
+         TEST_ASSERT( ! ( b < b ) );
+         TEST_ASSERT( ! ( b > b ) );
+         TEST_ASSERT( b <= b );
+         TEST_ASSERT( b >= b );
+
+         TEST_ASSERT( ! ( a == b ) );
+         TEST_ASSERT( ! ( b == a ) );
+         TEST_ASSERT( a != b );
+         TEST_ASSERT( b != a );
+
          TEST_ASSERT( a < b );
          TEST_ASSERT( b > a );
          TEST_ASSERT( ! ( a > b ) );
          TEST_ASSERT( ! ( b < a ) );
 
-         TEST_ASSERT( a <= a );
-         TEST_ASSERT( a >= a );
          TEST_ASSERT( a <= b );
          TEST_ASSERT( b >= a );
          TEST_ASSERT( ! ( a >= b ) );
@@ -62,8 +70,14 @@ namespace tao
          const value b( N( 43 ) );
 
          test_lt( a, b );
+
+         test_lt( N( 42 ), b );
+         test_lt( 42, b );
+         test_lt( 42u, b );
+
          test_lt( a, N( 43 ) );
          test_lt( a, 43 );
+         test_lt( a, 43u );
       }
 
       void test_string()
