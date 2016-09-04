@@ -152,6 +152,16 @@ namespace tao
          TEST_ASSERT( !( p4 > p3 ) );
          TEST_ASSERT( p4 <= p3 );
          TEST_ASSERT( !( p4 >= p3 ) );
+
+         TEST_THROWS( ""_json_pointer.split() );
+         TEST_ASSERT( "/"_json_pointer.split().first == ""_json_pointer );
+         TEST_ASSERT( "/"_json_pointer.split().second == "" );
+         TEST_ASSERT( "/a/b/c"_json_pointer.split().first == "/a/b"_json_pointer );
+         TEST_ASSERT( "/a/b/c"_json_pointer.split().second == "c" );
+         TEST_ASSERT( "/a~1b/c%d/m~0/x"_json_pointer.split().first == "/a~1b/c%d/m~0"_json_pointer );
+         TEST_ASSERT( "/a~1b/c%d/m~0/x"_json_pointer.split().second == "x" );
+         TEST_ASSERT( "/xyz/a~1b~0c"_json_pointer.split().first == "/xyz"_json_pointer );
+         TEST_ASSERT( "/xyz/a~1b~0c"_json_pointer.split().second == "a/b~c" );
       }
 
    } // json
