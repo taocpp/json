@@ -45,10 +45,24 @@ namespace tao
          const value a;
          const value b( null );
 
+         const value pa( &a );
+         const value pb( &b );
+         const value pz( nullptr );
+
          TEST_ASSERT( a.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::NULL_ );
 
          TEST_ASSERT( a == b );
+         TEST_ASSERT( a == pb );
+         TEST_ASSERT( a == pz );
+         TEST_ASSERT( a == null );
+         TEST_ASSERT( a == nullptr );
+
+         TEST_ASSERT( pa == b );
+         TEST_ASSERT( pa == pb );
+         TEST_ASSERT( pa == pz );
+         TEST_ASSERT( pa == null );
+         TEST_ASSERT( pa == nullptr );
       }
 
       void test_bool()
@@ -56,11 +70,19 @@ namespace tao
          const value t( true );
          const value f( false );
 
+         const value pt( &t );
+         const value pf( &f );
+
          TEST_ASSERT( t.type() == type::BOOL );
          TEST_ASSERT( f.type() == type::BOOL );
 
          test_lt( f, t );
+         test_lt( f, pt );
          test_lt( f, true );
+
+         test_lt( pf, t );
+         test_lt( pf, pt );
+         test_lt( pf, true );
       }
 
       template< typename N >
@@ -69,15 +91,29 @@ namespace tao
          const value a( N( 42 ) );
          const value b( N( 43 ) );
 
+         const value pa( &a );
+         const value pb( &b );
+
          test_lt( a, b );
+         test_lt( pa, b );
+         test_lt( a, pb );
+         test_lt( pa, pb );
 
          test_lt( N( 42 ), b );
          test_lt( 42, b );
          test_lt( 42u, b );
 
+         test_lt( N( 42 ), pb );
+         test_lt( 42, pb );
+         test_lt( 42u, pb );
+
          test_lt( a, N( 43 ) );
          test_lt( a, 43 );
          test_lt( a, 43u );
+
+         test_lt( pa, N( 43 ) );
+         test_lt( pa, 43 );
+         test_lt( pa, 43u );
       }
 
       void test_string()
@@ -85,12 +121,21 @@ namespace tao
          const value a( "bar" );
          const value b( "foo" );
 
+         const value pa( &a );
+         const value pb( &b );
+
          TEST_ASSERT( a.type() == type::STRING );
          TEST_ASSERT( b.type() == type::STRING );
 
          test_lt( a, b );
+         test_lt( a, pb );
          test_lt( a, "foo" );
          test_lt( a, std::string( "foo" ) );
+
+         test_lt( pa, b );
+         test_lt( pa, pb );
+         test_lt( pa, "foo" );
+         test_lt( pa, std::string( "foo" ) );
       }
 
       void test_array()
@@ -311,6 +356,26 @@ namespace tao
          test_lt( n, empty_array );
          test_lt( n, empty_object );
          test_lt( n, &u );
+
+         test_lt( pn, true );
+         test_lt( pn, -42 );
+         test_lt( pn, 42u );
+         test_lt( pn, 43.0 );
+         test_lt( pn, "string" );
+         test_lt( pn, std::string( "string" ) );
+         test_lt( pn, empty_array );
+         test_lt( pn, empty_object );
+         test_lt( pn, &u );
+
+         test_lt( pz, true );
+         test_lt( pz, -42 );
+         test_lt( pz, 42u );
+         test_lt( pz, 43.0 );
+         test_lt( pz, "string" );
+         test_lt( pz, std::string( "string" ) );
+         test_lt( pz, empty_array );
+         test_lt( pz, empty_object );
+         test_lt( pz, &u );
 
          test_lt( b, i );
          test_lt( b, u );

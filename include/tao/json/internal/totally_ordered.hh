@@ -361,7 +361,7 @@ namespace tao
             friend bool operator==( const T & lhs, const T * rhs ) noexcept
             {
                if ( rhs == nullptr ) {
-                  return lhs.is_null();
+                  return lhs == null;
                }
                return lhs == * rhs;
             }
@@ -369,7 +369,7 @@ namespace tao
             friend bool operator<( const T & lhs, const T * rhs ) noexcept
             {
                if ( rhs == nullptr ) {
-                  return false;
+                  return lhs < null;
                }
                return lhs < * rhs;
             }
@@ -377,7 +377,7 @@ namespace tao
             friend bool operator>( const T & lhs, const T * rhs ) noexcept
             {
                if ( rhs == nullptr ) {
-                  return ! lhs.is_null();
+                  return lhs > null;
                }
                return lhs > * rhs;
             }
@@ -390,7 +390,7 @@ namespace tao
             friend bool operator==( const T & lhs, T * rhs ) noexcept
             {
                if ( rhs == nullptr ) {
-                  return lhs.is_null();
+                  return lhs == null;
                }
                return lhs == * rhs;
             }
@@ -398,7 +398,7 @@ namespace tao
             friend bool operator<( const T & lhs, T * rhs ) noexcept
             {
                if ( rhs == nullptr ) {
-                  return false;
+                  return lhs < null;
                }
                return lhs < * rhs;
             }
@@ -406,7 +406,7 @@ namespace tao
             friend bool operator>( const T & lhs, T * rhs ) noexcept
             {
                if ( rhs == nullptr ) {
-                  return ! lhs.is_null();
+                  return lhs > null;
                }
                return lhs > * rhs;
             }
@@ -418,6 +418,14 @@ namespace tao
          {
             friend bool operator==( const T & lhs, std::nullptr_t ) noexcept
             {
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p == null;
+                  }
+                  else {
+                     return true;
+                  }
+               }
                return lhs.is_null();
             }
 
@@ -428,7 +436,15 @@ namespace tao
 
             friend bool operator>( const T & lhs, std::nullptr_t ) noexcept
             {
-               return ! ( lhs == nullptr );
+               if ( lhs.type() == type::POINTER ) {
+                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+                     return * p > null;
+                  }
+                  else {
+                     return false;
+                  }
+               }
+               return ! lhs.is_null();
             }
          };
 
