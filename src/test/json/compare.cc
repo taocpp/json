@@ -190,6 +190,22 @@ namespace tao
          TEST_ASSERT( pa.type() == type::POINTER );
          TEST_ASSERT( po.type() == type::POINTER );
 
+         test_lt( pz, b );
+         test_lt( pz, i );
+         test_lt( pz, u );
+         test_lt( pz, d );
+         test_lt( pz, s );
+         test_lt( pz, a );
+         test_lt( pz, o );
+
+         test_lt( pz, pb );
+         test_lt( pz, pi );
+         test_lt( pz, pu );
+         test_lt( pz, pd );
+         test_lt( pz, ps );
+         test_lt( pz, pa );
+         test_lt( pz, po );
+
          test_lt( n, b );
          test_lt( n, i );
          test_lt( n, u );
@@ -205,6 +221,14 @@ namespace tao
          test_lt( n, ps );
          test_lt( n, pa );
          test_lt( n, po );
+
+         test_lt( pn, pb );
+         test_lt( pn, pi );
+         test_lt( pn, pu );
+         test_lt( pn, pd );
+         test_lt( pn, ps );
+         test_lt( pn, pa );
+         test_lt( pn, po );
 
          test_lt( nullptr, b );
          test_lt( nullptr, i );
