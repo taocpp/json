@@ -87,7 +87,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, signed char & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -103,7 +103,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, unsigned char & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -119,7 +119,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, signed short & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -135,7 +135,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, unsigned short & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -151,7 +151,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, signed int & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -167,7 +167,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, unsigned int & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -183,7 +183,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, signed long & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -199,7 +199,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, unsigned long & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -215,7 +215,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, signed long long & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -231,7 +231,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, unsigned long long & i )
          {
-            unchecked_extract_number( v, i );
+            internal::unchecked_extract_number( v, i );
          }
       };
 
@@ -247,7 +247,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, float & f )
          {
-            unchecked_extract_number( v, f );
+            internal::unchecked_extract_number( v, f );
          }
       };
 
@@ -263,7 +263,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, double & f )
          {
-            unchecked_extract_number( v, f );
+            internal::unchecked_extract_number( v, f );
          }
       };
 
