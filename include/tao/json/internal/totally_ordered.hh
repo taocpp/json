@@ -354,6 +354,84 @@ namespace tao
             }
          };
 
+         template< typename T >
+         struct totally_ordered< T, const T *, type::POINTER >
+            : operators::totally_ordered< T, const T * >
+         {
+            friend bool operator==( const T & lhs, const T * rhs ) noexcept
+            {
+               if ( rhs == nullptr ) {
+                  return lhs.is_null();
+               }
+               return lhs == * rhs;
+            }
+
+            friend bool operator<( const T & lhs, const T * rhs ) noexcept
+            {
+               if ( rhs == nullptr ) {
+                  return false;
+               }
+               return lhs < * rhs;
+            }
+
+            friend bool operator>( const T & lhs, const T * rhs ) noexcept
+            {
+               if ( rhs == nullptr ) {
+                  return ! lhs.is_null();
+               }
+               return lhs > * rhs;
+            }
+         };
+
+         template< typename T >
+         struct totally_ordered< T, T *, type::POINTER >
+            : operators::totally_ordered< T, T * >
+         {
+            friend bool operator==( const T & lhs, T * rhs ) noexcept
+            {
+               if ( rhs == nullptr ) {
+                  return lhs.is_null();
+               }
+               return lhs == * rhs;
+            }
+
+            friend bool operator<( const T & lhs, T * rhs ) noexcept
+            {
+               if ( rhs == nullptr ) {
+                  return false;
+               }
+               return lhs < * rhs;
+            }
+
+            friend bool operator>( const T & lhs, T * rhs ) noexcept
+            {
+               if ( rhs == nullptr ) {
+                  return ! lhs.is_null();
+               }
+               return lhs > * rhs;
+            }
+         };
+
+         template< typename T >
+         struct totally_ordered< T, std::nullptr_t, type::POINTER >
+            : operators::totally_ordered< T, std::nullptr_t >
+         {
+            friend bool operator==( const T & lhs, std::nullptr_t ) noexcept
+            {
+               return lhs.is_null();
+            }
+
+            friend bool operator<( const T &, std::nullptr_t ) noexcept
+            {
+               return false;
+            }
+
+            friend bool operator>( const T & lhs, std::nullptr_t ) noexcept
+            {
+               return ! ( lhs == nullptr );
+            }
+         };
+
       } // internal
 
    } // json

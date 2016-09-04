@@ -56,7 +56,10 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
-           internal::totally_ordered< basic_value< Traits >, empty_object_t, type::OBJECT >
+           internal::totally_ordered< basic_value< Traits >, empty_object_t, type::OBJECT >,
+           internal::totally_ordered< basic_value< Traits >, const basic_value< Traits > *, type::POINTER >,
+           internal::totally_ordered< basic_value< Traits >, basic_value< Traits > *, type::POINTER >,
+           internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::POINTER >
       {
       public:
          basic_value() noexcept

@@ -182,23 +182,23 @@ namespace tao
          test_lt( n, o );
          test_lt( n, p );
 
-         // test_lt( nullptr, b );
-         // test_lt( nullptr, i );
-         // test_lt( nullptr, u );
-         // test_lt( nullptr, d );
-         // test_lt( nullptr, s );
-         // test_lt( nullptr, a );
-         // test_lt( nullptr, o );
-         // test_lt( nullptr, p );
+         test_lt( nullptr, b );
+         test_lt( nullptr, i );
+         test_lt( nullptr, u );
+         test_lt( nullptr, d );
+         test_lt( nullptr, s );
+         test_lt( nullptr, a );
+         test_lt( nullptr, o );
+         test_lt( nullptr, p );
 
-         // test_lt( &n, b );
-         // test_lt( &n, i );
-         // test_lt( &n, u );
-         // test_lt( &n, d );
-         // test_lt( &n, s );
-         // test_lt( &n, a );
-         // test_lt( &n, o );
-         // test_lt( &n, p );
+         test_lt( &n, b );
+         test_lt( &n, i );
+         test_lt( &n, u );
+         test_lt( &n, d );
+         test_lt( &n, s );
+         test_lt( &n, a );
+         test_lt( &n, o );
+         test_lt( &n, p );
 
          test_lt( n, &b );
          test_lt( n, &i );
@@ -209,14 +209,14 @@ namespace tao
          test_lt( n, &o );
          test_lt( n, &p );
 
-         // test_lt( &n, &b );
-         // test_lt( &n, &i );
-         // test_lt( &n, &u );
-         // test_lt( &n, &d );
-         // test_lt( &n, &s );
-         // test_lt( &n, &a );
-         // test_lt( &n, &o );
-         // test_lt( &n, &p );
+         test_lt( &n, &b );
+         test_lt( &n, &i );
+         test_lt( &n, &u );
+         test_lt( &n, &d );
+         test_lt( &n, &s );
+         test_lt( &n, &a );
+         test_lt( &n, &o );
+         test_lt( &n, &p );
 
          test_lt( pn, b );
          test_lt( pn, i );
@@ -245,18 +245,81 @@ namespace tao
          test_lt( b, o );
          test_lt( b, p );
 
+         test_lt( &b, i );
+         test_lt( &b, u );
+         test_lt( &b, d );
+         test_lt( &b, s );
+         test_lt( &b, a );
+         test_lt( &b, o );
+         test_lt( &b, p );
+
+         test_lt( b, &i );
+         test_lt( b, &u );
+         test_lt( b, &d );
+         test_lt( b, &s );
+         test_lt( b, &a );
+         test_lt( b, &o );
+         test_lt( b, &p );
+
+         test_lt( &b, &i );
+         test_lt( &b, &u );
+         test_lt( &b, &d );
+         test_lt( &b, &s );
+         test_lt( &b, &a );
+         test_lt( &b, &o );
+         test_lt( &b, &p );
+
          test_lt( i, s );
          test_lt( i, a );
          test_lt( i, o );
+
+         test_lt( &i, s );
+         test_lt( &i, a );
+         test_lt( &i, o );
+
+         test_lt( i, &s );
+         test_lt( i, &a );
+         test_lt( i, &o );
+
+         test_lt( &i, &s );
+         test_lt( &i, &a );
+         test_lt( &i, &o );
 
          test_lt( u, s );
          test_lt( u, a );
          test_lt( u, o );
 
+         test_lt( &u, s );
+         test_lt( &u, a );
+         test_lt( &u, o );
+
+         test_lt( u, &s );
+         test_lt( u, &a );
+         test_lt( u, &o );
+
+         test_lt( &u, &s );
+         test_lt( &u, &a );
+         test_lt( &u, &o );
+
          test_lt( s, a );
          test_lt( s, o );
 
+         test_lt( &s, a );
+         test_lt( &s, o );
+
+         test_lt( s, &a );
+         test_lt( s, &o );
+
+         test_lt( &s, &a );
+         test_lt( &s, &o );
+
          test_lt( a, o );
+
+         test_lt( &a, o );
+
+         test_lt( a, &o );
+
+         test_lt( &a, &o );
       }
 
       void unit_test()
