@@ -7,7 +7,7 @@ namespace tao
 {
    namespace json
    {
-     template< typename T, typename U >
+      template< typename T, typename U >
       void test_lt( const T & a, const U & b )
       {
          TEST_ASSERT( a == a );
@@ -181,6 +181,42 @@ namespace tao
          test_lt( n, a );
          test_lt( n, o );
          test_lt( n, p );
+
+         // test_lt( nullptr, b );
+         // test_lt( nullptr, i );
+         // test_lt( nullptr, u );
+         // test_lt( nullptr, d );
+         // test_lt( nullptr, s );
+         // test_lt( nullptr, a );
+         // test_lt( nullptr, o );
+         // test_lt( nullptr, p );
+
+         // test_lt( &n, b );
+         // test_lt( &n, i );
+         // test_lt( &n, u );
+         // test_lt( &n, d );
+         // test_lt( &n, s );
+         // test_lt( &n, a );
+         // test_lt( &n, o );
+         // test_lt( &n, p );
+
+         test_lt( n, &b );
+         test_lt( n, &i );
+         test_lt( n, &u );
+         test_lt( n, &d );
+         test_lt( n, &s );
+         test_lt( n, &a );
+         test_lt( n, &o );
+         test_lt( n, &p );
+
+         // test_lt( &n, &b );
+         // test_lt( &n, &i );
+         // test_lt( &n, &u );
+         // test_lt( &n, &d );
+         // test_lt( &n, &s );
+         // test_lt( &n, &a );
+         // test_lt( &n, &o );
+         // test_lt( &n, &p );
 
          test_lt( pn, b );
          test_lt( pn, i );
