@@ -159,8 +159,17 @@ namespace tao
          const value s = from_string( "\"string\"" );
          const value a = from_string( "[]" );
          const value o = from_string( "{}" );
-         const value p = &u;
-         const value pn = nullptr;
+
+
+         const value pz = nullptr;
+         const value pn = &n;
+         const value pb = &b;
+         const value pi = &i;
+         const value pu = &u;
+         const value pd = &d;
+         const value ps = &s;
+         const value pa = &a;
+         const value po = &o;
 
          TEST_ASSERT( n.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::BOOL );
@@ -170,8 +179,16 @@ namespace tao
          TEST_ASSERT( s.type() == type::STRING );
          TEST_ASSERT( a.type() == type::ARRAY );
          TEST_ASSERT( o.type() == type::OBJECT );
-         TEST_ASSERT( p.type() == type::POINTER );
+
+         TEST_ASSERT( pz.type() == type::POINTER );
          TEST_ASSERT( pn.type() == type::POINTER );
+         TEST_ASSERT( pb.type() == type::POINTER );
+         TEST_ASSERT( pi.type() == type::POINTER );
+         TEST_ASSERT( pu.type() == type::POINTER );
+         TEST_ASSERT( pd.type() == type::POINTER );
+         TEST_ASSERT( ps.type() == type::POINTER );
+         TEST_ASSERT( pa.type() == type::POINTER );
+         TEST_ASSERT( po.type() == type::POINTER );
 
          test_lt( n, b );
          test_lt( n, i );
@@ -180,7 +197,14 @@ namespace tao
          test_lt( n, s );
          test_lt( n, a );
          test_lt( n, o );
-         test_lt( n, p );
+
+         test_lt( n, pb );
+         test_lt( n, pi );
+         test_lt( n, pu );
+         test_lt( n, pd );
+         test_lt( n, ps );
+         test_lt( n, pa );
+         test_lt( n, po );
 
          test_lt( nullptr, b );
          test_lt( nullptr, i );
@@ -189,7 +213,14 @@ namespace tao
          test_lt( nullptr, s );
          test_lt( nullptr, a );
          test_lt( nullptr, o );
-         test_lt( nullptr, p );
+
+         test_lt( nullptr, pb );
+         test_lt( nullptr, pi );
+         test_lt( nullptr, pu );
+         test_lt( nullptr, pd );
+         test_lt( nullptr, ps );
+         test_lt( nullptr, pa );
+         test_lt( nullptr, po );
 
          test_lt( &n, b );
          test_lt( &n, i );
@@ -198,7 +229,14 @@ namespace tao
          test_lt( &n, s );
          test_lt( &n, a );
          test_lt( &n, o );
-         test_lt( &n, p );
+
+         test_lt( &n, pb );
+         test_lt( &n, pi );
+         test_lt( &n, pu );
+         test_lt( &n, pd );
+         test_lt( &n, ps );
+         test_lt( &n, pa );
+         test_lt( &n, po );
 
          test_lt( n, &b );
          test_lt( n, &i );
@@ -207,7 +245,14 @@ namespace tao
          test_lt( n, &s );
          test_lt( n, &a );
          test_lt( n, &o );
-         test_lt( n, &p );
+
+         test_lt( n, &pb );
+         test_lt( n, &pi );
+         test_lt( n, &pu );
+         test_lt( n, &pd );
+         test_lt( n, &ps );
+         test_lt( n, &pa );
+         test_lt( n, &po );
 
          test_lt( pn, b );
          test_lt( pn, i );
@@ -216,7 +261,22 @@ namespace tao
          test_lt( pn, s );
          test_lt( pn, a );
          test_lt( pn, o );
-         test_lt( pn, p );
+
+         test_lt( pn, pb );
+         test_lt( pn, pi );
+         test_lt( pn, pu );
+         test_lt( pn, pd );
+         test_lt( pn, ps );
+         test_lt( pn, pa );
+         test_lt( pn, po );
+
+         test_lt( pn, &pb );
+         test_lt( pn, &pi );
+         test_lt( pn, &pu );
+         test_lt( pn, &pd );
+         test_lt( pn, &ps );
+         test_lt( pn, &pa );
+         test_lt( pn, &po );
 
          test_lt( n, true );
          test_lt( n, -42 );
@@ -234,7 +294,13 @@ namespace tao
          test_lt( b, s );
          test_lt( b, a );
          test_lt( b, o );
-         test_lt( b, p );
+
+         test_lt( b, pi );
+         test_lt( b, pu );
+         test_lt( b, pd );
+         test_lt( b, ps );
+         test_lt( b, pa );
+         test_lt( b, po );
 
          test_lt( &b, i );
          test_lt( &b, u );
@@ -242,7 +308,6 @@ namespace tao
          test_lt( &b, s );
          test_lt( &b, a );
          test_lt( &b, o );
-         test_lt( &b, p );
 
          test_lt( b, &i );
          test_lt( b, &u );
@@ -250,11 +315,22 @@ namespace tao
          test_lt( b, &s );
          test_lt( b, &a );
          test_lt( b, &o );
-         test_lt( b, &p );
 
          test_lt( i, s );
          test_lt( i, a );
          test_lt( i, o );
+
+         test_lt( i, ps );
+         test_lt( i, pa );
+         test_lt( i, po );
+
+         test_lt( pi, s );
+         test_lt( pi, a );
+         test_lt( pi, o );
+
+         test_lt( pi, ps );
+         test_lt( pi, pa );
+         test_lt( pi, po );
 
          test_lt( &i, s );
          test_lt( &i, a );
