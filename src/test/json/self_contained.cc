@@ -12,22 +12,27 @@ namespace tao
       void unit_test()
       {
          value v = { { "foo", 1 } };
-         value v2 = { { "bar", &v }, { "baz", value::array( { 2, &v, 3 } ) } };
-         value v3 = { { "bar", v }, { "baz", value::array( { 2, v, 3 } ) } };
-         value v4 = { { "bar", { { "foo", 1 } } }, { "baz", value::array( { 2, { { "foo", 1 } }, 3 } ) } };
+         value v2 = { { "bar", &v }, { "baz", value::array( { 2, &v, 3, nullptr } ) } };
+         value v3 = { { "bar", v }, { "baz", value::array( { 2, v, 3, null } ) } };
+         value v4 = { { "bar", { { "foo", 1 } } }, { "baz", value::array( { 2, { { "foo", 1 } }, 3, null } ) } };
 
          TEST_ASSERT( v2 == v3 );
          TEST_ASSERT( v2 == v4 );
          TEST_ASSERT( v2.at( "bar" ).type() == type::POINTER );
          TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::POINTER );
+         TEST_ASSERT( v2.at( "baz" ).at( 3 ).type() == type::POINTER );
          TEST_ASSERT( v3.at( "bar" ).type() == type::OBJECT );
          TEST_ASSERT( v3.at( "baz" ).at( 1 ).type() == type::OBJECT );
+         TEST_ASSERT( v3.at( "baz" ).at( 3 ).type() == type::NULL_ );
 
+         TEST_ASSERT( ! is_self_contained( v2 ) );
          make_self_contained( v2 );
+         TEST_ASSERT( is_self_contained( v2 ) );
 
          TEST_ASSERT( v2 == v3 );
          TEST_ASSERT( v2.at( "bar" ).type() == type::OBJECT );
          TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::OBJECT );
+         TEST_ASSERT( v2.at( "baz" ).at( 3 ).type() == type::NULL_ );
       }
 
    } // json

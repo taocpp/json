@@ -29,10 +29,13 @@ namespace tao
 
       void unit_test()
       {
+         const value v = 42;
+
          test_simple( value( null ), "null" );
          test_simple( value( true ), "true" );
          test_simple( value( false ), "false" );
          test_simple( value( 42 ), "42" );
+         test_simple( value( 42u ), "42" );
          test_simple( value( 42.1 ), "42.1" );
          test_simple( value( "foo" ), "\"foo\"" );
          test_simple( empty_array, "[]" );
@@ -42,7 +45,12 @@ namespace tao
          test_simple( empty_object, "{}" );
          test_simple( {}, "null" );  // this is the default ctor
          test_simple( { { "foo", 42 } }, "{\"foo\":42}" );
+         test_simple( { { "foo", 42u } }, "{\"foo\":42}" );
          test_simple( { { "foo", 42 }, { "bar", 43 } }, "{\"bar\":43,\"foo\":42}" );
+         test_simple( { { "foo", 42 }, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
+         // test_simple( { v, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
+         test_simple( { { "foo", &v }, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
+         test_simple( { { "foo", nullptr } }, "{\"foo\":null}" );
 
          test_pretty( value( null ), "null" );
          test_pretty( value( true ), "true" );
@@ -53,11 +61,14 @@ namespace tao
          test_pretty( empty_array, "[]" );
          test_pretty( value::array( {} ), "[]" );
          test_pretty( value::array( { 1 } ), "[\n  1\n]" );
-         test_pretty( value::array( { 1, 2, 3 } ), "[\n  1,\n  2,\n  3\n]" );
+         test_pretty( value::array( { 1, 2u, 3 } ), "[\n  1,\n  2,\n  3\n]" );
          test_pretty( empty_object, "{}" );
          test_pretty( {}, "null" );  // this is the default ctor
          test_pretty( { { "foo", 42 } }, "{\n  \"foo\": 42\n}" );
-         test_pretty( { { "foo", 42 }, { "bar", 43 } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
+         test_pretty( { { "foo", 42 }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
+         // test_pretty( { v, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
+         test_pretty( { { "foo", &v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
+         test_pretty( { { "foo", nullptr } }, "{\n  \"foo\": null\n}" );
       }
 
    } // json
