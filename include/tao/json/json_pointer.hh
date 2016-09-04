@@ -116,7 +116,7 @@ namespace tao
          {
             const auto p = m_value.rfind( '/' );
             if( p == std::string::npos ) {
-               return { * this, "" };
+               throw std::logic_error( "empty json_pointer can not be split" );
             }
             const char * b = m_value.data() + p;
             const char * e = m_value.data() + m_value.size();
