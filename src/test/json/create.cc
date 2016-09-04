@@ -468,7 +468,8 @@ namespace tao
            TEST_ASSERT( v2.get_pointer() != nullptr );
            TEST_ASSERT( v2.get_pointer()->type() == type::POINTER );
            TEST_ASSERT( v2.get_pointer()->get_pointer() == nullptr );
-           TEST_ASSERT( v2.empty() );
+           TEST_ASSERT( ! v2.empty() );
+           TEST_ASSERT( v2.get_pointer()->empty() );
            TEST_ASSERT( v2 == null );
          }
 
