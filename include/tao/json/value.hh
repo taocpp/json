@@ -203,7 +203,7 @@ namespace tao
          null_t get_null() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
-            return unsafe_get_null();
+            return unsafe_get_null();  // LCOV_EXCL_LINE (always optimized)
          }
 
          bool get_bool() const
@@ -321,10 +321,12 @@ namespace tao
          // called when the type of the value is not the one
          // corresponding to the type of the accessor!
 
+         // LCOV_EXCL_START (always optimized)
          null_t unsafe_get_null() const noexcept
          {
             return null;
          }
+         // LCOV_EXCL_STOP
 
          bool unsafe_get_bool() const noexcept
          {
