@@ -299,7 +299,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, std::string & s )
          {
-            s = v.unsafe_get_string();
+            s = v.get_string();
          }
       };
 
@@ -309,7 +309,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static const std::string & extract( const basic_value< Traits > & v )
          {
-            return v.unsafe_get_string();
+            return v.get_string();
          }
       };
 
@@ -325,7 +325,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static const char * extract( const basic_value< Traits > & v )
          {
-            return v.unsafe_get_string().c_str();
+            return v.get_string().c_str();
          }
       };
 
