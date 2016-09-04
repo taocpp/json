@@ -25,7 +25,7 @@ namespace tao
       template< template< typename ... > class Traits >
       inline void from_string( basic_value< Traits > & output, const char * data, const std::size_t size, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
       {
-         output = json::from_string< Traits >( data, size, source, line, column );
+         output = from_string< Traits >( data, size, source, line, column );
       }
 
       inline value from_string( const char * data, const std::size_t size, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
