@@ -632,7 +632,7 @@ namespace tao
          void unsafe_assign( const std::initializer_list< pair< Traits > > & l )
          {
             unsafe_emplace_object();
-            for ( auto & e : l ) {
+            for ( const auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
@@ -821,7 +821,7 @@ namespace tao
          void insert( const std::initializer_list< pair< Traits > > & l )
          {
             prepare_object();
-            for ( auto & e : l ) {
+            for ( const auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate key detected: " + r.first->first );
