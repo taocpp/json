@@ -6,10 +6,15 @@
 
 #include "json/value.hh"
 
+#include "json/comparison_operators.hh"
+#include "json/object_operators.hh"
+
 #include "json/stream.hh"
 #include "json/to_string.hh"
+
 #include "json/from_string.hh"
 #include "json/parse_file.hh"
+
 #include "json/self_contained.hh"
 
 #include "json/patch.hh"
