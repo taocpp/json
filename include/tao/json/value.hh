@@ -22,7 +22,7 @@
 #include "traits.hh"
 #include "pair.hh"
 #include "single.hh"
-#include "json_pointer.hh"
+#include "pointer.hh"
 
 namespace tao
 {
@@ -422,14 +422,14 @@ namespace tao
             return m_union.o.at( key );
          }
 
-         basic_value & at( const json_pointer & k )
+         basic_value & at( const pointer & k )
          {
-            return internal::json_pointer_at( this, k );
+            return internal::pointer_at( this, k );
          }
 
-         const basic_value & at( const json_pointer & k ) const
+         const basic_value & at( const pointer & k ) const
          {
-            return internal::json_pointer_at( this, k );
+            return internal::pointer_at( this, k );
          }
 
          basic_value & unsafe_at( const std::size_t index )
@@ -470,36 +470,36 @@ namespace tao
             }
          }
 
-         void erase( const json_pointer & k )
+         void erase( const pointer & k )
          {
             if ( ! k ) {
-               throw std::runtime_error( "invalid json_pointer '' for erase" );
+               throw std::runtime_error( "invalid JSON Pointer '' for erase" );
             }
             const auto sp = k.split();
-            basic_value & v = internal::json_pointer_at( this, sp.first );
+            basic_value & v = internal::pointer_at( this, sp.first );
             switch ( v.m_type ) {
                case json::type::ARRAY:
-                  v.erase( internal::json_pointer_token_to_index( sp.second ) );
+                  v.erase( internal::pointer_token_to_index( sp.second ) );
                   break;
                case json::type::OBJECT:
                   v.erase( sp.second );
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "', "
+                  throw std::runtime_error( "unable to resolve JSON Pointer '" + k.value() + "', "
                                             "value at '" + sp.first.value() + "' "
                                             "is neither 'object' nor 'array', "
                                             "but '" + to_string( v.m_type ) + "'" );
             }
          }
 
-         basic_value & insert( const json_pointer & k, basic_value value )
+         basic_value & insert( const pointer & k, basic_value value )
          {
             if ( ! k ) {
                * this = std::move( value );
                return * this;
             }
             const auto sp = k.split();
-            basic_value & v = internal::json_pointer_at( this, sp.first );
+            basic_value & v = internal::pointer_at( this, sp.first );
             switch ( v.m_type ) {
                case json::type::ARRAY:
                   {
@@ -508,7 +508,7 @@ namespace tao
                         v.unsafe_emplace_back( std::move( value ) );
                         return v.m_union.a.back();
                      }
-                     const auto i = internal::json_pointer_token_to_index( t );
+                     const auto i = internal::pointer_token_to_index( t );
                      if ( i >= v.m_union.a.size() ) {
                         throw std::out_of_range( "array index too large" );
                      }
@@ -530,20 +530,20 @@ namespace tao
                   }
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "', "
+                  throw std::runtime_error( "unable to resolve JSON Pointer '" + k.value() + "', "
                                             "value at '" + sp.first.value() + "' "
                                             "is neither 'object' nor 'array', "
                                             "but '" + to_string( v.m_type ) + "'" );
             }
          }
 
-         basic_value & operator[] ( const json_pointer & k )
+         basic_value & operator[] ( const pointer & k )
          {
             if ( ! k ) {
                return * this;
             }
             const auto sp = k.split();
-            basic_value & v = internal::json_pointer_at( this, sp.first );
+            basic_value & v = internal::pointer_at( this, sp.first );
             switch ( v.m_type ) {
                case json::type::ARRAY:
                   {
@@ -552,7 +552,7 @@ namespace tao
                         v.unsafe_emplace_back( null );
                         return v.m_union.a.back();
                      }
-                     return v.at( internal::json_pointer_token_to_index( t ) );
+                     return v.at( internal::pointer_token_to_index( t ) );
                   }
                   break;
                case json::type::OBJECT:
@@ -568,7 +568,7 @@ namespace tao
                   }
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve json_pointer '" + k.value() + "', "
+                  throw std::runtime_error( "unable to resolve JSON Pointer '" + k.value() + "', "
                                             "value at '" + sp.first.value() + "' "
                                             "is neither 'object' nor 'array', "
                                             "but '" + to_string( v.m_type ) + "'" );

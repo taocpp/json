@@ -8,7 +8,7 @@
 #include <utility>
 
 #include "value.hh"
-#include "json_pointer.hh"
+#include "pointer.hh"
 
 namespace tao
 {
@@ -19,7 +19,7 @@ namespace tao
       {
          for( const auto & entry : patch.get_array() ) {
             const auto & op = entry.at( "op" ).get_string();
-            const json_pointer path( entry.at( "path" ).get_string() );
+            const pointer path( entry.at( "path" ).get_string() );
             if ( op == "test" ) {
                if ( value.at( path ) != entry.at( "value" ) ) {
                   throw std::runtime_error( "test failed for: " + path.value() );
@@ -35,13 +35,13 @@ namespace tao
                value.at( path ) = entry.at( "value" );
             }
             else if ( op == "move" ) {
-               const json_pointer from( entry.at( "from" ).get_string() );
+               const pointer from( entry.at( "from" ).get_string() );
                auto v = std::move( value.at( from ) );
                value.erase( from );
                value.insert( path, std::move( v ) );
             }
             else if ( op == "copy" ) {
-               const json_pointer from( entry.at( "from" ).get_string() );
+               const pointer from( entry.at( "from" ).get_string() );
                value.insert( path, value.at( from ) );
             }
             else {
@@ -55,7 +55,7 @@ namespace tao
       {
          for( const auto & entry : patch.get_array() ) {
             const auto & op = entry.at( "op" ).get_string();
-            const json_pointer path( entry.at( "path" ).get_string() );
+            const pointer path( entry.at( "path" ).get_string() );
             if ( op == "test" ) {
                if ( value.at( path ) != entry.at( "value" ) ) {
                   throw std::runtime_error( "test failed for: " + path.value() );
@@ -71,13 +71,13 @@ namespace tao
                value.at( path ) = std::move( entry.at( "value" ) );
             }
             else if ( op == "move" ) {
-               const json_pointer from( entry.at( "from" ).get_string() );
+               const pointer from( entry.at( "from" ).get_string() );
                auto v = std::move( value.at( from ) );
                value.erase( from );
                value.insert( path, std::move( v ) );
             }
             else if ( op == "copy" ) {
-               const json_pointer from( entry.at( "from" ).get_string() );
+               const pointer from( entry.at( "from" ).get_string() );
                value.insert( path, value.at( from ) );
             }
             else {
