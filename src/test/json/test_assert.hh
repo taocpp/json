@@ -1,30 +1,57 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_SRC_TEST_TEST_ASSERT_HH
 #define TAOCPP_JSON_INCLUDE_SRC_TEST_TEST_ASSERT_HH
 
 #include <iostream>
+#include <stdexcept>
 
-#define TEST_ASSERT( eXPReSSioN )                       \
-   do {                                                 \
-   if ( ! ( eXPReSSioN ) ) {                            \
-      std::cerr << "json: unit test assert [ "          \
-                << ( # eXPReSSioN )                     \
-                << " ] failed in line [ "               \
-                << __LINE__                             \
-                << " ] file [ "                         \
-                << __FILE__ << " ]"                     \
-                << std::endl;                           \
-      ++failed;                                         \
-   }  } while ( 0 )
-
-#define TEST_THROWS( STaTeMeNT )                        \
+#define TEST_ASSERT( ... )                              \
    do {                                                 \
       try {                                             \
-         STaTeMeNT;                                     \
-         std::cerr << "json: unit test assert [ "       \
-                   << ( # STaTeMeNT )                   \
+         if ( ! ( __VA_ARGS__ ) ) {                     \
+            std::cerr << "json: unit test assert [ "    \
+                      << ( # __VA_ARGS__ )              \
+                      << " ] failed in line [ "         \
+                      << __LINE__                       \
+                      << " ] file [ "                   \
+                      << __FILE__ << " ]"               \
+                      << std::endl;                     \
+            ++failed;                                   \
+         }                                              \
+      }                                                 \
+      catch ( const std::exception & e ) {              \
+         std::cerr << "json: unit test [ "              \
+                   << ( # __VA_ARGS__ )                 \
+                   << " ] threw an exception [ "        \
+                   << e.what()                          \
+                   << " ] in line [ "                   \
+                   << __LINE__                          \
+                   << " ] file [ "                      \
+                   << __FILE__ << " ]"                  \
+                   << std::endl;                        \
+         ++failed;                                      \
+      }                                                 \
+      catch ( ... ) {                                   \
+         std::cerr << "json: unit test [ "              \
+                   << ( # __VA_ARGS__ )                 \
+                   << " ] threw an unknown exception"   \
+                   << "in line [ "                      \
+                   << __LINE__                          \
+                   << " ] file [ "                      \
+                   << __FILE__ << " ]"                  \
+                   << std::endl;                        \
+         ++failed;                                      \
+      }                                                 \
+   } while ( false )
+
+#define TEST_THROWS( ... )                              \
+   do {                                                 \
+      try {                                             \
+         __VA_ARGS__;                                   \
+         std::cerr << "json: unit test [ "              \
+                   << ( # __VA_ARGS__ )                 \
                    << " ] did not throw in line [ "     \
                    << __LINE__                          \
                    << " ] file [ "                      \
@@ -34,6 +61,6 @@
       }                                                 \
       catch ( ... ) {                                   \
       }                                                 \
-   } while ( 0 )
+   } while ( false )
 
 #endif

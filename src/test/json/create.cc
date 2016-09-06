@@ -373,7 +373,7 @@ namespace tao
 
          // TODO: Add more tests
 
-         TEST_THROWS(( value { { "foo", 1 }, { "foo", 2 } } ));
+         TEST_THROWS( value { { "foo", 1 }, { "foo", 2 } } );
       }
 
       void unit_test()
