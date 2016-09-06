@@ -537,6 +537,26 @@ namespace tao
             }
          }
 
+         basic_value & operator[] ( const std::size_t index ) noexcept
+         {
+            return m_union.a[ index ];
+         }
+
+         const basic_value & operator[] ( const std::size_t index ) const noexcept
+         {
+            return m_union.a[ index ];
+         }
+
+         basic_value & operator[] ( const std::string & key )
+         {
+            return m_union.o[ key ];
+         }
+
+         basic_value & operator[] ( std::string && key )
+         {
+            return m_union.o[ std::move( key ) ];
+         }
+
          basic_value & operator[] ( const pointer & k )
          {
             if ( ! k ) {
