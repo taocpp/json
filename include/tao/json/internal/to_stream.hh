@@ -9,8 +9,6 @@
 #include "../external/double.hh"
 #include "../value.hh"
 
-#include "escape.hh"
-
 namespace tao
 {
    namespace json
@@ -19,7 +17,80 @@ namespace tao
       {
          inline void to_stream( std::ostream & o, const std::string & s )
          {
-            o << escape( s );  // TODO: Check whether direct-to-stream is faster.
+            static const char * h = "0123456789abcdef";
+
+            o << '"';
+            const char * p = s.data();
+            const char * l = p;
+            const char * const e = s.data() + s.size();
+            while ( p != e ) {
+               switch ( const unsigned char c = *p ) {
+                  case '\b':
+                     if ( l != p ) {
+                       o.write( l, p - l );
+                     }
+                     l = ++p;
+                     o << "\\b";
+                     break;
+                  case '\f':
+                     if ( l != p ) {
+                       o.write( l, p - l );
+                     }
+                     l = ++p;
+                     o << "\\f";
+                     break;
+                  case '\n':
+                     if ( l != p ) {
+                       o.write( l, p - l );
+                     }
+                     l = ++p;
+                     o << "\\n";
+                     break;
+                  case '\r':
+                     if ( l != p ) {
+                       o.write( l, p - l );
+                     }
+                     l = ++p;
+                     o << "\\r";
+                     break;
+                  case '\t':
+                     if ( l != p ) {
+                       o.write( l, p - l );
+                     }
+                     l = ++p;
+                     o << "\\t";
+                     break;
+                  case '\\':
+                     if ( l != p ) {
+                       o.write( l, p - l );
+                     }
+                     l = ++p;
+                     o << "\\\\";
+                     break;
+                  case '\"':
+                     if ( l != p ) {
+                       o.write( l, p - l );
+                     }
+                     l = ++p;
+                     o << "\\\"";
+                     break;
+                  default:
+                     if ( ( c < 32 ) || ( c == 127 ) ) {
+                        if ( l != p ) {
+                           o.write( l, p - l );
+                        }
+                        l = ++p;
+                        o << "\\u00" << h[ ( c & 0xf0 ) >> 4 ] << h[ c & 0x0f ];
+                     }
+                     else {
+                       ++p;
+                     }
+               }
+            }
+            if ( l != p ) {
+              o.write( l, p - l );
+            }
+            o << '"';
          }
 
          template< template< typename ... > class Traits >
@@ -111,10 +182,15 @@ namespace tao
          {
             switch ( v.type() ) {
                case type::NULL_:
-                  o << "null";
+                  o.write( "null", 4 );
                   return;
                case type::BOOL:
-                  o << ( v.unsafe_get_bool() ? "true" : "false" );
+                  if ( v.unsafe_get_bool() ) {
+                     o.write( "true", 4 );
+                  }
+                  else {
+                     o.write( "false", 5 );
+                  }
                   return;
                case type::SIGNED:
                   o << v.unsafe_get_signed();
@@ -140,7 +216,7 @@ namespace tao
                      internal::to_stream( o, * p );
                   }
                   else {
-                     o << "null";
+                     o.write( "null", 4 );
                   }
                   return;
             }
@@ -152,10 +228,15 @@ namespace tao
          {
             switch ( v.type() ) {
                case type::NULL_:
-                  o << "null";
+                  o.write( "null", 4 );
                   return;
                case type::BOOL:
-                  o << ( v.unsafe_get_bool() ? "true" : "false" );
+                  if ( v.unsafe_get_bool() ) {
+                     o.write( "true", 4 );
+                  }
+                  else {
+                     o.write( "false", 5 );
+                  }
                   return;
                case type::SIGNED:
                   o << v.unsafe_get_signed();
@@ -181,7 +262,7 @@ namespace tao
                      internal::to_stream( o, * p, indent, current );
                   }
                   else {
-                     o << "null";
+                     o.write( "null", 4 );
                   }
                   return;
             }
