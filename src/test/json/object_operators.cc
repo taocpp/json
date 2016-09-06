@@ -23,11 +23,13 @@ namespace tao
          TEST_THROWS( v -= { "what?" } );
          v -= {};
          TEST_ASSERT( v.get_object().size() == 3 );
-         v -= { "bar" };
+         v -= "bar";
+         TEST_THROWS( v -= "bar" );
          TEST_THROWS( v -= { "bar" } );
          TEST_ASSERT( v.get_object().size() == 2 );
          v -= { "foo", "baz" };
          TEST_ASSERT( v.get_object().size() == 0 );
+         TEST_THROWS( v -= "foo" );
          TEST_THROWS( v -= { "baz" } );
       }
 
