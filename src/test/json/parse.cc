@@ -98,9 +98,13 @@ namespace tao
          TEST_ASSERT( from_string( "-9223372036854775808" ) == -9223372036854775807ll - 1 );
          TEST_ASSERT( from_string( "18446744073709551615" ) == 18446744073709551615ull );
 
-         // TODO: test_integer()
          test_array();
          test_object();
+
+         // TODO: Other integer tests missing from integer.cc?
+
+         TEST_THROWS( from_string( "1" + std::string( internal::max_mantissa_digits - 2, '0' ) + "0" ) );  // Throws due to overflow.
+         TEST_THROWS( from_string( "1" + std::string( internal::max_mantissa_digits - 2, '0' ) + "1" ) );  // Throws due to overflow.
 
          TEST_THROWS( from_string( "" ) );
          TEST_THROWS( from_string( "[" ) );

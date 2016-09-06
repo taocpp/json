@@ -74,7 +74,7 @@ namespace tao
             static void apply( const tao_json_pegtl::input & in, number_state & result )
             {
                if ( in.size() > ( 1 << 20 ) ) {
-                  throw tao_json_pegtl::parse_error( "json number with 1 megabyte digits", in );
+                  throw tao_json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );
                }
                const auto c = std::min( in.size(), max_mantissa_digits );
                std::memcpy( result.mantissa + 1, in.begin(), c );
@@ -136,7 +136,7 @@ namespace tao
                   ++b;
                }
                if ( ( in.end() - b ) > 9 ) {
-                  throw tao_json_pegtl::parse_error( "json exponent has more than 9 significant digits", in );
+                  throw tao_json_pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );
                }
                int exponent10 = 0;
 
