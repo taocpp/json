@@ -25,15 +25,6 @@ namespace tao
       }
 
       template< template< typename ... > class Traits >
-      basic_value< Traits > & operator-= ( basic_value< Traits > & v, const std::string & k )
-      {
-         if ( v.get_object().erase( k ) == 0 ) {
-            throw std::runtime_error( "key not found: " + k );
-         }
-         return v;
-      }
-
-      template< template< typename ... > class Traits >
       basic_value< Traits > & operator-= ( basic_value< Traits > & v, std::initializer_list< std::string > l )
       {
          auto & o = v.get_object();
