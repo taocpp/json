@@ -58,6 +58,32 @@ namespace tao
          TEST_ASSERT( v[ 0 ] == 1 );
          v[ 0 ] = 2;
          TEST_ASSERT( v[ 0 ] == 2 );
+
+         TEST_ASSERT( "{\"foo\":42}"_json.at( "foo" ) == 42 );
+         TEST_THROWS( "{\"foo\":42}"_json.at( "bar" ) );
+         TEST_ASSERT( "{\"foo\":1,\"bar\":2}"_json.at( "foo" ) == 1 );
+         TEST_ASSERT( "{\"foo\":1,\"bar\":2}"_json.at( "bar" ) == 2 );
+
+         TEST_ASSERT( "{\"foo\":42}"_json[ "foo" ] == 42 );
+         TEST_ASSERT( "{\"foo\":42}"_json[ "bar" ] == null );
+         TEST_ASSERT( "{\"foo\":1,\"bar\":2}"_json[ "foo" ] == 1 );
+         TEST_ASSERT( "{\"foo\":1,\"bar\":2}"_json[ "bar" ] == 2 );
+
+         TEST_THROWS( "42"_json.at( "foo" ) );
+         TEST_THROWS( "[]"_json.at( "foo" ) );
+         TEST_THROWS( "{}"_json.at( "foo" ) );
+         TEST_THROWS( "{\"foo\":42}"_json.at( "bar" ) );
+
+         TEST_ASSERT( "{}"_json[ "foo" ] == null );
+         TEST_ASSERT( "{\"foo\":42}"_json[ "bar" ] == null );
+
+         value v2 = empty_object;
+         TEST_THROWS( v2.at( "foo" ) );
+         v2[ "foo" ] = 1;
+         TEST_ASSERT( v2.at( "foo" ) == 1 );
+         std::string s = "foo";
+         v2[ s ] = 2;
+         TEST_ASSERT( v2.at( "foo" ) == 2 );
       }
 
    } // json
