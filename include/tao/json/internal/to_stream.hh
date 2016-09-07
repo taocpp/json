@@ -24,71 +24,59 @@ namespace tao
             const char * l = p;
             const char * const e = s.data() + s.size();
             while ( p != e ) {
-               switch ( const unsigned char c = *p ) {
-                  case '\b':
-                     if ( l != p ) {
-                       o.write( l, p - l );
-                     }
-                     l = ++p;
-                     o << "\\b";
-                     break;
-                  case '\f':
-                     if ( l != p ) {
-                       o.write( l, p - l );
-                     }
-                     l = ++p;
-                     o << "\\f";
-                     break;
-                  case '\n':
-                     if ( l != p ) {
-                       o.write( l, p - l );
-                     }
-                     l = ++p;
-                     o << "\\n";
-                     break;
-                  case '\r':
-                     if ( l != p ) {
-                       o.write( l, p - l );
-                     }
-                     l = ++p;
-                     o << "\\r";
-                     break;
-                  case '\t':
-                     if ( l != p ) {
-                       o.write( l, p - l );
-                     }
-                     l = ++p;
-                     o << "\\t";
-                     break;
-                  case '\\':
-                     if ( l != p ) {
-                       o.write( l, p - l );
-                     }
-                     l = ++p;
-                     o << "\\\\";
-                     break;
-                  case '\"':
-                     if ( l != p ) {
-                       o.write( l, p - l );
-                     }
-                     l = ++p;
-                     o << "\\\"";
-                     break;
-                  default:
-                     if ( ( c < 32 ) || ( c == 127 ) ) {
-                        if ( l != p ) {
-                           o.write( l, p - l );
-                        }
-                        l = ++p;
+               const unsigned char c = *p;
+               if ( c == '\\' ) {
+                  if ( l != p ) {
+                     o.write( l, p - l );
+                  }
+                  l = ++p;
+                  o << "\\\\";
+               }
+               else if ( c == '"' ) {
+                  if ( l != p ) {
+                     o.write( l, p - l );
+                  }
+                  l = ++p;
+                  o << "\\\"";
+               }
+               else if ( c < 32 ) {
+                  if ( l != p ) {
+                     o.write( l, p - l );
+                  }
+                  l = ++p;
+                  switch ( c ) {
+                     case '\b':
+                        o << "\\b";
+                        break;
+                     case '\f':
+                        o << "\\f";
+                        break;
+                     case '\n':
+                        o << "\\n";
+                        break;
+                     case '\r':
+                        o << "\\r";
+                        break;
+                     case '\t':
+                        o << "\\t";
+                        break;
+                     default:
                         o << "\\u00" << h[ ( c & 0xf0 ) >> 4 ] << h[ c & 0x0f ];
-                     }
-                     else {
-                       ++p;
-                     }
+                  }
+               }
+               else if ( c == 127 ) {
+                  if ( l != p ) {
+                     o.write( l, p - l );
+                  }
+                  l = ++p;
+                  o << "\\u007f";
+               }
+               else {
+                  ++p;
                }
             }
             if ( l != p ) {
-              o.write( l, p - l );
+               o.write( l, p - l );
             }
             o << '"';
          }
