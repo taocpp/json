@@ -103,8 +103,8 @@ namespace tao
 
          // TODO: Other integer tests missing from integer.cc?
 
-         TEST_THROWS( from_string( "1" + std::string( internal::max_mantissa_digits - 2, '0' ) + "0" ) );  // Throws due to overflow.
-         TEST_THROWS( from_string( "1" + std::string( internal::max_mantissa_digits - 2, '0' ) + "1" ) );  // Throws due to overflow.
+         TEST_THROWS( from_string( "1" + std::string( internal::max_mantissa_digits, '0' ) ) );  // Throws due to overflow.
+         TEST_THROWS( from_string( "2" + std::string( internal::max_mantissa_digits, '1' ) ) );  // Throws due to overflow.
 
          TEST_THROWS( from_string( "" ) );
          TEST_THROWS( from_string( "[" ) );
