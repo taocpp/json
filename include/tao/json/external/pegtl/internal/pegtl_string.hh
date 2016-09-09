@@ -68,10 +68,10 @@ namespace tao_json_pegtl
    TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(8,x),               \
    TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(9,x)
 
-#define pegtl_string_t(x) \
+#define tao_json_pegtl_string_t(x) \
    tao_json_pegtl::internal::string_builder< tao_json_pegtl::ascii::string<>, TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_100(x) >::type
 
-#define pegtl_istring_t(x) \
+#define tao_json_pegtl_istring_t(x) \
    tao_json_pegtl::internal::string_builder< tao_json_pegtl::ascii::istring<>, TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_100(x) >::type
 
 #endif

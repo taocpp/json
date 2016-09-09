@@ -1,12 +1,17 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
 #ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_UNTIL_HH
 #define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_UNTIL_HH
 
-#include "skip_control.hh"
+#include "eof.hh"
+#include "star.hh"
 #include "bytes.hh"
+#include "not_at.hh"
+#include "skip_control.hh"
 #include "rule_conjunction.hh"
+
+#include "../analysis/generic.hh"
 
 namespace tao_json_pegtl
 {
@@ -20,7 +25,7 @@ namespace tao_json_pegtl
       template< typename Cond >
       struct until< Cond >
       {
-         using analyze_t = analysis::generic< analysis::rule_type::UNTIL, Cond, bytes< 1 > >;
+         using analyze_t = analysis::generic< analysis::rule_type::SEQ, star< not_at< Cond >, not_at< eof >, bytes< 1 > >, Cond >;
 
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
          static bool match( Input & in, States && ... st )
@@ -28,9 +33,10 @@ namespace tao_json_pegtl
             auto m = in.mark();
 
             while ( ! Control< Cond >::template match< A, Action, Control >( in, st ... ) ) {
-               if ( ! in.bump_if() ) {
+               if ( in.empty() ) {
                   return false;
                }
+               in.bump();
             }
             m.success();
             return true;
@@ -40,7 +46,7 @@ namespace tao_json_pegtl
       template< typename Cond, typename ... Rules >
       struct until
       {
-         using analyze_t = analysis::generic< analysis::rule_type::UNTIL, Cond, Rules ... >;
+         using analyze_t = analysis::generic< analysis::rule_type::SEQ, star< not_at< Cond >, not_at< eof >, Rules ... >, Cond >;
 
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
          static bool match( Input & in, States && ... st )

@@ -1,4 +1,4 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_GRAMMAR_HH
@@ -28,9 +28,9 @@ namespace tao
             struct name_separator : pad< one< ':' >, ws > {};
             struct value_separator : padr< one< ',' > > {};
 
-            struct false_ : pegtl_string_t( "false" ) {};
-            struct null : pegtl_string_t( "null" ) {};
-            struct true_ : pegtl_string_t( "true" ) {};
+            struct false_ : tao_json_pegtl_string_t( "false" ) {};
+            struct null : tao_json_pegtl_string_t( "null" ) {};
+            struct true_ : tao_json_pegtl_string_t( "true" ) {};
 
             struct digits : plus< abnf::DIGIT > {};
 

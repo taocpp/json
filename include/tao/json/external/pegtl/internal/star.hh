@@ -4,8 +4,9 @@
 #ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STAR_HH
 #define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STAR_HH
 
-#include "skip_control.hh"
 #include "seq.hh"
+#include "opt.hh"
+#include "skip_control.hh"
 
 #include "../analysis/generic.hh"
 
@@ -16,7 +17,7 @@ namespace tao_json_pegtl
       template< typename Rule, typename ... Rules >
       struct star
       {
-         using analyze_t = analysis::generic< analysis::rule_type::STAR, Rule, Rules ... >;
+         using analyze_t = analysis::generic< analysis::rule_type::OPT, Rule, Rules ..., star >;
 
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
          static bool match( Input & in, States && ... st )

@@ -4,8 +4,8 @@
 #ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_SEQ_HH
 #define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_SEQ_HH
 
-#include "skip_control.hh"
 #include "trivial.hh"
+#include "skip_control.hh"
 #include "rule_conjunction.hh"
 
 #include "../analysis/generic.hh"
