@@ -68,11 +68,10 @@ namespace tao
                            result = true;
                            continue;
                         }
-                        return result;
                      }
                      return result;
                   }
-                  return result;  // LCOV_EXCL_LINE  -- The rest of the grammar prevents this line from ever being called.
+                  throw std::logic_error( "code should be unreachable" );  // LCOV_EXCL_LINE
                }
             };
 
@@ -126,7 +125,7 @@ namespace tao
                      case 'n': return Control< null >::template match< A, Action, Control >( in, st ... );
                      case 't': return Control< true_ >::template match< A, Action, Control >( in, st ... );
                      case 'f': return Control< false_ >::template match< A, Action, Control >( in, st ... );
-                     default:  return Control< number >::template match< A, Action, Control >( in, st ... );
+                     default: return Control< number >::template match< A, Action, Control >( in, st ... );
                   }
                }
             };
