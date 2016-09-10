@@ -62,18 +62,9 @@ namespace tao
          return "unknown";
       }
 
-      struct null_t : operators::totally_ordered< null_t > {} constexpr null {};
-      struct empty_array_t : operators::totally_ordered< empty_array_t > {} constexpr empty_array {};
-      struct empty_object_t : operators::totally_ordered< empty_object_t > {} constexpr empty_object {};
-
-      constexpr bool operator== ( const null_t &, const null_t & ) noexcept { return true; }
-      constexpr bool operator< ( const null_t &, const null_t & ) noexcept { return false; }
-
-      constexpr bool operator== ( const empty_array_t &, const empty_array_t & ) noexcept { return true; }
-      constexpr bool operator< ( const empty_array_t &, const empty_array_t & ) noexcept { return false; }
-
-      constexpr bool operator== ( const empty_object_t &, const empty_object_t & ) noexcept { return true; }
-      constexpr bool operator< ( const empty_object_t &, const empty_object_t & ) noexcept { return false; }
+      struct null_t {} constexpr null {};
+      struct empty_array_t {} constexpr empty_array {};
+      struct empty_object_t {} constexpr empty_object {};
 
    } // json
 

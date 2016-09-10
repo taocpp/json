@@ -17,13 +17,6 @@ namespace tao
          TEST_ASSERT( a <= a );
          TEST_ASSERT( a >= a );
 
-         TEST_ASSERT( b == b );
-         TEST_ASSERT( ! ( b != b ) );
-         TEST_ASSERT( ! ( b < b ) );
-         TEST_ASSERT( ! ( b > b ) );
-         TEST_ASSERT( b <= b );
-         TEST_ASSERT( b >= b );
-
          TEST_ASSERT( ! ( a == b ) );
          TEST_ASSERT( ! ( b == a ) );
          TEST_ASSERT( a != b );
