@@ -112,7 +112,26 @@ namespace tao
                using content = object_content;
             };
 
-            struct value : padr< sor< string, number, object, array, false_, true_, null > > {};
+            struct sor_value
+            {
+               using analyze_t = analysis::generic< analysis::rule_type::SOR, string, number, object, array, false_, true_, null >;
+
+               template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
+               static bool match( Input & in, States && ... st )
+               {
+                  switch( in.peek_char() ) {
+                     case '"': return Control< string >::template match< A, Action, Control >( in, st ... );
+                     case '{': return Control< object >::template match< A, Action, Control >( in, st ... );
+                     case '[': return Control< array >::template match< A, Action, Control >( in, st ... );
+                     case 'n': return Control< null >::template match< A, Action, Control >( in, st ... );
+                     case 't': return Control< true_ >::template match< A, Action, Control >( in, st ... );
+                     case 'f': return Control< false_ >::template match< A, Action, Control >( in, st ... );
+                     default:  return Control< number >::template match< A, Action, Control >( in, st ... );
+                  }
+               }
+            };
+
+            struct value : padr< sor_value > {};
             struct array_element : seq< value > {};
 
             struct text : seq< star< ws >, value > {};
