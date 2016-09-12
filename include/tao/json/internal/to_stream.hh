@@ -26,23 +26,17 @@ namespace tao
             while ( p != e ) {
                const unsigned char c = *p;
                if ( c == '\\' ) {
-                  if ( l != p ) {
-                     o.write( l, p - l );
-                  }
+                  o.write( l, p - l );
                   l = ++p;
                   o << "\\\\";
                }
                else if ( c == '"' ) {
-                  if ( l != p ) {
-                     o.write( l, p - l );
-                  }
+                  o.write( l, p - l );
                   l = ++p;
                   o << "\\\"";
                }
                else if ( c < 32 ) {
-                  if ( l != p ) {
-                     o.write( l, p - l );
-                  }
+                  o.write( l, p - l );
                   l = ++p;
                   switch ( c ) {
                      case '\b':
@@ -65,9 +59,7 @@ namespace tao
                   }
                }
                else if ( c == 127 ) {
-                  if ( l != p ) {
-                     o.write( l, p - l );
-                  }
+                  o.write( l, p - l );
                   l = ++p;
                   o << "\\u007f";
                }
@@ -75,9 +67,7 @@ namespace tao
                   ++p;
                }
             }
-            if ( l != p ) {
-               o.write( l, p - l );
-            }
+            o.write( l, p - l );
             o << '"';
          }
 
