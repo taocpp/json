@@ -18,7 +18,8 @@ namespace tao
          // class value_handler
          // {
          //    void null() {}
-         //    void bool_( const bool v ) {}
+         //    void true_() {}
+         //    void false_() {}
          //    void number( const std::int64_t v ) {}
          //    void number( const std::uint64_t v ) {}
          //    void number( const double v ) {}
@@ -43,7 +44,8 @@ namespace tao
             value_builder() : current( & value ) {}
 
             void null() { current->unsafe_assign_null(); }
-            void bool_( const bool v ) { current->unsafe_assign_bool( v ); }
+            void true_() { current->unsafe_assign_bool( true ); }
+            void false_() { current->unsafe_assign_bool( false ); }
             void number( const std::int64_t v ) { current->unsafe_assign_signed( v ); }
             void number( const std::uint64_t v ) { current->unsafe_assign_unsigned( v ); }
             void number( const double v ) { current->unsafe_assign_double( v ); }

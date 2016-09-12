@@ -36,7 +36,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
-               handler.bool_( true );
+               handler.true_();
             }
          };
 
@@ -46,7 +46,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
-               handler.bool_( false );
+               handler.false_();
             }
          };
 
