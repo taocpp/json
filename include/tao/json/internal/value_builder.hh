@@ -14,7 +14,6 @@ namespace tao
       {
          // General interface for a SAX handler:
          //
-         // template< template< typename ... > class Traits >
          // class value_handler
          // {
          //    void null() {}
