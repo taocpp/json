@@ -37,66 +37,56 @@ namespace tao
          struct value_builder
          {
             basic_value< Traits > value;
+            std::vector< basic_value< Traits > > stack;
+            std::vector< std::string > keys;
 
-            basic_value< Traits > * current;
-            std::vector< basic_value< Traits > * > stack;
-
-            value_builder() : current( & value ) {}
-
-            void null() { current->unsafe_assign_null(); }
-            void true_() { current->unsafe_assign_bool( true ); }
-            void false_() { current->unsafe_assign_bool( false ); }
-            void number( const std::int64_t v ) { current->unsafe_assign_signed( v ); }
-            void number( const std::uint64_t v ) { current->unsafe_assign_unsigned( v ); }
-            void number( const double v ) { current->unsafe_assign_double( v ); }
-            void string( std::string && v ) { current->unsafe_emplace_string( std::move( v ) ); }
+            void null() { value.unsafe_assign_null(); }
+            void true_() { value.unsafe_assign_bool( true ); }
+            void false_() { value.unsafe_assign_bool( false ); }
+            void number( const std::int64_t v ) { value.unsafe_assign_signed( v ); }
+            void number( const std::uint64_t v ) { value.unsafe_assign_unsigned( v ); }
+            void number( const double v ) { value.unsafe_assign_double( v ); }
+            void string( std::string && v ) { value.unsafe_emplace_string( std::move( v ) ); }
 
             // array
             void begin_array()
             {
-               current->unsafe_emplace_array();
-               current->unsafe_emplace_back( json::null );
-               stack.push_back( current );
-               current = & current->unsafe_get_array().back();
+               stack.push_back( empty_array );
             }
 
             void commit_element()
             {
-               stack.back()->unsafe_emplace_back( json::null );
-               current = & stack.back()->unsafe_get_array().back();
+               stack.back().unsafe_emplace_back( std::move( value ) );
             }
 
             void end_array()
             {
-               current = stack.back();
-               current->unsafe_get_array().pop_back();
+               value = std::move( stack.back() );
                stack.pop_back();
             }
 
             // object
             void begin_object()
             {
-               current->unsafe_emplace_object();
+               stack.push_back( empty_object );
             }
 
             void commit_key( std::string && v )
             {
-               const auto r = current->unsafe_emplace( std::move( v ), json::null );
-               if ( ! r.second ) {
-                  // TODO: throw on duplicate key? offer a choice?
-                  r.first->second = json::null;
-               }
-               stack.push_back( current );
-               current = & r.first->second;
+               keys.push_back( std::move( v ) );
             }
 
             void commit_member()
             {
-               current = stack.back();
-               stack.pop_back();
+               stack.back().unsafe_emplace( std::move( keys.back() ), std::move( value ) );
+               keys.pop_back();
             }
 
-            void end_object() {}
+            void end_object()
+            {
+               value = std::move( stack.back() );
+               stack.pop_back();
+            }
          };
 
       } // internal
