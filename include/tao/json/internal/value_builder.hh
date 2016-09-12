@@ -27,7 +27,7 @@ namespace tao
          //    void commit_element() {}
          //    void end_array() {}
          //    void begin_object() {}
-         //    void commit_key( std::string && key ) {}
+         //    void commit_key( std::string && v ) {}
          //    void commit_member() {}
          //    void end_object() {}
          // };
@@ -77,9 +77,9 @@ namespace tao
                current->unsafe_emplace_object();
             }
 
-            void commit_key( std::string && key )
+            void commit_key( std::string && v )
             {
-               const auto r = current->unsafe_emplace( std::move( key ), json::null );
+               const auto r = current->unsafe_emplace( std::move( v ), json::null );
                if ( ! r.second ) {
                   // TODO: throw on duplicate key? offer a choice?
                   r.first->second = json::null;
