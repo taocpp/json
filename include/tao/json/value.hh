@@ -765,13 +765,7 @@ namespace tao
          template< typename K, typename V >
          std::pair< typename std::map< std::string, basic_value >::iterator, bool > unsafe_emplace( K && k, V && v )
          {
-#if (__GNUC__ > 4) || ((__GNUC__ == 4 ) && (__GNUC_MINOR__ >= 8))
             return m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
-#else
-            // work-around for missing std::map::emplace() in GCC 4.7
-            using value_type = typename std::map< std::string, basic_value >::value_type;
-            return m_union.o.insert( value_type( std::forward< K >( k ), std::forward< V >( v ) ) );
-#endif
          }
 
          template< typename K, typename V >

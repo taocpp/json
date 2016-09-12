@@ -13,6 +13,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format
 * [RFC6901]: JavaScript Object Notation (JSON) Pointer
 * [RFC6902]: JavaScript Object Notation (JSON) Patch
+* Provides *SAX* and *DOM* APIs.
 * Numeric values are stored as `int64_t`, `uint64_t` or `double` internally.
 * Standard containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
 * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
@@ -68,7 +69,7 @@ For questions and suggestions about the Art of C++ / JSON please contact the aut
 
 The Art of C++ / JSON contains the [PEGTL](https://github.com/ColinH/PEGTL) which is licensed as follows:
 
-> Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+> Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 >
