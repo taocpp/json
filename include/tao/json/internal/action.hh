@@ -1,15 +1,15 @@
 // Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_SAX_ACTION_HH
-#define TAOCPP_JSON_INCLUDE_INTERNAL_SAX_ACTION_HH
+#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ACTION_HH
+#define TAOCPP_JSON_INCLUDE_INTERNAL_ACTION_HH
 
 #include "../external/pegtl/contrib/changes.hh"
 
 #include "errors.hh"
 #include "grammar.hh"
 
-#include "sax_number_state.hh"
+#include "number_state.hh"
 
 namespace tao
 {
@@ -18,10 +18,10 @@ namespace tao
       namespace internal
       {
          template < typename Rule >
-         struct sax_action : tao_json_pegtl::nothing< Rule > {};
+         struct action : tao_json_pegtl::nothing< Rule > {};
 
          template<>
-         struct sax_action< rules::null >
+         struct action< rules::null >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -31,7 +31,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::true_ >
+         struct action< rules::true_ >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -41,7 +41,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::false_ >
+         struct action< rules::false_ >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -51,7 +51,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::array::begin >
+         struct action< rules::array::begin >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -61,7 +61,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::array::element >
+         struct action< rules::array::element >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -71,7 +71,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::array::end >
+         struct action< rules::array::end >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -81,7 +81,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::object::begin >
+         struct action< rules::object::begin >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -91,7 +91,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::object::element >
+         struct action< rules::object::element >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -101,7 +101,7 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::object::end >
+         struct action< rules::object::end >
          {
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
@@ -111,27 +111,27 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::msign >
+         struct action< rules::msign >
          {
-            static void apply( const tao_json_pegtl::input &, sax_number_state & result )
+            static void apply( const tao_json_pegtl::input &, number_state & result )
             {
                result.mneg = true;
             }
          };
 
          template<>
-         struct sax_action< rules::esign >
+         struct action< rules::esign >
          {
-            static void apply( const tao_json_pegtl::input & in, sax_number_state & result )
+            static void apply( const tao_json_pegtl::input & in, number_state & result )
             {
                result.eneg = ( in.peek_char() == '-' );
             }
          };
 
          template<>
-         struct sax_action< rules::idigits >
+         struct action< rules::idigits >
          {
-            static void apply( const tao_json_pegtl::input & in, sax_number_state & result )
+            static void apply( const tao_json_pegtl::input & in, number_state & result )
             {
                if ( in.size() > ( 1 << 20 ) ) {
                   throw tao_json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );
@@ -151,9 +151,9 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::fdigits >
+         struct action< rules::fdigits >
          {
-            static void apply( const tao_json_pegtl::input & in, sax_number_state & result )
+            static void apply( const tao_json_pegtl::input & in, number_state & result )
             {
                result.isfp = true;
 
@@ -184,9 +184,9 @@ namespace tao
          };
 
          template<>
-         struct sax_action< rules::edigits >
+         struct action< rules::edigits >
          {
-            static void apply( const tao_json_pegtl::input & in, sax_number_state & result )
+            static void apply( const tao_json_pegtl::input & in, number_state & result )
             {
                result.isfp = true;
 

@@ -9,8 +9,8 @@
 #include "internal/value_builder.hh"
 
 #include "internal/grammar.hh"
-#include "internal/sax_action.hh"
-#include "internal/sax_control.hh"
+#include "internal/action.hh"
+#include "internal/control.hh"
 
 namespace tao
 {
@@ -21,7 +21,7 @@ namespace tao
       {
          internal::value_builder< Traits > handler;
          tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
-         tao_json_pegtl::parse_input< internal::grammar, internal::sax_action, internal::sax_control >( input, handler );
+         tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, handler );
          return std::move( handler.value );
       }
 

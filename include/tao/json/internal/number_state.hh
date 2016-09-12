@@ -1,8 +1,8 @@
 // Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_SAX_NUMBER_STATE_HH
-#define TAOCPP_JSON_INCLUDE_INTERNAL_SAX_NUMBER_STATE_HH
+#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_NUMBER_STATE_HH
+#define TAOCPP_JSON_INCLUDE_INTERNAL_NUMBER_STATE_HH
 
 #include <cstdint>
 #include <cstdlib>
@@ -18,15 +18,15 @@ namespace tao
       {
          static const std::size_t max_mantissa_digits = 772;
 
-         struct sax_number_state
+         struct number_state
          {
-            sax_number_state()
+            number_state()
             {
                mantissa[ 0 ] = '-';
             }
 
-            sax_number_state( const sax_number_state & ) = delete;
-            void operator= ( const sax_number_state & ) = delete;
+            number_state( const number_state & ) = delete;
+            void operator= ( const number_state & ) = delete;
 
             int32_t exponent10 = 0;
             uint16_t msize = 0;  // Excluding sign.
