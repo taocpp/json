@@ -22,13 +22,16 @@ namespace tao
          //    void number( const std::int64_t v ) {}
          //    void number( const std::uint64_t v ) {}
          //    void number( const double v ) {}
-         //    void string( std::string && v ) {}
+         //    void string( std::string v ) {}
          //    void begin_array() {}
          //    void commit_element() {}
+         //    void element_separator() {}
          //    void end_array() {}
          //    void begin_object() {}
-         //    void commit_key( std::string && v ) {}
+         //    void commit_key( std::string v ) {}
+         //    void name_separator() {}
          //    void commit_member() {}
+         //    void value_separator() {}
          //    void end_object() {}
          // };
 
@@ -45,7 +48,7 @@ namespace tao
             void number( const std::int64_t v ) { value.unsafe_assign_signed( v ); }
             void number( const std::uint64_t v ) { value.unsafe_assign_unsigned( v ); }
             void number( const double v ) { value.unsafe_assign_double( v ); }
-            void string( std::string && v ) { value.unsafe_emplace_string( std::move( v ) ); }
+            void string( std::string v ) { value.unsafe_emplace_string( std::move( v ) ); }
 
             // array
             void begin_array()
@@ -57,6 +60,8 @@ namespace tao
             {
                stack.back().unsafe_emplace_back( std::move( value ) );
             }
+
+            void element_separator() {}
 
             void end_array()
             {
@@ -70,16 +75,20 @@ namespace tao
                stack.push_back( empty_object );
             }
 
-            void commit_key( std::string && v )
+            void commit_key( std::string v )
             {
                keys.push_back( std::move( v ) );
             }
+
+            void name_separator() {}
 
             void commit_member()
             {
                stack.back().unsafe_emplace( std::move( keys.back() ), std::move( value ) );
                keys.pop_back();
             }
+
+            void value_separator() {}
 
             void end_object()
             {

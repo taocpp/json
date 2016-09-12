@@ -71,6 +71,16 @@ namespace tao
          };
 
          template<>
+         struct action< rules::element_separator >
+         {
+            template< typename State >
+            static void apply( const tao_json_pegtl::input &, State & handler )
+            {
+               handler.element_separator();
+            }
+         };
+
+         template<>
          struct action< rules::array::end >
          {
             template< typename State >
@@ -97,6 +107,26 @@ namespace tao
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
                handler.commit_member();
+            }
+         };
+
+         template<>
+         struct action< rules::name_separator >
+         {
+            template< typename State >
+            static void apply( const tao_json_pegtl::input &, State & handler )
+            {
+               handler.name_separator();
+            }
+         };
+
+         template<>
+         struct action< rules::value_separator >
+         {
+            template< typename State >
+            static void apply( const tao_json_pegtl::input &, State & handler )
+            {
+               handler.value_separator();
             }
          };
 

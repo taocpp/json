@@ -27,6 +27,7 @@ namespace tao
             struct end_object : one< '}' > {};
             struct name_separator : pad< one< ':' >, ws > {};
             struct value_separator : padr< one< ',' > > {};
+            struct element_separator : padr< one< ',' > > {};
 
             struct false_ : tao_json_pegtl_string_t( "false" ) {};
             struct null : tao_json_pegtl_string_t( "null" ) {};
@@ -92,7 +93,7 @@ namespace tao
             struct value;
 
             struct array_element;
-            struct array_content : opt< list_must< array_element, value_separator > > {};
+            struct array_content : opt< list_must< array_element, element_separator > > {};
             struct array : seq< begin_array, array_content, must< end_array > >
             {
                using begin = begin_array;

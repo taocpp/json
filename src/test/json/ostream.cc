@@ -13,6 +13,7 @@ namespace tao
    {
       void test_simple( const value & v, const std::string & s )
       {
+        std::cout << s << std::endl;
          TEST_ASSERT( to_string( v ) == s );
          std::ostringstream oss;
          oss << v;
