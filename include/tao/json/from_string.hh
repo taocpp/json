@@ -6,8 +6,11 @@
 
 #include "external/pegtl/parse.hh"
 
-#include "internal/result_state.hh"
-#include "internal/control.hh"
+#include "internal/value_builder.hh"
+
+#include "internal/grammar.hh"
+#include "internal/sax_action.hh"
+#include "internal/sax_control.hh"
 
 namespace tao
 {
@@ -16,10 +19,10 @@ namespace tao
       template< template< typename ... > class Traits >
       inline basic_value< Traits > from_string( const char * data, const std::size_t size, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
       {
-         internal::result_state< Traits > result;
+         internal::value_builder< Traits > handler;
          tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
-         tao_json_pegtl::parse_input< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( input, result );
-         return std::move( result.result );
+         tao_json_pegtl::parse_input< internal::grammar, internal::sax_action, internal::sax_control >( input, handler );
+         return std::move( handler.value );
       }
 
       template< template< typename ... > class Traits >

@@ -6,34 +6,33 @@
 
 #include "external/pegtl/file_parser.hh"
 
-#include "internal/result_state.hh"
-#include "internal/control.hh"
+#include "internal/value_builder.hh"
+
+#include "internal/grammar.hh"
+#include "internal/sax_action.hh"
+#include "internal/sax_control.hh"
 
 namespace tao
 {
    namespace json
    {
       template< template< typename ... > class Traits >
-      void parse_file( basic_value< Traits > & output, const std::string & filename )
+      basic_value< Traits > parse_file( const std::string & filename )
       {
-         internal::result_state< Traits > result;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );
-         output = std::move( result.result );
+         internal::value_builder< Traits > handler;
+         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, internal::sax_action, internal::sax_control >( handler );
+         return std::move( handler.value );
       }
 
       template< template< typename ... > class Traits >
-      basic_value< Traits > parse_file( const std::string & filename )
+      void parse_file( basic_value< Traits > & output, const std::string & filename )
       {
-         internal::result_state< Traits > result;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< Traits >::template control >( result );
-         return std::move( result.result );
+         output = parse_file< Traits >( filename );
       }
 
       inline value parse_file( const std::string & filename )
       {
-         internal::result_state< traits > result;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, tao_json_pegtl::nothing, internal::control_selector< traits >::control >( result );
-         return std::move( result.result );
+         return parse_file< traits >( filename );
       }
 
    } // json
