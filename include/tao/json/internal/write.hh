@@ -60,7 +60,7 @@ namespace tao
                   }
                   break;
                default:
-                  assert( false );
+                  throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
             }
          }
 

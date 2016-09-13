@@ -52,7 +52,7 @@ namespace tao
                            result += '/';
                            break;
                         default:
-                           assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
+                           throw std::logic_error( "code should be unreachable" );  // LCOV_EXCL_LINE
                      }
                      ++p;
                      break;

@@ -13,7 +13,7 @@ namespace tao
       // recursively checks for the existence if POINTER nodes,
       // returns true is no POINTER nodes were found.
       template< template< typename ... > class Traits >
-      bool is_self_contained( basic_value< Traits > & v )
+      bool is_self_contained( basic_value< Traits > & v ) noexcept
       {
          switch ( v.type() ) {
             case json::type::NULL_:
@@ -25,14 +25,14 @@ namespace tao
                return true;
             case json::type::ARRAY:
                for ( auto & e : v.unsafe_get_array() ) {
-                  if( !is_self_contained( e ) ) {
+                  if ( ! is_self_contained( e ) ) {
                      return false;
                   }
                }
                return true;
             case json::type::OBJECT:
                for ( auto & e : v.unsafe_get_object() ) {
-                  if( !is_self_contained( e.second ) ) {
+                  if ( ! is_self_contained( e.second ) ) {
                      return false;
                   }
                }
@@ -67,7 +67,7 @@ namespace tao
                }
                return;
             case json::type::POINTER:
-               if( const auto * p = v.unsafe_get_pointer() ) {
+               if ( const auto * p = v.unsafe_get_pointer() ) {
                   v = * p;
                   make_self_contained( v );
                }
@@ -76,7 +76,7 @@ namespace tao
                }
                return;
          }
-         assert( false );  // LCOV_EXCL_LINE
+         throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
       }
 
   } // json
