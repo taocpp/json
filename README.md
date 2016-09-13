@@ -13,20 +13,19 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format
 * [RFC6901]: JavaScript Object Notation (JSON) Pointer
 * [RFC6902]: JavaScript Object Notation (JSON) Patch
-* Provides *SAX* and *DOM* APIs.
+* Achieves a **100% score** in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
+* Provides **SAX** and **DOM** APIs.
+* Construction of objects and arrays via `std::initializer_list`.
+* Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
 * Numeric values are stored as `int64_t`, `uint64_t` or `double` internally.
 * Standard containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
 * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
 * Indirect JSON values via non-owning C++ raw pointers for object sharing.
-* Construction of objects and arrays via `std::initializer_list`.
-* Allows construction of JSON value objects from arbitrary user-defined data-types with specialised traits class template.
 * C++11 literal operator for JSON values.
 
 ## Status
 
-The core JSON value class is implemented and working.
-
-The conversions from and to JSON string representation are finished and achieve a 100% score in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests. This also serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL), which is used for parsing JSON string representations.
+The core JSON value class is implemented and working. The conversions from and to JSON string representation via a SAX interface are finished. This also serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL), which is used for parsing JSON string representations.
 
 Some parts of the API are still under discussion and development and might change and/or be extended before the first release.
 
