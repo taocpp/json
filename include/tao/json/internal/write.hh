@@ -20,12 +20,7 @@ namespace tao
                   handler.null();
                   break;
                case type::BOOL:
-                  if ( v.unsafe_get_bool() ) {
-                     handler.true_();
-                  }
-                  else {
-                     handler.false_();
-                  }
+                  handler.boolean( v.unsafe_get_bool() );
                   break;
                case type::SIGNED:
                   handler.number( v.unsafe_get_signed() );
@@ -41,37 +36,18 @@ namespace tao
                   break;
                case type::ARRAY:
                   handler.begin_array();
-                  {
-                     bool first = true;
-                     for( const auto & e : v.unsafe_get_array() ) {
-                        if( first ) {
-                           first = false;
-                        }
-                        else {
-                           handler.element_separator();
-                        }
-                        internal::write( e, handler );
-                        handler.commit_element();
-                     }
+                  for( const auto & e : v.unsafe_get_array() ) {
+                     internal::write( e, handler );
+                     handler.element();
                   }
                   handler.end_array();
                   break;
                case type::OBJECT:
                   handler.begin_object();
-                  {
-                     bool first = true;
-                     for( const auto & e : v.unsafe_get_object() ) {
-                        if( first ) {
-                           first = false;
-                        }
-                        else {
-                           handler.value_separator();
-                        }
-                        handler.commit_key( e.first );
-                        handler.name_separator();
-                        internal::write( e.second, handler );
-                        handler.commit_member();
-                     }
+                  for( const auto & e : v.unsafe_get_object() ) {
+                     handler.key( e.first );
+                     internal::write( e.second, handler );
+                     handler.value();
                   }
                   handler.end_object();
                   break;

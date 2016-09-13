@@ -21,7 +21,7 @@ namespace tao
       {
          internal::value_builder< Traits > handler;
          tao_json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( handler );
-         return std::move( handler.value );
+         return std::move( handler.value_ );
       }
 
       template< template< typename ... > class Traits >

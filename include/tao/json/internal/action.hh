@@ -36,7 +36,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
-               handler.true_();
+               handler.boolean( true );
             }
          };
 
@@ -46,7 +46,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
-               handler.false_();
+               handler.boolean( false );
             }
          };
 
@@ -66,17 +66,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
-               handler.commit_element();
-            }
-         };
-
-         template<>
-         struct action< rules::element_separator >
-         {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
-            {
-               handler.element_separator();
+               handler.element();
             }
          };
 
@@ -106,27 +96,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
-               handler.commit_member();
-            }
-         };
-
-         template<>
-         struct action< rules::name_separator >
-         {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
-            {
-               handler.name_separator();
-            }
-         };
-
-         template<>
-         struct action< rules::value_separator >
-         {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
-            {
-               handler.value_separator();
+               handler.value();
             }
          };
 

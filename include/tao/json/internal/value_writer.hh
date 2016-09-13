@@ -4,6 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_WRITER_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_WRITER_HH
 
+#include <ostream>
+
 #include "escape.hh"
 
 #include "../external/double.hh"
@@ -18,27 +20,96 @@ namespace tao
          {
          private:
             std::ostream & os;
+            bool first;
 
          public:
-            explicit value_writer( std::ostream & os ) noexcept : os( os ) {}
+            explicit value_writer( std::ostream & os ) noexcept
+                 : os( os )
+            { }
 
-            void null() { os.write( "null", 4 ); }
-            void true_() { os.write( "true", 4 ); }
-            void false_() { os.write( "false", 5 ); }
-            void number( const std::int64_t v ) { os << v; }
-            void number( const std::uint64_t v ) { os << v; }
-            void number( const double v ) { json_double_conversion::Dtostr( os, v ); }
-            void string( const std::string & v ) { internal::escape( os, v ); }
-            void begin_array() { os.put( '[' ); }
-            void commit_element() noexcept {}
-            void element_separator() { os.put( ',' ); }
-            void end_array() { os.put( ']' ); }
-            void begin_object() { os.put( '{' ); }
-            void commit_key( const std::string & v ) { internal::escape( os, v ); }
-            void name_separator() { os.put( ':' ); }
-            void commit_member() noexcept {}
-            void value_separator() { os.put( ',' ); }
-            void end_object() { os.put( '}' ); }
+            void null()
+            {
+               os.write( "null", 4 );
+            }
+
+            void boolean( const bool v )
+            {
+               if ( v ) {
+                  os.write( "true", 4 );
+               }
+               else {
+                  os.write( "false", 5 );
+               }
+            }
+
+            void number( const std::int64_t v )
+            {
+               os << v;
+            }
+
+            void number( const std::uint64_t v )
+            {
+               os << v;
+            }
+
+            void number( const double v )
+            {
+               json_double_conversion::Dtostr( os, v );
+            }
+
+            void string( const std::string & v )
+            {
+               internal::escape( os, v );
+            }
+
+            // array
+            void begin_array()
+            {
+               os.put( '[' );
+               first = true;
+            }
+
+            void element()
+            {
+               os.put( ',' );
+               first = false;
+            }
+
+            void end_array()
+            {
+               if ( ! first ) {
+                  os.seekp( -1, std::ios_base::cur );
+               }
+               os.put( ']' );
+               first = false;
+            }
+
+            // object
+            void begin_object()
+            {
+               os.put( '{' );
+               first = true;
+            }
+
+            void key( const std::string & v )
+            {
+               if ( ! first ) {
+                  os.put( ',' );
+               }
+               internal::escape( os, v );
+               os.put( ':' );
+            }
+
+            void value()
+            {
+               first = false;
+            }
+
+            void end_object()
+            {
+               os.put( '}' );
+               first = false;
+            }
          };
 
       } // internal

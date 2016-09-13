@@ -22,7 +22,7 @@ namespace tao
             template< typename Handler >
             void success( Handler & handler )
             {
-               handler.commit_key( std::move( unescaped ) );
+               handler.key( std::move( unescaped ) );
             }
 
             std::string unescaped;

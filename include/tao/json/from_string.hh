@@ -22,7 +22,7 @@ namespace tao
          internal::value_builder< Traits > handler;
          tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
          tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, handler );
-         return std::move( handler.value );
+         return std::move( handler.value_ );
       }
 
       template< template< typename ... > class Traits >

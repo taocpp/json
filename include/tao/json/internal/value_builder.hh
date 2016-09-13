@@ -17,83 +17,99 @@ namespace tao
          // class value_handler
          // {
          //    void null() {}
-         //    void true_() {}
-         //    void false_() {}
+         //    void boolean( const bool v ) {}
          //    void number( const std::int64_t v ) {}
          //    void number( const std::uint64_t v ) {}
          //    void number( const double v ) {}
          //    void string( std::string v ) {}
          //    void begin_array() {}
-         //    void commit_element() {}
-         //    void element_separator() {}
+         //    void element() {}
          //    void end_array() {}
          //    void begin_object() {}
-         //    void commit_key( std::string v ) {}
-         //    void name_separator() {}
-         //    void commit_member() {}
-         //    void value_separator() {}
+         //    void key( std::string v ) {}
+         //    void value() {}
          //    void end_object() {}
          // };
 
          template< template< typename ... > class Traits >
          struct value_builder
          {
-            basic_value< Traits > value;
-            std::vector< basic_value< Traits > > stack;
-            std::vector< std::string > keys;
+         public:
+            basic_value< Traits > value_;
 
-            void null() { value.unsafe_assign_null(); }
-            void true_() { value.unsafe_assign_bool( true ); }
-            void false_() { value.unsafe_assign_bool( false ); }
-            void number( const std::int64_t v ) { value.unsafe_assign_signed( v ); }
-            void number( const std::uint64_t v ) { value.unsafe_assign_unsigned( v ); }
-            void number( const double v ) { value.unsafe_assign_double( v ); }
-            void string( std::string v ) { value.unsafe_emplace_string( std::move( v ) ); }
+         private:
+            std::vector< basic_value< Traits > > stack_;
+            std::vector< std::string > keys_;
+
+         public:
+            void null()
+            {
+               value_.unsafe_assign_null();
+            }
+
+            void boolean( const bool v )
+            {
+               value_.unsafe_assign_bool( v );
+            }
+
+            void number( const std::int64_t v )
+            {
+               value_.unsafe_assign_signed( v );
+            }
+
+            void number( const std::uint64_t v )
+            {
+               value_.unsafe_assign_unsigned( v );
+            }
+
+            void number( const double v )
+            {
+               value_.unsafe_assign_double( v );
+            }
+
+            void string( std::string v )
+            {
+               value_.unsafe_emplace_string( std::move( v ) );
+            }
 
             // array
             void begin_array()
             {
-               stack.push_back( empty_array );
+               stack_.push_back( empty_array );
             }
 
-            void commit_element()
+            void element()
             {
-               stack.back().unsafe_emplace_back( std::move( value ) );
+               stack_.back().unsafe_emplace_back( std::move( value_ ) );
             }
-
-            void element_separator() {}
 
             void end_array()
             {
-               value = std::move( stack.back() );
-               stack.pop_back();
+               value_ = std::move( stack_.back() );
+               stack_.pop_back();
             }
 
             // object
             void begin_object()
             {
-               stack.push_back( empty_object );
+               stack_.push_back( empty_object );
             }
 
-            void commit_key( std::string v )
+            void key( std::string v )
             {
-               keys.push_back( std::move( v ) );
+               keys_.push_back( std::move( v ) );
             }
 
-            void name_separator() {}
-
-            void commit_member()
+            void value()
             {
-               stack.back().unsafe_emplace( std::move( keys.back() ), std::move( value ) );
-               keys.pop_back();
+               stack_.back().unsafe_emplace( std::move( keys_.back() ), std::move( value_ ) );
+               keys_.pop_back();
             }
-
-            void value_separator() {}
 
             void end_object()
             {
-               value = std::move( stack.back() );
-               stack.pop_back();
+               value_ = std::move( stack_.back() );
+               stack_.pop_back();
             }
          };
 
