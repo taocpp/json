@@ -3,7 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/internal/value_writer.hh>
+#include <tao/json/sax/to_stream.hh>
+#include <tao/json/sax/from_string.hh>
 
 namespace tao
 {
@@ -12,8 +13,8 @@ namespace tao
       void test( const std::string & v )
       {
          std::ostringstream oss;
-         tao_json_pegtl::input input( 1, 0, v.data(), v.data() + v.size(), __PRETTY_FUNCTION__ );
-         tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, internal::value_writer( oss ) );
+         sax::to_stream handler( oss );
+         sax::from_string( v, handler );
          TEST_ASSERT( oss.str() == v );
       }
 

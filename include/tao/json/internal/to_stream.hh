@@ -5,12 +5,12 @@
 #define TAOCPP_JSON_INCLUDE_INTERNAL_TO_STREAM_HH
 
 #include <ostream>
+#include <cstddef>
 
 #include "../value.hh"
-#include "../traverse.hh"
-
-#include "value_writer.hh"
-#include "pretty_writer.hh"
+#include "../sax/to_stream.hh"
+#include "../sax/to_pretty_stream.hh"
+#include "../sax/traverse_value.hh"
 
 namespace tao
 {
@@ -19,17 +19,17 @@ namespace tao
       namespace internal
       {
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const basic_value< Traits > & v )
+         void to_stream( std::ostream & os, const basic_value< Traits > & v )
          {
-            internal::value_writer writer( o );
-            json::traverse( v, writer );
+            sax::to_stream handler( os );
+            sax::traverse_value( v, handler );
          }
 
          template< template< typename ... > class Traits >
-         void to_stream( std::ostream & o, const basic_value< Traits > & v, const unsigned indent )
+         void to_stream( std::ostream & os, const basic_value< Traits > & v, const std::size_t indent )
          {
-            internal::pretty_writer writer( o, indent );
-            json::traverse( v, writer );
+            sax::to_pretty_stream handler( os, indent );
+            sax::traverse_value( v, handler );
          }
 
       } // internal

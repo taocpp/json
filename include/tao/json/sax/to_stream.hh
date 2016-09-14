@@ -1,29 +1,30 @@
 // Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_WRITER_HH
-#define TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_WRITER_HH
+#ifndef TAOCPP_JSON_INCLUDE_SAX_TO_STREAM_HH
+#define TAOCPP_JSON_INCLUDE_SAX_TO_STREAM_HH
 
 #include <ostream>
-
-#include "escape.hh"
+#include <cstdint>
 
 #include "../external/double.hh"
+
+#include "../internal/escape.hh"
 
 namespace tao
 {
    namespace json
    {
-      namespace internal
+      namespace sax
       {
-         class value_writer
+         class to_stream
          {
          private:
             std::ostream & os;
             bool first;
 
          public:
-            explicit value_writer( std::ostream & os ) noexcept
+            explicit to_stream( std::ostream & os ) noexcept
                  : os( os )
             { }
 
@@ -112,7 +113,7 @@ namespace tao
             }
          };
 
-      } // internal
+      } // sax
 
    } // json
 

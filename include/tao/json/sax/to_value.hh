@@ -1,8 +1,8 @@
 // Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_BUILDER_HH
-#define TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_BUILDER_HH
+#ifndef TAOCPP_JSON_INCLUDE_SAX_TO_VALUE_HH
+#define TAOCPP_JSON_INCLUDE_SAX_TO_VALUE_HH
 
 #include "../value.hh"
 
@@ -10,7 +10,7 @@ namespace tao
 {
    namespace json
    {
-      namespace internal
+      namespace sax
       {
          // General interface for a SAX handler:
          //
@@ -32,16 +32,25 @@ namespace tao
          // };
 
          template< template< typename ... > class Traits >
-         struct value_builder
+         class to_basic_value
          {
-         public:
+         private:
             basic_value< Traits > value_;
 
-         private:
             std::vector< basic_value< Traits > > stack_;
             std::vector< std::string > keys_;
 
          public:
+            basic_value< Traits > & result() noexcept
+            {
+               return value_;
+            }
+
+            const basic_value< Traits > & result() const noexcept
+            {
+               return value_;
+            }
+
             void null()
             {
                value_.unsafe_assign_null();
@@ -113,7 +122,9 @@ namespace tao
             }
          };
 
-      } // internal
+         using to_value = to_basic_value< traits >;
+
+      } // sax
 
    } // json
 

@@ -1,29 +1,33 @@
 // Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_PRETTY_WRITER_HH
-#define TAOCPP_JSON_INCLUDE_INTERNAL_PRETTY_WRITER_HH
+#ifndef TAOCPP_JSON_INCLUDE_SAX_TO_PRETTY_STREAM_HH
+#define TAOCPP_JSON_INCLUDE_SAX_TO_PRETTY_STREAM_HH
 
 #include <ostream>
-
-#include "escape.hh"
+#include <cstddef>
+#include <string>
+#include <cstdint>
 
 #include "../external/double.hh"
+
+#include "../internal/escape.hh"
 
 namespace tao
 {
    namespace json
    {
-      namespace internal
+      namespace sax
       {
-         class pretty_writer
+         class to_pretty_stream
          {
          private:
             std::ostream & os;
             const std::size_t indent;
-            std::string current;
-            bool first = true;
-            bool after_key = false;
+
+            std::string current = "\n";
+            bool first_value = true;
+            bool after_key = true;
 
             void next()
             {
@@ -36,7 +40,7 @@ namespace tao
             }
 
          public:
-            pretty_writer( std::ostream & os, const std::size_t indent )
+            to_pretty_stream( std::ostream & os, const std::size_t indent )
               : os( os ),
                 indent( indent )
             { }
@@ -87,28 +91,25 @@ namespace tao
             {
                next();
                os.put( '[' );
-               if ( current.empty() ) {
-                  current = '\n';
-               }
                current.resize( current.size() + indent, ' ' );
-               first = true;
+               first_value = true;
             }
 
             void element()
             {
                os.put( ',' );
-               first = false;
+               first_value = false;
             }
 
             void end_array()
             {
                current.resize( current.size() - indent );
-               if ( ! first ) {
+               if ( ! first_value ) {
                   os.seekp( -1, std::ios_base::cur );
                   os << current;
                }
                os.put( ']' );
-               first = false;
+               first_value = false;
             }
 
             // object
@@ -116,11 +117,8 @@ namespace tao
             {
                next();
                os.put( '{' );
-               if ( current.empty() ) {
-                  current = '\n';
-               }
                current.resize( current.size() + indent, ' ' );
-               first = true;
+               first_value = true;
             }
 
             void key( const std::string & v )
@@ -134,22 +132,22 @@ namespace tao
             void value()
             {
                os.put( ',' );
-               first = false;
+               first_value = false;
             }
 
             void end_object()
             {
                current.resize( current.size() - indent );
-               if ( ! first ) {
+               if ( ! first_value ) {
                   os.seekp( -1, std::ios_base::cur );
                   os << current;
                }
                os.put( '}' );
-               first = false;
+               first_value = false;
             }
          };
 
-      } // internal
+      } // sax
 
    } // json
 

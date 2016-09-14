@@ -4,30 +4,22 @@
 #ifndef TAOCPP_JSON_INCLUDE_PARSE_FILE_HH
 #define TAOCPP_JSON_INCLUDE_PARSE_FILE_HH
 
-#include "external/pegtl/file_parser.hh"
+#include <string>
+#include <utility>
 
-#include "internal/value_builder.hh"
-
-#include "internal/grammar.hh"
-#include "internal/action.hh"
-#include "internal/control.hh"
+#include "sax/parse_file.hh"
+#include "sax/to_value.hh"
 
 namespace tao
 {
    namespace json
    {
-      template< typename Handler >
-      void parse_file( const std::string & filename, Handler & handler )
-      {
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( handler );
-      }
-
       template< template< typename ... > class Traits >
       basic_value< Traits > parse_file( const std::string & filename )
       {
-         internal::value_builder< Traits > handler;
-         json::parse_file( filename, handler );
-         return std::move( handler.value_ );
+         sax::to_basic_value< Traits > handler;
+         sax::parse_file( filename, handler );
+         return std::move( handler.result() );
       }
 
       template< template< typename ... > class Traits >
