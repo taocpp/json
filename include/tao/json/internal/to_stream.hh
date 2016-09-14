@@ -6,13 +6,11 @@
 
 #include <ostream>
 
-#include "../external/double.hh"
 #include "../value.hh"
+#include "../traverse.hh"
 
-#include "escape.hh"
 #include "value_writer.hh"
 #include "pretty_writer.hh"
-#include "write.hh"
 
 namespace tao
 {
@@ -24,14 +22,14 @@ namespace tao
          void to_stream( std::ostream & o, const basic_value< Traits > & v )
          {
             internal::value_writer writer( o );
-            internal::write( v, writer );
+            json::traverse( v, writer );
          }
 
          template< template< typename ... > class Traits >
          void to_stream( std::ostream & o, const basic_value< Traits > & v, const unsigned indent )
          {
             internal::pretty_writer writer( o, indent );
-            internal::write( v, writer );
+            json::traverse( v, writer );
          }
 
       } // internal
