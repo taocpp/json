@@ -16,12 +16,24 @@ namespace tao
 {
    namespace json
    {
+      template< typename Handler >
+      inline void from_string( const char * data, const std::size_t size, Handler & handler, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
+      {
+         tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
+         tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, handler );
+      }
+
+      template< typename Handler >
+      inline void from_string( const std::string & data, Handler & handler, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
+      {
+         json::from_string( data.data(), data.size(), handler, source, line, column );
+      }
+
       template< template< typename ... > class Traits >
       inline basic_value< Traits > from_string( const char * data, const std::size_t size, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
       {
          internal::value_builder< Traits > handler;
-         tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
-         tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, handler );
+         json::from_string( data, size, handler, source, line, column );
          return std::move( handler.value_ );
       }
 

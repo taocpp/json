@@ -16,11 +16,17 @@ namespace tao
 {
    namespace json
    {
+      template< typename Handler >
+      void parse_file( const std::string & filename, Handler & handler )
+      {
+         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( handler );
+      }
+
       template< template< typename ... > class Traits >
       basic_value< Traits > parse_file( const std::string & filename )
       {
          internal::value_builder< Traits > handler;
-         tao_json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( handler );
+         json::parse_file( filename, handler );
          return std::move( handler.value_ );
       }
 
