@@ -4,8 +4,6 @@
 #include "test.hh"
 
 #include <iostream>
-#include <tao/json/sax/debug.hh>
-#include <tao/json/sax/from_string.hh>
 
 namespace tao
 {

@@ -5,15 +5,12 @@
 
 #include <sstream>
 
-#include <tao/json.hh>
-
 namespace tao
 {
    namespace json
    {
       void test_simple( const value & v, const std::string & s )
       {
-        std::cout << s << std::endl;
          TEST_ASSERT( to_string( v ) == s );
          std::ostringstream oss;
          oss << v;

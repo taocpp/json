@@ -3,9 +3,6 @@
 
 #include "test.hh"
 
-#include <tao/json/sax/to_stream.hh>
-#include <tao/json/sax/from_string.hh>
-
 namespace tao
 {
    namespace json

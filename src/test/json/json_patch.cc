@@ -3,10 +3,6 @@
 
 #include "test.hh"
 
-#include <iostream>
-
-#include <tao/json.hh>
-
 namespace tao
 {
    namespace json
