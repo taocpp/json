@@ -19,6 +19,7 @@ namespace tao
    {
       namespace sax
       {
+         // SAX consumer to build a JSON pretty string representation
          class to_pretty_stream
          {
          private:
@@ -129,7 +130,7 @@ namespace tao
                after_key = true;
             }
 
-            void value()
+            void member()
             {
                os.put( ',' );
                first_value = false;

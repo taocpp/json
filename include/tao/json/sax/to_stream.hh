@@ -17,6 +17,7 @@ namespace tao
    {
       namespace sax
       {
+         // SAX consumer to build a JSON string representation
          class to_stream
          {
          private:
@@ -101,7 +102,7 @@ namespace tao
                os.put( ':' );
             }
 
-            void value()
+            void member()
             {
                first = false;
             }

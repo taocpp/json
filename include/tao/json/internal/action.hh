@@ -96,7 +96,7 @@ namespace tao
             template< typename State >
             static void apply( const tao_json_pegtl::input &, State & handler )
             {
-               handler.value();
+               handler.member();
             }
          };
 

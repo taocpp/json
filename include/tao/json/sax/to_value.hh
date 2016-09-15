@@ -17,68 +17,77 @@ namespace tao
          // class value_handler
          // {
          //    void null() {}
+         //
          //    void boolean( const bool v ) {}
+         //
          //    void number( const std::int64_t v ) {}
          //    void number( const std::uint64_t v ) {}
          //    void number( const double v ) {}
-         //    void string( std::string v ) {}
+         //
+         //    // the producer may call either one of the next two for a string,
+         //    // only implement the first one if you don't need the second.
+         //    void string( const std::string & v ) {}
+         //    void string( std::string && v ) {}
+         //
+         //    // array
          //    void begin_array() {}
          //    void element() {}
          //    void end_array() {}
+         //
+         //    // object
          //    void begin_object() {}
-         //    void key( std::string v ) {}
-         //    void value() {}
+         //    // the producer may call either one of the next two for a key,
+         //    // only implement the first one if you don't need the second.
+         //    void key( const std::string & v ) {}
+         //    void key( std::string && v ) {}
+         //    void member() {}
          //    void end_object() {}
          // };
 
+         // SAX consumer to build a JSON value
          template< template< typename ... > class Traits >
          class to_basic_value
          {
          private:
-            basic_value< Traits > value_;
-
             std::vector< basic_value< Traits > > stack_;
             std::vector< std::string > keys_;
 
          public:
-            basic_value< Traits > & result() noexcept
-            {
-               return value_;
-            }
-
-            const basic_value< Traits > & result() const noexcept
-            {
-               return value_;
-            }
+            basic_value< Traits > value;
 
             void null()
             {
-               value_.unsafe_assign_null();
+               value.unsafe_assign_null();
             }
 
             void boolean( const bool v )
             {
-               value_.unsafe_assign_bool( v );
+               value.unsafe_assign_bool( v );
             }
 
             void number( const std::int64_t v )
             {
-               value_.unsafe_assign_signed( v );
+               value.unsafe_assign_signed( v );
             }
 
             void number( const std::uint64_t v )
             {
-               value_.unsafe_assign_unsigned( v );
+               value.unsafe_assign_unsigned( v );
             }
 
             void number( const double v )
             {
-               value_.unsafe_assign_double( v );
+               value.unsafe_assign_double( v );
             }
 
-            void string( std::string v )
+            void string( const std::string & v )
             {
-               value_.unsafe_emplace_string( std::move( v ) );
+               value.unsafe_emplace_string( v );
+            }
+
+            void string( std::string && v )
+            {
+               value.unsafe_emplace_string( std::move( v ) );
             }
 
             // array
@@ -89,12 +98,12 @@ namespace tao
 
             void element()
             {
-               stack_.back().unsafe_emplace_back( std::move( value_ ) );
+               stack_.back().unsafe_emplace_back( std::move( value ) );
             }
 
             void end_array()
             {
-               value_ = std::move( stack_.back() );
+               value = std::move( stack_.back() );
                stack_.pop_back();
             }
 
@@ -104,20 +113,25 @@ namespace tao
                stack_.push_back( empty_object );
             }
 
-            void key( std::string v )
+            void key( const std::string & v )
+            {
+               keys_.push_back( v );
+            }
+
+            void key( std::string && v )
             {
                keys_.push_back( std::move( v ) );
             }
 
-            void value()
+            void member()
             {
-               stack_.back().unsafe_emplace( std::move( keys_.back() ), std::move( value_ ) );
+               stack_.back().unsafe_emplace( std::move( keys_.back() ), std::move( value ) );
                keys_.pop_back();
             }
 
             void end_object()
             {
-               value_ = std::move( stack_.back() );
+               value = std::move( stack_.back() );
                stack_.pop_back();
             }
          };

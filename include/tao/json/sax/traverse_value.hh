@@ -14,6 +14,7 @@ namespace tao
    {
       namespace sax
       {
+         // SAX producer to generate events from a JSON value
          template< template< typename ... > class Traits, typename Handler >
          void traverse_value( const basic_value< Traits > & v, Handler & handler )
          {
@@ -49,7 +50,7 @@ namespace tao
                   for( const auto & e : v.unsafe_get_object() ) {
                      handler.key( e.first );
                      sax::traverse_value( e.second, handler );
-                     handler.value();
+                     handler.member();
                   }
                   handler.end_object();
                   break;
@@ -66,6 +67,8 @@ namespace tao
             }
          }
 
+         // SAX producer to generate events from an rvalue JSON value
+         // note: strings from the source might be moved in the handler
          template< template< typename ... > class Traits, typename Handler >
          void traverse_value( basic_value< Traits > && v, Handler & handler )
          {
@@ -101,7 +104,7 @@ namespace tao
                   for( const auto & e : v.unsafe_get_object() ) {
                      handler.key( e.first );
                      sax::traverse_value( e.second, handler );
-                     handler.value();
+                     handler.member();
                   }
                   handler.end_object();
                   break;

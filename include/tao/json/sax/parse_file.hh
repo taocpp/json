@@ -16,6 +16,7 @@ namespace tao
    {
       namespace sax
       {
+         // SAX producer to parse a file containing a JSON string representation
          template< typename Handler >
          void parse_file( const std::string & filename, Handler & handler )
          {

@@ -20,7 +20,7 @@ namespace tao
       {
          sax::to_basic_value< Traits > handler;
          sax::from_string( data, size, handler, source, line, column );
-         return std::move( handler.result() );
+         return std::move( handler.value );
       }
 
       template< template< typename ... > class Traits >

@@ -16,6 +16,7 @@ namespace tao
    {
       namespace sax
       {
+         // SAX producer to parse a JSON string representation
          template< typename Handler >
          inline void from_string( const char * data, const std::size_t size, Handler & handler, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
          {
