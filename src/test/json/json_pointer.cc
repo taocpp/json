@@ -3,6 +3,9 @@
 
 #include "test.hh"
 
+#include <tao/json/value.hh>
+#include <tao/json/pointer.hh>
+
 namespace tao
 {
    namespace json

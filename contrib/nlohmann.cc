@@ -5,6 +5,9 @@
 
 #include "nlohmann/json.hpp"
 
+#include <tao/json/sax/from_string.hh>
+#include <tao/json/sax/to_stream.hh>
+
 namespace tao
 {
    namespace json

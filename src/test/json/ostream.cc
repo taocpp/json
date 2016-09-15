@@ -3,6 +3,10 @@
 
 #include "test.hh"
 
+#include <tao/json/value.hh>
+#include <tao/json/to_string.hh>
+#include <tao/json/stream.hh>
+
 #include <sstream>
 
 namespace tao
