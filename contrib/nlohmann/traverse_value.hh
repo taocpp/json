@@ -23,19 +23,19 @@ namespace tao
                   handler.null();
                   break;
                case Value::value_t::boolean:
-                  handler.boolean( v.get< bool >() );
+                  handler.boolean( v.template get< bool >() );
                   break;
                case Value::value_t::number_integer:
-                  handler.number( v.get< std::int64_t >() );
+                  handler.number( v.template get< std::int64_t >() );
                   break;
                case Value::value_t::number_unsigned:
-                  handler.number( v.get< std::uint64_t >() );
+                  handler.number( v.template get< std::uint64_t >() );
                   break;
                case Value::value_t::number_float:
-                  handler.number( v.get< double >() );
+                  handler.number( v.template get< double >() );
                   break;
                case Value::value_t::string:
-                  handler.string( v.get_ref< const std::string & >() );
+                  handler.string( v.template get_ref< const std::string & >() );
                   break;
                case Value::value_t::array:
                   handler.begin_array();
