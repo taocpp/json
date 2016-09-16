@@ -9,8 +9,6 @@
 #include <cstdint>
 #include <utility>
 
-#include "json.hpp"
-
 namespace tao
 {
    namespace json
@@ -18,14 +16,15 @@ namespace tao
       namespace nlohmann
       {
          // SAX consumer to build an nlohmann/json value
+         template< typename Value >
          class to_value
          {
          private:
-            std::vector< ::nlohmann::json > stack_;
+            std::vector< Value > stack_;
             std::vector< std::string > keys_;
 
          public:
-            ::nlohmann::json value;
+            Value value;
 
             void null()
             {
@@ -65,7 +64,7 @@ namespace tao
             // array
             void begin_array()
             {
-               stack_.push_back( ::nlohmann::json::array() );
+               stack_.push_back( Value::array() );
             }
 
             void element()
@@ -82,7 +81,7 @@ namespace tao
             // object
             void begin_object()
             {
-               stack_.push_back( ::nlohmann::json::object() );
+               stack_.push_back( Value::object() );
             }
 
             void key( const std::string & v )
@@ -97,7 +96,7 @@ namespace tao
 
             void member()
             {
-               stack_.back().push_back( ::nlohmann::json::object_t::value_type( std::move( keys_.back() ), std::move( value ) ) );
+               stack_.back().push_back( Value::object_t::value_type( std::move( keys_.back() ), std::move( value ) ) );
                keys_.pop_back();
             }
 
