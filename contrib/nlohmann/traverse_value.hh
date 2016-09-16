@@ -47,7 +47,7 @@ namespace tao
                   break;
                case Value::value_t::object:
                   handler.begin_object();
-                  for( Value::const_iterator it = v.begin(); it != v.end(); ++it ) {
+                  for( typename Value::const_iterator it = v.begin(); it != v.end(); ++it ) {
                      handler.key( it.key() );
                      tao::json::nlohmann::traverse_value( it.value(), handler );
                      handler.member();
