@@ -96,7 +96,7 @@ namespace tao
 
             void member()
             {
-               stack_.back().push_back( Value::object_t::value_type( std::move( keys_.back() ), std::move( value ) ) );
+               stack_.back().push_back( typename Value::object_t::value_type( std::move( keys_.back() ), std::move( value ) ) );
                keys_.pop_back();
             }
 
