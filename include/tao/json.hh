@@ -17,7 +17,9 @@
 #include "json/sax/to_pretty_stream.hh"
 #include "json/sax/to_value.hh" // SAX to DOM
 
-// SAX debug consumer
+// SAX other
+#include "json/sax/discard.hh"
+#include "json/sax/tee.hh"
 #include "json/sax/debug.hh"
 
 // DOM producers
