@@ -13,60 +13,60 @@ namespace tao
    {
       namespace internal
       {
-         inline void escape( std::ostream & o, const std::string & s )
+         inline void escape( std::ostream & os, const std::string & s )
          {
             static const char * h = "0123456789abcdef";
 
-            o << '"';
+            os << '"';
             const char * p = s.data();
             const char * l = p;
             const char * const e = s.data() + s.size();
             while ( p != e ) {
-               const unsigned char c = *p;
+               const unsigned char c = * p;
                if ( c == '\\' ) {
-                  o.write( l, p - l );
+                  os.write( l, p - l );
                   l = ++p;
-                  o << "\\\\";
+                  os << "\\\\";
                }
                else if ( c == '"' ) {
-                  o.write( l, p - l );
+                  os.write( l, p - l );
                   l = ++p;
-                  o << "\\\"";
+                  os << "\\\"";
                }
                else if ( c < 32 ) {
-                  o.write( l, p - l );
+                  os.write( l, p - l );
                   l = ++p;
                   switch ( c ) {
                      case '\b':
-                        o << "\\b";
+                        os << "\\b";
                         break;
                      case '\f':
-                        o << "\\f";
+                        os << "\\f";
                         break;
                      case '\n':
-                        o << "\\n";
+                        os << "\\n";
                         break;
                      case '\r':
-                        o << "\\r";
+                        os << "\\r";
                         break;
                      case '\t':
-                        o << "\\t";
+                        os << "\\t";
                         break;
                      default:
-                        o << "\\u00" << h[ ( c & 0xf0 ) >> 4 ] << h[ c & 0x0f ];
+                        os << "\\u00" << h[ ( c & 0xf0 ) >> 4 ] << h[ c & 0x0f ];
                   }
                }
                else if ( c == 127 ) {
-                  o.write( l, p - l );
+                  os.write( l, p - l );
                   l = ++p;
-                  o << "\\u007f";
+                  os << "\\u007f";
                }
                else {
                   ++p;
                }
             }
-            o.write( l, p - l );
-            o << '"';
+            os.write( l, p - l );
+            os << '"';
          }
 
       } // internal
