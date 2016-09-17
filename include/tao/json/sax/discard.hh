@@ -24,10 +24,7 @@ namespace tao
             void number( const std::uint64_t ) {}
             void number( const double ) {}
 
-            // the producer may call either one of the next two for a string,
-            // only implement the first one if you don't need the second.
             void string( const std::string & ) {}
-            void string( std::string && ) {}
 
             // array
             void begin_array() {}
@@ -36,10 +33,7 @@ namespace tao
 
             // object
             void begin_object() {}
-            // the producer may call either one of the next two for a key,
-            // only implement the first one if you don't need the second.
             void key( const std::string & ) {}
-            void key( std::string && ) {}
             void member() {}
             void end_object() {}
          };
