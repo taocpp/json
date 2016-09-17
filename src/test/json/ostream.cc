@@ -32,13 +32,13 @@ namespace tao
       {
          const value v = 42;
 
-         test_simple( value( null ), "null" );
-         test_simple( value( true ), "true" );
-         test_simple( value( false ), "false" );
-         test_simple( value( 42 ), "42" );
-         test_simple( value( 42u ), "42" );
-         test_simple( value( 42.1 ), "42.1" );
-         test_simple( value( "foo" ), "\"foo\"" );
+         test_simple( null, "null" );
+         test_simple( true, "true" );
+         test_simple( false, "false" );
+         test_simple( 42, "42" );
+         test_simple( 42u, "42" );
+         test_simple( 42.1, "42.1" );
+         test_simple( "foo", "\"foo\"" );
          test_simple( empty_array, "[]" );
          test_simple( value::array( {} ), "[]" );
          test_simple( value::array( { 1 } ), "[1]" );
@@ -54,12 +54,12 @@ namespace tao
          test_simple( { { "foo", nullptr } }, "{\"foo\":null}" );
          test_simple( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{\"foo\":[1,{\"bar\":42,\"baz\":[{},43]},[]]}" );
 
-         test_pretty( value( null ), "null" );
-         test_pretty( value( true ), "true" );
-         test_pretty( value( false ), "false" );
-         test_pretty( value( 42 ), "42" );
-         test_pretty( value( 42.1 ), "42.1" );
-         test_pretty( value( "foo" ), "\"foo\"" );
+         test_pretty( null, "null" );
+         test_pretty( true, "true" );
+         test_pretty( false, "false" );
+         test_pretty( 42, "42" );
+         test_pretty( 42.1, "42.1" );
+         test_pretty( "foo", "\"foo\"" );
          test_pretty( empty_array, "[]" );
          test_pretty( value::array( {} ), "[]" );
          test_pretty( value::array( { 1 } ), "[\n  1\n]" );
