@@ -20,6 +20,7 @@
 // SAX other
 #include "json/sax/discard.hh"
 #include "json/sax/tee.hh"
+#include "json/sax/validate_event_order.hh"
 #include "json/sax/debug.hh"
 
 // DOM producers
