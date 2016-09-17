@@ -15,7 +15,6 @@ namespace tao
 {
    namespace json
    {
-      // TODO: Move to a .cc file once taocpp/json drops 'header-only'.
       namespace internal
       {
          inline void validate_pointer( const std::string & v )
