@@ -24,8 +24,7 @@ namespace tao
       void test_pretty( const value & v, const std::string & s )
       {
          std::ostringstream oss;
-         oss << std::setw( 2 );
-         oss << v;
+         oss << std::setw( 2 ) << v;
          TEST_ASSERT( oss.str() == s );
       }
 
@@ -53,6 +52,7 @@ namespace tao
          test_simple( { { "foo", v }, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
          test_simple( { { "foo", &v }, { "bar", 43u } }, "{\"bar\":43,\"foo\":42}" );
          test_simple( { { "foo", nullptr } }, "{\"foo\":null}" );
+         test_simple( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{\"foo\":[1,{\"bar\":42,\"baz\":[{},43]},[]]}" );
 
          test_pretty( value( null ), "null" );
          test_pretty( value( true ), "true" );
@@ -71,6 +71,7 @@ namespace tao
          test_pretty( { { "foo", v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", &v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", nullptr } }, "{\n  \"foo\": null\n}" );
+         test_pretty( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{\n  \"foo\": [\n    1,\n    {\n      \"bar\": 42,\n      \"baz\": [\n        {},\n        43\n      ]\n    },\n    []\n  ]\n}" );
       }
 
    } // json
