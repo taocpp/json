@@ -14,7 +14,7 @@ namespace tao
       namespace sax
       {
          // SAX consumer does nothing
-         class discard
+         struct discard
          {
             void null() {}
 
