@@ -13,7 +13,7 @@ namespace tao
    {
       namespace sax
       {
-         // SAX consumer does nothing
+         // SAX consumer that discards events
          struct discard
          {
             void null() {}
