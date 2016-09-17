@@ -47,7 +47,7 @@ namespace tao
             template< typename U1, typename U2 >
             tee( U1 && u1, U2 && u2 )
               : t1( std::forward< U1 >( u1 ) ),
-                t2( std::forward< U2 >( u1 ) )
+                t2( std::forward< U2 >( u2 ) )
             { }
 
             void null()
