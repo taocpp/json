@@ -12,38 +12,6 @@ namespace tao
    {
       namespace sax
       {
-         // General interface for a SAX handler:
-         //
-         // class value_handler
-         // {
-         //    void null() {}
-         //
-         //    void boolean( const bool v ) {}
-         //
-         //    void number( const std::int64_t v ) {}
-         //    void number( const std::uint64_t v ) {}
-         //    void number( const double v ) {}
-         //
-         //    // the producer may call either one of the next two for a string,
-         //    // only implement the first one if you don't need the second.
-         //    void string( const std::string & v ) {}
-         //    void string( std::string && v ) {}
-         //
-         //    // array
-         //    void begin_array() {}
-         //    void element() {}
-         //    void end_array() {}
-         //
-         //    // object
-         //    void begin_object() {}
-         //    // the producer may call either one of the next two for a key,
-         //    // only implement the first one if you don't need the second.
-         //    void key( const std::string & v ) {}
-         //    void key( std::string && v ) {}
-         //    void member() {}
-         //    void end_object() {}
-         // };
-
          // SAX consumer to build a JSON value
          template< template< typename ... > class Traits >
          class to_basic_value
