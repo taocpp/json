@@ -67,6 +67,7 @@ namespace tao
             void element()
             {
                stack_.back().unsafe_emplace_back( std::move( value ) );
+               value.destroy();
             }
 
             void end_array()
@@ -94,6 +95,7 @@ namespace tao
             void member()
             {
                stack_.back().unsafe_emplace( std::move( keys_.back() ), std::move( value ) );
+               value.destroy();
                keys_.pop_back();
             }
 

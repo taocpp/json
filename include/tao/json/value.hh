@@ -845,6 +845,35 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
+         void unsafe_destroy() noexcept
+         {
+            switch ( m_type ) {
+               case json::type::NULL_:
+               case json::type::BOOL:
+               case json::type::SIGNED:
+               case json::type::UNSIGNED:
+               case json::type::DOUBLE:
+               case json::type::POINTER:
+                  return;
+               case json::type::STRING:
+                  m_union.s.~basic_string();
+                  return;
+               case json::type::ARRAY:
+                  m_union.a.~vector();
+                  return;
+               case json::type::OBJECT:
+                  m_union.o.~map();
+                  return;
+            }
+            assert( false );  // LCOV_EXCL_LINE
+         }
+
+         void destroy() noexcept
+         {
+            unsafe_destroy();
+            m_type = json::type::NULL_;
+         }
+
       private:
          void seize( basic_value && r ) noexcept
          {
@@ -910,35 +939,6 @@ namespace tao
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
-         }
-
-         void unsafe_destroy() noexcept
-         {
-            switch ( m_type ) {
-               case json::type::NULL_:
-               case json::type::BOOL:
-               case json::type::SIGNED:
-               case json::type::UNSIGNED:
-               case json::type::DOUBLE:
-               case json::type::POINTER:
-                  return;
-               case json::type::STRING:
-                  m_union.s.~basic_string();
-                  return;
-               case json::type::ARRAY:
-                  m_union.a.~vector();
-                  return;
-               case json::type::OBJECT:
-                  m_union.o.~map();
-                  return;
-            }
-            assert( false );  // LCOV_EXCL_LINE
-         }
-
-         void destroy() noexcept
-         {
-            unsafe_destroy();
-            m_type = json::type::NULL_;
          }
 
          internal::value_union< basic_value > m_union;
