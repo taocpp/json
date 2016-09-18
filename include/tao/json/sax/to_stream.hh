@@ -61,7 +61,9 @@ namespace tao
 
             void string( const std::string & v )
             {
+               os.put( '"' );
                internal::escape( os, v );
+               os.put( '"' );
             }
 
             // array
@@ -98,8 +100,9 @@ namespace tao
                if ( ! first ) {
                   os.put( ',' );
                }
+               os.put( '"' );
                internal::escape( os, v );
-               os.put( ':' );
+               os.write( "\":", 2 );
             }
 
             void member()

@@ -17,7 +17,6 @@ namespace tao
          {
             static const char * h = "0123456789abcdef";
 
-            os << '"';
             const char * p = s.data();
             const char * l = p;
             const char * const e = s.data() + s.size();
@@ -66,7 +65,6 @@ namespace tao
                }
             }
             os.write( l, p - l );
-            os << '"';
          }
 
       } // internal

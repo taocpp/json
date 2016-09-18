@@ -62,9 +62,9 @@ namespace tao
 
             void string( const std::string & v )
             {
-               os << "string: ";
+               os << "string: \"";
                internal::escape( os, v );
-               os << '\n';
+               os << "\"\n";
             }
 
             // array
@@ -91,9 +91,9 @@ namespace tao
 
             void key( const std::string & v )
             {
-               os << "key: ";
+               os << "key: \"";
                internal::escape( os, v );
-               os << '\n';
+               os << "\"\n";
             }
 
             void member()

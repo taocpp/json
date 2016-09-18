@@ -84,7 +84,9 @@ namespace tao
             void string( const std::string & v )
             {
                next();
+               os.put( '"' );
                internal::escape( os, v );
+               os.put( '"' );
             }
 
             // array
@@ -125,8 +127,9 @@ namespace tao
             void key( const std::string & v )
             {
                next();
+               os.put( '"' );
                internal::escape( os, v );
-               os.write( ": ", 2 );
+               os.write( "\": ", 3 );
                after_key = true;
             }
 
