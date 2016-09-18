@@ -15,6 +15,7 @@
 // SAX consumers
 #include "json/sax/to_stream.hh"
 #include "json/sax/to_pretty_stream.hh"
+#include "json/sax/to_string.hh"
 #include "json/sax/to_value.hh" // SAX to DOM
 
 // SAX other

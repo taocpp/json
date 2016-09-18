@@ -8,7 +8,7 @@
 #include "nlohmann/traverse_value.hh"
 
 #include <tao/json/sax/from_string.hh>
-#include <tao/json/sax/to_stream.hh>
+#include <tao/json/sax/to_string.hh>
 
 namespace tao
 {
@@ -39,11 +39,10 @@ namespace tao
          TEST_ASSERT( v[ 7 ].at( "a" ) == "b" );
          TEST_ASSERT( v[ 7 ].at( "c" ) == "d" );
 
-         std::ostringstream oss;
-         tao::json::sax::to_stream oss_handler( oss );
+         tao::json::sax::to_string oss_handler;
          tao::json::nlohmann::traverse_value( v, oss_handler );
 
-         TEST_ASSERT( oss.str() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
+         TEST_ASSERT( oss_handler.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
       }
 
    } // json
