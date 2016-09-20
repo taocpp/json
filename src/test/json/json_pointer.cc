@@ -38,7 +38,8 @@ namespace tao
             { "m~n", 8 },
             { ezp, 9 },
             { ezq, 10 },
-            { "-", 11 }
+            { "-", 11 },
+            { "007", 12 }
          };
 
          // check access
@@ -77,6 +78,7 @@ namespace tao
          TEST_ASSERT( v.at( "/o\0p"_json_pointer ) == 9 );
          TEST_ASSERT( v.at( "/o\0q"_json_pointer ) == 10 );
          TEST_ASSERT( v.at( "/-"_json_pointer ) == 11 );
+         TEST_ASSERT( v.at( "/007"_json_pointer ) == 12 );
 
          // check modifications
          v[ "/foo/-"_json_pointer ] = "bat";
@@ -117,6 +119,7 @@ namespace tao
          TEST_ASSERT( v[ "/o\0p"_json_pointer ] == 9 );
          TEST_ASSERT( v[ "/o\0q"_json_pointer ] == 10 );
          TEST_ASSERT( v[ "/-"_json_pointer ] == 11 );
+         TEST_ASSERT( v[ "/007"_json_pointer ] == 12 );
 
          TEST_THROWS( v.at( "/o\0r"_json_pointer ) );
          TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_null() );
@@ -154,16 +157,6 @@ namespace tao
          TEST_ASSERT( !( p4 > p3 ) );
          TEST_ASSERT( p4 <= p3 );
          TEST_ASSERT( !( p4 >= p3 ) );
-
-         TEST_THROWS( ""_json_pointer.split() );
-         TEST_ASSERT( "/"_json_pointer.split().first == ""_json_pointer );
-         TEST_ASSERT( "/"_json_pointer.split().second == "" );
-         TEST_ASSERT( "/a/b/c"_json_pointer.split().first == "/a/b"_json_pointer );
-         TEST_ASSERT( "/a/b/c"_json_pointer.split().second == "c" );
-         TEST_ASSERT( "/a~1b/c%d/m~0/x"_json_pointer.split().first == "/a~1b/c%d/m~0"_json_pointer );
-         TEST_ASSERT( "/a~1b/c%d/m~0/x"_json_pointer.split().second == "x" );
-         TEST_ASSERT( "/xyz/a~1b~0c"_json_pointer.split().first == "/xyz"_json_pointer );
-         TEST_ASSERT( "/xyz/a~1b~0c"_json_pointer.split().second == "a/b~c" );
       }
 
    } // json

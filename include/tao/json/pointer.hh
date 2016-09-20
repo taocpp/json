@@ -4,11 +4,12 @@
 #ifndef TAOCPP_JSON_INCLUDE_POINTER_HH
 #define TAOCPP_JSON_INCLUDE_POINTER_HH
 
+#include <cstdint>
 #include <string>
-#include <stdexcept>
 #include <utility>
+#include <stdexcept>
+#include <vector>
 
-#include "type.hh"
 #include "external/operators.hpp"
 
 namespace tao
@@ -17,59 +18,114 @@ namespace tao
    {
       namespace internal
       {
-         inline void validate_pointer( const std::string & v )
-         {
-            if ( v.empty() ) {
-               return;
-            }
-            if ( v[ 0 ] != '/' ) {
-               throw std::invalid_argument( "invalid JSON Pointer value, must be empty or begin with '/'" );
-            }
-            // TODO: Should we also check UTF-8 encoding and code-point range?
-            for ( auto it = v.begin(); it != v.end(); ++it ) {
-               if ( *it == '~' ) {
-                  if ( ++it == v.end() || !( *it == '0' || *it == '1' ) ) {
-                     throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
-                  }
-               }
-            }
-         }
-
-         inline std::string pointer_next_token( const char * & p, const char * e )
-         {
-            std::string result;
-            while ( p != e ) {
-               switch ( *p ) {
-                  case '/':
-                     return result;
-                  case '~':
-                     switch ( *++p ) {
-                        case '0':
-                           result += '~';
-                           break;
-                        case '1':
-                           result += '/';
-                           break;
-                        default:
-                           throw std::logic_error( "code should be unreachable" );  // LCOV_EXCL_LINE
-                     }
-                     ++p;
-                     break;
-                  default:
-                     result += *p++;
-               }
-            }
-            return result;
-         }
+         std::size_t token_to_index( const std::string & key );
 
       } // internal
 
       // RFC 6901
+      class token
+      {
+      private:
+         std::size_t m_index;
+         std::string m_key;
+
+      public:
+         static const std::size_t npos = -1;
+
+         explicit token( const std::string & key )
+              : m_index( internal::token_to_index( key ) ),
+                m_key( key )
+        { }
+
+        explicit token( std::string && key )
+             : m_index( internal::token_to_index( key ) ),
+               m_key( std::move( key ) )
+        { }
+
+        token( const token & ) = default;
+        token( token && v ) noexcept
+              : m_index( v.m_index ),
+                m_key( std::move( v.m_key ) )
+        { }
+
+        token & operator= ( const token & ) = default;
+        token & operator= ( token && v ) noexcept
+        {
+           m_index = v.m_index;
+           m_key = std::move( v.m_key );
+           return * this;
+        }
+
+        const std::string & key() const
+        {
+           return m_key;
+        }
+
+        std::size_t index() const
+        {
+           if ( m_index == npos ) {
+              throw std::invalid_argument( "unable to resolve JSON Pointer, invalid token for array access '" + m_key + '\'' );
+           }
+           return m_index;
+        }
+
+        friend bool operator==( const token & lhs, const token & rhs )
+        {
+           return lhs.m_key == rhs.m_key;
+        }
+
+        friend bool operator<( const token & lhs, const token & rhs )
+        {
+           return lhs.m_key < rhs.m_key;
+        }
+      };
+
       class pointer
            : operators::totally_ordered< pointer >
       {
       private:
-         std::string m_value;
+         std::vector< token > m_tokens;
+
+         static std::vector< token > parse( const std::string & v )
+         {
+            std::vector< token > result;
+            if ( ! v.empty() ) {
+               const char * p = v.data();
+               const char * const e = p + v.size();
+               if ( *p++ != '/' ) {
+                  throw std::invalid_argument( "invalid JSON Pointer value, must be empty or begin with '/'" );
+               }
+               std::string token;
+               while ( p != e ) {
+                  const auto c = *p++;
+                  switch( c ) {
+                  case '/':
+                     result.emplace_back( std::move( token ) );
+                     token.clear();
+                     break;
+                  case '~':
+                     if ( p == e ) {
+                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
+                     }
+                     switch( *p++ ) {
+                     case '0':
+                        token += '~';
+                        break;
+                     case '1':
+                        token += '/';
+                        break;
+                     default:
+                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
+                     }
+                     break;
+                  default:
+                     token += c;
+                  }
+               }
+               result.emplace_back( std::move( token ) );
+            }
+            return result;
+         }
 
       public:
          pointer() = default;
@@ -77,93 +133,66 @@ namespace tao
          pointer( const pointer & ) = default;
 
          pointer( pointer && p ) noexcept
-              : m_value( std::move( p.m_value ) )
+              : m_tokens( std::move( p.m_tokens ) )
          { }
 
-         explicit pointer( std::string v )
-              : m_value( std::move( v ) )
-         {
-            internal::validate_pointer( m_value );
-         }
+         explicit pointer( const std::string & v )
+              : m_tokens( parse( v ) )
+         { }
 
          pointer & operator= ( const pointer & ) = default;
 
          pointer & operator= ( pointer && p ) noexcept
          {
-            m_value = std::move( p.m_value );
+            m_tokens = std::move( p.m_tokens );
             return *this;
          }
 
-         pointer & operator= ( std::string v )
+         pointer & operator= ( const std::string & v )
          {
-            internal::validate_pointer( v );
-            m_value = std::move( v );
+            m_tokens = parse( v );
             return *this;
          }
 
          explicit operator bool() const noexcept
          {
-            return ! m_value.empty();
+            return ! m_tokens.empty();
          }
 
-         const std::string& value() const noexcept
+         std::vector< token >::const_iterator begin() const noexcept
          {
-            return m_value;
+            return m_tokens.begin();
          }
 
-         std::pair< pointer, std::string > split() const
+         std::vector< token >::const_iterator end() const noexcept
          {
-            const auto p = m_value.rfind( '/' );
-            if( p == std::string::npos ) {
-               throw std::logic_error( "empty JSON Pointer can not be split" );
-            }
-            const char * b = m_value.data() + p;
-            const char * e = m_value.data() + m_value.size();
-            return { pointer( m_value.substr( 0, p ) ), internal::pointer_next_token( ++b, e ) };
+            return m_tokens.end();
+         }
+
+         friend bool operator== ( const pointer & lhs, const pointer & rhs ) noexcept
+         {
+            return lhs.m_tokens == rhs.m_tokens;
+         }
+
+         friend bool operator< ( const pointer & lhs, const pointer & rhs ) noexcept
+         {
+            return lhs.m_tokens < rhs.m_tokens;
          }
       };
 
-      inline bool operator== ( const pointer & lhs, const pointer & rhs ) noexcept
-      {
-         return lhs.value() == rhs.value();
-      }
-
-      inline bool operator< ( const pointer & lhs, const pointer & rhs ) noexcept
-      {
-         return lhs.value() < rhs.value();
-      }
-
       namespace internal
       {
-         inline unsigned long long pointer_token_to_index( const std::string & t )
+         inline std::size_t token_to_index( const std::string & key )
          {
-            if ( ( t.find_first_not_of( "0123456789" ) != std::string::npos ) || ( t.size() > 1 && t[ 0 ] == '0' ) ) {
-               throw std::invalid_argument( "unable to resolve JSON Pointer, invalid token for array access '" + t + '\'' );
-            }
-            return std::stoull( t );
-         }
-
-         template< typename T >
-         T & pointer_at( T * v, const pointer & k )
-         {
-            const char * p = k.value().data();
-            const char * e = p + k.value().size();
-            while ( p != e ) {
-               switch ( v->type() ) {
-                  case type::ARRAY:
-                     v = &v->at( pointer_token_to_index( pointer_next_token( ++p, e ) ) );
-                     break;
-                  case type::OBJECT:
-                     v = &v->at( pointer_next_token( ++p, e ) );
-                     break;
-                  default:
-                     throw std::runtime_error( "unable to resolve JSON Pointer, "
-                                               "value at '" + std::string( k.value().c_str(), p ) + "' "
-                                               "is neither 'object' nor 'array', "
-                                               "but '" + to_string( v->type() ) + "'" );
+            if ( ! key.empty() ) {
+               if ( key == "0" ) {
+                  return 0;
+               }
+               else if ( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
+                  return std::stoull( key );
                }
             }
-            return * v;
+            return token::npos;
          }
       }
 

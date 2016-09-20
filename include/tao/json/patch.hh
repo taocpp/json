@@ -19,30 +19,31 @@ namespace tao
       {
          for( const auto & entry : patch.get_array() ) {
             const auto & op = entry.at( "op" ).get_string();
-            const pointer path( entry.at( "path" ).get_string() );
+            const auto & path = entry.at( "path" ).get_string();
+            const pointer path_pointer( path );
             if ( op == "test" ) {
-               if ( value.at( path ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path.value() );
+               if ( value.at( path_pointer ) != entry.at( "value" ) ) {
+                  throw std::runtime_error( "test failed for: " + path );
                }
             }
             else if ( op == "remove" ) {
-               value.erase( path );
+               value.erase( path_pointer );
             }
             else if ( op == "add" ) {
-               value.insert( path, entry.at( "value" ) );
+               value.insert( path_pointer, entry.at( "value" ) );
             }
             else if ( op == "replace" ) {
-               value.at( path ) = entry.at( "value" );
+               value.at( path_pointer ) = entry.at( "value" );
             }
             else if ( op == "move" ) {
                const pointer from( entry.at( "from" ).get_string() );
                auto v = std::move( value.at( from ) );
                value.erase( from );
-               value.insert( path, std::move( v ) );
+               value.insert( path_pointer, std::move( v ) );
             }
             else if ( op == "copy" ) {
                const pointer from( entry.at( "from" ).get_string() );
-               value.insert( path, value.at( from ) );
+               value.insert( path_pointer, value.at( from ) );
             }
             else {
                throw std::runtime_error( "unknown patch operation: '" + op + '\'' );
@@ -55,30 +56,31 @@ namespace tao
       {
          for( const auto & entry : patch.get_array() ) {
             const auto & op = entry.at( "op" ).get_string();
-            const pointer path( entry.at( "path" ).get_string() );
+            const auto & path = entry.at( "path" ).get_string();
+            const pointer path_pointer( path );
             if ( op == "test" ) {
-               if ( value.at( path ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path.value() );
+               if ( value.at( path_pointer ) != entry.at( "value" ) ) {
+                  throw std::runtime_error( "test failed for: " + path );
                }
             }
             else if ( op == "remove" ) {
-               value.erase( path );
+               value.erase( path_pointer );
             }
             else if ( op == "add" ) {
-               value.insert( path, std::move( entry.at( "value" ) ) );
+               value.insert( path_pointer, std::move( entry.at( "value" ) ) );
             }
             else if ( op == "replace" ) {
-               value.at( path ) = std::move( entry.at( "value" ) );
+               value.at( path_pointer ) = std::move( entry.at( "value" ) );
             }
             else if ( op == "move" ) {
                const pointer from( entry.at( "from" ).get_string() );
                auto v = std::move( value.at( from ) );
                value.erase( from );
-               value.insert( path, std::move( v ) );
+               value.insert( path_pointer, std::move( v ) );
             }
             else if ( op == "copy" ) {
                const pointer from( entry.at( "from" ).get_string() );
-               value.insert( path, value.at( from ) );
+               value.insert( path_pointer, value.at( from ) );
             }
             else {
                throw std::runtime_error( "unknown patch operation: '" + op + '\'' );
