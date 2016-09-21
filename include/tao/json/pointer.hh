@@ -184,12 +184,16 @@ namespace tao
       {
          inline std::size_t token_to_index( const std::string & key )
          {
-            if ( ! key.empty() ) {
+            if ( ! key.empty() && key.size() <= 20 ) {
                if ( key == "0" ) {
                   return 0;
                }
                else if ( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
-                  return std::stoull( key );
+                  try {
+                     return std::stoull( key );
+                  }
+                  catch( ... ) {
+                  }
                }
             }
             return token::npos;
