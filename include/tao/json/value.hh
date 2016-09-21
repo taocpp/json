@@ -34,20 +34,20 @@ namespace tao
          template< typename T, typename V > struct has_extract< T, V, decltype( T::extract( std::declval< const V & >() ), void() ) > : std::true_type {};
 
          template< typename T >
-         T & pointer_at( T * v, std::vector< token >::const_iterator begin, const std::vector< token >::const_iterator & end )
+         T & pointer_at( T * v, std::vector< token >::const_iterator it, const std::vector< token >::const_iterator & end )
          {
-            while ( begin != end ) {
+            while ( it != end ) {
                switch ( v->type() ) {
                   case type::ARRAY:
-                     v = & v->at( begin->index() );
+                     v = & v->at( it->index() );
                      break;
                   case type::OBJECT:
-                     v = & v->at( begin->key() );
+                     v = & v->at( it->key() );
                      break;
                   default:
-                     throw std::runtime_error( "unable to resolve JSON Pointer token '" + begin->key() + "', value is neither 'object' nor 'array'" );
+                     throw std::runtime_error( "unable to resolve JSON Pointer token '" + it->key() + "', value is neither 'object' nor 'array'" );
                }
-               ++begin;
+               ++it;
             }
             return * v;
          }
