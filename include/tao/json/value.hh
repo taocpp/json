@@ -473,7 +473,7 @@ namespace tao
          void erase( const pointer & k )
          {
             if ( ! k ) {
-               throw std::runtime_error( "invalid empty JSON Pointer for erase" );
+               throw std::runtime_error( "invalid root JSON Pointer for erase" );
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
