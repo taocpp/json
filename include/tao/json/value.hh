@@ -32,25 +32,6 @@ namespace tao
       {
          template< typename, typename, typename = void > struct has_extract : std::false_type {};
          template< typename T, typename V > struct has_extract< T, V, decltype( T::extract( std::declval< const V & >() ), void() ) > : std::true_type {};
-
-         template< typename T >
-         T & pointer_at( T * v, std::vector< token >::const_iterator it, const std::vector< token >::const_iterator & end )
-         {
-            while ( it != end ) {
-               switch ( v->type() ) {
-                  case type::ARRAY:
-                     v = & v->at( it->index() );
-                     break;
-                  case type::OBJECT:
-                     v = & v->at( it->key() );
-                     break;
-                  default:
-                     throw std::runtime_error( "unable to resolve JSON Pointer token '" + it->key() + "' -- value is neither 'object' nor 'array'" );
-               }
-               ++it;
-            }
-            return * v;
-         }
       }
 
       template< template< typename ... > class Traits >
@@ -505,7 +486,7 @@ namespace tao
                   v.erase( e->key() );
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "' -- value is neither 'object' nor 'array'" );
+                  throw internal::invalid_type( b, std::next( e ) );
             }
          }
 
@@ -527,7 +508,7 @@ namespace tao
                      }
                      const auto i = e->index();
                      if ( i >= v.m_union.a.size() ) {
-                        throw std::out_of_range( "JSON array index out of bounds" );
+                        throw std::out_of_range( "invalid JSON Pointer '" + internal::tokens_to_string( b, std::next( e ) ) + "' -- array index out of bounds" );
                      }
                      v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
                      return v.m_union.a.at( i );
@@ -547,7 +528,7 @@ namespace tao
                   }
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "' -- value is neither 'object' nor 'array'" );
+                  throw internal::invalid_type( b, std::next( e ) );
             }
          }
 
@@ -602,7 +583,7 @@ namespace tao
                   }
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "' -- value is neither 'object' nor 'array'" );
+                  throw internal::invalid_type( b, std::next( e ) );
             }
          }
 

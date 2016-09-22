@@ -198,6 +198,53 @@ namespace tao
             }
             return token::npos;
          }
+
+         inline std::string tokens_to_string( std::vector< token >::const_iterator it, const std::vector< token >::const_iterator & end )
+         {
+            std::string result;
+            while ( it != end ) {
+               result += '/';
+               for ( auto c : it->key() ) {
+                  switch ( c ) {
+                     case '~':
+                        result += "~0";
+                        break;
+                     case '/':
+                        result += "~1";
+                        break;
+                     default:
+                        result += c;
+                  }
+               }
+               ++it;
+            }
+            return result;
+         }
+
+         inline std::runtime_error invalid_type( const std::vector< token >::const_iterator & begin, const std::vector< token >::const_iterator & end )
+         {
+            return std::runtime_error( "unable to resolve JSON Pointer '" + tokens_to_string( begin, end ) + "' -- value type is neither 'object' nor 'array'" );
+         }
+
+         template< typename T >
+         T & pointer_at( T * v, const std::vector< token >::const_iterator & begin, const std::vector< token >::const_iterator & end )
+         {
+            auto it = begin;
+            while ( it != end ) {
+               switch ( v->type() ) {
+                  case type::ARRAY:
+                     v = & v->at( it->index() );
+                     break;
+                  case type::OBJECT:
+                     v = & v->at( it->key() );
+                     break;
+                  default:
+                     throw invalid_type( begin, std::next( it ) );
+               }
+               ++it;
+            }
+            return * v;
+         }
       }
 
       inline namespace literals
