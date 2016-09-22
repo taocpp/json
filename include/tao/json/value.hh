@@ -45,7 +45,7 @@ namespace tao
                      v = & v->at( it->key() );
                      break;
                   default:
-                     throw std::runtime_error( "unable to resolve JSON Pointer token '" + it->key() + "', value is neither 'object' nor 'array'" );
+                     throw std::runtime_error( "unable to resolve JSON Pointer token '" + it->key() + "' -- value is neither 'object' nor 'array'" );
                }
                ++it;
             }
@@ -476,7 +476,7 @@ namespace tao
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             auto & a = m_union.a;
             if ( index >= a.size() ) {
-               throw std::out_of_range( "array index too large" );
+               throw std::out_of_range( "JSON array index out of bounds" );
             }
             a.erase( a.begin() + index );
          }
@@ -485,14 +485,14 @@ namespace tao
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             if ( m_union.o.erase( key ) == 0 ) {
-               throw std::out_of_range( "key not found: " + key );
+               throw std::out_of_range( "JSON object key not found: " + key );
             }
          }
 
          void erase( const pointer & k )
          {
             if ( ! k ) {
-               throw std::runtime_error( "invalid JSON Pointer '' for erase" );
+               throw std::runtime_error( "invalid empty JSON Pointer for erase" );
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
@@ -505,7 +505,7 @@ namespace tao
                   v.erase( e->key() );
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "', value is neither 'object' nor 'array'" );
+                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "' -- value is neither 'object' nor 'array'" );
             }
          }
 
@@ -527,7 +527,7 @@ namespace tao
                      }
                      const auto i = e->index();
                      if ( i >= v.m_union.a.size() ) {
-                        throw std::out_of_range( "array index too large" );
+                        throw std::out_of_range( "JSON array index out of bounds" );
                      }
                      v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
                      return v.m_union.a.at( i );
@@ -547,7 +547,7 @@ namespace tao
                   }
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "', value is neither 'object' nor 'array'" );
+                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "' -- value is neither 'object' nor 'array'" );
             }
          }
 
@@ -602,7 +602,7 @@ namespace tao
                   }
                   break;
                default:
-                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "', value is neither 'object' nor 'array'" );
+                  throw std::runtime_error( "unable to resolve JSON Pointer token '" + e->key() + "' -- value is neither 'object' nor 'array'" );
             }
          }
 
@@ -635,7 +635,7 @@ namespace tao
             for ( auto & e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
@@ -646,7 +646,7 @@ namespace tao
             for ( const auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
@@ -689,7 +689,7 @@ namespace tao
          void unsafe_assign_double( const double d )
          {
             if ( ! std::isfinite( d ) ) {
-               throw std::runtime_error( "non-finite double value invalid for json" );
+               throw std::runtime_error( "non-finite double value invalid for JSON" );
             }
             unsafe_assign_double_unchecked( d );
          }
@@ -818,7 +818,7 @@ namespace tao
             for ( auto & e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
@@ -829,7 +829,7 @@ namespace tao
             for ( const auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate key detected: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
@@ -1118,7 +1118,7 @@ namespace tao
          auto & o = v.get_object();
          for ( const auto & k : l ) {
             if ( o.erase( k ) == 0 ) {
-               throw std::runtime_error( "key not found: " + k );
+               throw std::runtime_error( "JSON object key not found: " + k );
             }
          }
          return v;
