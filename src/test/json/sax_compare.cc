@@ -164,7 +164,6 @@ namespace tao
          TEST_ASSERT( ! test_value( value::array( { 1, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
          TEST_ASSERT( ! test_value( value::array( { 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, value::array( { 5 } ) } ) } ), c_nested_array ) );
-
       }
 
       void test_mixed()
@@ -208,6 +207,7 @@ namespace tao
          test_number();
          test_string();
          test_array();
+         // TODO: test_object();
          test_mixed();
       }
 
