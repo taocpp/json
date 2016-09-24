@@ -7,6 +7,7 @@
 #include <tao/json/sax/compare.hh>
 #include <tao/json/sax/traverse_value.hh>
 #include <tao/json/sax/from_string.hh>
+#include <tao/json/to_string.hh>
 
 namespace tao
 {
@@ -392,7 +393,9 @@ namespace tao
 
       void test_mixed()
       {
-         value v = { { "foo", 0 }, { "bar", true }, { "baz", value::array( { null, true, false, 0, 1, "hallo" } ) } };
+         const value s = "hallo";
+         const value b = true;
+         value v = { { "foo", 0 }, { "bar", & b }, { "baz", value::array( { null, & b, false, 0, 1, & s } ) } };
 
          sax::compare c( v );
          sax::traverse_value( v, c );
