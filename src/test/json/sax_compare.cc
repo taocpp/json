@@ -149,6 +149,7 @@ namespace tao
          TEST_ASSERT( ! test_value( empty_array, c_array ) );
          TEST_ASSERT( ! test_value( value::array( { empty_array } ), c_empty_array ) );
          TEST_ASSERT( test_value( value::array( { 1, 2, 3 } ), c_array ) );
+         TEST_ASSERT( test_value( value::array( { 1, 2u, 3.0 } ), c_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2 } ), c_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, 4 } ), c_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, 4 } ), c_array ) );
@@ -212,25 +213,13 @@ namespace tao
          TEST_ASSERT( ! test_value( empty_object, c_object ) );
          TEST_ASSERT( ! test_value( { { "a", 1 }, { "b", 2 } }, c_object ) );
          TEST_ASSERT( test_value( { { "a", 1 }, { "b", 2 }, { "c", 3 } }, c_object ) );
+         TEST_ASSERT( test_value( { { "a", 1 }, { "b", 2u }, { "c", 3.0 } }, c_object ) );
          TEST_ASSERT( ! test_value( { { "a", 1 }, { "b", 2 }, { "c", 3 }, { "d", 4 } }, c_object ) );
-         TEST_ASSERT( ! test_value( { { "a", 1 }, { "c", 3 }, { "b", 2 } }, c_object ) );
-         TEST_ASSERT( ! test_value( { { "a", 1 }, { "c", 2 }, { "b", 3 } }, c_object ) );
+         TEST_ASSERT( ! test_value( { { "a", 1 }, { "b", 2 }, { "c", 2 } }, c_object ) );
+         TEST_ASSERT( ! test_value( { { "a", 1 }, { "b", 1 }, { "c", 3 } }, c_object ) );
          TEST_ASSERT( ! test_value( { { "a", 1 }, { "c", 3 } }, c_object ) );
          TEST_ASSERT( ! test_value( { { "b", 2 }, { "c", 3 } }, c_object ) );
          TEST_ASSERT( ! test_value( nullptr, c_object ) );
-
-         sax::compare c_nested_array( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ) );
-
-         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3 } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4 } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( {} ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5, 6 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 1, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ), 6 } ) } ), c_nested_array ) );
-         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ), 6 } ), c_nested_array ) );
       }
 
       void test_mixed()
@@ -274,7 +263,7 @@ namespace tao
          test_number();
          test_string();
          test_array();
-         // TODO: test_object();
+         test_object();
          test_mixed();
       }
 
