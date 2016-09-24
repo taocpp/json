@@ -32,7 +32,8 @@ namespace tao
       {
          template< typename, typename, typename = void > struct has_extract : std::false_type {};
          template< typename T, typename V > struct has_extract< T, V, decltype( T::extract( std::declval< const V & >() ), void() ) > : std::true_type {};
-      }
+
+      } // internal
 
       template< template< typename ... > class Traits >
       class basic_value
@@ -396,6 +397,30 @@ namespace tao
          decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value > & >() ) ) unsafe_get() const
          {
             return internal::get_by_enum< E >::get( m_union );
+         }
+
+         basic_value * unsafe_find( const std::string & key )
+         {
+            const auto it = m_union.o.find( key );
+            return ( it != m_union.o.end() ) ? ( & it->second ) : nullptr;
+         }
+
+         const basic_value * unsafe_find( const std::string & key ) const
+         {
+            const auto it = m_union.o.find( key );
+            return ( it != m_union.o.end() ) ? ( & it->second ) : nullptr;
+         }
+
+         basic_value * find( const std::string & key )
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            return unsafe_find( key );
+         }
+
+         const basic_value * find( const std::string & key ) const
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            return unsafe_find( key );
          }
 
          basic_value & at( const std::size_t index )
