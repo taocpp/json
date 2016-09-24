@@ -62,42 +62,42 @@ namespace tao
                return * m_current.back();
             }
 
-            void null()
+            void null() noexcept
             {
                if ( m_match ) {
                   m_match = ( m_current.back() != nullptr ) && ( current().is_null() );
                }
             }
 
-            void boolean( const bool v )
+            void boolean( const bool v ) noexcept
             {
                if ( m_match ) {
                   m_match = ( m_current.back() != nullptr ) && ( current() == v );
                }
             }
 
-            void number( const std::int64_t v )
+            void number( const std::int64_t v ) noexcept
             {
                if ( m_match ) {
                   m_match = ( m_current.back() != nullptr ) && ( current() == v );
                }
             }
 
-            void number( const std::uint64_t v )
+            void number( const std::uint64_t v ) noexcept
             {
                if ( m_match ) {
                   m_match = ( m_current.back() != nullptr ) && ( current() == v );
                }
             }
 
-            void number( const double v )
+            void number( const double v ) noexcept
             {
                if ( m_match ) {
                   m_match = ( m_current.back() != nullptr ) && ( current() == v );
                }
             }
 
-            void string( const std::string & v )
+            void string( const std::string & v ) noexcept
             {
                if ( m_match ) {
                   m_match = ( m_current.back() != nullptr ) && ( current() == v );
@@ -128,7 +128,7 @@ namespace tao
                m_array_index.push_back( 0 );
             }
 
-            void element()
+            void element() noexcept
             {
                const auto i = ++m_array_index.back();
                if ( m_match ) {
@@ -144,7 +144,7 @@ namespace tao
                }
             }
 
-            void end_array()
+            void end_array() noexcept
             {
                m_current.pop_back();
                if ( m_match ) {
@@ -191,12 +191,12 @@ namespace tao
                }
             }
 
-            void member()
+            void member() noexcept
             {
                m_current.pop_back();
             }
 
-            void end_object()
+            void end_object() noexcept
             {
                if ( m_match ) {
                   if ( m_object_keys.back().size() != current().unsafe_get_object().size() ) {
