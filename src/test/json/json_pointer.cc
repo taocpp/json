@@ -127,6 +127,8 @@ namespace tao
          TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_null() );
          TEST_ASSERT( v.at( "/o\0r"_json_pointer ).is_null() );
 
+         TEST_THROWS( v.at( "/o~0p~1r"_json_pointer ) );
+
          const auto p1 = ""_json_pointer;
          const auto p2 = "/a"_json_pointer;
          const auto p3 = "/b"_json_pointer;

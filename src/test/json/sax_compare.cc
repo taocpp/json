@@ -128,6 +128,7 @@ namespace tao
          TEST_ASSERT( ! test_value( "Hello, world!", c_empty_array ) );
          TEST_ASSERT( ! test_value( "foo", c_empty_array ) );
          TEST_ASSERT( test_value( empty_array, c_empty_array ) );
+         TEST_ASSERT( ! test_value( value::array( { empty_array } ), c_empty_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, 3 } ), c_empty_array ) );
          TEST_ASSERT( ! test_value( empty_object, c_empty_array ) );
          TEST_ASSERT( ! test_value( nullptr, c_empty_array ) );
@@ -146,7 +147,9 @@ namespace tao
          TEST_ASSERT( ! test_value( "Hello, world!", c_array ) );
          TEST_ASSERT( ! test_value( "foo", c_array ) );
          TEST_ASSERT( ! test_value( empty_array, c_array ) );
+         TEST_ASSERT( ! test_value( value::array( { empty_array } ), c_empty_array ) );
          TEST_ASSERT( test_value( value::array( { 1, 2, 3 } ), c_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2 } ), c_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, 4 } ), c_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, 4 } ), c_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 3, 2 } ), c_array ) );
@@ -161,9 +164,73 @@ namespace tao
          TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4 } ) } ), c_nested_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( {} ) } ) } ), c_nested_array ) );
          TEST_ASSERT( test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5, 6 } ) } ) } ), c_nested_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
          TEST_ASSERT( ! test_value( value::array( { 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
          TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ), 6 } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ), 6 } ), c_nested_array ) );
+      }
+
+      void test_object()
+      {
+         sax::compare c_empty_object( empty_object );
+
+         TEST_ASSERT( ! test_value( null, c_empty_object ) );
+         TEST_ASSERT( ! test_value( true, c_empty_object ) );
+         TEST_ASSERT( ! test_value( false, c_empty_object ) );
+         TEST_ASSERT( ! test_value( 0, c_empty_object ) );
+         TEST_ASSERT( ! test_value( 0u, c_empty_object ) );
+         TEST_ASSERT( ! test_value( 0.0, c_empty_object ) );
+         TEST_ASSERT( ! test_value( 42, c_empty_object ) );
+         TEST_ASSERT( ! test_value( 42u, c_empty_object ) );
+         TEST_ASSERT( ! test_value( 42.0, c_empty_object ) );
+         TEST_ASSERT( ! test_value( "Hello, world!", c_empty_object ) );
+         TEST_ASSERT( ! test_value( "foo", c_empty_object ) );
+         TEST_ASSERT( ! test_value( empty_array, c_empty_object ) );
+         TEST_ASSERT( ! test_value( value::array( { empty_array } ), c_empty_object ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, 3 } ), c_empty_object ) );
+         TEST_ASSERT( test_value( empty_object, c_empty_object ) );
+         TEST_ASSERT( ! test_value( nullptr, c_empty_object ) );
+
+         sax::compare c_object( { { "a", 1 }, { "b", 2 }, { "c", 3 } } );
+
+         TEST_ASSERT( ! test_value( null, c_object ) );
+         TEST_ASSERT( ! test_value( true, c_object ) );
+         TEST_ASSERT( ! test_value( false, c_object ) );
+         TEST_ASSERT( ! test_value( 0, c_object ) );
+         TEST_ASSERT( ! test_value( 0u, c_object ) );
+         TEST_ASSERT( ! test_value( 0.0, c_object ) );
+         TEST_ASSERT( ! test_value( 42, c_object ) );
+         TEST_ASSERT( ! test_value( 42u, c_object ) );
+         TEST_ASSERT( ! test_value( 42.0, c_object ) );
+         TEST_ASSERT( ! test_value( "Hello, world!", c_object ) );
+         TEST_ASSERT( ! test_value( "foo", c_object ) );
+         TEST_ASSERT( ! test_value( empty_array, c_object ) );
+         TEST_ASSERT( ! test_value( value::array( { empty_array } ), c_empty_object ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, 3 } ), c_object ) );
+         TEST_ASSERT( ! test_value( empty_object, c_object ) );
+         TEST_ASSERT( ! test_value( { { "a", 1 }, { "b", 2 } }, c_object ) );
+         TEST_ASSERT( test_value( { { "a", 1 }, { "b", 2 }, { "c", 3 } }, c_object ) );
+         TEST_ASSERT( ! test_value( { { "a", 1 }, { "b", 2 }, { "c", 3 }, { "d", 4 } }, c_object ) );
+         TEST_ASSERT( ! test_value( { { "a", 1 }, { "c", 3 }, { "b", 2 } }, c_object ) );
+         TEST_ASSERT( ! test_value( { { "a", 1 }, { "c", 2 }, { "b", 3 } }, c_object ) );
+         TEST_ASSERT( ! test_value( { { "a", 1 }, { "c", 3 } }, c_object ) );
+         TEST_ASSERT( ! test_value( { { "b", 2 }, { "c", 3 } }, c_object ) );
+         TEST_ASSERT( ! test_value( nullptr, c_object ) );
+
+         sax::compare c_nested_array( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ) );
+
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3 } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4 } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( {} ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5, 6 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ), 6 } ) } ), c_nested_array ) );
+         TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ), 6 } ), c_nested_array ) );
       }
 
       void test_mixed()
