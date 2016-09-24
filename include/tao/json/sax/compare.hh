@@ -107,8 +107,7 @@ namespace tao
             // array
             void begin_array()
             {
-               if ( m_current.back() == nullptr )
-               {
+               if ( m_current.back() == nullptr ) {
                   m_match = false;
                   m_current.push_back( nullptr );
                }
@@ -158,8 +157,7 @@ namespace tao
             // object
             void begin_object()
             {
-               if ( m_current.back() == nullptr )
-               {
+               if ( m_current.back() == nullptr ) {
                   m_match = false;
                }
                else {
