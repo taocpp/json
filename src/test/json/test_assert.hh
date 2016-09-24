@@ -9,6 +9,7 @@
 
 #define TEST_ASSERT( ... )                              \
    do {                                                 \
+      std::cout << "TEST_ASSERT( " # __VA_ARGS__ " )" << std::endl; \
       try {                                             \
          if ( ! ( __VA_ARGS__ ) ) {                     \
             std::cerr << "json: unit test assert [ "    \
@@ -48,6 +49,7 @@
 
 #define TEST_THROWS( ... )                              \
    do {                                                 \
+      std::cout << "TEST_THROWS( " # __VA_ARGS__ " )" << std::endl; \
       try {                                             \
          __VA_ARGS__;                                   \
          std::cerr << "json: unit test [ "              \
