@@ -147,7 +147,7 @@ namespace tao
                   m_match = false; // duplicate key found! throw?
                   m_current.push_back( nullptr );
                }
-               else if ( const auto * p = current().find( v ) ) {
+               else if ( const auto * p = current().unsafe_find( v ) ) {
                   m_current.push_back( p );
                }
                else {
