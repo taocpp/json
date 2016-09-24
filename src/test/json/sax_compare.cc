@@ -4,9 +4,9 @@
 #include "test.hh"
 
 #include <tao/json/value.hh>
-#include <tao/json/from_string.hh>
 #include <tao/json/sax/compare.hh>
 #include <tao/json/sax/traverse_value.hh>
+#include <tao/json/sax/from_string.hh>
 
 namespace tao
 {
@@ -16,6 +16,13 @@ namespace tao
       {
          c.reset();
          sax::traverse_value( v, c );
+         return c.match();
+      }
+
+      bool test_parse( const std::string & v, sax::compare & c )
+      {
+         c.reset();
+         sax::from_string( v, c );
          return c.match();
       }
 
@@ -29,13 +36,35 @@ namespace tao
          TEST_ASSERT( ! test_value( 0, c_null ) );
          TEST_ASSERT( ! test_value( 0u, c_null ) );
          TEST_ASSERT( ! test_value( 0.0, c_null ) );
+         TEST_ASSERT( ! test_value( -42, c_null ) );
+         TEST_ASSERT( ! test_value( -42.0, c_null ) );
          TEST_ASSERT( ! test_value( 42, c_null ) );
          TEST_ASSERT( ! test_value( 42u, c_null ) );
          TEST_ASSERT( ! test_value( 42.0, c_null ) );
+         TEST_ASSERT( ! test_value( "", c_null ) );
          TEST_ASSERT( ! test_value( "Hello, world!", c_null ) );
          TEST_ASSERT( ! test_value( empty_array, c_null ) );
          TEST_ASSERT( ! test_value( empty_object, c_null ) );
+         TEST_ASSERT( ! test_value( value::array( { null } ), c_null ) );
+         TEST_ASSERT( ! test_value( { { "", null } }, c_null ) );
          TEST_ASSERT( test_value( nullptr, c_null ) );
+
+         TEST_ASSERT( test_parse( "null", c_null ) );
+         TEST_ASSERT( ! test_parse( "true", c_null ) );
+         TEST_ASSERT( ! test_parse( "false", c_null ) );
+         TEST_ASSERT( ! test_parse( "-0", c_null ) );
+         TEST_ASSERT( ! test_parse( "0", c_null ) );
+         TEST_ASSERT( ! test_parse( "0.0", c_null ) );
+         TEST_ASSERT( ! test_parse( "-42", c_null ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_null ) );
+         TEST_ASSERT( ! test_parse( "42", c_null ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_null ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_null ) );
+         TEST_ASSERT( ! test_parse( "\"Hello, world!\"", c_null ) );
+         TEST_ASSERT( ! test_parse( "[]", c_null ) );
+         TEST_ASSERT( ! test_parse( "{}", c_null ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_null ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_null ) );
       }
 
       void test_boolean()
@@ -55,6 +84,23 @@ namespace tao
          TEST_ASSERT( ! test_value( empty_array, c_true ) );
          TEST_ASSERT( ! test_value( empty_object, c_true ) );
          TEST_ASSERT( ! test_value( nullptr, c_true ) );
+
+         TEST_ASSERT( ! test_parse( "null", c_true ) );
+         TEST_ASSERT( test_parse( "true", c_true ) );
+         TEST_ASSERT( ! test_parse( "false", c_true ) );
+         TEST_ASSERT( ! test_parse( "-0", c_true ) );
+         TEST_ASSERT( ! test_parse( "0", c_true ) );
+         TEST_ASSERT( ! test_parse( "0.0", c_true ) );
+         TEST_ASSERT( ! test_parse( "-42", c_true ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_true ) );
+         TEST_ASSERT( ! test_parse( "42", c_true ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_true ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_true ) );
+         TEST_ASSERT( ! test_parse( "\"Hello, world!\"", c_true ) );
+         TEST_ASSERT( ! test_parse( "[]", c_true ) );
+         TEST_ASSERT( ! test_parse( "{}", c_true ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_true ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_true ) );
       }
 
       void test_number()
@@ -74,6 +120,23 @@ namespace tao
          TEST_ASSERT( ! test_value( empty_array, c_0 ) );
          TEST_ASSERT( ! test_value( empty_object, c_0 ) );
          TEST_ASSERT( ! test_value( nullptr, c_0 ) );
+
+         TEST_ASSERT( ! test_parse( "null", c_0 ) );
+         TEST_ASSERT( ! test_parse( "true", c_0 ) );
+         TEST_ASSERT( ! test_parse( "false", c_0 ) );
+         TEST_ASSERT( test_parse( "-0", c_0 ) );
+         TEST_ASSERT( test_parse( "0", c_0 ) );
+         TEST_ASSERT( test_parse( "0.0", c_0 ) );
+         TEST_ASSERT( ! test_parse( "-42", c_0 ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_0 ) );
+         TEST_ASSERT( ! test_parse( "42", c_0 ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_0 ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_0 ) );
+         TEST_ASSERT( ! test_parse( "\"Hello, world!\"", c_0 ) );
+         TEST_ASSERT( ! test_parse( "[]", c_0 ) );
+         TEST_ASSERT( ! test_parse( "{}", c_0 ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_0 ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_0 ) );
 
          sax::compare c_42( 42 );
 
@@ -110,6 +173,23 @@ namespace tao
          TEST_ASSERT( ! test_value( empty_array, c_hello_world ) );
          TEST_ASSERT( ! test_value( empty_object, c_hello_world ) );
          TEST_ASSERT( ! test_value( nullptr, c_hello_world ) );
+
+         TEST_ASSERT( ! test_parse( "null", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "true", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "false", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "-0", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "0", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "0.0", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "-42", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "42", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_hello_world ) );
+         TEST_ASSERT( test_parse( "\"Hello, world!\"", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "[]", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "{}", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_hello_world ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_hello_world ) );
       }
 
       void test_array()
@@ -132,6 +212,25 @@ namespace tao
          TEST_ASSERT( ! test_value( value::array( { 1, 2, 3 } ), c_empty_array ) );
          TEST_ASSERT( ! test_value( empty_object, c_empty_array ) );
          TEST_ASSERT( ! test_value( nullptr, c_empty_array ) );
+
+         TEST_ASSERT( ! test_parse( "null", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "true", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "false", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "-0", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "0", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "0.0", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "-42", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "42", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "\"Hello, world!\"", c_empty_array ) );
+         TEST_ASSERT( test_parse( "[]", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "[[]]", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "[{}]", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "{}", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_empty_array ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_empty_array ) );
 
          sax::compare c_array( value::array( { 1, 2, 3 } ) );
 
@@ -158,6 +257,33 @@ namespace tao
          TEST_ASSERT( ! test_value( value::array( { 1, 2, value::array( { 3 } ) } ), c_array ) );
          TEST_ASSERT( ! test_value( empty_object, c_array ) );
          TEST_ASSERT( ! test_value( nullptr, c_array ) );
+
+         TEST_ASSERT( ! test_parse( "null", c_array ) );
+         TEST_ASSERT( ! test_parse( "true", c_array ) );
+         TEST_ASSERT( ! test_parse( "false", c_array ) );
+         TEST_ASSERT( ! test_parse( "-0", c_array ) );
+         TEST_ASSERT( ! test_parse( "0", c_array ) );
+         TEST_ASSERT( ! test_parse( "0.0", c_array ) );
+         TEST_ASSERT( ! test_parse( "-42", c_array ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_array ) );
+         TEST_ASSERT( ! test_parse( "42", c_array ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_array ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_array ) );
+         TEST_ASSERT( ! test_parse( "\"Hello, world!\"", c_array ) );
+         TEST_ASSERT( ! test_parse( "[]", c_array ) );
+         TEST_ASSERT( test_parse( "[1,2,3]", c_array ) );
+         TEST_ASSERT( test_parse( "[1,2,3.0]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[1,2]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[1,2,3,4]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[1,2,4]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[1,3,2]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[[1,2,3]]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[[1],2,3]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[1,[2],3]", c_array ) );
+         TEST_ASSERT( ! test_parse( "[1,2,[3]]", c_array ) );
+         TEST_ASSERT( ! test_parse( "{}", c_array ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_array ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_array ) );
 
          sax::compare c_nested_array( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ) );
 
@@ -194,6 +320,24 @@ namespace tao
          TEST_ASSERT( test_value( empty_object, c_empty_object ) );
          TEST_ASSERT( ! test_value( nullptr, c_empty_object ) );
 
+         TEST_ASSERT( ! test_parse( "null", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "true", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "false", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "-0", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "0", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "0.0", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "-42", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "42", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "\"Hello, world!\"", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "[]", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "[{}]", c_empty_object ) );
+         TEST_ASSERT( test_parse( "{}", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_empty_object ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_empty_object ) );
+
          sax::compare c_object( { { "a", 1 }, { "b", 2 }, { "c", 3 } } );
 
          TEST_ASSERT( ! test_value( null, c_object ) );
@@ -220,6 +364,30 @@ namespace tao
          TEST_ASSERT( ! test_value( { { "a", 1 }, { "c", 3 } }, c_object ) );
          TEST_ASSERT( ! test_value( { { "b", 2 }, { "c", 3 } }, c_object ) );
          TEST_ASSERT( ! test_value( nullptr, c_object ) );
+
+         TEST_ASSERT( ! test_parse( "null", c_object ) );
+         TEST_ASSERT( ! test_parse( "true", c_object ) );
+         TEST_ASSERT( ! test_parse( "false", c_object ) );
+         TEST_ASSERT( ! test_parse( "-0", c_object ) );
+         TEST_ASSERT( ! test_parse( "0", c_object ) );
+         TEST_ASSERT( ! test_parse( "0.0", c_object ) );
+         TEST_ASSERT( ! test_parse( "-42", c_object ) );
+         TEST_ASSERT( ! test_parse( "-42.0", c_object ) );
+         TEST_ASSERT( ! test_parse( "42", c_object ) );
+         TEST_ASSERT( ! test_parse( "42.0", c_object ) );
+         TEST_ASSERT( ! test_parse( "\"\"", c_object ) );
+         TEST_ASSERT( ! test_parse( "\"Hello, world!\"", c_object ) );
+         TEST_ASSERT( ! test_parse( "[]", c_object ) );
+         TEST_ASSERT( ! test_parse( "[{}]", c_object ) );
+         TEST_ASSERT( ! test_parse( "{}", c_object ) );
+         TEST_ASSERT( test_parse( "{\"a\":1,\"b\":2,\"c\":3}", c_object ) );
+         TEST_ASSERT( test_parse( "{\"a\":1,\"c\":3,\"b\":2}", c_object ) );
+         TEST_ASSERT( ! test_parse( "{\"a\":1,\"b\":2}", c_object ) );
+         TEST_ASSERT( ! test_parse( "{\"a\":1,\"b\":2,\"c\":3,\"c\":3}", c_object ) ); // duplicate key -> nope!
+         TEST_ASSERT( ! test_parse( "{\"a\":1,\"b\":2,\"c\":3,\"d\":4}", c_object ) );
+         TEST_ASSERT( ! test_parse( "{\"a\":1,\"c\":3}", c_object ) );
+         TEST_ASSERT( ! test_parse( "[null]", c_object ) );
+         TEST_ASSERT( ! test_parse( "{\"\":null}", c_object ) );
       }
 
       void test_mixed()
