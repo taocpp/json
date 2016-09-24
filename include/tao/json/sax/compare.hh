@@ -27,6 +27,14 @@ namespace tao
             std::vector< std::set< std::string > > m_object_keys;
             bool m_match = true;
 
+            void reset() noexcept
+            {
+               m_current.clear();
+               m_array_index.clear();
+               m_object_keys.clear();
+               m_match = true;
+            }
+
             const value_t & current() const noexcept
             {
                return * m_current.back();
@@ -143,7 +151,10 @@ namespace tao
 
             void key( const std::string & v )
             {
-               if ( ! m_object_keys.back().insert( v ).second ) {
+               if ( ! m_match ) {
+                  m_current.push_back( nullptr );
+               }
+               else if ( ! m_object_keys.back().insert( v ).second ) {
                   m_match = false; // duplicate key found! throw?
                   m_current.push_back( nullptr );
                }
@@ -209,11 +220,8 @@ namespace tao
 
             void reset() noexcept
             {
-               m_current.clear();
+               internal::sax_compare< Traits >::reset();
                m_current.push_back( & m_value );
-               m_array_index.clear();
-               m_object_keys.clear();
-               m_match = true;
             }
          };
 
