@@ -26,7 +26,7 @@ namespace tao
 
             std::vector< const value_t * > m_current;
             std::vector< std::size_t > m_array_index;
-            std::vector< std::set< std::string > > m_object_keys;
+            std::vector< std::set< const value_t * > > m_object_keys;
             bool m_match = true;
 
             void reset() noexcept
@@ -170,12 +170,14 @@ namespace tao
                if ( ! m_match ) {
                   m_current.push_back( nullptr );
                }
-               else if ( ! m_object_keys.back().insert( v ).second ) {
-                  m_match = false; // duplicate key found! throw?
-                  m_current.push_back( nullptr );
-               }
                else if ( const auto * p = current().unsafe_find( v ) ) {
-                  push( p );
+                  if ( ! m_object_keys.back().insert( p ).second ) {
+                     m_match = false; // duplicate key found! -> fail
+                     m_current.push_back( nullptr );
+                  }
+                  else {
+                     push( p );
+                  }
                }
                else {
                   m_match = false;
