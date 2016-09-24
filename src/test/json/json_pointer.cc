@@ -129,7 +129,7 @@ namespace tao
 
          const value v2( { { "x~y/z", 0 } } );
          TEST_ASSERT( v2.at( "/x~0y~1z"_json_pointer ) == 0 );
-         TEST_THROWS( v2.at( "/x~0y~1/0"_json_pointer ) );
+         TEST_THROWS( v2.at( "/x~0y~1z/0"_json_pointer ) );
 
          const auto p1 = ""_json_pointer;
          const auto p2 = "/a"_json_pointer;
