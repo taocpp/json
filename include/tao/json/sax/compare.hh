@@ -26,6 +26,7 @@ namespace tao
 
             std::vector< const value_t * > m_current;
             std::vector< std::size_t > m_array_index;
+            // TODO: use std::unordered_set? or even std::vector!?
             std::vector< std::set< const value_t * > > m_object_keys;
             bool m_match = true;
 
@@ -37,12 +38,17 @@ namespace tao
                m_match = true;
             }
 
-            void push( const value_t * p )
+            static const value_t * skip_pointer( const value_t * p ) noexcept
             {
                while ( p && p->is_pointer() ) {
                   p = p->unsafe_get_pointer();
                }
-               m_current.push_back( p );
+               return p;
+            }
+
+            void push( const value_t * p )
+            {
+               m_current.push_back( skip_pointer( p ) );
             }
 
          public:
@@ -59,7 +65,7 @@ namespace tao
             void null()
             {
                if ( m_match ) {
-                  m_match = ( m_current.back() != nullptr ) && current().is_null();
+                  m_match = ( m_current.back() != nullptr ) && ( current().is_null() );
                }
             }
 
@@ -129,7 +135,7 @@ namespace tao
                   if ( m_current.back() != nullptr ) {
                      const auto & a = ( * ( m_current.end() - 2 ) )->unsafe_get_array();
                      if ( i < a.size() ) {
-                        m_current.back() = & a[ i ];
+                        m_current.back() = skip_pointer( & a[ i ] );
                      }
                      else {
                         m_current.back() = nullptr;
