@@ -19,9 +19,11 @@ namespace tao
       namespace internal
       {
          template< template< typename ... > class Traits >
-         struct sax_compare
+         class sax_compare
          {
+         protected:
             using value_t = basic_value< Traits >;
+
             std::vector< const value_t * > m_current;
             std::vector< std::size_t > m_array_index;
             std::vector< std::set< std::string > > m_object_keys;
@@ -33,6 +35,20 @@ namespace tao
                m_array_index.clear();
                m_object_keys.clear();
                m_match = true;
+            }
+
+            void push( const value_t * p )
+            {
+               while ( p && p->is_pointer() ) {
+                  p = p->unsafe_get_pointer();
+               }
+               m_current.push_back( p );
+            }
+
+         public:
+            bool match() const noexcept
+            {
+               return m_match;
             }
 
             const value_t & current() const noexcept
@@ -97,7 +113,7 @@ namespace tao
                      m_current.push_back( nullptr );
                   }
                   else if ( ! a.unsafe_get_array().empty() ) {
-                     m_current.push_back( & a.unsafe_get_array().front() );
+                     push( & a.unsafe_get_array().front() );
                   }
                   else {
                      m_current.push_back( nullptr );
@@ -159,7 +175,7 @@ namespace tao
                   m_current.push_back( nullptr );
                }
                else if ( const auto * p = current().unsafe_find( v ) ) {
-                  m_current.push_back( p );
+                  push( p );
                }
                else {
                   m_match = false;
@@ -193,11 +209,6 @@ namespace tao
          {
          private:
             using typename internal::sax_compare< Traits >::value_t;
-            using internal::sax_compare< Traits >::m_current;
-            using internal::sax_compare< Traits >::m_array_index;
-            using internal::sax_compare< Traits >::m_object_keys;
-            using internal::sax_compare< Traits >::m_match;
-
             const value_t m_value;
 
          public:
@@ -213,15 +224,10 @@ namespace tao
                reset();
             }
 
-            bool match() const noexcept
-            {
-               return m_match;
-            }
-
-            void reset() noexcept
+            void reset()
             {
                internal::sax_compare< Traits >::reset();
-               m_current.push_back( & m_value );
+               internal::sax_compare< Traits >::push( & m_value );
             }
          };
 
