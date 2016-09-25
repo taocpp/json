@@ -48,6 +48,8 @@ namespace tao
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"b\": 1, \"c\": 2 }" ) );
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"c\": 1 }" ) );
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"c\": 0, \"b\": 1 }" ) );
+
+         TEST_THROWS( test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"a\": 0, \"c\": 1 }" ) );
       }
 
    } // json

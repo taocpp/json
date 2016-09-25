@@ -118,18 +118,17 @@ namespace tao
             {
                m_digest.back()->feed( v );
                m_keys.emplace_back( m_digest.back()->get() );
+               if ( m_properties.back().find( m_keys.back() ) != m_properties.back().end() ) {
+                  throw std::runtime_error( "duplicate JSON object key: " + v );
+               }
                m_digest.back()->reset();
             }
 
             void member()
             {
-               auto key = std::move( m_keys.back() );
+               m_properties.back().emplace( std::move( m_keys.back() ), m_digest.back()->get() );
                m_keys.pop_back();
-               auto value = m_digest.back()->get();
                m_digest.back()->reset();
-               if ( ! m_properties.back().emplace( std::move( key ), std::move( value ) ).second ) {
-                  throw std::runtime_error( "duplicate JSON object key" );
-               }
             }
 
             void end_object()
