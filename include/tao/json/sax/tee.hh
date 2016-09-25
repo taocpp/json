@@ -5,9 +5,12 @@
 #define TAOCPP_JSON_INCLUDE_SAX_TEE_HH
 
 #include <utility>
+#include <type_traits>
+#include <tuple>
 #include <cstdint>
 #include <string>
-#include <type_traits>
+
+#include "../internal/integer_sequence.hh"
 
 namespace tao
 {
@@ -30,116 +33,196 @@ namespace tao
          template< typename T >
          using decay_and_strip_t = typename strip_reference_wrapper< typename std::decay< T >::type >::type;
 
+         template< typename >
+         struct sax_apply;
+
+         template< std::size_t ... Is >
+         struct sax_apply< index_sequence< Is ... > >
+         {
+            using sink = bool[];
+
+            template< typename ... Ts >
+            void null( std::tuple< Ts ... > & t )
+            {
+               (void)sink{ ( std::get< Is >( t ).null(), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void boolean( std::tuple< Ts ... > & t, const bool v )
+            {
+               (void)sink{ ( std::get< Is >( t ).boolean( v ), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void number( std::tuple< Ts ... > & t, const std::int64_t v )
+            {
+               (void)sink{ ( std::get< Is >( t ).number( v ), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void number( std::tuple< Ts ... > & t, const std::uint64_t v )
+            {
+               (void)sink{ ( std::get< Is >( t ).number( v ), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void number( std::tuple< Ts ... > & t, const double v )
+            {
+               (void)sink{ ( std::get< Is >( t ).number( v ), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void string( std::tuple< Ts ... > & t, const std::string & v )
+            {
+               (void)sink{ ( std::get< Is >( t ).string( v ), true ) ... };
+            }
+
+            // array
+            template< typename ... Ts >
+            void begin_array( std::tuple< Ts ... > & t )
+            {
+               (void)sink{ ( std::get< Is >( t ).begin_array(), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void element( std::tuple< Ts ... > & t )
+            {
+               (void)sink{ ( std::get< Is >( t ).element(), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void end_array( std::tuple< Ts ... > & t )
+            {
+               (void)sink{ ( std::get< Is >( t ).end_array(), true ) ... };
+            }
+
+            // object
+            template< typename ... Ts >
+            void begin_object( std::tuple< Ts ... > & t )
+            {
+               (void)sink{ ( std::get< Is >( t ).begin_object(), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void key( std::tuple< Ts ... > & t, const std::string & v )
+            {
+               (void)sink{ ( std::get< Is >( t ).key( v ), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void member( std::tuple< Ts ... > & t )
+            {
+               (void)sink{ ( std::get< Is >( t ).member(), true ) ... };
+            }
+
+            template< typename ... Ts >
+            void end_object( std::tuple< Ts ... > & t )
+            {
+               (void)sink{ ( std::get< Is >( t ).end_object(), true ) ... };
+            }
+         };
+
       } // internal
 
       namespace sax
       {
          // SAX consumer that forwards to two nested consumers
-         // TODO: generalize to multiple consumers?
-         template< typename T1, typename T2 >
+         template< typename ... Ts >
          class tee
          {
          private:
-            T1 t1;
-            T2 t2;
+            static_assert( sizeof ... ( Ts ) >= 1, "tao::json::sax::tee requires at least one consumer" );
+
+            static constexpr std::size_t S = sizeof ... ( Ts );
+
+            using I = internal::make_index_sequence< S >;
+            using H = internal::make_index_sequence< S - 1 >;
+
+            std::tuple< Ts ... > ts;
 
          public:
-            template< typename U1, typename U2 >
-            tee( U1 && u1, U2 && u2 )
-              : t1( std::forward< U1 >( u1 ) ),
-                t2( std::forward< U2 >( u2 ) )
+            template< typename ... Us >
+            tee( Us && ... us )
+                 : ts( std::forward< Us >( us ) ... )
             { }
 
             void null()
             {
-               t1.null();
-               t2.null();
+               internal::sax_apply< I >::null( ts );
             }
 
             void boolean( const bool v )
             {
-               t1.boolean( v );
-               t2.boolean( v );
+               internal::sax_apply< I >::boolean( ts, v );
             }
 
             void number( const std::int64_t v )
             {
-               t1.number( v );
-               t2.number( v );
+               internal::sax_apply< I >::number( ts, v );
             }
 
             void number( const std::uint64_t v )
             {
-               t1.number( v );
-               t2.number( v );
+               internal::sax_apply< I >::number( ts, v );
             }
 
             void number( const double v )
             {
-               t1.number( v );
-               t2.number( v );
+               internal::sax_apply< I >::number( ts, v );
             }
 
             void string( const std::string & v )
             {
-               t1.string( v );
-               t2.string( v );
+               internal::sax_apply< I >::string( ts, v );
             }
 
             void string( std::string && v )
             {
-               t1.string( v );
-               t2.string( std::move( v ) );
+               internal::sax_apply< H >::string( ts, v );
+               std::get< S - 1 >( ts ).string( std::move( v ) );
             }
 
             // array
             void begin_array()
             {
-               t1.begin_array();
-               t2.begin_array();
+               internal::sax_apply< I >::begin_array( ts );
             }
 
             void element()
             {
-               t1.element();
-               t2.element();
+               internal::sax_apply< I >::element( ts );
             }
 
             void end_array()
             {
-               t1.end_array();
-               t2.end_array();
+               internal::sax_apply< I >::end_array( ts );
             }
 
             // object
             void begin_object()
             {
-               t1.begin_object();
-               t2.begin_object();
+               internal::sax_apply< I >::begin_object( ts );
             }
 
             void key( const std::string & v )
             {
-               t1.key( v );
-               t2.key( v );
+               internal::sax_apply< I >::key( ts, v );
             }
 
             void key( std::string && v )
             {
-               t1.key( v );
-               t2.key( std::move( v ) );
+               internal::sax_apply< H >::key( ts, v );
+               std::get< S - 1 >( ts ).key( std::move( v ) );
             }
 
             void member()
             {
-               t1.member();
-               t2.member();
+               internal::sax_apply< I >::member( ts );
             }
 
             void end_object()
             {
-               t1.end_object();
-               t2.end_object();
+               internal::sax_apply< I >::end_object( ts );
             }
          };
 
@@ -150,9 +233,9 @@ namespace tao
             return tee< internal::decay_and_strip_t< T > ... >( std::forward< T >( t ) ... );
          }
 
-         // tie_tee
+         // tie
          template< typename ... T >
-         tee< T & ... > tie_tee( T & ... t )
+         tee< T & ... > tie( T & ... t )
          {
             return tee< T & ... >( t ... );
          }
