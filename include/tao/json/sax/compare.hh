@@ -30,6 +30,7 @@ namespace tao
             std::vector< std::set< const value_t * > > m_object_keys;
             bool m_match = true;
 
+         public:
             void reset() noexcept
             {
                m_current.clear();
@@ -51,7 +52,6 @@ namespace tao
                m_current.push_back( skip_pointer( p ) );
             }
 
-         public:
             bool match() const noexcept
             {
                return m_match;

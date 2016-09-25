@@ -19,6 +19,7 @@
 #include "json/sax/to_value.hh" // SAX to DOM
 
 // SAX other
+#include "json/sax/hash.hh"
 #include "json/sax/discard.hh"
 #include "json/sax/tee.hh"
 #include "json/sax/validate_event_order.hh"
