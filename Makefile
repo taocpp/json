@@ -48,7 +48,7 @@ build/%.d: %.cc Makefile
 	$(CXX) $(TAOCPPJSON_CXXSTD) -Iinclude $(TAOCPPJSON_CPPFLAGS) -MM -MQ $@ $< -o $@
 
 build/%: %.cc build/%.d
-	$(CXX) $(TAOCPPJSON_CXXSTD) -Iinclude $(TAOCPPJSON_CPPFLAGS) $(TAOCPPJSON_CXXFLAGS) $< -lcrypto -o $@
+	$(CXX) $(TAOCPPJSON_CXXSTD) -Iinclude $(TAOCPPJSON_CPPFLAGS) $(TAOCPPJSON_CXXFLAGS) $< -o $@
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)
 -include $(DEPENDS)
