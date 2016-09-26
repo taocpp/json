@@ -7,7 +7,6 @@
 #include <tao/json/sax/compare.hh>
 #include <tao/json/sax/traverse_value.hh>
 #include <tao/json/sax/from_string.hh>
-#include <tao/json/to_string.hh>
 
 namespace tao
 {
