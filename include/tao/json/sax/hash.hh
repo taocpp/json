@@ -45,12 +45,12 @@ namespace tao
 
             void null()
             {
-               m_digests.back()->feed( "n", 1 );
+               m_digests.back()->feed( 'n' );
             }
 
             void boolean( const bool v )
             {
-               m_digests.back()->feed( v ? "t" : "f", 1 );
+               m_digests.back()->feed( v ? 't' : 'f' );
             }
 
             void number( const std::int64_t v )
@@ -59,14 +59,14 @@ namespace tao
                   number( static_cast< std::uint64_t >( v ) );
                }
                else {
-                  m_digests.back()->feed( "i", 1 );
+                  m_digests.back()->feed( 'i' );
                   m_digests.back()->feed( & v, sizeof( v ) );
                }
             }
 
             void number( const std::uint64_t v )
             {
-               m_digests.back()->feed( "u", 1 );
+               m_digests.back()->feed( 'u' );
                m_digests.back()->feed( & v, sizeof( v ) );
             }
 
@@ -82,13 +82,13 @@ namespace tao
                   number( i );
                   return;
                }
-               m_digests.back()->feed( "d", 1 );
+               m_digests.back()->feed( 'd' );
                m_digests.back()->feed( & v, sizeof( v ) );
             }
 
             void string( const std::string & v )
             {
-               m_digests.back()->feed( "s", 1 );
+               m_digests.back()->feed( 's' );
                const auto s = v.size();
                m_digests.back()->feed( & s, sizeof( s ) );
                m_digests.back()->feed( v );
@@ -97,20 +97,20 @@ namespace tao
             // array
             void begin_array()
             {
-               m_digests.back()->feed( "[", 1 );
+               m_digests.back()->feed( '[' );
             }
 
             void element() {}
 
             void end_array()
             {
-               m_digests.back()->feed( "]", 1 );
+               m_digests.back()->feed( ']' );
             }
 
             // object
             void begin_object()
             {
-               m_digests.back()->feed( "{", 1 );
+               m_digests.back()->feed( '{' );
                m_properties.emplace_back();
                push();
             }
@@ -140,7 +140,7 @@ namespace tao
                   m_digests.back()->feed( e.second );
                }
                m_properties.pop_back();
-               m_digests.back()->feed( "}", 1 );
+               m_digests.back()->feed( '}' );
             }
          };
 
