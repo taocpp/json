@@ -22,13 +22,17 @@ namespace tao
          TEST_ASSERT( to_string( cv ) == "{\"fuu\":2}" );
 
          TEST_ASSERT( to_string( v2 ) == "{\"bar\":{\"foo\":1},\"baz\":null}" );
-         TEST_ASSERT( to_string( v2.at( "bar" ).type() ) == std::string( "pointer" ) );
-         TEST_ASSERT( to_string( v2.at( "baz" ).type() ) == std::string( "pointer" ) );
+
+         TEST_ASSERT( v2.at( "bar" ).is_pointer() );
+         TEST_ASSERT( ! v2.at( "bar" ).empty() );
+
+         TEST_ASSERT( v2.at( "baz" ).is_pointer() );
          TEST_ASSERT( v2.at( "baz" ).empty() );
 
          TEST_ASSERT( to_string( cv2 ) == "{\"baz\":{\"fuu\":2}}" );
-         TEST_ASSERT( to_string( cv2.at( "baz" ).type() ) == std::string( "pointer" ) );
-         TEST_ASSERT( !cv2.at( "baz" ).empty() );
+
+         TEST_ASSERT( cv2.at( "baz" ).is_pointer() );
+         TEST_ASSERT( ! cv2.at( "baz" ).empty() );
       }
 
    } // json
