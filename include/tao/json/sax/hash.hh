@@ -38,6 +38,9 @@ namespace tao
                push();
             }
 
+            hash( const hash & ) = delete;
+            void operator= ( const hash & ) = delete;
+
             std::string value() const
             {
                return m_digests.back()->get();

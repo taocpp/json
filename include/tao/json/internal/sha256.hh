@@ -113,6 +113,9 @@ namespace tao
                reset();
             }
 
+            sha256( const sha256 & ) = delete;
+            void operator= ( const sha256 & ) = delete;
+
             void reset() noexcept
             {
                size = 0;
