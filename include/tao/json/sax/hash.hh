@@ -27,12 +27,12 @@ namespace tao
             std::vector< std::string > m_keys;
             std::vector< std::map< std::string, std::string > > m_properties;
 
-         public:
             void push()
             {
                m_digests.emplace_back( new internal::sha256 );
             }
 
+         public:
             hash()
             {
                push();
