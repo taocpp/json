@@ -5,8 +5,9 @@
 #define TAOCPP_JSON_INCLUDE_SAX_HASH_HH
 
 #include <vector>
-#include <map>
+#include <memory>
 #include <string>
+#include <map>
 #include <cstdint>
 #include <utility>
 
