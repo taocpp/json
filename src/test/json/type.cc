@@ -23,6 +23,8 @@ namespace tao
          TEST_ASSERT( to_string( type::ARRAY ) == std::string( "array" ) );
          TEST_ASSERT( to_string( type::OBJECT ) == std::string( "object" ) );
 
+         TEST_ASSERT( to_string( type::POINTER ) == std::string( "pointer" ) );
+
          TEST_ASSERT( to_string( type( 42 ) ) == std::string( "unknown" ) );
 
          TEST_ASSERT( needs_destroy( type::NULL_ ) == false );
@@ -34,6 +36,8 @@ namespace tao
          TEST_ASSERT( needs_destroy( type::STRING ) == true );
          TEST_ASSERT( needs_destroy( type::ARRAY ) == true );
          TEST_ASSERT( needs_destroy( type::OBJECT ) == true );
+
+         TEST_ASSERT( needs_destroy( type::POINTER ) == false );
       }
 
    } // json
