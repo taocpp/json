@@ -137,7 +137,7 @@ namespace tao
                   throw tao_json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );
                }
                const auto c = std::min( in.size(), max_mantissa_digits );
-               std::memcpy( result.mantissa + 1, in.begin(), c );
+               std::memcpy( result.mantissa, in.begin(), c );
                result.exponent10 += in.size() - c;
                result.msize = c;
 
@@ -170,7 +170,7 @@ namespace tao
                   }
                }
                const auto c = std::min( std::size_t( e - b ), max_mantissa_digits - result.msize );
-               std::memcpy( result.mantissa + 1 + result.msize, b, c );
+               std::memcpy( result.mantissa + result.msize, b, c );
                result.exponent10 -= c;
                result.msize += c;
 
