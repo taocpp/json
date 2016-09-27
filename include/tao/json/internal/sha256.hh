@@ -155,7 +155,7 @@ namespace tao
             // RFC 6234, 4.1
             void store_unsafe( unsigned char * buffer ) noexcept
             {
-               std::size_t i = size;
+               std::size_t i = size % 64;
                if ( i < 56 ) {
                   M[ i++ ] = 0x80;
                   while ( i < 56 ) {
