@@ -48,7 +48,7 @@ namespace tao
          TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"b\": 1 }" ) );
          TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{ \"b\": 1, \"a\": 0 }" ) );
          TEST_ASSERT( test( { { "a", true }, { "b", false } }, "{ \"a\": true, \"b\": false }" ) );
-         TEST_ASSERT( test( { { "a", "Hello" }, { "b", "World" } }, "{ \"a\": \"H\\u0065llo\", \"b\": \"World\" }" ) );
+         TEST_ASSERT( test( { { "a", "Hello" }, { "b", "World" }, { "c", 1.25 } }, "{ \"a\": \"H\\u0065llo\", \"b\": \"World\", \"c\": 125e-2 }" ) );
 
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 1, \"b\": 1 }" ) );
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"b\": 0 }" ) );
