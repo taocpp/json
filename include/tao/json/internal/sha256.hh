@@ -184,7 +184,7 @@ namespace tao
 
                process();
 
-               for ( i = 0; i < 4; ++i ) {
+               for ( std::size_t i = 0; i < 4; ++i ) {
                   buffer[ i ] = ( H[ 0 ] >> ( 24 - i * 8 ) ) & 0xff;
                   buffer[ i + 4 ] = ( H[ 1 ] >> ( 24 - i * 8 ) ) & 0xff;
                   buffer[ i + 8 ] = ( H[ 2 ] >> ( 24 - i * 8 ) ) & 0xff;
