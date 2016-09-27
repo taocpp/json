@@ -36,8 +36,10 @@ namespace tao
          TEST_ASSERT( test( null, "null" ) );
          TEST_ASSERT( test( 0, "0" ) );
          TEST_ASSERT( ! test( 0, "null" ) );
+
          TEST_ASSERT( test( empty_array, "[]" ) );
          TEST_ASSERT( test( value::array( { 1, 2u, 3 } ), "[1,2,3.0]" ) );
+
          TEST_ASSERT( test( empty_object, "{}" ) );
          TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{\"a\":0,\"b\":1}" ) );
          TEST_ASSERT( test( { { "a", 0 }, { "b", -1 } }, "{\"a\":-0,\"b\":-1}" ) );
@@ -45,6 +47,9 @@ namespace tao
          TEST_ASSERT( test( { { "a", 0 }, { "b", -1.0 } }, "{\"a\":-0.0,\"b\":-1}" ) );
          TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"b\": 1 }" ) );
          TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{ \"b\": 1, \"a\": 0 }" ) );
+         TEST_ASSERT( test( { { "a", true }, { "b", false } }, "{ \"a\": true, \"b\": false }" ) );
+         TEST_ASSERT( test( { { "a", "Hello" }, { "b", "World" } }, "{ \"a\": \"H\\u0065llo\", \"b\": \"World\" }" ) );
+
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 1, \"b\": 1 }" ) );
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"b\": 0 }" ) );
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0 }" ) );
@@ -52,8 +57,6 @@ namespace tao
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"b\": 1, \"c\": 2 }" ) );
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"c\": 1 }" ) );
          TEST_ASSERT( ! test( { { "a", 0 }, { "b", 1 } }, "{ \"c\": 0, \"b\": 1 }" ) );
-         TEST_ASSERT( ! test( { { "a", true }, { "b", false } }, "{ \"c\": true, \"b\": false }" ) );
-         TEST_ASSERT( ! test( { { "a", "Hello" }, { "b", "World" } }, "{ \"c\": \"H\u0045llo\", \"b\": \"World\" }" ) );
 
          TEST_THROWS( test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"a\": 0, \"c\": 1 }" ) );
       }
