@@ -10,24 +10,45 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 ## Features
 
-* [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format
-* [RFC6901]: JavaScript Object Notation (JSON) Pointer
-* [RFC6902]: JavaScript Object Notation (JSON) Patch
-* Achieves a **100% score** in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
-* Provides **SAX** and **DOM** APIs.
-* Construction of objects and arrays via `std::initializer_list`.
-* Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
-* Numeric values are stored as `int64_t`, `uint64_t` or `double` internally.
-* Standard containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
-* No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
-* Indirect JSON values via non-owning C++ raw pointers for object sharing.
-* C++11 literal operator for JSON values.
+* Serious standard conformance!
+
+  * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
+  * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
+  * [RFC6902]: JavaScript Object Notation (JSON) Patch.
+  * Achieves a **100% score** in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
+
+* General
+
+  * Provides **DOM** and **SAX** APIs.
+  * Numeric values are handled as `std::int64_t`, `std::uint64_t` or `double` internally.
+  * Does *not* support duplicate keys in objects.
+  * Currently only supports UTF-8.
+
+* DOM API (aka "The value class")
+
+  * Construction of objects and arrays via `std::initializer_list`.
+  * Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
+  * Standard STL containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
+  * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
+  * Indirect JSON values via non-owning C++ raw pointers for object sharing.
+  * C++11 literal operator for JSON values.
+
+* SAX API
+
+  * Simple, straight forward SAX API.
+  * Parse JSON string representation to SAX events.
+  * Stream SAX to (prettified) JSON string representation.
+  * SAX-to-DOM value construction.
+  * DOM-to-SAX value traversal.
+  * Supports conversion from and to *foreign* DOM objects (check [`contrib/nlohmann.cc`](contrib/nlohmann.cc)).
+  * SAX comparator (against an existing DOM value).
+  * SAX hash algorithm (SHA-256 based).
 
 ## Status
 
-The core JSON value class is implemented and working. The conversions from and to JSON string representation via a SAX interface are finished. This also serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL), which is used for parsing JSON string representations.
+While most parts have stabilized, some parts of the API are still under discussion and development and might change and/or be extended before the first release.
 
-Some parts of the API are still under discussion and development and might change and/or be extended before the first release.
+The library currently serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL), which is used for parsing JSON string representations.
 
 ## Documentation
 
@@ -38,8 +59,8 @@ Until then, here are a few short indications on how to use this library:
 * Requires Clang or GCC with `-std=c++11` (or other compiler with sufficient C++11 support).
 * The library is header-only, to install and use simply copy the directory [`include/tao`](include/tao) to a convenient place and include the file [`include/tao/json.hh`](include/tao/json.hh).
 * The generic JSON value class, the main part of this library, is in [`include/tao/json/value.hh`](include/tao/json/value.hh).
-* To parse a JSON string representation, use one of the functions in [`include/tao/json/from_string.hh`](include/tao/json/from_string.hh) or [`include/tao/json/parse_file.hh`](include/tao/json/parse_file.hh).
-* To produce a JSON string representation, use one of the appropriate functions in [`include/tao/json/to_string.hh`](include/tao/json/to_string.hh) or [`include/tao/json/stream.hh`](include/tao/json/stream.hh).
+* To parse a JSON string representation to a DOM value, use one of the functions in [`include/tao/json/from_string.hh`](include/tao/json/from_string.hh) or [`include/tao/json/parse_file.hh`](include/tao/json/parse_file.hh).
+* To produce a JSON string representation from a DOM value, use one of the appropriate functions in [`include/tao/json/to_string.hh`](include/tao/json/to_string.hh) or [`include/tao/json/stream.hh`](include/tao/json/stream.hh).
 
 ## License
 
