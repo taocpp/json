@@ -46,6 +46,11 @@ namespace tao
                return m_digests.back()->get();
             }
 
+            void reset()
+            {
+               m_digests.back()->reset();
+            }
+
             void null()
             {
                m_digests.back()->feed( 'n' );

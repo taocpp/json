@@ -39,7 +39,7 @@ namespace tao
       class basic_value
          : operators::totally_ordered< basic_value< Traits > >,
            internal::totally_ordered< basic_value< Traits >, null_t, type::NULL_ >,
-           internal::totally_ordered< basic_value< Traits >, bool, type::BOOL >,
+           internal::totally_ordered< basic_value< Traits >, bool, type::BOOLEAN >,
            internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED >,
            internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED >,
            internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED >,
@@ -58,9 +58,9 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
            internal::totally_ordered< basic_value< Traits >, empty_object_t, type::OBJECT >,
-           internal::totally_ordered< basic_value< Traits >, const basic_value< Traits > *, type::POINTER >,
-           internal::totally_ordered< basic_value< Traits >, basic_value< Traits > *, type::POINTER >,
-           internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::POINTER >
+           internal::totally_ordered< basic_value< Traits >, const basic_value< Traits > *, type::RAW_PTR >,
+           internal::totally_ordered< basic_value< Traits >, basic_value< Traits > *, type::RAW_PTR >,
+           internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
       {
       public:
          basic_value() noexcept
@@ -156,7 +156,7 @@ namespace tao
 
          bool is_bool() const noexcept
          {
-            return m_type == json::type::BOOL;
+            return m_type == json::type::BOOLEAN;
          }
 
          bool is_signed() const noexcept
@@ -199,9 +199,9 @@ namespace tao
             return m_type == json::type::OBJECT;
          }
 
-         bool is_pointer() const noexcept
+         bool is_raw_ptr() const noexcept
          {
-            return m_type == json::type::POINTER;
+            return m_type == json::type::RAW_PTR;
          }
 
          null_t get_null() const
@@ -212,7 +212,7 @@ namespace tao
 
          bool get_bool() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BOOL );
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BOOLEAN );
             return unsafe_get_bool();
          }
 
@@ -270,10 +270,10 @@ namespace tao
             return unsafe_get_object();
          }
 
-         const basic_value * get_pointer() const
+         const basic_value * get_raw_ptr() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::POINTER );
-            return unsafe_get_pointer();
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::RAW_PTR );
+            return unsafe_get_raw_ptr();
          }
 
          template< json::type E >
@@ -382,7 +382,7 @@ namespace tao
             return m_union.o;
          }
 
-         const basic_value * unsafe_get_pointer() const noexcept
+         const basic_value * unsafe_get_raw_ptr() const noexcept
          {
             return m_union.p;
          }
@@ -670,7 +670,7 @@ namespace tao
          void unsafe_assign_bool( const bool b ) noexcept
          {
             m_union.b = b;
-            m_type = json::type::BOOL;
+            m_type = json::type::BOOLEAN;
          }
 
          void unsafe_assign_signed( const std::int64_t i ) noexcept
@@ -795,7 +795,7 @@ namespace tao
          void unsafe_assign_pointer( const basic_value * p ) noexcept
          {
             m_union.p = p;
-            m_type = json::type::POINTER;
+            m_type = json::type::RAW_PTR;
          }
 
          void append( std::initializer_list< single< Traits > > && l )
@@ -845,7 +845,7 @@ namespace tao
             switch ( m_type ) {
                case json::type::NULL_:
                   return true;
-               case json::type::BOOL:
+               case json::type::BOOLEAN:
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
@@ -856,7 +856,7 @@ namespace tao
                   return m_union.a.empty();
                case json::type::OBJECT:
                   return m_union.o.empty();
-               case json::type::POINTER:
+               case json::type::RAW_PTR:
                   return !m_union.p;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -866,11 +866,11 @@ namespace tao
          {
             switch ( m_type ) {
                case json::type::NULL_:
-               case json::type::BOOL:
+               case json::type::BOOLEAN:
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
-               case json::type::POINTER:
+               case json::type::RAW_PTR:
                   return;
                case json::type::STRING:
                   m_union.s.~basic_string();
@@ -897,7 +897,7 @@ namespace tao
             switch ( r.m_type ) {
                case json::type::NULL_:
                   return;
-               case json::type::BOOL:
+               case json::type::BOOLEAN:
                   m_union.b = r.m_union.b;
                   return;
                case json::type::SIGNED:
@@ -918,7 +918,7 @@ namespace tao
                case json::type::OBJECT:
                   new ( & m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
                   return;
-               case json::type::POINTER:
+               case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
                   return;
             }
@@ -930,7 +930,7 @@ namespace tao
             switch ( r.m_type ) {
                case json::type::NULL_:
                   return;
-               case json::type::BOOL:
+               case json::type::BOOLEAN:
                   m_union.b = r.m_union.b;
                   return;
                case json::type::SIGNED:
@@ -951,7 +951,7 @@ namespace tao
                case json::type::OBJECT:
                   new ( & m_union.o ) std::map< std::string, basic_value >( r.m_union.o );
                   return;
-               case json::type::POINTER:
+               case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
                   return;
             }
@@ -965,8 +965,8 @@ namespace tao
       template< template< typename ... > class Traits >
       bool operator== ( const basic_value< Traits > & lhs, const basic_value< Traits > & rhs ) noexcept
       {
-         if ( lhs.type() == type::POINTER ) {
-            if ( const auto * p = lhs.unsafe_get_pointer() ) {
+         if ( lhs.type() == type::RAW_PTR ) {
+            if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                return * p == rhs;
             }
             else {
@@ -974,8 +974,8 @@ namespace tao
             }
          }
          if ( lhs.type() != rhs.type() ) {
-            if ( rhs.type() == type::POINTER ) {
-               if ( const auto * p = rhs.unsafe_get_pointer() ) {
+            if ( rhs.type() == type::RAW_PTR ) {
+               if ( const auto * p = rhs.unsafe_get_raw_ptr() ) {
                   return lhs == * p;
                }
                else {
@@ -1013,7 +1013,7 @@ namespace tao
          switch ( lhs.type() ) {
             case type::NULL_:
                return true;
-            case type::BOOL:
+            case type::BOOLEAN:
                return lhs.unsafe_get_bool() == rhs.unsafe_get_bool();
             case type::SIGNED:
                return lhs.unsafe_get_signed() == rhs.unsafe_get_signed();
@@ -1027,7 +1027,7 @@ namespace tao
                return lhs.unsafe_get_array() == rhs.unsafe_get_array();
             case type::OBJECT:
                return lhs.unsafe_get_object() == rhs.unsafe_get_object();
-            case type::POINTER:
+            case type::RAW_PTR:
                break;  // LCOV_EXCL_LINE
          }
          assert( false );  // LCOV_EXCL_LINE
@@ -1036,8 +1036,8 @@ namespace tao
       template< template< typename ... > class Traits >
       bool operator< ( const basic_value< Traits > & lhs, const basic_value< Traits > & rhs ) noexcept
       {
-         if ( lhs.type() == type::POINTER ) {
-            if ( const auto * p = lhs.unsafe_get_pointer() ) {
+         if ( lhs.type() == type::RAW_PTR ) {
+            if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                return * p < rhs;
             }
             else {
@@ -1045,8 +1045,8 @@ namespace tao
             }
          }
          if ( lhs.type() != rhs.type() ) {
-            if ( rhs.type() == type::POINTER ) {
-               if ( const auto * p = rhs.unsafe_get_pointer() ) {
+            if ( rhs.type() == type::RAW_PTR ) {
+               if ( const auto * p = rhs.unsafe_get_raw_ptr() ) {
                   return lhs < * p;
                }
                else {
@@ -1084,7 +1084,7 @@ namespace tao
          switch ( lhs.type() ) {
             case type::NULL_:
                return false;
-            case type::BOOL:
+            case type::BOOLEAN:
                return lhs.unsafe_get_bool() < rhs.unsafe_get_bool();
             case type::SIGNED:
                return lhs.unsafe_get_signed() < rhs.unsafe_get_signed();
@@ -1098,7 +1098,7 @@ namespace tao
                return lhs.unsafe_get_array() < rhs.unsafe_get_array();
             case type::OBJECT:
                return lhs.unsafe_get_object() < rhs.unsafe_get_object();
-            case type::POINTER:
+            case type::RAW_PTR:
                break;  // LCOV_EXCL_LINE
          }
          assert( false );  // LCOV_EXCL_LINE

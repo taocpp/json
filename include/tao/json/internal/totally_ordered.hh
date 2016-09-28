@@ -24,8 +24,8 @@ namespace tao
          {
             friend bool operator==( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p == rhs;
                   }
                   else {
@@ -37,8 +37,8 @@ namespace tao
 
             friend bool operator<( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p < rhs;
                   }
                   else {
@@ -50,8 +50,8 @@ namespace tao
 
             friend bool operator>( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p > rhs;
                   }
                   else {
@@ -68,8 +68,8 @@ namespace tao
          {
             friend bool operator==( const T & lhs, null_t ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p == null;
                   }
                   else {
@@ -86,8 +86,8 @@ namespace tao
 
             friend bool operator>( const T & lhs, null_t ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p > null;
                   }
                   else {
@@ -104,8 +104,8 @@ namespace tao
          {
             friend bool operator==( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p == rhs;
                   }
                   else {
@@ -126,8 +126,8 @@ namespace tao
 
             friend bool operator<( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p < rhs;
                   }
                   else {
@@ -148,8 +148,8 @@ namespace tao
 
             friend bool operator>( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p > rhs;
                   }
                   else {
@@ -175,8 +175,8 @@ namespace tao
          {
             friend bool operator==( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p == rhs;
                   }
                   else {
@@ -198,8 +198,8 @@ namespace tao
 
             friend bool operator<( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p < rhs;
                   }
                   else {
@@ -221,8 +221,8 @@ namespace tao
 
             friend bool operator>( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p > rhs;
                   }
                   else {
@@ -249,8 +249,8 @@ namespace tao
          {
             friend bool operator==( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p == rhs;
                   }
                   else {
@@ -271,8 +271,8 @@ namespace tao
 
             friend bool operator<( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p < rhs;
                   }
                   else {
@@ -293,8 +293,8 @@ namespace tao
 
             friend bool operator>( const T & lhs, const U & rhs ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p > rhs;
                   }
                   else {
@@ -355,7 +355,7 @@ namespace tao
          };
 
          template< typename T >
-         struct totally_ordered< T, const T *, type::POINTER >
+         struct totally_ordered< T, const T *, type::RAW_PTR >
             : operators::totally_ordered< T, const T * >
          {
             friend bool operator==( const T & lhs, const T * rhs ) noexcept
@@ -384,7 +384,7 @@ namespace tao
          };
 
          template< typename T >
-         struct totally_ordered< T, T *, type::POINTER >
+         struct totally_ordered< T, T *, type::RAW_PTR >
             : operators::totally_ordered< T, T * >
          {
             friend bool operator==( const T & lhs, T * rhs ) noexcept
@@ -413,13 +413,13 @@ namespace tao
          };
 
          template< typename T >
-         struct totally_ordered< T, std::nullptr_t, type::POINTER >
+         struct totally_ordered< T, std::nullptr_t, type::RAW_PTR >
             : operators::totally_ordered< T, std::nullptr_t >
          {
             friend bool operator==( const T & lhs, std::nullptr_t ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p == null;
                   }
                   else {
@@ -436,8 +436,8 @@ namespace tao
 
             friend bool operator>( const T & lhs, std::nullptr_t ) noexcept
             {
-               if ( lhs.type() == type::POINTER ) {
-                  if ( const auto * p = lhs.unsafe_get_pointer() ) {
+               if ( lhs.type() == type::RAW_PTR ) {
+                  if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
                      return * p > null;
                   }
                   else {

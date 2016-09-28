@@ -223,8 +223,8 @@ namespace tao
          const value pt( &t );
          const value pf( &f );
 
-         TEST_ASSERT( t.type() == type::BOOL );
-         TEST_ASSERT( f.type() == type::BOOL );
+         TEST_ASSERT( t.type() == type::BOOLEAN );
+         TEST_ASSERT( f.type() == type::BOOLEAN );
 
          test_lt( f, t );
          test_lt( f, pt );
@@ -383,7 +383,7 @@ namespace tao
          const value po = &o;
 
          TEST_ASSERT( n.type() == type::NULL_ );
-         TEST_ASSERT( b.type() == type::BOOL );
+         TEST_ASSERT( b.type() == type::BOOLEAN );
          TEST_ASSERT( i.type() == type::SIGNED );
          TEST_ASSERT( u.type() == type::UNSIGNED );
          TEST_ASSERT( d.type() == type::DOUBLE );
@@ -391,15 +391,15 @@ namespace tao
          TEST_ASSERT( a.type() == type::ARRAY );
          TEST_ASSERT( o.type() == type::OBJECT );
 
-         TEST_ASSERT( pz.type() == type::POINTER );
-         TEST_ASSERT( pn.type() == type::POINTER );
-         TEST_ASSERT( pb.type() == type::POINTER );
-         TEST_ASSERT( pi.type() == type::POINTER );
-         TEST_ASSERT( pu.type() == type::POINTER );
-         TEST_ASSERT( pd.type() == type::POINTER );
-         TEST_ASSERT( ps.type() == type::POINTER );
-         TEST_ASSERT( pa.type() == type::POINTER );
-         TEST_ASSERT( po.type() == type::POINTER );
+         TEST_ASSERT( pz.type() == type::RAW_PTR );
+         TEST_ASSERT( pn.type() == type::RAW_PTR );
+         TEST_ASSERT( pb.type() == type::RAW_PTR );
+         TEST_ASSERT( pi.type() == type::RAW_PTR );
+         TEST_ASSERT( pu.type() == type::RAW_PTR );
+         TEST_ASSERT( pd.type() == type::RAW_PTR );
+         TEST_ASSERT( ps.type() == type::RAW_PTR );
+         TEST_ASSERT( pa.type() == type::RAW_PTR );
+         TEST_ASSERT( po.type() == type::RAW_PTR );
 
          test_lt( pz, b );
          test_lt( pz, i );

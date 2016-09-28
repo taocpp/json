@@ -41,8 +41,8 @@ namespace tao
 
             static const value_t * skip_pointer( const value_t * p ) noexcept
             {
-               while ( p && p->is_pointer() ) {
-                  p = p->unsafe_get_pointer();
+               while ( p && p->is_raw_ptr() ) {
+                  p = p->unsafe_get_raw_ptr();
                }
                return p;
             }

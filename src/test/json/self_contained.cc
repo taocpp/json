@@ -28,11 +28,11 @@ namespace tao
 
          TEST_ASSERT( v1.at( "bar" ).type() == type::OBJECT );
          TEST_ASSERT( v1.at( "baz" ).at( 1 ).type() == type::OBJECT );
-         TEST_ASSERT( v1.at( "baz" ).at( 3 ).type() == type::POINTER );
+         TEST_ASSERT( v1.at( "baz" ).at( 3 ).type() == type::RAW_PTR );
 
-         TEST_ASSERT( v2.at( "bar" ).type() == type::POINTER );
-         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::POINTER );
-         TEST_ASSERT( v2.at( "baz" ).at( 3 ).type() == type::POINTER );
+         TEST_ASSERT( v2.at( "bar" ).type() == type::RAW_PTR );
+         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::RAW_PTR );
+         TEST_ASSERT( v2.at( "baz" ).at( 3 ).type() == type::RAW_PTR );
 
          TEST_ASSERT( v3.at( "bar" ).type() == type::OBJECT );
          TEST_ASSERT( v3.at( "baz" ).at( 1 ).type() == type::OBJECT );

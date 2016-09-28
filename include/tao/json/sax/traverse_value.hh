@@ -22,7 +22,7 @@ namespace tao
                case type::NULL_:
                   handler.null();
                   break;
-               case type::BOOL:
+               case type::BOOLEAN:
                   handler.boolean( v.unsafe_get_bool() );
                   break;
                case type::SIGNED:
@@ -54,8 +54,8 @@ namespace tao
                   }
                   handler.end_object();
                   break;
-               case type::POINTER:
-                  if ( const basic_value< Traits > * p = v.unsafe_get_pointer() ) {
+               case type::RAW_PTR:
+                  if ( const basic_value< Traits > * p = v.unsafe_get_raw_ptr() ) {
                      sax::traverse_value( * p, handler );
                   }
                   else {
@@ -76,7 +76,7 @@ namespace tao
                case type::NULL_:
                   handler.null();
                   break;
-               case type::BOOL:
+               case type::BOOLEAN:
                   handler.boolean( v.unsafe_get_bool() );
                   break;
                case type::SIGNED:
@@ -108,8 +108,8 @@ namespace tao
                   }
                   handler.end_object();
                   break;
-               case type::POINTER:
-                  if ( const basic_value< Traits > * p = v.unsafe_get_pointer() ) {
+               case type::RAW_PTR:
+                  if ( const basic_value< Traits > * p = v.unsafe_get_raw_ptr() ) {
                      sax::traverse_value( * p, handler );
                   }
                   else {

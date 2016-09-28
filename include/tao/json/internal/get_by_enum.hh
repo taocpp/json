@@ -27,7 +27,7 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::BOOL >
+         template<> struct get_by_enum< type::BOOLEAN >
          {
             template< typename V >
             static bool get( const value_union< V > & u )
@@ -108,7 +108,7 @@ namespace tao
             }
          };
 
-         template<> struct get_by_enum< type::POINTER >
+         template<> struct get_by_enum< type::RAW_PTR >
          {
             template< typename V >
             static const V * get( const value_union< V > & u )

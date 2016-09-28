@@ -14,7 +14,7 @@ namespace tao
          TEST_ASSERT( sizeof( type ) == 1 );
 
          TEST_ASSERT( to_string( type::NULL_ ) == std::string( "null" ) );
-         TEST_ASSERT( to_string( type::BOOL ) == std::string( "bool" ) );
+         TEST_ASSERT( to_string( type::BOOLEAN ) == std::string( "boolean" ) );
          TEST_ASSERT( to_string( type::SIGNED ) == std::string( "signed" ) );
          TEST_ASSERT( to_string( type::UNSIGNED ) == std::string( "unsigned" ) );
          TEST_ASSERT( to_string( type::DOUBLE ) == std::string( "double" ) );
@@ -23,12 +23,12 @@ namespace tao
          TEST_ASSERT( to_string( type::ARRAY ) == std::string( "array" ) );
          TEST_ASSERT( to_string( type::OBJECT ) == std::string( "object" ) );
 
-         TEST_ASSERT( to_string( type::POINTER ) == std::string( "pointer" ) );
+         TEST_ASSERT( to_string( type::RAW_PTR ) == std::string( "raw_ptr" ) );
 
          TEST_ASSERT( to_string( type( 42 ) ) == std::string( "unknown" ) );
 
          TEST_ASSERT( needs_destroy( type::NULL_ ) == false );
-         TEST_ASSERT( needs_destroy( type::BOOL ) == false );
+         TEST_ASSERT( needs_destroy( type::BOOLEAN ) == false );
          TEST_ASSERT( needs_destroy( type::SIGNED ) == false );
          TEST_ASSERT( needs_destroy( type::UNSIGNED ) == false );
          TEST_ASSERT( needs_destroy( type::DOUBLE ) == false );
@@ -37,7 +37,7 @@ namespace tao
          TEST_ASSERT( needs_destroy( type::ARRAY ) == true );
          TEST_ASSERT( needs_destroy( type::OBJECT ) == true );
 
-         TEST_ASSERT( needs_destroy( type::POINTER ) == false );
+         TEST_ASSERT( needs_destroy( type::RAW_PTR ) == false );
       }
 
    } // json

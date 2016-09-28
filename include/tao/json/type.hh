@@ -15,14 +15,14 @@ namespace tao
       enum class type : std::uint8_t
       {
          NULL_,
-         BOOL,
+         BOOLEAN,
          SIGNED,
          UNSIGNED,
          DOUBLE,
          STRING,
          ARRAY,
          OBJECT,
-         POINTER
+         RAW_PTR
       };
 
       inline bool needs_destroy( const type t )
@@ -42,8 +42,8 @@ namespace tao
          switch ( t ) {
             case type::NULL_:
                return "null";
-            case type::BOOL:
-               return "bool";
+            case type::BOOLEAN:
+               return "boolean";
             case type::SIGNED:
                return "signed";
             case type::UNSIGNED:
@@ -56,8 +56,8 @@ namespace tao
                return "array";
             case type::OBJECT:
                return "object";
-            case type::POINTER:
-               return "pointer";
+            case type::RAW_PTR:
+               return "raw_ptr";
          }
          return "unknown";
       }
