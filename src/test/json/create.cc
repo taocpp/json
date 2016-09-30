@@ -376,8 +376,7 @@ namespace tao
 
          // TODO: Add more tests
 
-         // TODO: Temporarily disabled, might trigger a memory leak
-         // TEST_THROWS( value { { "foo", 1 }, { "foo", 2 } } );
+         TEST_THROWS( value { { "foo", 1 }, { "foo", 2 } } );
       }
 
       void unit_test()

@@ -641,7 +641,9 @@ namespace tao
             for ( auto & e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
+                  const auto s = r.first->first;
+                  destroy();
+                  throw std::runtime_error( "duplicate JSON object key: " + s );
                }
             }
          }
@@ -652,7 +654,9 @@ namespace tao
             for ( const auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
+                  const auto s = r.first->first;
+                  destroy();
+                  throw std::runtime_error( "duplicate JSON object key: " + s );
                }
             }
          }
