@@ -92,18 +92,36 @@ namespace tao
          template< typename T >
          basic_value( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value & >(), std::forward< T >( v ) ) ) )
          {
-            using D = typename std::decay< T >::type;
-            Traits< D >::assign( *this, std::forward< T >( v ) );
+            try {
+               using D = typename std::decay< T >::type;
+               Traits< D >::assign( *this, std::forward< T >( v ) );
+            }
+            catch( ... ) {
+               unsafe_destroy();
+               throw;
+            }
          }
 
          basic_value( std::initializer_list< pair< Traits > > && l )
          {
-            unsafe_assign( std::move( l ) );
+            try {
+               unsafe_assign( std::move( l ) );
+            }
+            catch( ... ) {
+               unsafe_destroy();
+               throw;
+            }
          }
 
          basic_value( const std::initializer_list< pair< Traits > > & l )
          {
-            unsafe_assign( l );
+            try {
+               unsafe_assign( l );
+            }
+            catch( ... ) {
+               unsafe_destroy();
+               throw;
+            }
          }
 
          basic_value( std::initializer_list< pair< Traits > > & l )
@@ -641,9 +659,7 @@ namespace tao
             for ( auto & e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if ( ! r.second ) {
-                  const auto s = r.first->first;
-                  destroy();
-                  throw std::runtime_error( "duplicate JSON object key: " + s );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
@@ -654,9 +670,7 @@ namespace tao
             for ( const auto & e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if ( ! r.second ) {
-                  const auto s = r.first->first;
-                  destroy();
-                  throw std::runtime_error( "duplicate JSON object key: " + s );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
