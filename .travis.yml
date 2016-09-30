@@ -108,11 +108,61 @@ matrix:
           packages: ['g++-6']
       env:
         - COMPILER=g++-6
-        - TAOCPPJSON_CXXFLAGS="-O0 --coverage"
+        - CXXFLAGS="-O0 --coverage"
       before_script:
         - pip install --user cpp-coveralls
       after_success:
         - coveralls --gcov gcov-6 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6']
+      env:
+        - CPPFLAGS=-fsanitize=undefined
+        - COMPILER=g++-6
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6']
+      env:
+        - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
+        - COMPILER=g++-6
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
+          packages: ['clang-3.8']
+      env:
+        - CPPFLAGS=-fsanitize=undefined
+        - COMPILER=clang++-3.8
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
+          packages: ['clang-3.8']
+      env:
+        - CPPFLAGS=-fsanitize=address
+        - COMPILER=clang++-3.8
+
+#    - os: linux
+#      compiler: clang
+#      addons:
+#        apt:
+#          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
+#          packages: ['clang-3.8']
+#      env:
+#        - CPPFLAGS=-fsanitize=memory
+#        - COMPILER=clang++-3.8
 
 script:
   make CXX=$COMPILER -j3

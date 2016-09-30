@@ -1,4 +1,4 @@
-# Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+# Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 # Please see LICENSE for license or visit https://github.com/taocpp/json
 
 ifeq ($(OS),Windows_NT)
@@ -9,21 +9,21 @@ endif
 
 # For Darwin (Mac OS X) we assume that the default compiler
 # clang++ is used; when $(CXX) is some version of g++, then
-# $(TAOCPPJSON_CXXSTD) has to be set to -std=c++11 (or newer) so
+# $(CXXSTD) has to be set to -std=c++11 (or newer) so
 # that -stdlib=libc++ is not automatically added.
 
-ifeq ($(TAOCPPJSON_CXXSTD),)
-TAOCPPJSON_CXXSTD := -std=c++11
+ifeq ($(CXXSTD),)
+CXXSTD := -std=c++11
 ifeq ($(UNAME_S),Darwin)
-TAOCPPJSON_CXXSTD += -stdlib=libc++
+CXXSTD += -stdlib=libc++
 endif
 endif
 
 # Ensure strict standard compliance and no warnings, can be
 # changed if desired.
 
-TAOCPPJSON_CPPFLAGS ?= -pedantic
-TAOCPPJSON_CXXFLAGS ?= -Wall -Wextra -Werror -O3
+CPPFLAGS ?= -pedantic
+CXXFLAGS ?= -Wall -Wextra -Werror -O3
 
 .PHONY: all clean
 
@@ -34,7 +34,7 @@ BINARIES := $(SOURCES:%.cc=build/%)
 UNIT_TESTS := $(filter build/src/test/json/%,$(BINARIES))
 
 all: $(BINARIES)
-	@echo "Built with '$(CXX) $(TAOCPPJSON_CXXSTD) -Iinclude $(TAOCPPJSON_CPPFLAGS) $(TAOCPPJSON_CXXFLAGS)'."
+	@echo "Built with '$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS)'."
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T > /dev/null; done
 	@echo "All $(words $(UNIT_TESTS)) unit tests passed."
 
@@ -45,10 +45,10 @@ clean:
 
 build/%.d: %.cc Makefile
 	@mkdir -p $(@D)
-	$(CXX) $(TAOCPPJSON_CXXSTD) -Iinclude $(TAOCPPJSON_CPPFLAGS) -MM -MQ $@ $< -o $@
+	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) -MM -MQ $@ $< -o $@
 
 build/%: %.cc build/%.d
-	$(CXX) $(TAOCPPJSON_CXXSTD) -Iinclude $(TAOCPPJSON_CPPFLAGS) $(TAOCPPJSON_CXXFLAGS) $< -o $@
+	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)
 -include $(DEPENDS)
