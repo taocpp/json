@@ -33,6 +33,12 @@ namespace tao
          template< typename, typename, typename = void > struct has_extract : std::false_type {};
          template< typename T, typename V > struct has_extract< T, V, decltype( T::extract( std::declval< const V & >() ), void() ) > : std::true_type {};
 
+         // required work-around for GCC 6
+         inline void rethrow()
+         {
+            throw;
+         }
+
       } // internal
 
       template< template< typename ... > class Traits >
@@ -98,7 +104,7 @@ namespace tao
             }
             catch( ... ) {
                unsafe_destroy();
-               throw;
+               internal::rethrow();
             }
          }
 
