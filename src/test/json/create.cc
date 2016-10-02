@@ -20,7 +20,7 @@ namespace tao
          TEST_ASSERT( v.empty() );
 
          TEST_ASSERT( v.is_null() );
-         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_boolean() );
          TEST_ASSERT( ! v.is_signed() );
          TEST_ASSERT( ! v.is_unsigned() );
          TEST_ASSERT( ! v.is_double() );
@@ -31,7 +31,7 @@ namespace tao
          TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
-         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_double() );
@@ -58,7 +58,7 @@ namespace tao
          TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( v.is_bool() );
+         TEST_ASSERT( v.is_boolean() );
          TEST_ASSERT( ! v.is_signed() );
          TEST_ASSERT( ! v.is_unsigned() );
          TEST_ASSERT( ! v.is_double() );
@@ -79,8 +79,8 @@ namespace tao
          TEST_THROWS( v.get_raw_ptr() );
 
          TEST_ASSERT( v.type() == type::BOOLEAN );
-         TEST_ASSERT( v.get_bool() == b );
-         TEST_ASSERT( v.unsafe_get_bool() == b );
+         TEST_ASSERT( v.get_boolean() == b );
+         TEST_ASSERT( v.unsafe_get_boolean() == b );
 
          TEST_ASSERT( v == v );
          TEST_ASSERT( value( b ) == v );
@@ -99,7 +99,7 @@ namespace tao
          TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_boolean() );
          TEST_ASSERT( v.is_signed() );
          TEST_ASSERT( ! v.is_unsigned() );
          TEST_ASSERT( ! v.is_double() );
@@ -111,7 +111,7 @@ namespace tao
          TEST_ASSERT( v.is_number() );
 
          TEST_THROWS( v.get_null() );
-         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
@@ -148,7 +148,7 @@ namespace tao
          TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_boolean() );
          TEST_ASSERT( ! v.is_signed() );
          TEST_ASSERT( v.is_unsigned() );
          TEST_ASSERT( ! v.is_double() );
@@ -160,7 +160,7 @@ namespace tao
          TEST_ASSERT( v.is_number() );
 
          TEST_THROWS( v.get_null() );
-         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
@@ -194,7 +194,7 @@ namespace tao
          TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_boolean() );
          TEST_ASSERT( ! v.is_signed() );
          TEST_ASSERT( ! v.is_unsigned() );
          TEST_ASSERT( v.is_double() );
@@ -205,7 +205,7 @@ namespace tao
          TEST_ASSERT( v.is_number() );
 
          TEST_THROWS( v.get_null() );
-         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_string() );
@@ -230,7 +230,7 @@ namespace tao
          TEST_ASSERT( v.empty() == ( N == 1 ) );
 
          TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_boolean() );
          TEST_ASSERT( ! v.is_signed() );
          TEST_ASSERT( ! v.is_unsigned() );
          TEST_ASSERT( ! v.is_double() );
@@ -241,7 +241,7 @@ namespace tao
          TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_null() );
-         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_double() );
@@ -271,7 +271,7 @@ namespace tao
          TEST_ASSERT( v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_boolean() );
          TEST_ASSERT( ! v.is_signed() );
          TEST_ASSERT( ! v.is_unsigned() );
          TEST_ASSERT( ! v.is_double() );
@@ -283,7 +283,7 @@ namespace tao
          TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_null() );
-         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_double() );
@@ -306,7 +306,7 @@ namespace tao
          TEST_ASSERT( v.empty() );
 
          TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_bool() );
+         TEST_ASSERT( ! v.is_boolean() );
          TEST_ASSERT( ! v.is_signed() );
          TEST_ASSERT( ! v.is_unsigned() );
          TEST_ASSERT( ! v.is_double() );
@@ -317,7 +317,7 @@ namespace tao
          TEST_ASSERT( ! v.is_number() );
 
          TEST_THROWS( v.get_null() );
-         TEST_THROWS( v.get_bool() );
+         TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_double() );
@@ -418,7 +418,7 @@ namespace tao
          v = true;
 
          TEST_ASSERT( v.type() == type::BOOLEAN );
-         TEST_ASSERT( v.get_bool() );
+         TEST_ASSERT( v.get_boolean() );
 
          v = 1;
 

@@ -4,7 +4,9 @@
 #ifndef TAOCPP_JSON_INCLUDE_URI_FRAGMENT_HH
 #define TAOCPP_JSON_INCLUDE_URI_FRAGMENT_HH
 
-#include "pointer.hh"
+#include "../pointer.hh"
+
+#include <stdexcept>
 
 namespace tao
 {

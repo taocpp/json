@@ -5,7 +5,7 @@
 
 #include <tao/json/value.hh>
 #include <tao/json/pointer.hh>
-#include <tao/json/uri_fragment.hh>
+#include <tao/json/internal/uri_fragment.hh>
 
 namespace tao
 {

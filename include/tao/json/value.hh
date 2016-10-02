@@ -178,7 +178,7 @@ namespace tao
             return m_type == json::type::NULL_;
          }
 
-         bool is_bool() const noexcept
+         bool is_boolean() const noexcept
          {
             return m_type == json::type::BOOLEAN;
          }
@@ -234,10 +234,10 @@ namespace tao
             return unsafe_get_null();  // LCOV_EXCL_LINE (always optimized)
          }
 
-         bool get_bool() const
+         bool get_boolean() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BOOLEAN );
-            return unsafe_get_bool();
+            return unsafe_get_boolean();
          }
 
          std::int64_t get_signed() const
@@ -356,7 +356,7 @@ namespace tao
          }
          // LCOV_EXCL_STOP
 
-         bool unsafe_get_bool() const noexcept
+         bool unsafe_get_boolean() const noexcept
          {
             return m_union.b;
          }
@@ -421,6 +421,14 @@ namespace tao
          decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value > & >() ) ) unsafe_get() const
          {
             return internal::get_by_enum< E >::get( m_union );
+         }
+
+         const basic_value * skip_raw_ptr() const
+         {
+            if ( is_raw_ptr() ) {
+               return unsafe_get_raw_ptr()->skip_raw_ptr();
+            }
+            return this;
          }
 
          basic_value * unsafe_find( const std::string & key )
@@ -1038,7 +1046,7 @@ namespace tao
             case type::NULL_:
                return true;
             case type::BOOLEAN:
-               return lhs.unsafe_get_bool() == rhs.unsafe_get_bool();
+               return lhs.unsafe_get_boolean() == rhs.unsafe_get_boolean();
             case type::SIGNED:
                return lhs.unsafe_get_signed() == rhs.unsafe_get_signed();
             case type::UNSIGNED:
@@ -1109,7 +1117,7 @@ namespace tao
             case type::NULL_:
                return false;
             case type::BOOLEAN:
-               return lhs.unsafe_get_bool() < rhs.unsafe_get_bool();
+               return lhs.unsafe_get_boolean() < rhs.unsafe_get_boolean();
             case type::SIGNED:
                return lhs.unsafe_get_signed() < rhs.unsafe_get_signed();
             case type::UNSIGNED:

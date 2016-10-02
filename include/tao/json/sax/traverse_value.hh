@@ -23,7 +23,7 @@ namespace tao
                   handler.null();
                   break;
                case type::BOOLEAN:
-                  handler.boolean( v.unsafe_get_bool() );
+                  handler.boolean( v.unsafe_get_boolean() );
                   break;
                case type::SIGNED:
                   handler.number( v.unsafe_get_signed() );
@@ -77,7 +77,7 @@ namespace tao
                   handler.null();
                   break;
                case type::BOOLEAN:
-                  handler.boolean( v.unsafe_get_bool() );
+                  handler.boolean( v.unsafe_get_boolean() );
                   break;
                case type::SIGNED:
                   handler.number( v.unsafe_get_signed() );

@@ -50,7 +50,7 @@ namespace tao
          template< template< typename ... > class Traits >
          static void extract( const basic_value< Traits > & v, bool & b )
          {
-            b = v.get_bool();
+            b = v.get_boolean();
          }
       };
 
