@@ -97,27 +97,26 @@ namespace tao
                }
                std::string token;
                while ( p != e ) {
-                  const auto c = *p++;
+                  const char c = *p++;
                   switch( c ) {
+                  case '~':
+                     if ( p != e ) {
+                        switch ( *p++ ) {
+                        case '0':
+                           token += '~';
+                           continue;
+                        case '1':
+                           token += '/';
+                           continue;
+                        }
+                     }
+                     throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
+
                   case '/':
                      result.emplace_back( std::move( token ) );
                      token.clear();
-                     break;
-                  case '~':
-                     if ( p == e ) {
-                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
-                     }
-                     switch( *p++ ) {
-                     case '0':
-                        token += '~';
-                        break;
-                     case '1':
-                        token += '/';
-                        break;
-                     default:
-                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
-                     }
-                     break;
+                     continue;
+
                   default:
                      token += c;
                   }
@@ -169,6 +168,28 @@ namespace tao
             return m_tokens.end();
          }
 
+         void push_back( const std::string & v )
+         {
+            m_tokens.push_back( token( v ) );
+         }
+
+         void push_back( std::string && v )
+         {
+            m_tokens.push_back( token( std::move( v ) ) );
+         }
+
+         pointer & operator+= ( const std::string & v )
+         {
+            push_back( v );
+            return * this;
+         }
+
+         pointer & operator+= ( std::string && v )
+         {
+            push_back( std::move( v ) );
+            return * this;
+         }
+
          friend bool operator== ( const pointer & lhs, const pointer & rhs ) noexcept
          {
             return lhs.m_tokens == rhs.m_tokens;
@@ -179,6 +200,20 @@ namespace tao
             return lhs.m_tokens < rhs.m_tokens;
          }
       };
+
+      inline pointer operator+ ( const pointer & p, const std::string & v )
+      {
+         pointer nrv( p );
+         nrv += v;
+         return nrv;
+      }
+
+      inline pointer operator+ ( const pointer & p, std::string && v )
+      {
+         pointer nrv( p );
+         nrv += std::move( v );
+         return nrv;
+      }
 
       namespace internal
       {
@@ -204,7 +239,7 @@ namespace tao
             std::string result;
             while ( it != end ) {
                result += '/';
-               for ( auto c : it->key() ) {
+               for ( const char c : it->key() ) {
                   switch ( c ) {
                      case '~':
                         result += "~0";
@@ -219,6 +254,11 @@ namespace tao
                ++it;
             }
             return result;
+         }
+
+         inline std::string to_string( const pointer & p )
+         {
+            return tokens_to_string( p.begin(), p.end() );
          }
 
          inline std::runtime_error invalid_type( const std::vector< token >::const_iterator & begin, const std::vector< token >::const_iterator & end )
@@ -245,7 +285,8 @@ namespace tao
             }
             return * v;
          }
-      }
+
+      } // internal
 
       inline namespace literals
       {
