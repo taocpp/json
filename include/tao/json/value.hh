@@ -425,10 +425,11 @@ namespace tao
 
          const basic_value * skip_raw_ptr() const
          {
-            if ( is_raw_ptr() ) {
-               return unsafe_get_raw_ptr()->skip_raw_ptr();
+            const basic_value * p = this;
+            while ( p && p->is_raw_ptr() ) {
+               p = p->unsafe_get_raw_ptr();
             }
-            return this;
+            return p;
          }
 
          basic_value * unsafe_find( const std::string & key )
