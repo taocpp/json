@@ -134,15 +134,16 @@ matrix:
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
         - COMPILER=g++-6
 
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
-          packages: ['clang-3.8']
-      env:
-        - CPPFLAGS=-fsanitize=undefined
-        - COMPILER=clang++-3.8
+# disabled: triggers compile time/memory regression in Clang
+#    - os: linux
+#      compiler: clang
+#      addons:
+#        apt:
+#          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
+#          packages: ['clang-3.8']
+#      env:
+#        - CPPFLAGS=-fsanitize=undefined
+#        - COMPILER=clang++-3.8
 
     - os: linux
       compiler: clang
@@ -154,6 +155,7 @@ matrix:
         - CPPFLAGS=-fsanitize=address
         - COMPILER=clang++-3.8
 
+# disabled: triggers false positive
 #    - os: linux
 #      compiler: clang
 #      addons:
