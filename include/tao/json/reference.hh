@@ -47,7 +47,10 @@ namespace tao
                   }
                   return;
                case json::type::OBJECT:
-                  if ( const auto * ref = v.find( "$ref" ) ) {
+                  for ( auto & e : v.unsafe_get_object() ) {
+                     resolve_references( r, e.second );
+                  }
+                  if ( const auto * ref = v.find( "$ref" )->skip_raw_ptr() ) {
                      if ( ref->is_string() ) {
                         const std::string & s = ref->unsafe_get_string();
                         if ( ! s.empty() && s[ 0 ] == '#' ) {
@@ -62,7 +65,7 @@ namespace tao
                               case type::OBJECT:
                                  if ( const auto * r = p->find( "$ref" ) ) {
                                     if ( r->is_string() ) {
-                                       throw std::runtime_error( "invalid JSON Reference: referencing additional data member is invalid" );
+                                       throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );
                                     }
                                  }
                                  p = p->at( it->key() ).skip_raw_ptr();
@@ -84,9 +87,6 @@ namespace tao
                            // throw std::runtime_error( "JSON Reference: unsupported or invalid URI: " + s );
                         }
                      }
-                  }
-                  for ( auto & e : v.unsafe_get_object() ) {
-                     resolve_references( r, e.second );
                   }
                   return;
                case json::type::RAW_PTR:
