@@ -423,7 +423,7 @@ namespace tao
             return internal::get_by_enum< E >::get( m_union );
          }
 
-         const basic_value * skip_raw_ptr() const
+         const basic_value * skip_raw_ptr() const noexcept
          {
             const basic_value * p = this;
             while ( p && p->is_raw_ptr() ) {
