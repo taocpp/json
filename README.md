@@ -13,9 +13,10 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * Serious standard conformance!
 
   * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
+  * Achieves a **100% score** in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
-  * Achieves a **100% score** in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
+  * Experimental support for [JSON Reference](https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03) (local references only).
 
 * General
 
@@ -30,7 +31,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
   * Standard STL containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
   * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
-  * Indirect JSON values via non-owning C++ raw pointers for object sharing.
+  * Indirect JSON values via non-owning C++ raw pointers for object sharing, reference resolution, and important optimization opportunities.
   * C++11 literal operator for JSON values.
 
 * SAX API
