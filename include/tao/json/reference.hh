@@ -14,7 +14,22 @@ namespace tao
    {
       namespace internal
       {
-         // currently, only URI fragments are supported
+         // JSON Reference, see draft ("work in progress") RFC at
+         // https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
+
+         // NOTE: Currently, only URI fragments are supported.
+         // Remote references are ignored, i.e., left untouched.
+
+         // JSON References are replaced with a RAW_PTR,
+         // which might lead to infinite loops if you try
+         // to traverse the value. Make sure you understand
+         // the consequences and handle the resulting value
+         // accordingly!
+
+         // Self-references will throw an exception, as well as
+         // references into JSON Reference additional members
+         // (which shall be ignored as per the specification).
+
          template< template< typename ... > class Traits >
          void resolve_references( basic_value< Traits > & r, basic_value< Traits > & v )
          {
@@ -32,13 +47,41 @@ namespace tao
                   }
                   return;
                case json::type::OBJECT:
-                  if ( const auto * ref = v.skip_raw_ptr()->find( "$ref" ) ) {
+                  if ( const auto * ref = v.find( "$ref" ) ) {
                      if ( ref->is_string() ) {
                         const std::string & s = ref->unsafe_get_string();
                         if ( ! s.empty() && s[ 0 ] == '#' ) {
-                           v = r.at( internal::uri_fragment_to_pointer( s ) ).skip_raw_ptr();
+                           const pointer ptr = internal::uri_fragment_to_pointer( s );
+                           const auto * p = & r;
+                           auto it = ptr.begin();
+                           while ( it != ptr.end() ) {
+                              switch ( p->type() ) {
+                              case type::ARRAY:
+                                 p = p->at( it->index() ).skip_raw_ptr();
+                                 break;
+                              case type::OBJECT:
+                                 if ( const auto * r = p->find( "$ref" ) ) {
+                                    if ( r->is_string() ) {
+                                       throw std::runtime_error( "invalid JSON Reference: referencing additional data member is invalid" );
+                                    }
+                                 }
+                                 p = p->at( it->key() ).skip_raw_ptr();
+                                 break;
+                              default:
+                                 throw invalid_type( ptr.begin(), std::next( it ) );
+                              }
+                              ++it;
+                           }
+                           if ( p == & v ) {
+                              throw std::runtime_error( "JSON Reference: invalid self reference" );
+                           }
+                           v = p;
                            resolve_references( r, v );
                            return;
+                        }
+                        else {
+                           // Ignore remote references for now...
+                           // throw std::runtime_error( "JSON Reference: unsupported or invalid URI: " + s );
                         }
                      }
                   }
