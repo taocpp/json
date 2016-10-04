@@ -448,9 +448,30 @@ namespace tao
 
                // TODO: format
 
-               // TODO: items
+               // items
+               if ( const auto * p = find( "items" ) ) {
+                  if ( p->is_array() ) {
+                     for ( const auto & e : p->unsafe_get_array() ) {
+                        m_referenced_pointers.insert( e.skip_raw_ptr() );
+                     }
+                  }
+                  else if ( p->is_object() ) {
+                     m_referenced_pointers.insert( p );
+                  }
+                  else {
+                     throw std::runtime_error( "invalid JSON Schema: \"items\" must be of type 'object' or 'array'" );
+                  }
+               }
 
-               // TODO: additionalItems
+               // additionalItems
+               if ( const auto * p = find( "additionalItems" ) ) {
+                  if ( p->is_object() ) {
+                     m_referenced_pointers.insert( p );
+                  }
+                  else if ( ! p->is_boolean() ) {
+                     throw std::runtime_error( "invalid JSON Schema: \"additionalItems\" must be of type 'boolean' or 'object'" );
+                  }
+               }
 
                // maxItems
                if ( const auto * p = find( "maxItems" ) ) {
