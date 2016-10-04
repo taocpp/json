@@ -20,6 +20,7 @@
 #include <limits>
 #include <memory>
 #include <regex>
+#include <type_traits>
 
 namespace tao
 {
@@ -29,6 +30,8 @@ namespace tao
       {
          enum schema_flags
          {
+            NONE = 0,
+
             HAS_TYPE = 1 << 0,
             NULL_ = 1 << 1,
             BOOLEAN = 1 << 2,
@@ -68,6 +71,11 @@ namespace tao
             NO_ADDITIONAL_PROPERTIES = 1 << 24,
          };
 
+         inline constexpr schema_flags operator|( const schema_flags lhs, const schema_flags rhs ) noexcept
+         {
+            return static_cast< schema_flags >( static_cast< std::underlying_type< schema_flags >::type >( lhs ) | static_cast< std::underlying_type< schema_flags >::type >( rhs ) );
+         }
+
          union schema_limit
          {
             std::int64_t i;
@@ -105,14 +113,14 @@ namespace tao
             std::uint64_t m_min_properties;
             std::set< std::string > m_required;
 
-            schema_flags m_flags = static_cast< schema_flags >( 0 );
+            schema_flags m_flags = NONE;
 
             void add_type( const schema_flags v )
             {
                if ( ( m_flags & v ) != 0 ) {
                   throw std::runtime_error( "invalid JSON Schema: duplicate primitive type" );
                }
-               m_flags = static_cast< schema_flags >( m_flags | v );
+               m_flags = m_flags | v;
             }
 
             void add_type( const std::string & v )
@@ -205,7 +213,7 @@ namespace tao
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"type\" must be of type 'string' or 'array'" );
                   }
-                  m_flags = static_cast< schema_flags >( m_flags | HAS_TYPE );
+                  m_flags = m_flags | HAS_TYPE;
                }
 
                // enum
@@ -213,7 +221,7 @@ namespace tao
                   if ( ! p->is_array() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"enum\" must be of type 'array'" );
                   }
-                  m_flags = static_cast< schema_flags >( m_flags | HAS_ENUM );
+                  m_flags = m_flags | HAS_ENUM;
                }
 
                // allOf
@@ -280,7 +288,7 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );
                            }
                            m_multiple_of.u = i;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MULTIPLE_OF_UNSIGNED );
+                           m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                         }
                         break;
                      case json::type::UNSIGNED:
@@ -290,7 +298,7 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );
                            }
                            m_multiple_of.u = u;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MULTIPLE_OF_UNSIGNED );
+                           m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                         }
                         break;
                      case json::type::DOUBLE:
@@ -300,7 +308,7 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );
                            }
                            m_multiple_of.d = d;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MULTIPLE_OF_DOUBLE );
+                           m_flags = m_flags | HAS_MULTIPLE_OF_DOUBLE;
                         }
                         break;
                      default:
@@ -313,15 +321,15 @@ namespace tao
                   switch ( p->type() ) {
                      case json::type::SIGNED:
                         m_maximum.i = p->unsafe_get_signed();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MAXIMUM_SIGNED );
+                        m_flags = m_flags | HAS_MAXIMUM_SIGNED;
                         break;
                      case json::type::UNSIGNED:
                         m_maximum.u = p->unsafe_get_unsigned();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MAXIMUM_UNSIGNED );
+                        m_flags = m_flags | HAS_MAXIMUM_UNSIGNED;
                         break;
                      case json::type::DOUBLE:
                         m_maximum.d = p->unsafe_get_double();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MAXIMUM_DOUBLE );
+                        m_flags = m_flags | HAS_MAXIMUM_DOUBLE;
                         break;
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"maximum\" must be of type 'number'" );
@@ -337,7 +345,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"exclusiveMaximum\" requires presence of \"maximum\"" );
                   }
                   if ( p->get_boolean() ) {
-                     m_flags = static_cast< schema_flags >( m_flags | EXCLUSIVE_MAXIMUM );
+                     m_flags = m_flags | EXCLUSIVE_MAXIMUM;
                   }
                }
 
@@ -346,15 +354,15 @@ namespace tao
                   switch ( p->type() ) {
                      case json::type::SIGNED:
                         m_minimum.i = p->unsafe_get_signed();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MINIMUM_SIGNED );
+                        m_flags = m_flags | HAS_MINIMUM_SIGNED;
                         break;
                      case json::type::UNSIGNED:
                         m_minimum.u = p->unsafe_get_unsigned();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MINIMUM_UNSIGNED );
+                        m_flags = m_flags | HAS_MINIMUM_UNSIGNED;
                         break;
                      case json::type::DOUBLE:
                         m_minimum.d = p->unsafe_get_double();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MINIMUM_DOUBLE );
+                        m_flags = m_flags | HAS_MINIMUM_DOUBLE;
                         break;
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"minimum\" must be of type 'number'" );
@@ -370,7 +378,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"exclusiveMinimum\" requires presence of \"minimum\"" );
                   }
                   if ( p->get_boolean() ) {
-                     m_flags = static_cast< schema_flags >( m_flags | EXCLUSIVE_MINIMUM );
+                     m_flags = m_flags | EXCLUSIVE_MINIMUM;
                   }
                }
 
@@ -384,12 +392,12 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"maxLength\" must be greater than or equal to zero" );
                            }
                            m_max_length = i;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MAX_LENGTH );
+                           m_flags = m_flags | HAS_MAX_LENGTH;
                         }
                         break;
                      case json::type::UNSIGNED:
                         m_max_length = p->unsafe_get_unsigned();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MAX_LENGTH );
+                        m_flags = m_flags | HAS_MAX_LENGTH;
                         break;
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"maxLength\" must be of type 'integer'" );
@@ -407,7 +415,7 @@ namespace tao
                            }
                            if ( i > 0 ) {
                               m_min_length = i;
-                              m_flags = static_cast< schema_flags >( m_flags | HAS_MIN_LENGTH );
+                              m_flags = m_flags | HAS_MIN_LENGTH;
                            }
                         }
                         break;
@@ -416,7 +424,7 @@ namespace tao
                            const auto u = p->unsafe_get_unsigned();
                            if ( u > 0 ) {
                               m_min_length = u;
-                              m_flags = static_cast< schema_flags >( m_flags | HAS_MIN_LENGTH );
+                              m_flags = m_flags | HAS_MIN_LENGTH;
                            }
                         }
                         break;
@@ -454,12 +462,12 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"maxItems\" must be greater than or equal to zero" );
                            }
                            m_max_items = i;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MAX_ITEMS );
+                           m_flags = m_flags | HAS_MAX_ITEMS;
                         }
                         break;
                      case json::type::UNSIGNED:
                         m_max_items = p->unsafe_get_unsigned();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MAX_ITEMS );
+                        m_flags = m_flags | HAS_MAX_ITEMS;
                         break;
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"maxItems\" must be of type 'integer'" );
@@ -476,12 +484,12 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"minItems\" must be greater than or equal to zero" );
                            }
                            m_min_items = i;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MIN_ITEMS );
+                           m_flags = m_flags | HAS_MIN_ITEMS;
                         }
                         break;
                      case json::type::UNSIGNED:
                         m_min_items = p->unsafe_get_unsigned();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MIN_ITEMS );
+                        m_flags = m_flags | HAS_MIN_ITEMS;
                         break;
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"minItems\" must be of type 'integer'" );
@@ -491,7 +499,7 @@ namespace tao
                // uniqueItems
                if ( const auto * p = find( "uniqueItems" ) ) {
                   if ( p->get_boolean() ) {
-                     m_flags = static_cast< schema_flags >( m_flags | HAS_UNIQUE_ITEMS );
+                     m_flags = m_flags | HAS_UNIQUE_ITEMS;
                   }
                }
 
@@ -505,12 +513,12 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"maxProperties\" must be greater than or equal to zero" );
                            }
                            m_max_properties = i;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MAX_PROPERTIES );
+                           m_flags = m_flags | HAS_MAX_PROPERTIES;
                         }
                         break;
                      case json::type::UNSIGNED:
                         m_max_properties = p->unsafe_get_unsigned();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MAX_PROPERTIES );
+                        m_flags = m_flags | HAS_MAX_PROPERTIES;
                         break;
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"maxProperties\" must be of type 'integer'" );
@@ -527,12 +535,12 @@ namespace tao
                               throw std::runtime_error( "invalid JSON Schema: \"minProperties\" must be greater than or equal to zero" );
                            }
                            m_min_properties = i;
-                           m_flags = static_cast< schema_flags >( m_flags | HAS_MIN_PROPERTIES );
+                           m_flags = m_flags | HAS_MIN_PROPERTIES;
                         }
                         break;
                      case json::type::UNSIGNED:
                         m_min_properties = p->unsafe_get_unsigned();
-                        m_flags = static_cast< schema_flags >( m_flags | HAS_MIN_PROPERTIES );
+                        m_flags = m_flags | HAS_MIN_PROPERTIES;
                         break;
                      default:
                         throw std::runtime_error( "invalid JSON Schema: \"minProperties\" must be of type 'integer'" );
@@ -1004,7 +1012,7 @@ namespace tao
 
             void number( const std::int64_t v )
             {
-               if ( m_match ) validate_type( static_cast< schema_flags >( INTEGER | NUMBER ) );
+               if ( m_match ) validate_type( INTEGER | NUMBER );
                if ( m_match ) validate_enum( [=]( sax_compare< Traits > & c ){ c.number( v ); return ! c.match(); } );
                if ( m_match ) validate_collections( [=]( schema_consumer & c ){ c.number( v ); return ! c.match(); } );
                if ( m_match && m_count.empty() ) validate_number( v );
@@ -1013,7 +1021,7 @@ namespace tao
 
             void number( const std::uint64_t v )
             {
-               if ( m_match ) validate_type( static_cast< schema_flags >( INTEGER | NUMBER ) );
+               if ( m_match ) validate_type( INTEGER | NUMBER );
                if ( m_match ) validate_enum( [=]( sax_compare< Traits > & c ){ c.number( v ); return ! c.match(); } );
                if ( m_match ) validate_collections( [=]( schema_consumer & c ){ c.number( v ); return ! c.match(); } );
                if ( m_match && m_count.empty() ) validate_number( v );
