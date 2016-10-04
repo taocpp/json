@@ -1120,7 +1120,7 @@ namespace tao
                if ( m_match ) validate_enum( []( sax_compare< Traits > & c ){ c.element(); return ! c.match(); } );
                if ( m_match ) validate_collections( []( schema_consumer & c ){ c.element(); return ! c.match(); } );
                if ( m_match && m_hash ) {
-                  if ( m_count.empty() ) {
+                  if ( m_count.size() == 1 ) {
                      if ( ! m_unique.emplace( m_hash->value() ).second ) {
                         m_match = false;
                      }
