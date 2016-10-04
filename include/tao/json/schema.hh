@@ -456,7 +456,7 @@ namespace tao
                      m_pattern.reset( new std::regex( p->unsafe_get_string() ) );
                   }
                   catch( const std::exception & e ) {
-                     throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be regular expressions: " + std::string( e.what() ) );
+                     throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be a regular expression: " + std::string( e.what() ) );
                   }
                }
 
