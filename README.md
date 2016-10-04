@@ -45,6 +45,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Supports conversion from and to *foreign* DOM objects (check [`contrib/nlohmann.cc`](contrib/nlohmann.cc)).
   * SAX comparator (against an existing DOM value).
   * SAX hash algorithm (SHA-256 based).
+  * SAX schema validator.
 
 ## Status
 
