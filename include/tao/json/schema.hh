@@ -1224,7 +1224,7 @@ namespace tao
 
       public:
          explicit basic_schema( const basic_value< Traits > & v )
-              : m_container( std::make_shared< const internal::schema_container< Traits > >( v ) )
+              : m_container( std::make_shared< internal::schema_container< Traits > >( v ) )
          { }
 
          std::unique_ptr< internal::schema_consumer< Traits > > consumer() const
