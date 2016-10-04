@@ -1112,12 +1112,44 @@ namespace tao
                      m_hash.reset( new sax::hash );
                   }
                }
+               if ( m_match && m_count.empty() ) {
+                  if ( const auto * p = m_node->m_items ) {
+                     if ( p->is_object() ) {
+                        const auto it = m_container->m_nodes.find( p );
+                        assert( it != m_container->m_nodes.end() );
+                        m_item.reset( new schema_consumer( m_container, * it->second ) );
+                     }
+                     else {
+                        const auto & a = p->unsafe_get_array();
+                        if ( ! a.empty() ) {
+                           const auto it = m_container->m_nodes.find( a[ 0 ].skip_raw_ptr() );
+                           assert( it != m_container->m_nodes.end() );
+                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                        }
+                     }
+                  }
+                  if ( ! m_item ) {
+                     if ( const auto * p = m_node->m_additional_items ) {
+                        if ( p->is_object() ) {
+                           const auto it = m_container->m_nodes.find( p );
+                           assert( it != m_container->m_nodes.end() );
+                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                        }
+                     }
+                  }
+               }
                m_count.push_back( 0 );
             }
 
             void element()
             {
                if ( m_match ) validate_enum( []( sax_compare< Traits > & c ){ c.element(); return ! c.match(); } );
+               if ( m_match && m_item ) {
+                  if ( m_count.size() == 1 ) {
+                     if ( ! m_item->finalize() ) m_match = false;
+                     m_item.reset();
+                  }
+               }
                if ( m_match ) validate_collections( []( schema_consumer & c ){ c.element(); return ! c.match(); } );
                if ( m_match && m_hash ) {
                   if ( m_count.size() == 1 ) {
@@ -1130,12 +1162,53 @@ namespace tao
                      m_hash->element();
                   }
                }
-               ++m_count.back();
+               const auto next = ++m_count.back();
+               if ( m_match && ( m_count.size() == 1 ) ) {
+                  if ( const auto * p = m_node->m_items ) {
+                     if ( p->is_object() ) {
+                        const auto it = m_container->m_nodes.find( p );
+                        assert( it != m_container->m_nodes.end() );
+                        m_item.reset( new schema_consumer( m_container, * it->second ) );
+                     }
+                     else {
+                        const auto & a = p->unsafe_get_array();
+                        if ( next < a.size() ) {
+                           const auto it = m_container->m_nodes.find( a[ next ].skip_raw_ptr() );
+                           assert( it != m_container->m_nodes.end() );
+                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                        }
+                     }
+                  }
+                  if ( ! m_item ) {
+                     if ( const auto * p = m_node->m_additional_items ) {
+                        if ( p->is_object() ) {
+                           const auto it = m_container->m_nodes.find( p );
+                           assert( it != m_container->m_nodes.end() );
+                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                        }
+                     }
+                  }
+               }
             }
 
             void end_array()
             {
                if ( m_match ) validate_enum( []( sax_compare< Traits > & c ){ c.end_array(); return ! c.match(); } );
+               if ( m_match && m_item && ( m_count.size() == 1 ) ) {
+                  if ( ! m_item->finalize() ) m_match = false;
+                  m_item.reset();
+               }
+               if ( m_match && ( m_count.size() == 1 ) ) {
+                  if ( m_node->m_items && m_node->m_items->is_array() ) {
+                     if ( m_node->m_additional_items && m_node->m_additional_items->is_boolean() ) {
+                        if ( ! m_node->m_additional_items->get_boolean() ) {
+                           if ( m_count.back() > m_node->m_items->unsafe_get_array().size() ) {
+                              m_match = false;
+                           }
+                        }
+                     }
+                  }
+               }
                if ( m_match ) validate_collections( []( schema_consumer & c ){ c.end_array(); return ! c.match(); } );
                if ( m_match && m_hash ) m_hash->end_array();
                if ( m_match && ( m_count.size() == 1 ) ) validate_elements( m_count.back() );
