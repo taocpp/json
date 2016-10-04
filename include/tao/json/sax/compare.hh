@@ -31,6 +31,14 @@ namespace tao
             bool m_match = true;
 
          public:
+            sax_compare() = default;
+
+            sax_compare( const sax_compare & ) = delete;
+            sax_compare( sax_compare && ) = delete;
+
+            void operator= ( const sax_compare & ) = delete;
+            void operator= ( sax_compare && ) = delete;
+
             void reset() noexcept
             {
                m_current.clear();
@@ -229,6 +237,12 @@ namespace tao
             {
                reset();
             }
+
+            basic_compare( const basic_compare & ) = delete;
+            basic_compare( basic_compare && ) = delete;
+
+            void operator= ( const basic_compare & ) = delete;
+            void operator= ( basic_compare && ) = delete;
 
             void reset()
             {

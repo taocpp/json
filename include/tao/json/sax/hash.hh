@@ -39,7 +39,10 @@ namespace tao
             }
 
             hash( const hash & ) = delete;
+            hash( hash && ) = delete;
+
             void operator= ( const hash & ) = delete;
+            void operator= ( hash && ) = delete;
 
             std::string value() const
             {
