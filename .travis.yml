@@ -67,10 +67,6 @@ matrix:
       env: COMPILER=clang++-3.8
 
     - os: osx
-      compiler: clang
-      env: COMPILER=clang++
-
-    - os: osx
       osx_image: xcode6.4
       compiler: clang
       env: COMPILER=clang++
