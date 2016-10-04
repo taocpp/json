@@ -675,6 +675,7 @@ namespace tao
             std::vector< std::unique_ptr< schema_consumer > > m_any_of;
             std::vector< std::unique_ptr< schema_consumer > > m_one_of;
             std::unique_ptr< schema_consumer > m_not;
+            std::unique_ptr< schema_consumer > m_item;
             bool m_match = true;
 
             void validate_type( const schema_flags t )
@@ -698,6 +699,16 @@ namespace tao
                if ( m_node->m_flags & HAS_ENUM ) {
                   m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [&]( const std::unique_ptr< sax_compare< Traits > > & p ){ return f( * p ); } ), m_enum.end() );
                   if ( m_enum.empty() ) {
+                     m_match = false;
+                  }
+               }
+            }
+
+            template< typename F >
+            void validate_item( F && f )
+            {
+               if ( m_item ) {
+                  if ( f( m_item ) ) {
                      m_match = false;
                   }
                }
@@ -763,6 +774,7 @@ namespace tao
             {
                assert( m_match );
                const auto f2 = [&]( const std::unique_ptr< schema_consumer > & p ){ return f( * p ); };
+               if ( m_match ) validate_item( f2 );
                if ( m_match ) validate_properties( f2 );
                if ( m_match ) validate_all_of( f2 );
                if ( m_match ) validate_any_of( f2 );
@@ -1022,10 +1034,11 @@ namespace tao
             void operator= ( const schema_consumer & ) = delete;
             void operator= ( schema_consumer && ) = delete;
 
-            void finalize()
+            bool finalize()
             {
                if ( m_match && ( m_one_of.size() > 1 ) ) m_match = false;
                if ( m_match && m_not ) m_match = false;
+               return m_match;
             }
 
             bool match() const noexcept
@@ -1187,8 +1200,7 @@ namespace tao
                if ( m_match ) validate_enum( []( sax_compare< Traits > & c ){ c.member(); return ! c.match(); } );
                if ( m_match && ! m_properties.empty() && ( m_count.size() == 1 ) ) {
                   for ( auto & e : m_properties ) {
-                     e->finalize();
-                     if ( ! e->match() ) {
+                     if ( ! e->finalize() ) {
                         m_match = false;
                         break;
                      }
@@ -1285,8 +1297,7 @@ namespace tao
             // as it could be more efficient than SAX validation!
             const auto c = consumer();
             sax::traverse_value( v, * c );
-            c->finalize();
-            return c->match();
+            return c->finalize();
          }
       };
 
