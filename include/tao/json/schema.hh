@@ -68,7 +68,18 @@ namespace tao
 
             HAS_MAX_PROPERTIES = 1 << 22,
             HAS_MIN_PROPERTIES = 1 << 23,
-            NO_ADDITIONAL_PROPERTIES = 1 << 24,
+            NO_ADDITIONAL_PROPERTIES = 1 << 24
+         };
+
+         enum class schema_format
+         {
+            NONE,
+            DATE_TIME,
+            EMAIL,
+            HOSTNAME,
+            IPV4,
+            IPV6,
+            URI
          };
 
          inline constexpr schema_flags operator|( const schema_flags lhs, const schema_flags rhs ) noexcept
@@ -122,7 +133,8 @@ namespace tao
             std::uint64_t m_min_properties;
             std::set< std::string > m_required;
 
-            schema_flags m_flags = NONE;
+            schema_flags m_flags = schema_flags::NONE;
+            schema_format m_format = schema_format::NONE;
 
             void add_type( const schema_flags v )
             {
@@ -460,7 +472,33 @@ namespace tao
                   }
                }
 
-               // TODO: format
+               // format
+               // TODO: offer an option to disable "format" support?
+               if ( const auto * p = find( "format" ) ) {
+                  if ( ! p->is_string() ) {
+                     throw std::runtime_error( "invalid JSON Schema: \"format\" must be of type 'string'" );
+                  }
+                  const auto & s = p->unsafe_get_string();
+                  if ( s == "date-time" ) {
+                     m_format = schema_format::DATE_TIME;
+                  }
+                  else if ( s == "email" ) {
+                     m_format = schema_format::EMAIL;
+                  }
+                  else if ( s == "hostname" ) {
+                     m_format = schema_format::HOSTNAME;
+                  }
+                  else if ( s == "ipv4" ) {
+                     m_format = schema_format::IPV4;
+                  }
+                  else if ( s == "ipv6" ) {
+                     m_format = schema_format::IPV6;
+                  }
+                  else if ( s == "uri" ) {
+                     m_format = schema_format::URI;
+                  }
+                  // unknown "format" values are ignored
+               }
 
                // items
                if ( const auto * p = find( "items" ) ) {
@@ -964,7 +1002,9 @@ namespace tao
                      m_match = false;
                   }
                }
-               // TODO: format
+               if ( m_match && m_node->m_format != schema_format::NONE ) {
+                  // TODO: validate format
+               }
             }
 
             void validate_elements( const std::size_t v )
