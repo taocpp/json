@@ -187,6 +187,7 @@ namespace tao
                  : m_container( c ),
                    m_value( & v2 )
             {
+               // general
                if ( ! m_value->is_object() ) {
                   throw std::runtime_error( "invalid JSON Schema: a schema must be of type 'object'" );
                }
@@ -449,7 +450,7 @@ namespace tao
                // pattern
                if ( const auto * p = find( "pattern" ) ) {
                   if ( ! p->is_string() ) {
-                     throw std::runtime_error( "invalid JSON Schema: \"maxItems\" must be of type 'integer'" );
+                     throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be of type 'string'" );
                   }
                   try {
                      m_pattern.reset( new std::regex( p->unsafe_get_string() ) );
