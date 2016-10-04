@@ -91,6 +91,15 @@ namespace tao
          {
             const schema_container< Traits > * m_container;
             const basic_value< Traits > * m_value;
+            const basic_value< Traits > * m_all_of = nullptr;
+            const basic_value< Traits > * m_any_of = nullptr;
+            const basic_value< Traits > * m_one_of = nullptr;
+            const basic_value< Traits > * m_not = nullptr;
+            const basic_value< Traits > * m_items = nullptr;
+            const basic_value< Traits > * m_additional_items = nullptr;
+            const basic_value< Traits > * m_properties = nullptr;
+            const basic_value< Traits > * m_pattern_properties = nullptr;
+            const basic_value< Traits > * m_additional_properties = nullptr;
 
             std::set< const basic_value< Traits > * > m_referenced_pointers;
 
@@ -235,6 +244,7 @@ namespace tao
                   for ( const auto & e : p->unsafe_get_array() ) {
                      m_referenced_pointers.insert( e.skip_raw_ptr() );
                   }
+                  m_all_of = p;
                }
 
                // anyOf
@@ -248,6 +258,7 @@ namespace tao
                   for ( const auto & e : p->unsafe_get_array() ) {
                      m_referenced_pointers.insert( e.skip_raw_ptr() );
                   }
+                  m_any_of = p;
                }
 
                // oneOf
@@ -261,11 +272,13 @@ namespace tao
                   for ( const auto & e : p->unsafe_get_array() ) {
                      m_referenced_pointers.insert( e.skip_raw_ptr() );
                   }
+                  m_one_of = p;
                }
 
                // not
                if ( const auto * p = find( "not" ) ) {
                   m_referenced_pointers.insert( p );
+                  m_not = p;
                }
 
                // definitions
@@ -461,6 +474,7 @@ namespace tao
                   else {
                      throw std::runtime_error( "invalid JSON Schema: \"items\" must be of type 'object' or 'array'" );
                   }
+                  m_items = p;
                }
 
                // additionalItems
@@ -471,6 +485,7 @@ namespace tao
                   else if ( ! p->is_boolean() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"additionalItems\" must be of type 'boolean' or 'object'" );
                   }
+                  m_additional_items = p;
                }
 
                // maxItems
@@ -591,17 +606,7 @@ namespace tao
                   for ( const auto & e : p->unsafe_get_object() ) {
                      m_referenced_pointers.insert( e.second.skip_raw_ptr() );
                   }
-               }
-
-               // additionalProperties
-               if ( const auto * p = find( "additionalProperties" ) ) {
-                  const type t = p->type();
-                  if ( t == type::OBJECT ) {
-                     m_referenced_pointers.insert( p );
-                  }
-                  else if ( t != type::BOOLEAN ) {
-                     throw std::runtime_error( "invalid JSON Schema: \"additionalProperties\" must be of type 'boolean' or 'object'" );
-                  }
+                  m_properties = p;
                }
 
                // patternProperties
@@ -618,6 +623,19 @@ namespace tao
                      }
                      m_referenced_pointers.insert( e.second.skip_raw_ptr() );
                   }
+                  m_pattern_properties = p;
+               }
+
+               // additionalProperties
+               if ( const auto * p = find( "additionalProperties" ) ) {
+                  const type t = p->type();
+                  if ( t == type::OBJECT ) {
+                     m_referenced_pointers.insert( p );
+                  }
+                  else if ( t != type::BOOLEAN ) {
+                     throw std::runtime_error( "invalid JSON Schema: \"additionalProperties\" must be of type 'boolean' or 'object'" );
+                  }
+                  m_additional_properties = p;
                }
 
                // TODO: dependencies
@@ -970,28 +988,28 @@ namespace tao
                      m_enum.back()->push( & e );
                   }
                }
-               if ( const auto * p = m_node->find( "allOf" ) ) {
+               if ( const auto * p = m_node->m_all_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
                      const auto it = m_container->m_nodes.find( e.skip_raw_ptr() );
                      assert( it != m_container->m_nodes.end() );
                      m_all_of.emplace_back( new schema_consumer( m_container, * it->second ) );
                   }
                }
-               if ( const auto * p = m_node->find( "anyOf" ) ) {
+               if ( const auto * p = m_node->m_any_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
                      const auto it = m_container->m_nodes.find( e.skip_raw_ptr() );
                      assert( it != m_container->m_nodes.end() );
                      m_any_of.emplace_back( new schema_consumer( m_container, * it->second ) );
                   }
                }
-               if ( const auto * p = m_node->find( "oneOf" ) ) {
+               if ( const auto * p = m_node->m_one_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
                      const auto it = m_container->m_nodes.find( e.skip_raw_ptr() );
                      assert( it != m_container->m_nodes.end() );
                      m_one_of.emplace_back( new schema_consumer( m_container, * it->second ) );
                   }
                }
-               if ( const auto * p = m_node->find( "not" ) ) {
+               if ( const auto * p = m_node->m_not ) {
                   const auto it = m_container->m_nodes.find( p );
                   assert( it != m_container->m_nodes.end() );
                   m_not.reset( new schema_consumer( m_container, * it->second ) );
@@ -1128,7 +1146,7 @@ namespace tao
                if ( m_match && m_hash ) m_hash->key( v );
                if ( m_match ) m_required.erase( v );
                if ( m_match && m_properties.empty() && ( m_count.size() == 1 ) ) {
-                  if ( const auto * p = m_node->find( "properties" ) ) {
+                  if ( const auto * p = m_node->m_properties ) {
                      const auto & o = p->unsafe_get_object();
                      const auto it = o.find( v );
                      if ( it != o.end() ) {
@@ -1137,7 +1155,7 @@ namespace tao
                         m_properties.emplace_back( new schema_consumer( m_container, * jt->second ) );
                      }
                   }
-                  if ( const auto * p = m_node->find( "patternProperties" ) ) {
+                  if ( const auto * p = m_node->m_pattern_properties ) {
                      for ( const auto & e : p->unsafe_get_object() ) {
                         std::regex re( e.first );
                         if ( std::regex_search( v, re ) ) {
@@ -1148,7 +1166,7 @@ namespace tao
                      }
                   }
                   if ( m_properties.empty() ) {
-                     if ( const auto * p = m_node->find( "additionalProperties" ) ) {
+                     if ( const auto * p = m_node->m_additional_properties ) {
                         if ( p->is_boolean() ) {
                            if ( ! p->unsafe_get_boolean() ) {
                               m_match = false;
