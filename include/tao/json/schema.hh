@@ -1182,7 +1182,7 @@ namespace tao
             {
                nodes_t result;
                resolve_references( m_value );
-               m_root = result.emplace( & m_value, new schema_node< Traits >( this, m_value ) ).first->second.get();
+               m_root = result.emplace( & m_value, std::unique_ptr< schema_node< Traits > >( new schema_node< Traits >( this, m_value ) ) ).first->second.get();
                while ( true ) {
                   std::set< const basic_value< Traits > * > required;
                   for ( const auto & e : result ) {
@@ -1196,7 +1196,7 @@ namespace tao
                      break;
                   }
                   for ( const auto & e : required ) {
-                     result.emplace( e, new schema_node< Traits >( this, * e ) );
+                     result.emplace( e, std::unique_ptr< schema_node< Traits > >( new schema_node< Traits >( this, * e ) ) );
                   }
                }
                return result;
