@@ -110,6 +110,7 @@ namespace tao
             const basic_value< Traits > * m_additional_items = nullptr;
             const basic_value< Traits > * m_properties = nullptr;
             const basic_value< Traits > * m_additional_properties = nullptr;
+            const basic_value< Traits > * m_dependencies = nullptr;
 
             std::vector< std::pair< std::regex, const basic_value< Traits > * > > m_pattern_properties;
 
@@ -677,7 +678,32 @@ namespace tao
                   m_additional_properties = p;
                }
 
-               // TODO: dependencies
+               // dependencies
+               if ( const auto * p = find( "dependencies" ) ) {
+                  if ( ! p->is_object() ) {
+                     throw std::runtime_error( "invalid JSON Schema: \"dependencies\" must be of type 'object'" );
+                  }
+                  for ( const auto & e : p->unsafe_get_object() ) {
+                     const auto * p2 = e.second.skip_raw_ptr();
+                     if ( p2->is_object() ) {
+                        // schema dependency
+                     }
+                     else if ( p2->is_array() ) {
+                        if ( p2->empty() ) {
+                           throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must have at least one element" );
+                        }
+                        for ( const auto & r : p2->unsafe_get_array() ) {
+                           if ( ! r.is_string() ) {
+                              throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must contain elements of type 'string'" );
+                           }
+                        }
+                     }
+                     else {
+                        throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" must be of type 'object' or 'array'" );
+                     }
+                  }
+                  m_dependencies = p;
+               }
 
                // default
                if ( const auto * p = find( "default" ) ) {
@@ -707,7 +733,7 @@ namespace tao
             std::vector< std::unique_ptr< sax_compare< Traits > > > m_enum;
             std::unique_ptr< sax::hash > m_hash;
             std::set< std::string > m_unique;
-            std::set< std::string > m_required;
+            std::set< std::string > m_keys;
             std::vector< std::size_t > m_count;
             std::vector< std::unique_ptr< schema_consumer > > m_properties;
             std::vector< std::unique_ptr< schema_consumer > > m_all_of;
@@ -1030,8 +1056,7 @@ namespace tao
          public:
             schema_consumer( const std::shared_ptr< const schema_container< Traits > > & c, const schema_node< Traits > & n )
                  : m_container( c ),
-                   m_node( & n ),
-                   m_required( n.m_required )
+                   m_node( & n )
             {
                if ( m_node->m_flags & HAS_ENUM ) {
                   const auto & a = m_node->m_value->unsafe_at( "enum" ).unsafe_get_array();
@@ -1271,7 +1296,13 @@ namespace tao
                if ( m_match ) validate_enum( [&]( sax_compare< Traits > & c ){ c.key( v ); return ! c.match(); } );
                if ( m_match ) validate_collections( [&]( schema_consumer & c ){ c.key( v ); return ! c.match(); } );
                if ( m_match && m_hash ) m_hash->key( v );
-               if ( m_match ) m_required.erase( v );
+               if ( m_match && ( m_count.size() == 1 ) && ( m_node->m_dependencies || ! m_node->m_required.empty() ) ) {
+                  if ( ! m_keys.insert( v ).second ) {
+                     // duplicate keys immediately invalidate!
+                     // TODO: throw?
+                     m_match = false;
+                  }
+               }
                if ( m_match && m_properties.empty() && ( m_count.size() == 1 ) ) {
                   if ( const auto * p = m_node->m_properties ) {
                      const auto & o = p->unsafe_get_object();
@@ -1329,7 +1360,29 @@ namespace tao
                if ( m_match ) validate_collections( []( schema_consumer & c ){ c.end_object(); return ! c.match(); } );
                if ( m_match && m_hash ) m_hash->end_object();
                if ( m_match && ( m_count.size() == 1 ) ) validate_members( m_count.back() );
-               if ( m_match && ! m_required.empty() ) m_match = false; // missing required members
+               if ( m_match && ( m_count.size() == 1 ) && ! m_node->m_required.empty() ) {
+                  if ( ! std::includes( m_keys.begin(), m_keys.end(), m_node->m_required.begin(), m_node->m_required.end() ) ) {
+                     m_match = false;
+                  }
+               }
+               if ( m_match && ( m_count.size() == 1 ) && m_node->m_dependencies ) {
+                  for ( const auto & e : m_node->m_dependencies->unsafe_get_object() ) {
+                     if ( m_keys.find( e.first ) != m_keys.end() ) {
+                        const auto * p = e.second.skip_raw_ptr();
+                        if ( p->is_array() ) {
+                           // TODO: switch to std::include-based (aka more efficient) comparison
+                           for ( const auto & r : p->unsafe_get_array() ) {
+                              if ( m_keys.find( r.skip_raw_ptr()->unsafe_get_string() ) == m_keys.end() ) {
+                                 m_match = false;
+                                 goto fail;
+                              }
+                           }
+                        }
+                        // TODO: implement schema dependencies
+                     }
+                  }
+               }
+            fail:
                m_count.pop_back();
             }
          };
