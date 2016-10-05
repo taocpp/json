@@ -337,12 +337,12 @@ namespace tao
          template< typename T >
          tao::optional< T > optional() const
          {
-           if ( this->is_null() ) {
-              return tao::nullopt;
-           }
-           else {
-              return this->as< T >();
-           }
+            if ( this->is_null() ) {
+               return tao::nullopt;
+            }
+            else {
+               return this->as< T >();
+            }
          }
 
          // The unsafe_get_*() accessor functions MUST NOT be
