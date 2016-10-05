@@ -327,7 +327,7 @@ namespace tao
          }
 
          template< typename T >
-         typename std::enable_if< !internal::has_extract< Traits< T >, basic_value >::value, T >::type as() const
+         typename std::enable_if< ! internal::has_extract< Traits< T >, basic_value >::value, T >::type as() const
          {
             T nrv;
             as( nrv );
@@ -890,7 +890,7 @@ namespace tao
                case json::type::OBJECT:
                   return m_union.o.empty();
                case json::type::RAW_PTR:
-                  return !m_union.p;
+                  return ! m_union.p;
             }
             assert( false );  // LCOV_EXCL_LINE
          }
