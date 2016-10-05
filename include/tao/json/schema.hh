@@ -468,7 +468,7 @@ namespace tao
                   try {
                      m_pattern.reset( new std::regex( p->unsafe_get_string() ) );
                   }
-                  catch( const std::exception & e ) {
+                  catch( const std::regex_error & e ) {
                      throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be a regular expression: " + std::string( e.what() ) );
                   }
                }
@@ -655,7 +655,12 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"patternProperties\" must be of type 'object'" );
                   }
                   for ( const auto & e : p->unsafe_get_object() ) {
-                     m_pattern_properties.emplace_back( std::regex( e.first ), e.second.skip_raw_ptr() );
+                     try {
+                        m_pattern_properties.emplace_back( std::regex( e.first ), e.second.skip_raw_ptr() );
+                     }
+                     catch( const std::regex_error & e ) {
+                        throw std::runtime_error( "invalid JSON Schema: keys in object \"patternProperties\" must be regular expressions: " + std::string( e.what() ) );
+                     }
                      m_referenced_pointers.insert( e.second.skip_raw_ptr() );
                   }
                }
@@ -674,9 +679,9 @@ namespace tao
 
                // TODO: dependencies
 
-               // TODO: default
+               // default
                if ( const auto * p = find( "default" ) ) {
-                  // TODO: the value must validate against the JSON Schema itself
+                  // TODO: the value should validate against the JSON Schema itself
                }
             }
 
