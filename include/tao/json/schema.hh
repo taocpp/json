@@ -109,8 +109,9 @@ namespace tao
             const basic_value< Traits > * m_items = nullptr;
             const basic_value< Traits > * m_additional_items = nullptr;
             const basic_value< Traits > * m_properties = nullptr;
-            const basic_value< Traits > * m_pattern_properties = nullptr;
             const basic_value< Traits > * m_additional_properties = nullptr;
+
+            std::vector< std::pair< std::regex, const basic_value< Traits > * > > m_pattern_properties;
 
             std::set< const basic_value< Traits > * > m_referenced_pointers;
 
@@ -654,15 +655,9 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"patternProperties\" must be of type 'object'" );
                   }
                   for ( const auto & e : p->unsafe_get_object() ) {
-                     try {
-                        std::regex( e.first );
-                     }
-                     catch( const std::exception & e ) {
-                        throw std::runtime_error( "invalid JSON Schema: keys of \"patternProperties\" must be regular expressions: " + std::string( e.what() ) );
-                     }
+                     m_pattern_properties.emplace_back( std::regex( e.first ), e.second.skip_raw_ptr() );
                      m_referenced_pointers.insert( e.second.skip_raw_ptr() );
                   }
-                  m_pattern_properties = p;
                }
 
                // additionalProperties
@@ -1282,14 +1277,11 @@ namespace tao
                         m_properties.emplace_back( new schema_consumer( m_container, * jt->second ) );
                      }
                   }
-                  if ( const auto * p = m_node->m_pattern_properties ) {
-                     for ( const auto & e : p->unsafe_get_object() ) {
-                        std::regex re( e.first );
-                        if ( std::regex_search( v, re ) ) {
-                           const auto it = m_container->m_nodes.find( & e.second );
-                           assert( it != m_container->m_nodes.end() );
-                           m_properties.emplace_back( new schema_consumer( m_container, * it->second ) );
-                        }
+                  for ( const auto & e : m_node->m_pattern_properties ) {
+                     if ( std::regex_search( v, e.first ) ) {
+                        const auto it = m_container->m_nodes.find( e.second );
+                        assert( it != m_container->m_nodes.end() );
+                        m_properties.emplace_back( new schema_consumer( m_container, * it->second ) );
                      }
                   }
                   if ( m_properties.empty() ) {
