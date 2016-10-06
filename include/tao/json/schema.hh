@@ -30,6 +30,15 @@ namespace tao
    {
       namespace internal
       {
+         struct hostname_label : tao_json_pegtl::seq< tao_json_pegtl::alnum, tao_json_pegtl::rep_max< 62, tao_json_pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > > {};
+         struct hostname : tao_json_pegtl::list_must< hostname_label, tao_json_pegtl::one< '.' > > {};
+
+         template< typename Rule >
+         bool parse( const std::string & v )
+         {
+            return tao_json_pegtl::parse< tao_json_pegtl::seq< Rule, tao_json_pegtl::eof > >( v, "" );
+         }
+
          enum schema_flags
          {
             NONE = 0,
@@ -1066,17 +1075,17 @@ namespace tao
                      // TODO: Implement me!
                      break;
                   case schema_format::HOSTNAME:
-                     // TODO: Implement me!
+                     if ( ! internal::parse< internal::hostname >( v ) ) m_match = false;
                      break;
                   case schema_format::IPV4:
-                     if ( ! tao_json_pegtl::parse< tao_json_pegtl::seq< tao_json_pegtl::uri::IPv4address, tao_json_pegtl::eof > >( v, "" ) ) m_match = false;
+                     if ( ! internal::parse< tao_json_pegtl::uri::IPv4address >( v ) ) m_match = false;
                      break;
                   case schema_format::IPV6:
-                     if ( ! tao_json_pegtl::parse< tao_json_pegtl::seq< tao_json_pegtl::uri::IPv6address, tao_json_pegtl::eof > >( v, "" ) ) m_match = false;
+                     if ( ! internal::parse< tao_json_pegtl::uri::IPv6address >( v ) ) m_match = false;
                      break;
                   case schema_format::URI:
                      // TODO: What rule exactly should we apply here?? JSON Schema is not exactly the best spec I've ever read...
-                     if ( ! tao_json_pegtl::parse< tao_json_pegtl::seq< tao_json_pegtl::uri::URI, tao_json_pegtl::eof > >( v, "" ) ) m_match = false;
+                     if ( ! internal::parse< tao_json_pegtl::uri::URI >( v ) ) m_match = false;
                      break;
                   case schema_format::NONE:
                      ;
