@@ -912,42 +912,42 @@ namespace tao
                validate_multiple_of( v );
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
-                  if ( v >= m_node->m_maximum.i ) m_match = false;
-                  break;
-               case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
                   if ( v > m_node->m_maximum.i ) m_match = false;
                   break;
-               case HAS_MAXIMUM_UNSIGNED:
-                  if ( v >= 0 && static_cast< std::uint64_t >( v ) >= m_node->m_maximum.u ) m_match = false;
+               case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
+                  if ( v >= m_node->m_maximum.i ) m_match = false;
                   break;
-               case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
+               case HAS_MAXIMUM_UNSIGNED:
                   if ( v >= 0 && static_cast< std::uint64_t >( v ) > m_node->m_maximum.u ) m_match = false;
                   break;
+               case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
+                  if ( v >= 0 && static_cast< std::uint64_t >( v ) >= m_node->m_maximum.u ) m_match = false;
+                  break;
                case HAS_MAXIMUM_DOUBLE:
-                  if ( v >= m_node->m_maximum.d ) m_match = false;
+                  if ( v > m_node->m_maximum.d ) m_match = false;
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
-                  if ( v > m_node->m_maximum.d ) m_match = false;
+                  if ( v >= m_node->m_maximum.d ) m_match = false;
                   break;
                }
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
-                  if ( v <= m_node->m_minimum.i ) m_match = false;
-                  break;
-               case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
                   if ( v < m_node->m_minimum.i ) m_match = false;
                   break;
-               case HAS_MINIMUM_UNSIGNED:
-                  if ( v < 0 || static_cast< std::uint64_t >( v ) <= m_node->m_minimum.u ) m_match = false;
+               case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
+                  if ( v <= m_node->m_minimum.i ) m_match = false;
                   break;
-               case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
+               case HAS_MINIMUM_UNSIGNED:
                   if ( v < 0 || static_cast< std::uint64_t >( v ) < m_node->m_minimum.u ) m_match = false;
                   break;
+               case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
+                  if ( v < 0 || static_cast< std::uint64_t >( v ) <= m_node->m_minimum.u ) m_match = false;
+                  break;
                case HAS_MINIMUM_DOUBLE:
-                  if ( v <= m_node->m_minimum.d ) m_match = false;
+                  if ( v < m_node->m_minimum.d ) m_match = false;
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
-                  if ( v < m_node->m_minimum.d ) m_match = false;
+                  if ( v <= m_node->m_minimum.d ) m_match = false;
                   break;
                }
             }
@@ -957,42 +957,42 @@ namespace tao
                validate_multiple_of( v );
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
-                  if ( m_node->m_maximum.i < 0 || v >= static_cast< std::uint64_t >( m_node->m_maximum.i ) ) m_match = false;
-                  break;
-               case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
                   if ( m_node->m_maximum.i < 0 || v > static_cast< std::uint64_t >( m_node->m_maximum.i ) ) m_match = false;
                   break;
-               case HAS_MAXIMUM_UNSIGNED:
-                  if ( v >= m_node->m_maximum.u ) m_match = false;
+               case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
+                  if ( m_node->m_maximum.i < 0 || v >= static_cast< std::uint64_t >( m_node->m_maximum.i ) ) m_match = false;
                   break;
-               case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
+               case HAS_MAXIMUM_UNSIGNED:
                   if ( v > m_node->m_maximum.u ) m_match = false;
                   break;
+               case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
+                  if ( v >= m_node->m_maximum.u ) m_match = false;
+                  break;
                case HAS_MAXIMUM_DOUBLE:
-                  if ( v >= m_node->m_maximum.d ) m_match = false;
+                  if ( v > m_node->m_maximum.d ) m_match = false;
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
-                  if ( v > m_node->m_maximum.d ) m_match = false;
+                  if ( v >= m_node->m_maximum.d ) m_match = false;
                   break;
                }
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
-                  if ( m_node->m_minimum.i >= 0 && v <= static_cast< std::uint64_t >( m_node->m_minimum.i ) ) m_match = false;
-                  break;
-               case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
                   if ( m_node->m_minimum.i >= 0 && v < static_cast< std::uint64_t >( m_node->m_minimum.i ) ) m_match = false;
                   break;
-               case HAS_MINIMUM_UNSIGNED:
-                  if ( v <= m_node->m_minimum.u ) m_match = false;
+               case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
+                  if ( m_node->m_minimum.i >= 0 && v <= static_cast< std::uint64_t >( m_node->m_minimum.i ) ) m_match = false;
                   break;
-               case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
+               case HAS_MINIMUM_UNSIGNED:
                   if ( v < m_node->m_minimum.u ) m_match = false;
                   break;
+               case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
+                  if ( v <= m_node->m_minimum.u ) m_match = false;
+                  break;
                case HAS_MINIMUM_DOUBLE:
-                  if ( v <= m_node->m_minimum.d ) m_match = false;
+                  if ( v < m_node->m_minimum.d ) m_match = false;
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
-                  if ( v < m_node->m_minimum.d ) m_match = false;
+                  if ( v <= m_node->m_minimum.d ) m_match = false;
                   break;
                }
             }
@@ -1002,42 +1002,42 @@ namespace tao
                validate_multiple_of( v );
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
-                  if ( v >= m_node->m_maximum.i ) m_match = false;
-                  break;
-               case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
                   if ( v > m_node->m_maximum.i ) m_match = false;
                   break;
-               case HAS_MAXIMUM_UNSIGNED:
-                  if ( v >= m_node->m_maximum.u ) m_match = false;
+               case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
+                  if ( v >= m_node->m_maximum.i ) m_match = false;
                   break;
-               case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
+               case HAS_MAXIMUM_UNSIGNED:
                   if ( v > m_node->m_maximum.u ) m_match = false;
                   break;
+               case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
+                  if ( v >= m_node->m_maximum.u ) m_match = false;
+                  break;
                case HAS_MAXIMUM_DOUBLE:
-                  if ( v >= m_node->m_maximum.d ) m_match = false;
+                  if ( v > m_node->m_maximum.d ) m_match = false;
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
-                  if ( v > m_node->m_maximum.d ) m_match = false;
+                  if ( v >= m_node->m_maximum.d ) m_match = false;
                   break;
                }
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
-                  if ( v <= m_node->m_minimum.i ) m_match = false;
-                  break;
-               case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
                   if ( v < m_node->m_minimum.i ) m_match = false;
                   break;
-               case HAS_MINIMUM_UNSIGNED:
-                  if ( v <= m_node->m_minimum.u ) m_match = false;
+               case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
+                  if ( v <= m_node->m_minimum.i ) m_match = false;
                   break;
-               case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
+               case HAS_MINIMUM_UNSIGNED:
                   if ( v < m_node->m_minimum.u ) m_match = false;
                   break;
+               case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
+                  if ( v <= m_node->m_minimum.u ) m_match = false;
+                  break;
                case HAS_MINIMUM_DOUBLE:
-                  if ( v <= m_node->m_minimum.d ) m_match = false;
+                  if ( v < m_node->m_minimum.d ) m_match = false;
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
-                  if ( v < m_node->m_minimum.d ) m_match = false;
+                  if ( v <= m_node->m_minimum.d ) m_match = false;
                   break;
                }
             }
