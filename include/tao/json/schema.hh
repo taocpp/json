@@ -1128,34 +1128,24 @@ namespace tao
                }
                if ( const auto * p = m_node->m_all_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
-                     const auto it = m_container->m_nodes.find( e.skip_raw_ptr() );
-                     assert( it != m_container->m_nodes.end() );
-                     m_all_of.emplace_back( new schema_consumer( m_container, * it->second ) );
+                     m_all_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
                   }
                }
                if ( const auto * p = m_node->m_any_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
-                     const auto it = m_container->m_nodes.find( e.skip_raw_ptr() );
-                     assert( it != m_container->m_nodes.end() );
-                     m_any_of.emplace_back( new schema_consumer( m_container, * it->second ) );
+                     m_any_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
                   }
                }
                if ( const auto * p = m_node->m_one_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
-                     const auto it = m_container->m_nodes.find( e.skip_raw_ptr() );
-                     assert( it != m_container->m_nodes.end() );
-                     m_one_of.emplace_back( new schema_consumer( m_container, * it->second ) );
+                     m_one_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
                   }
                }
                if ( const auto * p = m_node->m_not ) {
-                  const auto it = m_container->m_nodes.find( p );
-                  assert( it != m_container->m_nodes.end() );
-                  m_not.reset( new schema_consumer( m_container, * it->second ) );
+                  m_not = m_container->consumer( p );
                }
                for ( const auto & e : m_node->m_schema_dependencies ) {
-                  const auto it = m_container->m_nodes.find( e.second );
-                  assert( it != m_container->m_nodes.end() );
-                  m_schema_dependencies.emplace( e.first, std::unique_ptr< schema_consumer >( new schema_consumer( m_container, * it->second ) ) );
+                  m_schema_dependencies.emplace( e.first, m_container->consumer( e.second ) );
                }
             }
 
@@ -1280,25 +1270,19 @@ namespace tao
                if ( m_match && m_count.empty() ) {
                   if ( const auto * p = m_node->m_items ) {
                      if ( p->is_object() ) {
-                        const auto it = m_container->m_nodes.find( p );
-                        assert( it != m_container->m_nodes.end() );
-                        m_item.reset( new schema_consumer( m_container, * it->second ) );
+                        m_item = m_container->consumer( p );
                      }
                      else {
                         const auto & a = p->unsafe_get_array();
                         if ( ! a.empty() ) {
-                           const auto it = m_container->m_nodes.find( a[ 0 ].skip_raw_ptr() );
-                           assert( it != m_container->m_nodes.end() );
-                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                           m_item = m_container->consumer( a[ 0 ].skip_raw_ptr() );
                         }
                      }
                   }
                   if ( ! m_item ) {
                      if ( const auto * p = m_node->m_additional_items ) {
                         if ( p->is_object() ) {
-                           const auto it = m_container->m_nodes.find( p );
-                           assert( it != m_container->m_nodes.end() );
-                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                           m_item = m_container->consumer( p );
                         }
                      }
                   }
@@ -1331,25 +1315,19 @@ namespace tao
                if ( m_match && ( m_count.size() == 1 ) ) {
                   if ( const auto * p = m_node->m_items ) {
                      if ( p->is_object() ) {
-                        const auto it = m_container->m_nodes.find( p );
-                        assert( it != m_container->m_nodes.end() );
-                        m_item.reset( new schema_consumer( m_container, * it->second ) );
+                        m_item = m_container->consumer( p );
                      }
                      else {
                         const auto & a = p->unsafe_get_array();
                         if ( next < a.size() ) {
-                           const auto it = m_container->m_nodes.find( a[ next ].skip_raw_ptr() );
-                           assert( it != m_container->m_nodes.end() );
-                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                           m_item = m_container->consumer( a[ next ].skip_raw_ptr() );
                         }
                      }
                   }
                   if ( ! m_item ) {
                      if ( const auto * p = m_node->m_additional_items ) {
                         if ( p->is_object() ) {
-                           const auto it = m_container->m_nodes.find( p );
-                           assert( it != m_container->m_nodes.end() );
-                           m_item.reset( new schema_consumer( m_container, * it->second ) );
+                           m_item = m_container->consumer( p );
                         }
                      }
                   }
@@ -1407,16 +1385,12 @@ namespace tao
                      const auto & o = p->unsafe_get_object();
                      const auto it = o.find( v );
                      if ( it != o.end() ) {
-                        const auto jt = m_container->m_nodes.find( it->second.skip_raw_ptr() );
-                        assert( jt != m_container->m_nodes.end() );
-                        m_properties.emplace_back( new schema_consumer( m_container, * jt->second ) );
+                        m_properties.push_back( m_container->consumer( it->second.skip_raw_ptr() ) );
                      }
                   }
                   for ( const auto & e : m_node->m_pattern_properties ) {
                      if ( std::regex_search( v, e.first ) ) {
-                        const auto it = m_container->m_nodes.find( e.second );
-                        assert( it != m_container->m_nodes.end() );
-                        m_properties.emplace_back( new schema_consumer( m_container, * it->second ) );
+                        m_properties.push_back( m_container->consumer( e.second ) );
                      }
                   }
                   if ( m_properties.empty() ) {
@@ -1427,9 +1401,7 @@ namespace tao
                            }
                         }
                         else {
-                           const auto it = m_container->m_nodes.find( p );
-                           assert( it != m_container->m_nodes.end() );
-                           m_properties.emplace_back( new schema_consumer( m_container, * it->second ) );
+                           m_properties.push_back( m_container->consumer( p ) );
                         }
                      }
                   }
@@ -1485,19 +1457,15 @@ namespace tao
          {
          private:
             basic_value< Traits > m_value;
-            friend struct schema_node< Traits >;
-            friend class schema_consumer< Traits >;
 
             using nodes_t = std::map< const basic_value< Traits > *, std::unique_ptr< schema_node< Traits > > >;
             const nodes_t m_nodes;
-
-            const schema_node< Traits > * m_root;
 
             nodes_t parse()
             {
                nodes_t result;
                resolve_references( m_value );
-               m_root = result.emplace( & m_value, std::unique_ptr< schema_node< Traits > >( new schema_node< Traits >( this, m_value ) ) ).first->second.get();
+               result.emplace( & m_value, std::unique_ptr< schema_node< Traits > >( new schema_node< Traits >( this, m_value ) ) );
                while ( true ) {
                   std::set< const basic_value< Traits > * > required;
                   for ( const auto & e : result ) {
@@ -1523,9 +1491,18 @@ namespace tao
                    m_nodes( parse() )
             { }
 
+            std::unique_ptr< schema_consumer< Traits > > consumer( const basic_value< Traits > * p ) const
+            {
+               const auto it = m_nodes.find( p );
+               if ( it == m_nodes.end() ) {
+                  throw std::logic_error( "invalid node ptr, no schema registered" );
+               }
+               return std::unique_ptr< schema_consumer< Traits > >( new schema_consumer< Traits >( this->shared_from_this(), * it->second ) );
+            }
+
             std::unique_ptr< schema_consumer< Traits > > consumer() const
             {
-               return std::unique_ptr< schema_consumer< Traits > >( new schema_consumer< Traits >( this->shared_from_this(), * m_root ) );
+               return consumer( & m_value );
             }
          };
 
