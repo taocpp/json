@@ -68,7 +68,8 @@ namespace tao
 
             HAS_MAX_PROPERTIES = 1 << 22,
             HAS_MIN_PROPERTIES = 1 << 23,
-            NO_ADDITIONAL_PROPERTIES = 1 << 24
+            NO_ADDITIONAL_PROPERTIES = 1 << 24,
+            HAS_DEPENDENCIES = 1 << 25
          };
 
          enum class schema_format
@@ -110,7 +111,9 @@ namespace tao
             const basic_value< Traits > * m_additional_items = nullptr;
             const basic_value< Traits > * m_properties = nullptr;
             const basic_value< Traits > * m_additional_properties = nullptr;
-            const basic_value< Traits > * m_dependencies = nullptr;
+
+            std::map< std::string, std::set< std::string > > m_property_dependencies;
+            std::map< std::string, const basic_value< Traits > * > m_schema_dependencies;
 
             std::vector< std::pair< std::regex, const basic_value< Traits > * > > m_pattern_properties;
 
@@ -686,23 +689,31 @@ namespace tao
                   for ( const auto & e : p->unsafe_get_object() ) {
                      const auto * p2 = e.second.skip_raw_ptr();
                      if ( p2->is_object() ) {
-                        // schema dependency
+                        m_schema_dependencies.emplace( e.first, p2 );
+                        m_referenced_pointers.insert( p2 );
                      }
                      else if ( p2->is_array() ) {
                         if ( p2->empty() ) {
                            throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must have at least one element" );
                         }
+                        std::set< std::string > s;
                         for ( const auto & r : p2->unsafe_get_array() ) {
                            if ( ! r.is_string() ) {
                               throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must contain elements of type 'string'" );
                            }
+                           if ( ! s.emplace( r.unsafe_get_string() ).second ) {
+                              throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must contain unique elements of type 'string'" );
+                           }
                         }
+                        m_property_dependencies.emplace( e.first, std::move( s ) );
                      }
                      else {
                         throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" must be of type 'object' or 'array'" );
                      }
                   }
-                  m_dependencies = p;
+                  if ( ! p->empty() ) {
+                     m_flags = m_flags | HAS_DEPENDENCIES;
+                  }
                }
 
                // default
@@ -739,6 +750,7 @@ namespace tao
             std::vector< std::unique_ptr< schema_consumer > > m_all_of;
             std::vector< std::unique_ptr< schema_consumer > > m_any_of;
             std::vector< std::unique_ptr< schema_consumer > > m_one_of;
+            std::map< std::string, std::unique_ptr< schema_consumer > > m_schema_dependencies;
             std::unique_ptr< schema_consumer > m_not;
             std::unique_ptr< schema_consumer > m_item;
             bool m_match = true;
@@ -786,6 +798,20 @@ namespace tao
                   if ( f( p ) ) {
                      m_match = false;
                      break;
+                  }
+               }
+            }
+
+            template< typename F >
+            void validate_schema_dependencies( F && f )
+            {
+               auto it = m_schema_dependencies.begin();
+               while ( it != m_schema_dependencies.end() ) {
+                  if ( f( it->second ) ) {
+                     it = m_schema_dependencies.erase( it );
+                  }
+                  else {
+                     ++it;
                   }
                }
             }
@@ -845,6 +871,7 @@ namespace tao
                if ( m_match ) validate_any_of( f2 );
                if ( m_match ) validate_one_of( f2 );
                if ( m_match ) validate_not( f2 );
+               if ( m_match ) validate_schema_dependencies( f2 );
             }
 
             static bool is_multiple_of( const double v, const double d )
@@ -1092,6 +1119,11 @@ namespace tao
                   assert( it != m_container->m_nodes.end() );
                   m_not.reset( new schema_consumer( m_container, * it->second ) );
                }
+               for ( const auto & e : m_node->m_schema_dependencies ) {
+                  const auto it = m_container->m_nodes.find( e.second );
+                  assert( it != m_container->m_nodes.end() );
+                  m_schema_dependencies.emplace( e.first, std::unique_ptr< schema_consumer >( new schema_consumer( m_container, * it->second ) ) );
+               }
             }
 
             schema_consumer( const schema_consumer & ) = delete;
@@ -1104,6 +1136,21 @@ namespace tao
             {
                if ( m_match && ( m_one_of.size() > 1 ) ) m_match = false;
                if ( m_match && m_not ) m_match = false;
+               if ( m_match && m_node->m_flags & HAS_DEPENDENCIES ) {
+                  for ( const auto & e : m_node->m_schema_dependencies ) {
+                     if ( m_keys.find( e.first ) != m_keys.end() ) {
+                        const auto it = m_schema_dependencies.find( e.first );
+                        if ( it == m_schema_dependencies.end() ) {
+                           m_match = false;
+                           break;
+                        }
+                        if ( ! it->second->finalize() ) {
+                           m_match = false;
+                           break;
+                        }
+                     }
+                  }
+               }
                return m_match;
             }
 
@@ -1296,7 +1343,7 @@ namespace tao
                if ( m_match ) validate_enum( [&]( sax_compare< Traits > & c ){ c.key( v ); return ! c.match(); } );
                if ( m_match ) validate_collections( [&]( schema_consumer & c ){ c.key( v ); return ! c.match(); } );
                if ( m_match && m_hash ) m_hash->key( v );
-               if ( m_match && ( m_count.size() == 1 ) && ( m_node->m_dependencies || ! m_node->m_required.empty() ) ) {
+               if ( m_match && ( m_count.size() == 1 ) && ( m_node->m_flags & HAS_DEPENDENCIES || ! m_node->m_required.empty() ) ) {
                   if ( ! m_keys.insert( v ).second ) {
                      // duplicate keys immediately invalidate!
                      // TODO: throw?
@@ -1365,24 +1412,17 @@ namespace tao
                      m_match = false;
                   }
                }
-               if ( m_match && ( m_count.size() == 1 ) && m_node->m_dependencies ) {
-                  for ( const auto & e : m_node->m_dependencies->unsafe_get_object() ) {
+               if ( m_match && ( m_count.size() == 1 ) && m_node->m_flags & HAS_DEPENDENCIES ) {
+                  for ( const auto & e : m_node->m_property_dependencies ) {
                      if ( m_keys.find( e.first ) != m_keys.end() ) {
-                        const auto * p = e.second.skip_raw_ptr();
-                        if ( p->is_array() ) {
-                           // TODO: switch to std::include-based (aka more efficient) comparison
-                           for ( const auto & r : p->unsafe_get_array() ) {
-                              if ( m_keys.find( r.skip_raw_ptr()->unsafe_get_string() ) == m_keys.end() ) {
-                                 m_match = false;
-                                 goto fail;
-                              }
-                           }
+                        if ( ! std::includes( m_keys.begin(), m_keys.end(), e.second.begin(), e.second.end() ) ) {
+                           m_match = false;
+                           break;
                         }
                         // TODO: implement schema dependencies
                      }
                   }
                }
-            fail:
                m_count.pop_back();
             }
          };
