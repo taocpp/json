@@ -1134,8 +1134,27 @@ namespace tao
 
             bool finalize()
             {
-               if ( m_match && ( m_one_of.size() > 1 ) ) m_match = false;
-               if ( m_match && m_not ) m_match = false;
+               if ( m_match && ! m_all_of.empty() ) {
+                  for ( auto & e : m_all_of ) {
+                     if ( ! e->finalize() ) {
+                        m_match = false;
+                        break;
+                     }
+                  }
+               }
+               if ( m_match && ! m_any_of.empty() ) {
+                  m_any_of.erase( std::remove_if( m_any_of.begin(), m_any_of.end(), []( const std::unique_ptr< schema_consumer > & c ){ return ! c->finalize(); } ), m_any_of.end() );
+                  if ( m_any_of.empty() ) {
+                     m_match = false;
+                  }
+               }
+               if ( m_match && ! m_one_of.empty() ) {
+                  m_one_of.erase( std::remove_if( m_one_of.begin(), m_one_of.end(), []( const std::unique_ptr< schema_consumer > & c ){ return ! c->finalize(); } ), m_one_of.end() );
+                  if ( m_one_of.size() != 1 ) {
+                     m_match = false;
+                  }
+               }
+               if ( m_match && m_not && m_not->finalize() ) m_match = false;
                if ( m_match && m_node->m_flags & HAS_DEPENDENCIES ) {
                   for ( const auto & e : m_node->m_schema_dependencies ) {
                      if ( m_keys.find( e.first ) != m_keys.end() ) {
