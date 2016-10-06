@@ -16,6 +16,8 @@ namespace tao
 {
    namespace json
    {
+      std::size_t tests = 0;
+
       void test( const std::string & name )
       {
          std::cout << "File: " << name << std::endl;
@@ -27,6 +29,7 @@ namespace tao
                   schema s( e.at( "schema" ) );
                   for ( const auto & c : e.at( "tests" ).get_array() ) {
                      std::cout << "    Testcase: " << c.at( "description" ).get_string() << std::endl;
+                     ++tests;
                      try {
                         const bool result = s.validate( c.at( "data" ) );
                         const bool expected = c.at( "valid" ).get_boolean();
@@ -95,7 +98,7 @@ namespace tao
 
          // TODO: Remove this temporary work-around once all tests succeed
          if ( failed ) {
-            std::cerr << "JSON Schema failures: " << failed << std::endl;
+            std::cerr << "JSON Schema failures: " << failed << '/' << tests << std::endl;
          }
          failed = 0;
       }
