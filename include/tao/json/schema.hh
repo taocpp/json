@@ -10,6 +10,8 @@
 #include <tao/json/sax/compare.hh>
 #include <tao/json/sax/hash.hh>
 #include <tao/json/sax/traverse_value.hh>
+#include <tao/json/external/pegtl/parse.hh>
+#include <tao/json/external/pegtl/contrib/uri.hh>
 
 #include <cstdint>
 #include <set>
@@ -1056,7 +1058,29 @@ namespace tao
                   }
                }
                if ( m_match && m_node->m_format != schema_format::NONE ) {
-                  // TODO: validate format
+                  switch ( m_node->m_format ) {
+                  case schema_format::DATE_TIME:
+                     // TODO: Implement me!
+                     break;
+                  case schema_format::EMAIL:
+                     // TODO: Implement me!
+                     break;
+                  case schema_format::HOSTNAME:
+                     // TODO: Implement me!
+                     break;
+                  case schema_format::IPV4:
+                     if ( ! tao_json_pegtl::parse< tao_json_pegtl::seq< tao_json_pegtl::uri::IPv4address, tao_json_pegtl::eof > >( v, "" ) ) m_match = false;
+                     break;
+                  case schema_format::IPV6:
+                     if ( ! tao_json_pegtl::parse< tao_json_pegtl::seq< tao_json_pegtl::uri::IPv6address, tao_json_pegtl::eof > >( v, "" ) ) m_match = false;
+                     break;
+                  case schema_format::URI:
+                     // TODO: What rule exactly should we apply here?? JSON Schema is not exactly the best spec I've ever read...
+                     if ( ! tao_json_pegtl::parse< tao_json_pegtl::seq< tao_json_pegtl::uri::URI, tao_json_pegtl::eof > >( v, "" ) ) m_match = false;
+                     break;
+                  case schema_format::NONE:
+                     ;
+                  }
                }
             }
 
