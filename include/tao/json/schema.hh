@@ -1459,37 +1459,36 @@ namespace tao
             basic_value< Traits > m_value;
 
             using nodes_t = std::map< const basic_value< Traits > *, std::unique_ptr< schema_node< Traits > > >;
-            const nodes_t m_nodes;
+            nodes_t m_nodes;
 
-            nodes_t parse()
+            void make_node( const basic_value< Traits > * p )
             {
-               nodes_t result;
+               m_nodes.emplace( p, std::unique_ptr< schema_node< Traits > >( new schema_node< Traits >( this, * p ) ) );
+            }
+
+         public:
+            explicit schema_container( const basic_value< Traits > & v )
+                 : m_value( * v.skip_raw_ptr() )
+            {
                resolve_references( m_value );
-               result.emplace( & m_value, std::unique_ptr< schema_node< Traits > >( new schema_node< Traits >( this, m_value ) ) );
+               make_node( & m_value );
                while ( true ) {
                   std::set< const basic_value< Traits > * > required;
-                  for ( const auto & e : result ) {
+                  for ( const auto & e : m_nodes ) {
                      auto s = e.second->referenced_pointers();
                      required.insert( s.begin(), s.end() );
                   }
-                  for ( const auto & e : result ) {
+                  for ( const auto & e : m_nodes ) {
                      required.erase( e.first );
                   }
                   if ( required.empty() ) {
                      break;
                   }
                   for ( const auto & e : required ) {
-                     result.emplace( e, std::unique_ptr< schema_node< Traits > >( new schema_node< Traits >( this, * e ) ) );
+                     make_node( e );
                   }
                }
-               return result;
             }
-
-         public:
-            explicit schema_container( const basic_value< Traits > & v )
-                 : m_value( * v.skip_raw_ptr() ),
-                   m_nodes( parse() )
-            { }
 
             std::unique_ptr< schema_consumer< Traits > > consumer( const basic_value< Traits > * p ) const
             {
