@@ -47,19 +47,13 @@ namespace tao
 
          inline bool parse_date_time( const std::string & v )
          {
-            using namespace tao_json_pegtl;
-            using d4 = seq< digit, digit, digit, digit >;
-            using m = one< '-' >;
-            using d2 = seq< digit, digit >;
-            using T = one< 'T' >;
-            using c = one< ':' >;
-            using d = one< '.' >;
-            using Z = one< 'Z' >;
-            using pm = one< '+', '-' >;
-            if ( ! tao_json_pegtl::parse< seq< d4, m, d2, m, d2, T, d2, c, d2, c, d2, opt< d, plus< digit > >, sor< Z, seq< pm, d2, c, d2 > >, eof > >( v, "" ) ) return false;
+            static std::regex re( "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]\\d{2}:[0-5]\\d)$" );
+            if ( ! std::regex_search( v, re ) ) return false;
+
             const unsigned year = ( v[ 0 ] - '0' ) * 1000 + ( v[ 1 ] - '0' ) * 100 + ( v[ 2 ] - '0' ) * 10 + ( v[ 3 ] - '0' );
             const unsigned month = ( v[ 5 ] - '0' ) * 10 + ( v[ 6 ] - '0' );
             const unsigned day = ( v[ 8 ] - '0' ) * 10 + ( v[ 9 ] - '0' );
+
             if ( month == 0 || month > 12 ) return false;
             if ( day == 0 || day > 31 ) return false;
             if ( month == 2 ) {
@@ -75,13 +69,16 @@ namespace tao
                   return false;
                }
             }
+
             const unsigned hour = ( v[ 11 ] - '0' ) * 10 + ( v[ 12 ] - '0' );
-            if ( hour >= 24 || v[ 14 ] >= '6' || v[ 17 ] >= '6' ) return false; // TODO: Leap seconds?
+            if ( hour >= 24 ) return false;
+
             if ( * v.rbegin() != 'Z' ) {
                const auto s = v.size();
                const unsigned tz_hour = ( v[ s - 5 ] - '0' ) * 10 + ( v[ s - 4 ] - '0' );
-               if ( tz_hour >= 24 || v[ s - 2 ] >= '6' ) return false;
+               if ( tz_hour >= 24 ) return false;
             }
+
             return true;
          }
 
