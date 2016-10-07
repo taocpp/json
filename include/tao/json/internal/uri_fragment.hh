@@ -141,7 +141,7 @@ namespace tao
          {
             static const char * hex = "0123456789ABCDEF";
 
-            std::string result;
+            std::string result = "#";
             while ( it != end ) {
                result += '/';
                for ( const unsigned char c : it->key() ) {
