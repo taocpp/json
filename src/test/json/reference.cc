@@ -19,11 +19,21 @@ namespace tao
          TEST_ASSERT( v1 == v2 );
       }
 
+      void test_throws( const value & v )
+      {
+         value v2( v );
+         TEST_THROWS( resolve_references( v2 ) );
+      }
+
       void unit_test()
       {
          test( "{\"foo\":1,\"bar\":2}", "{\"foo\":1,\"bar\":2}" );
          test( "{\"foo\":1,\"bar\":{\"$ref\":\"#/foo\"}}", "{\"foo\":1,\"bar\":1}" );
          test( "{\"foo\":\"#/foo\",\"bar\":{\"$ref\":{\"$ref\":\"#/foo\"}}}", "{\"foo\":\"#/foo\",\"bar\":\"#/foo\"}" );
+
+         test_throws( { { "$ref", "#" } } );
+         test_throws( { { "$ref", "#/foo" } } );
+         test_throws( { { "$ref", "#/foo" }, { "foo", 0 } } );
       }
 
    } // json
