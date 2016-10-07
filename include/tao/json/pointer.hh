@@ -224,10 +224,8 @@ namespace tao
                   return 0;
                }
                else if ( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
-                  try {
+                  if ( key.size() < 20 || key < "18446744073709551616" ) {
                      return std::stoull( key );
-                  }
-                  catch( ... ) {
                   }
                }
             }
