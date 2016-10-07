@@ -45,19 +45,19 @@ namespace tao
                      }
                      catch( const std::exception & e ) {
                         ++failed;
-                        std::cerr << "    Failed with exception: " << e.what() << std::endl;
+                        std::cout << "    Failed with exception: " << e.what() << std::endl;
                      }
                   }
                }
                catch( const std::exception & e ) {
                   ++failed;
-                  std::cerr << "  Failed with exception: " << e.what() << std::endl;
+                  std::cout << "  Failed with exception: " << e.what() << std::endl;
                }
             }
          }
          catch( const std::exception & e ) {
             ++failed;
-            std::cerr << "Failed with exception: " << e.what() << std::endl;
+            std::cout << "Failed with exception: " << e.what() << std::endl;
          }
       }
 
