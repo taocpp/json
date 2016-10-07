@@ -30,13 +30,59 @@ namespace tao
    {
       namespace internal
       {
+         // TODO: Check if these grammars are correct.
+         struct local_part_label : tao_json_pegtl::plus< tao_json_pegtl::sor< tao_json_pegtl::alnum, tao_json_pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > > {};
+         struct local_part : tao_json_pegtl::list_must< local_part_label, tao_json_pegtl::one< '.' > > {};
+
          struct hostname_label : tao_json_pegtl::seq< tao_json_pegtl::alnum, tao_json_pegtl::rep_max< 62, tao_json_pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > > {};
          struct hostname : tao_json_pegtl::list_must< hostname_label, tao_json_pegtl::one< '.' > > {};
+
+         struct email : tao_json_pegtl::seq< local_part, tao_json_pegtl::one< '@' >, hostname > {};
 
          template< typename Rule >
          bool parse( const std::string & v )
          {
             return tao_json_pegtl::parse< tao_json_pegtl::seq< Rule, tao_json_pegtl::eof > >( v, "" );
+         }
+
+         inline bool parse_date_time( const std::string & v )
+         {
+            using namespace tao_json_pegtl;
+            using d4 = seq< digit, digit, digit, digit >;
+            using m = one< '-' >;
+            using d2 = seq< digit, digit >;
+            using T = one< 'T' >;
+            using c = one< ':' >;
+            using d = one< '.' >;
+            using Z = one< 'Z' >;
+            using pm = one< '+', '-' >;
+            if ( ! tao_json_pegtl::parse< seq< d4, m, d2, m, d2, T, d2, c, d2, c, d2, opt< d, plus< digit > >, sor< Z, seq< pm, d2, c, d2 > >, eof > >( v, "" ) ) return false;
+            const unsigned year = ( v[ 0 ] - '0' ) * 1000 + ( v[ 1 ] - '0' ) * 100 + ( v[ 2 ] - '0' ) * 10 + ( v[ 3 ] - '0' );
+            const unsigned month = ( v[ 5 ] - '0' ) * 10 + ( v[ 6 ] - '0' );
+            const unsigned day = ( v[ 8 ] - '0' ) * 10 + ( v[ 9 ] - '0' );
+            if ( month == 0 || month > 12 ) return false;
+            if ( day == 0 || day > 31 ) return false;
+            if ( month == 2 ) {
+               const bool is_leap_year = ( year % 4 == 0 ) && ( year % 100 != 0 || year % 400 == 0 );
+               if ( day > ( is_leap_year? 29 : 28 ) ) return false;
+            }
+            else if ( day == 31 ) {
+               switch ( month ) {
+               case 4:
+               case 6:
+               case 9:
+               case 11:
+                  return false;
+               }
+            }
+            const unsigned hour = ( v[ 11 ] - '0' ) * 10 + ( v[ 12 ] - '0' );
+            if ( hour >= 24 || v[ 14 ] >= '6' || v[ 17 ] >= '6' ) return false; // TODO: Leap seconds?
+            if ( * v.rbegin() != 'Z' ) {
+               const auto s = v.size();
+               const unsigned tz_hour = ( v[ s - 5 ] - '0' ) * 10 + ( v[ s - 4 ] - '0' );
+               if ( tz_hour >= 24 || v[ s - 2 ] >= '6' ) return false;
+            }
+            return true;
          }
 
          enum schema_flags
@@ -1069,13 +1115,13 @@ namespace tao
                if ( m_match && m_node->m_format != schema_format::NONE ) {
                   switch ( m_node->m_format ) {
                   case schema_format::DATE_TIME:
-                     // TODO: Implement me!
+                     if ( ! internal::parse_date_time( v ) ) m_match = false;
                      break;
                   case schema_format::EMAIL:
-                     // TODO: Implement me!
+                     if ( ( v.size() > 255 ) || ! internal::parse< internal::email >( v ) ) m_match = false;
                      break;
                   case schema_format::HOSTNAME:
-                     if ( ! internal::parse< internal::hostname >( v ) ) m_match = false;
+                     if ( ( v.size() > 255 ) || ! internal::parse< internal::hostname >( v ) ) m_match = false;
                      break;
                   case schema_format::IPV4:
                      if ( ! internal::parse< tao_json_pegtl::uri::IPv4address >( v ) ) m_match = false;
