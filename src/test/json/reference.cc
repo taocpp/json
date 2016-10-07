@@ -33,7 +33,7 @@ namespace tao
 
          test_throws( { { "$ref", "#" } } );
          test_throws( { { "$ref", "#/foo" } } );
-         test_throws( { { "$ref", "#/foo" }, { "foo", 0 } } );
+         test_throws( { { "foo", 0 }, { "bar", { { "$ref", "#/foo/bar" } } } } );
       }
 
    } // json
