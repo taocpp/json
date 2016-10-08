@@ -254,9 +254,9 @@ namespace tao
                return p;
             }
 
-            schema_node( const schema_container< Traits > * c, const basic_value< Traits > & v2 )
+            schema_node( const schema_container< Traits > * c, const basic_value< Traits > & v )
                  : m_container( c ),
-                   m_value( & v2 )
+                   m_value( & v )
             {
                // general
                if ( ! m_value->is_object() ) {
@@ -793,7 +793,7 @@ namespace tao
          {
          private:
             const std::shared_ptr< const schema_container< Traits > > m_container;
-            const schema_node< Traits > * m_node;
+            const schema_node< Traits > * const m_node;
 
             std::vector< std::unique_ptr< sax_compare< Traits > > > m_enum;
             std::unique_ptr< sax::hash > m_hash;
@@ -1486,7 +1486,6 @@ namespace tao
                            m_match = false;
                            break;
                         }
-                        // TODO: implement schema dependencies
                      }
                   }
                }
