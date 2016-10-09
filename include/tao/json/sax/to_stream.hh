@@ -26,16 +26,19 @@ namespace tao
 
          public:
             explicit to_stream( std::ostream & os ) noexcept
-                 : os( os )
+                 : os( os ),
+                   first( true )
             { }
 
             void null()
             {
+               if ( ! first ) os.put( ',' );
                os.write( "null", 4 );
             }
 
             void boolean( const bool v )
             {
+               if ( ! first ) os.put( ',' );
                if ( v ) {
                   os.write( "true", 4 );
                }
@@ -46,21 +49,25 @@ namespace tao
 
             void number( const std::int64_t v )
             {
+               if ( ! first ) os.put( ',' );
                os << v;
             }
 
             void number( const std::uint64_t v )
             {
+               if ( ! first ) os.put( ',' );
                os << v;
             }
 
             void number( const double v )
             {
+               if ( ! first ) os.put( ',' );
                json_double_conversion::Dtostr( os, v );
             }
 
             void string( const std::string & v )
             {
+               if ( ! first ) os.put( ',' );
                os.put( '"' );
                internal::escape( os, v );
                os.put( '"' );
@@ -69,21 +76,18 @@ namespace tao
             // array
             void begin_array()
             {
+               if ( ! first ) os.put( ',' );
                os.put( '[' );
                first = true;
             }
 
             void element()
             {
-               os.put( ',' );
                first = false;
             }
 
             void end_array()
             {
-               if ( ! first ) {
-                  os.seekp( -1, std::ios_base::cur );
-               }
                os.put( ']' );
                first = false;
             }
@@ -91,18 +95,16 @@ namespace tao
             // object
             void begin_object()
             {
+               if ( ! first ) os.put( ',' );
                os.put( '{' );
                first = true;
             }
 
             void key( const std::string & v )
             {
-               if ( ! first ) {
-                  os.put( ',' );
-               }
-               os.put( '"' );
-               internal::escape( os, v );
-               os.write( "\":", 2 );
+               string( v );
+               os.put( ':' );
+               first = true;
             }
 
             void member()
