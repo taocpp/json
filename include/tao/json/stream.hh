@@ -8,7 +8,7 @@
 #include <iomanip>
 
 #include "value.hh"
-#include "internal/to_stream.hh"
+#include "to_stream.hh"
 
 namespace tao
 {
@@ -24,10 +24,10 @@ namespace tao
          o.width( 0 );
 
          if ( w > 0 ) {
-            internal::to_stream( o, v, w );
+            json::to_stream( o, v, w );
          }
          else {
-            internal::to_stream( o, v );
+            json::to_stream( o, v );
          }
          return o;
       }

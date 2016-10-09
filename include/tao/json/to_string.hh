@@ -7,8 +7,7 @@
 #include <sstream>
 
 #include "value.hh"
-
-#include "internal/to_stream.hh"
+#include "to_stream.hh"
 
 namespace tao
 {
@@ -18,7 +17,7 @@ namespace tao
       std::string to_string( const basic_value< Traits > & v )
       {
          std::ostringstream o;
-         internal::to_stream( o, v );
+         json::to_stream( o, v );
          return o.str();
       }
 
@@ -26,7 +25,7 @@ namespace tao
       std::string to_string( const basic_value< Traits > & v, const unsigned indent )
       {
          std::ostringstream o;
-         internal::to_stream( o, v, indent );
+         json::to_stream( o, v, indent );
          return o.str();
       }
 

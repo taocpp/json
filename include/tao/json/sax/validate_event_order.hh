@@ -34,6 +34,11 @@ namespace tao
             std::vector< state_t > stack;
 
          public:
+            bool is_complete() const noexcept
+            {
+               return state == EXPECT_NOTHING;
+            }
+
             void null()
             {
                switch ( state ) {

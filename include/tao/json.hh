@@ -8,6 +8,7 @@
 #include "json/value.hh"
 
 // SAX producers
+//#include "json/sax/from_stream.hh" // includes PEGTL header/grammar
 #include "json/sax/from_string.hh" // includes PEGTL header/grammar
 #include "json/sax/parse_file.hh" // includes PEGTL header/grammar
 #include "json/sax/traverse_value.hh" // DOM to SAX
@@ -30,13 +31,14 @@
 #include "json/parse_file.hh" // includes PEGTL header/grammar
 
 // DOM writers
-#include "json/stream.hh"
+#include "json/to_stream.hh"
 #include "json/to_string.hh"
+#include "json/stream.hh" // operator<<
 
 // DOM support
 #include "json/self_contained.hh"
 #include "json/patch.hh"
 //#include "json/diff.hh"
-//#include "json/schema.hh"
+#include "json/schema.hh"
 
 #endif
