@@ -27,11 +27,12 @@ namespace tao
             const std::size_t indent;
 
             std::string current = "\n";
-            bool first_value = true;
+            bool first = true;
             bool after_key = true;
 
             void next()
             {
+               if ( ! first ) os.put( ',' );
                if ( after_key ) {
                   after_key = false;
                }
@@ -43,7 +44,8 @@ namespace tao
          public:
             to_pretty_stream( std::ostream & os, const std::size_t indent )
               : os( os ),
-                indent( indent )
+                indent( indent ),
+                first( true )
             { }
 
             void null()
@@ -95,24 +97,20 @@ namespace tao
                next();
                os.put( '[' );
                current.resize( current.size() + indent, ' ' );
-               first_value = true;
+               first = true;
             }
 
             void element()
             {
-               os.put( ',' );
-               first_value = false;
+               first = false;
             }
 
             void end_array()
             {
                current.resize( current.size() - indent );
-               if ( ! first_value ) {
-                  os.seekp( -1, std::ios_base::cur );
-                  os << current;
-               }
+               if ( ! first ) os << current;
                os.put( ']' );
-               first_value = false;
+               first = false;
             }
 
             // object
@@ -121,33 +119,28 @@ namespace tao
                next();
                os.put( '{' );
                current.resize( current.size() + indent, ' ' );
-               first_value = true;
+               first = true;
             }
 
             void key( const std::string & v )
             {
-               next();
-               os.put( '"' );
-               internal::escape( os, v );
-               os.write( "\": ", 3 );
+               string( v );
+               os.write( ": ", 2 );
+               first = true;
                after_key = true;
             }
 
             void member()
             {
-               os.put( ',' );
-               first_value = false;
+               first = false;
             }
 
             void end_object()
             {
                current.resize( current.size() - indent );
-               if ( ! first_value ) {
-                  os.seekp( -1, std::ios_base::cur );
-                  os << current;
-               }
+               if ( ! first ) os << current;
                os.put( '}' );
-               first_value = false;
+               first = false;
             }
          };
 

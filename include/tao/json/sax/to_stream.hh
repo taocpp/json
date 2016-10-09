@@ -24,6 +24,11 @@ namespace tao
             std::ostream & os;
             bool first;
 
+            void next()
+            {
+               if ( ! first ) os.put( ',' );
+            }
+
          public:
             explicit to_stream( std::ostream & os ) noexcept
                  : os( os ),
@@ -32,13 +37,13 @@ namespace tao
 
             void null()
             {
-               if ( ! first ) os.put( ',' );
+               next();
                os.write( "null", 4 );
             }
 
             void boolean( const bool v )
             {
-               if ( ! first ) os.put( ',' );
+               next();
                if ( v ) {
                   os.write( "true", 4 );
                }
@@ -49,25 +54,25 @@ namespace tao
 
             void number( const std::int64_t v )
             {
-               if ( ! first ) os.put( ',' );
+               next();
                os << v;
             }
 
             void number( const std::uint64_t v )
             {
-               if ( ! first ) os.put( ',' );
+               next();
                os << v;
             }
 
             void number( const double v )
             {
-               if ( ! first ) os.put( ',' );
+               next();
                json_double_conversion::Dtostr( os, v );
             }
 
             void string( const std::string & v )
             {
-               if ( ! first ) os.put( ',' );
+               next();
                os.put( '"' );
                internal::escape( os, v );
                os.put( '"' );
@@ -76,7 +81,7 @@ namespace tao
             // array
             void begin_array()
             {
-               if ( ! first ) os.put( ',' );
+               next();
                os.put( '[' );
                first = true;
             }
@@ -95,7 +100,7 @@ namespace tao
             // object
             void begin_object()
             {
-               if ( ! first ) os.put( ',' );
+               next();
                os.put( '{' );
                first = true;
             }
