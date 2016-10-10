@@ -64,13 +64,13 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 | `emplace_array` | constructs an underlying `std::vector` value in-place |
 | `emplace_object` | constructs an underlying `std::map` value in-place |
 | `unsafe_assign_raw_ptr` | assigns a `const basic_value *` value to the element |
-| `append` | appends element(s) at the specified position |
-| `insert` | inserts element(s) at the specified position |
+| `append` | appends elements at the specified position |
+| `insert` | inserts elements at the specified position |
 | `prepare_array` | constructs an empty underlying `std::vector` if necessary |
 | `emplace_back` | appends a value to the underlying `std::vector` |
 | `prepare_object` | constructs an empty underlying `std::map` if necessary |
 | `emplace` | inserts a value to the underlying `std::map` |
-| `erase` | erases element(s) with the specified position |
+| `erase` | erases elements with the specified position |
 | `swap` | swaps the contents |
 | **Other** |
 | `destroy` | destroys the element |
@@ -81,3 +81,5 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 | **Non-member functions** | Description |
 | --- | --- |
 | `operator==` <br/> `operator!=` <br/> `operator<` <br> `operator<=` <br> `operator>` <br> `operator>=` | lexicographically compares the elements
+| `operator+=` | inserts elements to an object
+| `operator-=` | removes elements to an object
