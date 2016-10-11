@@ -1,10 +1,10 @@
-### `tao::json::basic_value::basic_value`
+### <small>`tao::json::basic_value::`</small>`basic_value`
 
 | Method | # |
 | --- | --- |
 | `basic_value()` | 1 |
-| `basic_value( basic_value&& ) <br> ` | 2 |
+| `basic_value( basic_value&& )` | 2 |
 | `basic_value( const basic_value& )` <br/> `basic_value( basic_value& )` | 3 |
-| `basic_value( object_initializer&& )` | 4 |
-| `basic_value( const object_initializer& )` <br/> `basic_value( object_initializer& )` | 5 |
+| `basic_value( std::initializer_list< pair< Traits > > && )` | 4 |
+| `basic_value( const std::initializer_list< pair< Traits > > & )` <br/> `basic_value( std::initializer_list< pair< Traits > > & )` | 5 |
 | `template< typename T >` <br/> `basic_value( T&& )` | 6 |
