@@ -1,4 +1,4 @@
-## `tao::json::basic_value`
+### `tao::json::basic_value`
 
 Defined in `<tao/json/value.hh>`
 
@@ -18,7 +18,7 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 
 | Method | Description |
 | --- | --- |
-| (constructor) | constructs the value |
+| [(constructor)](value_ctor.md) | constructs the value |
 | (destructor) | destructs the value |
 | `operator=` | assigns the value |
 | **Element type** |
