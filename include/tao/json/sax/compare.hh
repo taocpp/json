@@ -4,7 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_SAX_COMPARE_HH
 #define TAOCPP_JSON_INCLUDE_SAX_COMPARE_HH
 
-#include <tao/json/value.hh>
+#include "../value.hh"
 
 #include <vector>
 #include <cstddef>
