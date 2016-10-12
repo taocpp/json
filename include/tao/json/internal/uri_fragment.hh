@@ -49,7 +49,7 @@ namespace tao
             false, false, false, false, false, false, false, false
          };
 
-         char xdigit_value( const char c )
+         inline char xdigit_value( const char c )
          {
             switch ( c ) {
             case '0': return 0;
@@ -72,7 +72,7 @@ namespace tao
             throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );
          }
 
-         pointer uri_fragment_to_pointer( const std::string & v )
+         inline pointer uri_fragment_to_pointer( const std::string & v )
          {
             pointer result;
             if ( v.empty() || v[ 0 ] != '#' ) {
