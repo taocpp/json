@@ -4,14 +4,14 @@
 #ifndef TAOCPP_JSON_INCLUDE_SCHEMA_HH
 #define TAOCPP_JSON_INCLUDE_SCHEMA_HH
 
-#include <tao/json/value.hh>
-#include <tao/json/pointer.hh>
-#include <tao/json/reference.hh>
-#include <tao/json/sax/compare.hh>
-#include <tao/json/sax/hash.hh>
-#include <tao/json/sax/traverse_value.hh>
-#include <tao/json/external/pegtl/parse.hh>
-#include <tao/json/external/pegtl/contrib/uri.hh>
+#include "value.hh"
+#include "pointer.hh"
+#include "reference.hh"
+#include "sax/compare.hh"
+#include "sax/hash.hh"
+#include "sax/traverse_value.hh"
+#include "external/pegtl/parse.hh"
+#include "external/pegtl/contrib/uri.hh"
 
 #include <cstdint>
 #include <set>
