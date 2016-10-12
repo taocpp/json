@@ -19,24 +19,26 @@ namespace tao
          void traverse_value( const Value & v, Handler & handler )
          {
             switch( v.type() ) {
+               case Value::value_t::discarded:
+                  throw std::logic_error( "invalid discarded value" );
                case Value::value_t::null:
                   handler.null();
-                  break;
+                  return;
                case Value::value_t::boolean:
                   handler.boolean( v.template get< bool >() );
-                  break;
+                  return;
                case Value::value_t::number_integer:
                   handler.number( v.template get< std::int64_t >() );
-                  break;
+                  return;
                case Value::value_t::number_unsigned:
                   handler.number( v.template get< std::uint64_t >() );
-                  break;
+                  return;
                case Value::value_t::number_float:
                   handler.number( v.template get< double >() );
-                  break;
+                  return;
                case Value::value_t::string:
                   handler.string( v.template get_ref< const std::string & >() );
-                  break;
+                  return;
                case Value::value_t::array:
                   handler.begin_array();
                   for( const auto & e : v ) {
@@ -44,7 +46,7 @@ namespace tao
                      handler.element();
                   }
                   handler.end_array();
-                  break;
+                  return;
                case Value::value_t::object:
                   handler.begin_object();
                   for( typename Value::const_iterator it = v.begin(); it != v.end(); ++it ) {
@@ -53,10 +55,9 @@ namespace tao
                      handler.member();
                   }
                   handler.end_object();
-                  break;
-               default:
-                  throw std::logic_error( "invalid value for type()" );  // LCOV_EXCL_LINE
+                  return;
             }
+            throw std::logic_error( "invalid value for type()" );  // LCOV_EXCL_LINE
          }
 
       } // nlohmann

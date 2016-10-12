@@ -19,24 +19,26 @@ namespace tao
          void traverse_value( const basic_value< Traits > & v, Handler & handler )
          {
             switch( v.type() ) {
+               case type::DISCARDED:
+                  throw std::logic_error( "unable to traverse discarded values" );
                case type::NULL_:
                   handler.null();
-                  break;
+                  return;
                case type::BOOLEAN:
                   handler.boolean( v.unsafe_get_boolean() );
-                  break;
+                  return;
                case type::SIGNED:
                   handler.number( v.unsafe_get_signed() );
-                  break;
+                  return;
                case type::UNSIGNED:
                   handler.number( v.unsafe_get_unsigned() );
-                  break;
+                  return;
                case type::DOUBLE:
                   handler.number( v.unsafe_get_double() );
-                  break;
+                  return;
                case type::STRING:
                   handler.string( v.unsafe_get_string() );
-                  break;
+                  return;
                case type::ARRAY:
                   handler.begin_array();
                   for( const auto & e : v.unsafe_get_array() ) {
@@ -44,7 +46,7 @@ namespace tao
                      handler.element();
                   }
                   handler.end_array();
-                  break;
+                  return;
                case type::OBJECT:
                   handler.begin_object();
                   for( const auto & e : v.unsafe_get_object() ) {
@@ -53,7 +55,7 @@ namespace tao
                      handler.member();
                   }
                   handler.end_object();
-                  break;
+                  return;
                case type::RAW_PTR:
                   if ( const basic_value< Traits > * p = v.unsafe_get_raw_ptr() ) {
                      sax::traverse_value( * p, handler );
@@ -61,10 +63,9 @@ namespace tao
                   else {
                      handler.null();
                   }
-                  break;
-               default:
-                  throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
+                  return;
             }
+            throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
          }
 
          // SAX producer to generate events from an rvalue JSON value

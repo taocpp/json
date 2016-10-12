@@ -38,7 +38,7 @@ namespace tao
 
       void test_null()
       {
-         const value a;
+         const value a = null;
          const value b( null );
          const value * p = nullptr;
 
@@ -362,7 +362,7 @@ namespace tao
 
       void test_mixed()
       {
-         const value n;
+         const value n = from_string( "null" );
          const value b = from_string( "true" );
          const value i = from_string( "-42" );
          const value u = from_string( "42" );

@@ -34,6 +34,7 @@ namespace tao
          void resolve_references( basic_value< Traits > & r, basic_value< Traits > & v )
          {
             switch ( v.type() ) {
+               case json::type::DISCARDED:
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:

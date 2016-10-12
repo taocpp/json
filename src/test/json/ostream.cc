@@ -44,7 +44,6 @@ namespace tao
          test_simple( value::array( { 1 } ), "[1]" );
          test_simple( value::array( { 1, 2, 3 } ), "[1,2,3]" );
          test_simple( empty_object, "{}" );
-         test_simple( {}, "null" );  // this is the default ctor
          test_simple( { { "foo", 42 } }, "{\"foo\":42}" );
          test_simple( { { "foo", 42u } }, "{\"foo\":42}" );
          test_simple( { { "foo", 42 }, { "bar", 43 } }, "{\"bar\":43,\"foo\":42}" );
@@ -65,7 +64,6 @@ namespace tao
          test_pretty( value::array( { 1 } ), "[\n  1\n]" );
          test_pretty( value::array( { 1, 2u, 3 } ), "[\n  1,\n  2,\n  3\n]" );
          test_pretty( empty_object, "{}" );
-         test_pretty( {}, "null" );  // this is the default ctor
          test_pretty( { { "foo", 42 } }, "{\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", 42 }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );

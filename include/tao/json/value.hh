@@ -156,8 +156,8 @@ namespace tao
          basic_value & operator= ( basic_value v ) noexcept
          {
             unsafe_destroy();
-            seize( std::move( v ) );
             m_type = v.m_type;
+            seize( std::move( v ) );
             return * this;
          }
 
@@ -171,6 +171,11 @@ namespace tao
          json::type type() const noexcept
          {
             return m_type;
+         }
+
+         explicit operator bool() const noexcept
+         {
+            return m_type != json::type::DISCARDED;
          }
 
          bool is_null() const noexcept
@@ -764,7 +769,7 @@ namespace tao
          void prepare_array()
          {
             switch ( m_type ) {
-               case json::type::NULL_:
+               case json::type::DISCARDED:
                   unsafe_emplace_array();
                case json::type::ARRAY:
                   break;
@@ -803,7 +808,7 @@ namespace tao
          void prepare_object()
          {
             switch ( m_type ) {
-               case json::type::NULL_:
+               case json::type::DISCARDED:
                   unsafe_emplace_object();
                case json::type::OBJECT:
                   break;
@@ -876,8 +881,9 @@ namespace tao
          bool empty() const noexcept
          {
             switch ( m_type ) {
-               case json::type::NULL_:
+               case json::type::DISCARDED:
                   return true;
+               case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
                case json::type::UNSIGNED:
@@ -898,6 +904,7 @@ namespace tao
          void unsafe_destroy() noexcept
          {
             switch ( m_type ) {
+               case json::type::DISCARDED:
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
@@ -921,38 +928,49 @@ namespace tao
          void destroy() noexcept
          {
             unsafe_destroy();
-            m_type = json::type::NULL_;
+            m_type = json::type::DISCARDED;
          }
 
       private:
          void seize( basic_value && r ) noexcept
          {
             switch ( r.m_type ) {
+               case json::type::DISCARDED:
+                  return;
                case json::type::NULL_:
+                  r.m_type = json::type::DISCARDED;
                   return;
                case json::type::BOOLEAN:
                   m_union.b = r.m_union.b;
+                  r.m_type = json::type::DISCARDED;
                   return;
                case json::type::SIGNED:
                   m_union.i = r.m_union.i;
+                  r.m_type = json::type::DISCARDED;
                   return;
                case json::type::UNSIGNED:
                   m_union.u = r.m_union.u;
+                  r.m_type = json::type::DISCARDED;
                   return;
                case json::type::DOUBLE:
                   m_union.d = r.m_union.d;
+                  r.m_type = json::type::DISCARDED;
                   return;
                case json::type::STRING:
                   new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
+                  r.destroy();
                   return;
                case json::type::ARRAY:
                   new ( & m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
+                  r.destroy();
                   return;
                case json::type::OBJECT:
                   new ( & m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
+                  r.destroy();
                   return;
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
+                  r.m_type = json::type::DISCARDED;
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -961,6 +979,7 @@ namespace tao
          void embed( const basic_value & r )
          {
             switch ( r.m_type ) {
+               case json::type::DISCARDED:
                case json::type::NULL_:
                   return;
                case json::type::BOOLEAN:
@@ -992,7 +1011,7 @@ namespace tao
          }
 
          internal::value_union< basic_value > m_union;
-         json::type m_type = json::type::NULL_;
+         json::type m_type = json::type::DISCARDED;
       };
 
       template< template< typename ... > class Traits >
@@ -1044,6 +1063,8 @@ namespace tao
             return false;
          }
          switch ( lhs.type() ) {
+            case type::DISCARDED:
+               return true;
             case type::NULL_:
                return true;
             case type::BOOLEAN:
@@ -1115,6 +1136,8 @@ namespace tao
             return lhs.type() < rhs.type();
          }
          switch ( lhs.type() ) {
+            case type::DISCARDED:
+               return false;
             case type::NULL_:
                return false;
             case type::BOOLEAN:

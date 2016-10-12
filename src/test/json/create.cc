@@ -14,10 +14,10 @@ namespace tao
    {
       void test_null()
       {
-         const value v;
+         const value v = null;
          const value v2( v );
 
-         TEST_ASSERT( v.empty() );
+         TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( v.is_null() );
          TEST_ASSERT( ! v.is_boolean() );

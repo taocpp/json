@@ -16,6 +16,7 @@ namespace tao
       bool is_self_contained( basic_value< Traits > & v ) noexcept
       {
          switch ( v.type() ) {
+            case json::type::DISCARDED:
             case json::type::NULL_:
             case json::type::BOOLEAN:
             case json::type::SIGNED:
@@ -49,6 +50,7 @@ namespace tao
       void make_self_contained( basic_value< Traits > & v )
       {
          switch ( v.type() ) {
+            case json::type::DISCARDED:
             case json::type::NULL_:
             case json::type::BOOLEAN:
             case json::type::SIGNED:
