@@ -48,11 +48,27 @@ namespace tao
          value u = v;
          TEST_ASSERT( u.type() == type::UNINITIALIZED );
          TEST_ASSERT( u == v );
+         TEST_ASSERT( u <= v );
+         TEST_ASSERT( u >= v );
+         TEST_ASSERT( !( u != v ) );
+         TEST_ASSERT( !( u < v ) );
+         TEST_ASSERT( !( u > v ) );
 
          const value w = std::move( u );
-         TEST_ASSERT( u.type() == type::DISCARDED );
          TEST_ASSERT( w.type() == type::UNINITIALIZED );
          TEST_ASSERT( w == v );
+         TEST_ASSERT( w <= v );
+         TEST_ASSERT( w >= v );
+         TEST_ASSERT( !( w != v ) );
+         TEST_ASSERT( !( w < v ) );
+         TEST_ASSERT( !( w > v ) );
+
+         TEST_ASSERT( u.type() == type::DISCARDED );
+         TEST_THROWS( u = u );
+
+         u.reset();
+         TEST_ASSERT( u.type() == type::UNINITIALIZED );
+         TEST_ASSERT( u == v );
       }
 
       void test_null()
