@@ -16,29 +16,33 @@ namespace tao
       bool is_self_contained( basic_value< Traits > & v ) noexcept
       {
          switch ( v.type() ) {
-            case json::type::DISCARDED:
-            case json::type::NULL_:
-            case json::type::BOOLEAN:
-            case json::type::SIGNED:
-            case json::type::UNSIGNED:
-            case json::type::DOUBLE:
-            case json::type::STRING:
+            case type::UNINITIALIZED:
                return true;
-            case json::type::ARRAY:
+            case type::DISCARDED:
+               assert( v.type() != type::DISCARDED );  // LCOV_EXCL_LINE
+               return false;
+            case type::NULL_:
+            case type::BOOLEAN:
+            case type::SIGNED:
+            case type::UNSIGNED:
+            case type::DOUBLE:
+            case type::STRING:
+               return true;
+            case type::ARRAY:
                for ( auto & e : v.unsafe_get_array() ) {
                   if ( ! is_self_contained( e ) ) {
                      return false;
                   }
                }
                return true;
-            case json::type::OBJECT:
+            case type::OBJECT:
                for ( auto & e : v.unsafe_get_object() ) {
                   if ( ! is_self_contained( e.second ) ) {
                      return false;
                   }
                }
                return true;
-            case json::type::RAW_PTR:
+            case type::RAW_PTR:
                return false;
          }
          assert( false );  // LCOV_EXCL_LINE
@@ -50,25 +54,28 @@ namespace tao
       void make_self_contained( basic_value< Traits > & v )
       {
          switch ( v.type() ) {
-            case json::type::DISCARDED:
-            case json::type::NULL_:
-            case json::type::BOOLEAN:
-            case json::type::SIGNED:
-            case json::type::UNSIGNED:
-            case json::type::DOUBLE:
-            case json::type::STRING:
+            case type::UNINITIALIZED:
                return;
-            case json::type::ARRAY:
+            case type::DISCARDED:
+               throw std::logic_error( "attempt to use a discarded value" );
+            case type::NULL_:
+            case type::BOOLEAN:
+            case type::SIGNED:
+            case type::UNSIGNED:
+            case type::DOUBLE:
+            case type::STRING:
+               return;
+            case type::ARRAY:
                for ( auto & e : v.unsafe_get_array() ) {
                   make_self_contained( e );
                }
                return;
-            case json::type::OBJECT:
+            case type::OBJECT:
                for ( auto & e : v.unsafe_get_object() ) {
                   make_self_contained( e.second );
                }
                return;
-            case json::type::RAW_PTR:
+            case type::RAW_PTR:
                if ( const auto * p = v.unsafe_get_raw_ptr() ) {
                   v = * p;
                   make_self_contained( v );

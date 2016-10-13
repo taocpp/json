@@ -34,7 +34,10 @@ namespace tao
          void resolve_references( basic_value< Traits > & r, basic_value< Traits > & v )
          {
             switch ( v.type() ) {
+               case json::type::UNINITIALIZED:
+                  return;
                case json::type::DISCARDED:
+                  throw std::logic_error( "attempt to use a discarded value" );
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:

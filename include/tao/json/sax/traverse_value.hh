@@ -19,6 +19,8 @@ namespace tao
          void traverse_value( const basic_value< Traits > & v, Handler & handler )
          {
             switch( v.type() ) {
+               case type::UNINITIALIZED:
+                  throw std::logic_error( "unable to traverse uninitialized values" );
                case type::DISCARDED:
                   throw std::logic_error( "unable to traverse discarded values" );
                case type::NULL_:

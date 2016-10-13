@@ -14,6 +14,7 @@ namespace tao
    {
       enum class type : std::uint8_t
       {
+         UNINITIALIZED,
          DISCARDED,
          NULL_,
          BOOLEAN,
@@ -41,6 +42,8 @@ namespace tao
       inline const char * to_string( const type t )
       {
          switch ( t ) {
+            case type::UNINITIALIZED:
+               return "uninitialized";
             case type::DISCARDED:
                return "discarded";
             case type::NULL_:

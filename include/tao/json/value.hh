@@ -175,7 +175,8 @@ namespace tao
 
          explicit operator bool() const noexcept
          {
-            return m_type != json::type::DISCARDED;
+            assert( m_type != json::type::DISCARDED );
+            return m_type != json::type::UNINITIALIZED;
          }
 
          bool is_null() const noexcept
@@ -769,7 +770,7 @@ namespace tao
          void prepare_array()
          {
             switch ( m_type ) {
-               case json::type::DISCARDED:
+               case json::type::UNINITIALIZED:
                   unsafe_emplace_array();
                case json::type::ARRAY:
                   break;
@@ -808,7 +809,7 @@ namespace tao
          void prepare_object()
          {
             switch ( m_type ) {
-               case json::type::DISCARDED:
+               case json::type::UNINITIALIZED:
                   unsafe_emplace_object();
                case json::type::OBJECT:
                   break;
@@ -881,8 +882,10 @@ namespace tao
          bool empty() const noexcept
          {
             switch ( m_type ) {
-               case json::type::DISCARDED:
+               case json::type::UNINITIALIZED:
                   return true;
+               case json::type::DISCARDED:
+                  assert( m_type != json::type::DISCARDED );  // LCOV_EXCL_LINE
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
@@ -904,6 +907,7 @@ namespace tao
          void unsafe_destroy() noexcept
          {
             switch ( m_type ) {
+               case json::type::UNINITIALIZED:
                case json::type::DISCARDED:
                case json::type::NULL_:
                case json::type::BOOLEAN:
@@ -931,46 +935,56 @@ namespace tao
             m_type = json::type::DISCARDED;
          }
 
+         void reset() noexcept
+         {
+            unsafe_destroy();
+            m_type = json::type::UNINITIALIZED;
+         }
+
       private:
          void seize( basic_value && r ) noexcept
          {
             switch ( r.m_type ) {
+               case json::type::UNINITIALIZED:
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+                  return;
                case json::type::DISCARDED:
+                  assert( r.m_type != json::type::DISCARDED );  // LCOV_EXCL_LINE
                   return;
                case json::type::NULL_:
-                  r.m_type = json::type::DISCARDED;
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::BOOLEAN:
                   m_union.b = r.m_union.b;
-                  r.m_type = json::type::DISCARDED;
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::SIGNED:
                   m_union.i = r.m_union.i;
-                  r.m_type = json::type::DISCARDED;
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::UNSIGNED:
                   m_union.u = r.m_union.u;
-                  r.m_type = json::type::DISCARDED;
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::DOUBLE:
                   m_union.d = r.m_union.d;
-                  r.m_type = json::type::DISCARDED;
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::STRING:
                   new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
-                  r.destroy();
+                  assert( ( r.destroy(), true ) );
                   return;
                case json::type::ARRAY:
                   new ( & m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
-                  r.destroy();
+                  assert( ( r.destroy(), true ) );
                   return;
                case json::type::OBJECT:
                   new ( & m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
-                  r.destroy();
+                  assert( ( r.destroy(), true ) );
                   return;
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
-                  r.m_type = json::type::DISCARDED;
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -979,7 +993,10 @@ namespace tao
          void embed( const basic_value & r )
          {
             switch ( r.m_type ) {
+               case json::type::UNINITIALIZED:
+                  return;
                case json::type::DISCARDED:
+                  throw std::logic_error( "attempt to use a discarded value" );
                case json::type::NULL_:
                   return;
                case json::type::BOOLEAN:
@@ -1011,7 +1028,7 @@ namespace tao
          }
 
          internal::value_union< basic_value > m_union;
-         json::type m_type = json::type::DISCARDED;
+         json::type m_type = json::type::UNINITIALIZED;
       };
 
       template< template< typename ... > class Traits >
@@ -1060,11 +1077,18 @@ namespace tao
                   return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned();
                }
             }
+            assert( lhs.type() != type::DISCARDED );
+            assert( rhs.type() != type::DISCARDED );
             return false;
          }
          switch ( lhs.type() ) {
-            case type::DISCARDED:
+            case type::UNINITIALIZED:
                return true;
+            case type::DISCARDED:
+               // LCOV_EXCL_START
+               assert( lhs.type() != type::DISCARDED );
+               break;
+               // LCOV_EXCL_STOP
             case type::NULL_:
                return true;
             case type::BOOLEAN:
@@ -1133,11 +1157,18 @@ namespace tao
                   return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned();
                }
             }
+            assert( lhs.type() != type::DISCARDED );
+            assert( rhs.type() != type::DISCARDED );
             return lhs.type() < rhs.type();
          }
          switch ( lhs.type() ) {
-            case type::DISCARDED:
+            case type::UNINITIALIZED:
                return false;
+            case type::DISCARDED:
+               // LCOV_EXCL_START
+               assert( lhs.type() != type::DISCARDED );
+               break;
+               // LCOV_EXCL_STOP
             case type::NULL_:
                return false;
             case type::BOOLEAN:
