@@ -27,6 +27,13 @@ namespace tao
 
       void unit_test()
       {
+         {
+            value e;
+            resolve_references( e );
+            value e2 = std::move( e );
+            TEST_THROWS( resolve_references( e ) );
+         }
+
          test( "{\"foo\":1,\"bar\":2}", "{\"foo\":1,\"bar\":2}" );
          test( "{\"foo\":1,\"bar\":{\"$ref\":\"#/foo\"}}", "{\"foo\":1,\"bar\":1}" );
          test( "{\"foo\":\"#/foo\",\"bar\":{\"$ref\":{\"$ref\":\"#/foo\"}}}", "{\"foo\":\"#/foo\",\"bar\":\"#/foo\"}" );
