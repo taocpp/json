@@ -885,7 +885,10 @@ namespace tao
                case json::type::UNINITIALIZED:
                   return true;
                case json::type::DISCARDED:
-                  assert( m_type != json::type::DISCARDED );  // LCOV_EXCL_LINE
+                  // LCOV_EXCL_START
+                  assert( m_type != json::type::DISCARDED );
+                  return true;
+                  // LCOV_EXCL_STOP
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
