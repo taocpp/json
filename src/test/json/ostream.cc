@@ -30,7 +30,13 @@ namespace tao
 
       void unit_test()
       {
-         const value v = 42;
+         value e;
+         value d = 42;
+
+         const value v = std::move( d );
+
+         TEST_THROWS( to_string( e ) );
+         TEST_THROWS( to_string( d ) );
 
          test_simple( null, "null" );
          test_simple( true, "true" );
