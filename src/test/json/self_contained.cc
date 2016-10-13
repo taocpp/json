@@ -12,7 +12,10 @@ namespace tao
    {
       void unit_test()
       {
-         value v = { { "foo", 1 } };
+         value e;
+
+         value d = { { "foo", 1 } };
+         value v = std::move( d );
 
          value v1 = { { "bar", v }, { "baz", value::array( { 2, v, 3, nullptr } ) } };
          value v2 = { { "bar", &v }, { "baz", value::array( { 2, &v, 3, nullptr } ) } };
@@ -38,10 +41,16 @@ namespace tao
          TEST_ASSERT( v3.at( "baz" ).at( 1 ).type() == type::OBJECT );
          TEST_ASSERT( v3.at( "baz" ).at( 3 ).type() == type::NULL_ );
 
+         TEST_ASSERT( is_self_contained( e ) );
+
          TEST_ASSERT( ! is_self_contained( v1 ) );
          TEST_ASSERT( ! is_self_contained( v2 ) );
          TEST_ASSERT( is_self_contained( v3 ) );
          TEST_ASSERT( is_self_contained( v4 ) );
+
+         make_self_contained( e );
+
+         TEST_THROWS( make_self_contained( d ) );
 
          make_self_contained( v1 );
          make_self_contained( v2 );

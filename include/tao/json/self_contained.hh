@@ -19,8 +19,10 @@ namespace tao
             case type::UNINITIALIZED:
                return true;
             case type::DISCARDED:
-               assert( v.type() != type::DISCARDED );  // LCOV_EXCL_LINE
+               // LCOV_EXCL_START
+               assert( v.type() != type::DISCARDED );
                return false;
+               // LCOV_EXCL_STOP
             case type::NULL_:
             case type::BOOLEAN:
             case type::SIGNED:
