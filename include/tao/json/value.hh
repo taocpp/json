@@ -952,8 +952,10 @@ namespace tao
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::DISCARDED:
-                  assert( r.m_type != json::type::DISCARDED );  // LCOV_EXCL_LINE
+                  // LCOV_EXCL_START
+                  assert( r.m_type != json::type::DISCARDED );
                   return;
+                  // LCOV_EXCL_STOP
                case json::type::NULL_:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
