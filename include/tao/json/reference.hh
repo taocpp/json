@@ -34,23 +34,23 @@ namespace tao
          void resolve_references( basic_value< Traits > & r, basic_value< Traits > & v )
          {
             switch ( v.type() ) {
-               case json::type::UNINITIALIZED:
+               case type::UNINITIALIZED:
                   return;
-               case json::type::DISCARDED:
+               case type::DISCARDED:
                   throw std::logic_error( "attempt to use a discarded value" );
-               case json::type::NULL_:
-               case json::type::BOOLEAN:
-               case json::type::SIGNED:
-               case json::type::UNSIGNED:
-               case json::type::DOUBLE:
-               case json::type::STRING:
+               case type::NULL_:
+               case type::BOOLEAN:
+               case type::SIGNED:
+               case type::UNSIGNED:
+               case type::DOUBLE:
+               case type::STRING:
                   return;
-               case json::type::ARRAY:
+               case type::ARRAY:
                   for ( auto & e : v.unsafe_get_array() ) {
                      resolve_references( r, e );
                   }
                   return;
-               case json::type::OBJECT:
+               case type::OBJECT:
                   for ( auto & e : v.unsafe_get_object() ) {
                      resolve_references( r, e.second );
                   }
@@ -93,7 +93,7 @@ namespace tao
                      }
                   }
                   return;
-               case json::type::RAW_PTR:
+               case type::RAW_PTR:
                   return;
             }
             throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE

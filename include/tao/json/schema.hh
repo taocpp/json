@@ -280,10 +280,10 @@ namespace tao
                // type
                if ( const auto * p = find( "type" ) ) {
                   switch ( p->type() ) {
-                     case json::type::STRING:
+                     case type::STRING:
                         add_type( p->unsafe_get_string() );
                         break;
-                     case json::type::ARRAY:
+                     case type::ARRAY:
                         for ( const auto & e : p->unsafe_get_array() ) {
                            if ( ! e.is_string() ) {
                               throw std::runtime_error( "invalid JSON Schema: elements in array \"type\" must be of type 'string'" );
@@ -366,7 +366,7 @@ namespace tao
                // multipleOf
                if ( const auto * p = find( "multipleOf" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         {
                            const auto i = p->unsafe_get_signed();
                            if ( i <= 0 ) {
@@ -376,7 +376,7 @@ namespace tao
                            m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                         }
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         {
                            const auto u = p->unsafe_get_unsigned();
                            if ( u == 0 ) {
@@ -386,7 +386,7 @@ namespace tao
                            m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                         }
                         break;
-                     case json::type::DOUBLE:
+                     case type::DOUBLE:
                         {
                            const auto d = p->unsafe_get_double();
                            if ( d <= 0 ) {
@@ -404,15 +404,15 @@ namespace tao
                // maximum
                if ( const auto * p = find( "maximum" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         m_maximum.i = p->unsafe_get_signed();
                         m_flags = m_flags | HAS_MAXIMUM_SIGNED;
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         m_maximum.u = p->unsafe_get_unsigned();
                         m_flags = m_flags | HAS_MAXIMUM_UNSIGNED;
                         break;
-                     case json::type::DOUBLE:
+                     case type::DOUBLE:
                         m_maximum.d = p->unsafe_get_double();
                         m_flags = m_flags | HAS_MAXIMUM_DOUBLE;
                         break;
@@ -437,15 +437,15 @@ namespace tao
                // minimum
                if ( const auto * p = find( "minimum" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         m_minimum.i = p->unsafe_get_signed();
                         m_flags = m_flags | HAS_MINIMUM_SIGNED;
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         m_minimum.u = p->unsafe_get_unsigned();
                         m_flags = m_flags | HAS_MINIMUM_UNSIGNED;
                         break;
-                     case json::type::DOUBLE:
+                     case type::DOUBLE:
                         m_minimum.d = p->unsafe_get_double();
                         m_flags = m_flags | HAS_MINIMUM_DOUBLE;
                         break;
@@ -470,7 +470,7 @@ namespace tao
                // maxLength
                if ( const auto * p = find( "maxLength" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         {
                            const auto i = p->unsafe_get_signed();
                            if ( i < 0 ) {
@@ -480,7 +480,7 @@ namespace tao
                            m_flags = m_flags | HAS_MAX_LENGTH;
                         }
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         m_max_length = p->unsafe_get_unsigned();
                         m_flags = m_flags | HAS_MAX_LENGTH;
                         break;
@@ -492,7 +492,7 @@ namespace tao
                // minLength
                if ( const auto * p = find( "minLength" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         {
                            const auto i = p->unsafe_get_signed();
                            if ( i < 0 ) {
@@ -504,7 +504,7 @@ namespace tao
                            }
                         }
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         {
                            const auto u = p->unsafe_get_unsigned();
                            if ( u > 0 ) {
@@ -589,7 +589,7 @@ namespace tao
                // maxItems
                if ( const auto * p = find( "maxItems" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         {
                            const auto i = p->unsafe_get_signed();
                            if ( i < 0 ) {
@@ -599,7 +599,7 @@ namespace tao
                            m_flags = m_flags | HAS_MAX_ITEMS;
                         }
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         m_max_items = p->unsafe_get_unsigned();
                         m_flags = m_flags | HAS_MAX_ITEMS;
                         break;
@@ -611,7 +611,7 @@ namespace tao
                // minItems
                if ( const auto * p = find( "minItems" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         {
                            const auto i = p->unsafe_get_signed();
                            if ( i < 0 ) {
@@ -621,7 +621,7 @@ namespace tao
                            m_flags = m_flags | HAS_MIN_ITEMS;
                         }
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         m_min_items = p->unsafe_get_unsigned();
                         m_flags = m_flags | HAS_MIN_ITEMS;
                         break;
@@ -640,7 +640,7 @@ namespace tao
                // maxProperties
                if ( const auto * p = find( "maxProperties" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         {
                            const auto i = p->unsafe_get_signed();
                            if ( i < 0 ) {
@@ -650,7 +650,7 @@ namespace tao
                            m_flags = m_flags | HAS_MAX_PROPERTIES;
                         }
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         m_max_properties = p->unsafe_get_unsigned();
                         m_flags = m_flags | HAS_MAX_PROPERTIES;
                         break;
@@ -662,7 +662,7 @@ namespace tao
                // minProperties
                if ( const auto * p = find( "minProperties" ) ) {
                   switch ( p->type() ) {
-                     case json::type::SIGNED:
+                     case type::SIGNED:
                         {
                            const auto i = p->unsafe_get_signed();
                            if ( i < 0 ) {
@@ -672,7 +672,7 @@ namespace tao
                            m_flags = m_flags | HAS_MIN_PROPERTIES;
                         }
                         break;
-                     case json::type::UNSIGNED:
+                     case type::UNSIGNED:
                         m_min_properties = p->unsafe_get_unsigned();
                         m_flags = m_flags | HAS_MIN_PROPERTIES;
                         break;
