@@ -12,11 +12,55 @@ namespace tao
 {
    namespace json
    {
+      void test_uninitialized()
+      {
+         const value v;
+
+         TEST_ASSERT( ! v );
+         TEST_ASSERT( v.empty() );
+
+         TEST_ASSERT( ! v.is_null() );
+         TEST_ASSERT( ! v.is_boolean() );
+         TEST_ASSERT( ! v.is_signed() );
+         TEST_ASSERT( ! v.is_unsigned() );
+         TEST_ASSERT( ! v.is_double() );
+         TEST_ASSERT( ! v.is_string() );
+         TEST_ASSERT( ! v.is_array() );
+         TEST_ASSERT( ! v.is_object() );
+         TEST_ASSERT( ! v.is_raw_ptr() );
+         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( ! v.is_number() );
+
+         TEST_THROWS( v.get_null() );
+         TEST_THROWS( v.get_boolean() );
+         TEST_THROWS( v.get_signed() );
+         TEST_THROWS( v.get_unsigned() );
+         TEST_THROWS( v.get_double() );
+         TEST_THROWS( v.get_string() );
+         TEST_THROWS( v.get_array() );
+         TEST_THROWS( v.get_object() );
+
+         TEST_ASSERT( v.type() == type::UNINITIALIZED );
+
+         TEST_THROWS( v.at( 0 ) );
+         TEST_THROWS( v.at( "foo" ) );
+
+         value u = v;
+         TEST_ASSERT( u.type() == type::UNINITIALIZED );
+         TEST_ASSERT( u == v );
+
+         const value w = std::move( u );
+         TEST_ASSERT( u.type() == type::DISCARDED );
+         TEST_ASSERT( w.type() == type::UNINITIALIZED );
+         TEST_ASSERT( w == v );
+      }
+
       void test_null()
       {
          const value v = null;
          const value v2( v );
 
+         TEST_ASSERT( v );
          TEST_ASSERT( ! v.empty() );
 
          TEST_ASSERT( v.is_null() );
@@ -381,6 +425,8 @@ namespace tao
 
       void unit_test()
       {
+         test_uninitialized();
+
          test_null();
 
          test_bool( true );
