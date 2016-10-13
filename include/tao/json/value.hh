@@ -103,7 +103,7 @@ namespace tao
                Traits< D >::assign( *this, std::forward< T >( v ) );
             }
             catch( ... ) {
-               unsafe_destroy();
+               unsafe_discard();
                internal::rethrow();
             }
          }
@@ -114,7 +114,7 @@ namespace tao
                unsafe_assign( std::move( l ) );
             }
             catch( ... ) {
-               unsafe_destroy();
+               unsafe_discard();
                throw;
             }
          }
@@ -125,7 +125,7 @@ namespace tao
                unsafe_assign( l );
             }
             catch( ... ) {
-               unsafe_destroy();
+               unsafe_discard();
                throw;
             }
          }
@@ -136,7 +136,7 @@ namespace tao
 
          ~basic_value() noexcept
          {
-            unsafe_destroy();
+            unsafe_discard();
          }
 
          static basic_value array( std::initializer_list< single< Traits > > && l )
@@ -155,7 +155,7 @@ namespace tao
 
          basic_value & operator= ( basic_value v ) noexcept
          {
-            unsafe_destroy();
+            unsafe_discard();
             m_type = v.m_type;
             seize( std::move( v ) );
             return * this;
@@ -665,7 +665,7 @@ namespace tao
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
-         // value v when json::needs_destroy( v.type() ) is true!
+         // value v when json::needs_discard( v.type() ) is true!
 
          template< typename T >
          void unsafe_assign( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value & >(), std::forward< T >( v ) ) ) )
@@ -749,7 +749,7 @@ namespace tao
          template< typename ... Ts >
          void emplace_string( Ts && ... ts )
          {
-            destroy();
+            discard();
             unsafe_emplace_string( std::forward< Ts >( ts ) ... );
          }
 
@@ -763,7 +763,7 @@ namespace tao
          template< typename ... Ts >
          void emplace_array( Ts && ... ts )
          {
-            destroy();
+            discard();
             unsafe_emplace_array( std::forward< Ts >( ts ) ... );
          }
 
@@ -802,7 +802,7 @@ namespace tao
          template< typename ... Ts >
          void emplace_object( Ts && ... ts )
          {
-            destroy();
+            discard();
             unsafe_emplace_object( std::forward< Ts >( ts ) ... );
          }
 
@@ -904,7 +904,7 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         void unsafe_destroy() noexcept
+         void unsafe_discard() noexcept
          {
             switch ( m_type ) {
                case json::type::UNINITIALIZED:
@@ -929,15 +929,15 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         void destroy() noexcept
+         void discard() noexcept
          {
-            unsafe_destroy();
+            unsafe_discard();
             m_type = json::type::DISCARDED;
          }
 
          void reset() noexcept
          {
-            unsafe_destroy();
+            unsafe_discard();
             m_type = json::type::UNINITIALIZED;
          }
 
@@ -972,15 +972,15 @@ namespace tao
                   return;
                case json::type::STRING:
                   new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
-                  assert( ( r.destroy(), true ) );
+                  assert( ( r.discard(), true ) );
                   return;
                case json::type::ARRAY:
                   new ( & m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
-                  assert( ( r.destroy(), true ) );
+                  assert( ( r.discard(), true ) );
                   return;
                case json::type::OBJECT:
                   new ( & m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
-                  assert( ( r.destroy(), true ) );
+                  assert( ( r.discard(), true ) );
                   return;
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;

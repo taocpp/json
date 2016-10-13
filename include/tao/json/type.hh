@@ -27,7 +27,7 @@ namespace tao
          RAW_PTR
       };
 
-      inline bool needs_destroy( const type t )
+      inline bool needs_discard( const type t )
       {
          switch ( t ) {
             case type::STRING:
