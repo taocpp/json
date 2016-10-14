@@ -25,9 +25,17 @@ namespace tao
             const value v = parse_file( name );
             for ( const auto & e : v.get_array() ) {
                std::cout << "  Schema: " << e.at( "description" ).get_string() << std::endl;
+               bool expected_schema = true;
+               if ( const auto * schema_valid = e.find( "valid" ) ) {
+                  expected_schema = schema_valid->get_boolean();
+               }
                try {
                   schema s( e.at( "schema" ) );
-                  for ( const auto & c : e.at( "tests" ).get_array() ) {
+                  if ( ! expected_schema ) {
+                     ++failed;
+                     std::cout << "  Failed: Schema is valid, but it should not be" << std::endl;
+                  }
+                  else for ( const auto & c : e.at( "tests" ).get_array() ) {
                      std::cout << "    Testcase: " << c.at( "description" ).get_string() << std::endl;
                      ++tests;
                      try {
@@ -50,8 +58,13 @@ namespace tao
                   }
                }
                catch( const std::exception & e ) {
-                  ++failed;
-                  std::cout << "  Failed with exception: " << e.what() << std::endl;
+                  if ( expected_schema ) {
+                     ++failed;
+                     std::cout << "  Failed with exception: " << e.what() << std::endl;
+                  }
+                  else {
+                     ++tests;
+                  }
                }
             }
          }
@@ -95,6 +108,8 @@ namespace tao
          test( "tests/draft4/optional/bignum.json" );
          test( "tests/draft4/optional/format.json" );
          test( "tests/draft4/optional/zeroTerminatedFloats.json" );
+
+         test( "tests/taocpp/invalidSchema.json" );
 
          // TODO: Remove this temporary work-around once all tests succeed
          if ( failed ) {
