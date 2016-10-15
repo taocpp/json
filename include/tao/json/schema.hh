@@ -48,17 +48,25 @@ namespace tao
          inline bool parse_date_time( const std::string & v )
          {
             static std::regex re( "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]\\d{2}:[0-5]\\d)$" );
-            if ( ! std::regex_search( v, re ) ) return false;
+            if ( ! std::regex_search( v, re ) ) {
+               return false;
+            }
 
             const unsigned year = ( v[ 0 ] - '0' ) * 1000 + ( v[ 1 ] - '0' ) * 100 + ( v[ 2 ] - '0' ) * 10 + ( v[ 3 ] - '0' );
             const unsigned month = ( v[ 5 ] - '0' ) * 10 + ( v[ 6 ] - '0' );
             const unsigned day = ( v[ 8 ] - '0' ) * 10 + ( v[ 9 ] - '0' );
 
-            if ( month == 0 || month > 12 ) return false;
-            if ( day == 0 || day > 31 ) return false;
+            if ( month == 0 || month > 12 ) {
+               return false;
+            }
+            if ( day == 0 || day > 31 ) {
+               return false;
+            }
             if ( month == 2 ) {
                const bool is_leap_year = ( year % 4 == 0 ) && ( year % 100 != 0 || year % 400 == 0 );
-               if ( day > ( is_leap_year? 29 : 28 ) ) return false;
+               if ( day > ( is_leap_year? 29 : 28 ) ) {
+                  return false;
+               }
             }
             else if ( day == 31 ) {
                switch ( month ) {
@@ -71,12 +79,16 @@ namespace tao
             }
 
             const unsigned hour = ( v[ 11 ] - '0' ) * 10 + ( v[ 12 ] - '0' );
-            if ( hour >= 24 ) return false;
+            if ( hour >= 24 ) {
+               return false;
+            }
 
             if ( * v.rbegin() != 'Z' ) {
                const auto s = v.size();
                const unsigned tz_hour = ( v[ s - 5 ] - '0' ) * 10 + ( v[ s - 4 ] - '0' );
-               if ( tz_hour >= 24 ) return false;
+               if ( tz_hour >= 24 ) {
+                  return false;
+               }
             }
 
             return true;
@@ -931,8 +943,12 @@ namespace tao
             static bool is_multiple_of( const double v, const double d )
             {
                const auto r = std::fmod( v, d );
-               if ( std::fabs( r ) < std::numeric_limits< double >::epsilon() ) return true;
-               if ( std::fabs( r - d ) < std::numeric_limits< double >::epsilon() ) return true;
+               if ( std::fabs( r ) < std::numeric_limits< double >::epsilon() ) {
+                  return true;
+               }
+               if ( std::fabs( r - d ) < std::numeric_limits< double >::epsilon() ) {
+                  return true;
+               }
                return false;
             }
 
@@ -941,10 +957,14 @@ namespace tao
             {
                switch ( m_node->m_flags & HAS_MULTIPLE_OF ) {
                case HAS_MULTIPLE_OF_UNSIGNED:
-                  if ( ( v % m_node->m_multiple_of.u ) != 0 ) m_match = false;
+                  if ( ( v % m_node->m_multiple_of.u ) != 0 ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MULTIPLE_OF_DOUBLE:
-                  if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) m_match = false;
+                  if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     m_match = false;
+                  }
                   break;
                }
             }
@@ -953,10 +973,14 @@ namespace tao
             {
                switch ( m_node->m_flags & HAS_MULTIPLE_OF ) {
                case HAS_MULTIPLE_OF_UNSIGNED:
-                  if ( ! is_multiple_of( v, m_node->m_multiple_of.u ) ) m_match = false;
+                  if ( ! is_multiple_of( v, m_node->m_multiple_of.u ) ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MULTIPLE_OF_DOUBLE:
-                  if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) m_match = false;
+                  if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     m_match = false;
+                  }
                   break;
                }
             }
@@ -966,42 +990,66 @@ namespace tao
                validate_multiple_of( v );
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
-                  if ( v > m_node->m_maximum.i ) m_match = false;
+                  if ( v > m_node->m_maximum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
-                  if ( v >= m_node->m_maximum.i ) m_match = false;
+                  if ( v >= m_node->m_maximum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_UNSIGNED:
-                  if ( v >= 0 && static_cast< std::uint64_t >( v ) > m_node->m_maximum.u ) m_match = false;
+                  if ( v >= 0 && static_cast< std::uint64_t >( v ) > m_node->m_maximum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
-                  if ( v >= 0 && static_cast< std::uint64_t >( v ) >= m_node->m_maximum.u ) m_match = false;
+                  if ( v >= 0 && static_cast< std::uint64_t >( v ) >= m_node->m_maximum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_DOUBLE:
-                  if ( v > m_node->m_maximum.d ) m_match = false;
+                  if ( v > m_node->m_maximum.d ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
-                  if ( v >= m_node->m_maximum.d ) m_match = false;
+                  if ( v >= m_node->m_maximum.d ) {
+                     m_match = false;
+                  }
                   break;
                }
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
-                  if ( v < m_node->m_minimum.i ) m_match = false;
+                  if ( v < m_node->m_minimum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
-                  if ( v <= m_node->m_minimum.i ) m_match = false;
+                  if ( v <= m_node->m_minimum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_UNSIGNED:
-                  if ( v < 0 || static_cast< std::uint64_t >( v ) < m_node->m_minimum.u ) m_match = false;
+                  if ( v < 0 || static_cast< std::uint64_t >( v ) < m_node->m_minimum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
-                  if ( v < 0 || static_cast< std::uint64_t >( v ) <= m_node->m_minimum.u ) m_match = false;
+                  if ( v < 0 || static_cast< std::uint64_t >( v ) <= m_node->m_minimum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_DOUBLE:
-                  if ( v < m_node->m_minimum.d ) m_match = false;
+                  if ( v < m_node->m_minimum.d ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
-                  if ( v <= m_node->m_minimum.d ) m_match = false;
+                  if ( v <= m_node->m_minimum.d ) {
+                     m_match = false;
+                  }
                   break;
                }
             }
@@ -1011,42 +1059,66 @@ namespace tao
                validate_multiple_of( v );
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
-                  if ( m_node->m_maximum.i < 0 || v > static_cast< std::uint64_t >( m_node->m_maximum.i ) ) m_match = false;
+                  if ( m_node->m_maximum.i < 0 || v > static_cast< std::uint64_t >( m_node->m_maximum.i ) ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
-                  if ( m_node->m_maximum.i < 0 || v >= static_cast< std::uint64_t >( m_node->m_maximum.i ) ) m_match = false;
+                  if ( m_node->m_maximum.i < 0 || v >= static_cast< std::uint64_t >( m_node->m_maximum.i ) ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_UNSIGNED:
-                  if ( v > m_node->m_maximum.u ) m_match = false;
+                  if ( v > m_node->m_maximum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
-                  if ( v >= m_node->m_maximum.u ) m_match = false;
+                  if ( v >= m_node->m_maximum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_DOUBLE:
-                  if ( v > m_node->m_maximum.d ) m_match = false;
+                  if ( v > m_node->m_maximum.d ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
-                  if ( v >= m_node->m_maximum.d ) m_match = false;
+                  if ( v >= m_node->m_maximum.d ) {
+                     m_match = false;
+                  }
                   break;
                }
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
-                  if ( m_node->m_minimum.i >= 0 && v < static_cast< std::uint64_t >( m_node->m_minimum.i ) ) m_match = false;
+                  if ( m_node->m_minimum.i >= 0 && v < static_cast< std::uint64_t >( m_node->m_minimum.i ) ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
-                  if ( m_node->m_minimum.i >= 0 && v <= static_cast< std::uint64_t >( m_node->m_minimum.i ) ) m_match = false;
+                  if ( m_node->m_minimum.i >= 0 && v <= static_cast< std::uint64_t >( m_node->m_minimum.i ) ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_UNSIGNED:
-                  if ( v < m_node->m_minimum.u ) m_match = false;
+                  if ( v < m_node->m_minimum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
-                  if ( v <= m_node->m_minimum.u ) m_match = false;
+                  if ( v <= m_node->m_minimum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_DOUBLE:
-                  if ( v < m_node->m_minimum.d ) m_match = false;
+                  if ( v < m_node->m_minimum.d ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
-                  if ( v <= m_node->m_minimum.d ) m_match = false;
+                  if ( v <= m_node->m_minimum.d ) {
+                     m_match = false;
+                  }
                   break;
                }
             }
@@ -1056,42 +1128,66 @@ namespace tao
                validate_multiple_of( v );
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
-                  if ( v > m_node->m_maximum.i ) m_match = false;
+                  if ( v > m_node->m_maximum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
-                  if ( v >= m_node->m_maximum.i ) m_match = false;
+                  if ( v >= m_node->m_maximum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_UNSIGNED:
-                  if ( v > m_node->m_maximum.u ) m_match = false;
+                  if ( v > m_node->m_maximum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
-                  if ( v >= m_node->m_maximum.u ) m_match = false;
+                  if ( v >= m_node->m_maximum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_DOUBLE:
-                  if ( v > m_node->m_maximum.d ) m_match = false;
+                  if ( v > m_node->m_maximum.d ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
-                  if ( v >= m_node->m_maximum.d ) m_match = false;
+                  if ( v >= m_node->m_maximum.d ) {
+                     m_match = false;
+                  }
                   break;
                }
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
-                  if ( v < m_node->m_minimum.i ) m_match = false;
+                  if ( v < m_node->m_minimum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
-                  if ( v <= m_node->m_minimum.i ) m_match = false;
+                  if ( v <= m_node->m_minimum.i ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_UNSIGNED:
-                  if ( v < m_node->m_minimum.u ) m_match = false;
+                  if ( v < m_node->m_minimum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
-                  if ( v <= m_node->m_minimum.u ) m_match = false;
+                  if ( v <= m_node->m_minimum.u ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_DOUBLE:
-                  if ( v < m_node->m_minimum.d ) m_match = false;
+                  if ( v < m_node->m_minimum.d ) {
+                     m_match = false;
+                  }
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
-                  if ( v <= m_node->m_minimum.d ) m_match = false;
+                  if ( v <= m_node->m_minimum.d ) {
+                     m_match = false;
+                  }
                   break;
                }
             }
@@ -1112,23 +1208,35 @@ namespace tao
                if ( m_match && m_node->m_format != schema_format::NONE ) {
                   switch ( m_node->m_format ) {
                   case schema_format::DATE_TIME:
-                     if ( ! internal::parse_date_time( v ) ) m_match = false;
+                     if ( ! internal::parse_date_time( v ) ) {
+                        m_match = false;
+                     }
                      break;
                   case schema_format::EMAIL:
-                     if ( ( v.size() > 255 ) || ! internal::parse< internal::email >( v ) ) m_match = false;
+                     if ( ( v.size() > 255 ) || ! internal::parse< internal::email >( v ) ) {
+                        m_match = false;
+                     }
                      break;
                   case schema_format::HOSTNAME:
-                     if ( ( v.size() > 255 ) || ! internal::parse< internal::hostname >( v ) ) m_match = false;
+                     if ( ( v.size() > 255 ) || ! internal::parse< internal::hostname >( v ) ) {
+                        m_match = false;
+                     }
                      break;
                   case schema_format::IPV4:
-                     if ( ! internal::parse< tao_json_pegtl::uri::IPv4address >( v ) ) m_match = false;
+                     if ( ! internal::parse< tao_json_pegtl::uri::IPv4address >( v ) ) {
+                        m_match = false;
+                     }
                      break;
                   case schema_format::IPV6:
-                     if ( ! internal::parse< tao_json_pegtl::uri::IPv6address >( v ) ) m_match = false;
+                     if ( ! internal::parse< tao_json_pegtl::uri::IPv6address >( v ) ) {
+                        m_match = false;
+                     }
                      break;
                   case schema_format::URI:
                      // TODO: What rule exactly should we apply here?? JSON Schema is not exactly the best spec I've ever read...
-                     if ( ! internal::parse< tao_json_pegtl::uri::URI >( v ) ) m_match = false;
+                     if ( ! internal::parse< tao_json_pegtl::uri::URI >( v ) ) {
+                        m_match = false;
+                     }
                      break;
                   case schema_format::NONE:
                      ;
@@ -1220,7 +1328,9 @@ namespace tao
                      m_match = false;
                   }
                }
-               if ( m_match && m_not && m_not->finalize() ) m_match = false;
+               if ( m_match && m_not && m_not->finalize() ) {
+                  m_match = false;
+               }
                if ( m_match && m_node->m_flags & HAS_DEPENDENCIES ) {
                   for ( const auto & e : m_node->m_schema_dependencies ) {
                      if ( m_keys.find( e.first ) != m_keys.end() ) {
@@ -1338,7 +1448,9 @@ namespace tao
                if ( m_match ) validate_enum( []( sax_compare< Traits > & c ){ c.element(); return ! c.match(); } );
                if ( m_match && m_item ) {
                   if ( m_count.size() == 1 ) {
-                     if ( ! m_item->finalize() ) m_match = false;
+                     if ( ! m_item->finalize() ) {
+                        m_match = false;
+                     }
                      m_item.reset();
                   }
                }
@@ -1381,7 +1493,9 @@ namespace tao
             {
                if ( m_match ) validate_enum( []( sax_compare< Traits > & c ){ c.end_array(); return ! c.match(); } );
                if ( m_match && m_item && ( m_count.size() == 1 ) ) {
-                  if ( ! m_item->finalize() ) m_match = false;
+                  if ( ! m_item->finalize() ) {
+                     m_match = false;
+                  }
                   m_item.reset();
                }
                if ( m_match && ( m_count.size() == 1 ) ) {
