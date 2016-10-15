@@ -59,6 +59,21 @@
                 "valid": false
             },
             {
+                "description": "an invalid date-time string (invalid fraction part)",
+                "data": "1972-11-10T08:30:06.Z",
+                "valid": false
+            },
+            {
+                "description": "an invalid date-time string (60 as minute)",
+                "data": "1972-11-10T08:60:06Z",
+                "valid": false
+            },
+            {
+                "description": "an invalid date-time string (25 as hour)",
+                "data": "1972-11-10T25:30:06Z",
+                "valid": false
+            },
+            {
                 "description": "an invalid date-time string (00 as day)",
                 "data": "1972-11-00T08:30:06Z",
                 "valid": false
@@ -80,12 +95,12 @@
             },
             {
                 "description": "an invalid date-time string (invalid offset)",
-                "data": "1972-11-10T08:30:06+2400",
+                "data": "1972-11-10T08:30:06+24:00",
                 "valid": false
             },
             {
                 "description": "an invalid date-time string (invalid offset)",
-                "data": "1972-11-10T08:30:06-2400",
+                "data": "1972-11-10T08:30:06-24:00",
                 "valid": false
             }
         ]
