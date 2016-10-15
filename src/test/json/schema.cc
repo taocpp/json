@@ -110,6 +110,7 @@ namespace tao
          test( "tests/draft4/optional/zeroTerminatedFloats.json" );
 
          test( "tests/taocpp/schema.json" );
+         test( "tests/taocpp/number.json" );
          test( "tests/taocpp/dateTime.json" );
 
          // TODO: Remove this temporary work-around once all tests succeed
