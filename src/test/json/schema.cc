@@ -109,8 +109,8 @@ namespace tao
          test( "tests/draft4/optional/format.json" );
          test( "tests/draft4/optional/zeroTerminatedFloats.json" );
 
-         test( "tests/taocpp/invalidSchema.json" );
-         test( "tests/taocpp/invalidDateTime.json" );
+         test( "tests/taocpp/schema.json" );
+         test( "tests/taocpp/dateTime.json" );
 
          // TODO: Remove this temporary work-around once all tests succeed
          if ( failed ) {
