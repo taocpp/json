@@ -952,8 +952,30 @@ namespace tao
                return false;
             }
 
-            template< typename T >
-            void validate_multiple_of( const T v )
+            void validate_multiple_of( const std::int64_t v )
+            {
+               switch ( m_node->m_flags & HAS_MULTIPLE_OF ) {
+               case HAS_MULTIPLE_OF_UNSIGNED:
+                  if ( v < 0 ) {
+                     if ( ( -v % m_node->m_multiple_of.u ) != 0 ) {
+                        m_match = false;
+                     }
+                  }
+                  else {
+                     if ( ( v % m_node->m_multiple_of.u ) != 0 ) {
+                        m_match = false;
+                     }
+                  }
+                  break;
+               case HAS_MULTIPLE_OF_DOUBLE:
+                  if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     m_match = false;
+                  }
+                  break;
+               }
+            }
+
+            void validate_multiple_of( const std::uint64_t v )
             {
                switch ( m_node->m_flags & HAS_MULTIPLE_OF ) {
                case HAS_MULTIPLE_OF_UNSIGNED:
