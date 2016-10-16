@@ -615,7 +615,7 @@
     },
     {
         "description": "multipleOf 3.0",
-        "schema": {"multipleOf": 3},
+        "schema": {"multipleOf": 3.0},
         "tests": [
             {
                 "description": "0 is multiple of 3.0",
