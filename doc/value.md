@@ -8,7 +8,7 @@ template<
 > class basic_value;
 ```
 
-Each instance is a JSON document. Each instance stores the type of the JSON document as well as the value itself. Documents of type `array` or `object` store nested JSON documents. TODO: Add more...
+Each instance is a JSON document. Each instance stores the type of the JSON document as well as the value itself. Documents of type `array` or `object` store nested JSON documents. Additionally, an instance may be uninitialized, discarded or it may contain a raw pointer to another value. TODO: Add more...
 
 ### Template parameter
 
@@ -73,7 +73,8 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 | `erase` | erases elements with the specified position |
 | `swap` | swaps the contents |
 | **Other** |
-| `destroy` | destroys the element |
+| `discard` | discards the element |
+| `reset` | resets the element |
 | `skip_raw_ptr` | returns a pointer to the first value skipping all raw pointers |
 
 > Many `unsafe_*`-methods are omitted from the above table and only mentioned within the non-`unsafe_*` method as another "overload".
