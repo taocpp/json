@@ -17,19 +17,22 @@ template< typename T >
 basic_value( T&& value ); // (6)
 ```
 
-Constructs new JSON values from a variety of data sources and optionally using a (user-specialized) `Traits` class.
+Constructs a new `basic_value` from a variety of data sources and optionally using a (user-specialized) `Traits` class.
 
-1. Constructs a value with type `UNINITIALIZED`.
-2. Move constructor. Constructs a value with the contents of `other` using move semantics.
-3. Copy constructor. Constructs a value with a copy of the contents of `other`.
-4. Constructs a value with the contents of `init` using move semantics. Uses (6) for the actual nodes, the initializer list may be nested.
-5. Constructs a value with the contents of `init`. Uses (6) for the actual nodes, the initializer list may be nested.
-6. Constructs a value with the value of `value`, using `Traits` to perform the actual mapping from source type to JSON value type.
+1. Constructs a `basic_value` with type `UNINITIALIZED`.
+2. Move constructor. Constructs a `basic_value` with the contents of `other` using move semantics.
+3. Copy constructor. Constructs a `basic_value` with a copy of the contents of `other`.
+4. Constructs a `basic_value` with the contents of `init` using move semantics. Uses (6) for the actual nodes, the initializer list may be nested.
+5. Constructs a `basic_value` with the contents of `init`. Uses (6) for the actual nodes, the initializer list may be nested.
+6. Constructs a `basic_value` with the value of `value`, using `Traits` to perform the actual mapping from source type to the stored type.
 
 #### Exceptions
 
 1. `noexcept`
 2. `noexcept`
+3. -
+4. -
+5. -
 6. `noexcept(noexcept(Traits<std::decay_t<T>>::assign(std::declval<basic_value&>(), std::forward<T>(v))))`
 
 #### Complexity
