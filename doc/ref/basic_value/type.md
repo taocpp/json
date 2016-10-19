@@ -1,10 +1,10 @@
 ### `tao::json::basic_value::type`
 
 ```c++
-type() const; // (1)
+json::type type() const; // (1)
 ```
 
-Returns the type of the currently stored contents. The result is of type [`tao::json::type`](../type.md)
+Returns the type of the currently stored contents.
 
 #### Return value
 
