@@ -18,64 +18,64 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 
 | Method | Description |
 | --- | --- |
-| [(constructor)](value_ctor.md) | constructs the value |
-| [(destructor)](value_dtor.md) | destructs the value |
-| `operator=` | assigns the value |
+| [(constructor)](basic_value/basic_value.md) | constructs the value |
+| [(destructor)](basic_value/~basic_value.md) | destructs the value |
+| [`operator=`](basic_value/operator=.md) | assigns the value |
 | **Element type** |
-| `type` | the type of the element |
-| `is_null` | checks whether the element type is `type::NULL_` |
-| `is_boolean` | checks whether the element type is `type::BOOLEAN` |
-| `is_signed` | checks whether the element type is `type::SIGNED` |
-| `is_unsigned` | checks whether the element type is `type::UNSIGNED` |
-| `is_integer` | checks whether the element type is `type::SIGNED` or `type::UNSIGNED` |
-| `is_double` | checks whether the element type is `type::DOUBLE` |
-| `is_number` | checks whether the element type is an integer or `type::DOUBLE` |
-| `is_string` | checks whether the element type is `type::STRING` |
-| `is_array` | checks whether the element type is `type::ARRAY` |
-| `is_object` | checks whether the element type is `type::OBJECT` |
-| `is_raw_ptr` | checks whether the element type is `type::RAW_PTR` |
+| [`type`](basic_value/type.md) | the type of the element |
+| [`is_null`](basic_value/is_null.md) | checks whether the element type is `type::NULL_` |
+| [`is_boolean`](basic_value/is_boolean.md) | checks whether the element type is `type::BOOLEAN` |
+| [`is_signed`](basic_value/is_signed.md) | checks whether the element type is `type::SIGNED` |
+| [`is_unsigned`](basic_value/is_unsigned.md) | checks whether the element type is `type::UNSIGNED` |
+| [`is_integer`](basic_value/is_integer.md) | checks whether the element type is `type::SIGNED` or `type::UNSIGNED` |
+| [`is_double`](basic_value/is_double.md) | checks whether the element type is `type::DOUBLE` |
+| [`is_number`](basic_value/is_number.md) | checks whether the element type is an integer or `type::DOUBLE` |
+| [`is_string`](basic_value/is_string.md) | checks whether the element type is `type::STRING` |
+| [`is_array`](basic_value/is_array.md) | checks whether the element type is `type::ARRAY` |
+| [`is_object`](basic_value/is_object.md) | checks whether the element type is `type::OBJECT` |
+| [`is_raw_ptr`](basic_value/is_raw_ptr.md) | checks whether the element type is `type::RAW_PTR` |
 | **Element access** |
-| `empty` | checks whether the element is empty |
-| `get_null` | returns the value of the stored `null_t` |
-| `get_boolean` | returns the value of the stored `bool` |
-| `get_signed` | returns the value of the stored `std::int64_t` |
-| `get_unsigned` | returns the value of the stored `std::uint64_t` |
-| `get_double` | returns the value of the stored`double` |
-| `get_string` | returns the value of the stored `std::string` |
-| `get_array` | returns a reference to the underlying `std::vector` |
-| `get_object` | returns a reference to the underlying `std::map` |
-| `get_raw_ptr` | returns the value of a `const basic_value *` |
-| `get` | returns the value or a reference of the underlying container |
-| `as` | converts the value to the requested type |
-| `optional` | converts the value to the requested type, if possible |
+| [`empty`](basic_value/empty.md) | checks whether the element is empty |
+| [`get_null`](basic_value/get_null.md) | returns the value of the stored `null_t` |
+| [`get_boolean`](basic_value/get_boolean.md) | returns the value of the stored `bool` |
+| [`get_signed`](basic_value/get_signed.md) | returns the value of the stored `std::int64_t` |
+| [`get_unsigned`](basic_value/get_unsigned.md) | returns the value of the stored `std::uint64_t` |
+| [`get_double`](basic_value/get_double.md) | returns the value of the stored`double` |
+| [`get_string`](basic_value/get_string.md) | returns the value of the stored `std::string` |
+| [`get_array`](basic_value/get_array.md) | returns a reference to the underlying `std::vector` |
+| [`get_object`](basic_value/get_object.md) | returns a reference to the underlying `std::map` |
+| [`get_raw_ptr`](basic_value/get_raw_ptr.md) | returns the value of a `const basic_value *` |
+| [`get`](basic_value/get.md) | returns the value or a reference of the underlying container |
+| [`as`](basic_value/as.md) | converts the value to the requested type |
+| [`optional`](basic_value/optional.md) | converts the value to the requested type, if possible |
 | **Lookup** |
-| `at` | access specified element with bounds checking |
-| `operator[]` | access specified element |
-| `find` | finds element with the specified position |
+| [`at`](basic_value/at.md) | access specified element with bounds checking |
+| [`operator[]`](basic_value/operator_at.md) | access specified element |
+| [`find`](basic_value/find.md) | finds element with the specified position |
 | **Modifiers** |
-| `unsafe_assign` | assigns a value to the element |
-| `unsafe_assign_null` | assigns a `null_t` value to the element |
-| `unsafe_assign_boolean` | assigns a `bool` value to the element |
-| `unsafe_assign_signed` | assigns a `std::int64_t` value to the element |
-| `unsafe_assign_unsigned` | assigns a `std::uint64_t` value to the element |
-| `unsafe_assign_double` | assigns a `double` value to the element |
-| `unsafe_assign_double_unchecked` | assigns an unchecked `double` value to the element |
-| `emplace_string` | constructs an underlying `std::string` value in-place |
-| `emplace_array` | constructs an underlying `std::vector` value in-place |
-| `emplace_object` | constructs an underlying `std::map` value in-place |
-| `unsafe_assign_raw_ptr` | assigns a `const basic_value *` value to the element |
-| `append` | appends elements at the specified position |
-| `insert` | inserts elements at the specified position |
-| `prepare_array` | constructs an empty underlying `std::vector` if necessary |
-| `emplace_back` | appends a value to the underlying `std::vector` |
-| `prepare_object` | constructs an empty underlying `std::map` if necessary |
-| `emplace` | inserts a value to the underlying `std::map` |
-| `erase` | erases elements with the specified position |
-| `swap` | swaps the contents |
+| [`unsafe_assign`](basic_value/unsafe_assign.md) | assigns a value to the element |
+| [`unsafe_assign_null`](basic_value/unsafe_assign_null.md) | assigns a `null_t` value to the element |
+| [`unsafe_assign_boolean`](basic_value/unsafe_assign_boolean.md) | assigns a `bool` value to the element |
+| [`unsafe_assign_signed`](basic_value/unsafe_assign_signed.md) | assigns a `std::int64_t` value to the element |
+| [`unsafe_assign_unsigned`](basic_value/unsafe_assign_unsigned.md) | assigns a `std::uint64_t` value to the element |
+| [`unsafe_assign_double`](basic_value/unsafe_assign_double.md) | assigns a `double` value to the element |
+| [`unsafe_assign_double_unchecked`](basic_value/unsafe_assign_double_unchecked.md) | assigns an unchecked `double` value to the element |
+| [`emplace_string`](basic_value/emplace_string.md) | constructs an underlying `std::string` value in-place |
+| [`emplace_array`](basic_value/emplace_array.md) | constructs an underlying `std::vector` value in-place |
+| [`emplace_object`](basic_value/emplace_object.md) | constructs an underlying `std::map` value in-place |
+| [`unsafe_assign_raw_ptr`](basic_value/unsafe_assign_raw_ptr.md) | assigns a `const basic_value *` value to the element |
+| [`append`](basic_value/append.md) | appends elements at the specified position |
+| [`insert`](basic_value/insert.md) | inserts elements at the specified position |
+| [`prepare_array`](basic_value/prepare_array.md) | constructs an empty underlying `std::vector` if necessary |
+| [`emplace_back`](basic_value/emplace_back.md) | appends a value to the underlying `std::vector` |
+| [`prepare_object`](basic_value/prepare_object.md) | constructs an empty underlying `std::map` if necessary |
+| [`emplace`](basic_value/emplace.md) | inserts a value to the underlying `std::map` |
+| [`erase`](basic_value/erase.md) | erases elements with the specified position |
+| [`swap`](basic_value/swap.md) | swaps the contents |
 | **Other** |
-| `discard` | discards the element |
-| `reset` | resets the element |
-| `skip_raw_ptr` | returns a pointer to the first value skipping all raw pointers |
+| [`discard`](basic_value/discard.md) | discards the element |
+| [`reset`](basic_value/reset.md) | resets the element |
+| [`skip_raw_ptr`](basic_value/skip_raw_ptr.md) | returns a pointer to the first value skipping all raw pointers |
 
 > Many `unsafe_*`-methods are omitted from the above table and only mentioned within the non-`unsafe_*` method as another "overload".
 
