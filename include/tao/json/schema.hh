@@ -259,7 +259,7 @@ namespace tao
 
             const basic_value< Traits > * find( const char * s ) const
             {
-               const auto * p = m_value->find( s );
+               const auto * p = m_value->unsafe_find( s );
                if ( p != nullptr ) {
                   p = p->skip_raw_ptr();
                }
