@@ -8,7 +8,7 @@ Returns whether the instance has been initialized. Note that an initialized valu
 
 #### Preconditions
 
-The instance must *not* be in a discarded state. This precondition *might* be checked by the implementation with an `assert`.
+The instance must *not* be in a discarded state.
 
 #### Return value
 

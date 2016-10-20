@@ -14,11 +14,11 @@ Returns whether the instance is considered "empty". An instance is considered em
 
 #### Preconditions
 
-The instance must *not* be in a discarded state. The precondition *may* be checked by the implementation with `assert`.
+The instance must *not* be in a discarded state.
 
 #### Return value
 
-`true` when the instance is considered empty, `true` otherwise.
+`true` when the instance is considered empty, `false` otherwise.
 
 #### Exceptions
 
