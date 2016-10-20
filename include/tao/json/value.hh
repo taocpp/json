@@ -904,7 +904,10 @@ namespace tao
                case json::type::RAW_PTR:
                   return ! m_union.p;
             }
-            assert( false );  // LCOV_EXCL_LINE
+            // LCOV_EXCL_START
+            assert( false );
+            return false;
+            // LCOV_EXCL_STOP
          }
 
          void unsafe_discard() noexcept
@@ -1113,7 +1116,10 @@ namespace tao
             case type::RAW_PTR:
                break;  // LCOV_EXCL_LINE
          }
-         assert( false );  // LCOV_EXCL_LINE
+         // LCOV_EXCL_START
+         assert( false );
+         return false;
+         // LCOV_EXCL_STOP
       }
 
       template< template< typename ... > class Traits >
@@ -1193,7 +1199,10 @@ namespace tao
             case type::RAW_PTR:
                break;  // LCOV_EXCL_LINE
          }
-         assert( false );  // LCOV_EXCL_LINE
+         // LCOV_EXCL_START
+         assert( false );
+         return false;
+         // LCOV_EXCL_STOP
       }
 
       template< template< typename ... > class Traits >
