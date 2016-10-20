@@ -234,12 +234,6 @@ namespace tao
             return m_type == json::type::RAW_PTR;
          }
 
-         null_t get_null() const
-         {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::NULL_ );
-            return unsafe_get_null();  // LCOV_EXCL_LINE (always optimized)
-         }
-
          bool get_boolean() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BOOLEAN );
@@ -354,13 +348,6 @@ namespace tao
          // The unsafe_get_*() accessor functions MUST NOT be
          // called when the type of the value is not the one
          // corresponding to the type of the accessor!
-
-         // LCOV_EXCL_START (always optimized)
-         null_t unsafe_get_null() const noexcept
-         {
-            return null;
-         }
-         // LCOV_EXCL_STOP
 
          bool unsafe_get_boolean() const noexcept
          {

@@ -31,7 +31,6 @@ namespace tao
          TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
@@ -129,7 +128,6 @@ namespace tao
          TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_double() );
@@ -170,7 +168,6 @@ namespace tao
          TEST_ASSERT( v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_unsigned() );
          TEST_THROWS( v.get_double() );
@@ -219,7 +216,6 @@ namespace tao
          TEST_ASSERT( v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_double() );
@@ -264,7 +260,6 @@ namespace tao
          TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
@@ -300,7 +295,6 @@ namespace tao
          TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
@@ -342,7 +336,6 @@ namespace tao
          TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
@@ -376,7 +369,6 @@ namespace tao
          TEST_ASSERT( ! v.is_integer() );
          TEST_ASSERT( ! v.is_number() );
 
-         TEST_THROWS( v.get_null() );
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );

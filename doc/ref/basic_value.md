@@ -37,7 +37,6 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 | **Element access** |
 | [`operator bool`](basic_value/operator_bool.md) | checks whether the element is initialized |
 | [`empty`](basic_value/empty.md) | checks whether the element is empty |
-| [`get_null`](basic_value/get_null.md) | returns the value of the stored `null_t` |
 | [`get_boolean`](basic_value/get_boolean.md) | returns the value of the stored `bool` |
 | [`get_signed`](basic_value/get_signed.md) | returns the value of the stored `std::int64_t` |
 | [`get_unsigned`](basic_value/get_unsigned.md) | returns the value of the stored `std::uint64_t` |
