@@ -35,13 +35,14 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 | [`is_object`](basic_value/is_object.md) | checks whether the element type is `type::OBJECT` |
 | [`is_raw_ptr`](basic_value/is_raw_ptr.md) | checks whether the element type is `type::RAW_PTR` |
 | **Element access** |
+| [`operator bool`](basic_value/operator_bool.md) | checks whether the element is initialized |
 | [`empty`](basic_value/empty.md) | checks whether the element is empty |
 | [`get_null`](basic_value/get_null.md) | returns the value of the stored `null_t` |
 | [`get_boolean`](basic_value/get_boolean.md) | returns the value of the stored `bool` |
 | [`get_signed`](basic_value/get_signed.md) | returns the value of the stored `std::int64_t` |
 | [`get_unsigned`](basic_value/get_unsigned.md) | returns the value of the stored `std::uint64_t` |
 | [`get_double`](basic_value/get_double.md) | returns the value of the stored`double` |
-| [`get_string`](basic_value/get_string.md) | returns the value of the stored `std::string` |
+| [`get_string`](basic_value/get_string.md) | returns a reference to the stored `std::string` |
 | [`get_array`](basic_value/get_array.md) | returns a reference to the underlying `std::vector` |
 | [`get_object`](basic_value/get_object.md) | returns a reference to the underlying `std::map` |
 | [`get_raw_ptr`](basic_value/get_raw_ptr.md) | returns the value of a `const basic_value *` |
