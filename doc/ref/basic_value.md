@@ -14,6 +14,13 @@ Each instance is a JSON document. Each instance stores the type of the JSON docu
 
 `Traits` - Conversion from and to other data types. Can be specialized or replaced by the user.
 
+### Member types
+
+| Member | Description |
+| --- | --- |
+| `array_t` | Type to store an embedded array, `std::vector<basic_value>` |
+| `object_t` | Type to store an embedded object, `std::map<std::string, basic_value>` |
+
 ### Member functions
 
 | Method | Description |

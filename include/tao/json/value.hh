@@ -69,6 +69,9 @@ namespace tao
              internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
       {
       public:
+         using array_t = std::vector< basic_value >;
+         using object_t = std::map< std::string, basic_value >;
+
          basic_value() noexcept
          { }
 
@@ -270,25 +273,25 @@ namespace tao
             return unsafe_get_string();
          }
 
-         std::vector< basic_value > & get_array()
+         array_t & get_array()
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
-         const std::vector< basic_value > & get_array() const
+         const array_t & get_array() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
-         std::map< std::string, basic_value > & get_object()
+         object_t & get_object()
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
          }
 
-         const std::map< std::string, basic_value > & get_object() const
+         const object_t & get_object() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
@@ -379,22 +382,22 @@ namespace tao
             return m_union.s;
          }
 
-         std::vector< basic_value > & unsafe_get_array() noexcept
+         array_t & unsafe_get_array() noexcept
          {
             return m_union.a;
          }
 
-         const std::vector< basic_value > & unsafe_get_array() const noexcept
+         const array_t & unsafe_get_array() const noexcept
          {
             return m_union.a;
          }
 
-         std::map< std::string, basic_value > & unsafe_get_object() noexcept
+         object_t & unsafe_get_object() noexcept
          {
             return m_union.o;
          }
 
-         const std::map< std::string, basic_value > & unsafe_get_object() const noexcept
+         const object_t & unsafe_get_object() const noexcept
          {
             return m_union.o;
          }
@@ -806,13 +809,13 @@ namespace tao
          }
 
          template< typename K, typename V >
-         std::pair< typename std::map< std::string, basic_value >::iterator, bool > unsafe_emplace( K && k, V && v )
+         std::pair< typename object_t::iterator, bool > unsafe_emplace( K && k, V && v )
          {
             return m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
          template< typename K, typename V >
-         std::pair< typename std::map< std::string, basic_value >::iterator, bool > emplace( K && k, V && v )
+         std::pair< typename object_t::iterator, bool > emplace( K && k, V && v )
          {
             prepare_object();
             return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
