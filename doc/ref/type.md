@@ -31,7 +31,7 @@ For tracking the kind of data currently stored in a [`basic_value`](basic_value.
 | `BOOLEAN` | For JSON boolean values. |
 | `SIGNED` | For JSON numbers stored as `std::int64_t`. |
 | `UNSIGNED` | For JSON numbers stored as `std::uint64_t`. |
-| `DOUBLE` | For JSON numbers stored as `double`' |
+| `DOUBLE` | For JSON numbers stored as `double`. |
 | `STRING` | For JSON strings. |
 | `ARRAY` | For JSON arrays. |
 | `OBJECT` | For JSON objects. |
