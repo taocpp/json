@@ -30,8 +30,8 @@ namespace tao
    {
       namespace internal
       {
-         template< typename, typename, typename = void > struct has_extract : std::false_type {};
-         template< typename T, typename V > struct has_extract< T, V, decltype( T::extract( std::declval< const V & >() ), void() ) > : std::true_type {};
+         template< typename, typename, typename = void > struct has_as : std::false_type {};
+         template< typename T, typename V > struct has_as< T, V, decltype( T::as( std::declval< const V & >() ), void() ) > : std::true_type {};
 
          // required work-around for GCC 6
          inline void rethrow()
@@ -319,22 +319,22 @@ namespace tao
          }
 
          template< typename T >
-         void as( T& v ) const
+         void extract( T& v ) const
          {
             Traits< typename std::decay< T >::type >::extract( * this, v );
          }
 
          template< typename T >
-         typename std::enable_if< internal::has_extract< Traits< T >, basic_value >::value, T >::type as() const
+         typename std::enable_if< internal::has_as< Traits< T >, basic_value >::value, T >::type as() const
          {
-            return Traits< T >::extract( * this );
+            return Traits< T >::as( * this );
          }
 
          template< typename T >
-         typename std::enable_if< ! internal::has_extract< Traits< T >, basic_value >::value, T >::type as() const
+         typename std::enable_if< ! internal::has_as< Traits< T >, basic_value >::value, T >::type as() const
          {
             T nrv;
-            as( nrv );
+            extract( nrv );
             return nrv;
          }
 
