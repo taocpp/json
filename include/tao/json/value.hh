@@ -106,7 +106,7 @@ namespace tao
                Traits< D >::assign( *this, std::forward< T >( v ) );
             }
             catch( ... ) {
-               unsafe_discard();
+               discard();
                internal::rethrow();
             }
          }
@@ -117,7 +117,7 @@ namespace tao
                unsafe_assign( std::move( l ) );
             }
             catch( ... ) {
-               unsafe_discard();
+               discard();
                throw;
             }
          }
@@ -128,7 +128,7 @@ namespace tao
                unsafe_assign( l );
             }
             catch( ... ) {
-               unsafe_discard();
+               discard();
                throw;
             }
          }
@@ -140,6 +140,7 @@ namespace tao
          ~basic_value() noexcept
          {
             unsafe_discard();
+            assert( ( m_type = json::type::DISCARDED, true ) );
          }
 
          static basic_value array( std::initializer_list< single< Traits > > && l )
