@@ -587,61 +587,6 @@ namespace tao
             }
          }
 
-         basic_value & operator[] ( const std::size_t index ) noexcept
-         {
-            return m_union.a[ index ];
-         }
-
-         const basic_value & operator[] ( const std::size_t index ) const noexcept
-         {
-            return m_union.a[ index ];
-         }
-
-         basic_value & operator[] ( const std::string & key )
-         {
-            return m_union.o[ key ];
-         }
-
-         basic_value & operator[] ( std::string && key )
-         {
-            return m_union.o[ std::move( key ) ];
-         }
-
-         basic_value & operator[] ( const pointer & k )
-         {
-            if ( ! k ) {
-               return * this;
-            }
-            const auto b = k.begin();
-            const auto e = std::prev( k.end() );
-            basic_value & v = internal::pointer_at( this, b, e );
-            switch ( v.m_type ) {
-               case json::type::ARRAY:
-                  {
-                     if ( e->key() == "-" ) {
-                        v.unsafe_emplace_back( null );
-                        return v.m_union.a.back();
-                     }
-                     return v.at( e->index() );
-                  }
-                  break;
-               case json::type::OBJECT:
-                  {
-                     const auto & k = e->key();
-                     const auto it = v.m_union.o.find( k );
-                     if ( it == v.m_union.o.end() ) {
-                        const auto r = v.unsafe_emplace( k, null );
-                        assert( r.second );
-                        return r.first->second;
-                     }
-                     return it->second;
-                  }
-                  break;
-               default:
-                  throw internal::invalid_type( b, std::next( e ) );
-            }
-         }
-
          template< typename T >
          tao::optional< T > optional( const std::string & key ) const
          {
@@ -867,6 +812,66 @@ namespace tao
                if ( ! r.second ) {
                   throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
+            }
+         }
+
+
+         basic_value & operator[] ( const std::size_t index ) noexcept
+         {
+            assert( m_type == type::ARRAY );
+            return m_union.a[ index ];
+         }
+
+         const basic_value & operator[] ( const std::size_t index ) const noexcept
+         {
+            assert( m_type == type::ARRAY );
+            return m_union.a[ index ];
+         }
+
+         basic_value & operator[] ( const std::string & key )
+         {
+            prepare_object();
+            return m_union.o[ key ];
+         }
+
+         basic_value & operator[] ( std::string && key )
+         {
+            prepare_object();
+            return m_union.o[ std::move( key ) ];
+         }
+
+         basic_value & operator[] ( const pointer & k )
+         {
+            if ( ! k ) {
+               return * this;
+            }
+            const auto b = k.begin();
+            const auto e = std::prev( k.end() );
+            basic_value & v = internal::pointer_at( this, b, e );
+            switch ( v.m_type ) {
+               case json::type::ARRAY:
+                  {
+                     if ( e->key() == "-" ) {
+                        v.unsafe_emplace_back( null );
+                        return v.m_union.a.back();
+                     }
+                     return v.at( e->index() );
+                  }
+                  break;
+               case json::type::OBJECT:
+                  {
+                     const auto & k = e->key();
+                     const auto it = v.m_union.o.find( k );
+                     if ( it == v.m_union.o.end() ) {
+                        const auto r = v.unsafe_emplace( k, null );
+                        assert( r.second );
+                        return r.first->second;
+                     }
+                     return it->second;
+                  }
+                  break;
+               default:
+                  throw internal::invalid_type( b, std::next( e ) );
             }
          }
 
