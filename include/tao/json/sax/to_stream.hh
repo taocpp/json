@@ -94,7 +94,6 @@ namespace tao
             void end_array()
             {
                os.put( ']' );
-               first = false;
             }
 
             // object
@@ -120,7 +119,6 @@ namespace tao
             void end_object()
             {
                os.put( '}' );
-               first = false;
             }
          };
 
