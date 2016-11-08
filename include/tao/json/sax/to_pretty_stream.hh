@@ -110,7 +110,6 @@ namespace tao
                current.resize( current.size() - indent );
                if ( ! first ) os << current;
                os.put( ']' );
-               first = false;
             }
 
             // object
@@ -140,7 +139,6 @@ namespace tao
                current.resize( current.size() - indent );
                if ( ! first ) os << current;
                os.put( '}' );
-               first = false;
             }
          };
 
