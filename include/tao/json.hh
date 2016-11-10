@@ -11,7 +11,7 @@
 //#include "json/sax/from_stream.hh" // includes PEGTL header/grammar
 #include "json/sax/from_string.hh" // includes PEGTL header/grammar
 #include "json/sax/parse_file.hh" // includes PEGTL header/grammar
-#include "json/sax/traverse_value.hh" // DOM to SAX
+#include "json/sax/from_value.hh" // DOM to SAX
 
 // SAX consumers
 #include "json/sax/to_stream.hh"

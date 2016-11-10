@@ -1,8 +1,8 @@
 // Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_JSON_NLOHMANN_TRAVERSE_VALUE_HH
-#define TAOCPP_JSON_INCLUDE_JSON_NLOHMANN_TRAVERSE_VALUE_HH
+#ifndef TAOCPP_JSON_INCLUDE_JSON_NLOHMANN_FROM_VALUE_HH
+#define TAOCPP_JSON_INCLUDE_JSON_NLOHMANN_FROM_VALUE_HH
 
 #include <cstdint>
 #include <string>
@@ -15,46 +15,46 @@ namespace tao
       namespace nlohmann
       {
          // SAX producer for an nlohmann/json value
-         template< typename Value, typename Handler >
-         void traverse_value( const Value & v, Handler & handler )
+         template< typename Value, typename Consumer >
+         void from_value( const Value & v, Consumer & consumer )
          {
             switch( v.type() ) {
                case Value::value_t::discarded:
                   throw std::logic_error( "invalid discarded value" );
                case Value::value_t::null:
-                  handler.null();
+                  consumer.null();
                   return;
                case Value::value_t::boolean:
-                  handler.boolean( v.template get< bool >() );
+                  consumer.boolean( v.template get< bool >() );
                   return;
                case Value::value_t::number_integer:
-                  handler.number( v.template get< std::int64_t >() );
+                  consumer.number( v.template get< std::int64_t >() );
                   return;
                case Value::value_t::number_unsigned:
-                  handler.number( v.template get< std::uint64_t >() );
+                  consumer.number( v.template get< std::uint64_t >() );
                   return;
                case Value::value_t::number_float:
-                  handler.number( v.template get< double >() );
+                  consumer.number( v.template get< double >() );
                   return;
                case Value::value_t::string:
-                  handler.string( v.template get_ref< const std::string & >() );
+                  consumer.string( v.template get_ref< const std::string & >() );
                   return;
                case Value::value_t::array:
-                  handler.begin_array();
+                  consumer.begin_array();
                   for( const auto & e : v ) {
-                     tao::json::nlohmann::traverse_value( e, handler );
-                     handler.element();
+                     tao::json::nlohmann::from_value( e, consumer );
+                     consumer.element();
                   }
-                  handler.end_array();
+                  consumer.end_array();
                   return;
                case Value::value_t::object:
-                  handler.begin_object();
+                  consumer.begin_object();
                   for( typename Value::const_iterator it = v.begin(); it != v.end(); ++it ) {
-                     handler.key( it.key() );
-                     tao::json::nlohmann::traverse_value( it.value(), handler );
-                     handler.member();
+                     consumer.key( it.key() );
+                     tao::json::nlohmann::from_value( it.value(), consumer );
+                     consumer.member();
                   }
-                  handler.end_object();
+                  consumer.end_object();
                   return;
             }
             throw std::logic_error( "invalid value for type()" );  // LCOV_EXCL_LINE

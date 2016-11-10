@@ -10,7 +10,6 @@
 #include <tao/json/pointer.hh>
 #include <tao/json/schema.hh>
 #include <tao/json/parse_file.hh>
-#include <tao/json/sax/traverse_value.hh>
 
 namespace tao
 {

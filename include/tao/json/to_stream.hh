@@ -8,7 +8,7 @@
 #include <cstddef>
 
 #include "value.hh"
-#include "sax/traverse_value.hh"
+#include "sax/from_value.hh"
 #include "sax/to_stream.hh"
 #include "sax/to_pretty_stream.hh"
 
@@ -19,15 +19,15 @@ namespace tao
       template< template< typename ... > class Traits >
       void to_stream( std::ostream & os, const basic_value< Traits > & v )
       {
-         sax::to_stream handler( os );
-         sax::traverse_value( v, handler );
+         sax::to_stream consumer( os );
+         sax::from_value( v, consumer );
       }
 
       template< template< typename ... > class Traits >
       void to_stream( std::ostream & os, const basic_value< Traits > & v, const std::size_t indent )
       {
-         sax::to_pretty_stream handler( os, indent );
-         sax::traverse_value( v, handler );
+         sax::to_pretty_stream consumer( os, indent );
+         sax::from_value( v, consumer );
       }
 
    } // json

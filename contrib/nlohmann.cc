@@ -5,7 +5,7 @@
 
 #include "nlohmann/json.hpp"
 #include "nlohmann/to_value.hh"
-#include "nlohmann/traverse_value.hh"
+#include "nlohmann/from_value.hh"
 
 #include <tao/json/sax/from_string.hh>
 #include <tao/json/sax/to_string.hh>
@@ -40,7 +40,7 @@ namespace tao
          TEST_ASSERT( v[ 7 ].at( "c" ) == "d" );
 
          tao::json::sax::to_string oss_handler;
-         tao::json::nlohmann::traverse_value( v, oss_handler );
+         tao::json::nlohmann::from_value( v, oss_handler );
 
          TEST_ASSERT( oss_handler.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
       }

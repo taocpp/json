@@ -5,7 +5,7 @@
 
 #include <tao/json/value.hh>
 #include <tao/json/sax/compare.hh>
-#include <tao/json/sax/traverse_value.hh>
+#include <tao/json/sax/from_value.hh>
 #include <tao/json/sax/from_string.hh>
 
 namespace tao
@@ -15,7 +15,7 @@ namespace tao
       bool test_value( const value & v, sax::compare & c )
       {
          c.reset();
-         sax::traverse_value( v, c );
+         sax::from_value( v, c );
          return c.match();
       }
 
@@ -397,32 +397,32 @@ namespace tao
          value v = { { "foo", 0 }, { "bar", & b }, { "baz", value::array( { null, & b, false, 0, 1, & s } ) } };
 
          sax::compare c( v );
-         sax::traverse_value( v, c );
+         sax::from_value( v, c );
          TEST_ASSERT( c.match() );
 
          c.reset();
          v.at( "foo" ) = 42;
-         sax::traverse_value( v, c );
+         sax::from_value( v, c );
          TEST_ASSERT( ! c.match() );
 
          c.reset();
          v.at( "foo" ) = 0;
-         sax::traverse_value( v, c );
+         sax::from_value( v, c );
          TEST_ASSERT( c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = 42;
-         sax::traverse_value( v, c );
+         sax::from_value( v, c );
          TEST_ASSERT( ! c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = true;
-         sax::traverse_value( v, c );
+         sax::from_value( v, c );
          TEST_ASSERT( ! c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = false;
-         sax::traverse_value( v, c );
+         sax::from_value( v, c );
          TEST_ASSERT( c.match() );
       }
 

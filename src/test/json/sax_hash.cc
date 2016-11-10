@@ -5,7 +5,7 @@
 
 #include <tao/json/value.hh>
 #include <tao/json/sax/hash.hh>
-#include <tao/json/sax/traverse_value.hh>
+#include <tao/json/sax/from_value.hh>
 #include <tao/json/sax/from_string.hh>
 
 namespace tao
@@ -15,7 +15,7 @@ namespace tao
       std::string hash_value( const value & v )
       {
          sax::hash h;
-         sax::traverse_value( v, h );
+         sax::from_value( v, h );
          return h.value();
       }
 

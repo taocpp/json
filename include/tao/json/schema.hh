@@ -9,7 +9,7 @@
 #include "reference.hh"
 #include "sax/compare.hh"
 #include "sax/hash.hh"
-#include "sax/traverse_value.hh"
+#include "sax/from_value.hh"
 #include "external/pegtl/parse.hh"
 #include "external/pegtl/contrib/uri.hh"
 
@@ -1706,7 +1706,7 @@ namespace tao
             // TODO: DOM validation should be implemented independently,
             // as it could be more efficient than SAX validation!
             const auto c = consumer();
-            sax::traverse_value( v, * c );
+            sax::from_value( v, * c );
             return c->finalize();
          }
       };
