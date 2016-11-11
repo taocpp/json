@@ -20,7 +20,7 @@ namespace tao
          template< typename Handler >
          inline void from_string( const char * data, const std::size_t size, Handler & handler, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
          {
-            tao_json_pegtl::input input( line, column, data, data + size, source ? source : __PRETTY_FUNCTION__ );
+            tao_json_pegtl::input input( line, column, data, data + size, source ? source : "tao::json::sax::from_string" );
             tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, handler );
          }
 
