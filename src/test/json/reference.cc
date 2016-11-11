@@ -30,8 +30,10 @@ namespace tao
          {
             value e;
             resolve_references( e );
+#ifndef NDEBUG
             value e2 = std::move( e );
             TEST_THROWS( resolve_references( e ) );
+#endif
          }
 
          test( "{\"foo\":1,\"bar\":2}", "{\"foo\":1,\"bar\":2}" );

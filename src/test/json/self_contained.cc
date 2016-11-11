@@ -49,9 +49,9 @@ namespace tao
          TEST_ASSERT( is_self_contained( v4 ) );
 
          make_self_contained( e );
-
+#ifndef NDEBUG
          TEST_THROWS( make_self_contained( d ) );
-
+#endif
          make_self_contained( v1 );
          make_self_contained( v2 );
 

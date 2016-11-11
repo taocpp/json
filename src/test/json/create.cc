@@ -62,8 +62,10 @@ namespace tao
          TEST_ASSERT( !( w < v ) );
          TEST_ASSERT( !( w > v ) );
 
+#ifndef NDEBUG
          TEST_ASSERT( u.type() == type::DISCARDED );
          TEST_THROWS( u = u );
+#endif
 
          u.reset();
          TEST_ASSERT( u.type() == type::UNINITIALIZED );

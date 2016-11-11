@@ -36,7 +36,9 @@ namespace tao
          const value v = std::move( d );
 
          TEST_THROWS( to_string( e ) );
+#ifndef NDEBUG
          TEST_THROWS( to_string( d ) );
+#endif
 
          test_simple( null, "null" );
          test_simple( true, "true" );
