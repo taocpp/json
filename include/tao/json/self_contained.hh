@@ -47,7 +47,10 @@ namespace tao
             case type::RAW_PTR:
                return false;
          }
-         assert( false );  // LCOV_EXCL_LINE
+         // LCOV_EXCL_START
+         assert( false );
+         return false;
+         // LCOV_EXCL_STOP
       }
 
       // removes all RAW_PTR nodes, recursively, by copying their pointed-to content
