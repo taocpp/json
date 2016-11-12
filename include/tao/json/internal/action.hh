@@ -138,8 +138,8 @@ namespace tao
                }
                const auto c = std::min( in.size(), max_mantissa_digits );
                std::memcpy( result.mantissa, in.begin(), c );
-               result.exponent10 += in.size() - c;
-               result.msize = c;
+               result.exponent10 += static_cast<number_state::exponent10_t>(in.size() - c);
+               result.msize = static_cast<number_state::msize_t>(c);
 
                for ( std::size_t i = c; i < in.size(); ++i ) {
                   if ( in.peek_char( i ) != '0' ) {
@@ -171,8 +171,8 @@ namespace tao
                }
                const auto c = std::min( std::size_t( e - b ), max_mantissa_digits - result.msize );
                std::memcpy( result.mantissa + result.msize, b, c );
-               result.exponent10 -= c;
-               result.msize += c;
+               result.exponent10 -= static_cast<number_state::exponent10_t>(c);
+               result.msize += static_cast<number_state::msize_t>(c);
 
                for ( const auto * r = b + c; r < e; ++r ) {
                   if ( *r != '0' ) {

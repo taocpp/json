@@ -20,13 +20,16 @@ namespace tao
 
          struct number_state
          {
+            using exponent10_t = int32_t;
+            using msize_t = uint16_t;
+
             number_state() {}
 
             number_state( const number_state & ) = delete;
             void operator= ( const number_state & ) = delete;
 
-            int32_t exponent10 = 0;
-            uint16_t msize = 0;  // Excluding sign.
+            exponent10_t exponent10 = 0;
+            msize_t msize = 0;  // Excluding sign.
             bool isfp = false;
             bool mneg = false;
             bool eneg = false;
