@@ -30,16 +30,14 @@ namespace tao
          std::string m_key;
 
       public:
-         static const std::size_t npos = std::string::npos;
-
          explicit token( const std::string & key )
               : m_index( internal::token_to_index( key ) ),
                 m_key( key )
         { }
 
         explicit token( std::string && key )
-             : m_index( internal::token_to_index( key ) ),
-               m_key( std::move( key ) )
+              : m_index( internal::token_to_index( key ) ),
+                m_key( std::move( key ) )
         { }
 
         token( const token & ) = default;
@@ -63,7 +61,7 @@ namespace tao
 
         std::size_t index() const
         {
-           if ( m_index == npos ) {
+           if ( m_index == std::string::npos ) {
               throw std::invalid_argument( "unable to resolve JSON Pointer, invalid token for array access '" + m_key + '\'' );
            }
            return m_index;
@@ -229,7 +227,7 @@ namespace tao
                   }
                }
             }
-            return token::npos;
+            return std::string::npos;
          }
 
          inline std::string tokens_to_string( std::vector< token >::const_iterator it, const std::vector< token >::const_iterator & end )
