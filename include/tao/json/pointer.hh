@@ -9,7 +9,6 @@
 #include <utility>
 #include <stdexcept>
 #include <vector>
-#include <limits>
 
 #include "external/operators.hpp"
 
@@ -31,7 +30,7 @@ namespace tao
          std::string m_key;
 
       public:
-         static const std::size_t npos = std::numeric_limits<size_t>::max();
+         static const std::size_t npos = std::string::npos;
 
          explicit token( const std::string & key )
               : m_index( internal::token_to_index( key ) ),
