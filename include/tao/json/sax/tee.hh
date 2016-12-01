@@ -42,81 +42,81 @@ namespace tao
             using sink = bool[];
 
             template< typename ... Ts >
-            void null( std::tuple< Ts ... > & t )
+            static void null( std::tuple< Ts ... > & t )
             {
                (void)sink{ ( std::get< Is >( t ).null(), true ) ... };
             }
 
             template< typename ... Ts >
-            void boolean( std::tuple< Ts ... > & t, const bool v )
+            static void boolean( std::tuple< Ts ... > & t, const bool v )
             {
                (void)sink{ ( std::get< Is >( t ).boolean( v ), true ) ... };
             }
 
             template< typename ... Ts >
-            void number( std::tuple< Ts ... > & t, const std::int64_t v )
+            static void number( std::tuple< Ts ... > & t, const std::int64_t v )
             {
                (void)sink{ ( std::get< Is >( t ).number( v ), true ) ... };
             }
 
             template< typename ... Ts >
-            void number( std::tuple< Ts ... > & t, const std::uint64_t v )
+            static void number( std::tuple< Ts ... > & t, const std::uint64_t v )
             {
                (void)sink{ ( std::get< Is >( t ).number( v ), true ) ... };
             }
 
             template< typename ... Ts >
-            void number( std::tuple< Ts ... > & t, const double v )
+            static void number( std::tuple< Ts ... > & t, const double v )
             {
                (void)sink{ ( std::get< Is >( t ).number( v ), true ) ... };
             }
 
             template< typename ... Ts >
-            void string( std::tuple< Ts ... > & t, const std::string & v )
+            static void string( std::tuple< Ts ... > & t, const std::string & v )
             {
                (void)sink{ ( std::get< Is >( t ).string( v ), true ) ... };
             }
 
             // array
             template< typename ... Ts >
-            void begin_array( std::tuple< Ts ... > & t )
+            static void begin_array( std::tuple< Ts ... > & t )
             {
                (void)sink{ ( std::get< Is >( t ).begin_array(), true ) ... };
             }
 
             template< typename ... Ts >
-            void element( std::tuple< Ts ... > & t )
+            static void element( std::tuple< Ts ... > & t )
             {
                (void)sink{ ( std::get< Is >( t ).element(), true ) ... };
             }
 
             template< typename ... Ts >
-            void end_array( std::tuple< Ts ... > & t )
+            static void end_array( std::tuple< Ts ... > & t )
             {
                (void)sink{ ( std::get< Is >( t ).end_array(), true ) ... };
             }
 
             // object
             template< typename ... Ts >
-            void begin_object( std::tuple< Ts ... > & t )
+            static void begin_object( std::tuple< Ts ... > & t )
             {
                (void)sink{ ( std::get< Is >( t ).begin_object(), true ) ... };
             }
 
             template< typename ... Ts >
-            void key( std::tuple< Ts ... > & t, const std::string & v )
+            static void key( std::tuple< Ts ... > & t, const std::string & v )
             {
                (void)sink{ ( std::get< Is >( t ).key( v ), true ) ... };
             }
 
             template< typename ... Ts >
-            void member( std::tuple< Ts ... > & t )
+            static void member( std::tuple< Ts ... > & t )
             {
                (void)sink{ ( std::get< Is >( t ).member(), true ) ... };
             }
 
             template< typename ... Ts >
-            void end_object( std::tuple< Ts ... > & t )
+            static void end_object( std::tuple< Ts ... > & t )
             {
                (void)sink{ ( std::get< Is >( t ).end_object(), true ) ... };
             }
