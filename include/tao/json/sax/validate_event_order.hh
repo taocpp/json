@@ -273,7 +273,7 @@ namespace tao
                   throw std::logic_error( "expected key() or end_object(), but begin_object() was called" );
                case EXPECT_OBJECT_VALUE:
                   stack.push_back( EXPECT_OBJECT_MEMBER );
-                  state = EXPECT_OBJECT_MEMBER;
+                  state = EXPECT_OBJECT_KEY_OR_END;
                   return;
                case EXPECT_OBJECT_MEMBER:
                   throw std::logic_error( "expected member(), but begin_object() was called" );
