@@ -17,29 +17,29 @@ namespace tao
       namespace sax
       {
          // SAX producer to parse a JSON string representation
-         template< typename Handler >
-         inline void from_string( const char * data, const std::size_t size, Handler & handler, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
+         template< typename Consumer >
+         inline void from_string( const char * data, const std::size_t size, Consumer & consumer, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
          {
             tao_json_pegtl::input input( line, column, data, data + size, source ? source : "tao::json::sax::from_string" );
-            tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, handler );
+            tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
          }
 
-         template< typename Handler >
-         inline void from_string( const char * data, const std::size_t size, Handler & handler, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
+         template< typename Consumer >
+         inline void from_string( const char * data, const std::size_t size, Consumer & consumer, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
          {
-            sax::from_string( data, size, handler, source.c_str(), line, column );
+            sax::from_string( data, size, consumer, source.c_str(), line, column );
          }
 
-         template< typename Handler >
-         inline void from_string( const std::string & data, Handler & handler, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
+         template< typename Consumer >
+         inline void from_string( const std::string & data, Consumer & consumer, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
          {
-            sax::from_string( data.data(), data.size(), handler, source, line, column );
+            sax::from_string( data.data(), data.size(), consumer, source, line, column );
          }
 
-         template< typename Handler >
-         inline void from_string( const std::string & data, Handler & handler, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
+         template< typename Consumer >
+         inline void from_string( const std::string & data, Consumer & consumer, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
          {
-            sax::from_string( data, handler, source.c_str(), line, column );
+            sax::from_string( data, consumer, source.c_str(), line, column );
          }
 
       } // sax

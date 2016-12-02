@@ -17,10 +17,10 @@ namespace tao
       namespace sax
       {
          // SAX producer to parse a file containing a JSON string representation
-         template< typename Handler >
-         void parse_file( const std::string & filename, Handler & handler )
+         template< typename Consumer >
+         void parse_file( const std::string & filename, Consumer & consumer )
          {
-            tao_json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( handler );
+            tao_json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( consumer );
          }
 
       } // sax
