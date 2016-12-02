@@ -12,8 +12,8 @@ namespace tao
    {
       void test( const std::string & v )
       {
-         sax::debug handler( std::cout );
-         sax::from_string( v, handler );
+         sax::debug consumer( std::cout );
+         sax::from_string( v, consumer );
       }
 
       void unit_test()

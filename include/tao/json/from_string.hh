@@ -16,15 +16,15 @@ namespace tao
    namespace json
    {
       template< template< typename ... > class Traits >
-      inline basic_value< Traits > from_string( const char * data, const std::size_t size, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
+      basic_value< Traits > from_string( const char * data, const std::size_t size, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
       {
-         sax::to_basic_value< Traits > handler;
-         sax::from_string( data, size, handler, source, line, column );
-         return std::move( handler.value );
+         sax::to_basic_value< Traits > consumer;
+         sax::from_string( data, size, consumer, source, line, column );
+         return std::move( consumer.value );
       }
 
       template< template< typename ... > class Traits >
-      inline basic_value< Traits > from_string( const char * data, const std::size_t size, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
+      basic_value< Traits > from_string( const char * data, const std::size_t size, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
       {
          return from_string< Traits >( data, size, source.c_str(), line, column );
       }
@@ -40,13 +40,13 @@ namespace tao
       }
 
       template< template< typename ... > class Traits >
-      inline basic_value< Traits > from_string( const std::string & data, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
+      basic_value< Traits > from_string( const std::string & data, const char * source = nullptr, const std::size_t line = 1, const std::size_t column = 0 )
       {
          return from_string< Traits >( data.data(), data.size(), source, line, column );
       }
 
       template< template< typename ... > class Traits >
-      inline basic_value< Traits > from_string( const std::string & data, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
+      basic_value< Traits > from_string( const std::string & data, const std::string & source, const std::size_t line = 1, const std::size_t column = 0 )
       {
          return from_string< Traits >( data.data(), data.size(), source.c_str(), line, column );
       }
@@ -62,7 +62,7 @@ namespace tao
       }
 
       template< template< typename ... > class Traits, typename ... Ts >
-      inline void from_string( basic_value< Traits > & output, Ts && ... ts )
+      void from_string( basic_value< Traits > & output, Ts && ... ts )
       {
          output = from_string< Traits >( std::forward< Ts >( ts ) ... );
       }

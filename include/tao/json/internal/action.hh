@@ -23,90 +23,90 @@ namespace tao
          template<>
          struct action< rules::null >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.null();
+               consumer.null();
             }
          };
 
          template<>
          struct action< rules::true_ >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.boolean( true );
+               consumer.boolean( true );
             }
          };
 
          template<>
          struct action< rules::false_ >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.boolean( false );
+               consumer.boolean( false );
             }
          };
 
          template<>
          struct action< rules::array::begin >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.begin_array();
+               consumer.begin_array();
             }
          };
 
          template<>
          struct action< rules::array::element >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.element();
+               consumer.element();
             }
          };
 
          template<>
          struct action< rules::array::end >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.end_array();
+               consumer.end_array();
             }
          };
 
          template<>
          struct action< rules::object::begin >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.begin_object();
+               consumer.begin_object();
             }
          };
 
          template<>
          struct action< rules::object::element >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.member();
+               consumer.member();
             }
          };
 
          template<>
          struct action< rules::object::end >
          {
-            template< typename State >
-            static void apply( const tao_json_pegtl::input &, State & handler )
+            template< typename Consumer >
+            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
             {
-               handler.end_object();
+               consumer.end_object();
             }
          };
 

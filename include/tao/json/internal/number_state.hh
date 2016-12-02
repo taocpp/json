@@ -36,8 +36,8 @@ namespace tao
             bool drop = false;
             char mantissa[ max_mantissa_digits + 1 ];
 
-            template< typename Handler >
-            void success( Handler & handler )
+            template< typename Consumer >
+            void success( Consumer & consumer )
             {
                if ( ! isfp && msize <= 20 ) {
                   mantissa[ msize ] = 0;
@@ -47,16 +47,16 @@ namespace tao
                   if ( ( errno != ERANGE ) && ( p == mantissa + msize ) ) {
                      if ( mneg ) {
                         if ( ull < 9223372036854775808ull ) {
-                           handler.number( -static_cast< std::int64_t >( ull ) );
+                           consumer.number( -static_cast< std::int64_t >( ull ) );
                            return;
                         }
                         else if ( ull == 9223372036854775808ull ) {
-                           handler.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
+                           consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
                            return;
                         }
                      }
                      else {
-                        handler.number( ull );
+                        consumer.number( ull );
                         return;
                      }
                   }
@@ -66,7 +66,7 @@ namespace tao
                   --exponent10;
                }
                const auto d = json_double_conversion::Strtod( json_double_conversion::Vector< const char >( mantissa, msize ), exponent10 );
-               handler.number( mneg ? -d : d );
+               consumer.number( mneg ? -d : d );
             }
          };
 

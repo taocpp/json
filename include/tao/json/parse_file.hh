@@ -17,9 +17,9 @@ namespace tao
       template< template< typename ... > class Traits >
       basic_value< Traits > parse_file( const std::string & filename )
       {
-         sax::to_basic_value< Traits > handler;
-         sax::parse_file( filename, handler );
-         return std::move( handler.value );
+         sax::to_basic_value< Traits > consumer;
+         sax::parse_file( filename, consumer );
+         return std::move( consumer.value );
       }
 
       template< template< typename ... > class Traits >

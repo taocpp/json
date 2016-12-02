@@ -19,10 +19,10 @@ namespace tao
             key_state( const key_state & ) = delete;
             void operator= ( const key_state & ) = delete;
 
-            template< typename Handler >
-            void success( Handler & handler )
+            template< typename Consumer >
+            void success( Consumer & consumer )
             {
-               handler.key( std::move( unescaped ) );
+               consumer.key( std::move( unescaped ) );
             }
 
             std::string unescaped;

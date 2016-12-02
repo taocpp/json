@@ -16,10 +16,10 @@ namespace tao
    {
       void unit_test()
       {
-         tao::json::nlohmann::to_value handler;
-         tao::json::sax::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]", handler );
+         tao::json::nlohmann::to_value value_consumer;
+         tao::json::sax::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]", value_consumer );
 
-         const auto & v = handler.value;
+         const auto & v = value_consumer.value;
 
          TEST_ASSERT( v.type() == ::nlohmann::json::value_t::array );
          TEST_ASSERT( v.size() == 8 );
@@ -39,10 +39,10 @@ namespace tao
          TEST_ASSERT( v[ 7 ].at( "a" ) == "b" );
          TEST_ASSERT( v[ 7 ].at( "c" ) == "d" );
 
-         tao::json::sax::to_string oss_handler;
-         tao::json::nlohmann::from_value( v, oss_handler );
+         tao::json::sax::to_string output_consumer;
+         tao::json::nlohmann::from_value( v, output_consumer );
 
-         TEST_ASSERT( oss_handler.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
+         TEST_ASSERT( output_consumer.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
       }
 
    } // json

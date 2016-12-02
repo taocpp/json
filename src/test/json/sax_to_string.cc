@@ -12,9 +12,9 @@ namespace tao
    {
       void test( const std::string & v )
       {
-         sax::to_string handler;
-         sax::from_string( v, handler );
-         TEST_ASSERT( handler.value() == v );
+         sax::to_string consumer;
+         sax::from_string( v, consumer );
+         TEST_ASSERT( consumer.value() == v );
       }
 
       void unit_test()

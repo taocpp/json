@@ -3,6 +3,8 @@
 
 #include "test.hh"
 
+#include <sstream>
+
 #include <tao/json/sax/to_stream.hh>
 #include <tao/json/sax/from_string.hh>
 
@@ -13,8 +15,8 @@ namespace tao
       void test( const std::string & v )
       {
          std::ostringstream oss;
-         sax::to_stream handler( oss );
-         sax::from_string( v, handler );
+         sax::to_stream consumer( oss );
+         sax::from_string( v, consumer );
          TEST_ASSERT( oss.str() == v );
       }
 
@@ -28,4 +30,3 @@ namespace tao
 } // tao
 
 #include "main.hh"
-
