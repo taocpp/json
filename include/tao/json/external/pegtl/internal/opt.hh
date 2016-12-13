@@ -1,13 +1,17 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_OPT_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_OPT_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_OPT_HH
+#define TAO_CPP_PEGTL_INTERNAL_OPT_HH
+
+#include <type_traits>
 
 #include "skip_control.hh"
+#include "rule_match_three.hh"
 #include "seq.hh"
 #include "trivial.hh"
 
+#include "../apply_mode.hh"
 #include "../analysis/generic.hh"
 
 namespace tao_json_pegtl
@@ -31,12 +35,15 @@ namespace tao_json_pegtl
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
          static bool match( Input & in, States && ... st )
          {
-            return in.empty() || rule_match_three< seq< Rules ... >, A, Action, Control >::match( in, st ... ) || true;
+            if ( ! in.empty() ) {
+               rule_match_three< seq< Rules ... >, A, Action, Control >::match( in, st ... );
+            }
+            return true;
          }
       };
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

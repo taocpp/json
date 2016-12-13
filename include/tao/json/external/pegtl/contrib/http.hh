@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_HTTP_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_HTTP_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_HTTP_HH
+#define TAO_CPP_PEGTL_CONTRIB_HTTP_HH
 
 #include "../rules.hh"
 #include "../ascii.hh"
@@ -26,6 +26,7 @@ namespace tao_json_pegtl
       using RWS = plus< WSP >; // required whitespace
       using BWS = OWS; // "bad" whitespace
 
+      // cppcheck-suppress constStatement
       using obs_text = not_range< 0x00, 0x7F >;
       using obs_fold = seq< CRLF, plus< WSP > >;
 
@@ -54,7 +55,7 @@ namespace tao_json_pegtl
       struct status_code : rep< 3, DIGIT > {};
       struct reason_phrase : star< sor< VCHAR, obs_text, WSP > > {};
 
-      struct HTTP_version : if_must< tao_json_pegtl_string_t( "HTTP/" ), DIGIT, one< '.' >, DIGIT > {};
+      struct HTTP_version : if_must< pegtl_string_t( "HTTP/" ), DIGIT, one< '.' >, DIGIT > {};
 
       struct request_line : if_must< method, SP, request_target, SP, HTTP_version, CRLF > {};
       struct status_line : if_must< HTTP_version, SP, status_code, SP, reason_phrase, CRLF > {};
@@ -78,17 +79,17 @@ namespace tao_json_pegtl
 
       struct transfer_parameter : seq< token, BWS, one< '=' >, BWS, sor< token, quoted_string > > {};
       struct transfer_extension : seq< token, star< OWS, one< ';' >, OWS, transfer_parameter > > {};
-      struct transfer_coding : sor< tao_json_pegtl_istring_t( "chunked" ),
-                                    tao_json_pegtl_istring_t( "compress" ),
-                                    tao_json_pegtl_istring_t( "deflate" ),
-                                    tao_json_pegtl_istring_t( "gzip" ),
+      struct transfer_coding : sor< pegtl_istring_t( "chunked" ),
+                                    pegtl_istring_t( "compress" ),
+                                    pegtl_istring_t( "deflate" ),
+                                    pegtl_istring_t( "gzip" ),
                                     transfer_extension > {};
 
       struct rank : sor< seq< one< '0' >, opt< one< '.' >, rep_opt< 3, DIGIT > > >,
                          seq< one< '1' >, opt< one< '.' >, rep_opt< 3, one< '0' > > > > > {};
 
       struct t_ranking : seq< OWS, one< ';' >, OWS, one< 'q', 'Q' >, one< '=' >, rank > {};
-      struct t_codings : sor< tao_json_pegtl_istring_t( "trailers" ), seq< transfer_coding, opt< t_ranking > > > {};
+      struct t_codings : sor< pegtl_istring_t( "trailers" ), seq< transfer_coding, opt< t_ranking > > > {};
 
       struct TE : opt< sor< one< ',' >, t_codings >, star< OWS, one< ',' >, opt< OWS, t_codings > > > {};
 
@@ -116,8 +117,8 @@ namespace tao_json_pegtl
 
       struct Via : make_comma_list< seq< received_protocol, RWS, received_by, opt< RWS, comment > > > {};
 
-      struct http_URI : if_must< tao_json_pegtl_istring_t( "http://" ), uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
-      struct https_URI : if_must< tao_json_pegtl_istring_t( "https://" ), uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
+      struct http_URI : if_must< pegtl_istring_t( "http://" ), uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
+      struct https_URI : if_must< pegtl_istring_t( "https://" ), uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
 
       struct partial_URI : seq< uri::relative_part, uri::opt_query > {};
 
@@ -137,8 +138,8 @@ namespace tao_json_pegtl
 
       struct chunked_body : seq< until< last_chunk, chunk >, trailer_part, CRLF > {};
 
-   } // http
+   } // namespace http
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

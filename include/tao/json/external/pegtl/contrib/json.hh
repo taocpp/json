@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_JSON_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_JSON_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_JSON_HH
+#define TAO_CPP_PEGTL_CONTRIB_JSON_HH
 
 #include "../rules.hh"
 #include "../ascii.hh"
@@ -26,9 +26,9 @@ namespace tao_json_pegtl
       struct name_separator : pad< one< ':' >, ws > {};
       struct value_separator : padr< one< ',' > > {};
 
-      struct false_ : tao_json_pegtl_string_t( "false" ) {};
-      struct null : tao_json_pegtl_string_t( "null" ) {};
-      struct true_ : tao_json_pegtl_string_t( "true" ) {};
+      struct false_ : pegtl_string_t( "false" ) {};
+      struct null : pegtl_string_t( "null" ) {};
+      struct true_ : pegtl_string_t( "true" ) {};
 
       struct digits : plus< abnf::DIGIT > {};
       struct exp : seq< one< 'e', 'E' >, opt< one< '-', '+'> >, must< digits > > {};
@@ -82,8 +82,8 @@ namespace tao_json_pegtl
 
       struct text : seq< star< ws >, value > {};
 
-   } // json
+   } // namespace json
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

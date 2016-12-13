@@ -1,8 +1,8 @@
 // Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_UTF16_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_UTF16_HH
+#ifndef TAO_CPP_PEGTL_UTF16_HH
+#define TAO_CPP_PEGTL_UTF16_HH
 
 #include "internal/rules.hh"
 #include "internal/peek_utf16.hh"
@@ -19,8 +19,8 @@ namespace tao_json_pegtl
       template< char32_t Lo, char32_t Hi > struct range : internal::range< internal::result_on_found::SUCCESS, internal::peek_utf16, Lo, Hi > {};
       template< char32_t ... Cs > struct ranges : internal::ranges< internal::peek_utf16, Cs ... > {};
 
-   } // utf16
+   } // namespace utf16
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

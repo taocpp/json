@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_URI_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_URI_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_URI_HH
+#define TAO_CPP_PEGTL_CONTRIB_URI_HH
 
 #include "../rules.hh"
 #include "../ascii.hh"
@@ -101,8 +101,8 @@ namespace tao_json_pegtl
       struct URI_reference : sor< URI, relative_ref > {};
       struct absolute_URI : seq< scheme, one< ':' >, hier_part, opt_query > {};
 
-   } // uri
+   } // namespace uri
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

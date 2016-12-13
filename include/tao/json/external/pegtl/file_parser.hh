@@ -1,8 +1,8 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_FILE_PARSER_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_FILE_PARSER_HH
+#ifndef TAO_CPP_PEGTL_FILE_PARSER_HH
+#define TAO_CPP_PEGTL_FILE_PARSER_HH
 
 #include "read_parser.hh"
 
@@ -18,9 +18,26 @@ namespace tao_json_pegtl
 {
 #if defined(_POSIX_MAPPED_FILES)
    using file_parser = mmap_parser;
+   template< typename Eol >
+   using basic_file_parser = basic_mmap_parser< Eol >;
 #else
    using file_parser = read_parser;
+   template< typename Eol >
+   using basic_file_parser = basic_read_parser< Eol >;
 #endif
-} // tao_json_pegtl
+
+   template< typename Rule, template< typename ... > class Action = nothing, template< typename ... > class Control = normal, typename ... States >
+   bool parse_file( const std::string & filename, States && ... st )
+   {
+      return file_parser( filename ).parse< Rule, Action, Control >( st ... );
+   }
+
+   template< typename Rule, template< typename ... > class Action = nothing, template< typename ... > class Control = normal, typename Outer, typename ... States >
+   bool parse_file_nested( Outer & oi, const std::string & filename, States && ... st )
+   {
+      return basic_file_parser< typename Outer::eol >( filename ).template parse_nested< Rule, Action, Control >( oi, st ... );
+   }
+
+} // namespace tao_json_pegtl
 
 #endif

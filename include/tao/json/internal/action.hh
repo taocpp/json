@@ -23,8 +23,8 @@ namespace tao
          template<>
          struct action< rules::null >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.null();
             }
@@ -33,8 +33,8 @@ namespace tao
          template<>
          struct action< rules::true_ >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.boolean( true );
             }
@@ -43,8 +43,8 @@ namespace tao
          template<>
          struct action< rules::false_ >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.boolean( false );
             }
@@ -53,8 +53,8 @@ namespace tao
          template<>
          struct action< rules::array::begin >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.begin_array();
             }
@@ -63,8 +63,8 @@ namespace tao
          template<>
          struct action< rules::array::element >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.element();
             }
@@ -73,8 +73,8 @@ namespace tao
          template<>
          struct action< rules::array::end >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.end_array();
             }
@@ -83,8 +83,8 @@ namespace tao
          template<>
          struct action< rules::object::begin >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.begin_object();
             }
@@ -93,8 +93,8 @@ namespace tao
          template<>
          struct action< rules::object::element >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.member();
             }
@@ -103,8 +103,8 @@ namespace tao
          template<>
          struct action< rules::object::end >
          {
-            template< typename Consumer >
-            static void apply( const tao_json_pegtl::input &, Consumer & consumer )
+            template< typename Input, typename Consumer >
+            static void apply( const Input &, Consumer & consumer )
             {
                consumer.end_object();
             }
@@ -113,7 +113,8 @@ namespace tao
          template<>
          struct action< rules::msign >
          {
-            static void apply( const tao_json_pegtl::input &, number_state & result )
+            template< typename Input >
+            static void apply( const Input &, number_state & result )
             {
                result.mneg = true;
             }
@@ -122,7 +123,8 @@ namespace tao
          template<>
          struct action< rules::esign >
          {
-            static void apply( const tao_json_pegtl::input & in, number_state & result )
+            template< typename Input >
+            static void apply( const Input & in, number_state & result )
             {
                result.eneg = ( in.peek_char() == '-' );
             }
@@ -131,7 +133,8 @@ namespace tao
          template<>
          struct action< rules::idigits >
          {
-            static void apply( const tao_json_pegtl::input & in, number_state & result )
+            template< typename Input >
+            static void apply( const Input & in, number_state & result )
             {
                if ( in.size() > ( 1 << 20 ) ) {
                   throw tao_json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );
@@ -153,7 +156,8 @@ namespace tao
          template<>
          struct action< rules::fdigits >
          {
-            static void apply( const tao_json_pegtl::input & in, number_state & result )
+            template< typename Input >
+            static void apply( const Input & in, number_state & result )
             {
                result.isfp = true;
 
@@ -186,7 +190,8 @@ namespace tao
          template<>
          struct action< rules::edigits >
          {
-            static void apply( const tao_json_pegtl::input & in, number_state & result )
+            template< typename Input >
+            static void apply( const Input & in, number_state & result )
             {
                result.isfp = true;
 

@@ -1,14 +1,12 @@
 // Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_EOLF_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_EOLF_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_EOLF_HH
+#define TAO_CPP_PEGTL_INTERNAL_EOLF_HH
 
 #include "skip_control.hh"
 
 #include "../analysis/generic.hh"
-
-#include "eol.hh"
 
 namespace tao_json_pegtl
 {
@@ -21,18 +19,17 @@ namespace tao_json_pegtl
          template< typename Input >
          static bool match( Input & in )
          {
-            if ( const auto s = in.size() ) {
-               return eol::match_impl( in, s );
-            }
-            return true;
+            using eol_t = typename Input::eol_t;
+            const auto p = eol_t::match( in );
+            return p.first || ( ! p.second );
          }
       };
 
       template<>
       struct skip_control< eolf > : std::true_type {};
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

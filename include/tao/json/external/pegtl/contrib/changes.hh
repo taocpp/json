@@ -1,8 +1,8 @@
 // Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_CHANGES_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_CHANGES_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_CHANGES_HH
+#define TAO_CPP_PEGTL_CONTRIB_CHANGES_HH
 
 #include <type_traits>
 
@@ -22,7 +22,7 @@ namespace tao_json_pegtl
       template< tao_json_pegtl::apply_mode A, typename State >
       using state_disable_helper = typename std::conditional< A == tao_json_pegtl::apply_mode::ACTION, State, dummy_disabled_state >::type;
 
-   } // internal
+   } // namespace internal
 
    template< typename Rule, typename State, template< typename ... > class Base = tao_json_pegtl::normal >
    struct change_state
@@ -63,6 +63,6 @@ namespace tao_json_pegtl
          : public change_state< Rule, State, change_both_helper< Action, Base >::template change_action >
    { };
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

@@ -65,7 +65,7 @@ namespace tao
                   while ( ! in.empty() ) {
                      if ( const auto t = tao_json_pegtl::internal::peek_utf8::peek( in ) ) {
                         if ( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
-                           in.bump_in_line( t.size );
+                           in.bump_in_this_line( t.size );
                            result = true;
                            continue;
                         }

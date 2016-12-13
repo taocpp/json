@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_UNESCAPE_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_UNESCAPE_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_UNESCAPE_HH
+#define TAO_CPP_PEGTL_CONTRIB_UNESCAPE_HH
 
 #include <string>
 #include <cassert>
@@ -128,7 +128,8 @@ namespace tao_json_pegtl
          {
             assert( ! in.empty() );  // First character MUST be present, usually 'u' or 'U'.
             if ( ! utf8_append_utf32( st.unescaped, unhex_string< unsigned >( in.begin() + 1, in.end() ) ) ) {
-               throw parse_error( "invalid escaped unicode code point", in );
+               using exception_t = typename Input::exception_t;
+               throw exception_t( "invalid escaped unicode code point", in );
             }
          }
       };
@@ -172,8 +173,8 @@ namespace tao_json_pegtl
          }
       };
 
-   } // unescape
+   } // namespace unescape
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

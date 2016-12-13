@@ -1,9 +1,10 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_RAW_STRING_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_RAW_STRING_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_RAW_STRING_HH
+#define TAO_CPP_PEGTL_CONTRIB_RAW_STRING_HH
 
+#include "../action_input.hh"
 #include "../apply_mode.hh"
 #include "../nothing.hh"
 
@@ -27,19 +28,21 @@ namespace tao_json_pegtl
       {
          template< typename Input, typename ... States >
          raw_string_state( const Input & in, States && ... )
-               : line( in.line() ),
-                 column( in.column() ),
-                 size( in.size() )
+               : byte( in.byte() ),
+                 line( in.line() ),
+                 byte_in_line( in.byte_in_line() ),
+                 size( in.size( 0 ) )
          { }
 
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
          typename std::enable_if< ( ( A == apply_mode::ACTION ) && ( ! is_nothing< Action, Tag >::value ) ) >::type
          success( const Input & in, States && ... st ) const
          {
-            Input content( line, column, in.begin() - ( size - in.size() ), in.begin() - count, in.source() );
-            const bool skip = ( content.peek_char( count ) == '\n' );
-            content.bump( count + skip );
-            Action< Tag >::apply( const_cast< const Input & >( content ), st ... );
+            using eol_t = typename Input::eol_t;
+            using action_t = typename Input::action_t;
+            const auto * const begin = in.begin() - size + in.size( 0 ) + count;
+            action_t content( byte, line, byte_in_line, begin + ( ( * begin ) == eol_t::ch ), in.begin() - count, in.source() );
+            Action< Tag >::apply( const_cast< const action_t & >( content ), st ... );
          }
 
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
@@ -50,8 +53,9 @@ namespace tao_json_pegtl
          raw_string_state( const raw_string_state & ) = delete;
          void operator= ( const raw_string_state & ) = delete;
 
+         std::size_t byte;
          std::size_t line;
-         std::size_t column;
+         std::size_t byte_in_line;
          std::size_t size;
          std::size_t count = 0;
       };
@@ -67,7 +71,7 @@ namespace tao_json_pegtl
             if ( in.empty() || ( in.peek_char( 0 ) != Open ) ) {
                return false;
             }
-            for ( std::size_t i = 1; i < in.size(); ++i ) {
+            for ( std::size_t i = 1; i < in.size( i + 1 ); ++i ) {
                switch ( const auto c = in.peek_char( i ) ) {
                   case Open:
                      ls.count = i + 1;
@@ -91,7 +95,7 @@ namespace tao_json_pegtl
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input >
          static bool match( Input & in, const raw_string_state< Tag > & ls )
          {
-            if ( in.size() < ls.count ) {
+            if ( in.size( ls.count ) < ls.count ) {
                return false;
             }
             if ( in.peek_char( 0 ) != Close ) {
@@ -116,7 +120,7 @@ namespace tao_json_pegtl
       template< typename Tag, char Intermediate, char Close >
       struct skip_control< raw_string_close< Tag, Intermediate, Close > > : std::true_type {};
 
-   } // internal
+   } // namespace internal
 
    // raw_string matches Lua-style long literals.
    //
@@ -144,17 +148,17 @@ namespace tao_json_pegtl
    // support on the grammar level.
 
    template< char Open, char Intermediate, char Close, typename Tag = internal::raw_string_tag< Open, Intermediate, Close > >
-   struct raw_string : state< internal::raw_string_state< Tag >,
-                              internal::raw_string_open< Tag, Open, Intermediate >,
-                              internal::must< internal::until< internal::raw_string_close< Tag, Intermediate, Close > > > >
+   struct raw_string : internal::state< internal::raw_string_state< Tag >,
+                                        internal::raw_string_open< Tag, Open, Intermediate >,
+                                        internal::must< internal::until< internal::raw_string_close< Tag, Intermediate, Close > > > >
    {
-      // This is used to bind an action to the content
+      // This is used to bind an action to the content.
       using content = Tag;
 
-      // This is used for error-reporting when a raw string is not closed properly
+      // This is used for error-reporting when a raw string is not closed properly.
       using close = internal::until< internal::raw_string_close< Tag, Intermediate, Close > >;
    };
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

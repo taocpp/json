@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_ONE_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_ONE_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_ONE_HH
+#define TAO_CPP_PEGTL_INTERNAL_ONE_HH
 
 #include <utility>
 #include <algorithm>
@@ -66,8 +66,8 @@ namespace tao_json_pegtl
       template< result_on_found R, typename Peek, typename Peek::data_t ... Cs >
       struct skip_control< one< R, Peek, Cs ... > > : std::true_type {};
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

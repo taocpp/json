@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_ABNF_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_ABNF_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_ABNF_HH
+#define TAO_CPP_PEGTL_CONTRIB_ABNF_HH
 
 #include "../internal/rules.hh"
 
@@ -29,8 +29,8 @@ namespace tao_json_pegtl
       struct VCHAR : internal::range< internal::result_on_found::SUCCESS, internal::peek_char, char( 33 ), char( 126 ) > {};
       struct WSP : internal::one< internal::result_on_found::SUCCESS, internal::peek_char, ' ', '\t' > {};
 
-   } // abnf
+   } // namespace abnf
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

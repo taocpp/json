@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_ANALYZE_CYCLES_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_ANALYZE_CYCLES_HH
+#ifndef TAO_CPP_PEGTL_ANALYSIS_ANALYZE_CYCLES_HH
+#define TAO_CPP_PEGTL_ANALYSIS_ANALYZE_CYCLES_HH
 
 #include <cassert>
 
@@ -54,33 +54,33 @@ namespace tao_json_pegtl
                   case rule_type::ANY: {
                      bool a = false;
                      for ( const auto & r : start->second.rules ) {
-                        a |= work( find( r ), accum || a );
+                        a = a || work( find( r ), accum || a );
                      }
                      return m_cache[ start->first ] = true;
                   }
                   case rule_type::OPT: {
                      bool a = false;
                      for ( const auto & r : start->second.rules ) {
-                        a |= work( find( r ), accum || a );
+                        a = a || work( find( r ), accum || a );
                      }
                      return m_cache[ start->first ] = false;
                   }
                   case rule_type::SEQ: {
                      bool a = false;
                      for ( const auto & r : start->second.rules ) {
-                        a |= work( find( r ), accum || a );
+                        a = a || work( find( r ), accum || a );
                      }
                      return m_cache[ start->first ] = a;
                   }
                   case rule_type::SOR: {
                      bool a = true;
                      for ( const auto & r : start->second.rules ) {
-                        a &= work( find( r ), accum );
+                        a = a && work( find( r ), accum );
                      }
                      return m_cache[ start->first ] = a;
                   }
                }
-               assert( false );  // LCOV_EXCL_LINE
+               throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
             }
             if ( ! accum ) {
                ++m_problems;
@@ -122,8 +122,8 @@ namespace tao_json_pegtl
          }
       };
 
-   } // analysis
+   } // namespace analysis
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

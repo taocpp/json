@@ -1,9 +1,10 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_RULE_MATCH_TWO_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_RULE_MATCH_TWO_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_RULE_MATCH_TWO_HH
+#define TAO_CPP_PEGTL_INTERNAL_RULE_MATCH_TWO_HH
 
+#include "../action_input.hh"
 #include "../apply_mode.hh"
 #include "../nothing.hh"
 
@@ -50,16 +51,18 @@ namespace tao_json_pegtl
          {
             auto m = in.mark();
 
+            using action_t = typename Input::action_t;
+
             if ( rule_match_two< Rule, A, Action, Control, false >::match( in, st ... ) ) {
-               Action< Rule >::apply( Input( in.data(), m ), st ... );
+               Action< Rule >::apply( action_t( m, in.data() ), st ... );
                return m( true );
             }
             return false;
          }
       };
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

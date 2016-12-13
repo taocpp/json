@@ -1,14 +1,19 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_REP_MIN_MAX_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_REP_MIN_MAX_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_REP_MIN_MAX_HH
+#define TAO_CPP_PEGTL_INTERNAL_REP_MIN_MAX_HH
 
-#include "trivial.hh"
+#include <type_traits>
+
 #include "skip_control.hh"
-#include "seq.hh"
+#include "trivial.hh"
 #include "not_at.hh"
+#include "rule_conjunction.hh"
+#include "rule_match_three.hh"
+#include "seq.hh"
 
+#include "../apply_mode.hh"
 #include "../analysis/counted.hh"
 
 namespace tao_json_pegtl
@@ -24,7 +29,7 @@ namespace tao_json_pegtl
       struct rep_min_max< Min, Max >
             : trivial< false >
       {
-         static_assert( Min <= Max, "illegal rep_min_max rule (maximum number of repetitions smaller than minimum)" );
+         static_assert( Min <= Max, "invalid rep_min_max rule (maximum number of repetitions smaller than minimum)" );
       };
 
       template< typename Rule, typename ... Rules >
@@ -37,7 +42,7 @@ namespace tao_json_pegtl
       {
          using analyze_t = analysis::counted< analysis::rule_type::SEQ, Min, Rules ... >;
 
-         static_assert( Min <= Max, "illegal rep_min_max rule (maximum number of repetitions smaller than minimum)" );
+         static_assert( Min <= Max, "invalid rep_min_max rule (maximum number of repetitions smaller than minimum)" );
 
          template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
          static bool match( Input & in, States && ... st )
@@ -46,7 +51,7 @@ namespace tao_json_pegtl
 
             for ( unsigned i = 0; i != Min; ++i ) {
                if ( ! rule_conjunction< Rules ... >::template match< A, Action, Control >( in, st ... ) ) {
-                  return m( false );
+                  return false;
                }
             }
             for ( unsigned i = Min; i != Max; ++i ) {
@@ -58,8 +63,8 @@ namespace tao_json_pegtl
          }
       };
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

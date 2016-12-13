@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_UNTIL_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_UNTIL_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_UNTIL_HH
+#define TAO_CPP_PEGTL_INTERNAL_UNTIL_HH
 
 #include "eof.hh"
 #include "star.hh"
@@ -38,8 +38,7 @@ namespace tao_json_pegtl
                }
                in.bump();
             }
-            m.success();
-            return true;
+            return m( true );
          }
       };
 
@@ -58,13 +57,12 @@ namespace tao_json_pegtl
                   return false;
                }
             }
-            m.success();
-            return true;
+            return m( true );
          }
       };
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_GRAMMAR_INFO_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_GRAMMAR_INFO_HH
+#ifndef TAO_CPP_PEGTL_ANALYSIS_GRAMMAR_INFO_HH
+#define TAO_CPP_PEGTL_ANALYSIS_GRAMMAR_INFO_HH
 
 #include <map>
 #include <string>
@@ -28,8 +28,8 @@ namespace tao_json_pegtl
          }
       };
 
-   } // analysis
+   } // namespace analysis
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

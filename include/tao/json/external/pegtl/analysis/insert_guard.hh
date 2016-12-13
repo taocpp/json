@@ -1,8 +1,10 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_INSERT_GUARD_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_INSERT_GUARD_HH
+#ifndef TAO_CPP_PEGTL_ANALYSIS_INSERT_GUARD_HH
+#define TAO_CPP_PEGTL_ANALYSIS_INSERT_GUARD_HH
+
+#include <utility>
 
 namespace tao_json_pegtl
 {
@@ -12,7 +14,7 @@ namespace tao_json_pegtl
       class insert_guard
       {
       public:
-         insert_guard( insert_guard && g )
+         insert_guard( insert_guard && g ) noexcept
                : m_i( g.m_i ),
                  m_c( g.m_c )
          {
@@ -50,8 +52,8 @@ namespace tao_json_pegtl
          return insert_guard< C >( c, t );
       }
 
-   } // analysis
+   } // namespace analysis
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

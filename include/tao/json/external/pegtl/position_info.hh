@@ -1,14 +1,13 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_POSITION_INFO_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_POSITION_INFO_HH
+#ifndef TAO_CPP_PEGTL_POSITION_INFO_HH
+#define TAO_CPP_PEGTL_POSITION_INFO_HH
 
 #include <string>
-#include <cstdlib>
+#include <sstream>
 #include <ostream>
-
-#include "input.hh"
+#include <cstdlib>
 
 #include "internal/input_data.hh"
 
@@ -17,30 +16,31 @@ namespace tao_json_pegtl
    struct position_info
    {
       explicit
-      position_info( const input & in )
-            : position_info( in.data() )
+      position_info( const internal::input_data & d )
+            : byte( d.byte ),
+              line( d.line ),
+              byte_in_line( d.byte_in_line ),
+              source( d.source )
       { }
 
-      explicit
-      position_info( const internal::input_data & id )
-            : source( id.source ),
-              line( id.line ),
-              column( id.column ),
-              begin( id.begin )
-      { }
-
-      std::string source;
+      std::size_t byte;
       std::size_t line;
-      std::size_t column;
-
-      const char * begin;
+      std::size_t byte_in_line;
+      std::string source;
    };
 
    inline std::ostream & operator<< ( std::ostream & o, const position_info & p )
    {
-      return o << p.source << ':' << p.line << ':' << p.column;
+      return o << p.source << ':' << p.line << ':' << p.byte_in_line << '(' << p.byte << ')';
    }
 
-} // tao_json_pegtl
+   inline std::string to_string( const position_info & p )
+   {
+      std::ostringstream o;
+      o << p;
+      return o.str();
+   }
+
+} // namespace tao_json_pegtl
 
 #endif

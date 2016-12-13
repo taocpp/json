@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_SKIP_CONTROL_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_SKIP_CONTROL_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_SKIP_CONTROL_HH
+#define TAO_CPP_PEGTL_INTERNAL_SKIP_CONTROL_HH
 
 #include <type_traits>
 
@@ -21,8 +21,8 @@ namespace tao_json_pegtl
       template< typename Rule >
       struct skip_control : std::false_type {};
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_RULE_CONJUNCTION_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_RULE_CONJUNCTION_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_RULE_CONJUNCTION_HH
+#define TAO_CPP_PEGTL_INTERNAL_RULE_CONJUNCTION_HH
 
 #include "../apply_mode.hh"
 
@@ -27,8 +27,8 @@ namespace tao_json_pegtl
          }
       };
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

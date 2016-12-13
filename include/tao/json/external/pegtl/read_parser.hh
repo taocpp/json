@@ -1,29 +1,42 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_READ_PARSER_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_READ_PARSER_HH
+#ifndef TAO_CPP_PEGTL_READ_PARSER_HH
+#define TAO_CPP_PEGTL_READ_PARSER_HH
 
-#include "data_parser.hh"
-
+#include "eol.hh"
+#include "string_parser.hh"
 #include "internal/file_reader.hh"
 
 namespace tao_json_pegtl
 {
-   class read_parser
-         : public data_parser
+   template< typename Eol >
+   class basic_read_parser
+         : public basic_string_parser< Eol >
    {
    public:
       explicit
-      read_parser( const std::string & filename )
-            : data_parser( internal::file_reader( filename ).read(), filename )
+      basic_read_parser( const std::string & filename )
+            : basic_string_parser< Eol >( internal::file_reader( filename ).read(), filename )
       { }
 
-      read_parser( const std::string & filename, const tao_json_pegtl::input & from )
-            : data_parser( internal::file_reader( filename ).read(), filename, from )
-      { }
+      using eol = Eol;
    };
 
-} // tao_json_pegtl
+   using read_parser = basic_read_parser< lf_crlf_eol >;
+
+   template< typename Rule, template< typename ... > class Action = nothing, template< typename ... > class Control = normal, typename ... States >
+   bool parse_read( const std::string & filename, States && ... st )
+   {
+      return read_parser( filename ).parse< Rule, Action, Control >( st ... );
+   }
+
+   template< typename Rule, template< typename ... > class Action = nothing, template< typename ... > class Control = normal, typename Outer, typename ... States >
+   bool parse_read_nested( Outer & oi, const std::string & filename, States && ... st )
+   {
+      return basic_read_parser< typename Outer::eol >( filename ).template parse_nested< Rule, Action, Control >( oi, st ... );
+   }
+
+} // namespace tao_json_pegtl
 
 #endif

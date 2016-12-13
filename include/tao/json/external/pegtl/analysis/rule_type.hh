@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_RULE_TYPE_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_ANALYSIS_RULE_TYPE_HH
+#ifndef TAO_CPP_PEGTL_ANALYSIS_RULE_TYPE_HH
+#define TAO_CPP_PEGTL_ANALYSIS_RULE_TYPE_HH
 
 namespace tao_json_pegtl
 {
@@ -16,8 +16,8 @@ namespace tao_json_pegtl
          SOR   // Consumption-on-success depends on consumption of (non-zero bounded repetition of) disjunction of sub-rules.
       };
 
-   } // analysis
+   } // namespace analysis
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

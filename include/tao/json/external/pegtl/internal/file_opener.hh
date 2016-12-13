@@ -1,13 +1,15 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_FILE_OPENER_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_FILE_OPENER_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_FILE_OPENER_HH
+#define TAO_CPP_PEGTL_INTERNAL_FILE_OPENER_HH
 
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include <utility>
 
 #include "../input_error.hh"
 
@@ -18,8 +20,8 @@ namespace tao_json_pegtl
       struct file_opener
       {
          explicit
-         file_opener( const std::string & filename )
-               : m_source( filename ),
+         file_opener( std::string filename )
+               : m_source( std::move( filename ) ),
                  m_fd( open() )
          { }
 
@@ -36,7 +38,7 @@ namespace tao_json_pegtl
             struct stat st;
             errno = 0;
             if ( ::fstat( m_fd, & st ) < 0 ) {
-               TAOCPP_JSON_EMBEDDED_PEGTL_THROW_INPUT_ERROR( "unable to fstat() file " << m_source << " descriptor " << m_fd );
+               TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to fstat() file " << m_source << " descriptor " << m_fd );
             }
             return std::size_t( st.st_size );
          }
@@ -52,12 +54,12 @@ namespace tao_json_pegtl
             if ( fd >= 0 ) {
                return fd;
             }
-            TAOCPP_JSON_EMBEDDED_PEGTL_THROW_INPUT_ERROR( "unable to open() file " << m_source << " for reading" );
+            TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to open() file " << m_source << " for reading" );
          }
       };
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

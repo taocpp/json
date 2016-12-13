@@ -1,8 +1,8 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_IF_THEN_ELSE_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_IF_THEN_ELSE_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_IF_THEN_ELSE_HH
+#define TAO_CPP_PEGTL_INTERNAL_IF_THEN_ELSE_HH
 
 #include "sor.hh"
 #include "seq.hh"
@@ -28,17 +28,15 @@ namespace tao_json_pegtl
             if ( Control< Cond >::template match< A, Action, Control >( in, st ... ) ) {
                return m( Control< Then >::template match< A, Action, Control >( in, st ... ) );
             }
-            else {
-               return m( Control< Else >::template match< A, Action, Control >( in, st ... ) );
-            }
+            return m( Control< Else >::template match< A, Action, Control >( in, st ... ) );
          }
       };
 
       template< typename Cond, typename Then, typename Else >
       struct skip_control< if_then_else< Cond, Then, Else > > : std::true_type {};
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

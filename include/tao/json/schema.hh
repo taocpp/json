@@ -42,7 +42,7 @@ namespace tao
          template< typename Rule >
          bool parse( const std::string & v )
          {
-            return tao_json_pegtl::parse< tao_json_pegtl::seq< Rule, tao_json_pegtl::eof > >( v, "" );
+            return tao_json_pegtl::parse_string< tao_json_pegtl::seq< Rule, tao_json_pegtl::eof > >( v, "" );
          }
 
          inline bool parse_date_time( const std::string & v )

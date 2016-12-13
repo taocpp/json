@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_NORMAL_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_NORMAL_HH
+#ifndef TAO_CPP_PEGTL_NORMAL_HH
+#define TAO_CPP_PEGTL_NORMAL_HH
 
 #include "apply_mode.hh"
 #include "parse_error.hh"
@@ -30,7 +30,8 @@ namespace tao_json_pegtl
       template< typename Input, typename ... States >
       static void raise( const Input & in, States && ... )
       {
-         throw tao_json_pegtl::parse_error( "parse error matching " + internal::demangle< Rule >(), in );
+         using exception_t = typename Input::exception_t;
+         throw exception_t( "parse error matching " + internal::demangle< Rule >(), in );
       }
 
       template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
@@ -40,6 +41,6 @@ namespace tao_json_pegtl
       }
    };
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

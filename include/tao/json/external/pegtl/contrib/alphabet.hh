@@ -1,8 +1,8 @@
 // Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_ALPHABET_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_CONTRIB_ALPHABET_HH
+#ifndef TAO_CPP_PEGTL_CONTRIB_ALPHABET_HH
+#define TAO_CPP_PEGTL_CONTRIB_ALPHABET_HH
 
 namespace tao_json_pegtl
 {
@@ -62,8 +62,8 @@ namespace tao_json_pegtl
       static const int Y = 'Y';
       static const int Z = 'Z';
 
-   } // alphabet
+   } // namespace alphabet
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

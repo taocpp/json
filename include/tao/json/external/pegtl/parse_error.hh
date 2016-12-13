@@ -1,56 +1,38 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_PARSE_ERROR_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_PARSE_ERROR_HH
+#ifndef TAO_CPP_PEGTL_PARSE_ERROR_HH
+#define TAO_CPP_PEGTL_PARSE_ERROR_HH
 
 #include <vector>
-#include <sstream>
 #include <stdexcept>
 
 #include "position_info.hh"
 
 namespace tao_json_pegtl
 {
-   namespace internal
+   template< typename Pos >
+   struct basic_parse_error
+         : public std::runtime_error
    {
-      template< typename Input >
-      std::vector< position_info > positions( const Input & in )
-      {
-         std::vector< position_info > result;
-         for ( const auto * id = & in.data(); id; id = id->from ) {
-            result.push_back( tao_json_pegtl::position_info( * id ) );
-         }
-         return result;
-      }
-
-      template< typename Input >
-      std::string source( const Input & in )
-      {
-         std::ostringstream oss;
-         oss << tao_json_pegtl::position_info( in.data() );
-         return oss.str();
-      }
-
-   } // internal
-
-   struct parse_error
-         : std::runtime_error
-   {
-      parse_error( const std::string & message, std::vector< position_info > && positions )
+      basic_parse_error( const std::string & message, std::vector< Pos > && in_positions )
             : std::runtime_error( message ),
-              positions( std::move( positions ) )
+              positions( std::move( in_positions ) )
       { }
 
       template< typename Input >
-      parse_error( const std::string & message, const Input & in )
-            : std::runtime_error( internal::source( in ) + ": " + message ),
-              positions( internal::positions( in ) )
+      basic_parse_error( const std::string & message, const Input & in )
+            : std::runtime_error( to_string( in.position() ) + ": " + message ),
+              positions( 1, in.position() )
       { }
 
-      std::vector< position_info > positions;
+      using position_t = Pos;
+
+      std::vector< Pos > positions;
    };
 
-} // tao_json_pegtl
+   using parse_error = basic_parse_error< position_info >;
+
+} // namespace tao_json_pegtl
 
 #endif

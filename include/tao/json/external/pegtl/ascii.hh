@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_ASCII_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_ASCII_HH
+#ifndef TAO_CPP_PEGTL_ASCII_HH
+#define TAO_CPP_PEGTL_ASCII_HH
 
 #include "internal/rules.hh"
 #include "internal/result_on_found.hh"
@@ -38,9 +38,9 @@ namespace tao_json_pegtl
       struct upper : internal::range< internal::result_on_found::SUCCESS, internal::peek_char, 'A', 'Z' > {};
       struct xdigit : internal::ranges< internal::peek_char, '0', '9', 'a', 'f', 'A', 'F' > {};
 
-   } // ascii
+   } // namespace ascii
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #include "internal/pegtl_string.hh"
 

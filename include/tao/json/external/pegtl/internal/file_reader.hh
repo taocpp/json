@@ -1,11 +1,13 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_FILE_READER_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_FILE_READER_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_FILE_READER_HH
+#define TAO_CPP_PEGTL_INTERNAL_FILE_READER_HH
 
 #include <cstdio>
 #include <memory>
+#include <string>
+#include <utility>
 
 #include "../input_error.hh"
 
@@ -17,8 +19,8 @@ namespace tao_json_pegtl
       {
       public:
          explicit
-         file_reader( const std::string & filename )
-               : m_source( filename ),
+         file_reader( std::string filename )
+               : m_source( std::move( filename ) ),
                  m_file( open(), & std::fclose )
          { }
 
@@ -28,17 +30,17 @@ namespace tao_json_pegtl
          std::size_t size() const
          {
             errno = 0;
-            if ( std::fseek( m_file.get(), 0, SEEK_END ) ) {
-               TAOCPP_JSON_EMBEDDED_PEGTL_THROW_INPUT_ERROR( "unable to fseek() to end of file " << m_source );  // LCOV_EXCL_LINE
+            if ( std::fseek( m_file.get(), 0, SEEK_END ) != 0 ) {
+               TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to fseek() to end of file " << m_source );  // LCOV_EXCL_LINE
             }
             errno = 0;
             const auto s = std::ftell( m_file.get() );
             if ( s < 0 ) {
-               TAOCPP_JSON_EMBEDDED_PEGTL_THROW_INPUT_ERROR( "unable to ftell() file size of file " << m_source );  // LCOV_EXCL_LINE
+               TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to ftell() file size of file " << m_source );  // LCOV_EXCL_LINE
             }
             errno = 0;
-            if ( std::fseek( m_file.get(), 0, SEEK_SET ) ) {
-               TAOCPP_JSON_EMBEDDED_PEGTL_THROW_INPUT_ERROR( "unable to fseek() to beginning of file " << m_source );  // LCOV_EXCL_LINE
+            if ( std::fseek( m_file.get(), 0, SEEK_SET ) != 0 ) {
+               TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to fseek() to beginning of file " << m_source );  // LCOV_EXCL_LINE
             }
             return s;
          }
@@ -48,8 +50,8 @@ namespace tao_json_pegtl
             std::string nrv;
             nrv.resize( size() );
             errno = 0;
-            if ( nrv.size() && ( std::fread( & nrv[ 0 ], nrv.size(), 1, m_file.get() ) != 1 ) ) {
-               TAOCPP_JSON_EMBEDDED_PEGTL_THROW_INPUT_ERROR( "unable to fread() file " << m_source << " size " << nrv.size() );  // LCOV_EXCL_LINE
+            if ( ( nrv.size() != 0 ) && ( std::fread( & nrv[ 0 ], nrv.size(), 1, m_file.get() ) != 1 ) ) {
+               TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to fread() file " << m_source << " size " << nrv.size() );  // LCOV_EXCL_LINE
             }
             return nrv;
          }
@@ -64,12 +66,12 @@ namespace tao_json_pegtl
             if ( auto * file = std::fopen( m_source.c_str(), "rb" ) ) {
                return file;
             }
-            TAOCPP_JSON_EMBEDDED_PEGTL_THROW_INPUT_ERROR( "unable to fopen() file " << m_source << " for reading" );
+            TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to fopen() file " << m_source << " for reading" );
          }
       };
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif

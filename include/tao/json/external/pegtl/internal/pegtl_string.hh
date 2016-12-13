@@ -1,8 +1,8 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_TAOCPP_JSON_EMBEDDED_PEGTL_STRING_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_TAOCPP_JSON_EMBEDDED_PEGTL_STRING_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_TAO_CPP_PEGTL_STRING_HH
+#define TAO_CPP_PEGTL_INTERNAL_TAO_CPP_PEGTL_STRING_HH
 
 #include <type_traits>
 #include <cstddef>
@@ -17,61 +17,75 @@ namespace tao_json_pegtl
 
    namespace internal
    {
-      template< std::size_t N, std::size_t M >
-      constexpr char string_at( const char(&c)[ M ] ) noexcept
-      {
-         static_assert( M <= 101, "String longer than 100 (excluding terminating \\0)!" );
-         return ( N < M ) ? c[ N ] : 0;
-      }
+      template< typename, typename, typename, typename, typename, typename, typename, typename >
+      struct string_join;
 
-      template< typename, char ... >
-      struct string_builder;
-
-      template< typename T >
-      struct string_builder< T >
+      template< template< char ... > class S, char ... C0s, char ... C1s, char ... C2s, char ... C3s, char ... C4s, char ... C5s, char ... C6s, char ... C7s >
+      struct string_join< S< C0s ... >, S< C1s ... >, S< C2s ... >, S< C3s ... >, S< C4s ... >, S< C5s ... >, S< C6s ... >, S< C7s ... > >
       {
+         using type = S< C0s ..., C1s ..., C2s ..., C3s ..., C4s ..., C5s ..., C6s ..., C7s ... >;
+      };
+
+      template< template< char ... > class S, char, bool >
+      struct string_at
+      {
+         using type = S<>;
+      };
+
+      template< template< char ... > class S, char C >
+      struct string_at< S, C, true >
+      {
+         using type = S< C >;
+      };
+
+      template< typename T, std::size_t S >
+      struct string_max_length
+      {
+         static_assert( S <= 512, "String longer than 512 (excluding terminating \\0)!" );
          using type = T;
       };
 
-      template< template< char ... > class S, char ... Hs, char C, char ... Cs >
-      struct string_builder< S< Hs ... >, C, Cs ... >
-            : std::conditional< C == '\0',
-                                string_builder< S< Hs ... > >,
-                                string_builder< S< Hs ..., C >, Cs ... > >::type
-      { };
+   } // namespace internal
 
-   } // internal
+} // namespace tao_json_pegtl
 
-} // tao_json_pegtl
+#define TAO_CPP_PEGTL_INTERNAL_EMPTY()
+#define TAO_CPP_PEGTL_INTERNAL_DEFER( X ) X TAO_CPP_PEGTL_INTERNAL_EMPTY()
+#define TAO_CPP_PEGTL_INTERNAL_EXPAND(...) __VA_ARGS__
 
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(n,x)           \
-   tao_json_pegtl::internal::string_at< n##0 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##1 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##2 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##3 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##4 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##5 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##6 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##7 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##8 >( x ),     \
-   tao_json_pegtl::internal::string_at< n##9 >( x )
+#define TAO_CPP_PEGTL_INTERNAL_STRING_AT( S, x, n ) \
+   tao_json_pegtl::internal::string_at< S, ( 0##n < sizeof( x ) ) ? x[ 0##n ] : 0, ( 0##n < sizeof( x ) - 1 ) >::type
 
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_100(x)            \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(,x),                \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(1,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(2,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(3,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(4,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(5,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(6,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(7,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(8,x),               \
-   TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_10(9,x)
+#define TAO_CPP_PEGTL_INTERNAL_JOIN_8( M, S, x, n ) \
+   tao_json_pegtl::internal::string_join<            \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##0 ), \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##1 ), \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##2 ), \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##3 ), \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##4 ), \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##5 ), \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##6 ), \
+   TAO_CPP_PEGTL_INTERNAL_DEFER( M )( S, x, n##7 )>::type
 
-#define tao_json_pegtl_string_t(x) \
-   tao_json_pegtl::internal::string_builder< tao_json_pegtl::ascii::string<>, TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_100(x) >::type
+#define TAO_CPP_PEGTL_INTERNAL_STRING_8( S, x, n ) \
+   TAO_CPP_PEGTL_INTERNAL_JOIN_8( TAO_CPP_PEGTL_INTERNAL_STRING_AT, S, x, n )
 
-#define tao_json_pegtl_istring_t(x) \
-   tao_json_pegtl::internal::string_builder< tao_json_pegtl::ascii::istring<>, TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_STRING_100(x) >::type
+#define TAO_CPP_PEGTL_INTERNAL_STRING_64( S, x, n ) \
+   TAO_CPP_PEGTL_INTERNAL_JOIN_8( TAO_CPP_PEGTL_INTERNAL_STRING_8, S, x, n )
+
+#define TAO_CPP_PEGTL_INTERNAL_STRING_512( S, x, n ) \
+   TAO_CPP_PEGTL_INTERNAL_JOIN_8( TAO_CPP_PEGTL_INTERNAL_STRING_64, S, x, n )
+
+#define TAO_CPP_PEGTL_INTERNAL_STRING( S, x ) \
+   TAO_CPP_PEGTL_INTERNAL_EXPAND( \
+      TAO_CPP_PEGTL_INTERNAL_EXPAND( \
+         TAO_CPP_PEGTL_INTERNAL_EXPAND( \
+            tao_json_pegtl::internal::string_max_length< TAO_CPP_PEGTL_INTERNAL_STRING_512( S, x, ), sizeof( x ) - 1 >::type ) ) )
+
+#define tao_json_pegtl_string_t( x ) \
+   TAO_CPP_PEGTL_INTERNAL_STRING( tao_json_pegtl::ascii::string, x )
+
+#define tao_json_pegtl_istring_t( x ) \
+   TAO_CPP_PEGTL_INTERNAL_STRING( tao_json_pegtl::ascii::istring, x )
 
 #endif

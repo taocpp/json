@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
-#ifndef TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_RANGES_HH
-#define TAOCPP_JSON_EMBEDDED_PEGTL_INTERNAL_RANGES_HH
+#ifndef TAO_CPP_PEGTL_INTERNAL_RANGES_HH
+#define TAO_CPP_PEGTL_INTERNAL_RANGES_HH
 
 #include "any.hh"
 #include "range.hh"
@@ -15,12 +15,12 @@ namespace tao_json_pegtl
 {
    namespace internal
    {
-      template< typename Char, Char ... Cs > struct ranges_impl;
+      template< int Eol, typename Char, Char ... Cs > struct ranges_impl;
 
-      template< typename Char >
-      struct ranges_impl< Char >
+      template< int Eol, typename Char >
+      struct ranges_impl< Eol, Char >
       {
-         static constexpr bool can_match_lf = false;
+         static constexpr bool can_match_eol = false;
 
          static bool match( const Char )
          {
@@ -28,10 +28,10 @@ namespace tao_json_pegtl
          }
       };
 
-      template< typename Char, Char Eq >
-      struct ranges_impl< Char, Eq >
+      template< int Eol, typename Char, Char Eq >
+      struct ranges_impl< Eol, Char, Eq >
       {
-         static constexpr bool can_match_lf = ( Eq == '\n' );
+         static constexpr bool can_match_eol = ( Eq == Eol );
 
          static bool match( const Char c )
          {
@@ -39,14 +39,14 @@ namespace tao_json_pegtl
          }
       };
 
-      template< typename Char, Char Lo, Char Hi, Char ... Cs >
-      struct ranges_impl< Char, Lo, Hi, Cs ... >
+      template< int Eol, typename Char, Char Lo, Char Hi, Char ... Cs >
+      struct ranges_impl< Eol, Char, Lo, Hi, Cs ... >
       {
-         static constexpr bool can_match_lf = ( ( ( Lo <= '\n' ) && ( '\n' <= Hi ) ) || ranges_impl< Char, Cs ... >::can_match_lf );
+         static constexpr bool can_match_eol = ( ( ( Lo <= Eol ) && ( Eol <= Hi ) ) || ranges_impl< Eol, Char, Cs ... >::can_match_eol );
 
          static bool match( const Char c )
          {
-            return ( ( Lo <= c ) && ( c <= Hi ) ) || ranges_impl< Char, Cs ... >::match( c );
+            return ( ( Lo <= c ) && ( c <= Hi ) ) || ranges_impl< Eol, Char, Cs ... >::match( c );
          }
       };
 
@@ -55,15 +55,21 @@ namespace tao_json_pegtl
       {
          using analyze_t = analysis::generic< analysis::rule_type::ANY >;
 
-         static constexpr bool can_match_lf = ranges_impl< typename Peek::data_t, Cs ... >::can_match_lf;
+         template< int Eol >
+         struct can_match_eol
+         {
+            static constexpr bool value = ranges_impl< Eol, typename Peek::data_t, Cs ... >::can_match_eol;
+         };
 
          template< typename Input >
          static bool match( Input & in )
          {
+            using eol_t = typename Input::eol_t;
+
             if ( ! in.empty() ) {
                if ( const auto t = Peek::peek( in ) ) {
-                  if ( ranges_impl< typename Peek::data_t, Cs ... >::match( t.data ) ) {
-                     bump_impl< can_match_lf >::bump( in, t.size );
+                  if ( ranges_impl< eol_t::ch, typename Peek::data_t, Cs ... >::match( t.data ) ) {
+                     bump_impl< can_match_eol< eol_t::ch >::value >::bump( in, t.size );
                      return true;
                   }
                }
@@ -79,8 +85,8 @@ namespace tao_json_pegtl
       template< typename Peek, typename Peek::data_t ... Cs >
       struct skip_control< ranges< Peek, Cs ... > > : std::true_type {};
 
-   } // internal
+   } // namespace internal
 
-} // tao_json_pegtl
+} // namespace tao_json_pegtl
 
 #endif
