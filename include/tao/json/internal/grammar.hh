@@ -131,7 +131,7 @@ namespace tao
                }
             };
 
-            struct value : padr< sor_value > {};
+            struct value : padr< discard_if< sor_value > > {};
             struct array_element : seq< value > {};
 
             struct text : seq< star< ws >, value > {};
