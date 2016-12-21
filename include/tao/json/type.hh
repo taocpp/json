@@ -68,9 +68,9 @@ namespace tao
          return "unknown";
       }
 
-      struct null_t {} constexpr null {};
-      struct empty_array_t {} constexpr empty_array {};
-      struct empty_object_t {} constexpr empty_object {};
+      struct null_t { constexpr explicit null_t( int ) {} } constexpr null { 0 };
+      struct empty_array_t { constexpr explicit empty_array_t( int ) {} } constexpr empty_array { 0 };
+      struct empty_object_t { constexpr explicit empty_object_t( int ) {} } constexpr empty_object { 0 };
 
    } // json
 
