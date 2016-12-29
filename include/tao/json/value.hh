@@ -1031,8 +1031,8 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         internal::value_union< basic_value > m_union;
          json::type m_type = json::type::UNINITIALIZED;
+         internal::value_union< basic_value > m_union;
       };
 
       template< template< typename ... > class Traits >
