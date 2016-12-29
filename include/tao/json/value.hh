@@ -140,7 +140,7 @@ namespace tao
          ~basic_value() noexcept
          {
             unsafe_discard();
-            assert( ( m_type = json::type::DISCARDED, true ) );
+            assert( ( * const_cast< volatile json::type * >( & m_type ) = json::type::DISCARDED, true ) );
          }
 
          static basic_value array( std::initializer_list< single< Traits > > && l )
