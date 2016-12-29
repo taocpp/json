@@ -106,7 +106,8 @@ namespace tao
                Traits< D >::assign( *this, std::forward< T >( v ) );
             }
             catch( ... ) {
-               discard();
+               unsafe_discard();
+               const_cast< volatile json::type & >( m_type ) = json::type::DISCARDED;
                internal::rethrow();
             }
          }
@@ -117,7 +118,8 @@ namespace tao
                unsafe_assign( std::move( l ) );
             }
             catch( ... ) {
-               discard();
+               unsafe_discard();
+               const_cast< volatile json::type & >( m_type ) = json::type::DISCARDED;
                throw;
             }
          }
@@ -128,7 +130,8 @@ namespace tao
                unsafe_assign( l );
             }
             catch( ... ) {
-               discard();
+               unsafe_discard();
+               const_cast< volatile json::type & >( m_type ) = json::type::DISCARDED;
                throw;
             }
          }
