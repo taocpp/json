@@ -17,7 +17,9 @@ namespace tao
          {
             using namespace tao_json_pegtl;
 
-            struct ws : one< ' ', '\t', '\n', '\r' > {};
+            struct comment;
+
+            struct ws : sor<comment, one< ' ', '\t', '\n', '\r' > > {};
 
             template< typename R, typename P = ws > struct padr : tao_json_pegtl::internal::seq< R, tao_json_pegtl::internal::star< P > > {};
 
@@ -33,7 +35,7 @@ namespace tao
             struct null : tao_json_pegtl_string_t( "null" ) {};
             struct true_ : tao_json_pegtl_string_t( "true" ) {};
 
-            struct digits : plus< abnf::DIGIT > {};
+            struct digits : tao_json_pegtl::plus< abnf::DIGIT > {};
 
             struct zero : one< '0' > {};
             struct msign : one< '-' > {};
@@ -49,7 +51,7 @@ namespace tao
             struct number : seq< opt< msign >, int_, opt< frac >, opt< exp > > {};
 
             struct xdigit : abnf::HEXDIG {};
-            struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
+            struct unicode : tao_json_pegtl::list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
             struct escaped_char : one< '"', '\\', '/', 'b', 'f', 'n', 'r', 't' > {};
             struct escaped : sor< escaped_char, unicode > {};
 
@@ -111,6 +113,13 @@ namespace tao
                using element = member;
                using content = object_content;
             };
+
+            struct end_star_comment : until< seq< one<'*'>, one<'/'> > >{};
+            struct star_comment : if_must< seq< one<'/'>, one<'*'> >,  end_star_comment> {}; 
+            struct end_line_comment : until< eolf >{};
+            struct line_comment : if_must< seq< one<'/'>, one<'/'> >, end_line_comment> {};
+
+            struct comment : sor<star_comment, line_comment> {};
 
             struct sor_value
             {
