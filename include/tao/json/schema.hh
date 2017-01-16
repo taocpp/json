@@ -16,6 +16,7 @@
 #include <cstdint>
 #include <set>
 #include <string>
+#include <sstream>
 #include <stdexcept>
 #include <algorithm>
 #include <cmath>
@@ -806,6 +807,7 @@ namespace tao
          private:
             const std::shared_ptr< const schema_container< Traits > > m_container;
             const schema_node< Traits > * const m_node;
+            const std::string m_path;
 
             std::vector< std::unique_ptr< sax_compare< Traits > > > m_enum;
             std::unique_ptr< sax::hash > m_hash;
@@ -820,6 +822,8 @@ namespace tao
             std::unique_ptr< schema_consumer > m_not;
             std::unique_ptr< schema_consumer > m_item;
             bool m_match = true;
+            std::stringstream m_reason;
+            
 
             void validate_type( const schema_flags t )
             {
@@ -830,6 +834,7 @@ namespace tao
                   return;
                }
                if ( ( m_node->m_flags & t ) == 0 ) {
+                  m_reason << "Type validation failed: " << m_path;
                   m_match = false;
                }
             }
@@ -842,6 +847,7 @@ namespace tao
                if ( m_node->m_flags & HAS_ENUM ) {
                   m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [&]( const std::unique_ptr< sax_compare< Traits > > & p ){ return f( * p ); } ), m_enum.end() );
                   if ( m_enum.empty() ) {
+                     m_reason << "Enum validation failed: " + m_path;
                      m_match = false;
                   }
                }
@@ -852,6 +858,7 @@ namespace tao
             {
                if ( m_item ) {
                   if ( f( m_item ) ) {
+                     m_reason << "Item validation failed: " + m_path;
                      m_match = false;
                   }
                }
@@ -862,6 +869,7 @@ namespace tao
             {
                for ( auto & p : m_properties ) {
                   if ( f( p ) ) {
+                     m_reason << "Properties validation failed: " + m_path;
                      m_match = false;
                      break;
                   }
@@ -887,6 +895,7 @@ namespace tao
             {
                for ( auto & p : m_all_of ) {
                   if ( f( p ) ) {
+                     m_reason << "Conditions 'allOf' validation failed: " + m_path;
                      m_match = false;
                      break;
                   }
@@ -899,6 +908,7 @@ namespace tao
                if ( ! m_any_of.empty() ) {
                   m_any_of.erase( std::remove_if( m_any_of.begin(), m_any_of.end(), f ), m_any_of.end() );
                   if ( m_any_of.empty() ) {
+                     m_reason << "Conditions 'anyOf' validation failed: " + m_path;
                      m_match = false;
                   }
                }
@@ -910,6 +920,7 @@ namespace tao
                if ( ! m_one_of.empty() ) {
                   m_one_of.erase( std::remove_if( m_one_of.begin(), m_one_of.end(), f ), m_one_of.end() );
                   if ( m_one_of.empty() ) {
+                     m_reason << "Conditions 'oneOf' validation failed: " + m_path;
                      m_match = false;
                   }
                }
@@ -958,17 +969,20 @@ namespace tao
                case HAS_MULTIPLE_OF_UNSIGNED:
                   if ( v < 0 ) {
                      if ( ( -v % m_node->m_multiple_of.u ) != 0 ) {
+                        m_reason << "Multiple_of validation failed: " + m_path;
                         m_match = false;
                      }
                   }
                   else {
                      if ( ( v % m_node->m_multiple_of.u ) != 0 ) {
+                        m_reason << "Multiple_of validation failed: " + m_path;
                         m_match = false;
                      }
                   }
                   break;
                case HAS_MULTIPLE_OF_DOUBLE:
                   if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     m_reason << "Multiple_of_double validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -980,11 +994,13 @@ namespace tao
                switch ( m_node->m_flags & HAS_MULTIPLE_OF ) {
                case HAS_MULTIPLE_OF_UNSIGNED:
                   if ( ( v % m_node->m_multiple_of.u ) != 0 ) {
+                     m_reason << "Multiple_of validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MULTIPLE_OF_DOUBLE:
                   if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     m_reason << "Multiple_of validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -996,11 +1012,13 @@ namespace tao
                switch ( m_node->m_flags & HAS_MULTIPLE_OF ) {
                case HAS_MULTIPLE_OF_UNSIGNED:
                   if ( ! is_multiple_of( v, m_node->m_multiple_of.u ) ) {
+                     m_reason << "Multiple_of validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MULTIPLE_OF_DOUBLE:
                   if ( ! is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     m_reason << "Multiple_of validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -1013,31 +1031,37 @@ namespace tao
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
                   if ( v > m_node->m_maximum.i ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
                   if ( v >= m_node->m_maximum.i ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_UNSIGNED:
                   if ( v >= 0 && static_cast< std::uint64_t >( v ) > m_node->m_maximum.u ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
                   if ( v >= 0 && static_cast< std::uint64_t >( v ) >= m_node->m_maximum.u ) {
+                     m_reason << "Maximum exclusive validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_DOUBLE:
                   if ( v > m_node->m_maximum.d ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
                   if ( v >= m_node->m_maximum.d ) {
+                     m_reason << "Maximum exclusive validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -1082,31 +1106,37 @@ namespace tao
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
                   if ( m_node->m_maximum.i < 0 || v > static_cast< std::uint64_t >( m_node->m_maximum.i ) ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
                   if ( m_node->m_maximum.i < 0 || v >= static_cast< std::uint64_t >( m_node->m_maximum.i ) ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_UNSIGNED:
                   if ( v > m_node->m_maximum.u ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
                   if ( v >= m_node->m_maximum.u ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_DOUBLE:
                   if ( v > m_node->m_maximum.d ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
                   if ( v >= m_node->m_maximum.d ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -1114,31 +1144,37 @@ namespace tao
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
                   if ( m_node->m_minimum.i >= 0 && v < static_cast< std::uint64_t >( m_node->m_minimum.i ) ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
                   if ( m_node->m_minimum.i >= 0 && v <= static_cast< std::uint64_t >( m_node->m_minimum.i ) ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_UNSIGNED:
                   if ( v < m_node->m_minimum.u ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
                   if ( v <= m_node->m_minimum.u ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_DOUBLE:
                   if ( v < m_node->m_minimum.d ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
                   if ( v <= m_node->m_minimum.d ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -1151,31 +1187,37 @@ namespace tao
                switch ( m_node->m_flags & ( HAS_MAXIMUM | EXCLUSIVE_MAXIMUM ) ) {
                case HAS_MAXIMUM_SIGNED:
                   if ( v > m_node->m_maximum.i ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_SIGNED | EXCLUSIVE_MAXIMUM:
                   if ( v >= m_node->m_maximum.i ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_UNSIGNED:
                   if ( v > m_node->m_maximum.u ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_UNSIGNED | EXCLUSIVE_MAXIMUM:
                   if ( v >= m_node->m_maximum.u ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_DOUBLE:
                   if ( v > m_node->m_maximum.d ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MAXIMUM_DOUBLE | EXCLUSIVE_MAXIMUM:
                   if ( v >= m_node->m_maximum.d ) {
+                     m_reason << "Maximum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -1183,31 +1225,37 @@ namespace tao
                switch ( m_node->m_flags & ( HAS_MINIMUM | EXCLUSIVE_MINIMUM ) ) {
                case HAS_MINIMUM_SIGNED:
                   if ( v < m_node->m_minimum.i ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_SIGNED | EXCLUSIVE_MINIMUM:
                   if ( v <= m_node->m_minimum.i ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_UNSIGNED:
                   if ( v < m_node->m_minimum.u ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_UNSIGNED | EXCLUSIVE_MINIMUM:
                   if ( v <= m_node->m_minimum.u ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_DOUBLE:
                   if ( v < m_node->m_minimum.d ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
                case HAS_MINIMUM_DOUBLE | EXCLUSIVE_MINIMUM:
                   if ( v <= m_node->m_minimum.d ) {
+                     m_reason << "Minimum validation failed: " + m_path;
                      m_match = false;
                   }
                   break;
@@ -1217,13 +1265,16 @@ namespace tao
             void validate_string( const std::string & v )
             {
                if ( m_node->m_flags & HAS_MAX_LENGTH && v.size() > m_node->m_max_length ) {
+                  m_reason << "Max length validation failed: " + m_path;
                   m_match = false;
                }
                if ( m_node->m_flags & HAS_MIN_LENGTH && v.size() < m_node->m_min_length ) {
+                  m_reason << "Min length validation failed: " + m_path;
                   m_match = false;
                }
                if ( m_match && m_node->m_pattern ) {
                   if ( ! std::regex_search( v, * m_node->m_pattern ) ) {
+                     m_reason << "Regex validation failed: " + m_path;
                      m_match = false;
                   }
                }
@@ -1231,32 +1282,38 @@ namespace tao
                   switch ( m_node->m_format ) {
                   case schema_format::DATE_TIME:
                      if ( ! internal::parse_date_time( v ) ) {
+                        m_reason << "Datetime validation failed: " + m_path;
                         m_match = false;
                      }
                      break;
                   case schema_format::EMAIL:
                      if ( ( v.size() > 255 ) || ! internal::parse< internal::email >( v ) ) {
+                        m_reason << "Email validation failed: " + m_path;
                         m_match = false;
                      }
                      break;
                   case schema_format::HOSTNAME:
                      if ( ( v.size() > 255 ) || ! internal::parse< internal::hostname >( v ) ) {
+                        m_reason << "Hostname validation failed: " + m_path;
                         m_match = false;
                      }
                      break;
                   case schema_format::IPV4:
                      if ( ! internal::parse< tao_json_pegtl::uri::IPv4address >( v ) ) {
+                        m_reason << "ipv4 validation failed: " + m_path;
                         m_match = false;
                      }
                      break;
                   case schema_format::IPV6:
                      if ( ! internal::parse< tao_json_pegtl::uri::IPv6address >( v ) ) {
+                        m_reason << "ipv6 validation failed: " + m_path;
                         m_match = false;
                      }
                      break;
                   case schema_format::URI:
                      // TODO: What rule exactly should we apply here?? JSON Schema is not exactly the best spec I've ever read...
                      if ( ! internal::parse< tao_json_pegtl::uri::URI >( v ) ) {
+                        m_reason << "uri validation failed: " + m_path;
                         m_match = false;
                      }
                      break;
@@ -1269,9 +1326,11 @@ namespace tao
             void validate_elements( const std::size_t v )
             {
                if ( m_node->m_flags & HAS_MAX_ITEMS && v > m_node->m_max_items ) {
+                  m_reason << "Max_items validation failed: " + m_path;
                   m_match = false;
                }
                if ( m_node->m_flags & HAS_MIN_ITEMS && v < m_node->m_min_items ) {
+                  m_reason << "Min_items validation failed: " + m_path;
                   m_match = false;
                }
             }
@@ -1279,17 +1338,20 @@ namespace tao
             void validate_members( const std::size_t v )
             {
                if ( m_node->m_flags & HAS_MAX_PROPERTIES && v > m_node->m_max_properties ) {
+                  m_reason << "max properties validation failed: " + m_path;
                   m_match = false;
                }
                if ( m_node->m_flags & HAS_MIN_PROPERTIES && v < m_node->m_min_properties ) {
+                  m_reason << "min properties validation failed: " + m_path;
                   m_match = false;
                }
             }
 
          public:
-            schema_consumer( const std::shared_ptr< const schema_container< Traits > > & c, const schema_node< Traits > & n )
+            schema_consumer( const std::shared_ptr< const schema_container< Traits > > & c, const schema_node< Traits > & n, const std::string& path)
                  : m_container( c ),
-                   m_node( & n )
+                   m_node( & n ),
+                   m_path(path)
             {
                if ( m_node->m_flags & HAS_ENUM ) {
                   const auto & a = m_node->m_value->unsafe_at( "enum" ).unsafe_get_array();
@@ -1301,24 +1363,24 @@ namespace tao
                }
                if ( const auto * p = m_node->m_all_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
-                     m_all_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
+                     m_all_of.push_back( m_container->consumer( e.skip_raw_ptr(), m_path ) );
                   }
                }
                if ( const auto * p = m_node->m_any_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
-                     m_any_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
+                     m_any_of.push_back( m_container->consumer( e.skip_raw_ptr(), m_path ) );
                   }
                }
                if ( const auto * p = m_node->m_one_of ) {
                   for ( const auto & e : p->unsafe_get_array() ) {
-                     m_one_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
+                     m_one_of.push_back( m_container->consumer( e.skip_raw_ptr(), m_path ) );
                   }
                }
                if ( const auto * p = m_node->m_not ) {
-                  m_not = m_container->consumer( p );
+                  m_not = m_container->consumer( p, m_path );
                }
                for ( const auto & e : m_node->m_schema_dependencies ) {
-                  m_schema_dependencies.emplace( e.first, m_container->consumer( e.second ) );
+                  m_schema_dependencies.emplace( e.first, m_container->consumer( e.second, m_path ) );
                }
             }
 
@@ -1333,6 +1395,7 @@ namespace tao
                if ( m_match && ! m_all_of.empty() ) {
                   for ( auto & e : m_all_of ) {
                      if ( ! e->finalize() ) {
+                        m_reason << "All_of validation failed: " + m_path;
                         m_match = false;
                         break;
                      }
@@ -1341,16 +1404,19 @@ namespace tao
                if ( m_match && ! m_any_of.empty() ) {
                   m_any_of.erase( std::remove_if( m_any_of.begin(), m_any_of.end(), []( const std::unique_ptr< schema_consumer > & c ){ return ! c->finalize(); } ), m_any_of.end() );
                   if ( m_any_of.empty() ) {
+                     m_reason << "Any_of validation failed: " + m_path;
                      m_match = false;
                   }
                }
                if ( m_match && ! m_one_of.empty() ) {
                   m_one_of.erase( std::remove_if( m_one_of.begin(), m_one_of.end(), []( const std::unique_ptr< schema_consumer > & c ){ return ! c->finalize(); } ), m_one_of.end() );
                   if ( m_one_of.size() != 1 ) {
+                     m_reason << "One_if validation failed: " + m_path;
                      m_match = false;
                   }
                }
                if ( m_match && m_not && m_not->finalize() ) {
+                  m_reason << "Not validation failed: " + m_path;
                   m_match = false;
                }
                if ( m_match && m_node->m_flags & HAS_DEPENDENCIES ) {
@@ -1358,10 +1424,12 @@ namespace tao
                      if ( m_keys.find( e.first ) != m_keys.end() ) {
                         const auto it = m_schema_dependencies.find( e.first );
                         if ( it == m_schema_dependencies.end() ) {
+                           m_reason << "Dependencies validation failed: " + m_path;
                            m_match = false;
                            break;
                         }
                         if ( ! it->second->finalize() ) {
+                           m_reason << "Dependencies validation failed: " + m_path;
                            m_match = false;
                            break;
                         }
@@ -1374,6 +1442,50 @@ namespace tao
             bool match() const noexcept
             {
                return m_match;
+            }
+
+            std::vector<std::string> reasons() const noexcept
+            {
+               std::vector<std::string> result;
+               for (auto & consumer : m_properties) {
+                  auto r = consumer->reasons();
+                  result.insert(result.end(), r.begin(), r.end());
+               }
+            
+               for (auto & consumer : m_all_of) {
+                  auto r = consumer->reasons();
+                  result.insert(result.end(), r.begin(), r.end());
+               }
+            
+               for (auto & consumer : m_any_of) {
+                  auto r = consumer->reasons();
+                  result.insert(result.end(), r.begin(), r.end());
+               }
+
+               for (auto & consumer : m_one_of) {
+                  auto r = consumer->reasons();
+                  result.insert(result.end(), r.begin(), r.end());
+               }
+
+               for (auto & consumer : m_schema_dependencies) {
+                  result.push_back(consumer.first);
+
+                  auto r = consumer.second->reasons();
+                  result.insert(result.end(), r.begin(), r.end());
+               }
+
+               if (m_not) {
+                  auto r = m_not->reasons();
+                  result.insert(result.end(), r.begin(), r.end());
+               }
+
+               if (m_item) {
+                  auto r = m_item->reasons();
+                  result.insert(result.end(), r.begin(), r.end());
+               }
+
+               result.push_back(m_reason.str());
+               return result;
             }
 
             void null()
@@ -1445,19 +1557,19 @@ namespace tao
                if ( m_match && m_count.empty() ) {
                   if ( const auto * p = m_node->m_items ) {
                      if ( p->is_object() ) {
-                        m_item = m_container->consumer( p );
+                        m_item = m_container->consumer( p, m_path );
                      }
                      else {
                         const auto & a = p->unsafe_get_array();
                         if ( ! a.empty() ) {
-                           m_item = m_container->consumer( a[ 0 ].skip_raw_ptr() );
+                           m_item = m_container->consumer( a[ 0 ].skip_raw_ptr(), m_path );
                         }
                      }
                   }
                   if ( ! m_item ) {
                      if ( const auto * p = m_node->m_additional_items ) {
                         if ( p->is_object() ) {
-                           m_item = m_container->consumer( p );
+                           m_item = m_container->consumer( p, m_path );
                         }
                      }
                   }
@@ -1471,6 +1583,7 @@ namespace tao
                if ( m_match && m_item ) {
                   if ( m_count.size() == 1 ) {
                      if ( ! m_item->finalize() ) {
+                        m_reason << "Element validation failed: " + m_path;
                         m_match = false;
                      }
                      m_item.reset();
@@ -1480,6 +1593,7 @@ namespace tao
                if ( m_match && m_hash ) {
                   if ( m_count.size() == 1 ) {
                      if ( ! m_unique.emplace( m_hash->value() ).second ) {
+                        m_reason << "Unique valiation failed: " + m_path;
                         m_match = false;
                      }
                      m_hash->reset();
@@ -1492,19 +1606,19 @@ namespace tao
                if ( m_match && ( m_count.size() == 1 ) ) {
                   if ( const auto * p = m_node->m_items ) {
                      if ( p->is_object() ) {
-                        m_item = m_container->consumer( p );
+                        m_item = m_container->consumer( p, m_path );
                      }
                      else {
                         const auto & a = p->unsafe_get_array();
                         if ( next < a.size() ) {
-                           m_item = m_container->consumer( a[ next ].skip_raw_ptr() );
+                           m_item = m_container->consumer( a[ next ].skip_raw_ptr(), m_path );
                         }
                      }
                   }
                   if ( ! m_item ) {
                      if ( const auto * p = m_node->m_additional_items ) {
                         if ( p->is_object() ) {
-                           m_item = m_container->consumer( p );
+                           m_item = m_container->consumer( p, m_path );
                         }
                      }
                   }
@@ -1516,6 +1630,7 @@ namespace tao
                if ( m_match ) validate_enum( []( sax_compare< Traits > & c ){ c.end_array(); return ! c.match(); } );
                if ( m_match && m_item && ( m_count.size() == 1 ) ) {
                   if ( ! m_item->finalize() ) {
+                     m_reason << "Element validation failed: " + m_path;
                      m_match = false;
                   }
                   m_item.reset();
@@ -1525,6 +1640,7 @@ namespace tao
                      if ( m_node->m_additional_items && m_node->m_additional_items->is_boolean() ) {
                         if ( ! m_node->m_additional_items->get_boolean() ) {
                            if ( m_count.back() > m_node->m_items->unsafe_get_array().size() ) {
+                              m_reason << "Array validation failed: " + m_path;
                               m_match = false;
                            }
                         }
@@ -1556,6 +1672,7 @@ namespace tao
                   if ( ! m_keys.insert( v ).second ) {
                      // duplicate keys immediately invalidate!
                      // TODO: throw?
+                     m_reason << "Duplicate keys: " + m_path;
                      m_match = false;
                   }
                }
@@ -1564,23 +1681,24 @@ namespace tao
                      const auto & o = p->unsafe_get_object();
                      const auto it = o.find( v );
                      if ( it != o.end() ) {
-                        m_properties.push_back( m_container->consumer( it->second.skip_raw_ptr() ) );
+                        m_properties.push_back( m_container->consumer( it->second.skip_raw_ptr(), m_path + "." + v ) );
                      }
                   }
                   for ( const auto & e : m_node->m_pattern_properties ) {
                      if ( std::regex_search( v, e.first ) ) {
-                        m_properties.push_back( m_container->consumer( e.second ) );
+                        m_properties.push_back( m_container->consumer( e.second, m_path + "." + v ) );
                      }
                   }
                   if ( m_properties.empty() ) {
                      if ( const auto * p = m_node->m_additional_properties ) {
                         if ( p->is_boolean() ) {
                            if ( ! p->unsafe_get_boolean() ) {
+                              m_reason << "Object validation failed: " + m_path;
                               m_match = false;
                            }
                         }
                         else {
-                           m_properties.push_back( m_container->consumer( p ) );
+                           m_properties.push_back( m_container->consumer( p, m_path + "." + v ) );
                         }
                      }
                   }
@@ -1593,6 +1711,7 @@ namespace tao
                if ( m_match && ! m_properties.empty() && ( m_count.size() == 1 ) ) {
                   for ( auto & e : m_properties ) {
                      if ( ! e->finalize() ) {
+                        m_reason << "Member validation failed: " + m_path;
                         m_match = false;
                         break;
                      }
@@ -1612,6 +1731,7 @@ namespace tao
                if ( m_match && ( m_count.size() == 1 ) ) validate_members( m_count.back() );
                if ( m_match && ( m_count.size() == 1 ) && ! m_node->m_required.empty() ) {
                   if ( ! std::includes( m_keys.begin(), m_keys.end(), m_node->m_required.begin(), m_node->m_required.end() ) ) {
+                     m_reason << "Required fields validation failed: " + m_path;
                      m_match = false;
                   }
                }
@@ -1619,6 +1739,7 @@ namespace tao
                   for ( const auto & e : m_node->m_property_dependencies ) {
                      if ( m_keys.find( e.first ) != m_keys.end() ) {
                         if ( ! std::includes( m_keys.begin(), m_keys.end(), e.second.begin(), e.second.end() ) ) {
+                           m_reason << "Dependencies validation failed: " + m_path;
                            m_match = false;
                            break;
                         }
@@ -1668,18 +1789,18 @@ namespace tao
                }
             }
 
-            std::unique_ptr< schema_consumer< Traits > > consumer( const basic_value< Traits > * p ) const
+            std::unique_ptr< schema_consumer< Traits > > consumer( const basic_value< Traits > * p, const std::string name = "") const
             {
                const auto it = m_nodes.find( p );
                if ( it == m_nodes.end() ) {
                   throw std::logic_error( "invalid node ptr, no schema registered" );
                }
-               return std::unique_ptr< schema_consumer< Traits > >( new schema_consumer< Traits >( this->shared_from_this(), * it->second ) );
+               return std::unique_ptr< schema_consumer< Traits > >( new schema_consumer< Traits >( this->shared_from_this(), * it->second, name) ); // TODO path
             }
 
             std::unique_ptr< schema_consumer< Traits > > consumer() const
             {
-               return consumer( & m_value );
+               return consumer( & m_value, "root");
             }
          };
 
@@ -1690,10 +1811,11 @@ namespace tao
       {
       private:
          const std::shared_ptr< const internal::schema_container< Traits > > m_container;
+         std::vector<std::string> m_reasons;
 
       public:
          explicit basic_schema( const basic_value< Traits > & v )
-              : m_container( std::make_shared< internal::schema_container< Traits > >( v ) )
+            : m_container( std::make_shared< internal::schema_container< Traits > >( v ) )
          { }
 
          std::unique_ptr< internal::schema_consumer< Traits > > consumer() const
@@ -1701,13 +1823,20 @@ namespace tao
             return m_container->consumer();
          }
 
-         bool validate( const basic_value< Traits > & v ) const
+         bool validate( const basic_value< Traits > & v )
          {
             // TODO: DOM validation should be implemented independently,
             // as it could be more efficient than SAX validation!
             const auto c = consumer();
             sax::from_value( v, * c );
-            return c->finalize();
+            bool ok = c->finalize();
+            m_reasons = c->reasons();
+            return ok;
+         }
+
+         std::vector<std::string> reasons() const
+         {
+            return m_reasons;
          }
       };
 

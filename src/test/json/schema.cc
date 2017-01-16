@@ -58,6 +58,11 @@ namespace tao
                               std::cout << "    Failed: Schema does not match, but it should" << std::endl;
                            }
                         }
+                        if (!result) {
+                          std::cout << "    Schema does not match with reasons: " << std::endl;
+                          for (auto &r : s.reasons())
+                            std::cout << "      " << r << std::endl;
+                        }
                      }
                      catch( const std::exception & e ) {
                         ++failed;
