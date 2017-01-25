@@ -19,7 +19,7 @@ endif ()
 
 enable_testing ()
 
-include_directories (${CMAKE_SOURCE_DIR})
+include_directories (${CMAKE_SOURCE_DIR}/include)
 
 file (GLOB testsources src/test/json/*.cc)
 foreach (testsourcefile ${testsources})
