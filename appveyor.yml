@@ -1,0 +1,25 @@
+version: '{branch}-{build}'
+
+os: Visual Studio 2015
+
+configuration: Release
+
+branches:
+  only:
+    - master
+
+init: []
+
+before_build:
+- del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+
+build_script:
+- md build-vc
+- cd build-vc
+- cmake -Wno-dev ..
+- cmake --build .
+
+test_script:
+- ctest -C Debug --output-on-failure
+
+install: []
