@@ -8,7 +8,8 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.8']
-      env: COMPILER=g++-4.8
+      env:
+        - COMPILER=g++-4.8
 
     - os: linux
       compiler: gcc
@@ -16,7 +17,8 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.9']
-      env: COMPILER=g++-4.9
+      env:
+        - COMPILER=g++-4.9
 
     - os: linux
       compiler: gcc
@@ -24,7 +26,8 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: COMPILER=g++-5
+      env:
+        - COMPILER=g++-5
 
     - os: linux
       compiler: gcc
@@ -32,7 +35,17 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
-      env: COMPILER=g++-6
+      env:
+        - COMPILER=g++-6
+
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.9']
+      env:
+        - COMPILER=clang++
 
     - os: linux
       compiler: clang
@@ -40,7 +53,8 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
           packages: ['clang-3.5', 'g++-4.9']
-      env: COMPILER=clang++-3.5
+      env:
+        - COMPILER=clang++-3.5
 
     - os: linux
       compiler: clang
@@ -48,7 +62,8 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
           packages: ['clang-3.6']
-      env: COMPILER=clang++-3.6
+      env:
+        - COMPILER=clang++-3.6
 
     - os: linux
       compiler: clang
@@ -56,7 +71,8 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7']
-      env: COMPILER=clang++-3.7
+      env:
+        - COMPILER=clang++-3.7
 
     - os: linux
       compiler: clang
@@ -64,22 +80,46 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
           packages: ['clang-3.8']
-      env: COMPILER=clang++-3.8
+      env:
+        - COMPILER=clang++-3.8
+
+    - os: linux
+      dist: trusty
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.9']
+          packages: ['clang-3.9']
+      env:
+        - COMPILER=clang++-3.9
+
+    - os: linux
+      dist: trusty
+      compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+          packages: ['clang-4.0']
+      env:
+        - COMPILER=clang++-4.0
 
     - os: osx
       osx_image: xcode6.4
       compiler: clang
-      env: COMPILER=clang++
+      env:
+        - COMPILER=clang++
 
     - os: osx
       osx_image: xcode7.3
       compiler: clang
-      env: COMPILER=clang++
+      env:
+        - COMPILER=clang++
 
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode8.2
       compiler: clang
-      env: COMPILER=clang++
+      env:
+        - COMPILER=clang++
 
     - os: linux
       compiler: gcc
