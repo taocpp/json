@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include "test.hh"
@@ -20,6 +20,25 @@ namespace tao
          TEST_ASSERT( a <= a );
          TEST_ASSERT( a >= a );
 
+         TEST_ASSERT( ! ( a == b ) );
+         TEST_ASSERT( ! ( b == a ) );
+         TEST_ASSERT( a != b );
+         TEST_ASSERT( b != a );
+
+         TEST_ASSERT( a < b );
+         TEST_ASSERT( b > a );
+         TEST_ASSERT( ! ( a > b ) );
+         TEST_ASSERT( ! ( b < a ) );
+
+         TEST_ASSERT( a <= b );
+         TEST_ASSERT( b >= a );
+         TEST_ASSERT( ! ( a >= b ) );
+         TEST_ASSERT( ! ( b <= a ) );
+      }
+
+      template< typename T >
+      void test_lt( const std::nullptr_t & a, const T & b )
+      {
          TEST_ASSERT( ! ( a == b ) );
          TEST_ASSERT( ! ( b == a ) );
          TEST_ASSERT( a != b );
