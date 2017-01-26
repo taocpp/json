@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_TYPE_HH
@@ -68,9 +68,13 @@ namespace tao
          return "unknown";
       }
 
-      struct null_t { constexpr explicit null_t( int ) {} } constexpr null { 0 };
-      struct empty_array_t { constexpr explicit empty_array_t( int ) {} } constexpr empty_array { 0 };
-      struct empty_object_t { constexpr explicit empty_object_t( int ) {} } constexpr empty_object { 0 };
+      struct null_t { constexpr explicit null_t( int ) {} };
+      struct empty_array_t { constexpr explicit empty_array_t( int ) {} };
+      struct empty_object_t { constexpr explicit empty_object_t( int ) {} };
+
+      constexpr null_t null { 0 };
+      constexpr empty_array_t empty_array { 0 };
+      constexpr empty_object_t empty_object { 0 };
 
    } // json
 
