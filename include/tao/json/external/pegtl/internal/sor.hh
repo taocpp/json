@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
 #ifndef TAO_CPP_PEGTL_INTERNAL_SOR_HH
@@ -31,6 +31,10 @@ namespace tao_json_pegtl
 #endif
          }
       };
+
+      template<>
+      struct sor<>
+            : trivial< false > {};
 
       template< typename ... Rules >
       struct skip_control< sor< Rules ... > > : std::true_type {};

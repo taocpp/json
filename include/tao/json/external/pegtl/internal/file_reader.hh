@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
 #ifndef TAO_CPP_PEGTL_INTERNAL_FILE_READER_HH
@@ -63,7 +63,13 @@ namespace tao_json_pegtl
          std::FILE * open() const
          {
             errno = 0;
-            if ( auto * file = std::fopen( m_source.c_str(), "rb" ) ) {
+#ifdef _WIN32
+            std::FILE* file;
+            if ( ::fopen_s( & file, m_source.c_str(), "rb" ) == 0 )
+#else
+            if ( auto * file = std::fopen( m_source.c_str(), "rb" ) )
+#endif
+            {
                return file;
             }
             TAO_CPP_PEGTL_THROW_INPUT_ERROR( "unable to fopen() file " << m_source << " for reading" );

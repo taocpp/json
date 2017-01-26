@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/ColinH/PEGTL/
 
 #ifndef TAO_CPP_PEGTL_ANALYSIS_INSERT_GUARD_HH
@@ -21,9 +21,9 @@ namespace tao_json_pegtl
             g.m_c = 0;
          }
 
-         insert_guard( C & c, const typename C::value_type & t )
-               : m_i( c.insert( t ) ),
-                 m_c( & c )
+         insert_guard( C & cs, const typename C::value_type & ts )
+               : m_i( cs.insert( ts ) ),
+                 m_c( & cs )
          { }
 
          ~insert_guard()
