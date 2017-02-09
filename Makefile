@@ -1,5 +1,9 @@
-# Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
+# The Art of C++
+# Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 # Please see LICENSE for license or visit https://github.com/taocpp/json
+
+.SUFFIXES:
+.SECONDARY:
 
 ifeq ($(OS),Windows_NT)
 UNAME_S := $(OS)
@@ -27,21 +31,18 @@ CXXFLAGS ?= -Wall -Wextra -Werror -O3
 
 .PHONY: all clean
 
-SOURCES := $(wildcard */*/*/*.cc)
+SOURCES := $(shell find src -name '*.cc')
 DEPENDS := $(SOURCES:%.cc=build/%.d)
 BINARIES := $(SOURCES:%.cc=build/%)
 
-UNIT_TESTS := $(filter build/src/test/json/%,$(BINARIES))
+UNIT_TESTS := $(filter build/src/test/%,$(BINARIES))
 
 all: $(BINARIES)
-	@echo "Built with '$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS)'."
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T > /dev/null; done
-	@echo "All $(words $(UNIT_TESTS)) unit tests passed."
 
 clean:
-	rm -rf build/*
-
-.SECONDARY:
+	@rm -rf build
+	@find . -name '*~' -delete
 
 build/%.d: %.cc Makefile
 	@mkdir -p $(@D)
