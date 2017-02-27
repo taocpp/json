@@ -49,6 +49,10 @@ namespace tao
 
          template<> const std::string errors< tao_json_pegtl::eof >::error_message __attribute__(( weak )) = "unexpected character after JSON value";
 
+        template<> const std::string errors< rules::end_star_comment >::error_message __attribute__(( weak )) = "unexpected character after JSON comment";
+
+        template<> const std::string errors< rules::end_line_comment >::error_message __attribute__(( weak )) = "unexpected character after JSON line comment";
+
       } // internal
 
    } // json
