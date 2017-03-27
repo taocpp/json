@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+#include "type.hh"
+
 #include "external/operators.hpp"
 
 namespace tao
