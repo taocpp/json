@@ -1,5 +1,5 @@
 // The Art of C++ / Operators
-// Copyright (c) 2013-2016 Daniel Frey
+// Copyright (c) 2013-2017 Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/operators/
 
 #ifndef TAOCPP_OPERATORS_INCLUDE_OPERATORS_HPP

@@ -31,9 +31,9 @@ CXXFLAGS ?= -Wall -Wextra -Werror -O3
 
 .PHONY: all compile check clean
 
-SOURCES := $(shell find src -name '*.cc')
-DEPENDS := $(SOURCES:%.cc=build/%.d)
-BINARIES := $(SOURCES:%.cc=build/%)
+SOURCES := $(shell find src -name '*.cpp')
+DEPENDS := $(SOURCES:%.cpp=build/%.d)
+BINARIES := $(SOURCES:%.cpp=build/%)
 
 UNIT_TESTS := $(filter build/src/test/%,$(BINARIES))
 
@@ -48,11 +48,11 @@ clean:
 	@rm -rf build
 	@find . -name '*~' -delete
 
-build/%.d: %.cc Makefile
+build/%.d: %.cpp Makefile
 	@mkdir -p $(@D)
 	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) -MM -MQ $@ $< -o $@
 
-build/%: %.cc build/%.d
+build/%: %.cpp build/%.d
 	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) $< -o $@
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)

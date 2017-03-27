@@ -1,5 +1,5 @@
 // The Art of C++
-// Copyright (c) 2016 Daniel Frey
+// Copyright (c) 2016-2017 Daniel Frey
 
 #ifndef TAOCPP_INCLUDE_OPTIONAL_HPP
 #define TAOCPP_INCLUDE_OPTIONAL_HPP
