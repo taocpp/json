@@ -1,11 +1,11 @@
-// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_GRAMMAR_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_GRAMMAR_HH
 
-#include "../external/pegtl.hh"
-#include "../external/pegtl/contrib/abnf.hh"
+#include "../external/pegtl.hpp"
+#include "../external/pegtl/contrib/abnf.hpp"
 
 namespace tao
 {
@@ -13,13 +13,15 @@ namespace tao
    {
       namespace internal
       {
+         // clang-format off
          namespace rules
          {
-            using namespace tao_json_pegtl;
+            using namespace json_pegtl;
 
             struct ws : one< ' ', '\t', '\n', '\r' > {};
 
-            template< typename R, typename P = ws > struct padr : tao_json_pegtl::internal::seq< R, tao_json_pegtl::internal::star< P > > {};
+            template< typename R, typename P = ws >
+            using padr = json_pegtl::internal::seq< R, json_pegtl::internal::star< P > >;
 
             struct begin_array : padr< one< '[' > > {};
             struct begin_object : padr< one< '{' > > {};
@@ -29,9 +31,9 @@ namespace tao
             struct value_separator : padr< one< ',' > > {};
             struct element_separator : padr< one< ',' > > {};
 
-            struct false_ : tao_json_pegtl_string_t( "false" ) {};
-            struct null : tao_json_pegtl_string_t( "null" ) {};
-            struct true_ : tao_json_pegtl_string_t( "true" ) {};
+            struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
+            struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
+            struct true_ : TAOCPP_JSON_PEGTL_STRING( "true" ) {};
 
             struct digits : plus< abnf::DIGIT > {};
 
@@ -63,7 +65,7 @@ namespace tao
                   bool result = false;
 
                   while ( ! in.empty() ) {
-                     if ( const auto t = tao_json_pegtl::internal::peek_utf8::peek( in ) ) {
+                     if ( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
                         if ( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
                            in.bump_in_this_line( t.size );
                            result = true;
@@ -116,34 +118,35 @@ namespace tao
             {
                using analyze_t = analysis::generic< analysis::rule_type::SOR, string, number, object, array, false_, true_, null >;
 
-               template< apply_mode A, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
+               template< apply_mode A, rewind_mode M, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
                static bool match( Input & in, States && ... st )
                {
                   switch( in.peek_char() ) {
-                     case '"': return Control< string >::template match< A, Action, Control >( in, st ... );
-                     case '{': return Control< object >::template match< A, Action, Control >( in, st ... );
-                     case '[': return Control< array >::template match< A, Action, Control >( in, st ... );
-                     case 'n': return Control< null >::template match< A, Action, Control >( in, st ... );
-                     case 't': return Control< true_ >::template match< A, Action, Control >( in, st ... );
-                     case 'f': return Control< false_ >::template match< A, Action, Control >( in, st ... );
-                     default: return Control< number >::template match< A, Action, Control >( in, st ... );
+                     case '"': return Control< string >::template match< A, M, Action, Control >( in, st ... );
+                     case '{': return Control< object >::template match< A, M, Action, Control >( in, st ... );
+                     case '[': return Control< array >::template match< A, M, Action, Control >( in, st ... );
+                     case 'n': return Control< null >::template match< A, M, Action, Control >( in, st ... );
+                     case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st ... );
+                     case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st ... );
+                     default: return Control< number >::template match< A, M, Action, Control >( in, st ... );
                   }
                }
             };
 
-            struct value : padr< discard_if< sor_value > > {};
-            struct array_element : seq< value > {};
+            struct value : padr< seq< sor_value, discard > > {};
+            struct array_element : value {};
 
             struct text : seq< star< ws >, value > {};
 
-         } // rules
+         }  // namespace rules
 
-         struct grammar : tao_json_pegtl::must< rules::text, tao_json_pegtl::eof > {};
+         struct grammar : json_pegtl::must< rules::text, json_pegtl::eof > {};
+         // clang-format on
 
-      } // internal
+      } // namespace internal
 
-   } // json
+   } // namespace json
 
-} // tao
+} // namespace tao
 
 #endif

@@ -1,0 +1,24 @@
+// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
+
+#ifndef TAOCPP_JSON_PEGTL_INCLUDE_ANALYZE_HPP
+#define TAOCPP_JSON_PEGTL_INCLUDE_ANALYZE_HPP
+
+#include "analysis/analyze_cycles.hpp"
+#include "config.hpp"
+
+namespace tao
+{
+   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   {
+      template< typename Rule >
+      std::size_t analyze( const bool verbose = true )
+      {
+         return analysis::analyze_cycles< Rule >( verbose ).problems();
+      }
+
+   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+
+}  // namespace tao
+
+#endif

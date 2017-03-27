@@ -1,4 +1,4 @@
-// Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_SAX_FROM_STREAM_HH
@@ -6,8 +6,8 @@
 
 #include <istream>
 
-#include "../external/pegtl/parse.hh"
-#include "../external/pegtl/internal/istream_reader.hh"
+#include "../external/pegtl/parse.hpp"
+#include "../external/pegtl/internal/istream_reader.hpp"
 
 #include "../internal/grammar.hh"
 #include "../internal/action.hh"
@@ -22,8 +22,8 @@ namespace tao
          template< typename Consumer >
          inline void from_stream( std::istream & stream, Consumer & consumer, const char * source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            tao_json_pegtl::buffer_input< tao_json_pegtl::internal::istream_reader > input( source ? source : "tao::json::sax::from_stream", maximum_buffer_size, stream );
-            tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
+            json_pegtl::buffer_input< json_pegtl::internal::istream_reader > input( source ? source : "tao::json::sax::from_stream", maximum_buffer_size, stream );
+            json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
          }
 
          template< typename Consumer >

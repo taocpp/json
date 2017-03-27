@@ -1,10 +1,10 @@
-// Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ACTION_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_ACTION_HH
 
-#include "../external/pegtl/contrib/changes.hh"
+#include "../external/pegtl/contrib/changes.hpp"
 
 #include "errors.hh"
 #include "grammar.hh"
@@ -18,7 +18,7 @@ namespace tao
       namespace internal
       {
          template < typename Rule >
-         struct action : tao_json_pegtl::nothing< Rule > {};
+         struct action : json_pegtl::nothing< Rule > {};
 
          template<>
          struct action< rules::null >
@@ -137,7 +137,7 @@ namespace tao
             static void apply( const Input & in, number_state & result )
             {
                if ( in.size() > ( 1 << 20 ) ) {
-                  throw tao_json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );
+                  throw json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );
                }
                const auto c = std::min( in.size(), max_mantissa_digits );
                std::memcpy( result.mantissa, in.begin(), c );
@@ -201,7 +201,7 @@ namespace tao
                   ++b;
                }
                if ( ( in.end() - b ) > 9 ) {
-                  throw tao_json_pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );
+                  throw json_pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );
                }
                int exponent10 = 0;
 

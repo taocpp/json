@@ -1,11 +1,11 @@
-// Copyright (c) 2015 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_UNESCAPE_ACTION_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_UNESCAPE_ACTION_HH
 
-#include "../external/pegtl/nothing.hh"
-#include "../external/pegtl/contrib/unescape.hh"
+#include "../external/pegtl/nothing.hpp"
+#include "../external/pegtl/contrib/unescape.hpp"
 
 #include "grammar.hh"
 
@@ -15,11 +15,11 @@ namespace tao
    {
       namespace internal
       {
-         template< typename Rule > struct unescape_action : tao_json_pegtl::nothing< Rule > {};
+         template< typename Rule > struct unescape_action : json_pegtl::nothing< Rule > {};
 
-         template<> struct unescape_action< rules::unicode > : tao_json_pegtl::unescape::unescape_j {};
-         template<> struct unescape_action< rules::escaped_char > : tao_json_pegtl::unescape::unescape_c< rules::escaped_char, '"', '\\', '/', '\b', '\f', '\n', '\r', '\t' > {};
-         template<> struct unescape_action< rules::unescaped > : tao_json_pegtl::unescape::append_all {};
+         template<> struct unescape_action< rules::unicode > : json_pegtl::unescape::unescape_j {};
+         template<> struct unescape_action< rules::escaped_char > : json_pegtl::unescape::unescape_c< rules::escaped_char, '"', '\\', '/', '\b', '\f', '\n', '\r', '\t' > {};
+         template<> struct unescape_action< rules::unescaped > : json_pegtl::unescape::append_all {};
 
       } // internal
 

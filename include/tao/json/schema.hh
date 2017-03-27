@@ -1,4 +1,4 @@
-// Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_SCHEMA_HH
@@ -10,8 +10,9 @@
 #include "sax/compare.hh"
 #include "sax/hash.hh"
 #include "sax/from_value.hh"
-#include "external/pegtl/parse.hh"
-#include "external/pegtl/contrib/uri.hh"
+
+#include "external/pegtl/parse.hpp"
+#include "external/pegtl/contrib/uri.hpp"
 
 #include <cstdint>
 #include <set>
@@ -31,18 +32,18 @@ namespace tao
       namespace internal
       {
          // TODO: Check if these grammars are correct.
-         struct local_part_label : tao_json_pegtl::plus< tao_json_pegtl::sor< tao_json_pegtl::alnum, tao_json_pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > > {};
-         struct local_part : tao_json_pegtl::list_must< local_part_label, tao_json_pegtl::one< '.' > > {};
+         struct local_part_label : json_pegtl::plus< json_pegtl::sor< json_pegtl::alnum, json_pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > > {};
+         struct local_part : json_pegtl::list_must< local_part_label, json_pegtl::one< '.' > > {};
 
-         struct hostname_label : tao_json_pegtl::seq< tao_json_pegtl::alnum, tao_json_pegtl::rep_max< 62, tao_json_pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > > {};
-         struct hostname : tao_json_pegtl::list_must< hostname_label, tao_json_pegtl::one< '.' > > {};
+         struct hostname_label : json_pegtl::seq< json_pegtl::alnum, json_pegtl::rep_max< 62, json_pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > > {};
+         struct hostname : json_pegtl::list_must< hostname_label, json_pegtl::one< '.' > > {};
 
-         struct email : tao_json_pegtl::seq< local_part, tao_json_pegtl::one< '@' >, hostname > {};
+         struct email : json_pegtl::seq< local_part, json_pegtl::one< '@' >, hostname > {};
 
          template< typename Rule >
          bool parse( const std::string & v )
          {
-            return tao_json_pegtl::parse_string< tao_json_pegtl::seq< Rule, tao_json_pegtl::eof > >( v, "" );
+            return json_pegtl::parse_string< json_pegtl::seq< Rule, json_pegtl::eof > >( v, "" );
          }
 
          inline bool parse_date_time( const std::string & v )
@@ -1245,18 +1246,18 @@ namespace tao
                      }
                      break;
                   case schema_format::IPV4:
-                     if ( ! internal::parse< tao_json_pegtl::uri::IPv4address >( v ) ) {
+                     if ( ! internal::parse< json_pegtl::uri::IPv4address >( v ) ) {
                         m_match = false;
                      }
                      break;
                   case schema_format::IPV6:
-                     if ( ! internal::parse< tao_json_pegtl::uri::IPv6address >( v ) ) {
+                     if ( ! internal::parse< json_pegtl::uri::IPv6address >( v ) ) {
                         m_match = false;
                      }
                      break;
                   case schema_format::URI:
                      // TODO: What rule exactly should we apply here?? JSON Schema is not exactly the best spec I've ever read...
-                     if ( ! internal::parse< tao_json_pegtl::uri::URI >( v ) ) {
+                     if ( ! internal::parse< json_pegtl::uri::URI >( v ) ) {
                         m_match = false;
                      }
                      break;

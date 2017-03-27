@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ERRORS_HH
@@ -6,8 +6,8 @@
 
 #include <string>
 
-#include "../external/pegtl/normal.hh"
-#include "../external/pegtl/parse_error.hh"
+#include "../external/pegtl/normal.hpp"
+#include "../external/pegtl/parse_error.hpp"
 
 #include "grammar.hh"
 
@@ -19,14 +19,14 @@ namespace tao
       {
          template< typename Rule >
          struct errors
-               : public tao_json_pegtl::normal< Rule >
+               : public json_pegtl::normal< Rule >
          {
             static const std::string error_message;
 
             template< typename Input, typename ... States >
             static void raise( const Input & in, States && ... )
             {
-               throw tao_json_pegtl::parse_error( error_message, in );
+               throw json_pegtl::parse_error( error_message, in );
             }
          };
 
@@ -47,7 +47,7 @@ namespace tao
          template<> const std::string errors< rules::string::content >::error_message __attribute__(( weak )) = "unterminated string";
          template<> const std::string errors< rules::key::content >::error_message __attribute__(( weak )) = "unterminated key";
 
-         template<> const std::string errors< tao_json_pegtl::eof >::error_message __attribute__(( weak )) = "unexpected character after JSON value";
+         template<> const std::string errors< json_pegtl::eof >::error_message __attribute__(( weak )) = "unexpected character after JSON value";
 
       } // internal
 

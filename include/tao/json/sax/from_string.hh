@@ -1,10 +1,10 @@
-// Copyright (c) 2016 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAOCPP_JSON_INCLUDE_SAX_FROM_STRING_HH
 #define TAOCPP_JSON_INCLUDE_SAX_FROM_STRING_HH
 
-#include "../external/pegtl/parse.hh"
+#include "../external/pegtl/parse.hpp"
 
 #include "../internal/grammar.hh"
 #include "../internal/action.hh"
@@ -20,8 +20,8 @@ namespace tao
          template< typename Consumer >
          inline void from_string( const char * data, const std::size_t size, Consumer & consumer, const char * source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
          {
-            tao_json_pegtl::memory_input input( byte, line, column, data, data + size, source ? source : "tao::json::sax::from_string" );
-            tao_json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
+            json_pegtl::memory_input input( data, data + size, source ? source : "tao::json::sax::from_string", byte, line, column );
+            json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
          }
 
          template< typename Consumer >
