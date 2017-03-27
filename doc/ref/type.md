@@ -1,6 +1,6 @@
 ## `tao::json::type`
 
-Defined in `<tao/json/type.hh>`
+Defined in `<tao/json/type.hpp>`
 
 ```c++
 enum class type : std::uint8_t

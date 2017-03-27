@@ -104,7 +104,7 @@ namespace tao
          test_array();
          test_object();
 
-         // TODO: Other integer tests missing from integer.cc?
+         // TODO: Other integer tests missing from integer.cpp?
 
          TEST_THROWS( from_string( "1" + std::string( internal::max_mantissa_digits, '0' ) ) );  // Throws due to overflow.
          TEST_THROWS( from_string( "2" + std::string( internal::max_mantissa_digits, '1' ) ) );  // Throws due to overflow.

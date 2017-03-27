@@ -1,6 +1,6 @@
 ### `tao::json::basic_value`
 
-Defined in `<tao/json/value.hh>`
+Defined in `<tao/json/value.hpp>`
 
 ```c++
 template<
