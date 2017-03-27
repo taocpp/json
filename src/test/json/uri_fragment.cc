@@ -3,9 +3,9 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
-#include <tao/json/pointer.hh>
 #include <tao/json/internal/uri_fragment.hh>
+#include <tao/json/pointer.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -49,8 +49,8 @@ namespace tao
          TEST_ASSERT( "#/m~0n" == internal::to_uri_fragment( "/m~0n"_json_pointer ) );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

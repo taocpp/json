@@ -143,10 +143,10 @@ namespace tao
          struct grammar : json_pegtl::must< rules::text, json_pegtl::eof > {};
          // clang-format on
 
-      } // namespace internal
+      }  // namespace internal
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

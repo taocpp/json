@@ -3,8 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/from_string.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -12,10 +12,10 @@ namespace tao
    {
       union uint64_double
       {
-         explicit
-         uint64_double( const uint64_t u )
-               : u( u )
-         { }
+         explicit uint64_double( const uint64_t u )
+            : u( u )
+         {
+         }
 
          uint64_t u;
          double d;
@@ -26,7 +26,7 @@ namespace tao
          return uint64_double( d ).u;
       }
 
-      void test_double( const std::string & input, const double value )
+      void test_double( const std::string& input, const double value )
       {
          const double d = json::from_string( input ).get_double();
          TEST_ASSERT( d2u( d ) == d2u( value ) );
@@ -104,13 +104,13 @@ namespace tao
 
          // 1.0 is in (1.0 - 2^-54, 1.0 + 2^-53)
          // 1.0 - 2^-54 = 0.999999999999999944488848768742172978818416595458984375
-         test_double( "0.999999999999999944488848768742172978818416595458984375", 1.0 );  // Round to even
+         test_double( "0.999999999999999944488848768742172978818416595458984375", 1.0 );                  // Round to even
          test_double( "0.999999999999999944488848768742172978818416595458984374", 0.99999999999999989 );  // Previous double
-         test_double( "0.999999999999999944488848768742172978818416595458984376", 1.0 ); // Next double
+         test_double( "0.999999999999999944488848768742172978818416595458984376", 1.0 );                  // Next double
          // 1.0 + 2^-53 = 1.00000000000000011102230246251565404236316680908203125
-         test_double( "1.00000000000000011102230246251565404236316680908203125", 1.0 ); // Round to even
-         test_double( "1.00000000000000011102230246251565404236316680908203124", 1.0 ); // Previous double
-         test_double( "1.00000000000000011102230246251565404236316680908203126", 1.00000000000000022);  // Next double
+         test_double( "1.00000000000000011102230246251565404236316680908203125", 1.0 );                  // Round to even
+         test_double( "1.00000000000000011102230246251565404236316680908203124", 1.0 );                  // Previous double
+         test_double( "1.00000000000000011102230246251565404236316680908203126", 1.00000000000000022 );  // Next double
 
          // Numbers from https://github.com/floitsch/double-conversion/blob/master/test/cctest/test-strtod.cc
 
@@ -146,7 +146,8 @@ namespace tao
                       "5722898802581825451803257070188608721131280795122334262883686223215037756666225039825343359745688844"
                       "2390026549819838548794829220689472168983109969836584681402285424333066033985088644580400103493397042"
                       "7567186443383770486037861622771738545623065874679014086723327636718751234567890123456789012345678901"
-                      "e-308", 2.2250738585072014e-308 );
+                      "e-308",
+                      2.2250738585072014e-308 );
 
          test_double( "30e001", 300.0 );
 
@@ -159,11 +160,13 @@ namespace tao
             const auto a = from_string( "42.0" ).as< double >();
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
-         } {
+         }
+         {
             const auto a = from_string( "42.3" ).as< short >();
             TEST_ASSERT( sizeof( a ) == sizeof( short ) );
             TEST_ASSERT( a == 42 );
-         } {
+         }
+         {
             const auto a = from_string( "42" ).as< double >();
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
@@ -172,8 +175,8 @@ namespace tao
          TEST_THROWS( value( "bar" ).as< int >() );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

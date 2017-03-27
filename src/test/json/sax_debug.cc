@@ -10,7 +10,7 @@ namespace tao
 {
    namespace json
    {
-      void test( const std::string & v )
+      void test( const std::string& v )
       {
          sax::debug consumer( std::cout );
          sax::from_string( v, consumer );
@@ -21,8 +21,8 @@ namespace tao
          test( "[null,true,false,-42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

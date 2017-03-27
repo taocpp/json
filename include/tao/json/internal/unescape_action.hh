@@ -4,8 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_UNESCAPE_ACTION_HH
 #define TAOCPP_JSON_INCLUDE_INTERNAL_UNESCAPE_ACTION_HH
 
-#include "../external/pegtl/nothing.hpp"
 #include "../external/pegtl/contrib/unescape.hpp"
+#include "../external/pegtl/nothing.hpp"
 
 #include "grammar.hh"
 
@@ -15,16 +15,18 @@ namespace tao
    {
       namespace internal
       {
+         // clang-format off
          template< typename Rule > struct unescape_action : json_pegtl::nothing< Rule > {};
 
          template<> struct unescape_action< rules::unicode > : json_pegtl::unescape::unescape_j {};
          template<> struct unescape_action< rules::escaped_char > : json_pegtl::unescape::unescape_c< rules::escaped_char, '"', '\\', '/', '\b', '\f', '\n', '\r', '\t' > {};
          template<> struct unescape_action< rules::unescaped > : json_pegtl::unescape::append_all {};
+         // clang-format on
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

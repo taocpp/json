@@ -3,8 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/from_string.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -15,8 +15,8 @@ namespace tao
          TEST_ASSERT( "42"_json.get_unsigned() == 42 );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

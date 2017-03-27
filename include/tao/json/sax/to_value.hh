@@ -13,7 +13,7 @@ namespace tao
       namespace sax
       {
          // SAX consumer to build a JSON value
-         template< template< typename ... > class Traits >
+         template< template< typename... > class Traits >
          class to_basic_value
          {
          private:
@@ -48,12 +48,12 @@ namespace tao
                value.unsafe_assign_double( v );
             }
 
-            void string( const std::string & v )
+            void string( const std::string& v )
             {
                value.unsafe_emplace_string( v );
             }
 
-            void string( std::string && v )
+            void string( std::string&& v )
             {
                value.unsafe_emplace_string( std::move( v ) );
             }
@@ -82,12 +82,12 @@ namespace tao
                stack_.push_back( empty_object );
             }
 
-            void key( const std::string & v )
+            void key( const std::string& v )
             {
                keys_.push_back( v );
             }
 
-            void key( std::string && v )
+            void key( std::string&& v )
             {
                keys_.push_back( std::move( v ) );
             }
@@ -108,10 +108,10 @@ namespace tao
 
          using to_value = to_basic_value< traits >;
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

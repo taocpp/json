@@ -4,25 +4,25 @@
 #ifndef TAOCPP_JSON_INCLUDE_VALUE_HH
 #define TAOCPP_JSON_INCLUDE_VALUE_HH
 
-#include <cstdint>
-#include <cmath>
 #include <cassert>
-#include <utility>
+#include <cmath>
+#include <cstdint>
 #include <stdexcept>
+#include <utility>
 
 #include "external/operators.hpp"
 #include "external/optional.hpp"
 
-#include "internal/totally_ordered.hh"
-#include "internal/value_union.hh"
 #include "internal/get_by_enum.hh"
 #include "internal/throw.hh"
+#include "internal/totally_ordered.hh"
+#include "internal/value_union.hh"
 
-#include "type.hh"
-#include "traits.hh"
 #include "pair.hh"
-#include "single.hh"
 #include "pointer.hh"
+#include "single.hh"
+#include "traits.hh"
+#include "type.hh"
 
 namespace tao
 {
@@ -30,8 +30,14 @@ namespace tao
    {
       namespace internal
       {
-         template< typename, typename, typename = void > struct has_as : std::false_type {};
-         template< typename T, typename V > struct has_as< T, V, decltype( T::as( std::declval< const V & >() ), void() ) > : std::true_type {};
+         template< typename, typename, typename = void >
+         struct has_as : std::false_type
+         {
+         };
+         template< typename T, typename V >
+         struct has_as< T, V, decltype( T::as( std::declval< const V& >() ), void() ) > : std::true_type
+         {
+         };
 
          // required work-around for GCC 6
          inline void rethrow()
@@ -39,67 +45,69 @@ namespace tao
             throw;
          }
 
-      } // internal
+      }  // internal
 
-      template< template< typename ... > class Traits >
+      template< template< typename... > class Traits >
       class basic_value
-           : operators::totally_ordered< basic_value< Traits > >,
-             internal::totally_ordered< basic_value< Traits >, null_t, type::NULL_ >,
-             internal::totally_ordered< basic_value< Traits >, bool, type::BOOLEAN >,
-             internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED >,
-             internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED >,
-             internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED >,
-             internal::totally_ordered< basic_value< Traits >, unsigned short, type::UNSIGNED >,
-             internal::totally_ordered< basic_value< Traits >, signed int, type::SIGNED >,
-             internal::totally_ordered< basic_value< Traits >, unsigned int, type::UNSIGNED >,
-             internal::totally_ordered< basic_value< Traits >, signed long, type::SIGNED >,
-             internal::totally_ordered< basic_value< Traits >, unsigned long, type::UNSIGNED >,
-             internal::totally_ordered< basic_value< Traits >, signed long long, type::SIGNED >,
-             internal::totally_ordered< basic_value< Traits >, unsigned long long, type::UNSIGNED >,
-             internal::totally_ordered< basic_value< Traits >, float, type::DOUBLE >,
-             internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
-             internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
-             internal::totally_ordered< basic_value< Traits >, const char *, type::STRING >,
-             internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
-             internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
-             internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
-             internal::totally_ordered< basic_value< Traits >, empty_object_t, type::OBJECT >,
-             internal::totally_ordered< basic_value< Traits >, const basic_value< Traits > *, type::RAW_PTR >,
-             internal::totally_ordered< basic_value< Traits >, basic_value< Traits > *, type::RAW_PTR >,
-             internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
+         : operators::totally_ordered< basic_value< Traits > >,
+           internal::totally_ordered< basic_value< Traits >, null_t, type::NULL_ >,
+           internal::totally_ordered< basic_value< Traits >, bool, type::BOOLEAN >,
+           internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned short, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed int, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned int, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed long, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned long, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, signed long long, type::SIGNED >,
+           internal::totally_ordered< basic_value< Traits >, unsigned long long, type::UNSIGNED >,
+           internal::totally_ordered< basic_value< Traits >, float, type::DOUBLE >,
+           internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
+           internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
+           internal::totally_ordered< basic_value< Traits >, const char*, type::STRING >,
+           internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
+           internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
+           internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
+           internal::totally_ordered< basic_value< Traits >, empty_object_t, type::OBJECT >,
+           internal::totally_ordered< basic_value< Traits >, const basic_value< Traits >*, type::RAW_PTR >,
+           internal::totally_ordered< basic_value< Traits >, basic_value< Traits >*, type::RAW_PTR >,
+           internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
       {
       public:
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
 
          basic_value() noexcept
-         { }
+         {
+         }
 
-         basic_value( basic_value && r ) noexcept
-              : m_type( r.m_type )
+         basic_value( basic_value&& r ) noexcept
+            : m_type( r.m_type )
          {
             seize( std::move( r ) );
          }
 
          // required work-around for a bug in older GCCs (<4.9)
-         basic_value( const basic_value && r )
-              : m_type( r.m_type )
+         basic_value( const basic_value&& r )
+            : m_type( r.m_type )
          {
             embed( r );
          }
 
-         basic_value( const basic_value & r )
-              : m_type( r.m_type )
+         basic_value( const basic_value& r )
+            : m_type( r.m_type )
          {
             embed( r );
          }
 
-         basic_value( basic_value & r )
-              : basic_value( static_cast< const basic_value & >( r ) )
-         { }
+         basic_value( basic_value& r )
+            : basic_value( static_cast< const basic_value& >( r ) )
+         {
+         }
 
          template< typename T >
-         basic_value( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value & >(), std::forward< T >( v ) ) ) )
+         basic_value( T&& v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          {
             try {
                using D = typename std::decay< T >::type;
@@ -107,72 +115,73 @@ namespace tao
             }
             catch( ... ) {
                unsafe_discard();
-               const_cast< volatile json::type & >( m_type ) = json::type::DISCARDED;
+               const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED;
                internal::rethrow();
             }
          }
 
-         basic_value( std::initializer_list< pair< Traits > > && l )
+         basic_value( std::initializer_list< pair< Traits > >&& l )
          {
             try {
                unsafe_assign( std::move( l ) );
             }
             catch( ... ) {
                unsafe_discard();
-               const_cast< volatile json::type & >( m_type ) = json::type::DISCARDED;
+               const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED;
                throw;
             }
          }
 
-         basic_value( const std::initializer_list< pair< Traits > > & l )
+         basic_value( const std::initializer_list< pair< Traits > >& l )
          {
             try {
                unsafe_assign( l );
             }
             catch( ... ) {
                unsafe_discard();
-               const_cast< volatile json::type & >( m_type ) = json::type::DISCARDED;
+               const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED;
                throw;
             }
          }
 
-         basic_value( std::initializer_list< pair< Traits > > & l )
-              : basic_value( static_cast< const std::initializer_list< pair< Traits > > & >( l ) )
-         { }
+         basic_value( std::initializer_list< pair< Traits > >& l )
+            : basic_value( static_cast< const std::initializer_list< pair< Traits > >& >( l ) )
+         {
+         }
 
          ~basic_value() noexcept
          {
             unsafe_discard();
-            assert( ( const_cast< volatile json::type & >( m_type ) = json::type::DISCARDED, true ) );
+            assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED, true ) );
          }
 
-         static basic_value array( std::initializer_list< single< Traits > > && l )
+         static basic_value array( std::initializer_list< single< Traits > >&& l )
          {
             basic_value v;
             v.append( std::move( l ) );
             return v;
          }
 
-         static basic_value array( const std::initializer_list< single< Traits > > & l )
+         static basic_value array( const std::initializer_list< single< Traits > >& l )
          {
             basic_value v;
             v.append( l );
             return v;
          }
 
-         basic_value & operator= ( basic_value v ) noexcept
+         basic_value& operator=( basic_value v ) noexcept
          {
             unsafe_discard();
             m_type = v.m_type;
             seize( std::move( v ) );
-            return * this;
+            return *this;
          }
 
-         void swap( basic_value & r ) noexcept
+         void swap( basic_value& r ) noexcept
          {
             basic_value t( std::move( r ) );
-            r = std::move( * this );
-            ( * this ) = ( std::move( t ) );
+            r = std::move( *this );
+            ( *this ) = ( std::move( t ) );
          }
 
          json::type type() const noexcept
@@ -265,57 +274,57 @@ namespace tao
             return unsafe_get_double();
          }
 
-         std::string & get_string()
+         std::string& get_string()
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING );
             return unsafe_get_string();
          }
 
-         const std::string & get_string() const
+         const std::string& get_string() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING );
             return unsafe_get_string();
          }
 
-         array_t & get_array()
+         array_t& get_array()
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
-         const array_t & get_array() const
+         const array_t& get_array() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return unsafe_get_array();
          }
 
-         object_t & get_object()
+         object_t& get_object()
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
          }
 
-         const object_t & get_object() const
+         const object_t& get_object() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_get_object();
          }
 
-         const basic_value * get_raw_ptr() const
+         const basic_value* get_raw_ptr() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::RAW_PTR );
             return unsafe_get_raw_ptr();
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value > & >() ) ) get()
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) get()
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value > & >() ) ) get() const
+         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value >& >() ) ) get() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, E );
             return internal::get_by_enum< E >::get( m_union );
@@ -324,17 +333,17 @@ namespace tao
          template< typename T >
          void extract( T& v ) const
          {
-            Traits< typename std::decay< T >::type >::extract( * this, v );
+            Traits< typename std::decay< T >::type >::extract( *this, v );
          }
 
          template< typename T >
          typename std::enable_if< internal::has_as< Traits< T >, basic_value >::value, T >::type as() const
          {
-            return Traits< T >::as( * this );
+            return Traits< T >::as( *this );
          }
 
          template< typename T >
-         typename std::enable_if< ! internal::has_as< Traits< T >, basic_value >::value, T >::type as() const
+         typename std::enable_if< !internal::has_as< Traits< T >, basic_value >::value, T >::type as() const
          {
             T nrv;
             extract( nrv );
@@ -344,7 +353,7 @@ namespace tao
          template< typename T >
          tao::optional< T > optional() const
          {
-            if ( this->is_null() ) {
+            if( this->is_null() ) {
                return tao::nullopt;
             }
             else {
@@ -376,136 +385,136 @@ namespace tao
             return m_union.d;
          }
 
-         std::string & unsafe_get_string() noexcept
+         std::string& unsafe_get_string() noexcept
          {
             return m_union.s;
          }
 
-         const std::string & unsafe_get_string() const noexcept
+         const std::string& unsafe_get_string() const noexcept
          {
             return m_union.s;
          }
 
-         array_t & unsafe_get_array() noexcept
+         array_t& unsafe_get_array() noexcept
          {
             return m_union.a;
          }
 
-         const array_t & unsafe_get_array() const noexcept
+         const array_t& unsafe_get_array() const noexcept
          {
             return m_union.a;
          }
 
-         object_t & unsafe_get_object() noexcept
+         object_t& unsafe_get_object() noexcept
          {
             return m_union.o;
          }
 
-         const object_t & unsafe_get_object() const noexcept
+         const object_t& unsafe_get_object() const noexcept
          {
             return m_union.o;
          }
 
-         const basic_value * unsafe_get_raw_ptr() const noexcept
+         const basic_value* unsafe_get_raw_ptr() const noexcept
          {
             return m_union.p;
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value > & >() ) ) unsafe_get()
+         decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) unsafe_get()
          {
             return internal::get_by_enum< E >::get( m_union );
          }
 
          template< json::type E >
-         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value > & >() ) ) unsafe_get() const
+         decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value >& >() ) ) unsafe_get() const
          {
             return internal::get_by_enum< E >::get( m_union );
          }
 
-         const basic_value * skip_raw_ptr() const noexcept
+         const basic_value* skip_raw_ptr() const noexcept
          {
-            const basic_value * p = this;
-            while ( p && p->is_raw_ptr() ) {
+            const basic_value* p = this;
+            while( p && p->is_raw_ptr() ) {
                p = p->unsafe_get_raw_ptr();
             }
             return p;
          }
 
-         basic_value * unsafe_find( const std::string & key ) noexcept
+         basic_value* unsafe_find( const std::string& key ) noexcept
          {
             const auto it = m_union.o.find( key );
-            return ( it != m_union.o.end() ) ? ( & it->second ) : nullptr;
+            return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
-         const basic_value * unsafe_find( const std::string & key ) const noexcept
+         const basic_value* unsafe_find( const std::string& key ) const noexcept
          {
             const auto it = m_union.o.find( key );
-            return ( it != m_union.o.end() ) ? ( & it->second ) : nullptr;
+            return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
-         basic_value * find( const std::string & key )
+         basic_value* find( const std::string& key )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_find( key );
          }
 
-         const basic_value * find( const std::string & key ) const
+         const basic_value* find( const std::string& key ) const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_find( key );
          }
 
-         basic_value & at( const std::size_t index )
+         basic_value& at( const std::size_t index )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
-         const basic_value & at( const std::size_t index ) const
+         const basic_value& at( const std::size_t index ) const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             return m_union.a.at( index );
          }
 
-         basic_value & at( const std::string & key )
+         basic_value& at( const std::string& key )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
          }
 
-         const basic_value & at( const std::string & key ) const
+         const basic_value& at( const std::string& key ) const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return m_union.o.at( key );
          }
 
-         basic_value & at( const pointer & k )
+         basic_value& at( const pointer& k )
          {
             return internal::pointer_at( this, k.begin(), k.end() );
          }
 
-         const basic_value & at( const pointer & k ) const
+         const basic_value& at( const pointer& k ) const
          {
             return internal::pointer_at( this, k.begin(), k.end() );
          }
 
-         basic_value & unsafe_at( const std::size_t index ) noexcept
+         basic_value& unsafe_at( const std::size_t index ) noexcept
          {
             return m_union.a[ index ];
          }
 
-         const basic_value & unsafe_at( const std::size_t index ) const noexcept
+         const basic_value& unsafe_at( const std::size_t index ) const noexcept
          {
             return m_union.a[ index ];
          }
 
-         basic_value & unsafe_at( const std::string & key ) noexcept
+         basic_value& unsafe_at( const std::string& key ) noexcept
          {
             return m_union.o.find( key )->second;
          }
 
-         const basic_value & unsafe_at( const std::string & key ) const noexcept
+         const basic_value& unsafe_at( const std::string& key ) const noexcept
          {
             return m_union.o.find( key )->second;
          }
@@ -513,30 +522,30 @@ namespace tao
          void erase( const std::size_t index )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
-            auto & a = m_union.a;
-            if ( index >= a.size() ) {
+            auto& a = m_union.a;
+            if( index >= a.size() ) {
                throw std::out_of_range( "JSON array index out of bounds" );
             }
             a.erase( a.begin() + index );
          }
 
-         void erase( const std::string & key )
+         void erase( const std::string& key )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            if ( m_union.o.erase( key ) == 0 ) {
+            if( m_union.o.erase( key ) == 0 ) {
                throw std::out_of_range( "JSON object key not found: " + key );
             }
          }
 
-         void erase( const pointer & k )
+         void erase( const pointer& k )
          {
-            if ( ! k ) {
+            if( !k ) {
                throw std::runtime_error( "invalid root JSON Pointer for erase" );
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
-            basic_value & v = internal::pointer_at( this, b, e );
-            switch ( v.m_type ) {
+            basic_value& v = internal::pointer_at( this, b, e );
+            switch( v.m_type ) {
                case json::type::ARRAY:
                   v.erase( e->index() );
                   break;
@@ -548,54 +557,50 @@ namespace tao
             }
          }
 
-         basic_value & insert( const pointer & k, basic_value value )
+         basic_value& insert( const pointer& k, basic_value value )
          {
-            if ( ! k ) {
-               * this = std::move( value );
-               return * this;
+            if( !k ) {
+               *this = std::move( value );
+               return *this;
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
-            basic_value & v = internal::pointer_at( this, b, e );
-            switch ( v.m_type ) {
-               case json::type::ARRAY:
-                  {
-                     if ( e->key() == "-" ) {
-                        v.unsafe_emplace_back( std::move( value ) );
-                        return v.m_union.a.back();
-                     }
-                     const auto i = e->index();
-                     if ( i >= v.m_union.a.size() ) {
-                        throw std::out_of_range( "invalid JSON Pointer '" + internal::tokens_to_string( b, std::next( e ) ) + "' -- array index out of bounds" );
-                     }
-                     v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
-                     return v.m_union.a.at( i );
+            basic_value& v = internal::pointer_at( this, b, e );
+            switch( v.m_type ) {
+               case json::type::ARRAY: {
+                  if( e->key() == "-" ) {
+                     v.unsafe_emplace_back( std::move( value ) );
+                     return v.m_union.a.back();
                   }
-                  break;
-               case json::type::OBJECT:
-                  {
-                     const auto & k = e->key();
-                     const auto it = v.m_union.o.find( k );
-                     if ( it == v.m_union.o.end() ) {
-                        const auto r = v.unsafe_emplace( k, std::move( value ) );
-                        assert( r.second );
-                        return r.first->second;
-                     }
-                     it->second = std::move( value );
-                     return it->second;
+                  const auto i = e->index();
+                  if( i >= v.m_union.a.size() ) {
+                     throw std::out_of_range( "invalid JSON Pointer '" + internal::tokens_to_string( b, std::next( e ) ) + "' -- array index out of bounds" );
                   }
-                  break;
+                  v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
+                  return v.m_union.a.at( i );
+               } break;
+               case json::type::OBJECT: {
+                  const auto& k = e->key();
+                  const auto it = v.m_union.o.find( k );
+                  if( it == v.m_union.o.end() ) {
+                     const auto r = v.unsafe_emplace( k, std::move( value ) );
+                     assert( r.second );
+                     return r.first->second;
+                  }
+                  it->second = std::move( value );
+                  return it->second;
+               } break;
                default:
                   throw internal::invalid_type( b, std::next( e ) );
             }
          }
 
          template< typename T >
-         tao::optional< T > optional( const std::string & key ) const
+         tao::optional< T > optional( const std::string& key ) const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             const auto it = m_union.o.find( key );
-            if ( it == m_union.o.end() ) {
+            if( it == m_union.o.end() ) {
                return tao::nullopt;
             }
             else {
@@ -607,37 +612,37 @@ namespace tao
          // value v when json::needs_discard( v.type() ) is true!
 
          template< typename T >
-         void unsafe_assign( T && v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value & >(), std::forward< T >( v ) ) ) )
+         void unsafe_assign( T&& v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          {
             using D = typename std::decay< T >::type;
             Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( std::initializer_list< pair< Traits > > && l )
+         void unsafe_assign( std::initializer_list< pair< Traits > >&& l )
          {
             unsafe_emplace_object();
-            for ( auto & e : l ) {
+            for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
-               if ( ! r.second ) {
+               if( !r.second ) {
                   throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
 
-         void unsafe_assign( const std::initializer_list< pair< Traits > > & l )
+         void unsafe_assign( const std::initializer_list< pair< Traits > >& l )
          {
             unsafe_emplace_object();
-            for ( const auto & e : l ) {
+            for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
-               if ( ! r.second ) {
+               if( !r.second ) {
                   throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
 
-         void unsafe_assign( std::initializer_list< pair< Traits > > & l )
+         void unsafe_assign( std::initializer_list< pair< Traits > >& l )
          {
-            unsafe_assign( static_cast< const std::initializer_list< pair< Traits > > & >( l ) );
+            unsafe_assign( static_cast< const std::initializer_list< pair< Traits > >& >( l ) );
          }
 
          void unsafe_assign_null() noexcept
@@ -672,43 +677,43 @@ namespace tao
 
          void unsafe_assign_double( const double d )
          {
-            if ( ! std::isfinite( d ) ) {
+            if( !std::isfinite( d ) ) {
                throw std::runtime_error( "non-finite double value invalid for JSON" );
             }
             unsafe_assign_double_unchecked( d );
          }
 
-         template< typename ... Ts >
-         void unsafe_emplace_string( Ts && ... ts )
+         template< typename... Ts >
+         void unsafe_emplace_string( Ts&&... ts )
          {
-            new ( & m_union.s ) std::string( std::forward< Ts >( ts ) ... );
+            new( &m_union.s ) std::string( std::forward< Ts >( ts )... );
             m_type = json::type::STRING;
          }
 
-         template< typename ... Ts >
-         void emplace_string( Ts && ... ts )
+         template< typename... Ts >
+         void emplace_string( Ts&&... ts )
          {
             discard();
-            unsafe_emplace_string( std::forward< Ts >( ts ) ... );
+            unsafe_emplace_string( std::forward< Ts >( ts )... );
          }
 
-         template< typename ... Ts >
-         void unsafe_emplace_array( Ts && ... ts )
+         template< typename... Ts >
+         void unsafe_emplace_array( Ts&&... ts )
          {
-            new ( & m_union.a ) std::vector< basic_value >( std::forward< Ts >( ts ) ... );
+            new( &m_union.a ) std::vector< basic_value >( std::forward< Ts >( ts )... );
             m_type = json::type::ARRAY;
          }
 
-         template< typename ... Ts >
-         void emplace_array( Ts && ... ts )
+         template< typename... Ts >
+         void emplace_array( Ts&&... ts )
          {
             discard();
-            unsafe_emplace_array( std::forward< Ts >( ts ) ... );
+            unsafe_emplace_array( std::forward< Ts >( ts )... );
          }
 
          void prepare_array()
          {
-            switch ( m_type ) {
+            switch( m_type ) {
                case json::type::UNINITIALIZED:
                   unsafe_emplace_array();
                case json::type::ARRAY:
@@ -719,35 +724,35 @@ namespace tao
          }
 
          template< typename V >
-         void unsafe_emplace_back( V && v )
+         void unsafe_emplace_back( V&& v )
          {
             m_union.a.emplace_back( std::forward< V >( v ) );
          }
 
          template< typename V >
-         void emplace_back( V && v )
+         void emplace_back( V&& v )
          {
             prepare_array();
             unsafe_emplace_back( std::forward< V >( v ) );
          }
 
-         template< typename ... Ts >
-         void unsafe_emplace_object( Ts && ... ts )
+         template< typename... Ts >
+         void unsafe_emplace_object( Ts&&... ts )
          {
-            new ( & m_union.o ) std::map< std::string, basic_value >( std::forward< Ts >( ts ) ... );
+            new( &m_union.o ) std::map< std::string, basic_value >( std::forward< Ts >( ts )... );
             m_type = json::type::OBJECT;
          }
 
-         template< typename ... Ts >
-         void emplace_object( Ts && ... ts )
+         template< typename... Ts >
+         void emplace_object( Ts&&... ts )
          {
             discard();
-            unsafe_emplace_object( std::forward< Ts >( ts ) ... );
+            unsafe_emplace_object( std::forward< Ts >( ts )... );
          }
 
          void prepare_object()
          {
-            switch ( m_type ) {
+            switch( m_type ) {
                case json::type::UNINITIALIZED:
                   unsafe_emplace_object();
                case json::type::OBJECT:
@@ -758,121 +763,116 @@ namespace tao
          }
 
          template< typename K, typename V >
-         std::pair< typename object_t::iterator, bool > unsafe_emplace( K && k, V && v )
+         std::pair< typename object_t::iterator, bool > unsafe_emplace( K&& k, V&& v )
          {
             return m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
          template< typename K, typename V >
-         std::pair< typename object_t::iterator, bool > emplace( K && k, V && v )
+         std::pair< typename object_t::iterator, bool > emplace( K&& k, V&& v )
          {
             prepare_object();
             return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
          }
 
-         void unsafe_assign_pointer( const basic_value * p ) noexcept
+         void unsafe_assign_pointer( const basic_value* p ) noexcept
          {
             m_union.p = p;
             m_type = json::type::RAW_PTR;
          }
 
-         void append( std::initializer_list< single< Traits > > && l )
+         void append( std::initializer_list< single< Traits > >&& l )
          {
             prepare_array();
-            auto & v = unsafe_get_array();
+            auto& v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
-            for ( auto & e : l ) {
+            for( auto& e : l ) {
                unsafe_emplace_back( std::move( e.value ) );
             }
          }
 
-         void append( const std::initializer_list< single< Traits > > & l )
+         void append( const std::initializer_list< single< Traits > >& l )
          {
             prepare_array();
-            auto & v = unsafe_get_array();
+            auto& v = unsafe_get_array();
             v.reserve( v.size() + l.size() );
-            for ( const auto & e : l ) {
+            for( const auto& e : l ) {
                unsafe_emplace_back( e.value );
             }
          }
 
-         void insert( std::initializer_list< pair< Traits > > && l )
+         void insert( std::initializer_list< pair< Traits > >&& l )
          {
             prepare_object();
-            for ( auto & e : l ) {
+            for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
-               if ( ! r.second ) {
+               if( !r.second ) {
                   throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
 
-         void insert( const std::initializer_list< pair< Traits > > & l )
+         void insert( const std::initializer_list< pair< Traits > >& l )
          {
             prepare_object();
-            for ( const auto & e : l ) {
+            for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
-               if ( ! r.second ) {
+               if( !r.second ) {
                   throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
                }
             }
          }
 
-
-         basic_value & operator[] ( const std::size_t index ) noexcept
+         basic_value& operator[]( const std::size_t index ) noexcept
          {
             assert( m_type == json::type::ARRAY );
             return m_union.a[ index ];
          }
 
-         const basic_value & operator[] ( const std::size_t index ) const noexcept
+         const basic_value& operator[]( const std::size_t index ) const noexcept
          {
             assert( m_type == json::type::ARRAY );
             return m_union.a[ index ];
          }
 
-         basic_value & operator[] ( const std::string & key )
+         basic_value& operator[]( const std::string& key )
          {
             prepare_object();
             return m_union.o[ key ];
          }
 
-         basic_value & operator[] ( std::string && key )
+         basic_value& operator[]( std::string&& key )
          {
             prepare_object();
             return m_union.o[ std::move( key ) ];
          }
 
-         basic_value & operator[] ( const pointer & k )
+         basic_value& operator[]( const pointer& k )
          {
-            if ( ! k ) {
-               return * this;
+            if( !k ) {
+               return *this;
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
-            basic_value & v = internal::pointer_at( this, b, e );
-            switch ( v.m_type ) {
-               case json::type::ARRAY:
-                  {
-                     if ( e->key() == "-" ) {
-                        v.unsafe_emplace_back( null );
-                        return v.m_union.a.back();
-                     }
-                     return v.at( e->index() );
+            basic_value& v = internal::pointer_at( this, b, e );
+            switch( v.m_type ) {
+               case json::type::ARRAY: {
+                  if( e->key() == "-" ) {
+                     v.unsafe_emplace_back( null );
+                     return v.m_union.a.back();
                   }
-                  break;
-               case json::type::OBJECT:
-                  {
-                     const auto & k = e->key();
-                     const auto it = v.m_union.o.find( k );
-                     if ( it == v.m_union.o.end() ) {
-                        const auto r = v.unsafe_emplace( k, null );
-                        assert( r.second );
-                        return r.first->second;
-                     }
-                     return it->second;
+                  return v.at( e->index() );
+               } break;
+               case json::type::OBJECT: {
+                  const auto& k = e->key();
+                  const auto it = v.m_union.o.find( k );
+                  if( it == v.m_union.o.end() ) {
+                     const auto r = v.unsafe_emplace( k, null );
+                     assert( r.second );
+                     return r.first->second;
                   }
-                  break;
+                  return it->second;
+               } break;
                default:
                   throw internal::invalid_type( b, std::next( e ) );
             }
@@ -880,14 +880,14 @@ namespace tao
 
          bool empty() const noexcept
          {
-            switch ( m_type ) {
+            switch( m_type ) {
                case json::type::UNINITIALIZED:
                   return true;
                case json::type::DISCARDED:
                   // LCOV_EXCL_START
                   assert( m_type != json::type::DISCARDED );
                   return true;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
@@ -901,7 +901,7 @@ namespace tao
                case json::type::OBJECT:
                   return m_union.o.empty();
                case json::type::RAW_PTR:
-                  return ! m_union.p;
+                  return !m_union.p;
             }
             // LCOV_EXCL_START
             assert( false );
@@ -911,7 +911,7 @@ namespace tao
 
          void unsafe_discard() noexcept
          {
-            switch ( m_type ) {
+            switch( m_type ) {
                case json::type::UNINITIALIZED:
                case json::type::DISCARDED:
                case json::type::NULL_:
@@ -947,9 +947,9 @@ namespace tao
          }
 
       private:
-         void seize( basic_value && r ) noexcept
+         void seize( basic_value&& r ) noexcept
          {
-            switch ( r.m_type ) {
+            switch( r.m_type ) {
                case json::type::UNINITIALIZED:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
@@ -957,7 +957,7 @@ namespace tao
                   // LCOV_EXCL_START
                   assert( r.m_type != json::type::DISCARDED );
                   return;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
                case json::type::NULL_:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
@@ -978,15 +978,15 @@ namespace tao
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::STRING:
-                  new ( & m_union.s ) std::string( std::move( r.m_union.s ) );
+                  new( &m_union.s ) std::string( std::move( r.m_union.s ) );
                   assert( ( r.discard(), true ) );
                   return;
                case json::type::ARRAY:
-                  new ( & m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
+                  new( &m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
                   assert( ( r.discard(), true ) );
                   return;
                case json::type::OBJECT:
-                  new ( & m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
+                  new( &m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
                   assert( ( r.discard(), true ) );
                   return;
                case json::type::RAW_PTR:
@@ -997,9 +997,9 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         void embed( const basic_value & r )
+         void embed( const basic_value& r )
          {
-            switch ( r.m_type ) {
+            switch( r.m_type ) {
                case json::type::UNINITIALIZED:
                   return;
                case json::type::DISCARDED:
@@ -1019,13 +1019,13 @@ namespace tao
                   m_union.d = r.m_union.d;
                   return;
                case json::type::STRING:
-                  new ( & m_union.s ) std::string( r.m_union.s );
+                  new( &m_union.s ) std::string( r.m_union.s );
                   return;
                case json::type::ARRAY:
-                  new ( & m_union.a ) std::vector< basic_value >( r.m_union.a );
+                  new( &m_union.a ) std::vector< basic_value >( r.m_union.a );
                   return;
                case json::type::OBJECT:
-                  new ( & m_union.o ) std::map< std::string, basic_value >( r.m_union.o );
+                  new( &m_union.o ) std::map< std::string, basic_value >( r.m_union.o );
                   return;
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
@@ -1038,49 +1038,49 @@ namespace tao
          internal::value_union< basic_value > m_union;
       };
 
-      template< template< typename ... > class Traits >
-      bool operator== ( const basic_value< Traits > & lhs, const basic_value< Traits > & rhs ) noexcept
+      template< template< typename... > class Traits >
+      bool operator==( const basic_value< Traits >& lhs, const basic_value< Traits >& rhs ) noexcept
       {
-         if ( lhs.type() == type::RAW_PTR ) {
-            if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
-               return * p == rhs;
+         if( lhs.type() == type::RAW_PTR ) {
+            if( const auto* p = lhs.unsafe_get_raw_ptr() ) {
+               return *p == rhs;
             }
             else {
                return null == rhs;
             }
          }
-         if ( lhs.type() != rhs.type() ) {
-            if ( rhs.type() == type::RAW_PTR ) {
-               if ( const auto * p = rhs.unsafe_get_raw_ptr() ) {
-                  return lhs == * p;
+         if( lhs.type() != rhs.type() ) {
+            if( rhs.type() == type::RAW_PTR ) {
+               if( const auto* p = rhs.unsafe_get_raw_ptr() ) {
+                  return lhs == *p;
                }
                else {
                   return lhs == null;
                }
             }
-            if ( lhs.type() == type::SIGNED ) {
-               if ( rhs.type() == type::UNSIGNED ) {
+            if( lhs.type() == type::SIGNED ) {
+               if( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed();
                   return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs.unsafe_get_unsigned() );
                }
-               if ( rhs.type() == type::DOUBLE ) {
+               if( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_signed() == rhs.unsafe_get_double();
                }
             }
-            else if ( lhs.type() == type::UNSIGNED ) {
-               if ( rhs.type() == type::SIGNED ) {
+            else if( lhs.type() == type::UNSIGNED ) {
+               if( rhs.type() == type::SIGNED ) {
                   const auto v = rhs.unsafe_get_signed();
                   return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< std::uint64_t >( v ) );
                }
-               if ( rhs.type() == type::DOUBLE ) {
+               if( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_unsigned() == rhs.unsafe_get_double();
                }
             }
-            else if ( lhs.type() == type::DOUBLE ) {
-               if ( rhs.type() == type::SIGNED ) {
+            else if( lhs.type() == type::DOUBLE ) {
+               if( rhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_double() == rhs.unsafe_get_signed();
                }
-               if ( rhs.type() == type::UNSIGNED ) {
+               if( rhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned();
                }
             }
@@ -1088,14 +1088,14 @@ namespace tao
             assert( rhs.type() != type::DISCARDED );
             return false;
          }
-         switch ( lhs.type() ) {
+         switch( lhs.type() ) {
             case type::UNINITIALIZED:
                return true;
             case type::DISCARDED:
                // LCOV_EXCL_START
                assert( lhs.type() != type::DISCARDED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
             case type::NULL_:
                return true;
             case type::BOOLEAN:
@@ -1121,49 +1121,49 @@ namespace tao
          // LCOV_EXCL_STOP
       }
 
-      template< template< typename ... > class Traits >
-      bool operator< ( const basic_value< Traits > & lhs, const basic_value< Traits > & rhs ) noexcept
+      template< template< typename... > class Traits >
+      bool operator<( const basic_value< Traits >& lhs, const basic_value< Traits >& rhs ) noexcept
       {
-         if ( lhs.type() == type::RAW_PTR ) {
-            if ( const auto * p = lhs.unsafe_get_raw_ptr() ) {
-               return * p < rhs;
+         if( lhs.type() == type::RAW_PTR ) {
+            if( const auto* p = lhs.unsafe_get_raw_ptr() ) {
+               return *p < rhs;
             }
             else {
                return null < rhs;
             }
          }
-         if ( lhs.type() != rhs.type() ) {
-            if ( rhs.type() == type::RAW_PTR ) {
-               if ( const auto * p = rhs.unsafe_get_raw_ptr() ) {
-                  return lhs < * p;
+         if( lhs.type() != rhs.type() ) {
+            if( rhs.type() == type::RAW_PTR ) {
+               if( const auto* p = rhs.unsafe_get_raw_ptr() ) {
+                  return lhs < *p;
                }
                else {
                   return lhs < null;
                }
             }
-            if ( lhs.type() == type::SIGNED ) {
-               if ( rhs.type() == type::UNSIGNED ) {
+            if( lhs.type() == type::SIGNED ) {
+               if( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed();
                   return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs.unsafe_get_unsigned() );
                }
-               if ( rhs.type() == type::DOUBLE ) {
+               if( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_signed() < rhs.unsafe_get_double();
                }
             }
-            else if ( lhs.type() == type::UNSIGNED ) {
-               if ( rhs.type() == type::SIGNED ) {
+            else if( lhs.type() == type::UNSIGNED ) {
+               if( rhs.type() == type::SIGNED ) {
                   const auto v = rhs.unsafe_get_signed();
                   return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< std::uint64_t >( v ) );
                }
-               if ( rhs.type() == type::DOUBLE ) {
+               if( rhs.type() == type::DOUBLE ) {
                   return lhs.unsafe_get_unsigned() < rhs.unsafe_get_double();
                }
             }
-            else if ( lhs.type() == type::DOUBLE ) {
-               if ( rhs.type() == type::SIGNED ) {
+            else if( lhs.type() == type::DOUBLE ) {
+               if( rhs.type() == type::SIGNED ) {
                   return lhs.unsafe_get_double() < rhs.unsafe_get_signed();
                }
-               if ( rhs.type() == type::UNSIGNED ) {
+               if( rhs.type() == type::UNSIGNED ) {
                   return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned();
                }
             }
@@ -1171,14 +1171,14 @@ namespace tao
             assert( rhs.type() != type::DISCARDED );
             return lhs.type() < rhs.type();
          }
-         switch ( lhs.type() ) {
+         switch( lhs.type() ) {
             case type::UNINITIALIZED:
                return false;
             case type::DISCARDED:
                // LCOV_EXCL_START
                assert( lhs.type() != type::DISCARDED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
             case type::NULL_:
                return false;
             case type::BOOLEAN:
@@ -1204,26 +1204,26 @@ namespace tao
          // LCOV_EXCL_STOP
       }
 
-      template< template< typename ... > class Traits >
-      basic_value< Traits > & operator+= ( basic_value< Traits > & v, std::initializer_list< pair< Traits > > && l )
+      template< template< typename... > class Traits >
+      basic_value< Traits >& operator+=( basic_value< Traits >& v, std::initializer_list< pair< Traits > >&& l )
       {
          v.insert( std::move( l ) );
          return v;
       }
 
-      template< template< typename ... > class Traits >
-      basic_value< Traits > & operator+= ( basic_value< Traits > & v, const std::initializer_list< pair< Traits > > & l )
+      template< template< typename... > class Traits >
+      basic_value< Traits >& operator+=( basic_value< Traits >& v, const std::initializer_list< pair< Traits > >& l )
       {
          v.insert( l );
          return v;
       }
 
-      template< template< typename ... > class Traits >
-      basic_value< Traits > & operator-= ( basic_value< Traits > & v, std::initializer_list< std::string > l )
+      template< template< typename... > class Traits >
+      basic_value< Traits >& operator-=( basic_value< Traits >& v, std::initializer_list< std::string > l )
       {
-         auto & o = v.get_object();
-         for ( const auto & k : l ) {
-            if ( o.erase( k ) == 0 ) {
+         auto& o = v.get_object();
+         for( const auto& k : l ) {
+            if( o.erase( k ) == 0 ) {
                throw std::runtime_error( "JSON object key not found: " + k );
             }
          }
@@ -1232,8 +1232,8 @@ namespace tao
 
       using value = basic_value< traits >;
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

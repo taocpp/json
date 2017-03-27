@@ -16,11 +16,11 @@ namespace tao
          struct string_state
          {
             string_state() = default;
-            string_state( const string_state & ) = delete;
-            void operator= ( const string_state & ) = delete;
+            string_state( const string_state& ) = delete;
+            void operator=( const string_state& ) = delete;
 
             template< typename Consumer >
-            void success( Consumer & consumer )
+            void success( Consumer& consumer )
             {
                consumer.string( std::move( unescaped ) );
             }
@@ -28,10 +28,10 @@ namespace tao
             std::string unescaped;
          };
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

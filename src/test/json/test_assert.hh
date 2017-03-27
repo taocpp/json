@@ -7,62 +7,62 @@
 #include <iostream>
 #include <stdexcept>
 
-#define TEST_ASSERT( ... )                              \
-   do {                                                 \
-      std::cout << "TEST_ASSERT( " # __VA_ARGS__ " )" << std::endl; \
-      try {                                             \
-         if ( ! ( __VA_ARGS__ ) ) {                     \
-            std::cerr << "json: unit test assert [ "    \
-                      << ( # __VA_ARGS__ )              \
-                      << " ] failed in line [ "         \
-                      << __LINE__                       \
-                      << " ] file [ "                   \
-                      << __FILE__ << " ]"               \
-                      << std::endl;                     \
-            ++failed;                                   \
-         }                                              \
-      }                                                 \
-      catch ( const std::exception & e ) {              \
-         std::cerr << "json: unit test [ "              \
-                   << ( # __VA_ARGS__ )                 \
-                   << " ] threw an exception [ "        \
-                   << e.what()                          \
-                   << " ] in line [ "                   \
-                   << __LINE__                          \
-                   << " ] file [ "                      \
-                   << __FILE__ << " ]"                  \
-                   << std::endl;                        \
-         ++failed;                                      \
-      }                                                 \
-      catch ( ... ) {                                   \
-         std::cerr << "json: unit test [ "              \
-                   << ( # __VA_ARGS__ )                 \
-                   << " ] threw an unknown exception"   \
-                   << "in line [ "                      \
-                   << __LINE__                          \
-                   << " ] file [ "                      \
-                   << __FILE__ << " ]"                  \
-                   << std::endl;                        \
-         ++failed;                                      \
-      }                                                 \
-   } while ( false )
+#define TEST_ASSERT( ... )                                         \
+   do {                                                            \
+      std::cout << "TEST_ASSERT( " #__VA_ARGS__ " )" << std::endl; \
+      try {                                                        \
+         if( !( __VA_ARGS__ ) ) {                                  \
+            std::cerr << "json: unit test assert [ "               \
+                      << ( #__VA_ARGS__ )                          \
+                      << " ] failed in line [ "                    \
+                      << __LINE__                                  \
+                      << " ] file [ "                              \
+                      << __FILE__ << " ]"                          \
+                      << std::endl;                                \
+            ++failed;                                              \
+         }                                                         \
+      }                                                            \
+      catch( const std::exception& e ) {                           \
+         std::cerr << "json: unit test [ "                         \
+                   << ( #__VA_ARGS__ )                             \
+                   << " ] threw an exception [ "                   \
+                   << e.what()                                     \
+                   << " ] in line [ "                              \
+                   << __LINE__                                     \
+                   << " ] file [ "                                 \
+                   << __FILE__ << " ]"                             \
+                   << std::endl;                                   \
+         ++failed;                                                 \
+      }                                                            \
+      catch( ... ) {                                               \
+         std::cerr << "json: unit test [ "                         \
+                   << ( #__VA_ARGS__ )                             \
+                   << " ] threw an unknown exception"              \
+                   << "in line [ "                                 \
+                   << __LINE__                                     \
+                   << " ] file [ "                                 \
+                   << __FILE__ << " ]"                             \
+                   << std::endl;                                   \
+         ++failed;                                                 \
+      }                                                            \
+   } while( false )
 
-#define TEST_THROWS( ... )                              \
-   do {                                                 \
-      std::cout << "TEST_THROWS( " # __VA_ARGS__ " )" << std::endl; \
-      try {                                             \
-         __VA_ARGS__;                                   \
-         std::cerr << "json: unit test [ "              \
-                   << ( # __VA_ARGS__ )                 \
-                   << " ] did not throw in line [ "     \
-                   << __LINE__                          \
-                   << " ] file [ "                      \
-                   << __FILE__ << " ]"                  \
-                   << std::endl;                        \
-         ++failed;                                      \
-      }                                                 \
-      catch ( ... ) {                                   \
-      }                                                 \
-   } while ( false )
+#define TEST_THROWS( ... )                                         \
+   do {                                                            \
+      std::cout << "TEST_THROWS( " #__VA_ARGS__ " )" << std::endl; \
+      try {                                                        \
+         __VA_ARGS__;                                              \
+         std::cerr << "json: unit test [ "                         \
+                   << ( #__VA_ARGS__ )                             \
+                   << " ] did not throw in line [ "                \
+                   << __LINE__                                     \
+                   << " ] file [ "                                 \
+                   << __FILE__ << " ]"                             \
+                   << std::endl;                                   \
+         ++failed;                                                 \
+      }                                                            \
+      catch( ... ) {                                               \
+      }                                                            \
+   } while( false )
 
 #endif

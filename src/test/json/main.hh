@@ -6,11 +6,11 @@
 
 #include <cstdlib>
 
-int main( int, char ** argv )
+int main( int, char** argv )
 {
    tao::json::unit_test();
 
-   if ( tao::json::failed ) {
+   if( tao::json::failed ) {
       std::cerr << "json: unit test " << argv[ 0 ] << " failed " << tao::json::failed << std::endl;
    }
    return ( tao::json::failed == 0 ) ? EXIT_SUCCESS : EXIT_FAILURE;

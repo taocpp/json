@@ -16,32 +16,65 @@ namespace tao
          // SAX consumer that discards events
          struct discard
          {
-            void null() {}
+            void null()
+            {
+            }
 
-            void boolean( const bool ) {}
+            void boolean( const bool )
+            {
+            }
 
-            void number( const std::int64_t ) {}
-            void number( const std::uint64_t ) {}
-            void number( const double ) {}
+            void number( const std::int64_t )
+            {
+            }
 
-            void string( const std::string & ) {}
+            void number( const std::uint64_t )
+            {
+            }
+
+            void number( const double )
+            {
+            }
+
+            void string( const std::string& )
+            {
+            }
 
             // array
-            void begin_array() {}
-            void element() {}
-            void end_array() {}
+            void begin_array()
+            {
+            }
+
+            void element()
+            {
+            }
+
+            void end_array()
+            {
+            }
 
             // object
-            void begin_object() {}
-            void key( const std::string & ) {}
-            void member() {}
-            void end_object() {}
+            void begin_object()
+            {
+            }
+
+            void key( const std::string& )
+            {
+            }
+
+            void member()
+            {
+            }
+
+            void end_object()
+            {
+            }
          };
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

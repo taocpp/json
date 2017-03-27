@@ -7,41 +7,41 @@
 #include <stdexcept>
 #include <utility>
 
-#include "value.hh"
 #include "pointer.hh"
+#include "value.hh"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename ... > class Traits >
-      void patch_inplace( basic_value< Traits > & value, const basic_value< Traits > & patch )
+      template< template< typename... > class Traits >
+      void patch_inplace( basic_value< Traits >& value, const basic_value< Traits >& patch )
       {
-         for( const auto & entry : patch.get_array() ) {
-            const auto & op = entry.at( "op" ).get_string();
-            const auto & path = entry.at( "path" ).get_string();
+         for( const auto& entry : patch.get_array() ) {
+            const auto& op = entry.at( "op" ).get_string();
+            const auto& path = entry.at( "path" ).get_string();
             const pointer path_pointer( path );
-            if ( op == "test" ) {
-               if ( value.at( path_pointer ) != entry.at( "value" ) ) {
+            if( op == "test" ) {
+               if( value.at( path_pointer ) != entry.at( "value" ) ) {
                   throw std::runtime_error( "test failed for: " + path );
                }
             }
-            else if ( op == "remove" ) {
+            else if( op == "remove" ) {
                value.erase( path_pointer );
             }
-            else if ( op == "add" ) {
+            else if( op == "add" ) {
                value.insert( path_pointer, entry.at( "value" ) );
             }
-            else if ( op == "replace" ) {
+            else if( op == "replace" ) {
                value.at( path_pointer ) = entry.at( "value" );
             }
-            else if ( op == "move" ) {
+            else if( op == "move" ) {
                const pointer from( entry.at( "from" ).get_string() );
                auto v = std::move( value.at( from ) );
                value.erase( from );
                value.insert( path_pointer, std::move( v ) );
             }
-            else if ( op == "copy" ) {
+            else if( op == "copy" ) {
                const pointer from( entry.at( "from" ).get_string() );
                value.insert( path_pointer, value.at( from ) );
             }
@@ -51,34 +51,34 @@ namespace tao
          }
       }
 
-      template< template< typename ... > class Traits >
-      void patch_inplace( basic_value< Traits > & value, basic_value< Traits > && patch )
+      template< template< typename... > class Traits >
+      void patch_inplace( basic_value< Traits >& value, basic_value< Traits >&& patch )
       {
-         for( const auto & entry : patch.get_array() ) {
-            const auto & op = entry.at( "op" ).get_string();
-            const auto & path = entry.at( "path" ).get_string();
+         for( const auto& entry : patch.get_array() ) {
+            const auto& op = entry.at( "op" ).get_string();
+            const auto& path = entry.at( "path" ).get_string();
             const pointer path_pointer( path );
-            if ( op == "test" ) {
-               if ( value.at( path_pointer ) != entry.at( "value" ) ) {
+            if( op == "test" ) {
+               if( value.at( path_pointer ) != entry.at( "value" ) ) {
                   throw std::runtime_error( "test failed for: " + path );
                }
             }
-            else if ( op == "remove" ) {
+            else if( op == "remove" ) {
                value.erase( path_pointer );
             }
-            else if ( op == "add" ) {
+            else if( op == "add" ) {
                value.insert( path_pointer, std::move( entry.at( "value" ) ) );
             }
-            else if ( op == "replace" ) {
+            else if( op == "replace" ) {
                value.at( path_pointer ) = std::move( entry.at( "value" ) );
             }
-            else if ( op == "move" ) {
+            else if( op == "move" ) {
                const pointer from( entry.at( "from" ).get_string() );
                auto v = std::move( value.at( from ) );
                value.erase( from );
                value.insert( path_pointer, std::move( v ) );
             }
-            else if ( op == "copy" ) {
+            else if( op == "copy" ) {
                const pointer from( entry.at( "from" ).get_string() );
                value.insert( path_pointer, value.at( from ) );
             }
@@ -88,22 +88,22 @@ namespace tao
          }
       }
 
-      template< template< typename ... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > value, const basic_value< Traits > & patch )
+      template< template< typename... > class Traits >
+      basic_value< Traits > patch( basic_value< Traits > value, const basic_value< Traits >& patch )
       {
-        patch_inplace( value, patch );
-        return std::move( value );
+         patch_inplace( value, patch );
+         return std::move( value );
       }
 
-      template< template< typename ... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > value, basic_value< Traits > && patch )
+      template< template< typename... > class Traits >
+      basic_value< Traits > patch( basic_value< Traits > value, basic_value< Traits >&& patch )
       {
-        patch_inplace( value, std::move( patch ) );
-        return std::move( value );
+         patch_inplace( value, std::move( patch ) );
+         return std::move( value );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

@@ -4,8 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_SRC_TEST_TEST_HH
 #define TAOCPP_JSON_INCLUDE_SRC_TEST_TEST_HH
 
-#include <cstddef>
 #include <cassert>
+#include <cstddef>
 #include <iomanip>
 #include <iostream>
 
@@ -17,8 +17,8 @@ namespace tao
    {
       std::size_t failed = 0;
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

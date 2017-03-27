@@ -4,8 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_SAX_TO_STREAM_HH
 #define TAOCPP_JSON_INCLUDE_SAX_TO_STREAM_HH
 
-#include <ostream>
 #include <cstdint>
+#include <ostream>
 
 #include "../external/double.hh"
 
@@ -21,19 +21,21 @@ namespace tao
          class to_stream
          {
          private:
-            std::ostream & os;
+            std::ostream& os;
             bool first;
 
             void next()
             {
-               if ( ! first ) os.put( ',' );
+               if( !first )
+                  os.put( ',' );
             }
 
          public:
-            explicit to_stream( std::ostream & os ) noexcept
-                 : os( os ),
-                   first( true )
-            { }
+            explicit to_stream( std::ostream& os ) noexcept
+               : os( os ),
+                 first( true )
+            {
+            }
 
             void null()
             {
@@ -44,7 +46,7 @@ namespace tao
             void boolean( const bool v )
             {
                next();
-               if ( v ) {
+               if( v ) {
                   os.write( "true", 4 );
                }
                else {
@@ -70,7 +72,7 @@ namespace tao
                json_double_conversion::Dtostr( os, v );
             }
 
-            void string( const std::string & v )
+            void string( const std::string& v )
             {
                next();
                os.put( '"' );
@@ -104,7 +106,7 @@ namespace tao
                first = true;
             }
 
-            void key( const std::string & v )
+            void key( const std::string& v )
             {
                string( v );
                os.put( ':' );
@@ -122,10 +124,10 @@ namespace tao
             }
          };
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

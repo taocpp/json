@@ -3,9 +3,9 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
-#include <tao/json/to_string.hh>
 #include <tao/json/stream.hh>
+#include <tao/json/to_string.hh>
+#include <tao/json/value.hh>
 
 #include <sstream>
 
@@ -13,7 +13,7 @@ namespace tao
 {
    namespace json
    {
-      void test_simple( const value & v, const std::string & s )
+      void test_simple( const value& v, const std::string& s )
       {
          TEST_ASSERT( to_string( v ) == s );
          std::ostringstream oss;
@@ -21,7 +21,7 @@ namespace tao
          TEST_ASSERT( oss.str() == s );
       }
 
-      void test_pretty( const value & v, const std::string & s )
+      void test_pretty( const value& v, const std::string& s )
       {
          std::ostringstream oss;
          oss << std::setw( 2 ) << v;
@@ -80,8 +80,8 @@ namespace tao
          test_pretty( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{\n  \"foo\": [\n    1,\n    {\n      \"bar\": 42,\n      \"baz\": [\n        {},\n        43\n      ]\n    },\n    []\n  ]\n}" );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

@@ -4,8 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_SAX_DEBUG_HH
 #define TAOCPP_JSON_INCLUDE_SAX_DEBUG_HH
 
-#include <ostream>
 #include <cstdint>
+#include <ostream>
 
 #include "../external/double.hh"
 
@@ -21,12 +21,13 @@ namespace tao
          class debug
          {
          private:
-            std::ostream & os;
+            std::ostream& os;
 
          public:
-            explicit debug( std::ostream & os ) noexcept
-                 : os( os )
-            { }
+            explicit debug( std::ostream& os ) noexcept
+               : os( os )
+            {
+            }
 
             void null()
             {
@@ -35,7 +36,7 @@ namespace tao
 
             void boolean( const bool v )
             {
-               if ( v ) {
+               if( v ) {
                   os << "boolean: true\n";
                }
                else {
@@ -60,7 +61,7 @@ namespace tao
                os << '\n';
             }
 
-            void string( const std::string & v )
+            void string( const std::string& v )
             {
                os << "string: \"";
                internal::escape( os, v );
@@ -89,7 +90,7 @@ namespace tao
                os << "begin object\n";
             }
 
-            void key( const std::string & v )
+            void key( const std::string& v )
             {
                os << "key: \"";
                internal::escape( os, v );
@@ -107,10 +108,10 @@ namespace tao
             }
          };
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

@@ -14,27 +14,27 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename ... > class Traits >
-      basic_value< Traits > parse_file( const std::string & filename )
+      template< template< typename... > class Traits >
+      basic_value< Traits > parse_file( const std::string& filename )
       {
          sax::to_basic_value< Traits > consumer;
          sax::parse_file( filename, consumer );
          return std::move( consumer.value );
       }
 
-      template< template< typename ... > class Traits >
-      void parse_file( basic_value< Traits > & output, const std::string & filename )
+      template< template< typename... > class Traits >
+      void parse_file( basic_value< Traits >& output, const std::string& filename )
       {
          output = parse_file< Traits >( filename );
       }
 
-      inline value parse_file( const std::string & filename )
+      inline value parse_file( const std::string& filename )
       {
          return parse_file< traits >( filename );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

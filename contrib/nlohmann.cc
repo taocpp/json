@@ -3,9 +3,9 @@
 
 #include "test.hh"
 
+#include "nlohmann/from_value.hh"
 #include "nlohmann/json.hpp"
 #include "nlohmann/to_value.hh"
-#include "nlohmann/from_value.hh"
 
 #include <tao/json/sax/from_string.hh>
 #include <tao/json/sax/to_string.hh>
@@ -19,7 +19,7 @@ namespace tao
          tao::json::nlohmann::to_value value_consumer;
          tao::json::sax::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]", value_consumer );
 
-         const auto & v = value_consumer.value;
+         const auto& v = value_consumer.value;
 
          TEST_ASSERT( v.type() == ::nlohmann::json::value_t::array );
          TEST_ASSERT( v.size() == 8 );
@@ -45,8 +45,8 @@ namespace tao
          TEST_ASSERT( output_consumer.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

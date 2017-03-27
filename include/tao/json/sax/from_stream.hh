@@ -6,12 +6,12 @@
 
 #include <istream>
 
-#include "../external/pegtl/parse.hpp"
 #include "../external/pegtl/internal/istream_reader.hpp"
+#include "../external/pegtl/parse.hpp"
 
-#include "../internal/grammar.hh"
 #include "../internal/action.hh"
 #include "../internal/control.hh"
+#include "../internal/grammar.hh"
 
 namespace tao
 {
@@ -20,22 +20,22 @@ namespace tao
       namespace sax
       {
          template< typename Consumer >
-         inline void from_stream( std::istream & stream, Consumer & consumer, const char * source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+         inline void from_stream( std::istream& stream, Consumer& consumer, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
             json_pegtl::buffer_input< json_pegtl::internal::istream_reader > input( source ? source : "tao::json::sax::from_stream", maximum_buffer_size, stream );
             json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
          }
 
          template< typename Consumer >
-         inline void from_stream( std::istream & stream, Consumer & consumer, const std::string & source, const std::size_t maximum_buffer_size = 4000 )
+         inline void from_stream( std::istream& stream, Consumer& consumer, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
          {
             sax::from_stream( stream, consumer, source.c_str(), maximum_buffer_size );
          }
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

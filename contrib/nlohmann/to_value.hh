@@ -4,10 +4,10 @@
 #ifndef TAOCPP_JSON_INCLUDE_JSON_NLOHMANN_TO_VALUE_HH
 #define TAOCPP_JSON_INCLUDE_JSON_NLOHMANN_TO_VALUE_HH
 
-#include <vector>
-#include <string>
 #include <cstdint>
+#include <string>
 #include <utility>
+#include <vector>
 
 namespace tao
 {
@@ -51,12 +51,12 @@ namespace tao
                value = v;
             }
 
-            void string( const std::string & v )
+            void string( const std::string& v )
             {
                value = v;
             }
 
-            void string( std::string && v )
+            void string( std::string&& v )
             {
                value = std::move( v );
             }
@@ -84,12 +84,12 @@ namespace tao
                stack_.push_back( Value::object() );
             }
 
-            void key( const std::string & v )
+            void key( const std::string& v )
             {
                keys_.push_back( v );
             }
 
-            void key( std::string && v )
+            void key( std::string&& v )
             {
                keys_.push_back( std::move( v ) );
             }
@@ -107,10 +107,10 @@ namespace tao
             }
          };
 
-      } // nlohmann
+      }  // nlohmann
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

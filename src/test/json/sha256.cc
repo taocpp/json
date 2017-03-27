@@ -11,11 +11,11 @@ namespace tao
    {
       static char hex[] = "0123456789ABCDEF";
 
-      std::string to_hex( const std::string & s )
+      std::string to_hex( const std::string& s )
       {
          std::string result;
          result.reserve( s.size() * 2 );
-         for ( unsigned char c : s ) {
+         for( unsigned char c : s ) {
             result += hex[ c >> 4 ];
             result += hex[ c & 15 ];
          }
@@ -35,8 +35,8 @@ namespace tao
          TEST_ASSERT( to_hex( d.get() ) == "248D6A61D20638B8E5C026930C3E6039A33CE45964FF2167F6ECEDD419DB06C1" );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

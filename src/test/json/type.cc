@@ -46,8 +46,8 @@ namespace tao
          TEST_ASSERT( needs_discard( type::RAW_PTR ) == false );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

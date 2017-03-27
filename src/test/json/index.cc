@@ -3,8 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/from_string.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -66,7 +66,7 @@ namespace tao
          TEST_ASSERT( "{\"foo\":1,\"bar\":2}"_json.at( "bar" ) == 2 );
 
          TEST_ASSERT( "{\"foo\":42}"_json[ "foo" ] == 42 );
-         TEST_ASSERT( ! "{\"foo\":42}"_json[ "bar" ] );
+         TEST_ASSERT( !"{\"foo\":42}"_json[ "bar" ] );
          TEST_ASSERT( "{\"foo\":1,\"bar\":2}"_json[ "foo" ] == 1 );
          TEST_ASSERT( "{\"foo\":1,\"bar\":2}"_json[ "bar" ] == 2 );
 
@@ -75,7 +75,7 @@ namespace tao
          TEST_THROWS( "{}"_json.at( "foo" ) );
          TEST_THROWS( "{\"foo\":42}"_json.at( "bar" ) );
 
-         TEST_ASSERT( ! "{}"_json[ "foo" ] );
+         TEST_ASSERT( !"{}"_json[ "foo" ] );
 
          value v2 = empty_object;
          TEST_THROWS( v2.at( "foo" ) );
@@ -86,8 +86,8 @@ namespace tao
          TEST_ASSERT( v2.at( "foo" ) == 2 );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

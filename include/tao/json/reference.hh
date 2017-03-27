@@ -4,9 +4,9 @@
 #ifndef TAOCPP_JSON_INCLUDE_REFERENCE_HH
 #define TAOCPP_JSON_INCLUDE_REFERENCE_HH
 
-#include "value.hh"
-#include "pointer.hh"
 #include "internal/uri_fragment.hh"
+#include "pointer.hh"
+#include "value.hh"
 
 namespace tao
 {
@@ -30,10 +30,10 @@ namespace tao
          // references into JSON Reference additional members
          // (which shall be ignored as per the specification).
 
-         template< template< typename ... > class Traits >
-         void resolve_references( basic_value< Traits > & r, basic_value< Traits > & v )
+         template< template< typename... > class Traits >
+         void resolve_references( basic_value< Traits >& r, basic_value< Traits >& v )
          {
-            switch ( v.type() ) {
+            switch( v.type() ) {
                case type::UNINITIALIZED:
                   return;
                case type::DISCARDED:
@@ -46,40 +46,40 @@ namespace tao
                case type::STRING:
                   return;
                case type::ARRAY:
-                  for ( auto & e : v.unsafe_get_array() ) {
+                  for( auto& e : v.unsafe_get_array() ) {
                      resolve_references( r, e );
                   }
                   return;
                case type::OBJECT:
-                  for ( auto & e : v.unsafe_get_object() ) {
+                  for( auto& e : v.unsafe_get_object() ) {
                      resolve_references( r, e.second );
                   }
-                  if ( const auto * ref = v.find( "$ref" )->skip_raw_ptr() ) {
-                     if ( ref->is_string() ) {
-                        const std::string & s = ref->unsafe_get_string();
-                        if ( ! s.empty() && s[ 0 ] == '#' ) {
+                  if( const auto* ref = v.find( "$ref" )->skip_raw_ptr() ) {
+                     if( ref->is_string() ) {
+                        const std::string& s = ref->unsafe_get_string();
+                        if( !s.empty() && s[ 0 ] == '#' ) {
                            const pointer ptr = internal::uri_fragment_to_pointer( s );
-                           const auto * p = & r;
+                           const auto* p = &r;
                            auto it = ptr.begin();
-                           while ( it != ptr.end() ) {
-                              switch ( p->type() ) {
-                              case type::ARRAY:
-                                 p = p->at( it->index() ).skip_raw_ptr();
-                                 break;
-                              case type::OBJECT:
-                                 if ( const auto * r = p->find( "$ref" ) ) {
-                                    if ( r->is_string() ) {
-                                       throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );
+                           while( it != ptr.end() ) {
+                              switch( p->type() ) {
+                                 case type::ARRAY:
+                                    p = p->at( it->index() ).skip_raw_ptr();
+                                    break;
+                                 case type::OBJECT:
+                                    if( const auto* r = p->find( "$ref" ) ) {
+                                       if( r->is_string() ) {
+                                          throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );
+                                       }
                                     }
-                                 }
-                                 p = p->at( it->key() ).skip_raw_ptr();
-                                 break;
-                              default:
-                                 throw invalid_type( ptr.begin(), std::next( it ) );
+                                    p = p->at( it->key() ).skip_raw_ptr();
+                                    break;
+                                 default:
+                                    throw invalid_type( ptr.begin(), std::next( it ) );
                               }
                               ++it;
                            }
-                           if ( p == & v ) {
+                           if( p == &v ) {
                               throw std::runtime_error( "JSON Reference: invalid self reference" );
                            }
                            v = p;
@@ -99,16 +99,16 @@ namespace tao
             throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
          }
 
-      } // internal
+      }  // internal
 
-      template< template< typename ... > class Traits >
-      void resolve_references( basic_value< Traits > & r )
+      template< template< typename... > class Traits >
+      void resolve_references( basic_value< Traits >& r )
       {
          resolve_references( r, r );
       }
 
-  } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

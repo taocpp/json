@@ -3,8 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/pointer.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -27,7 +27,7 @@ namespace tao
          // create test vector
          const std::string ezp( "o\0p", 3 );
          const std::string ezq( "o\0q", 3 );
-         value v {
+         value v{
             { "foo", value::array( { "bar", "baz" } ) },
             { "", 0 },
             { "a/b", 1 },
@@ -87,7 +87,7 @@ namespace tao
          TEST_ASSERT( v.at( "/foo"_json_pointer ) != value::array( { "bar", "baz" } ) );
          TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz", "bat" } ) );
 
-         v[ "/foo/-"_json_pointer ]; // no assignment, but the null is appended anyways... TODO: change that to require an assignment?
+         v[ "/foo/-"_json_pointer ];  // no assignment, but the null is appended anyways... TODO: change that to require an assignment?
          TEST_ASSERT( v.at( "/foo"_json_pointer ) != value::array( { "bar", "baz", "bat" } ) );
          TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz", "bat", null } ) );
 
@@ -165,8 +165,8 @@ namespace tao
          TEST_ASSERT( !( p4 >= p3 ) );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

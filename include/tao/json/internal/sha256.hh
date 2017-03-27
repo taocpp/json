@@ -11,7 +11,10 @@
 #include <cstring>
 #include <string>
 
-#define DBL_INT_ADD(a,b,c) if (a > 0xffffffff - (c)) ++b; a += c;
+#define DBL_INT_ADD( a, b, c )  \
+   if( a > 0xffffffff - ( c ) ) \
+      ++b;                      \
+   a += c;
 
 // RFC 6234, 3.d; see also http://stackoverflow.com/a/4209604/2073257
 #define ROR( x, N ) ( ( x >> N ) | ( x << ( 32 - N ) ) )
@@ -31,6 +34,7 @@ namespace tao
       namespace internal
       {
          // RFC 6234, 5.1
+         // clang-format off
          static std::uint32_t K[ 64 ] = {
             0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
             0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -49,6 +53,7 @@ namespace tao
             0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
             0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
          };
+         // clang-format on
 
          class sha256
          {
@@ -64,10 +69,10 @@ namespace tao
                std::uint32_t W[ 64 ];
 
                // step 1
-               for ( std::size_t t = 0, i = 0; t != 16; ++t, i += 4 ) {
+               for( std::size_t t = 0, i = 0; t != 16; ++t, i += 4 ) {
                   W[ t ] = ( M[ i ] << 24 ) | ( M[ i + 1 ] << 16 ) | ( M[ i + 2 ] << 8 ) | ( M[ i + 3 ] );
                }
-               for ( std::size_t t = 16; t != 64; ++t ) {
+               for( std::size_t t = 16; t != 64; ++t ) {
                   W[ t ] = SSIG1( W[ t - 2 ] ) + W[ t - 7 ] + SSIG0( W[ t - 15 ] ) + W[ t - 16 ];
                }
 
@@ -83,7 +88,7 @@ namespace tao
                h = H[ 7 ];
 
                // step 3
-               for ( std::size_t t = 0; t != 64; ++t ) {
+               for( std::size_t t = 0; t != 64; ++t ) {
                   const std::uint32_t T1 = h + BSIG1( e ) + CH( e, f, g ) + K[ t ] + W[ t ];
                   const std::uint32_t T2 = BSIG0( a ) + MAJ( a, b, c );
                   h = g;
@@ -113,8 +118,8 @@ namespace tao
                reset();
             }
 
-            sha256( const sha256 & ) = delete;
-            void operator= ( const sha256 & ) = delete;
+            sha256( const sha256& ) = delete;
+            void operator=( const sha256& ) = delete;
 
             void reset() noexcept
             {
@@ -134,37 +139,37 @@ namespace tao
             void feed( const unsigned char c ) noexcept
             {
                M[ size++ % 64 ] = c;
-               if ( ( size % 64 ) == 0 ) {
+               if( ( size % 64 ) == 0 ) {
                   process();
                }
             }
 
-            void feed( const void * p, std::size_t s ) noexcept
+            void feed( const void* p, std::size_t s ) noexcept
             {
-               const unsigned char * q = static_cast< const unsigned char * >( p );
-               while ( s-- ) {
+               const unsigned char* q = static_cast< const unsigned char* >( p );
+               while( s-- ) {
                   feed( *q++ );
                }
             }
 
-            void feed( const std::string & v ) noexcept
+            void feed( const std::string& v ) noexcept
             {
                feed( v.data(), v.size() );
             }
 
             // RFC 6234, 4.1
-            void store_unsafe( unsigned char * buffer ) noexcept
+            void store_unsafe( unsigned char* buffer ) noexcept
             {
                std::size_t i = size % 64;
-               if ( i < 56 ) {
+               if( i < 56 ) {
                   M[ i++ ] = 0x80;
-                  while ( i < 56 ) {
+                  while( i < 56 ) {
                      M[ i++ ] = 0x00;
                   }
                }
                else {
-		  M[ i++ ] = 0x80;
-                  while ( i < 64 ) {
+                  M[ i++ ] = 0x80;
+                  while( i < 64 ) {
                      M[ i++ ] = 0x00;
                   }
                   process();
@@ -184,7 +189,7 @@ namespace tao
 
                process();
 
-               for ( std::size_t i = 0; i < 4; ++i ) {
+               for( std::size_t i = 0; i < 4; ++i ) {
                   buffer[ i ] = ( H[ 0 ] >> ( 24 - i * 8 ) ) & 0xff;
                   buffer[ i + 4 ] = ( H[ 1 ] >> ( 24 - i * 8 ) ) & 0xff;
                   buffer[ i + 8 ] = ( H[ 2 ] >> ( 24 - i * 8 ) ) & 0xff;
@@ -200,15 +205,15 @@ namespace tao
             {
                std::string result;
                result.resize( 32 );
-               store_unsafe( (unsigned char *)( result.data() ) );
+               store_unsafe( (unsigned char*)( result.data() ) );
                return result;
             }
          };
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

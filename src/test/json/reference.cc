@@ -3,15 +3,15 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/from_string.hh>
 #include <tao/json/reference.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
    namespace json
    {
-      void test( const std::string & s1, const std::string & s2 )
+      void test( const std::string& s1, const std::string& s2 )
       {
          auto v1 = from_string( s1 );
          const auto v2 = from_string( s2 );
@@ -19,7 +19,7 @@ namespace tao
          TEST_ASSERT( v1 == v2 );
       }
 
-      void test_throws( const value & v )
+      void test_throws( const value& v )
       {
          value v2( v );
          TEST_THROWS( resolve_references( v2 ) );
@@ -45,8 +45,8 @@ namespace tao
          test_throws( { { "foo", 0 }, { "bar", { { "$ref", "#/foo/bar" } } } } );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

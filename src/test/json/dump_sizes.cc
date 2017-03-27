@@ -3,8 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/pointer.hh>
+#include <tao/json/value.hh>
 
 #include <list>
 #include <unordered_map>
@@ -31,8 +31,8 @@ namespace tao
          std::cout << "std::unordered_multimap< std::string, json::value >: " << sizeof( std::unordered_multimap< std::string, value > ) << std::endl;
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

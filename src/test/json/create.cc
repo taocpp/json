@@ -5,8 +5,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/from_string.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -16,20 +16,20 @@ namespace tao
       {
          const value v;
 
-         TEST_ASSERT( ! v );
+         TEST_ASSERT( !v );
          TEST_ASSERT( v.empty() );
 
-         TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_raw_ptr() );
-         TEST_ASSERT( ! v.is_integer() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_null() );
+         TEST_ASSERT( !v.is_boolean() );
+         TEST_ASSERT( !v.is_signed() );
+         TEST_ASSERT( !v.is_unsigned() );
+         TEST_ASSERT( !v.is_double() );
+         TEST_ASSERT( !v.is_string() );
+         TEST_ASSERT( !v.is_array() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_integer() );
+         TEST_ASSERT( !v.is_number() );
 
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
@@ -78,19 +78,19 @@ namespace tao
          const value v2( v );
 
          TEST_ASSERT( v );
-         TEST_ASSERT( ! v.empty() );
+         TEST_ASSERT( !v.empty() );
 
          TEST_ASSERT( v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_raw_ptr() );
-         TEST_ASSERT( ! v.is_integer() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_boolean() );
+         TEST_ASSERT( !v.is_signed() );
+         TEST_ASSERT( !v.is_unsigned() );
+         TEST_ASSERT( !v.is_double() );
+         TEST_ASSERT( !v.is_string() );
+         TEST_ASSERT( !v.is_array() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_integer() );
+         TEST_ASSERT( !v.is_number() );
 
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
@@ -116,19 +116,19 @@ namespace tao
          const value v( b );
          const value v2( v );
 
-         TEST_ASSERT( ! v.empty() );
+         TEST_ASSERT( !v.empty() );
 
-         TEST_ASSERT( ! v.is_null() );
+         TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_raw_ptr() );
-         TEST_ASSERT( ! v.is_integer() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_signed() );
+         TEST_ASSERT( !v.is_unsigned() );
+         TEST_ASSERT( !v.is_double() );
+         TEST_ASSERT( !v.is_string() );
+         TEST_ASSERT( !v.is_array() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_integer() );
+         TEST_ASSERT( !v.is_number() );
 
          TEST_THROWS( v.get_signed() );
          TEST_THROWS( v.get_unsigned() );
@@ -144,7 +144,7 @@ namespace tao
 
          TEST_ASSERT( v == v );
          TEST_ASSERT( value( b ) == v );
-         TEST_ASSERT( value( ! b ) != v );
+         TEST_ASSERT( value( !b ) != v );
 
          TEST_THROWS( v.at( 0 ) );
          TEST_THROWS( v.at( "foo" ) );
@@ -156,17 +156,17 @@ namespace tao
          const value v( t );
          const value v2( v );
 
-         TEST_ASSERT( ! v.empty() );
+         TEST_ASSERT( !v.empty() );
 
-         TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
+         TEST_ASSERT( !v.is_null() );
+         TEST_ASSERT( !v.is_boolean() );
          TEST_ASSERT( v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_unsigned() );
+         TEST_ASSERT( !v.is_double() );
+         TEST_ASSERT( !v.is_string() );
+         TEST_ASSERT( !v.is_array() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_raw_ptr() );
          TEST_ASSERT( v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
@@ -204,17 +204,17 @@ namespace tao
          const value v( t );
          const value v2( v );
 
-         TEST_ASSERT( ! v.empty() );
+         TEST_ASSERT( !v.empty() );
 
-         TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
+         TEST_ASSERT( !v.is_null() );
+         TEST_ASSERT( !v.is_boolean() );
+         TEST_ASSERT( !v.is_signed() );
          TEST_ASSERT( v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_double() );
+         TEST_ASSERT( !v.is_string() );
+         TEST_ASSERT( !v.is_array() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_raw_ptr() );
          TEST_ASSERT( v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
@@ -249,17 +249,17 @@ namespace tao
          const value v( d );
          const value v2( v );
 
-         TEST_ASSERT( ! v.empty() );
+         TEST_ASSERT( !v.empty() );
 
-         TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
+         TEST_ASSERT( !v.is_null() );
+         TEST_ASSERT( !v.is_boolean() );
+         TEST_ASSERT( !v.is_signed() );
+         TEST_ASSERT( !v.is_unsigned() );
          TEST_ASSERT( v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_integer() );
+         TEST_ASSERT( !v.is_string() );
+         TEST_ASSERT( !v.is_array() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
          TEST_THROWS( v.get_boolean() );
@@ -279,23 +279,23 @@ namespace tao
       }
 
       template< unsigned N >
-      void test_string( const char ( & s )[ N ] )
+      void test_string( const char ( &s )[ N ] )
       {
          const value v( s );
          const value v2( v );
 
          TEST_ASSERT( v.empty() == ( N == 1 ) );
 
-         TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
+         TEST_ASSERT( !v.is_null() );
+         TEST_ASSERT( !v.is_boolean() );
+         TEST_ASSERT( !v.is_signed() );
+         TEST_ASSERT( !v.is_unsigned() );
+         TEST_ASSERT( !v.is_double() );
          TEST_ASSERT( v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_integer() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_array() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_integer() );
+         TEST_ASSERT( !v.is_number() );
 
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
@@ -326,17 +326,17 @@ namespace tao
 
          TEST_ASSERT( v.empty() );
 
-         TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
+         TEST_ASSERT( !v.is_null() );
+         TEST_ASSERT( !v.is_boolean() );
+         TEST_ASSERT( !v.is_signed() );
+         TEST_ASSERT( !v.is_unsigned() );
+         TEST_ASSERT( !v.is_double() );
+         TEST_ASSERT( !v.is_string() );
          TEST_ASSERT( v.is_array() );
-         TEST_ASSERT( ! v.is_object() );
-         TEST_ASSERT( ! v.is_raw_ptr() );
-         TEST_ASSERT( ! v.is_integer() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_object() );
+         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_integer() );
+         TEST_ASSERT( !v.is_number() );
 
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
@@ -360,16 +360,16 @@ namespace tao
 
          TEST_ASSERT( v.empty() );
 
-         TEST_ASSERT( ! v.is_null() );
-         TEST_ASSERT( ! v.is_boolean() );
-         TEST_ASSERT( ! v.is_signed() );
-         TEST_ASSERT( ! v.is_unsigned() );
-         TEST_ASSERT( ! v.is_double() );
-         TEST_ASSERT( ! v.is_string() );
-         TEST_ASSERT( ! v.is_array() );
+         TEST_ASSERT( !v.is_null() );
+         TEST_ASSERT( !v.is_boolean() );
+         TEST_ASSERT( !v.is_signed() );
+         TEST_ASSERT( !v.is_unsigned() );
+         TEST_ASSERT( !v.is_double() );
+         TEST_ASSERT( !v.is_string() );
+         TEST_ASSERT( !v.is_array() );
          TEST_ASSERT( v.is_object() );
-         TEST_ASSERT( ! v.is_integer() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_integer() );
+         TEST_ASSERT( !v.is_number() );
 
          TEST_THROWS( v.get_boolean() );
          TEST_THROWS( v.get_signed() );
@@ -392,10 +392,10 @@ namespace tao
          const value v = value::array( { 1, 2, 3, 4 } );
          const value v2( v );
 
-         TEST_ASSERT( ! v.empty() );
+         TEST_ASSERT( !v.empty() );
 
          TEST_ASSERT( v.is_array() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_number() );
          TEST_ASSERT( v.type() == type::ARRAY );
 
          const std::vector< value > r = { value( 1 ), value( 2 ), value( 3 ), value( 4 ) };
@@ -419,18 +419,18 @@ namespace tao
 
       void test_object_1234()
       {
-         const value v { { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
+         const value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
          const value v2( v );
 
-         TEST_ASSERT( ! v.empty() );
+         TEST_ASSERT( !v.empty() );
 
          TEST_ASSERT( v.is_object() );
-         TEST_ASSERT( ! v.is_number() );
+         TEST_ASSERT( !v.is_number() );
          TEST_ASSERT( v.type() == type::OBJECT );
 
          // TODO: Add more tests
 
-         TEST_THROWS( value { { "foo", 1 }, { "foo", 2 } } );
+         TEST_THROWS( value{ { "foo", 1 }, { "foo", 2 } } );
       }
 
       void unit_test()
@@ -514,22 +514,22 @@ namespace tao
          TEST_ASSERT( v == null );
 
          {
-           value v2( v );
-           TEST_ASSERT( v2.type() == type::RAW_PTR );
-           TEST_ASSERT( v2.get_raw_ptr() == nullptr );
-           TEST_ASSERT( v2.empty() );
-           TEST_ASSERT( v2 == null );
+            value v2( v );
+            TEST_ASSERT( v2.type() == type::RAW_PTR );
+            TEST_ASSERT( v2.get_raw_ptr() == nullptr );
+            TEST_ASSERT( v2.empty() );
+            TEST_ASSERT( v2 == null );
          }
 
          {
-           value v2( &v );
-           TEST_ASSERT( v2.type() == type::RAW_PTR );
-           TEST_ASSERT( v2.get_raw_ptr() != nullptr );
-           TEST_ASSERT( v2.get_raw_ptr()->type() == type::RAW_PTR );
-           TEST_ASSERT( v2.get_raw_ptr()->get_raw_ptr() == nullptr );
-           TEST_ASSERT( ! v2.empty() );
-           TEST_ASSERT( v2.get_raw_ptr()->empty() );
-           TEST_ASSERT( v2 == null );
+            value v2( &v );
+            TEST_ASSERT( v2.type() == type::RAW_PTR );
+            TEST_ASSERT( v2.get_raw_ptr() != nullptr );
+            TEST_ASSERT( v2.get_raw_ptr()->type() == type::RAW_PTR );
+            TEST_ASSERT( v2.get_raw_ptr()->get_raw_ptr() == nullptr );
+            TEST_ASSERT( !v2.empty() );
+            TEST_ASSERT( v2.get_raw_ptr()->empty() );
+            TEST_ASSERT( v2 == null );
          }
 
          test_string( "" );
@@ -558,7 +558,8 @@ namespace tao
             TEST_ASSERT( a.at( 0 ) == 4 );
             value b( a );
             TEST_ASSERT( a.get_array() == b.get_array() );
-         } {
+         }
+         {
             value a;
             a.emplace( "foo", 5 );
             TEST_ASSERT( a.type() == type::OBJECT );
@@ -566,37 +567,41 @@ namespace tao
             value b( a );
             TEST_ASSERT( a == b );
             TEST_ASSERT( a.get_object() == b.get_object() );
-         } {
+         }
+         {
             const value a( "foo" );
             const value b( a );
             TEST_ASSERT( a.get_string() == b.get_string() );
-         } {
-           const value a( 4 );
-           const value b( 4.0 );
-           TEST_ASSERT( a == b );
-           TEST_ASSERT( a == 4 );
-           TEST_ASSERT( a == 4.0 );
-           TEST_ASSERT( b == 4 );
-           TEST_ASSERT( b == 4.0 );
-         } {
-           value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
-           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
-           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
-           v = v.at( "foo" ).at( "bar" );
-           TEST_ASSERT( v.at( "baz" ).is_signed() );
-           TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
-         } {
-           value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
-           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
-           TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
-           v = std::move( v.at( "foo" ).at( "bar" ) );
-           TEST_ASSERT( v.at( "baz" ).is_signed() );
-           TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
+         }
+         {
+            const value a( 4 );
+            const value b( 4.0 );
+            TEST_ASSERT( a == b );
+            TEST_ASSERT( a == 4 );
+            TEST_ASSERT( a == 4.0 );
+            TEST_ASSERT( b == 4 );
+            TEST_ASSERT( b == 4.0 );
+         }
+         {
+            value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
+            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
+            v = v.at( "foo" ).at( "bar" );
+            TEST_ASSERT( v.at( "baz" ).is_signed() );
+            TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
+         }
+         {
+            value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
+            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
+            v = std::move( v.at( "foo" ).at( "bar" ) );
+            TEST_ASSERT( v.at( "baz" ).is_signed() );
+            TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
          }
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

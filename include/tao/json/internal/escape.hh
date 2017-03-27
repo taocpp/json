@@ -13,29 +13,29 @@ namespace tao
    {
       namespace internal
       {
-         inline void escape( std::ostream & os, const std::string & s )
+         inline void escape( std::ostream& os, const std::string& s )
          {
-            static const char * h = "0123456789abcdef";
+            static const char* h = "0123456789abcdef";
 
-            const char * p = s.data();
-            const char * l = p;
-            const char * const e = s.data() + s.size();
-            while ( p != e ) {
-               const unsigned char c = * p;
-               if ( c == '\\' ) {
+            const char* p = s.data();
+            const char* l = p;
+            const char* const e = s.data() + s.size();
+            while( p != e ) {
+               const unsigned char c = *p;
+               if( c == '\\' ) {
                   os.write( l, p - l );
                   l = ++p;
                   os << "\\\\";
                }
-               else if ( c == '"' ) {
+               else if( c == '"' ) {
                   os.write( l, p - l );
                   l = ++p;
                   os << "\\\"";
                }
-               else if ( c < 32 ) {
+               else if( c < 32 ) {
                   os.write( l, p - l );
                   l = ++p;
-                  switch ( c ) {
+                  switch( c ) {
                      case '\b':
                         os << "\\b";
                         break;
@@ -55,7 +55,7 @@ namespace tao
                         os << "\\u00" << h[ ( c & 0xf0 ) >> 4 ] << h[ c & 0x0f ];
                   }
                }
-               else if ( c == 127 ) {
+               else if( c == 127 ) {
                   os.write( l, p - l );
                   l = ++p;
                   os << "\\u007f";
@@ -67,10 +67,10 @@ namespace tao
             os.write( l, p - l );
          }
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

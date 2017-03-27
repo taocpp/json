@@ -4,10 +4,10 @@
 #ifndef TAOCPP_JSON_INCLUDE_SAX_TO_PRETTY_STREAM_HH
 #define TAOCPP_JSON_INCLUDE_SAX_TO_PRETTY_STREAM_HH
 
-#include <ostream>
 #include <cstddef>
-#include <string>
 #include <cstdint>
+#include <ostream>
+#include <string>
 
 #include "../external/double.hh"
 
@@ -23,7 +23,7 @@ namespace tao
          class to_pretty_stream
          {
          private:
-            std::ostream & os;
+            std::ostream& os;
             const std::size_t indent;
 
             std::string current = "\n";
@@ -32,8 +32,9 @@ namespace tao
 
             void next()
             {
-               if ( ! first ) os.put( ',' );
-               if ( after_key ) {
+               if( !first )
+                  os.put( ',' );
+               if( after_key ) {
                   after_key = false;
                }
                else {
@@ -42,11 +43,12 @@ namespace tao
             }
 
          public:
-            to_pretty_stream( std::ostream & os, const std::size_t indent )
-              : os( os ),
-                indent( indent ),
-                first( true )
-            { }
+            to_pretty_stream( std::ostream& os, const std::size_t indent )
+               : os( os ),
+                 indent( indent ),
+                 first( true )
+            {
+            }
 
             void null()
             {
@@ -57,7 +59,7 @@ namespace tao
             void boolean( const bool v )
             {
                next();
-               if ( v ) {
+               if( v ) {
                   os.write( "true", 4 );
                }
                else {
@@ -83,7 +85,7 @@ namespace tao
                json_double_conversion::Dtostr( os, v );
             }
 
-            void string( const std::string & v )
+            void string( const std::string& v )
             {
                next();
                os.put( '"' );
@@ -108,7 +110,8 @@ namespace tao
             void end_array()
             {
                current.resize( current.size() - indent );
-               if ( ! first ) os << current;
+               if( !first )
+                  os << current;
                os.put( ']' );
             }
 
@@ -121,7 +124,7 @@ namespace tao
                first = true;
             }
 
-            void key( const std::string & v )
+            void key( const std::string& v )
             {
                string( v );
                os.write( ": ", 2 );
@@ -137,15 +140,16 @@ namespace tao
             void end_object()
             {
                current.resize( current.size() - indent );
-               if ( ! first ) os << current;
+               if( !first )
+                  os << current;
                os.put( '}' );
             }
          };
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

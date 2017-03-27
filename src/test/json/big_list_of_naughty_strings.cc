@@ -3,15 +3,15 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
+#include <tao/json/from_string.hh>
 #include <tao/json/parse_file.hh>
 #include <tao/json/to_string.hh>
-#include <tao/json/from_string.hh>
+#include <tao/json/value.hh>
 
-#include <string>
 #include <fstream>
+#include <string>
 
-std::string get_file_contents( const char * filename )
+std::string get_file_contents( const char* filename )
 {
    std::ifstream in( filename, std::ios::in | std::ios::binary );
    if( in ) {
@@ -19,7 +19,7 @@ std::string get_file_contents( const char * filename )
       in.seekg( 0, std::ios::end );
       contents.resize( in.tellg() );
       in.seekg( 0, std::ios::beg );
-      in.read( & contents[ 0 ], contents.size() );
+      in.read( &contents[ 0 ], contents.size() );
       in.close();
       return contents;
    }
@@ -40,8 +40,8 @@ namespace tao
          TEST_ASSERT( v2 == v );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

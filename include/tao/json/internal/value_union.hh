@@ -5,9 +5,9 @@
 #define TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_UNION_HH
 
 #include <cstdint>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 namespace tao
 {
@@ -19,13 +19,15 @@ namespace tao
          union value_union
          {
             value_union()
-            { }
+            {
+            }
 
-            value_union( const value_union & ) = delete;
-            void operator= ( const value_union & ) = delete;
+            value_union( const value_union& ) = delete;
+            void operator=( const value_union& ) = delete;
 
             ~value_union()
-            { }
+            {
+            }
 
             bool b;
             std::int64_t i;
@@ -36,13 +38,13 @@ namespace tao
             std::vector< Value > a;
             std::map< std::string, Value > o;
 
-            const Value * p;
+            const Value* p;
          };
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

@@ -10,9 +10,9 @@
 
 #include "unescape_action.hh"
 
+#include "key_state.hh"
 #include "number_state.hh"
 #include "string_state.hh"
-#include "key_state.hh"
 
 namespace tao
 {
@@ -21,21 +21,29 @@ namespace tao
       namespace internal
       {
          template< typename Rule >
-         struct control : errors< Rule > {};
+         struct control : errors< Rule >
+         {
+         };
 
          template<>
-         struct control< rules::number > : json_pegtl::change_state< rules::number, number_state, json_pegtl::normal > {};
+         struct control< rules::number > : json_pegtl::change_state< rules::number, number_state, json_pegtl::normal >
+         {
+         };
 
          template<>
-         struct control< rules::string::content > : json_pegtl::change_state_and_action< rules::string::content, string_state, unescape_action, json_pegtl::normal > {};
+         struct control< rules::string::content > : json_pegtl::change_state_and_action< rules::string::content, string_state, unescape_action, json_pegtl::normal >
+         {
+         };
 
          template<>
-         struct control< rules::key::content > : json_pegtl::change_state_and_action< rules::key::content, key_state, unescape_action, json_pegtl::normal > {};
+         struct control< rules::key::content > : json_pegtl::change_state_and_action< rules::key::content, key_state, unescape_action, json_pegtl::normal >
+         {
+         };
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

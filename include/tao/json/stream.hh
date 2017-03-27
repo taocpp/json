@@ -4,11 +4,11 @@
 #ifndef TAOCPP_JSON_INCLUDE_STREAM_HH
 #define TAOCPP_JSON_INCLUDE_STREAM_HH
 
-#include <iosfwd>
 #include <iomanip>
+#include <iosfwd>
 
-#include "value.hh"
 #include "to_stream.hh"
+#include "value.hh"
 
 namespace tao
 {
@@ -16,14 +16,14 @@ namespace tao
    {
       // Use ostream << std::setw( n ) for pretty-printing with indent n.
 
-      template< template< typename ... > class Traits >
-      std::ostream & operator<< ( std::ostream & o, const basic_value< Traits > & v )
+      template< template< typename... > class Traits >
+      std::ostream& operator<<( std::ostream& o, const basic_value< Traits >& v )
       {
          const auto w = o.width();
 
          o.width( 0 );
 
-         if ( w > 0 ) {
+         if( w > 0 ) {
             json::to_stream( o, v, w );
          }
          else {
@@ -32,8 +32,8 @@ namespace tao
          return o;
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

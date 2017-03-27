@@ -29,7 +29,7 @@ namespace tao
 
       inline bool needs_discard( const type t )
       {
-         switch ( t ) {
+         switch( t ) {
             case type::STRING:
             case type::ARRAY:
             case type::OBJECT:
@@ -39,9 +39,9 @@ namespace tao
          }
       }
 
-      inline const char * to_string( const type t )
+      inline const char* to_string( const type t )
       {
-         switch ( t ) {
+         switch( t ) {
             case type::UNINITIALIZED:
                return "uninitialized";
             case type::DISCARDED:
@@ -68,16 +68,33 @@ namespace tao
          return "unknown";
       }
 
-      struct null_t { constexpr explicit null_t( int ) {} };
-      struct empty_array_t { constexpr explicit empty_array_t( int ) {} };
-      struct empty_object_t { constexpr explicit empty_object_t( int ) {} };
+      struct null_t
+      {
+         constexpr explicit null_t( int )
+         {
+         }
+      };
 
-      constexpr null_t null { 0 };
-      constexpr empty_array_t empty_array { 0 };
-      constexpr empty_object_t empty_object { 0 };
+      struct empty_array_t
+      {
+         constexpr explicit empty_array_t( int )
+         {
+         }
+      };
 
-   } // json
+      struct empty_object_t
+      {
+         constexpr explicit empty_object_t( int )
+         {
+         }
+      };
 
-} // tao
+      constexpr null_t null{ 0 };
+      constexpr empty_array_t empty_array{ 0 };
+      constexpr empty_object_t empty_object{ 0 };
+
+   }  // json
+
+}  // tao
 
 #endif

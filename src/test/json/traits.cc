@@ -3,26 +3,28 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/to_string.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
    namespace json
    {
-      struct my_data {};
+      struct my_data
+      {
+      };
 
       template<>
       struct traits< my_data >
       {
          static const char* default_key;
 
-         static void assign( value & v, const my_data & )
+         static void assign( value& v, const my_data& )
          {
             v = {
-              { "fuh", "bar" },
-              { "bar", 42 },
-              { "baz", true }
+               { "fuh", "bar" },
+               { "bar", 42 },
+               { "baz", true }
             };
          }
       };
@@ -31,20 +33,20 @@ namespace tao
 
       void unit_test()
       {
-         const value v { { "foo", my_data() }, my_data() };
+         const value v{ { "foo", my_data() }, my_data() };
          std::cout << to_string( v ) << std::endl;
 
          std::string s2 = "bar";
-         const value v2 { { s2, my_data() }, my_data() };
+         const value v2{ { s2, my_data() }, my_data() };
          std::cout << to_string( v2 ) << std::endl;
 
          const std::string s3 = "baz";
-         const value v3 { { s3, my_data() }, my_data() };
+         const value v3{ { s3, my_data() }, my_data() };
          std::cout << to_string( v3 ) << std::endl;
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

@@ -19,17 +19,18 @@ namespace tao
       {
          template< typename Rule >
          struct errors
-               : public json_pegtl::normal< Rule >
+            : public json_pegtl::normal< Rule >
          {
             static const std::string error_message;
 
-            template< typename Input, typename ... States >
-            static void raise( const Input & in, States && ... )
+            template< typename Input, typename... States >
+            static void raise( const Input& in, States&&... )
             {
                throw json_pegtl::parse_error( error_message, in );
             }
          };
 
+         // clang-format off
          template<> const std::string errors< rules::text >::error_message __attribute__(( weak )) = "no valid JSON";
 
          template<> const std::string errors< rules::end_array >::error_message __attribute__(( weak )) = "incomplete array, expected ']'";
@@ -48,11 +49,12 @@ namespace tao
          template<> const std::string errors< rules::key::content >::error_message __attribute__(( weak )) = "unterminated key";
 
          template<> const std::string errors< json_pegtl::eof >::error_message __attribute__(( weak )) = "unexpected character after JSON value";
+         // clang-format on
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

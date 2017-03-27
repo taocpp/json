@@ -15,8 +15,8 @@ namespace tao
       namespace sax
       {
          // SAX producer to generate events from a JSON value
-         template< template< typename ... > class Traits, typename Consumer >
-         void from_value( const basic_value< Traits > & v, Consumer & consumer )
+         template< template< typename... > class Traits, typename Consumer >
+         void from_value( const basic_value< Traits >& v, Consumer& consumer )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -43,7 +43,7 @@ namespace tao
                   return;
                case type::ARRAY:
                   consumer.begin_array();
-                  for( const auto & e : v.unsafe_get_array() ) {
+                  for( const auto& e : v.unsafe_get_array() ) {
                      sax::from_value( e, consumer );
                      consumer.element();
                   }
@@ -51,7 +51,7 @@ namespace tao
                   return;
                case type::OBJECT:
                   consumer.begin_object();
-                  for( const auto & e : v.unsafe_get_object() ) {
+                  for( const auto& e : v.unsafe_get_object() ) {
                      consumer.key( e.first );
                      sax::from_value( e.second, consumer );
                      consumer.member();
@@ -59,8 +59,8 @@ namespace tao
                   consumer.end_object();
                   return;
                case type::RAW_PTR:
-                  if ( const basic_value< Traits > * p = v.unsafe_get_raw_ptr() ) {
-                     sax::from_value( * p, consumer );
+                  if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
+                     sax::from_value( *p, consumer );
                   }
                   else {
                      consumer.null();
@@ -72,8 +72,8 @@ namespace tao
 
          // SAX producer to generate events from an rvalue JSON value
          // note: strings from the source might be moved in the consumer
-         template< template< typename ... > class Traits, typename Consumer >
-         void from_value( basic_value< Traits > && v, Consumer & consumer )
+         template< template< typename... > class Traits, typename Consumer >
+         void from_value( basic_value< Traits >&& v, Consumer& consumer )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -100,7 +100,7 @@ namespace tao
                   return;
                case type::ARRAY:
                   consumer.begin_array();
-                  for( auto && e : v.unsafe_get_array() ) {
+                  for( auto&& e : v.unsafe_get_array() ) {
                      sax::from_value( std::move( e ), consumer );
                      consumer.element();
                   }
@@ -108,7 +108,7 @@ namespace tao
                   return;
                case type::OBJECT:
                   consumer.begin_object();
-                  for( auto && e : v.unsafe_get_object() ) {
+                  for( auto&& e : v.unsafe_get_object() ) {
                      consumer.key( std::move( e.first ) );
                      sax::from_value( std::move( e.second ), consumer );
                      consumer.member();
@@ -116,8 +116,8 @@ namespace tao
                   consumer.end_object();
                   return;
                case type::RAW_PTR:
-                  if ( const basic_value< Traits > * p = v.unsafe_get_raw_ptr() ) {
-                     sax::from_value( * p, consumer );
+                  if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
+                     sax::from_value( *p, consumer );
                   }
                   else {
                      consumer.null();
@@ -127,10 +127,10 @@ namespace tao
             throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
          }
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

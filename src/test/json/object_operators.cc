@@ -33,8 +33,8 @@ namespace tao
          TEST_THROWS( v -= { "baz" } );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

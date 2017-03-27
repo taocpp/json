@@ -4,14 +4,14 @@
 #include "test.hh"
 
 #include <fstream>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
-#include <tao/json/value.hh>
+#include <tao/json/from_stream.hh>
+#include <tao/json/parse_file.hh>
 #include <tao/json/pointer.hh>
 #include <tao/json/schema.hh>
-#include <tao/json/parse_file.hh>
-#include <tao/json/from_stream.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -19,54 +19,55 @@ namespace tao
    {
       std::size_t tests = 0;
 
-      value parse_stream( const std::string & name )
+      value parse_stream( const std::string& name )
       {
          std::ifstream ifs( name.c_str() );
          return from_stream( ifs, name, 192 );
       }
 
-      void test( const std::string & name )
+      void test( const std::string& name )
       {
          std::cout << "File: " << name << std::endl;
          try {
             const value v = parse_stream( name );
             // const value v = parse_file( name );
-            for ( const auto & e : v.get_array() ) {
+            for( const auto& e : v.get_array() ) {
                std::cout << "  Schema: " << e.at( "description" ).get_string() << std::endl;
                bool expected_schema = true;
-               if ( const auto * schema_valid = e.find( "valid" ) ) {
+               if( const auto* schema_valid = e.find( "valid" ) ) {
                   expected_schema = schema_valid->get_boolean();
                }
                try {
                   schema s( e.at( "schema" ) );
-                  if ( ! expected_schema ) {
+                  if( !expected_schema ) {
                      ++failed;
                      std::cout << "  Failed: Schema is valid, but it should not be" << std::endl;
                   }
-                  else for ( const auto & c : e.at( "tests" ).get_array() ) {
-                     std::cout << "    Testcase: " << c.at( "description" ).get_string() << std::endl;
-                     ++tests;
-                     try {
-                        const bool result = s.validate( c.at( "data" ) );
-                        const bool expected = c.at( "valid" ).get_boolean();
-                        if ( result != expected ) {
-                           ++failed;
-                           if ( result ) {
-                              std::cout << "    Failed: Schema matches, but it should not" << std::endl;
-                           }
-                           else {
-                              std::cout << "    Failed: Schema does not match, but it should" << std::endl;
+                  else
+                     for( const auto& c : e.at( "tests" ).get_array() ) {
+                        std::cout << "    Testcase: " << c.at( "description" ).get_string() << std::endl;
+                        ++tests;
+                        try {
+                           const bool result = s.validate( c.at( "data" ) );
+                           const bool expected = c.at( "valid" ).get_boolean();
+                           if( result != expected ) {
+                              ++failed;
+                              if( result ) {
+                                 std::cout << "    Failed: Schema matches, but it should not" << std::endl;
+                              }
+                              else {
+                                 std::cout << "    Failed: Schema does not match, but it should" << std::endl;
+                              }
                            }
                         }
+                        catch( const std::exception& e ) {
+                           ++failed;
+                           std::cout << "    Failed with exception: " << e.what() << std::endl;
+                        }
                      }
-                     catch( const std::exception & e ) {
-                        ++failed;
-                        std::cout << "    Failed with exception: " << e.what() << std::endl;
-                     }
-                  }
                }
-               catch( const std::exception & e ) {
-                  if ( expected_schema ) {
+               catch( const std::exception& e ) {
+                  if( expected_schema ) {
                      ++failed;
                      std::cout << "  Failed with exception: " << e.what() << std::endl;
                   }
@@ -76,7 +77,7 @@ namespace tao
                }
             }
          }
-         catch( const std::exception & e ) {
+         catch( const std::exception& e ) {
             ++failed;
             std::cout << "Failed with exception: " << e.what() << std::endl;
          }
@@ -122,14 +123,14 @@ namespace tao
          test( "tests/taocpp/dateTime.json" );
 
          // TODO: Remove this temporary work-around once all tests succeed
-         if ( failed ) {
+         if( failed ) {
             std::cerr << "JSON Schema failures: " << failed << '/' << tests << std::endl;
          }
          failed = 0;
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

@@ -4,12 +4,12 @@
 #ifndef TAOCPP_JSON_INCLUDE_SAX_HASH_HH
 #define TAOCPP_JSON_INCLUDE_SAX_HASH_HH
 
-#include <vector>
+#include <cstdint>
+#include <map>
 #include <memory>
 #include <string>
-#include <map>
-#include <cstdint>
 #include <utility>
+#include <vector>
 
 #include "../internal/sha256.hh"
 
@@ -38,11 +38,11 @@ namespace tao
                push();
             }
 
-            hash( const hash & ) = delete;
-            hash( hash && ) = delete;
+            hash( const hash& ) = delete;
+            hash( hash&& ) = delete;
 
-            void operator= ( const hash & ) = delete;
-            void operator= ( hash && ) = delete;
+            void operator=( const hash& ) = delete;
+            void operator=( hash&& ) = delete;
 
             std::string value() const
             {
@@ -66,42 +66,42 @@ namespace tao
 
             void number( const std::int64_t v )
             {
-               if ( v >= 0 ) {
+               if( v >= 0 ) {
                   number( static_cast< std::uint64_t >( v ) );
                }
                else {
                   m_digests.back()->feed( 'i' );
-                  m_digests.back()->feed( & v, sizeof( v ) );
+                  m_digests.back()->feed( &v, sizeof( v ) );
                }
             }
 
             void number( const std::uint64_t v )
             {
                m_digests.back()->feed( 'u' );
-               m_digests.back()->feed( & v, sizeof( v ) );
+               m_digests.back()->feed( &v, sizeof( v ) );
             }
 
             void number( const double v )
             {
                const std::uint64_t u = v;
-               if ( u == v ) {
+               if( u == v ) {
                   number( u );
                   return;
                }
                const std::int64_t i = v;
-               if ( i == v ) {
+               if( i == v ) {
                   number( i );
                   return;
                }
                m_digests.back()->feed( 'd' );
-               m_digests.back()->feed( & v, sizeof( v ) );
+               m_digests.back()->feed( &v, sizeof( v ) );
             }
 
-            void string( const std::string & v )
+            void string( const std::string& v )
             {
                m_digests.back()->feed( 's' );
                const auto s = v.size();
-               m_digests.back()->feed( & s, sizeof( s ) );
+               m_digests.back()->feed( &s, sizeof( s ) );
                m_digests.back()->feed( v );
             }
 
@@ -111,7 +111,9 @@ namespace tao
                m_digests.back()->feed( '[' );
             }
 
-            void element() {}
+            void element()
+            {
+            }
 
             void end_array()
             {
@@ -126,11 +128,11 @@ namespace tao
                push();
             }
 
-            void key( const std::string & v )
+            void key( const std::string& v )
             {
                m_digests.back()->feed( v );
                m_keys.emplace_back( m_digests.back()->get() );
-               if ( m_properties.back().find( m_keys.back() ) != m_properties.back().end() ) {
+               if( m_properties.back().find( m_keys.back() ) != m_properties.back().end() ) {
                   throw std::runtime_error( "duplicate JSON object key: " + v );
                }
                m_digests.back()->reset();
@@ -146,7 +148,7 @@ namespace tao
             void end_object()
             {
                m_digests.pop_back();
-               for ( const auto & e : m_properties.back() ) {
+               for( const auto& e : m_properties.back() ) {
                   m_digests.back()->feed( e.first );
                   m_digests.back()->feed( e.second );
                }
@@ -155,10 +157,10 @@ namespace tao
             }
          };
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

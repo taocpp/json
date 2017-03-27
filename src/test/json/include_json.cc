@@ -10,10 +10,11 @@ namespace tao
    namespace json
    {
       void unit_test()
-      { }
+      {
+      }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

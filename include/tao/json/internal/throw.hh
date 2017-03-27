@@ -9,16 +9,16 @@
 
 #include "../type.hh"
 
-#define TAOCPP_JSON_THROW_TYPE_ERROR( TyPe )                            \
-   do {                                                                 \
+#define TAOCPP_JSON_THROW_TYPE_ERROR( TyPe )                                                     \
+   do {                                                                                          \
       throw std::logic_error( std::string( "invalid json type '" ) + to_string( TyPe ) + '\'' ); \
-   } while ( false )
+   } while( false )
 
-#define TAOCPP_JSON_CHECK_TYPE_ERROR( HaVe, NeeD )             \
-   do {                                                        \
-      if ( ( HaVe ) != ( NeeD ) ) {                            \
-         TAOCPP_JSON_THROW_TYPE_ERROR( HaVe );                 \
-      }                                                        \
-   } while ( false )
+#define TAOCPP_JSON_CHECK_TYPE_ERROR( HaVe, NeeD ) \
+   do {                                            \
+      if( ( HaVe ) != ( NeeD ) ) {                 \
+         TAOCPP_JSON_THROW_TYPE_ERROR( HaVe );     \
+      }                                            \
+   } while( false )
 
 #endif

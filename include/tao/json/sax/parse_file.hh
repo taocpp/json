@@ -4,9 +4,9 @@
 #ifndef TAOCPP_JSON_INCLUDE_SAX_PARSE_FILE_HH
 #define TAOCPP_JSON_INCLUDE_SAX_PARSE_FILE_HH
 
-#include "../internal/grammar.hh"
 #include "../internal/action.hh"
 #include "../internal/control.hh"
+#include "../internal/grammar.hh"
 
 #include "../external/pegtl/file_parser.hpp"
 
@@ -18,15 +18,15 @@ namespace tao
       {
          // SAX producer to parse a file containing a JSON string representation
          template< typename Consumer >
-         void parse_file( const std::string & filename, Consumer & consumer )
+         void parse_file( const std::string& filename, Consumer& consumer )
          {
             json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( consumer );
          }
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

@@ -10,7 +10,7 @@ namespace tao
 {
    namespace json
    {
-      void roundtrip( const std::string & value )
+      void roundtrip( const std::string& value )
       {
          TEST_ASSERT( to_string( from_string( value ) ) == value );
       }
@@ -39,8 +39,8 @@ namespace tao
          TEST_ASSERT( to_string( from_string( s2 ) ) == s2 );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

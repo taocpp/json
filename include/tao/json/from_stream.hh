@@ -5,8 +5,8 @@
 #define TAOCPP_JSON_INCLUDE_FROM_STREAM_HH
 
 #include <cstddef>
-#include <utility>
 #include <string>
+#include <utility>
 
 #include "sax/from_stream.hh"
 #include "sax/to_value.hh"
@@ -15,38 +15,38 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename ... > class Traits >
-      basic_value< Traits > from_stream( std::istream & stream, const char * source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+      template< template< typename... > class Traits >
+      basic_value< Traits > from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
       {
          sax::to_basic_value< Traits > consumer;
          sax::from_stream( stream, consumer, source, maximum_buffer_size );
          return std::move( consumer.value );
       }
 
-      template< template< typename ... > class Traits >
-      basic_value< Traits > from_stream( std::istream & stream, const std::string & source, const std::size_t maximum_buffer_size = 4000 )
+      template< template< typename... > class Traits >
+      basic_value< Traits > from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
       {
          return from_stream< Traits >( stream, source.c_str(), maximum_buffer_size );
       }
 
-      inline value from_stream( std::istream & stream, const char * source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+      inline value from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
       {
          return from_stream< traits >( stream, source, maximum_buffer_size );
       }
 
-      inline value from_stream( std::istream & stream, const std::string & source, const std::size_t maximum_buffer_size = 4000 )
+      inline value from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
       {
          return from_stream< traits >( stream, source.c_str(), maximum_buffer_size );
       }
 
-      template< template< typename ... > class Traits, typename ... Ts >
-      void from_stream( basic_value< Traits > & output, Ts && ... ts )
+      template< template< typename... > class Traits, typename... Ts >
+      void from_stream( basic_value< Traits >& output, Ts&&... ts )
       {
-         output = from_stream< Traits >( std::forward< Ts >( ts ) ... );
+         output = from_stream< Traits >( std::forward< Ts >( ts )... );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

@@ -3,8 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/self_contained.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -43,8 +43,8 @@ namespace tao
 
          TEST_ASSERT( is_self_contained( e ) );
 
-         TEST_ASSERT( ! is_self_contained( v1 ) );
-         TEST_ASSERT( ! is_self_contained( v2 ) );
+         TEST_ASSERT( !is_self_contained( v1 ) );
+         TEST_ASSERT( !is_self_contained( v2 ) );
          TEST_ASSERT( is_self_contained( v3 ) );
          TEST_ASSERT( is_self_contained( v4 ) );
 
@@ -73,8 +73,8 @@ namespace tao
          TEST_ASSERT( v2.at( "baz" ).at( 3 ).type() == type::NULL_ );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

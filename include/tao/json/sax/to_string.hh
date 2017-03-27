@@ -19,15 +19,21 @@ namespace tao
          {
             std::ostringstream oss;
 
-            to_string() : to_stream( oss ) {}
+            to_string()
+               : to_stream( oss )
+            {
+            }
 
-            std::string value() const { return oss.str(); }
+            std::string value() const
+            {
+               return oss.str();
+            }
          };
 
-      } // sax
+      }  // sax
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

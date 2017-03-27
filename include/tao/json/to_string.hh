@@ -6,31 +6,31 @@
 
 #include <sstream>
 
-#include "value.hh"
 #include "to_stream.hh"
+#include "value.hh"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename ... > class Traits >
-      std::string to_string( const basic_value< Traits > & v )
+      template< template< typename... > class Traits >
+      std::string to_string( const basic_value< Traits >& v )
       {
          std::ostringstream o;
          json::to_stream( o, v );
          return o.str();
       }
 
-      template< template< typename ... > class Traits >
-      std::string to_string( const basic_value< Traits > & v, const unsigned indent )
+      template< template< typename... > class Traits >
+      std::string to_string( const basic_value< Traits >& v, const unsigned indent )
       {
          std::ostringstream o;
          json::to_stream( o, v, indent );
          return o.str();
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

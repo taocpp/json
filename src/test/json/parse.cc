@@ -3,8 +3,8 @@
 
 #include "test.hh"
 
-#include <tao/json/value.hh>
 #include <tao/json/from_string.hh>
+#include <tao/json/value.hh>
 
 namespace tao
 {
@@ -26,7 +26,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::ARRAY );
 
-         const auto & a = v.get_array();
+         const auto& a = v.get_array();
 
          TEST_ASSERT( a.size() == 8 );
          TEST_ASSERT( a[ 0 ] == value( null ) );
@@ -52,7 +52,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::OBJECT );
 
-         const auto & o = v.get_object();
+         const auto& o = v.get_object();
 
          TEST_ASSERT( o.size() == 8 );
          TEST_ASSERT( o.at( "a" ) == value( null ) );
@@ -123,8 +123,8 @@ namespace tao
          TEST_THROWS( from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf\"" ) );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"

@@ -16,11 +16,11 @@ namespace tao
          struct key_state
          {
             key_state() = default;
-            key_state( const key_state & ) = delete;
-            void operator= ( const key_state & ) = delete;
+            key_state( const key_state& ) = delete;
+            void operator=( const key_state& ) = delete;
 
             template< typename Consumer >
-            void success( Consumer & consumer )
+            void success( Consumer& consumer )
             {
                consumer.key( std::move( unescaped ) );
             }
@@ -28,10 +28,10 @@ namespace tao
             std::string unescaped;
          };
 
-      } // internal
+      }  // internal
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

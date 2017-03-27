@@ -5,8 +5,8 @@
 #define TAOCPP_JSON_INCLUDE_JSON_NLOHMANN_FROM_VALUE_HH
 
 #include <cstdint>
-#include <string>
 #include <stdexcept>
+#include <string>
 
 namespace tao
 {
@@ -16,7 +16,7 @@ namespace tao
       {
          // SAX producer for an nlohmann/json value
          template< typename Value, typename Consumer >
-         void from_value( const Value & v, Consumer & consumer )
+         void from_value( const Value& v, Consumer& consumer )
          {
             switch( v.type() ) {
                case Value::value_t::discarded:
@@ -37,11 +37,11 @@ namespace tao
                   consumer.number( v.template get< double >() );
                   return;
                case Value::value_t::string:
-                  consumer.string( v.template get_ref< const std::string & >() );
+                  consumer.string( v.template get_ref< const std::string& >() );
                   return;
                case Value::value_t::array:
                   consumer.begin_array();
-                  for( const auto & e : v ) {
+                  for( const auto& e : v ) {
                      tao::json::nlohmann::from_value( e, consumer );
                      consumer.element();
                   }
@@ -60,10 +60,10 @@ namespace tao
             throw std::logic_error( "invalid value for type()" );  // LCOV_EXCL_LINE
          }
 
-      } // nlohmann
+      }  // nlohmann
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif

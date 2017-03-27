@@ -11,7 +11,7 @@ namespace tao
    namespace json
    {
       template< typename T >
-      void test_integer_s( const std::string & input, const T value )
+      void test_integer_s( const std::string& input, const T value )
       {
          const auto j = json::from_string( input );
          TEST_ASSERT( j.as< T >() == value );
@@ -115,8 +115,8 @@ namespace tao
          test_integer_unsigned< unsigned long long >( 1 );
       }
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #include "main.hh"
