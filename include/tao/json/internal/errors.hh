@@ -11,6 +11,14 @@
 
 #include "grammar.hh"
 
+#if defined( _MSC_VER )
+#define WEAK_PREFIX __declspec( selectany )
+#define WEAK_SUFFIX
+#else
+#define WEAK_PREFIX
+#define WEAK_SUFFIX __attribute__( ( weak ) )
+#endif
+
 namespace tao
 {
    namespace json
@@ -31,24 +39,24 @@ namespace tao
          };
 
          // clang-format off
-         template<> const std::string errors< rules::text >::error_message __attribute__(( weak )) = "no valid JSON";
+         template<> WEAK_PREFIX const std::string errors< rules::text >::error_message WEAK_SUFFIX = "no valid JSON";
 
-         template<> const std::string errors< rules::end_array >::error_message __attribute__(( weak )) = "incomplete array, expected ']'";
-         template<> const std::string errors< rules::end_object >::error_message __attribute__(( weak )) = "incomplete object, expected '}'";
-         template<> const std::string errors< rules::member >::error_message __attribute__(( weak )) = "expected member";
-         template<> const std::string errors< rules::name_separator >::error_message __attribute__(( weak )) = "expected ':'";
-         template<> const std::string errors< rules::array_element >::error_message __attribute__(( weak )) = "expected value";
-         template<> const std::string errors< rules::value >::error_message __attribute__(( weak )) = "expected value";
+         template<> WEAK_PREFIX const std::string errors< rules::end_array >::error_message WEAK_SUFFIX = "incomplete array, expected ']'";
+         template<> WEAK_PREFIX const std::string errors< rules::end_object >::error_message WEAK_SUFFIX = "incomplete object, expected '}'";
+         template<> WEAK_PREFIX const std::string errors< rules::member >::error_message WEAK_SUFFIX = "expected member";
+         template<> WEAK_PREFIX const std::string errors< rules::name_separator >::error_message WEAK_SUFFIX = "expected ':'";
+         template<> WEAK_PREFIX const std::string errors< rules::array_element >::error_message WEAK_SUFFIX = "expected value";
+         template<> WEAK_PREFIX const std::string errors< rules::value >::error_message WEAK_SUFFIX = "expected value";
 
-         template<> const std::string errors< rules::edigits >::error_message __attribute__(( weak )) = "expected at least one exponent digit";
-         template<> const std::string errors< rules::fdigits >::error_message __attribute__(( weak )) = "expected at least one fraction digit";
-         template<> const std::string errors< rules::xdigit >::error_message __attribute__(( weak )) = "incomplete universal character name";
-         template<> const std::string errors< rules::escaped >::error_message __attribute__(( weak )) = "unknown escape sequence";
-         template<> const std::string errors< rules::chars >::error_message __attribute__(( weak )) = "invalid character in string";
-         template<> const std::string errors< rules::string::content >::error_message __attribute__(( weak )) = "unterminated string";
-         template<> const std::string errors< rules::key::content >::error_message __attribute__(( weak )) = "unterminated key";
+         template<> WEAK_PREFIX const std::string errors< rules::edigits >::error_message WEAK_SUFFIX = "expected at least one exponent digit";
+         template<> WEAK_PREFIX const std::string errors< rules::fdigits >::error_message WEAK_SUFFIX = "expected at least one fraction digit";
+         template<> WEAK_PREFIX const std::string errors< rules::xdigit >::error_message WEAK_SUFFIX = "incomplete universal character name";
+         template<> WEAK_PREFIX const std::string errors< rules::escaped >::error_message WEAK_SUFFIX = "unknown escape sequence";
+         template<> WEAK_PREFIX const std::string errors< rules::chars >::error_message WEAK_SUFFIX = "invalid character in string";
+         template<> WEAK_PREFIX const std::string errors< rules::string::content >::error_message WEAK_SUFFIX = "unterminated string";
+         template<> WEAK_PREFIX const std::string errors< rules::key::content >::error_message WEAK_SUFFIX = "unterminated key";
 
-         template<> const std::string errors< json_pegtl::eof >::error_message __attribute__(( weak )) = "unexpected character after JSON value";
+         template<> WEAK_PREFIX const std::string errors< json_pegtl::eof >::error_message WEAK_SUFFIX = "unexpected character after JSON value";
          // clang-format on
 
       }  // internal
