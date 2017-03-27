@@ -29,7 +29,7 @@ endif
 CPPFLAGS ?= -pedantic
 CXXFLAGS ?= -Wall -Wextra -Werror -O3
 
-.PHONY: all clean
+.PHONY: all compile check clean
 
 SOURCES := $(shell find src -name '*.cc')
 DEPENDS := $(SOURCES:%.cc=build/%.d)
@@ -37,7 +37,11 @@ BINARIES := $(SOURCES:%.cc=build/%)
 
 UNIT_TESTS := $(filter build/src/test/%,$(BINARIES))
 
-all: $(BINARIES)
+all: compile check
+
+compile: $(BINARIES)
+
+check: $(UNIT_TESTS)
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T > /dev/null; done
 
 clean:
