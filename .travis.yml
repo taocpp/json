@@ -122,7 +122,6 @@ matrix:
         - COMPILER=g++-6
         - CXXFLAGS="-O0 --coverage"
       before_script:
-        - pip install --upgrade pip
         - pip install 'requests[security]'
         - pip install --user cpp-coveralls
       after_success:
