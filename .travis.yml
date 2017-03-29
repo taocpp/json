@@ -113,7 +113,7 @@ matrix:
         - COMPILER=clang++
 
     - os: linux
-      language: cpp
+      compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
