@@ -113,7 +113,7 @@ matrix:
         - COMPILER=clang++
 
     - os: linux
-      compiler: gcc
+      language: cpp
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -122,8 +122,11 @@ matrix:
         - COMPILER=g++-6
         - CXXFLAGS="-O0 --coverage"
       before_script:
-        - pip install 'requests[security]'
-        - pip install --user cpp-coveralls
+        - pip install --user urllib3[secure] cpp-coveralls
+        # Work around https://github.com/eddyxu/cpp-coveralls/issues/108 by manually
+        # installing the pyOpenSSL module and injecting it into urllib3 as per
+        # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
+        - sed -i -e '/^import sys$/a import urllib3.contrib.pyopenssl\nurllib3.contrib.pyopenssl.inject_into_urllib3()' $(which coveralls)
       after_success:
         - coveralls --gcov gcov-6 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
 
