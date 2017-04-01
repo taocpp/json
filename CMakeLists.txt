@@ -1,29 +1,23 @@
-cmake_minimum_required (VERSION 2.8.0 FATAL_ERROR)
-project (TAOCPP_JSON)
+cmake_minimum_required (VERSION 3.2.0 FATAL_ERROR)
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /utf-8 /W4")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  set (CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-  set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g -DNDEBUG")
-  set (CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Werror")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set (CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG")
-  set (CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g -DNDEBUG")
-  set (CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Werror")
-else ()
-  message (FATAL_ERROR "Unknown C++ compiler")
-endif ()
+# set project and version
+project (taocpp-json VERSION 1.0.0 LANGUAGES CXX)
 
+# set C++ language standard
+set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# define a header-only library
+add_library (taocpp-json INTERFACE)
+target_include_directories (taocpp-json INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
+)
+
+# testing
 enable_testing ()
+add_subdirectory (src/test/json)
 
-include_directories (${CMAKE_SOURCE_DIR}/include)
-
-file (GLOB testsources src/test/json/*.cpp)
-foreach (testsourcefile ${testsources})
-  get_filename_component (exename ${testsourcefile} NAME_WE)
-  add_executable (${exename} ${testsourcefile})
-  add_test (NAME ${exename} WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} COMMAND ${CMAKE_BINARY_DIR}/${exename})
-endforeach (testsourcefile)
+# install
+install (DIRECTORY include/ DESTINATION include)
+install (FILES LICENSE DESTINATION include/tao/json)
