@@ -1,22 +1,37 @@
 version: '{branch}-{build}'
 
-os: Visual Studio 2017
+os:
+- Visual Studio 2015
+- Visual Studio 2017
 
-configuration: Release
+configuration:
+- Release
+- Debug
 
 branches:
   only:
     - master
 
+build:
+  verbosity: minimal
+
 init: []
 
+before_build:
+- ps: |
+    if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015")
+    {
+      del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
+    }
+
 build_script:
-- md build-vc
-- cd build-vc
-- cmake -Wno-dev .. -G "Visual Studio 15 2017"
-- cmake --build .
+- md build
+- cd build
+- IF "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" (SET GEN="Visual Studio 14 2015") ELSE (SET GEN="Visual Studio 15 2017")
+- cmake -Wno-dev --config "%CONFIGURATION%" .. -G%GEN%
+- cmake --build . --config "%CONFIGURATION%"
 
 test_script:
-- ctest -C Debug --output-on-failure
+- ctest -C "%CONFIGURATION%" --output-on-failure
 
 install: []
