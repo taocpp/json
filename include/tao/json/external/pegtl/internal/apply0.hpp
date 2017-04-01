@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_APPLY_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_APPLY_HPP
+#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_APPLY0_HPP
+#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_APPLY0_HPP
 
 #include "../config.hpp"
 
@@ -18,38 +18,36 @@ namespace tao
       namespace internal
       {
          template< apply_mode A, typename... Actions >
-         struct apply_impl;
+         struct apply0_impl;
 
          template< typename... Actions >
-         struct apply_impl< apply_mode::ACTION, Actions... >
+         struct apply0_impl< apply_mode::ACTION, Actions... >
          {
-            template< typename Input, typename... States >
-            static bool match( Input& in, States&&... st )
+            template< typename... States >
+            static bool match( States&&... st )
             {
-               using action_t = typename Input::action_t;
-               const action_t i2( in.count(), in.begin(), in.source() );  // No data -- range is from begin to begin.
 #ifdef __cpp_fold_expressions
-               ( Actions::apply( i2, st... ), ... );
+               ( Actions::apply0( st... ), ... );
 #else
                using swallow = bool[];
-               (void)swallow{ ( Actions::apply( i2, st... ), true )..., true };
+               (void)swallow{ ( Actions::apply0( st... ), true )..., true };
 #endif
                return true;
             }
          };
 
          template< typename... Actions >
-         struct apply_impl< apply_mode::NOTHING, Actions... >
+         struct apply0_impl< apply_mode::NOTHING, Actions... >
          {
-            template< typename Input, typename... States >
-            static bool match( Input&, States&&... )
+            template< typename... States >
+            static bool match( States&&... )
             {
                return true;
             }
          };
 
          template< typename... Actions >
-         struct apply
+         struct apply0
          {
             using analyze_t = analysis::counted< analysis::rule_type::ANY, 0 >;
 
@@ -59,14 +57,14 @@ namespace tao
                       template< typename... > class Control,
                       typename Input,
                       typename... States >
-            static bool match( Input& in, States&&... st )
+            static bool match( Input&, States&&... st )
             {
-               return apply_impl< A, Actions... >::match( in, st... );
+               return apply0_impl< A, Actions... >::match( st... );
             }
          };
 
          template< typename... Actions >
-         struct skip_control< apply< Actions... > > : std::true_type
+         struct skip_control< apply0< Actions... > > : std::true_type
          {
          };
 
