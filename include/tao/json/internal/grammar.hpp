@@ -64,9 +64,9 @@ namespace tao
                {
                   bool result = false;
 
-                  while ( ! in.empty() ) {
-                     if ( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
-                        if ( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
+                  while( !in.empty() ) {
+                     if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
+                        if( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
                            in.bump_in_this_line( t.size );
                            result = true;
                            continue;
@@ -118,7 +118,12 @@ namespace tao
             {
                using analyze_t = analysis::generic< analysis::rule_type::SOR, string, number, object, array, false_, true_, null >;
 
-               template< apply_mode A, rewind_mode M, template< typename ... > class Action, template< typename ... > class Control, typename Input, typename ... States >
+               template< apply_mode A,
+                         rewind_mode M,
+                         template< typename ... > class Action,
+                         template< typename ... > class Control,
+                         typename Input,
+                         typename ... States >
                static bool match( Input & in, States && ... st )
                {
                   switch( in.peek_char() ) {
