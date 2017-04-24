@@ -5,142 +5,292 @@
 #define TAOCPP_JSON_PEGTL_INCLUDE_MEMORY_INPUT_HPP
 
 #include <cstddef>
+#include <cstring>
 #include <string>
 #include <utility>
 
 #include "config.hpp"
-#include "count_data.hpp"
 #include "eol.hpp"
+#include "position.hpp"
+#include "tracking_mode.hpp"
+
 #include "internal/action_input.hpp"
 #include "internal/bump_impl.hpp"
-#include "internal/input_mark.hpp"
-#include "position_info.hpp"
+#include "internal/iterator.hpp"
+#include "internal/marker.hpp"
 
 namespace tao
 {
    namespace TAOCPP_JSON_PEGTL_NAMESPACE
    {
-      template< typename Eol >
-      class basic_memory_input
+      namespace internal
+      {
+         template< typename Eol, tracking_mode >
+         class memory_input_base;
+
+         template< typename Eol >
+         class memory_input_base< Eol, tracking_mode::IMMEDIATE >
+         {
+         public:
+            using iterator_t = internal::iterator;
+
+            memory_input_base( const internal::iterator& in_iter, const char* in_end, const char* in_source ) noexcept
+               : m_data( in_iter ),
+                 m_end( in_end ),
+                 m_source( in_source )
+            {
+            }
+
+            memory_input_base( const internal::iterator& in_iter, const char* in_end, const std::string& in_source ) noexcept
+               : memory_input_base( in_iter, in_end, in_source.c_str() )
+            {
+            }
+
+            memory_input_base( const char* in_begin, const char* in_end, const char* in_source ) noexcept
+               : memory_input_base( internal::iterator( in_begin ), in_end, in_source )
+            {
+            }
+
+            memory_input_base( const char* in_begin, const char* in_end, const std::string& in_source ) noexcept
+               : memory_input_base( in_begin, in_end, in_source.c_str() )
+            {
+            }
+
+            memory_input_base( const char* in_begin, const char* in_end, const char* in_source, const std::size_t in_byte, const std::size_t in_line, const std::size_t in_byte_in_line ) noexcept
+               : memory_input_base( { in_byte, in_line, in_byte_in_line, in_begin }, in_end, in_source )
+            {
+            }
+
+            memory_input_base( const char* in_begin, const char* in_end, const std::string& in_source, const std::size_t in_byte, const std::size_t in_line, const std::size_t in_byte_in_line ) noexcept
+               : memory_input_base( in_begin, in_end, in_source.c_str(), in_byte, in_line, in_byte_in_line )
+            {
+            }
+
+            const char* begin() const noexcept
+            {
+               return m_data.data;
+            }
+
+            const char* end( const std::size_t = 0 ) const noexcept
+            {
+               return m_end;
+            }
+
+            std::size_t byte() const noexcept
+            {
+               return m_data.byte;
+            }
+
+            std::size_t line() const noexcept
+            {
+               return m_data.line;
+            }
+
+            std::size_t byte_in_line() const noexcept
+            {
+               return m_data.byte_in_line;
+            }
+
+            const char* source() const noexcept
+            {
+               return m_source;
+            }
+
+            void bump( const std::size_t in_count = 1 ) noexcept
+            {
+               internal::bump( m_data, in_count, Eol::ch );
+            }
+
+            void bump_in_this_line( const std::size_t in_count = 1 ) noexcept
+            {
+               internal::bump_in_this_line( m_data, in_count );
+            }
+
+            void bump_to_next_line( const std::size_t in_count = 1 ) noexcept
+            {
+               internal::bump_to_next_line( m_data, in_count );
+            }
+
+            TAOCPP_JSON_PEGTL_NAMESPACE::position position() const noexcept
+            {
+               return TAOCPP_JSON_PEGTL_NAMESPACE::position( m_data, m_source );
+            }
+
+            internal::iterator& iterator() noexcept
+            {
+               return m_data;
+            }
+
+            const internal::iterator& iterator() const noexcept
+            {
+               return m_data;
+            }
+
+         private:
+            internal::iterator m_data;
+            const char* const m_end;
+            const char* const m_source;
+         };
+
+         template< typename Eol >
+         class memory_input_base< Eol, tracking_mode::LAZY >
+         {
+         public:
+            using iterator_t = const char*;
+
+            memory_input_base( const char* in_begin, const char* in_end, const char* in_source ) noexcept
+               : m_all( in_begin ),
+                 m_run( in_begin ),
+                 m_end( in_end ),
+                 m_source( in_source )
+            {
+            }
+
+            memory_input_base( const char* in_begin, const char* in_end, const std::string& in_source ) noexcept
+               : memory_input_base( in_begin, in_end, in_source.c_str() )
+            {
+            }
+
+            const char* begin() const noexcept
+            {
+               return m_run;
+            }
+
+            const char* end( const std::size_t = 0 ) const noexcept
+            {
+               return m_end;
+            }
+
+            std::size_t byte() const noexcept
+            {
+               return std::size_t( begin() - m_all );
+            }
+
+            const char* source() const noexcept
+            {
+               return m_source;
+            }
+
+            void bump( const std::size_t in_count = 1 ) noexcept
+            {
+               m_run += in_count;
+            }
+
+            void bump_in_this_line( const std::size_t in_count = 1 ) noexcept
+            {
+               m_run += in_count;
+            }
+
+            void bump_to_next_line( const std::size_t in_count = 1 ) noexcept
+            {
+               m_run += in_count;
+            }
+
+            TAOCPP_JSON_PEGTL_NAMESPACE::position position() const noexcept
+            {
+               internal::iterator c( m_all );
+               internal::bump( c, byte(), Eol::ch );
+               return TAOCPP_JSON_PEGTL_NAMESPACE::position( c, m_source );
+            }
+
+            const char*& iterator() noexcept
+            {
+               return m_run;
+            }
+
+            const char* iterator() const noexcept
+            {
+               return m_run;
+            }
+
+         private:
+            const char* const m_all;
+            const char* m_run;
+            const char* const m_end;
+            const char* const m_source;
+         };
+
+      }  // namespace internal
+
+      template< typename Eol = lf_crlf_eol, tracking_mode P = tracking_mode::IMMEDIATE >
+      class memory_input
+         : public internal::memory_input_base< Eol, P >
       {
       public:
          using eol_t = Eol;
-         using action_t = internal::basic_action_input< Eol >;
-         using memory_t = basic_memory_input< Eol >;
+         static constexpr tracking_mode tracking_mode_v = P;
 
-         basic_memory_input( const char* in_begin, const char* in_end, const char* in_source )
-            : basic_memory_input( { 0, 1, 0, in_begin }, in_end, in_source )
+         using typename internal::memory_input_base< Eol, P >::iterator_t;
+
+         using memory_t = memory_input;
+         using action_t = internal::action_input< Eol, P >;
+
+         using internal::memory_input_base< Eol, P >::memory_input_base;
+
+         memory_input( const char* in_begin, const std::size_t in_size, const char* in_source ) noexcept
+            : memory_input( in_begin, in_begin + in_size, in_source )
          {
          }
 
-         basic_memory_input( const char* in_begin, const char* in_end, const char* in_source, const std::size_t in_byte, const std::size_t in_line, const std::size_t in_byte_in_line )
-            : basic_memory_input( { in_byte, in_line, in_byte_in_line, in_begin }, in_end, in_source )
+         memory_input( const char* in_begin, const std::size_t in_size, const std::string& in_source ) noexcept
+            : memory_input( in_begin, in_size, in_source.c_str() )
          {
          }
 
-         basic_memory_input( const count_data& in_data, const char* in_end, const char* in_source )
-            : m_data( in_data ),
-              m_end( in_end ),
-              m_source( in_source )
+         memory_input( const std::string& in_string, const char* in_source ) noexcept
+            : memory_input( in_string.data(), in_string.size(), in_source )
          {
          }
 
-         bool empty() const
+         memory_input( const std::string& in_string, const std::string& in_source ) noexcept
+            : memory_input( in_string, in_source.c_str() )
          {
-            return m_end == m_data.data;
          }
 
-         std::size_t size( const std::size_t ) const
+         memory_input( const char* in_begin, const char* in_source ) noexcept
+            : memory_input( in_begin, std::strlen( in_begin ), in_source )
          {
-            return std::size_t( m_end - m_data.data );
          }
 
-         const char* begin() const
+         memory_input( const char* in_begin, const std::string& in_source ) noexcept
+            : memory_input( in_begin, in_source.c_str() )
          {
-            return m_data.data;
          }
 
-         const char* end( const std::size_t ) const
+         bool empty() const noexcept
          {
-            return m_end;
+            return this->begin() == this->end();
          }
 
-         std::size_t byte() const
+         std::size_t size( const std::size_t = 0 ) const noexcept
          {
-            return m_data.byte;
+            return std::size_t( this->end() - this->begin() );
          }
 
-         std::size_t line() const
+         char peek_char( const std::size_t offset = 0 ) const noexcept
          {
-            return m_data.line;
+            return this->begin()[ offset ];
          }
 
-         std::size_t byte_in_line() const
-         {
-            return m_data.byte_in_line;
-         }
-
-         const char* source() const
-         {
-            return m_source;
-         }
-
-         char peek_char( const std::size_t offset = 0 ) const
-         {
-            return m_data.data[ offset ];
-         }
-
-         unsigned char peek_byte( const std::size_t offset = 0 ) const
+         unsigned char peek_byte( const std::size_t offset = 0 ) const noexcept
          {
             return static_cast< unsigned char >( peek_char( offset ) );
          }
 
-         void bump( const std::size_t in_count = 1 )
-         {
-            internal::bump( m_data, in_count, Eol::ch );
-         }
-
-         void bump_in_this_line( const std::size_t in_count = 1 )
-         {
-            internal::bump_in_this_line( m_data, in_count );
-         }
-
-         void bump_to_next_line( const std::size_t in_count = 1 )
-         {
-            internal::bump_to_next_line( m_data, in_count );
-         }
-
-         void discard()
+         void discard() const noexcept
          {
          }
 
-         void require( const std::size_t )
+         void require( const std::size_t ) const noexcept
          {
          }
 
          template< rewind_mode M >
-         internal::input_mark< M > mark()
+         internal::marker< iterator_t, M > mark() noexcept
          {
-            return internal::input_mark< M >( m_data );
+            return internal::marker< iterator_t, M >( this->iterator() );
          }
-
-         position_info position() const
-         {
-            return position_info( m_data, m_source );
-         }
-
-         const count_data& count() const
-         {
-            return m_data;
-         }
-
-      private:
-         count_data m_data;
-         const char* m_end;
-         const char* m_source;
       };
-
-      using memory_input = basic_memory_input< lf_crlf_eol >;
 
    }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
 

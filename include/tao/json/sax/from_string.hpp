@@ -20,8 +20,8 @@ namespace tao
          template< typename Consumer >
          inline void from_string( const char* data, const std::size_t size, Consumer& consumer, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
          {
-            json_pegtl::memory_input input( data, data + size, source ? source : "tao::json::sax::from_string", byte, line, column );
-            json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
+            json_pegtl::memory_input<> input( data, data + size, source ? source : "tao::json::sax::from_string", byte, line, column );
+            json_pegtl::parse< internal::grammar, internal::action, internal::control >( input, consumer );
          }
 
          template< typename Consumer >

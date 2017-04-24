@@ -4,7 +4,7 @@
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_EOL_HPP
 #define TAOCPP_JSON_PEGTL_INCLUDE_EOL_HPP
 
-#include <cstdlib>
+#include <cstddef>
 #include <utility>
 
 #include "config.hpp"

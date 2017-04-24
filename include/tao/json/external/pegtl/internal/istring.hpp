@@ -30,7 +30,7 @@ namespace tao
          template< char C >
          struct ichar_equal< C, true >
          {
-            static bool match( const char c )
+            static bool match( const char c ) noexcept
             {
                return ( C | 0x20 ) == ( c | 0x20 );
             }
@@ -39,7 +39,7 @@ namespace tao
          template< char C >
          struct ichar_equal< C, false >
          {
-            static bool match( const char c )
+            static bool match( const char c ) noexcept
             {
                return c == C;
             }
@@ -51,7 +51,7 @@ namespace tao
          template<>
          struct istring_equal<>
          {
-            static bool match( const char* )
+            static bool match( const char* ) noexcept
             {
                return true;
             }
@@ -60,7 +60,7 @@ namespace tao
          template< char C, char... Cs >
          struct istring_equal< C, Cs... >
          {
-            static bool match( const char* r )
+            static bool match( const char* r ) noexcept
             {
                return ichar_equal< C >::match( *r ) && istring_equal< Cs... >::match( r + 1 );
             }
@@ -68,11 +68,6 @@ namespace tao
 
          template< char... Cs >
          struct istring;
-
-         template< char... Cs >
-         struct skip_control< istring< Cs... > > : std::true_type
-         {
-         };
 
          template<>
          struct istring<>
@@ -96,6 +91,11 @@ namespace tao
                }
                return false;
             }
+         };
+
+         template< char... Cs >
+         struct skip_control< istring< Cs... > > : std::true_type
+         {
          };
 
       }  // namespace internal

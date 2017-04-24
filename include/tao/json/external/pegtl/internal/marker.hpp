@@ -1,11 +1,10 @@
 // Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_INPUT_MARK_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_INPUT_MARK_HPP
+#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_MARKER_HPP
+#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_MARKER_HPP
 
 #include "../config.hpp"
-#include "../count_data.hpp"
 #include "../rewind_mode.hpp"
 
 namespace tao
@@ -14,57 +13,57 @@ namespace tao
    {
       namespace internal
       {
-         template< rewind_mode M >
-         class input_mark
+         template< typename Iterator, rewind_mode M >
+         class marker
          {
          public:
             static constexpr rewind_mode next_rewind_mode = M;
 
-            explicit input_mark( const count_data& )
+            explicit marker( const Iterator& ) noexcept
             {
             }
 
-            input_mark( input_mark&& ) noexcept
+            marker( marker&& ) noexcept
             {
             }
 
-            input_mark( const input_mark& ) = delete;
-            void operator=( const input_mark& ) = delete;
+            marker( const marker& ) = delete;
+            void operator=( const marker& ) = delete;
 
-            bool operator()( const bool result ) noexcept
+            bool operator()( const bool result ) const noexcept
             {
                return result;
             }
          };
 
-         template<>
-         class input_mark< rewind_mode::REQUIRED >
+         template< typename Iterator >
+         class marker< Iterator, rewind_mode::REQUIRED >
          {
          public:
             static constexpr rewind_mode next_rewind_mode = rewind_mode::ACTIVE;
 
-            explicit input_mark( count_data& i ) noexcept
-               : m_count( i ),
+            explicit marker( Iterator& i ) noexcept
+               : m_saved( i ),
                  m_input( &i )
             {
             }
 
-            input_mark( input_mark&& i ) noexcept
-               : m_count( i.m_count ),
+            marker( marker&& i ) noexcept
+               : m_saved( i.m_saved ),
                  m_input( i.m_input )
             {
                i.m_input = nullptr;
             }
 
-            ~input_mark() noexcept
+            ~marker() noexcept
             {
                if( m_input != nullptr ) {
-                  ( *m_input ) = m_count;
+                  ( *m_input ) = m_saved;
                }
             }
 
-            input_mark( const input_mark& ) = delete;
-            void operator=( const input_mark& ) = delete;
+            marker( const marker& ) = delete;
+            void operator=( const marker& ) = delete;
 
             bool operator()( const bool result ) noexcept
             {
@@ -75,14 +74,14 @@ namespace tao
                return false;
             }
 
-            const count_data& count() const noexcept
+            const Iterator& iterator() const noexcept
             {
-               return m_count;
+               return m_saved;
             }
 
          private:
-            const count_data m_count;
-            count_data* m_input;
+            const Iterator m_saved;
+            Iterator* m_input;
          };
 
       }  // namespace internal

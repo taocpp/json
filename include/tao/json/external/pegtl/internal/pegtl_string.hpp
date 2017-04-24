@@ -92,4 +92,7 @@ namespace tao
 #define TAOCPP_JSON_PEGTL_ISTRING( x ) \
    TAOCPP_JSON_PEGTL_INTERNAL_STRING( tao::TAOCPP_JSON_PEGTL_NAMESPACE::ascii::istring, x )
 
+#define TAOCPP_JSON_PEGTL_KEYWORD( x ) \
+   TAOCPP_JSON_PEGTL_INTERNAL_STRING( tao::TAOCPP_JSON_PEGTL_NAMESPACE::ascii::keyword, x )
+
 #endif

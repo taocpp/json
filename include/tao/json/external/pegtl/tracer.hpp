@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_TRACE_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_TRACE_HPP
+#ifndef TAOCPP_JSON_PEGTL_INCLUDE_TRACER_HPP
+#define TAOCPP_JSON_PEGTL_INCLUDE_TRACER_HPP
 
 #include <cassert>
 #include <iomanip>
@@ -12,9 +12,6 @@
 
 #include "config.hpp"
 #include "normal.hpp"
-#include "nothing.hpp"
-#include "parse.hpp"
-#include "position_info.hpp"
 
 #include "internal/demangle.hpp"
 
@@ -73,55 +70,39 @@ namespace tao
             std::cerr << std::setw( 6 ) << ++ts.line << " " << std::setw( 6 ) << ts.stack.back() << " " << in.position() << " failure " << internal::demangle< Rule >() << std::endl;
             ts.stack.pop_back();
          }
+
+         template< template< typename... > class Action, typename Input, typename... States >
+         static void apply0( const Input&, States&&... st )
+         {
+            std::cerr << "apply0 " << internal::demangle< Action< Rule > >() << std::endl;
+            Action< Rule >::apply0( st... );
+         }
+
+         template< template< typename... > class Action, typename Input >
+         static void apply0( const Input&, trace_state& ts )
+         {
+            std::cerr << std::setw( 6 ) << ++ts.line << "        " << internal::demangle< Action< Rule > >() << "::apply0()" << std::endl;
+            Action< Rule >::apply0( ts );
+         }
+
+         template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
+         static void apply( const Iterator begin, const Iterator end, const Input& in, States&&... st )
+         {
+            std::cerr << "apply " << internal::demangle< Action< Rule > >() << std::endl;
+            using action_t = typename Input::action_t;
+            const action_t action_input( begin, end, in.source() );
+            Action< Rule >::apply( action_input, st... );
+         }
+
+         template< template< typename... > class Action, typename Iterator, typename Input >
+         static void apply( const Iterator begin, const Iterator end, const Input& in, trace_state& ts )
+         {
+            std::cerr << std::setw( 6 ) << ++ts.line << "        " << internal::demangle< Action< Rule > >() << "::apply()" << std::endl;
+            using action_t = typename Input::action_t;
+            const action_t action_input( begin, end, in.source() );
+            Action< Rule >::apply( action_input, ts );
+         }
       };
-
-      template< typename Rule, template< typename... > class Action = nothing, typename Input, typename... States >
-      bool trace_input( Input& in, States&&... st )
-      {
-         return parse_input< Rule, Action, tracer >( in, st... );
-      }
-
-      template< typename Rule, template< typename... > class Action = nothing, typename... Args >
-      bool trace_arg( Args&&... args )
-      {
-         return parse_arg< Rule, Action, tracer >( std::forward< Args >( args )... );
-      }
-
-      template< typename Rule, template< typename... > class Action = nothing, typename... Args >
-      bool trace_memory( Args&&... args )
-      {
-         return parse_memory< Rule, Action, tracer >( std::forward< Args >( args )... );
-      }
-
-      template< typename Rule, template< typename... > class Action = nothing, typename... Args >
-      bool trace_string( Args&&... args )
-      {
-         return parse_string< Rule, Action, tracer >( std::forward< Args >( args )... );
-      }
-
-      template< typename Rule, template< typename... > class Action = nothing, typename... Args >
-      bool trace_cstream( Args&&... args )
-      {
-         return parse_cstream< Rule, Action, tracer >( std::forward< Args >( args )... );
-      }
-
-      template< typename Rule, template< typename... > class Action = nothing, typename... Args >
-      bool trace_stdin( Args&&... args )
-      {
-         return parse_stdin< Rule, Action, tracer >( std::forward< Args >( args )... );
-      }
-
-      template< typename Rule, template< typename... > class Action = nothing, typename... Args >
-      bool trace_cstring( Args&&... args )
-      {
-         return parse_cstring< Rule, Action, tracer >( std::forward< Args >( args )... );
-      }
-
-      template< typename Rule, template< typename... > class Action = nothing, typename... Args >
-      bool trace_istream( Args&&... args )
-      {
-         return parse_istream< Rule, Action, tracer >( std::forward< Args >( args )... );
-      }
 
    }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
 

@@ -6,12 +6,10 @@
 
 #include "apply_mode.hpp"
 #include "config.hpp"
-#include "count_data.hpp"
 #include "nothing.hpp"
 #include "parse_error.hpp"
 #include "rewind_mode.hpp"
 
-#include "internal/action_input.hpp"
 #include "internal/demangle.hpp"
 #include "internal/dusel_mode.hpp"
 #include "internal/duseltronik.hpp"
@@ -26,17 +24,17 @@ namespace tao
       struct normal
       {
          template< typename Input, typename... States >
-         static void start( const Input&, States&&... )
+         static void start( const Input&, States&&... ) noexcept
          {
          }
 
          template< typename Input, typename... States >
-         static void success( const Input&, States&&... )
+         static void success( const Input&, States&&... ) noexcept
          {
          }
 
          template< typename Input, typename... States >
-         static void failure( const Input&, States&&... )
+         static void failure( const Input&, States&&... ) noexcept
          {
          }
 
@@ -46,17 +44,18 @@ namespace tao
             throw parse_error( "parse error matching " + internal::demangle< Rule >(), in );
          }
 
-         template< template< typename... > class Action, typename... States >
-         static void apply0( States&&... st )
+         template< template< typename... > class Action, typename Input, typename... States >
+         static void apply0( const Input&, States&&... st )
          {
             Action< Rule >::apply0( st... );
          }
 
-         template< typename Input, template< typename... > class Action, typename... States >
-         static void apply( const count_data& begin, const count_data& end, const char* source, States&&... st )
+         template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
+         static void apply( const Iterator begin, const Iterator end, const Input& in, States&&... st )
          {
-            const Input in( begin, end.data, source );
-            Action< Rule >::apply( in, st... );
+            using action_t = typename Input::action_t;
+            const action_t action_input( begin, end, in.source() );
+            Action< Rule >::apply( action_input, st... );
          }
 
          template< apply_mode A,

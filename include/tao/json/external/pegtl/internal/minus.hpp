@@ -9,7 +9,6 @@
 #include "skip_control.hpp"
 
 #include "../apply_mode.hpp"
-#include "../memory_input.hpp"
 #include "../rewind_mode.hpp"
 
 namespace tao
@@ -37,7 +36,7 @@ namespace tao
                   return false;
                }
                using memory_t = typename Input::memory_t;
-               memory_t i2( m.count(), in.begin(), in.source() );
+               memory_t i2( m.iterator(), in.begin(), in.source() );
 
                if( !Control< S >::template match< apply_mode::NOTHING, rewind_mode::ACTIVE, Action, Control >( i2, st... ) ) {
                   return m( true );

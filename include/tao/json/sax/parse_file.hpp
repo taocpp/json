@@ -8,7 +8,7 @@
 #include "../internal/control.hpp"
 #include "../internal/grammar.hpp"
 
-#include "../external/pegtl/file_parser.hpp"
+#include "../external/pegtl/file_input.hpp"
 
 namespace tao
 {
@@ -20,7 +20,8 @@ namespace tao
          template< typename Consumer >
          void parse_file( const std::string& filename, Consumer& consumer )
          {
-            json_pegtl::file_parser( filename ).parse< internal::grammar, internal::action, internal::control >( consumer );
+            json_pegtl::file_input<> input( filename );
+            json_pegtl::parse< internal::grammar, internal::action, internal::control >( input, consumer );
          }
 
       }  // sax

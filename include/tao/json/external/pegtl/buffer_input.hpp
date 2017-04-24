@@ -9,31 +9,32 @@
 #include <memory>
 
 #include "config.hpp"
-#include "count_data.hpp"
 #include "eol.hpp"
+#include "memory_input.hpp"
+#include "position.hpp"
+#include "tracking_mode.hpp"
+
 #include "internal/action_input.hpp"
 #include "internal/bump_impl.hpp"
-#include "internal/input_mark.hpp"
-#include "position_info.hpp"
+#include "internal/iterator.hpp"
+#include "internal/marker.hpp"
 
 namespace tao
 {
    namespace TAOCPP_JSON_PEGTL_NAMESPACE
    {
-      template< typename Eol >
-      class basic_memory_input;
-
-      template< typename Eol, typename Reader >
-      class basic_buffer_input
+      template< typename Reader, typename Eol = lf_crlf_eol >
+      class buffer_input
       {
       public:
-         using eol_t = Eol;
          using reader_t = Reader;
-         using action_t = internal::basic_action_input< Eol >;
-         using memory_t = basic_memory_input< Eol >;
+         using eol_t = Eol;
+
+         using memory_t = memory_input< Eol >;
+         using action_t = internal::action_input< Eol, tracking_mode::IMMEDIATE >;
 
          template< typename... As >
-         basic_buffer_input( const char* in_source, const std::size_t maximum, As&&... as )
+         buffer_input( const char* in_source, const std::size_t maximum, As&&... as )
             : m_reader( std::forward< As >( as )... ),
               m_maximum( maximum ),
               m_buffer( new char[ maximum ] ),
@@ -43,8 +44,14 @@ namespace tao
          {
          }
 
-         basic_buffer_input( const basic_buffer_input& ) = delete;
-         void operator=( const basic_buffer_input& ) = delete;
+         template< typename... As >
+         buffer_input( const std::string& in_source, As&&... as )
+            : buffer_input( in_source.c_str(), std::forward< As >( as )... )
+         {
+         }
+
+         buffer_input( const buffer_input& ) = delete;
+         void operator=( const buffer_input& ) = delete;
 
          bool empty()
          {
@@ -58,7 +65,7 @@ namespace tao
             return std::size_t( m_end - m_data.data );
          }
 
-         const char* begin() const
+         const char* begin() const noexcept
          {
             return m_data.data;
          }
@@ -69,52 +76,52 @@ namespace tao
             return m_end;
          }
 
-         std::size_t byte() const
+         std::size_t byte() const noexcept
          {
             return m_data.byte;
          }
 
-         std::size_t line() const
+         std::size_t line() const noexcept
          {
             return m_data.line;
          }
 
-         std::size_t byte_in_line() const
+         std::size_t byte_in_line() const noexcept
          {
             return m_data.byte_in_line;
          }
 
-         const char* source() const
+         const char* source() const noexcept
          {
             return m_source;
          }
 
-         char peek_char( const std::size_t offset = 0 ) const
+         char peek_char( const std::size_t offset = 0 ) const noexcept
          {
             return m_data.data[ offset ];
          }
 
-         unsigned char peek_byte( const std::size_t offset = 0 ) const
+         unsigned char peek_byte( const std::size_t offset = 0 ) const noexcept
          {
             return static_cast< unsigned char >( peek_char( offset ) );
          }
 
-         void bump( const std::size_t in_count = 1 )
+         void bump( const std::size_t in_count = 1 ) noexcept
          {
             internal::bump( m_data, in_count, Eol::ch );
          }
 
-         void bump_in_this_line( const std::size_t in_count = 1 )
+         void bump_in_this_line( const std::size_t in_count = 1 ) noexcept
          {
             internal::bump_in_this_line( m_data, in_count );
          }
 
-         void bump_to_next_line( const std::size_t in_count = 1 )
+         void bump_to_next_line( const std::size_t in_count = 1 ) noexcept
          {
             internal::bump_to_next_line( m_data, in_count );
          }
 
-         void discard()
+         void discard() noexcept
          {
             const auto s = m_end - m_data.data;
             std::memmove( m_buffer.get(), m_data.data, s );
@@ -137,17 +144,17 @@ namespace tao
          }
 
          template< rewind_mode M >
-         internal::input_mark< M > mark()
+         internal::marker< internal::iterator, M > mark() noexcept
          {
-            return internal::input_mark< M >( m_data );
+            return internal::marker< internal::iterator, M >( m_data );
          }
 
-         position_info position() const
+         TAOCPP_JSON_PEGTL_NAMESPACE::position position() const noexcept
          {
-            return position_info( m_data, m_source );
+            return TAOCPP_JSON_PEGTL_NAMESPACE::position( m_data, m_source );
          }
 
-         const count_data& count() const
+         const internal::iterator& iterator() const noexcept
          {
             return m_data;
          }
@@ -156,13 +163,10 @@ namespace tao
          Reader m_reader;
          std::size_t m_maximum;
          std::unique_ptr< char[] > m_buffer;
-         count_data m_data;
+         internal::iterator m_data;
          const char* m_end;
-         const char* m_source;
+         const char* const m_source;
       };
-
-      template< typename Reader >
-      using buffer_input = basic_buffer_input< lf_crlf_eol, Reader >;
 
    }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
 

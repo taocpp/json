@@ -22,7 +22,7 @@ namespace tao
          class file_mapper
          {
          public:
-            explicit file_mapper( const std::string& filename )
+            explicit file_mapper( const char* filename )
                : file_mapper( file_opener( filename ) )
             {
             }
@@ -36,7 +36,7 @@ namespace tao
                }
             }
 
-            ~file_mapper()
+            ~file_mapper() noexcept
             {
                ::munmap( const_cast< char* >( m_data ), m_size );  // Legacy C interface requires pointer-to-mutable but does not write through the pointer.
             }
@@ -44,12 +44,12 @@ namespace tao
             file_mapper( const file_mapper& ) = delete;
             void operator=( const file_mapper& ) = delete;
 
-            bool empty() const
+            bool empty() const noexcept
             {
                return m_size == 0;
             }
 
-            std::size_t size() const
+            std::size_t size() const noexcept
             {
                return m_size;
             }
@@ -57,17 +57,17 @@ namespace tao
             using iterator = const char*;
             using const_iterator = const char*;
 
-            iterator data() const
+            iterator data() const noexcept
             {
                return m_data;
             }
 
-            iterator begin() const
+            iterator begin() const noexcept
             {
                return m_data;
             }
 
-            iterator end() const
+            iterator end() const noexcept
             {
                return m_data + m_size;
             }

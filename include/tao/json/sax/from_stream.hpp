@@ -22,8 +22,8 @@ namespace tao
          template< typename Consumer >
          inline void from_stream( std::istream& stream, Consumer& consumer, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            json_pegtl::buffer_input< json_pegtl::internal::istream_reader > input( source ? source : "tao::json::sax::from_stream", maximum_buffer_size, stream );
-            json_pegtl::parse_input< internal::grammar, internal::action, internal::control >( input, consumer );
+            json_pegtl::istream_input<> input( stream, maximum_buffer_size, source ? source : "tao::json::sax::from_stream" );
+            json_pegtl::parse< internal::grammar, internal::action, internal::control >( input, consumer );
          }
 
          template< typename Consumer >
