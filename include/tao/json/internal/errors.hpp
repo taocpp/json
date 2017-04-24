@@ -36,6 +36,36 @@ namespace tao
             {
                throw json_pegtl::parse_error( error_message, in );
             }
+
+            template< template< typename... > class Action, typename Input, typename... States >
+            static void apply0( const Input& in, States&&... st )
+            {
+               try {
+                  Action< Rule >::apply0( st... );
+               }
+               catch( const json_pegtl::parse_error& ) {
+                  throw;
+               }
+               catch( const std::exception& e ) {
+                  throw json_pegtl::parse_error( e.what(), in );
+               }
+            }
+
+            template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
+            static void apply( const Iterator begin, const Iterator end, const Input& in, States&&... st )
+            {
+               try {
+                  using action_t = typename Input::action_t;
+                  const action_t action_input( begin, end, in.source() );
+                  Action< Rule >::apply( action_input, st... );
+               }
+               catch( const json_pegtl::parse_error& ) {
+                  throw;
+               }
+               catch( const std::exception& e ) {
+                  throw json_pegtl::parse_error( e.what(), in );
+               }
+            }
          };
 
          // clang-format off

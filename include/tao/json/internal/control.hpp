@@ -26,17 +26,17 @@ namespace tao
          };
 
          template<>
-         struct control< rules::number > : json_pegtl::change_state< rules::number, number_state, json_pegtl::normal >
+         struct control< rules::number > : json_pegtl::change_state< rules::number, number_state, errors >
          {
          };
 
          template<>
-         struct control< rules::string::content > : json_pegtl::change_state_and_action< rules::string::content, string_state, unescape_action, json_pegtl::normal >
+         struct control< rules::string::content > : json_pegtl::change_state_and_action< rules::string::content, string_state, unescape_action, errors >
          {
          };
 
          template<>
-         struct control< rules::key::content > : json_pegtl::change_state_and_action< rules::key::content, key_state, unescape_action, json_pegtl::normal >
+         struct control< rules::key::content > : json_pegtl::change_state_and_action< rules::key::content, key_state, unescape_action, errors >
          {
          };
 
