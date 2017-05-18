@@ -60,7 +60,7 @@ namespace tao
                using analyze_t = analysis::generic< analysis::rule_type::ANY >;
 
                template< typename Input >
-               static bool match( Input & in )
+               static bool match( Input& in )
                {
                   bool result = false;
 
@@ -120,20 +120,20 @@ namespace tao
 
                template< apply_mode A,
                          rewind_mode M,
-                         template< typename ... > class Action,
-                         template< typename ... > class Control,
+                         template< typename... > class Action,
+                         template< typename... > class Control,
                          typename Input,
-                         typename ... States >
-               static bool match( Input & in, States && ... st )
+                         typename... States >
+               static bool match( Input& in, States&& ... st )
                {
                   switch( in.peek_char() ) {
-                     case '"': return Control< string >::template match< A, M, Action, Control >( in, st ... );
-                     case '{': return Control< object >::template match< A, M, Action, Control >( in, st ... );
-                     case '[': return Control< array >::template match< A, M, Action, Control >( in, st ... );
-                     case 'n': return Control< null >::template match< A, M, Action, Control >( in, st ... );
-                     case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st ... );
-                     case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st ... );
-                     default: return Control< number >::template match< A, M, Action, Control >( in, st ... );
+                     case '"': return Control< string >::template match< A, M, Action, Control >( in, st... );
+                     case '{': return Control< object >::template match< A, M, Action, Control >( in, st... );
+                     case '[': return Control< array >::template match< A, M, Action, Control >( in, st... );
+                     case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
+                     case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
+                     case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
+                     default: return Control< number >::template match< A, M, Action, Control >( in, st... );
                   }
                }
             };

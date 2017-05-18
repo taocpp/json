@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstring>
 #include <string>
+#include <type_traits>
 #include <utility>
 
 #include "config.hpp"
@@ -34,22 +35,19 @@ namespace tao
          public:
             using iterator_t = internal::iterator;
 
-            memory_input_base( const iterator_t& in_begin, const char* in_end, Source in_source ) noexcept
+            template< typename T >
+            memory_input_base( const iterator_t& in_begin, const char* in_end, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
                : m_current( in_begin ),
                  m_end( in_end ),
-                 m_source( std::move( in_source ) )
+                 m_source( std::forward< T >( in_source ) )
             {
             }
 
             template< typename T >
-            memory_input_base( const char* in_begin, const char* in_end, T&& in_source ) noexcept
-               : memory_input_base( iterator_t( in_begin ), in_end, std::forward< T >( in_source ) )
-            {
-            }
-
-            template< typename T >
-            memory_input_base( const char* in_begin, const char* in_end, T&& in_source, const std::size_t in_byte, const std::size_t in_line, const std::size_t in_byte_in_line ) noexcept
-               : memory_input_base( { in_byte, in_line, in_byte_in_line, in_begin }, in_end, std::forward< T >( in_source ) )
+            memory_input_base( const char* in_begin, const char* in_end, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
+               : m_current( in_begin ),
+                 m_end( in_end ),
+                 m_source( std::forward< T >( in_source ) )
             {
             }
 
@@ -96,7 +94,7 @@ namespace tao
                internal::bump_to_next_line( m_current, in_count );
             }
 
-            TAOCPP_JSON_PEGTL_NAMESPACE::position position( const iterator_t& it ) const noexcept
+            TAOCPP_JSON_PEGTL_NAMESPACE::position position( const iterator_t& it ) const
             {
                return TAOCPP_JSON_PEGTL_NAMESPACE::position( it, m_source );
             }
@@ -113,19 +111,21 @@ namespace tao
          public:
             using iterator_t = const char*;
 
-            memory_input_base( const char* in_begin, const char* in_end, Source in_source ) noexcept
+            template< typename T >
+            memory_input_base( const internal::iterator& in_begin, const char* in_end, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
                : m_begin( in_begin ),
-                 m_current( in_begin ),
+                 m_current( in_begin.data ),
                  m_end( in_end ),
-                 m_source( std::move( in_source ) )
+                 m_source( std::forward< T >( in_source ) )
             {
             }
 
-            memory_input_base( const char* in_begin, const char* in_end, Source in_source, const std::size_t in_byte, const std::size_t in_line, const std::size_t in_byte_in_line ) noexcept
-               : m_begin( in_byte, in_line, in_byte_in_line, in_begin ),
+            template< typename T >
+            memory_input_base( const char* in_begin, const char* in_end, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
+               : m_begin( in_begin ),
                  m_current( in_begin ),
                  m_end( in_end ),
-                 m_source( std::move( in_source ) )
+                 m_source( std::forward< T >( in_source ) )
             {
             }
 
@@ -162,7 +162,7 @@ namespace tao
                m_current += in_count;
             }
 
-            TAOCPP_JSON_PEGTL_NAMESPACE::position position( const iterator_t it ) const noexcept
+            TAOCPP_JSON_PEGTL_NAMESPACE::position position( const iterator_t it ) const
             {
                internal::iterator c( m_begin );
                internal::bump( c, std::size_t( it - m_begin.data ), Eol::ch );
@@ -178,7 +178,7 @@ namespace tao
 
       }  // namespace internal
 
-      template< tracking_mode P = tracking_mode::IMMEDIATE, typename Eol = lf_crlf_eol, typename Source = std::string >
+      template< tracking_mode P = tracking_mode::IMMEDIATE, typename Eol = eol::lf_crlf, typename Source = std::string >
       class memory_input
          : public internal::memory_input_base< P, Eol, Source >
       {
@@ -190,26 +190,31 @@ namespace tao
 
          using typename internal::memory_input_base< P, Eol, Source >::iterator_t;
 
-         using memory_t = memory_input;
-         using action_t = internal::action_input< memory_input, P >;
+         using action_t = internal::action_input< memory_input >;
 
          using internal::memory_input_base< P, Eol, Source >::memory_input_base;
 
          template< typename T >
-         memory_input( const char* in_begin, const std::size_t in_size, T&& in_source ) noexcept
+         memory_input( const char* in_begin, const std::size_t in_size, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
             : memory_input( in_begin, in_begin + in_size, std::forward< T >( in_source ) )
          {
          }
 
          template< typename T >
-         memory_input( const std::string& in_string, T&& in_source ) noexcept
+         memory_input( const std::string& in_string, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
             : memory_input( in_string.data(), in_string.size(), std::forward< T >( in_source ) )
          {
          }
 
          template< typename T >
-         memory_input( const char* in_begin, T&& in_source ) noexcept
+         memory_input( const char* in_begin, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
             : memory_input( in_begin, std::strlen( in_begin ), std::forward< T >( in_source ) )
+         {
+         }
+
+         template< typename T >
+         memory_input( const char* in_begin, const char* in_end, T&& in_source, const std::size_t in_byte, const std::size_t in_line, const std::size_t in_byte_in_line ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )
+            : memory_input( { in_begin, in_byte, in_line, in_byte_in_line }, in_end, std::forward< T >( in_source ) )
          {
          }
 
@@ -253,9 +258,9 @@ namespace tao
 
          using internal::memory_input_base< P, Eol, Source >::position;
 
-         TAOCPP_JSON_PEGTL_NAMESPACE::position position() const noexcept
+         TAOCPP_JSON_PEGTL_NAMESPACE::position position() const
          {
-            return this->position( this->iterator() );
+            return position( iterator() );
          }
 
          void discard() const noexcept
@@ -269,7 +274,7 @@ namespace tao
          template< rewind_mode M >
          internal::marker< iterator_t, M > mark() noexcept
          {
-            return internal::marker< iterator_t, M >( this->iterator() );
+            return internal::marker< iterator_t, M >( iterator() );
          }
       };
 

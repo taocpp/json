@@ -11,6 +11,8 @@
 
 #include "../config.hpp"
 
+#include "demangle_sanitise.hpp"
+
 namespace tao
 {
    namespace TAOCPP_JSON_PEGTL_NAMESPACE
@@ -20,7 +22,14 @@ namespace tao
          inline std::string demangle( const char* symbol )
          {
             const std::unique_ptr< char, decltype( &std::free ) > demangled( abi::__cxa_demangle( symbol, nullptr, nullptr, nullptr ), &std::free );
-            return demangled ? demangled.get() : symbol;
+            if( !demangled ) {
+               return symbol;
+            }
+            std::string result( demangled.get() );
+#ifdef TAOCPP_JSON_PEGTL_PRETTY_DEMANGLE
+            demangle_sanitise_chars( result );
+#endif
+            return result;
          }
 
       }  // namespace internal

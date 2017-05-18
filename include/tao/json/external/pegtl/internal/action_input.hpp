@@ -10,17 +10,12 @@
 #include "iterator.hpp"
 
 #include "../config.hpp"
-#include "../eol.hpp"
 #include "../position.hpp"
-#include "../tracking_mode.hpp"
 
 namespace tao
 {
    namespace TAOCPP_JSON_PEGTL_NAMESPACE
    {
-      template< tracking_mode, typename Eol, typename Source >
-      class memory_input;
-
       namespace internal
       {
          inline const char* begin_c_ptr( const char* p ) noexcept
@@ -33,19 +28,12 @@ namespace tao
             return it.data;
          }
 
-         template< typename Input, tracking_mode P >
+         template< typename Input >
          class action_input
          {
          public:
-            static constexpr tracking_mode tracking_mode_v = P;
-
-            using eol_t = typename Input::eol_t;
-            using source_t = typename Input::source_t;
-
+            using input_t = Input;
             using iterator_t = typename Input::iterator_t;
-
-            using memory_t = memory_input< P, eol_t, source_t >;
-            using action_t = action_input;
 
             action_input( const iterator_t& in_begin, const Input& in_input ) noexcept
                : m_begin( in_begin ),
@@ -71,7 +59,7 @@ namespace tao
                return begin_c_ptr( iterator() );
             }
 
-            const char* end( const std::size_t = 0 ) const noexcept
+            const char* end() const noexcept
             {
                return input().current();
             }
@@ -81,9 +69,9 @@ namespace tao
                return begin() == end();
             }
 
-            std::size_t size( const std::size_t s = 0 ) const noexcept
+            std::size_t size() const noexcept
             {
-               return std::size_t( end( s ) - begin() );
+               return std::size_t( end() - begin() );
             }
 
             std::string string() const

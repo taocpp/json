@@ -24,7 +24,7 @@ namespace tao
 {
    namespace TAOCPP_JSON_PEGTL_NAMESPACE
    {
-      template< typename Reader, typename Eol = lf_crlf_eol, typename Source = std::string >
+      template< typename Reader, typename Eol = eol::lf_crlf, typename Source = std::string >
       class buffer_input
       {
       public:
@@ -36,17 +36,16 @@ namespace tao
 
          using iterator_t = internal::iterator;
 
-         using memory_t = memory_input< tracking_mode::IMMEDIATE, Eol, Source >;
-         using action_t = internal::action_input< buffer_input, tracking_mode::IMMEDIATE >;
+         using action_t = internal::action_input< buffer_input >;
 
-         template< typename... As >
-         buffer_input( Source in_source, const std::size_t maximum, As&&... as )
+         template< typename T, typename... As >
+         buffer_input( T&& in_source, const std::size_t maximum, As&&... as )
             : m_reader( std::forward< As >( as )... ),
               m_maximum( maximum ),
               m_buffer( new char[ maximum ] ),
-              m_current( { 0, 1, 0, m_buffer.get() } ),
+              m_current( m_buffer.get() ),
               m_end( m_buffer.get() ),
-              m_source( std::move( in_source ) )
+              m_source( std::forward< T >( in_source ) )
          {
          }
 
@@ -149,12 +148,12 @@ namespace tao
             return internal::marker< iterator_t, M >( m_current );
          }
 
-         TAOCPP_JSON_PEGTL_NAMESPACE::position position( const iterator_t& it ) const noexcept
+         TAOCPP_JSON_PEGTL_NAMESPACE::position position( const iterator_t& it ) const
          {
             return TAOCPP_JSON_PEGTL_NAMESPACE::position( it, m_source );
          }
 
-         TAOCPP_JSON_PEGTL_NAMESPACE::position position() const noexcept
+         TAOCPP_JSON_PEGTL_NAMESPACE::position position() const
          {
             return position( m_current );
          }

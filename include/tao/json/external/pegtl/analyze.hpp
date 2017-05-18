@@ -4,8 +4,9 @@
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_ANALYZE_HPP
 #define TAOCPP_JSON_PEGTL_INCLUDE_ANALYZE_HPP
 
-#include "analysis/analyze_cycles.hpp"
 #include "config.hpp"
+
+#include "analysis/analyze_cycles.hpp"
 
 namespace tao
 {
