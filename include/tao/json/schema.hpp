@@ -32,29 +32,36 @@ namespace tao
       namespace internal
       {
          // TODO: Check if these grammars are correct.
-         struct local_part_label : json_pegtl::plus< json_pegtl::sor< json_pegtl::alnum, json_pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > >
-         {
-         };
-         struct local_part : json_pegtl::list_must< local_part_label, json_pegtl::one< '.' > >
-         {
-         };
-
-         struct hostname_label : json_pegtl::seq< json_pegtl::alnum, json_pegtl::rep_max< 62, json_pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > >
-         {
-         };
-         struct hostname : json_pegtl::list_must< hostname_label, json_pegtl::one< '.' > >
+         struct local_part_label
+            : json_pegtl::plus< json_pegtl::sor< json_pegtl::alnum, json_pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > >
          {
          };
 
-         struct email : json_pegtl::seq< local_part, json_pegtl::one< '@' >, hostname >
+         struct local_part
+            : json_pegtl::list_must< local_part_label, json_pegtl::one< '.' > >
+         {
+         };
+
+         struct hostname_label
+            : json_pegtl::seq< json_pegtl::alnum, json_pegtl::rep_max< 62, json_pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > >
+         {
+         };
+
+         struct hostname
+            : json_pegtl::list_must< hostname_label, json_pegtl::one< '.' > >
+         {
+         };
+
+         struct email
+            : json_pegtl::seq< local_part, json_pegtl::one< '@' >, hostname >
          {
          };
 
          template< typename Rule >
          bool parse( const std::string& v )
          {
-            json_pegtl::memory_input<> input( v, "" );
-            return json_pegtl::parse< json_pegtl::seq< Rule, json_pegtl::eof > >( input );
+            json_pegtl::memory_input<> in( v, "" );
+            return json_pegtl::parse< json_pegtl::seq< Rule, json_pegtl::eof > >( in );
          }
 
          inline bool parse_date_time( const std::string& v )

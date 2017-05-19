@@ -27,7 +27,7 @@ namespace tao
       {
          template< typename Rule >
          struct errors
-            : public json_pegtl::normal< Rule >
+            : json_pegtl::normal< Rule >
          {
             static const std::string error_message;
 

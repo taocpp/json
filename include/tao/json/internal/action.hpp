@@ -4,7 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ACTION_HPP
 #define TAOCPP_JSON_INCLUDE_INTERNAL_ACTION_HPP
 
-#include "../external/pegtl/contrib/changes.hpp"
+#include "../external/pegtl/nothing.hpp"
 
 #include "errors.hpp"
 #include "grammar.hpp"
@@ -18,7 +18,8 @@ namespace tao
       namespace internal
       {
          template< typename Rule >
-         struct action : json_pegtl::nothing< Rule >
+         struct action
+            : json_pegtl::nothing< Rule >
          {
          };
 
