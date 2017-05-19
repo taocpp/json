@@ -1,18 +1,15 @@
-# set C++ language standard
-set (CMAKE_CXX_EXTENSIONS OFF)
-
-# add warnings
-if (MSVC)
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX /utf-8")
-else ()
-  set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wshadow -Werror")
-endif ()
-
-# add tests
 file (GLOB testsources *.cpp)
 foreach (testsourcefile ${testsources})
   get_filename_component (exename ${testsourcefile} NAME_WE)
   add_executable (${exename} ${testsourcefile})
-  target_link_libraries (${exename} taocpp-json)
+  set_property (TARGET ${exename} PROPERTY CXX_STANDARD 11)
+  set_property (TARGET ${exename} PROPERTY CXX_STANDARD_REQUIRED ON)
+  set_property (TARGET ${exename} PROPERTY CXX_EXTENSIONS OFF)
+  target_link_libraries (${exename} taocpp::json)
+  if (MSVC)
+    target_compile_options (${exename} PRIVATE /W4 /WX /utf-8)
+  else ()
+    target_compile_options (${exename} PRIVATE -pedantic -Wall -Wextra -Wshadow -Werror)
+  endif ()
   add_test (NAME ${exename} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../.. COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${exename})
 endforeach (testsourcefile)
