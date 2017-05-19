@@ -1,11 +1,11 @@
 The taocpp/json library contains portions of the PEGTL library from
-  https://www.github.com/ColinH/PEGTL
+  https://www.github.com/taocpp/PEGTL
 which is licensed as follows:
 
 
 The MIT License (MIT)
 
-Copyright (c) 2008-2017 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2007-2017 Dr. Colin Hirsch and Daniel Frey
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

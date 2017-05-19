@@ -51,7 +51,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 While most parts have stabilized, some parts of the API are still under discussion and development and might change and/or be extended before the first release.
 
-The library currently serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/ColinH/PEGTL), which is used for parsing JSON string representations.
+The library currently serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/taocpp/PEGTL), which is used for parsing JSON string representations.
 
 ## Documentation
 
@@ -90,9 +90,9 @@ For questions and suggestions about the Art of C++ / JSON please contact the aut
 
 ### PEGTL License
 
-The Art of C++ / JSON contains the [PEGTL](https://github.com/ColinH/PEGTL) which is licensed as follows:
+The Art of C++ / JSON contains portions of the [PEGTL](https://github.com/taocpp/PEGTL) which is licensed as follows:
 
-> Copyright (c) 2008-2017 Dr. Colin Hirsch and Daniel Frey
+> Copyright (c) 2007-2017 Dr. Colin Hirsch and Daniel Frey
 >
 > Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 >
