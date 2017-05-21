@@ -8,8 +8,8 @@
 #include <string>
 #include <utility>
 
-#include "sax/from_string.hpp"
-#include "sax/to_value.hpp"
+#include "events/from_string.hpp"
+#include "events/to_value.hpp"
 
 namespace tao
 {
@@ -18,8 +18,8 @@ namespace tao
       template< template< typename... > class Traits >
       basic_value< Traits > from_string( const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
       {
-         sax::to_basic_value< Traits > consumer;
-         sax::from_string( data, size, consumer, source, byte, line, column );
+         events::to_basic_value< Traits > consumer;
+         events::from_string( data, size, consumer, source, byte, line, column );
          return std::move( consumer.value );
       }
 
@@ -76,8 +76,8 @@ namespace tao
 
       }  // literals
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

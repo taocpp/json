@@ -89,10 +89,10 @@ namespace tao
          template<> WEAK_PREFIX const std::string errors< json_pegtl::eof >::error_message WEAK_SUFFIX = "unexpected character after JSON value";
          // clang-format on
 
-      }  // internal
+      }  // namespace internal
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

@@ -6,9 +6,9 @@
 
 #include "pointer.hpp"
 #include "reference.hpp"
-#include "sax/compare.hpp"
-#include "sax/from_value.hpp"
-#include "sax/hash.hpp"
+#include "events/compare.hpp"
+#include "events/from_value.hpp"
+#include "events/hash.hpp"
 #include "value.hpp"
 
 #include "external/pegtl/contrib/uri.hpp"
@@ -806,8 +806,8 @@ namespace tao
             const std::shared_ptr< const schema_container< Traits > > m_container;
             const schema_node< Traits >* const m_node;
 
-            std::vector< std::unique_ptr< sax_compare< Traits > > > m_enum;
-            std::unique_ptr< sax::hash > m_hash;
+            std::vector< std::unique_ptr< events_compare< Traits > > > m_enum;
+            std::unique_ptr< events::hash > m_hash;
             std::set< std::string > m_unique;
             std::set< std::string > m_keys;
             std::vector< std::size_t > m_count;
@@ -839,7 +839,7 @@ namespace tao
             {
                assert( m_match );
                if( m_node->m_flags & HAS_ENUM ) {
-                  m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [&]( const std::unique_ptr< sax_compare< Traits > >& p ) { return f( *p ); } ), m_enum.end() );
+                  m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [&]( const std::unique_ptr< events_compare< Traits > >& p ) { return f( *p ); } ), m_enum.end() );
                   if( m_enum.empty() ) {
                      m_match = false;
                   }
@@ -1300,7 +1300,7 @@ namespace tao
                   const auto& a = m_node->m_value->unsafe_at( "enum" ).unsafe_get_array();
                   m_enum.reserve( a.size() );
                   for( const auto& e : a ) {
-                     m_enum.emplace_back( new sax_compare< Traits >() );
+                     m_enum.emplace_back( new events_compare< Traits >() );
                      m_enum.back()->push( &e );
                   }
                }
@@ -1386,7 +1386,7 @@ namespace tao
                if( m_match )
                   validate_type( NULL_ );
                if( m_match )
-                  validate_enum( []( sax_compare< Traits >& c ) { c.null(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.null(); return ! c.match(); } );
                if( m_match )
                   validate_collections( []( schema_consumer& c ) { c.null(); return ! c.match(); } );
                if( m_match && m_hash )
@@ -1398,7 +1398,7 @@ namespace tao
                if( m_match )
                   validate_type( BOOLEAN );
                if( m_match )
-                  validate_enum( [=]( sax_compare< Traits >& c ) { c.boolean( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.boolean( v ); return ! c.match(); } );
                if( m_match )
                   validate_collections( [=]( schema_consumer& c ) { c.boolean( v ); return ! c.match(); } );
                if( m_match && m_hash )
@@ -1410,7 +1410,7 @@ namespace tao
                if( m_match )
                   validate_type( INTEGER | NUMBER );
                if( m_match )
-                  validate_enum( [=]( sax_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
                if( m_match )
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
                if( m_match && m_count.empty() )
@@ -1424,7 +1424,7 @@ namespace tao
                if( m_match )
                   validate_type( INTEGER | NUMBER );
                if( m_match )
-                  validate_enum( [=]( sax_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
                if( m_match )
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
                if( m_match && m_count.empty() )
@@ -1438,7 +1438,7 @@ namespace tao
                if( m_match )
                   validate_type( NUMBER );
                if( m_match )
-                  validate_enum( [=]( sax_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
                if( m_match )
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
                if( m_match && m_count.empty() )
@@ -1452,7 +1452,7 @@ namespace tao
                if( m_match )
                   validate_type( STRING );
                if( m_match )
-                  validate_enum( [&]( sax_compare< Traits >& c ) { c.string( v ); return ! c.match(); } );
+                  validate_enum( [&]( events_compare< Traits >& c ) { c.string( v ); return ! c.match(); } );
                if( m_match )
                   validate_collections( [&]( schema_consumer& c ) { c.string( v ); return ! c.match(); } );
                if( m_match && m_count.empty() )
@@ -1467,7 +1467,7 @@ namespace tao
                if( m_match )
                   validate_type( ARRAY );
                if( m_match )
-                  validate_enum( []( sax_compare< Traits >& c ) { c.begin_array(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.begin_array(); return ! c.match(); } );
                if( m_match )
                   validate_collections( []( schema_consumer& c ) { c.begin_array(); return ! c.match(); } );
                if( m_match ) {
@@ -1475,7 +1475,7 @@ namespace tao
                      m_hash->begin_array();
                   }
                   else if( m_count.empty() && ( ( m_node->m_flags & HAS_UNIQUE_ITEMS ) != 0 ) ) {
-                     m_hash.reset( new sax::hash );
+                     m_hash.reset( new events::hash );
                   }
                }
                if( m_match && m_count.empty() ) {
@@ -1504,7 +1504,7 @@ namespace tao
             void element()
             {
                if( m_match )
-                  validate_enum( []( sax_compare< Traits >& c ) { c.element(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.element(); return ! c.match(); } );
                if( m_match && m_item ) {
                   if( m_count.size() == 1 ) {
                      if( !m_item->finalize() ) {
@@ -1552,7 +1552,7 @@ namespace tao
             void end_array()
             {
                if( m_match )
-                  validate_enum( []( sax_compare< Traits >& c ) { c.end_array(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.end_array(); return ! c.match(); } );
                if( m_match && m_item && ( m_count.size() == 1 ) ) {
                   if( !m_item->finalize() ) {
                      m_match = false;
@@ -1585,7 +1585,7 @@ namespace tao
                if( m_match )
                   validate_type( OBJECT );
                if( m_match )
-                  validate_enum( []( sax_compare< Traits >& c ) { c.begin_object(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.begin_object(); return ! c.match(); } );
                if( m_match )
                   validate_collections( []( schema_consumer& c ) { c.begin_object(); return ! c.match(); } );
                if( m_match && m_hash )
@@ -1596,7 +1596,7 @@ namespace tao
             void key( const std::string& v )
             {
                if( m_match )
-                  validate_enum( [&]( sax_compare< Traits >& c ) { c.key( v ); return ! c.match(); } );
+                  validate_enum( [&]( events_compare< Traits >& c ) { c.key( v ); return ! c.match(); } );
                if( m_match )
                   validate_collections( [&]( schema_consumer& c ) { c.key( v ); return ! c.match(); } );
                if( m_match && m_hash )
@@ -1639,7 +1639,7 @@ namespace tao
             void member()
             {
                if( m_match )
-                  validate_enum( []( sax_compare< Traits >& c ) { c.member(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.member(); return ! c.match(); } );
                if( m_match && !m_properties.empty() && ( m_count.size() == 1 ) ) {
                   for( auto& e : m_properties ) {
                      if( !e->finalize() ) {
@@ -1659,7 +1659,7 @@ namespace tao
             void end_object()
             {
                if( m_match )
-                  validate_enum( []( sax_compare< Traits >& c ) { c.end_object(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.end_object(); return ! c.match(); } );
                if( m_match )
                   validate_collections( []( schema_consumer& c ) { c.end_object(); return ! c.match(); } );
                if( m_match && m_hash )
@@ -1739,7 +1739,7 @@ namespace tao
             }
          };
 
-      }  // internal
+      }  // namespace internal
 
       template< template< typename... > class Traits >
       class basic_schema
@@ -1760,10 +1760,10 @@ namespace tao
 
          bool validate( const basic_value< Traits >& v ) const
          {
-            // TODO: DOM validation should be implemented independently,
-            // as it could be more efficient than SAX validation!
+            // TODO: Value validation should be implemented independently,
+            // as it could be more efficient than Events validation!
             const auto c = consumer();
-            sax::from_value( v, *c );
+            events::from_value( v, *c );
             return c->finalize();
          }
       };
@@ -1776,8 +1776,8 @@ namespace tao
          return basic_schema< Traits >( v );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

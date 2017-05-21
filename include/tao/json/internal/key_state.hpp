@@ -28,10 +28,10 @@ namespace tao
             std::string unescaped;
          };
 
-      }  // internal
+      }  // namespace internal
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

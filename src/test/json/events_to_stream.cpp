@@ -5,8 +5,8 @@
 
 #include <sstream>
 
-#include <tao/json/sax/from_string.hpp>
-#include <tao/json/sax/to_stream.hpp>
+#include <tao/json/events/from_string.hpp>
+#include <tao/json/events/to_stream.hpp>
 
 namespace tao
 {
@@ -15,8 +15,8 @@ namespace tao
       void test( const std::string& v )
       {
          std::ostringstream oss;
-         sax::to_stream consumer( oss );
-         sax::from_string( v, consumer );
+         events::to_stream consumer( oss );
+         events::from_string( v, consumer );
          TEST_ASSERT( oss.str() == v );
       }
 

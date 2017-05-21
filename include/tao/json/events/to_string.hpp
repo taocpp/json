@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_TO_STRING_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_TO_STRING_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_TO_STRING_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_TO_STRING_HPP
 
 #include <sstream>
 
@@ -12,10 +12,12 @@ namespace tao
 {
    namespace json
    {
-      namespace sax
+      namespace events
       {
-         // SAX consumer to build a JSON string representation
-         struct to_string : to_stream
+         // Events consumer to build a JSON string representation.
+
+         struct to_string
+            : public to_stream
          {
             std::ostringstream oss;
 
@@ -30,10 +32,10 @@ namespace tao
             }
          };
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

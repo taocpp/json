@@ -45,7 +45,7 @@ namespace tao
             throw;
          }
 
-      }  // internal
+      }  // namespace internal
 
       template< template< typename... > class Traits >
       class basic_value
@@ -1232,8 +1232,8 @@ namespace tao
 
       using value = basic_value< traits >;
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

@@ -8,8 +8,8 @@
 #include <string>
 #include <utility>
 
-#include "sax/from_stream.hpp"
-#include "sax/to_value.hpp"
+#include "events/from_stream.hpp"
+#include "events/to_value.hpp"
 
 namespace tao
 {
@@ -18,8 +18,8 @@ namespace tao
       template< template< typename... > class Traits >
       basic_value< Traits > from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
       {
-         sax::to_basic_value< Traits > consumer;
-         sax::from_stream( stream, consumer, source, maximum_buffer_size );
+         events::to_basic_value< Traits > consumer;
+         events::from_stream( stream, consumer, source, maximum_buffer_size );
          return std::move( consumer.value );
       }
 
@@ -45,8 +45,8 @@ namespace tao
          output = from_stream< Traits >( std::forward< Ts >( ts )... );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

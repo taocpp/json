@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_TO_STREAM_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_TO_STREAM_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_DEBUG_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_DEBUG_HPP
 
 #include <cstdint>
 #include <ostream>
@@ -15,119 +15,104 @@ namespace tao
 {
    namespace json
    {
-      namespace sax
+      namespace events
       {
-         // SAX consumer to build a JSON string representation
-         class to_stream
+         // Events consumer that writes the events to a stream for debug purposes.
+
+         class debug
          {
          private:
             std::ostream& os;
-            bool first;
-
-            void next()
-            {
-               if( !first )
-                  os.put( ',' );
-            }
 
          public:
-            explicit to_stream( std::ostream& os ) noexcept
-               : os( os ),
-                 first( true )
+            explicit debug( std::ostream& os ) noexcept
+               : os( os )
             {
             }
 
             void null()
             {
-               next();
-               os.write( "null", 4 );
+               os << "null\n";
             }
 
             void boolean( const bool v )
             {
-               next();
                if( v ) {
-                  os.write( "true", 4 );
+                  os << "boolean: true\n";
                }
                else {
-                  os.write( "false", 5 );
+                  os << "boolean: false\n";
                }
             }
 
             void number( const std::int64_t v )
             {
-               next();
-               os << v;
+               os << "std::int64_t: " << v << '\n';
             }
 
             void number( const std::uint64_t v )
             {
-               next();
-               os << v;
+               os << "std::uint64_t: " << v << '\n';
             }
 
             void number( const double v )
             {
-               next();
+               os << "double: ";
                json_double_conversion::Dtostr( os, v );
+               os << '\n';
             }
 
             void string( const std::string& v )
             {
-               next();
-               os.put( '"' );
+               os << "string: \"";
                internal::escape( os, v );
-               os.put( '"' );
+               os << "\"\n";
             }
 
             // array
             void begin_array()
             {
-               next();
-               os.put( '[' );
-               first = true;
+               os << "begin array\n";
             }
 
             void element()
             {
-               first = false;
+               os << "element\n";
             }
 
             void end_array()
             {
-               os.put( ']' );
+               os << "end array\n";
             }
 
             // object
             void begin_object()
             {
-               next();
-               os.put( '{' );
-               first = true;
+               os << "begin object\n";
             }
 
             void key( const std::string& v )
             {
-               string( v );
-               os.put( ':' );
-               first = true;
+               os << "key: \"";
+               internal::escape( os, v );
+               os << "\"\n";
             }
 
             void member()
             {
-               first = false;
+               os << "member\n";
             }
 
             void end_object()
             {
-               os.put( '}' );
+               os << "end object\n";
             }
          };
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

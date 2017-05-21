@@ -4,38 +4,38 @@
 #ifndef TAOCPP_JSON_INCLUDE_JSON_HPP
 #define TAOCPP_JSON_INCLUDE_JSON_HPP
 
-// DOM value
+// JSON Value
 #include "json/value.hpp"
 
-// SAX producers
-//#include "json/sax/from_stream.hpp" // includes PEGTL header/grammar
-#include "json/sax/from_string.hpp"  // includes PEGTL header/grammar
-#include "json/sax/from_value.hpp"   // DOM to SAX
-#include "json/sax/parse_file.hpp"   // includes PEGTL header/grammar
+// Events producers
+//#include "json/events/from_stream.hpp" // includes PEGTL header/grammar
+#include "json/events/from_string.hpp"  // includes PEGTL header/grammar
+#include "json/events/from_value.hpp"   // Value to Events
+#include "json/events/parse_file.hpp"   // includes PEGTL header/grammar
 
-// SAX consumers
-#include "json/sax/to_pretty_stream.hpp"
-#include "json/sax/to_stream.hpp"
-#include "json/sax/to_string.hpp"
-#include "json/sax/to_value.hpp"  // SAX to DOM
+// Events consumers
+#include "json/events/to_pretty_stream.hpp"
+#include "json/events/to_stream.hpp"
+#include "json/events/to_string.hpp"
+#include "json/events/to_value.hpp"  // Events to Value
 
-// SAX other
-#include "json/sax/debug.hpp"
-#include "json/sax/discard.hpp"
-#include "json/sax/hash.hpp"
-#include "json/sax/tee.hpp"
-#include "json/sax/validate_event_order.hpp"
+// Events other
+#include "json/events/debug.hpp"
+#include "json/events/discard.hpp"
+#include "json/events/hash.hpp"
+#include "json/events/tee.hpp"
+#include "json/events/validate_event_order.hpp"
 
-// DOM producers
+// Value producers
 #include "json/from_string.hpp"  // includes PEGTL header/grammar
 #include "json/parse_file.hpp"   // includes PEGTL header/grammar
 
-// DOM writers
+// Value writers
 #include "json/stream.hpp"  // operator<<
 #include "json/to_stream.hpp"
 #include "json/to_string.hpp"
 
-// DOM support
+// Value support
 #include "json/patch.hpp"
 #include "json/self_contained.hpp"
 //#include "json/diff.hpp"

@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_COMPARE_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_COMPARE_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_COMPARE_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_COMPARE_HPP
 
 #include "../value.hpp"
 
@@ -19,7 +19,7 @@ namespace tao
       namespace internal
       {
          template< template< typename... > class Traits >
-         class sax_compare
+         class events_compare
          {
          protected:
             using value_t = basic_value< Traits >;
@@ -31,13 +31,13 @@ namespace tao
             bool m_match = true;
 
          public:
-            sax_compare() = default;
+            events_compare() = default;
 
-            sax_compare( const sax_compare& ) = delete;
-            sax_compare( sax_compare&& ) = delete;
+            events_compare( const events_compare& ) = delete;
+            events_compare( events_compare&& ) = delete;
 
-            void operator=( const sax_compare& ) = delete;
-            void operator=( sax_compare&& ) = delete;
+            void operator=( const events_compare& ) = delete;
+            void operator=( events_compare&& ) = delete;
 
             void reset() noexcept
             {
@@ -213,16 +213,17 @@ namespace tao
             }
          };
 
-      }  // internal
+      }  // namespace internal
 
-      namespace sax
+      namespace events
       {
-         // SAX consumer that compares against a DOM value
+         // Events consumer that compares against a JSON Value.
+
          template< template< typename... > class Traits >
-         class basic_compare : public internal::sax_compare< Traits >
+         class basic_compare : public internal::events_compare< Traits >
          {
          private:
-            using typename internal::sax_compare< Traits >::value_t;
+            using typename internal::events_compare< Traits >::value_t;
             const value_t m_value;
 
          public:
@@ -246,17 +247,17 @@ namespace tao
 
             void reset()
             {
-               internal::sax_compare< Traits >::reset();
-               internal::sax_compare< Traits >::push( &m_value );
+               internal::events_compare< Traits >::reset();
+               internal::events_compare< Traits >::push( &m_value );
             }
          };
 
          using compare = basic_compare< traits >;
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

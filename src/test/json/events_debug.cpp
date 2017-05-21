@@ -3,8 +3,8 @@
 
 #include "test.hpp"
 
-#include <tao/json/sax/from_string.hpp>
-#include <tao/json/sax/to_string.hpp>
+#include <tao/json/events/debug.hpp>
+#include <tao/json/events/from_string.hpp>
 
 namespace tao
 {
@@ -12,14 +12,13 @@ namespace tao
    {
       void test( const std::string& v )
       {
-         sax::to_string consumer;
-         sax::from_string( v, consumer );
-         TEST_ASSERT( consumer.value() == v );
+         events::debug consumer( std::cout );
+         events::from_string( v, consumer );
       }
 
       void unit_test()
       {
-         test( "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
+         test( "[null,true,false,-42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
       }
 
    }  // json

@@ -41,10 +41,10 @@ namespace tao
             const Value* p;
          };
 
-      }  // internal
+      }  // namespace internal
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_PARSE_FILE_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_PARSE_FILE_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_PARSE_FILE_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_PARSE_FILE_HPP
 
 #include <utility>
 
@@ -16,9 +16,10 @@ namespace tao
 {
    namespace json
    {
-      namespace sax
+      namespace events
       {
-         // SAX producer to parse a file containing a JSON string representation
+         // Events producer to parse a file containing a JSON string representation.
+
          template< typename T, typename Consumer >
          void parse_file( T&& filename, Consumer& consumer )
          {
@@ -26,10 +27,10 @@ namespace tao
             json_pegtl::parse< internal::grammar, internal::action, internal::control >( in, consumer );
          }
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

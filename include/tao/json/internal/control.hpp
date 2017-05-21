@@ -44,10 +44,10 @@ namespace tao
          {
          };
 
-      }  // internal
+      }  // namespace internal
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

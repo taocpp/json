@@ -3,32 +3,32 @@
 
 #include "test.hpp"
 
-#include <tao/json/sax/compare.hpp>
-#include <tao/json/sax/from_string.hpp>
-#include <tao/json/sax/from_value.hpp>
+#include <tao/json/events/compare.hpp>
+#include <tao/json/events/from_string.hpp>
+#include <tao/json/events/from_value.hpp>
 #include <tao/json/value.hpp>
 
 namespace tao
 {
    namespace json
    {
-      bool test_value( const value& v, sax::compare& c )
+      bool test_value( const value& v, events::compare& c )
       {
          c.reset();
-         sax::from_value( v, c );
+         events::from_value( v, c );
          return c.match();
       }
 
-      bool test_parse( const std::string& v, sax::compare& c )
+      bool test_parse( const std::string& v, events::compare& c )
       {
          c.reset();
-         sax::from_string( v, c );
+         events::from_string( v, c );
          return c.match();
       }
 
       void test_null()
       {
-         sax::compare c_null( null );
+         events::compare c_null( null );
 
          TEST_ASSERT( test_value( null, c_null ) );
          TEST_ASSERT( !test_value( true, c_null ) );
@@ -69,7 +69,7 @@ namespace tao
 
       void test_boolean()
       {
-         sax::compare c_true( true );
+         events::compare c_true( true );
 
          TEST_ASSERT( !test_value( null, c_true ) );
          TEST_ASSERT( test_value( true, c_true ) );
@@ -105,7 +105,7 @@ namespace tao
 
       void test_number()
       {
-         sax::compare c_0( 0 );
+         events::compare c_0( 0 );
 
          TEST_ASSERT( !test_value( null, c_0 ) );
          TEST_ASSERT( !test_value( true, c_0 ) );
@@ -138,7 +138,7 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_0 ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_0 ) );
 
-         sax::compare c_42( 42 );
+         events::compare c_42( 42 );
 
          TEST_ASSERT( !test_value( null, c_42 ) );
          TEST_ASSERT( !test_value( true, c_42 ) );
@@ -157,7 +157,7 @@ namespace tao
 
       void test_string()
       {
-         sax::compare c_hello_world( "Hello, world!" );
+         events::compare c_hello_world( "Hello, world!" );
 
          TEST_ASSERT( !test_value( null, c_hello_world ) );
          TEST_ASSERT( !test_value( true, c_hello_world ) );
@@ -194,7 +194,7 @@ namespace tao
 
       void test_array()
       {
-         sax::compare c_empty_array( empty_array );
+         events::compare c_empty_array( empty_array );
 
          TEST_ASSERT( !test_value( null, c_empty_array ) );
          TEST_ASSERT( !test_value( true, c_empty_array ) );
@@ -232,7 +232,7 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_empty_array ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_empty_array ) );
 
-         sax::compare c_array( value::array( { 1, 2, 3 } ) );
+         events::compare c_array( value::array( { 1, 2, 3 } ) );
 
          TEST_ASSERT( !test_value( null, c_array ) );
          TEST_ASSERT( !test_value( true, c_array ) );
@@ -285,7 +285,7 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_array ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_array ) );
 
-         sax::compare c_nested_array( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ) );
+         events::compare c_nested_array( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ) );
 
          TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3 } ) } ), c_nested_array ) );
          TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, 4 } ) } ), c_nested_array ) );
@@ -301,7 +301,7 @@ namespace tao
 
       void test_object()
       {
-         sax::compare c_empty_object( empty_object );
+         events::compare c_empty_object( empty_object );
 
          TEST_ASSERT( !test_value( null, c_empty_object ) );
          TEST_ASSERT( !test_value( true, c_empty_object ) );
@@ -338,7 +338,7 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_empty_object ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_empty_object ) );
 
-         sax::compare c_object( { { "a", 1 }, { "b", 2 }, { "c", 3 } } );
+         events::compare c_object( { { "a", 1 }, { "b", 2 }, { "c", 3 } } );
 
          TEST_ASSERT( !test_value( null, c_object ) );
          TEST_ASSERT( !test_value( true, c_object ) );
@@ -396,33 +396,33 @@ namespace tao
          const value b = true;
          value v = { { "foo", 0 }, { "bar", &b }, { "baz", value::array( { null, &b, false, 0, 1, &s } ) } };
 
-         sax::compare c( v );
-         sax::from_value( v, c );
+         events::compare c( v );
+         events::from_value( v, c );
          TEST_ASSERT( c.match() );
 
          c.reset();
          v.at( "foo" ) = 42;
-         sax::from_value( v, c );
+         events::from_value( v, c );
          TEST_ASSERT( !c.match() );
 
          c.reset();
          v.at( "foo" ) = 0;
-         sax::from_value( v, c );
+         events::from_value( v, c );
          TEST_ASSERT( c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = 42;
-         sax::from_value( v, c );
+         events::from_value( v, c );
          TEST_ASSERT( !c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = true;
-         sax::from_value( v, c );
+         events::from_value( v, c );
          TEST_ASSERT( !c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = false;
-         sax::from_value( v, c );
+         events::from_value( v, c );
          TEST_ASSERT( c.match() );
       }
 

@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_DISCARD_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_DISCARD_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_DISCARD_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_DISCARD_HPP
 
 #include <cstdint>
 #include <string>
@@ -11,9 +11,10 @@ namespace tao
 {
    namespace json
    {
-      namespace sax
+      namespace events
       {
-         // SAX consumer that discards events
+         // Events consumer that discards events.
+
          struct discard
          {
             void null()
@@ -71,10 +72,10 @@ namespace tao
             }
          };
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

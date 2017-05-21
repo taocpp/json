@@ -403,8 +403,8 @@ namespace tao
          }
       };
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

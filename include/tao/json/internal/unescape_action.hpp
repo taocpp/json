@@ -23,10 +23,10 @@ namespace tao
          template<> struct unescape_action< rules::unescaped > : json_pegtl::unescape::append_all {};
          // clang-format on
 
-      }  // internal
+      }  // namespace internal
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

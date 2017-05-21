@@ -7,9 +7,9 @@
 #include <cstddef>
 #include <ostream>
 
-#include "sax/from_value.hpp"
-#include "sax/to_pretty_stream.hpp"
-#include "sax/to_stream.hpp"
+#include "events/from_value.hpp"
+#include "events/to_pretty_stream.hpp"
+#include "events/to_stream.hpp"
 #include "value.hpp"
 
 namespace tao
@@ -19,19 +19,19 @@ namespace tao
       template< template< typename... > class Traits >
       void to_stream( std::ostream& os, const basic_value< Traits >& v )
       {
-         sax::to_stream consumer( os );
-         sax::from_value( v, consumer );
+         events::to_stream consumer( os );
+         events::from_value( v, consumer );
       }
 
       template< template< typename... > class Traits >
       void to_stream( std::ostream& os, const basic_value< Traits >& v, const std::size_t indent )
       {
-         sax::to_pretty_stream consumer( os, indent );
-         sax::from_value( v, consumer );
+         events::to_pretty_stream consumer( os, indent );
+         events::from_value( v, consumer );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

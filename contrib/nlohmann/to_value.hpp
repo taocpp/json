@@ -15,7 +15,8 @@ namespace tao
    {
       namespace nlohmann
       {
-         // SAX consumer to build an nlohmann/json value
+         // Events consumer to build an nlohmann/json value.
+
          template< typename Value >
          class to_value
          {

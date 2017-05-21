@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_TO_VALUE_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_TO_VALUE_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_TO_VALUE_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_TO_VALUE_HPP
 
 #include "../value.hpp"
 
@@ -10,9 +10,10 @@ namespace tao
 {
    namespace json
    {
-      namespace sax
+      namespace events
       {
-         // SAX consumer to build a JSON value
+         // Events consumer to build a JSON Value.
+
          template< template< typename... > class Traits >
          class to_basic_value
          {
@@ -108,10 +109,10 @@ namespace tao
 
          using to_value = to_basic_value< traits >;
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

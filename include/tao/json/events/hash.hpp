@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_HASH_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_HASH_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_HASH_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_HASH_HPP
 
 #include <cstdint>
 #include <map>
@@ -17,9 +17,10 @@ namespace tao
 {
    namespace json
    {
-      namespace sax
+      namespace events
       {
-         // SAX consumer that calculates an SHA-256 hash
+         // Events consumer that calculates an SHA-256 hash.
+
          class hash
          {
          private:
@@ -157,10 +158,10 @@ namespace tao
             }
          };
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

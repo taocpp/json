@@ -93,8 +93,8 @@ namespace tao
          throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

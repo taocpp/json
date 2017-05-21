@@ -3,9 +3,9 @@
 
 #include "test.hpp"
 
-#include <tao/json/sax/from_string.hpp>
-#include <tao/json/sax/from_value.hpp>
-#include <tao/json/sax/hash.hpp>
+#include <tao/json/events/from_string.hpp>
+#include <tao/json/events/from_value.hpp>
+#include <tao/json/events/hash.hpp>
 #include <tao/json/value.hpp>
 
 namespace tao
@@ -14,15 +14,15 @@ namespace tao
    {
       std::string hash_value( const value& v )
       {
-         sax::hash h;
-         sax::from_value( v, h );
+         events::hash h;
+         events::from_value( v, h );
          return h.value();
       }
 
       std::string hash_parse( const std::string& v )
       {
-         sax::hash h;
-         sax::from_string( v, h );
+         events::hash h;
+         events::from_string( v, h );
          return h.value();
       }
 

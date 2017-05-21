@@ -99,7 +99,7 @@ namespace tao
             throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
          }
 
-      }  // internal
+      }  // namespace internal
 
       template< template< typename... > class Traits >
       void resolve_references( basic_value< Traits >& r )
@@ -107,8 +107,8 @@ namespace tao
          resolve_references( r, r );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

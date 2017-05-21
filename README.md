@@ -5,7 +5,7 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON value object, conversions from and to JSON string representation, and supports JSON Pointer and JSON Patch. It is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
+The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON Value object, conversions from and to JSON string representation, and supports JSON Pointer and JSON Patch. It is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
 
 ## Features
 
@@ -20,12 +20,13 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 * General
 
-  * Provides **DOM** and **SAX**-style APIs.
+  * Provides JSON Value (DOM-style).
+  * Provides JSON Events (SAX-style).
   * Numeric values are stored as `std::int64_t`, `std::uint64_t` or `double`.
   * Does *not* support duplicate keys in JSON objects.
   * Currently only supports UTF-8 as input and output encoding.
 
-* DOM API (aka "The value class")
+* Value API
 
   * Construction of objects and arrays via `std::initializer_list`.
   * Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
@@ -34,17 +35,16 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Indirect JSON values via non-owning C++ raw pointers for object sharing, reference resolution, and important optimization opportunities.
   * C++11 literal operator for JSON values.
 
-* SAX API
+* Events API
 
-  * Simple, straight forward SAX API.
-  * Parse JSON string representation to SAX events.
-  * Stream SAX to (prettified) JSON string representation.
-  * SAX-to-DOM value construction.
-  * DOM-to-SAX value traversal.
-  * Supports conversion from and to *foreign* DOM objects (check [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
-  * SAX comparator (against an existing DOM value).
-  * SAX hash algorithm (SHA-256 based).
-  * SAX schema validator.
+  * Simple, straightforward JSON Events API.
+  * Parse JSON string representation to JSON Events.
+  * Stream JSON Events to (prettified) JSON string representation.
+  * JSON Events-to-Value and Value-to-Events interfaces.
+  * Supports conversion from and to *other* JSON objects (check [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
+  * JSON Events comparison (against an existing JSON Value).
+  * JSON Events hash algorithm (SHA-256 based).
+  * JSON Events schema validator.
 
 ## Status
 
@@ -61,8 +61,8 @@ Until then, here are a few short indications on how to use this library:
 * Requires Clang or GCC with `-std=c++11` (or other compiler with sufficient C++11 support).
 * The library is header-only, to install and use simply copy the directory [`include/tao`](include/tao) to a convenient place and include the file [`include/tao/json.hpp`](include/tao/json.hpp).
 * The generic JSON value class, the main part of this library, is in [`include/tao/json/value.hpp`](include/tao/json/value.hpp).
-* To parse a JSON string representation to a DOM value, use one of the functions in [`include/tao/json/from_string.hpp`](include/tao/json/from_string.hpp) or [`include/tao/json/parse_file.hpp`](include/tao/json/parse_file.hpp).
-* To produce a JSON string representation from a DOM value, use one of the appropriate functions in [`include/tao/json/to_string.hpp`](include/tao/json/to_string.hpp) or [`include/tao/json/stream.hpp`](include/tao/json/stream.hpp).
+* To parse a JSON string representation to a JSON Value, use one of the functions in [`include/tao/json/from_string.hpp`](include/tao/json/from_string.hpp) or [`include/tao/json/parse_file.hpp`](include/tao/json/parse_file.hpp).
+* To produce a JSON string representation from a JSON Value, use one of the appropriate functions in [`include/tao/json/to_string.hpp`](include/tao/json/to_string.hpp) or [`include/tao/json/stream.hpp`](include/tao/json/stream.hpp).
 
 ## License
 

@@ -93,8 +93,8 @@ namespace tao
       constexpr empty_array_t empty_array{ 0 };
       constexpr empty_object_t empty_object{ 0 };
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_SAX_TO_PRETTY_STREAM_HPP
-#define TAOCPP_JSON_INCLUDE_SAX_TO_PRETTY_STREAM_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_TO_PRETTY_STREAM_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_TO_PRETTY_STREAM_HPP
 
 #include <cstddef>
 #include <cstdint>
@@ -17,9 +17,10 @@ namespace tao
 {
    namespace json
    {
-      namespace sax
+      namespace events
       {
-         // SAX consumer to build a JSON pretty string representation
+         // Events consumer to build a JSON pretty string representation.
+
          class to_pretty_stream
          {
          private:
@@ -32,8 +33,9 @@ namespace tao
 
             void next()
             {
-               if( !first )
+               if( !first ) {
                   os.put( ',' );
+               }
                if( after_key ) {
                   after_key = false;
                }
@@ -110,8 +112,9 @@ namespace tao
             void end_array()
             {
                current.resize( current.size() - indent );
-               if( !first )
+               if( !first ) {
                   os << current;
+               }
                os.put( ']' );
             }
 
@@ -140,16 +143,17 @@ namespace tao
             void end_object()
             {
                current.resize( current.size() - indent );
-               if( !first )
+               if( !first ) {
                   os << current;
+               }
                os.put( '}' );
             }
          };
 
-      }  // sax
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

@@ -14,7 +14,8 @@ namespace tao
    {
       namespace nlohmann
       {
-         // SAX producer for an nlohmann/json value
+         // Events producer from an nlohmann/json value.
+
          template< typename Value, typename Consumer >
          void from_value( const Value& v, Consumer& consumer )
          {

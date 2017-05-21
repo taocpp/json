@@ -7,8 +7,8 @@
 #include "nlohmann/json.hpp"
 #include "nlohmann/to_value.hpp"
 
-#include <tao/json/sax/from_string.hpp>
-#include <tao/json/sax/to_string.hpp>
+#include <tao/json/events/from_string.hpp>
+#include <tao/json/events/to_string.hpp>
 
 namespace tao
 {
@@ -17,7 +17,7 @@ namespace tao
       void unit_test()
       {
          tao::json::nlohmann::to_value value_consumer;
-         tao::json::sax::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]", value_consumer );
+         tao::json::events::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]", value_consumer );
 
          const auto& v = value_consumer.value;
 
@@ -39,7 +39,7 @@ namespace tao
          TEST_ASSERT( v[ 7 ].at( "a" ) == "b" );
          TEST_ASSERT( v[ 7 ].at( "c" ) == "d" );
 
-         tao::json::sax::to_string output_consumer;
+         tao::json::events::to_string output_consumer;
          tao::json::nlohmann::from_value( v, output_consumer );
 
          TEST_ASSERT( output_consumer.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );

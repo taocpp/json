@@ -22,7 +22,7 @@ namespace tao
       {
          std::size_t token_to_index( const std::string& key );
 
-      }  // internal
+      }  // namespace internal
 
       // RFC 6901
       class token
@@ -289,7 +289,7 @@ namespace tao
             return *v;
          }
 
-      }  // internal
+      }  // namespace internal
 
       inline namespace literals
       {
@@ -300,8 +300,8 @@ namespace tao
 
       }  // literals
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif
