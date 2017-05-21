@@ -124,7 +124,7 @@ namespace tao
                          template< typename... > class Control,
                          typename Input,
                          typename... States >
-               static bool match( Input& in, States&& ... st )
+               static bool match_impl( Input& in, States&&... st )
                {
                   switch( in.peek_char() ) {
                      case '"': return Control< string >::template match< A, M, Action, Control >( in, st... );
@@ -136,9 +136,24 @@ namespace tao
                      default: return Control< number >::template match< A, M, Action, Control >( in, st... );
                   }
                }
+
+               template< apply_mode A,
+                         rewind_mode M,
+                         template< typename... > class Action,
+                         template< typename... > class Control,
+                         typename Input,
+                         typename... States >
+               static bool match( Input& in, States&&... st )
+               {
+                  if( in.size( 1 ) && match_impl< A, M, Action, Control >( in, st... ) ) {
+                     in.discard();
+                     return true;
+                  }
+                  return false;
+               }
             };
 
-            struct value : padr< seq< sor_value, discard > > {};
+            struct value : padr< sor_value > {};
             struct array_element : value {};
 
             struct text : seq< star< ws >, value > {};
