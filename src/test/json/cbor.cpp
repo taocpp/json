@@ -90,13 +90,20 @@ namespace tao
          cbor_encode( "[{}]", "81a0" );
 
          cbor_decode( "00", "0" );
-         cbor_decode( "9fff", "[]" );
          cbor_decode( "80", "[]" );
+         cbor_decode( "9fff", "[]" );
          cbor_decode( "8100", "[0]" );
+         cbor_decode( "9f00ff", "[0]" );
          cbor_decode( "8180", "[[]]" );
+         cbor_decode( "9f80ff", "[[]]" );
+         cbor_decode( "9f9fffff", "[[]]" );
+         cbor_decode( "819fff", "[[]]" );
          cbor_decode( "8a00010203040506070809", "[0,1,2,3,4,5,6,7,8,9]" );
+         cbor_decode( "9f00010203040506070809ff", "[0,1,2,3,4,5,6,7,8,9]" );
          cbor_decode( "a0", "{}" );
+         cbor_decode( "bfff", "{}" );
          cbor_decode( "a1616100", "{\"a\":0}" );
+         cbor_decode( "bf616100ff", "{\"a\":0}" );
          cbor_decode( "7f6161626262ff", "\"abb\"" );
 
          // TODO: Decode tests for broken inputs.
@@ -120,6 +127,7 @@ namespace tao
          cbor_roundtrip( "[1,2,3,4]" );
          cbor_roundtrip( "{\"a\":[],\"b\":{}}" );
          cbor_roundtrip( "1.23" );
+         cbor_roundtrip( "345e-123" );
       }
 
    } // namespace json
