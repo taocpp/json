@@ -80,9 +80,13 @@ namespace tao
                number( major::UNSIGNED, v );
             }
 
-            void number( const double )
+            void number( const double v )
             {
-               assert( false );  // TODO
+               std::uint64_t n;
+               std::memcpy( &n, &v, sizeof( n ) );
+               n = json::internal::h_to_be( n );
+               os.put( char( std::uint8_t( major::OTHER ) + 27 ) );
+               os.write( reinterpret_cast< const char* >( &n ), sizeof( n ) );
             }
 
             void string( const std::string& v )

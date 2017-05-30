@@ -300,6 +300,18 @@ namespace tao
                return true;
             }
 
+            template< typename Floating, typename Input >
+            static double read_floating_impl( Input& in )
+            {
+               // TODO: Map NaN/Inf to JSON null.
+               if( in.size( sizeof( Floating ) ) > sizeof( Floating ) ) {
+                  const Floating result = json::internal::be_to_h< Floating >( in.current() + 1 );
+                  in.bump_in_this_line( 1 + sizeof( Floating ) );
+                  return result;
+               }
+               throw json_pegtl::parse_error( "unexpected end of input", in );
+            }
+
             template< typename Input, typename Consumer >
             static bool match_other( Input& in, Consumer& consumer )
             {
@@ -316,13 +328,14 @@ namespace tao
                      consumer.null();
                      in.bump_in_this_line();
                      return true;
-                  case 25:
-                  // TODO: 16bit float
                   case 26:
-                  // TODO: 32bit float
+                     consumer.number( read_floating_impl< float >( in ) );
+                     return true;
                   case 27:
-                  // TODO: 64bit float (double)
+                     consumer.number( read_floating_impl< double >( in ) );
+                     return true;
                   case 24:
+                  case 25:  // TODO: 16bit float?
                   default:
                      throw json_pegtl::parse_error( "unsupported minor for major 7", in );
                }

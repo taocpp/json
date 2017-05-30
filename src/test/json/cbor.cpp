@@ -119,6 +119,7 @@ namespace tao
          cbor_roundtrip( "[{}]" );
          cbor_roundtrip( "[1,2,3,4]" );
          cbor_roundtrip( "{\"a\":[],\"b\":{}}" );
+         cbor_roundtrip( "1.23" );
       }
 
    } // namespace json

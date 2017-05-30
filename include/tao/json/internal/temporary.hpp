@@ -4,8 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_JSON_INTERNAL_TEMPORARY_HPP
 #define TAOCPP_JSON_INCLUDE_JSON_INTERNAL_TEMPORARY_HPP
 
-#include <cassert>
 #include <cstdint>
+#include <cstring>
 
 namespace tao
 {
@@ -14,10 +14,8 @@ namespace tao
       namespace internal
       {
          // TODO: Where to put this header?
-         // TODO: Support float and double.
          // TODO: Support big-endian platforms (degrade to a nop).
          // TODO: Support other compilers (VS: intrin.h's _byteswap_ushort etc.)
-         // TODO: Support other platforms (don't perform unaligned memory access).
 
          template< unsigned S > struct bswap;
 
@@ -39,6 +37,15 @@ namespace tao
 
          template<> struct bswap< 4 >
          {
+            static double convert( float n ) noexcept
+            {
+               std::uint32_t u;
+               std::memcpy( &u, &n, 4 );
+               u = convert( u );
+               std::memcpy( &n, &u, 4 );
+               return n;
+            }
+
             static std::uint32_t convert( const std::uint32_t n ) noexcept
             {
                return __builtin_bswap32( n );
@@ -47,6 +54,15 @@ namespace tao
 
          template<> struct bswap< 8 >
          {
+            static double convert( double n ) noexcept
+            {
+               std::uint64_t u;
+               std::memcpy( &u, &n, 8 );
+               u = convert( u );
+               std::memcpy( &n, &u, 8 );
+               return n;
+            }
+
             static std::uint64_t convert( const std::uint64_t n ) noexcept
             {
                return __builtin_bswap64( n );
@@ -68,7 +84,9 @@ namespace tao
          template< typename N >
          N be_to_h( const void* p ) noexcept
          {
-            return internal::be_to_h( *reinterpret_cast< const N* >( p ) );
+            N n;
+            std::memcpy( &n, p, sizeof( n ) );
+            return internal::be_to_h( n );
          }
 
       } // internal
