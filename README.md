@@ -12,7 +12,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * Serious standard conformance!
 
   * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
-  * Achieves a **100% score** in the [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) conformance tests.
+  * Achieves a **100% score** in the [Native JSON Benchmark] conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
   * Experimental support for [RFC7049]: Concise Binary Object Representation (CBOR).
@@ -84,7 +84,7 @@ For questions and suggestions about the Art of C++ / JSON please contact the aut
 ## Thank You
 
 * Niels Lohmann and his [JSON library](https://github.com/nlohmann/json) for the inspiration.
-* Milo Yip and his [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark) for a reference to measure progress against.
+* Milo Yip and his [Native JSON Benchmark] for a reference to measure progress against.
 
 ## Additional Licenses
 
@@ -112,7 +112,9 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 >
 > THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-[RFC7159]: https://tools.ietf.org/html/rfc7159
 [ECMA-404]: http://www.ecma-international.org/publications/standards/Ecma-404.htm
+[Native JSON Benchmark]: https://github.com/miloyip/nativejson-benchmark
 [RFC6901]: https://tools.ietf.org/html/rfc6901
 [RFC6902]: https://tools.ietf.org/html/rfc6902
+[RFC7049]: https://tools.ietf.org/html/rfc7049
+[RFC7159]: https://tools.ietf.org/html/rfc7159
