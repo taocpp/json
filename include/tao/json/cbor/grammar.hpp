@@ -54,7 +54,7 @@ namespace tao
 
          }  // namespace internal
 
-         struct text
+         struct data
          {
             using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
 
@@ -342,7 +342,7 @@ namespace tao
             }
          };
 
-         struct grammar : json_pegtl::must< text, json_pegtl::eof >
+         struct grammar : json_pegtl::must< data, json_pegtl::eof >
          {
          };
 
