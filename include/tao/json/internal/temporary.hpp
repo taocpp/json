@@ -14,8 +14,25 @@ namespace tao
       namespace internal
       {
          // TODO: Where to put this header?
-         // TODO: Support big-endian platforms (degrade to a nop).
          // TODO: Support other compilers (VS: intrin.h's _byteswap_ushort etc.)
+         // TODO: More portable endian detection?
+
+#if not defined( __BYTE_ORDER__ )
+
+#error TODO!
+
+#elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+
+         template< unsigned S > struct bswap
+         {
+            template< typename T >
+            static T convert( const T n ) noexcept
+            {
+               return n;
+            }
+         };
+
+#elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 
          template< unsigned S > struct bswap;
 
@@ -37,7 +54,7 @@ namespace tao
 
          template<> struct bswap< 4 >
          {
-            static double convert( float n ) noexcept
+            static float convert( float n ) noexcept
             {
                std::uint32_t u;
                std::memcpy( &u, &n, 4 );
@@ -68,6 +85,12 @@ namespace tao
                return __builtin_bswap64( n );
             }
          };
+
+#else
+
+#error Unknown host byte order!
+
+#endif
 
          template< typename N >
          N h_to_be( const N n ) noexcept
