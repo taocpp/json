@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_JSON_CBOR_MAJOR_HH
-#define TAOCPP_JSON_INCLUDE_JSON_CBOR_MAJOR_HH
+#ifndef TAOCPP_JSON_INCLUDE_CBOR_MAJOR_HPP
+#define TAOCPP_JSON_INCLUDE_CBOR_MAJOR_HPP
 
 #include <cstdint>
 
@@ -27,10 +27,10 @@ namespace tao
          static constexpr std::uint8_t major_mask = 0xe0;
          static constexpr std::uint8_t minor_mask = 0x1f;
 
-      } // namespace cbor
+      }  // namespace cbor
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_JSON_CBOR_TO_STREAM_HPP
-#define TAOCPP_JSON_INCLUDE_JSON_CBOR_TO_STREAM_HPP
+#ifndef TAOCPP_JSON_INCLUDE_CBOR_TO_STREAM_HPP
+#define TAOCPP_JSON_INCLUDE_CBOR_TO_STREAM_HPP
 
 #include <cstdint>
 #include <ostream>
@@ -125,10 +125,10 @@ namespace tao
             }
          };
 
-      } // cbor
+      }  // namespace cbor
 
-   } // json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

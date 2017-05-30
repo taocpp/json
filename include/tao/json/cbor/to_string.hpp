@@ -30,10 +30,10 @@ namespace tao
             }
          };
 
-      } // cbor
+      }  // namespace cbor
 
-   } // json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

@@ -17,7 +17,7 @@ namespace tao
          template< typename Consumer >
          void from_string( const char* data, const std::size_t size, Consumer& consumer, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 0 )
          {
-            json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::events::from_string", byte, line, byte_in_line );
+            json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::cbor::from_string", byte, line, byte_in_line );
             json_pegtl::parse< cbor::grammar >( in, consumer );
          }
 
@@ -27,10 +27,10 @@ namespace tao
             cbor::from_string( data.data(), data.size(), consumer, source.c_str(), byte, line, byte_in_line );
          }
 
-      } // cbor
+      }  // namespace cbor
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

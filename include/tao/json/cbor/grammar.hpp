@@ -1,11 +1,11 @@
 // Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_JSON_CBOR_GRAMMAR_HPP
-#define TAOCPP_JSON_INCLUDE_JSON_CBOR_GRAMMAR_HPP
+#ifndef TAOCPP_JSON_INCLUDE_CBOR_GRAMMAR_HPP
+#define TAOCPP_JSON_INCLUDE_CBOR_GRAMMAR_HPP
 
-#include <utility>
 #include <cstdint>
+#include <utility>
 
 #include "major.hpp"
 
@@ -30,7 +30,7 @@ namespace tao
             template< typename Input >
             major peek_major( Input& in )
             {
-               return major( in.peek_byte() & major_mask );
+               return static_cast< major >( in.peek_byte() & major_mask );
             }
 
             template< typename Input >
@@ -49,10 +49,10 @@ namespace tao
             template< typename Input >
             major peek_major_safe( Input& in )
             {
-               return major( peek_byte_safe( in ) & major_mask );
+               return static_cast< major >( peek_byte_safe( in ) & major_mask );
             }
 
-         } // namespace internal
+         }  // namespace internal
 
          struct text
          {
@@ -70,8 +70,7 @@ namespace tao
                return ( !in.empty() ) && match_impl( in, consumer );
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_impl( Input& in, Consumer& consumer )
             {
                switch( internal::peek_major( in ) ) {
@@ -132,8 +131,7 @@ namespace tao
                return result;
             }
 
-            template< typename Unsigned,
-                      typename Input >
+            template< typename Unsigned, typename Input >
             static std::uint64_t read_unsigned_impl( Input& in )
             {
                if( in.size( sizeof( Unsigned ) ) > sizeof( Unsigned ) ) {
@@ -168,16 +166,14 @@ namespace tao
                }
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_unsigned( Input& in, Consumer& consumer )
             {
                consumer.number( read_unsigned( in ) );
                return true;
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_negative( Input& in, Consumer& consumer )
             {
                const auto u = read_unsigned( in );
@@ -221,24 +217,21 @@ namespace tao
                return result;
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_binary( Input& in, Consumer& consumer )
             {
                consumer.string( read_string( in, major::BINARY ) );  // TODO: Convert to consumer.binary() if/when available.
                return true;
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_string( Input& in, Consumer& consumer )
             {
                consumer.string( read_string( in, major::STRING ) );
                return true;
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_array( Input& in, Consumer& consumer )
             {
                consumer.begin_array();
@@ -262,8 +255,7 @@ namespace tao
                return true;
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_object( Input& in, Consumer& consumer )
             {
                consumer.begin_object();
@@ -297,16 +289,14 @@ namespace tao
                return true;
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_tag( Input& in, Consumer& )
             {
                skip_unsigned( in );
                return true;
             }
 
-            template< typename Input,
-                      typename Consumer >
+            template< typename Input, typename Consumer >
             static bool match_other( Input& in, Consumer& consumer )
             {
                switch( internal::peek_minor( in ) ) {
@@ -323,11 +313,11 @@ namespace tao
                      in.bump_in_this_line();
                      return true;
                   case 25:
-                     // TODO: 16bit float
+                  // TODO: 16bit float
                   case 26:
-                     // TODO: 32bit float
+                  // TODO: 32bit float
                   case 27:
-                     // TODO: 64bit float (double)
+                  // TODO: 64bit float (double)
                   case 24:
                   default:
                      throw json_pegtl::parse_error( "unsupported minor for major 7", in );
@@ -335,12 +325,14 @@ namespace tao
             }
          };
 
-         struct grammar : json_pegtl::must< text, json_pegtl::eof > {};
+         struct grammar : json_pegtl::must< text, json_pegtl::eof >
+         {
+         };
 
-      } // cbor
+      }  // namespace cbor
 
-   } // json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif
