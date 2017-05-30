@@ -20,6 +20,14 @@ namespace tao
          namespace internal
          {
             template< typename Input >
+            void throw_on_empty( Input& in )
+            {
+               if( in.empty() ) {
+                  throw json_pegtl::parse_error( "unexpected end of input", in );
+               }
+            }
+
+            template< typename Input >
             major peek_major( Input& in )
             {
                return major( in.peek_byte() & major_mask );
@@ -34,9 +42,7 @@ namespace tao
             template< typename Input >
             std::uint8_t peek_byte_safe( Input& in )
             {
-               if( in.empty() ) {
-                  throw json_pegtl::parse_error( "unexpected end of input", in );
-               }
+               throw_on_empty( in );
                return in.peek_byte();
             }
 
@@ -239,6 +245,7 @@ namespace tao
                if( internal::peek_minor( in ) != minor_mask ) {
                   const auto count = read_unsigned( in );
                   for( std::uint64_t i = 0; i < count; ++i ) {
+                     internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.element();
                   }
@@ -266,7 +273,9 @@ namespace tao
                      if( internal::peek_major_safe( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
+                     internal::throw_on_empty( in );
                      consumer.key( read_string( in, major::STRING ) );
+                     internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.member();
                   }
@@ -278,6 +287,7 @@ namespace tao
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
                      consumer.key( read_string( in, major::STRING ) );
+                     internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.member();
                   }
