@@ -96,7 +96,12 @@ namespace tao
                os.put( char( std::uint8_t( major::ARRAY ) + minor_mask ) );
             }
 
-            void element()
+            void begin_array( const std::size_t size )
+            {
+               number( major::ARRAY, size );
+            }
+
+            void element() noexcept
             {
             }
 
@@ -105,9 +110,18 @@ namespace tao
                os.put( char( 0xff ) );
             }
 
+            void end_array( const std::size_t ) noexcept
+            {
+            }
+
             void begin_object()
             {
                os.put( char( std::uint8_t( major::OBJECT ) + minor_mask ) );
+            }
+
+            void begin_object( const std::size_t size )
+            {
+               number( major::OBJECT, size );
             }
 
             void key( const std::string& v )
@@ -115,13 +129,17 @@ namespace tao
                string( v );
             }
 
-            void member()
+            void member() noexcept
             {
             }
 
             void end_object()
             {
                os.put( char( 0xff ) );
+            }
+
+            void end_object( const std::size_t ) noexcept
+            {
             }
          };
 

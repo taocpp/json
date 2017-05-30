@@ -69,10 +69,14 @@ namespace tao
                os << "\"\n";
             }
 
-            // array
             void begin_array()
             {
                os << "begin array\n";
+            }
+
+            void begin_array( const std::size_t size )
+            {
+               os << "begin array " << size << '\n';
             }
 
             void element()
@@ -85,10 +89,19 @@ namespace tao
                os << "end array\n";
             }
 
-            // object
+            void end_array( const std::size_t size )
+            {
+               os << "end array " << size << '\n';
+            }
+
             void begin_object()
             {
                os << "begin object\n";
+            }
+
+            void begin_object( const std::size_t size )
+            {
+               os << "begin object " << size << '\n';
             }
 
             void key( const std::string& v )
@@ -106,6 +119,11 @@ namespace tao
             void end_object()
             {
                os << "end object\n";
+            }
+
+            void end_object( const std::size_t size )
+            {
+               os << "end object " << size << '\n';
             }
          };
 

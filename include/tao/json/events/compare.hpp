@@ -112,8 +112,7 @@ namespace tao
                }
             }
 
-            // array
-            void begin_array()
+            void begin_array( const std::size_t = 0 )
             {
                if( m_current.back() == nullptr ) {
                   m_match = false;
@@ -151,7 +150,7 @@ namespace tao
                }
             }
 
-            void end_array() noexcept
+            void end_array( const std::size_t = 0 ) noexcept
             {
                m_current.pop_back();
                if( m_match ) {
@@ -162,8 +161,7 @@ namespace tao
                m_array_index.pop_back();
             }
 
-            // object
-            void begin_object()
+            void begin_object( const std::size_t = 0 )
             {
                if( m_current.back() == nullptr ) {
                   m_match = false;
@@ -202,7 +200,7 @@ namespace tao
                m_current.pop_back();
             }
 
-            void end_object() noexcept
+            void end_object( const std::size_t = 0 ) noexcept
             {
                if( m_match ) {
                   if( m_object_keys.back().size() != current().unsafe_get_object().size() ) {

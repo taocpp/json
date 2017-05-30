@@ -95,8 +95,7 @@ namespace tao
                os.put( '"' );
             }
 
-            // array
-            void begin_array()
+            void begin_array( const std::size_t = 0 )
             {
                next();
                os.put( '[' );
@@ -109,7 +108,7 @@ namespace tao
                first = false;
             }
 
-            void end_array()
+            void end_array( const std::size_t = 0 )
             {
                current.resize( current.size() - indent );
                if( !first ) {
@@ -118,8 +117,7 @@ namespace tao
                os.put( ']' );
             }
 
-            // object
-            void begin_object()
+            void begin_object( const std::size_t = 0 )
             {
                next();
                os.put( '{' );
@@ -140,7 +138,7 @@ namespace tao
                first = false;
             }
 
-            void end_object()
+            void end_object( const std::size_t = 0 )
             {
                current.resize( current.size() - indent );
                if( !first ) {

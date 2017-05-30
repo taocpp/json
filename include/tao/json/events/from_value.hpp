@@ -43,21 +43,21 @@ namespace tao
                   consumer.string( v.unsafe_get_string() );
                   return;
                case type::ARRAY:
-                  consumer.begin_array();
+                  consumer.begin_array( v.unsafe_get_array().size() );
                   for( const auto& e : v.unsafe_get_array() ) {
                      events::from_value( e, consumer );
                      consumer.element();
                   }
-                  consumer.end_array();
+                  consumer.end_array( v.unsafe_get_array().size() );
                   return;
                case type::OBJECT:
-                  consumer.begin_object();
+                  consumer.begin_object( v.unsafe_get_object().size() );
                   for( const auto& e : v.unsafe_get_object() ) {
                      consumer.key( e.first );
                      events::from_value( e.second, consumer );
                      consumer.member();
                   }
-                  consumer.end_object();
+                  consumer.end_object( v.unsafe_get_object().size() );
                   return;
                case type::RAW_PTR:
                   if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
@@ -101,21 +101,21 @@ namespace tao
                   consumer.string( std::move( v.unsafe_get_string() ) );
                   return;
                case type::ARRAY:
-                  consumer.begin_array();
+                  consumer.begin_array( v.unsafe_get_array().size() );
                   for( auto&& e : v.unsafe_get_array() ) {
                      events::from_value( std::move( e ), consumer );
                      consumer.element();
                   }
-                  consumer.end_array();
+                  consumer.end_array( v.unsafe_get_array().size() );
                   return;
                case type::OBJECT:
-                  consumer.begin_object();
+                  consumer.begin_object( v.unsafe_get_object().size() );
                   for( auto&& e : v.unsafe_get_object() ) {
                      consumer.key( std::move( e.first ) );
                      events::from_value( std::move( e.second ), consumer );
                      consumer.member();
                   }
-                  consumer.end_object();
+                  consumer.end_object( v.unsafe_get_object().size() );
                   return;
                case type::RAW_PTR:
                   if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {

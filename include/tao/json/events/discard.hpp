@@ -17,57 +17,55 @@ namespace tao
 
          struct discard
          {
-            void null()
+            void null() noexcept
             {
             }
 
-            void boolean( const bool )
+            void boolean( const bool ) noexcept
             {
             }
 
-            void number( const std::int64_t )
+            void number( const std::int64_t ) noexcept
             {
             }
 
-            void number( const std::uint64_t )
+            void number( const std::uint64_t ) noexcept
             {
             }
 
-            void number( const double )
+            void number( const double ) noexcept
             {
             }
 
-            void string( const std::string& )
+            void string( const std::string& ) noexcept
             {
             }
 
-            // array
-            void begin_array()
+            void begin_array( const std::size_t = 0 ) noexcept
             {
             }
 
-            void element()
+            void element() noexcept
             {
             }
 
-            void end_array()
+            void end_array( const std::size_t = 0 ) noexcept
             {
             }
 
-            // object
-            void begin_object()
+            void begin_object( const std::size_t = 0 ) noexcept
             {
             }
 
-            void key( const std::string& )
+            void key( const std::string& ) noexcept
             {
             }
 
-            void member()
+            void member() noexcept
             {
             }
 
-            void end_object()
+            void end_object( const std::size_t = 0 ) noexcept
             {
             }
          };

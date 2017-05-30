@@ -59,10 +59,15 @@ namespace tao
                value.unsafe_emplace_string( std::move( v ) );
             }
 
-            // array
             void begin_array()
             {
                stack_.push_back( empty_array );
+            }
+
+            void begin_array( const std::size_t size )
+            {
+               begin_array();
+               stack_.back().unsafe_get_array().reserve( size );
             }
 
             void element()
@@ -71,14 +76,13 @@ namespace tao
                value.discard();
             }
 
-            void end_array()
+            void end_array( const std::size_t = 0 )
             {
                value = std::move( stack_.back() );
                stack_.pop_back();
             }
 
-            // object
-            void begin_object()
+            void begin_object( const std::size_t = 0 )
             {
                stack_.push_back( empty_object );
             }
@@ -100,7 +104,7 @@ namespace tao
                keys_.pop_back();
             }
 
-            void end_object()
+            void end_object( const std::size_t = 0 )
             {
                value = std::move( stack_.back() );
                stack_.pop_back();

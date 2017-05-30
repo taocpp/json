@@ -33,6 +33,7 @@ namespace tao
 
             state_t state = EXPECT_TOP_LEVEL_VALUE;
             std::vector< state_t > stack;
+            // TODO: Another stack for array/object sizes.
 
          public:
             bool is_complete() const noexcept
@@ -184,8 +185,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            // array
-            void begin_array()
+            void begin_array( const std::size_t = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -233,7 +233,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            void end_array()
+            void end_array( const std::size_t = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -256,8 +256,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            // object
-            void begin_object()
+            void begin_object( const std::size_t = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -328,7 +327,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            void end_object()
+            void end_object( const std::size_t = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:

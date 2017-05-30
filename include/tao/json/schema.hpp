@@ -1461,8 +1461,7 @@ namespace tao
                   m_hash->string( v );
             }
 
-            // array
-            void begin_array()
+            void begin_array( const std::size_t = 0 )
             {
                if( m_match )
                   validate_type( ARRAY );
@@ -1549,7 +1548,7 @@ namespace tao
                }
             }
 
-            void end_array()
+            void end_array( const std::size_t = 0 )
             {
                if( m_match )
                   validate_enum( []( events_compare< Traits >& c ) { c.end_array(); return ! c.match(); } );
@@ -1579,8 +1578,7 @@ namespace tao
                m_count.pop_back();
             }
 
-            // object
-            void begin_object()
+            void begin_object( const std::size_t = 0 )
             {
                if( m_match )
                   validate_type( OBJECT );
@@ -1656,7 +1654,7 @@ namespace tao
                ++m_count.back();
             }
 
-            void end_object()
+            void end_object( const std::size_t = 0 )
             {
                if( m_match )
                   validate_enum( []( events_compare< Traits >& c ) { c.end_object(); return ! c.match(); } );

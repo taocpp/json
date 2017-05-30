@@ -54,19 +54,19 @@ namespace tao
          };
 
          template< typename N >
-         N h_to_be( const N n )
+         N h_to_be( const N n ) noexcept
          {
             return N( bswap< sizeof( N ) >::convert( n ) );
          }
 
          template< typename N >
-         N be_to_h( const N n )
+         N be_to_h( const N n ) noexcept
          {
             return h_to_be( n );
          }
 
          template< typename N >
-         N be_to_h( const void* p )
+         N be_to_h( const void* p ) noexcept
          {
             return internal::be_to_h( *reinterpret_cast< const N* >( p ) );
          }

@@ -81,13 +81,13 @@ namespace tao
          //         cbor_encode( '"' + std::string( std::size_t( 4294967295 ), 'D' ) + '"', "7affffffff" + std::string( std::size_t( 8589934590 ), '4' ) );  // Uses 24GB of RAM.
          //         cbor_encode( '"' + std::string( std::size_t( 4294967296 ), 'D' ) + '"', "7b0000000100000000" + std::string( std::size_t( 8589934592 ), '4' ) );  // Uses 24GB of RAM.
 
-         cbor_encode( "[]", "9fff" );
-         cbor_encode( "{}", "bfff" );
+         cbor_encode( "[]", "80" );
+         cbor_encode( "{}", "a0" );
 
-         cbor_encode( "[1,2,3,4]", "9f01020304ff" );
-         cbor_encode( "{\"a\":0,\"b\":1}", "bf616100616201ff" );
+         cbor_encode( "[1,2,3,4]", "8401020304" );
+         cbor_encode( "{\"a\":0,\"b\":1}", "a2616100616201" );
 
-         cbor_encode( "[{}]", "9fbfffff" );
+         cbor_encode( "[{}]", "81a0" );
 
          cbor_decode( "00", "0" );
          cbor_decode( "9fff", "[]" );

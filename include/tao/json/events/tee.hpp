@@ -77,11 +77,16 @@ namespace tao
                (void)sink{ ( std::get< Is >( t ).string( v ), true )... };
             }
 
-            // array
             template< typename... Ts >
             static void begin_array( std::tuple< Ts... >& t )
             {
                (void)sink{ ( std::get< Is >( t ).begin_array(), true )... };
+            }
+
+            template< typename... Ts >
+            static void begin_array( std::tuple< Ts... >& t, const std::size_t size )
+            {
+               (void)sink{ ( std::get< Is >( t ).begin_array( size ), true )... };
             }
 
             template< typename... Ts >
@@ -96,11 +101,22 @@ namespace tao
                (void)sink{ ( std::get< Is >( t ).end_array(), true )... };
             }
 
-            // object
+            template< typename... Ts >
+            static void end_array( std::tuple< Ts... >& t, const std::size_t size )
+            {
+               (void)sink{ ( std::get< Is >( t ).end_array( size ), true )... };
+            }
+
             template< typename... Ts >
             static void begin_object( std::tuple< Ts... >& t )
             {
                (void)sink{ ( std::get< Is >( t ).begin_object(), true )... };
+            }
+
+            template< typename... Ts >
+            static void begin_object( std::tuple< Ts... >& t, const std::size_t size )
+            {
+               (void)sink{ ( std::get< Is >( t ).begin_object( size ), true )... };
             }
 
             template< typename... Ts >
@@ -119,6 +135,12 @@ namespace tao
             static void end_object( std::tuple< Ts... >& t )
             {
                (void)sink{ ( std::get< Is >( t ).end_object(), true )... };
+            }
+
+            template< typename... Ts >
+            static void end_object( std::tuple< Ts... >& t, const std::size_t size )
+            {
+               (void)sink{ ( std::get< Is >( t ).end_object( size ), true )... };
             }
          };
 
@@ -184,10 +206,14 @@ namespace tao
                std::get< S - 1 >( ts ).string( std::move( v ) );
             }
 
-            // array
             void begin_array()
             {
                internal::events_apply< I >::begin_array( ts );
+            }
+
+            void begin_array( const std::size_t size )
+            {
+               internal::events_apply< I >::begin_array( ts, size );
             }
 
             void element()
@@ -200,10 +226,19 @@ namespace tao
                internal::events_apply< I >::end_array( ts );
             }
 
-            // object
+            void end_array( const std::size_t size )
+            {
+               internal::events_apply< I >::end_array( ts, size );
+            }
+
             void begin_object()
             {
                internal::events_apply< I >::begin_object( ts );
+            }
+
+            void begin_object( const std::size_t size )
+            {
+               internal::events_apply< I >::begin_object( ts, size );
             }
 
             void key( const std::string& v )
@@ -225,6 +260,11 @@ namespace tao
             void end_object()
             {
                internal::events_apply< I >::end_object( ts );
+            }
+
+            void end_object( const std::size_t size )
+            {
+               internal::events_apply< I >::end_object( ts, size );
             }
          };
 

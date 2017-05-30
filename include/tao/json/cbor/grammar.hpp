@@ -234,34 +234,36 @@ namespace tao
             template< typename Input, typename Consumer >
             static bool match_array( Input& in, Consumer& consumer )
             {
-               consumer.begin_array();
                if( internal::peek_minor( in ) != minor_mask ) {
-                  const auto count = read_unsigned( in );
-                  for( std::uint64_t i = 0; i < count; ++i ) {
+                  const auto size = read_unsigned( in );
+                  consumer.begin_array( size );
+                  for( std::uint64_t i = 0; i < size; ++i ) {
                      internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.element();
                   }
+                  consumer.end_array( size );
                }
                else {
                   in.bump_in_this_line();
+                  consumer.begin_array();
                   while( internal::peek_byte_safe( in ) != 0xff ) {
                      match_impl( in, consumer );
                      consumer.element();
                   }
                   in.bump_in_this_line();
+                  consumer.end_array();
                }
-               consumer.end_array();
                return true;
             }
 
             template< typename Input, typename Consumer >
             static bool match_object( Input& in, Consumer& consumer )
             {
-               consumer.begin_object();
                if( internal::peek_minor( in ) != minor_mask ) {
-                  const auto count = read_unsigned( in );
-                  for( std::uint64_t i = 0; i < count; ++i ) {
+                  const auto size = read_unsigned( in );
+                  consumer.begin_object( size );
+                  for( std::uint64_t i = 0; i < size; ++i ) {
                      if( internal::peek_major_safe( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
@@ -271,9 +273,11 @@ namespace tao
                      match_impl( in, consumer );
                      consumer.member();
                   }
+                  consumer.end_object( size );
                }
                else {
                   in.bump_in_this_line();
+                  consumer.begin_object();
                   while( internal::peek_byte_safe( in ) != 0xff ) {
                      if( internal::peek_major( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
@@ -284,8 +288,8 @@ namespace tao
                      consumer.member();
                   }
                   in.bump_in_this_line();
+                  consumer.end_object();
                }
-               consumer.end_object();
                return true;
             }
 

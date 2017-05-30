@@ -106,8 +106,7 @@ namespace tao
                m_digests.back()->feed( v );
             }
 
-            // array
-            void begin_array()
+            void begin_array( const std::size_t = 0 )
             {
                m_digests.back()->feed( '[' );
             }
@@ -116,13 +115,12 @@ namespace tao
             {
             }
 
-            void end_array()
+            void end_array( const std::size_t = 0 )
             {
                m_digests.back()->feed( ']' );
             }
 
-            // object
-            void begin_object()
+            void begin_object( const std::size_t = 0 )
             {
                m_digests.back()->feed( '{' );
                m_properties.emplace_back();
@@ -146,7 +144,7 @@ namespace tao
                m_digests.back()->reset();
             }
 
-            void end_object()
+            void end_object( const std::size_t = 0 )
             {
                m_digests.pop_back();
                for( const auto& e : m_properties.back() ) {
