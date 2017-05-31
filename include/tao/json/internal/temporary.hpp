@@ -7,15 +7,16 @@
 #include <cstdint>
 #include <cstring>
 
+// TODO: Where to put this header?
+// TODO: Support other compilers (VS: intrin.h's _byteswap_ushort etc.)
+// TODO: More portable endian detection?
+
 namespace tao
 {
    namespace json
    {
       namespace internal
       {
-         // TODO: Where to put this header?
-         // TODO: Support other compilers (VS: intrin.h's _byteswap_ushort etc.)
-         // TODO: More portable endian detection?
 
 #if not defined( __BYTE_ORDER__ )
 
@@ -23,7 +24,8 @@ namespace tao
 
 #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 
-         template< unsigned S > struct bswap
+         template< unsigned S >
+         struct bswap
          {
             template< typename T >
             static T convert( const T n ) noexcept
@@ -34,9 +36,11 @@ namespace tao
 
 #elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 
-         template< unsigned S > struct bswap;
+         template< unsigned S >
+         struct bswap;
 
-         template<> struct bswap< 1 >
+         template<>
+         struct bswap< 1 >
          {
             static std::uint8_t convert( const std::uint8_t n ) noexcept
             {
@@ -44,7 +48,8 @@ namespace tao
             }
          };
 
-         template<> struct bswap< 2 >
+         template<>
+         struct bswap< 2 >
          {
             static std::uint16_t convert( const std::uint16_t n ) noexcept
             {
@@ -52,7 +57,8 @@ namespace tao
             }
          };
 
-         template<> struct bswap< 4 >
+         template<>
+         struct bswap< 4 >
          {
             static float convert( float n ) noexcept
             {
@@ -69,7 +75,8 @@ namespace tao
             }
          };
 
-         template<> struct bswap< 8 >
+         template<>
+         struct bswap< 8 >
          {
             static double convert( double n ) noexcept
             {
@@ -112,10 +119,10 @@ namespace tao
             return internal::be_to_h( n );
          }
 
-      } // internal
+      }  // namespace internal
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

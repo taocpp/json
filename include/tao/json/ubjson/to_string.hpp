@@ -31,10 +31,10 @@ namespace tao
             }
          };
 
-      } // ubjson
+      }  // namespace ubjson
 
-   } // json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

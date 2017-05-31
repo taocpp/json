@@ -32,16 +32,16 @@ namespace tao
             assert( !( data.size() & 1 ) );
             std::string result;
             result.reserve( data.size() / 2 );
-            for( std::string::size_type i = 0; i < data.size(); i+= 2 ) {
+            for( std::string::size_type i = 0; i < data.size(); i += 2 ) {
                result += ( unhex( data[ i ] ) << 4 ) + unhex( data[ i + 1 ] );
             }
             return result;
          }
 
-      } // internal
+      }  // namespace internal
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif
