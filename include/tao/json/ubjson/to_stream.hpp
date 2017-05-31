@@ -9,6 +9,7 @@
 #include <ostream>
 #include <string>
 
+#include "../byte.hpp"
 #include "../internal/temporary.hpp"
 
 namespace tao
@@ -116,7 +117,7 @@ namespace tao
                }
             }
 
-            void binary( const std::vector< std::uint8_t >& v )
+            void binary( const std::vector< byte >& v )
             {
                // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
                os.write( "[$U#", 4 );

@@ -17,6 +17,7 @@
 #include "internal/totally_ordered.hpp"
 #include "internal/value_union.hpp"
 
+#include "byte.hpp"
 #include "pair.hpp"
 #include "pointer.hpp"
 #include "single.hpp"
@@ -33,6 +34,7 @@ namespace tao
          struct has_as : std::false_type
          {
          };
+
          template< typename T, typename V >
          struct has_as< T, V, decltype( T::as( std::declval< const V& >() ), void() ) > : std::true_type
          {
@@ -65,7 +67,7 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
            internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, const char*, type::STRING >,
-           internal::totally_ordered< basic_value< Traits >, std::vector< std::uint8_t >, type::BINARY >,
+           internal::totally_ordered< basic_value< Traits >, std::vector< byte >, type::BINARY >,
            internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
@@ -75,7 +77,7 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
       {
       public:
-         using binary_t = std::vector< std::uint8_t >;
+         using binary_t = std::vector< byte >;
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
 
@@ -707,7 +709,7 @@ namespace tao
          template< typename... Ts >
          void unsafe_emplace_binary( Ts&&... ts )
          {
-            new( &m_union.x ) std::vector< std::uint8_t >( std::forward< Ts >( ts )... );
+            new( &m_union.x ) std::vector< byte >( std::forward< Ts >( ts )... );
             m_type = json::type::BINARY;
          }
 
@@ -1015,7 +1017,7 @@ namespace tao
                   assert( ( r.discard(), true ) );
                   return;
                case json::type::BINARY:
-                  new( &m_union.x ) std::vector< std::uint8_t >( std::move( r.m_union.x ) );
+                  new( &m_union.x ) std::vector< byte >( std::move( r.m_union.x ) );
                   assert( ( r.discard(), true ) );
                   return;
                case json::type::ARRAY:
@@ -1059,7 +1061,7 @@ namespace tao
                   new( &m_union.s ) std::string( r.m_union.s );
                   return;
                case json::type::BINARY:
-                  new( &m_union.x ) std::vector< std::uint8_t >( r.m_union.x );
+                  new( &m_union.x ) std::vector< byte >( r.m_union.x );
                   return;
                case json::type::ARRAY:
                   new( &m_union.a ) std::vector< basic_value >( r.m_union.a );

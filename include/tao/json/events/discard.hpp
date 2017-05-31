@@ -6,6 +6,9 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
+
+#include "../byte.hpp"
 
 namespace tao
 {
@@ -41,7 +44,7 @@ namespace tao
             {
             }
 
-            void binary( const std::vector< std::uint8_t >& ) noexcept
+            void binary( const std::vector< byte >& ) noexcept
             {
             }
 

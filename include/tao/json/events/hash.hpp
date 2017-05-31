@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+#include "../byte.hpp"
 #include "../internal/sha256.hpp"
 
 namespace tao
@@ -106,7 +107,7 @@ namespace tao
                m_digests.back()->feed( v );
             }
 
-            void binary( const std::vector< std::uint8_t >& v )
+            void binary( const std::vector< byte >& v )
             {
                m_digests.back()->feed( 'x' );
                const auto s = v.size();

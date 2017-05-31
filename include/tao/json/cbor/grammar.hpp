@@ -9,6 +9,7 @@
 
 #include "major.hpp"
 
+#include "../byte.hpp"
 #include "../internal/temporary.hpp"
 
 namespace tao
@@ -231,7 +232,7 @@ namespace tao
             template< typename Input, typename Consumer >
             static bool match_binary( Input& in, Consumer& consumer )
             {
-               consumer.binary( read_string< std::vector< std::uint8_t > >( in, major::BINARY ) );
+               consumer.binary( read_string< std::vector< byte > >( in, major::BINARY ) );
                return true;
             }
 

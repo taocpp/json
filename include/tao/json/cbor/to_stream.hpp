@@ -10,6 +10,7 @@
 
 #include "major.hpp"
 
+#include "../byte.hpp"
 #include "../internal/temporary.hpp"
 
 namespace tao
@@ -95,7 +96,7 @@ namespace tao
                os.write( v.data(), v.size() );
             }
 
-            void binary( const std::vector< std::uint8_t >& v )
+            void binary( const std::vector< byte >& v )
             {
                number( major::BINARY, v.size() );
                os.write( reinterpret_cast< const char* >( v.data() ), v.size() );

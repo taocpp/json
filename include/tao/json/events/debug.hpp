@@ -5,11 +5,13 @@
 #define TAOCPP_JSON_INCLUDE_EVENTS_DEBUG_HPP
 
 #include <cstdint>
+#include <iomanip>
 #include <ostream>
 #include <vector>
 
 #include "../external/double.hpp"
 
+#include "../byte.hpp"
 #include "../internal/escape.hpp"
 
 namespace tao
@@ -70,9 +72,15 @@ namespace tao
                os << "\"\n";
             }
 
-            void binary( const std::vector< std::uint8_t >& )
+            void binary( const std::vector< byte >& v )
             {
-               os<< "binary: TODO hexdump\n";
+               auto f = os.flags();
+               os << "binary: " << std::hex << std::setfill( '0' );
+               for( const auto c : v ) {
+                  os << std::setw( 2 ) << to_integer< unsigned char >( c );
+               }
+               os << "\n";
+               os.flags( f );
             }
 
             void begin_array()

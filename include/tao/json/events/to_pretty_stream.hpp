@@ -11,6 +11,7 @@
 
 #include "../external/double.hpp"
 
+#include "../byte.hpp"
 #include "../internal/escape.hpp"
 
 namespace tao
@@ -84,6 +85,7 @@ namespace tao
             void number( const double v )
             {
                next();
+               // TODO: Check for and handle non-finite values via traits...
                json_double_conversion::Dtostr( os, v );
             }
 
@@ -95,7 +97,7 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const std::vector< std::uint8_t >& )
+            void binary( const std::vector< byte >& )
             {
                // TODO: What?
             }

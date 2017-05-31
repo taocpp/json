@@ -4,11 +4,11 @@
 #ifndef TAOCPP_JSON_INCLUDE_SCHEMA_HPP
 #define TAOCPP_JSON_INCLUDE_SCHEMA_HPP
 
-#include "pointer.hpp"
-#include "reference.hpp"
 #include "events/compare.hpp"
 #include "events/from_value.hpp"
 #include "events/hash.hpp"
+#include "pointer.hpp"
+#include "reference.hpp"
 #include "value.hpp"
 
 #include "external/pegtl/contrib/uri.hpp"
@@ -1461,7 +1461,7 @@ namespace tao
                   m_hash->string( v );
             }
 
-            void binary( const std::vector< std::uint8_t >& )
+            void binary( const std::vector< byte >& )
             {
                // TODO: What?
             }

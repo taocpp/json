@@ -185,9 +185,28 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            void binary( const std::vector< std::uint8_t >& )
+            void binary( const std::vector< byte >& )
             {
-               // TODO!
+               switch( state ) {
+                  case EXPECT_TOP_LEVEL_VALUE:
+                     state = EXPECT_NOTHING;
+                     return;
+                  case EXPECT_ARRAY_VALUE_OR_END:
+                     state = EXPECT_ARRAY_ELEMENT;
+                     return;
+                  case EXPECT_ARRAY_ELEMENT:
+                     throw std::logic_error( "expected element(), but binary() was called" );
+                  case EXPECT_OBJECT_KEY_OR_END:
+                     throw std::logic_error( "expected key() or end_object(), but binary() was called" );
+                  case EXPECT_OBJECT_VALUE:
+                     state = EXPECT_OBJECT_MEMBER;
+                     return;
+                  case EXPECT_OBJECT_MEMBER:
+                     throw std::logic_error( "expected member(), but binary() was called" );
+                  case EXPECT_NOTHING:
+                     throw std::logic_error( "expected nothing, but binary() was called" );
+               }
+               throw std::logic_error( "invalid state" );
             }
 
             void begin_array( const std::size_t = 0 )

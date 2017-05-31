@@ -6,9 +6,12 @@
 
 #include <cstdint>
 #include <ostream>
+#include <string>
+#include <vector>
 
 #include "../external/double.hpp"
 
+#include "../byte.hpp"
 #include "../internal/escape.hpp"
 
 namespace tao
@@ -82,7 +85,7 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const std::vector< std::uint8_t >& )
+            void binary( const std::vector< byte >& )
             {
                // TODO: What?
             }
