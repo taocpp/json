@@ -95,6 +95,12 @@ namespace tao
                os.write( v.data(), v.size() );
             }
 
+            void binary( const std::vector< std::uint8_t >& v )
+            {
+               number( major::BINARY, v.size() );
+               os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+            }
+
             void begin_array()
             {
                os.put( char( std::uint8_t( major::ARRAY ) + minor_mask ) );

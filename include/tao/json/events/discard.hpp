@@ -41,6 +41,10 @@ namespace tao
             {
             }
 
+            void binary( const std::vector< std::uint8_t >& ) noexcept
+            {
+            }
+
             void begin_array( const std::size_t = 0 ) noexcept
             {
             }

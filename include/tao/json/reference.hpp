@@ -44,6 +44,7 @@ namespace tao
                case type::UNSIGNED:
                case type::DOUBLE:
                case type::STRING:
+               case type::BINARY:
                   return;
                case type::ARRAY:
                   for( auto& e : v.unsafe_get_array() ) {

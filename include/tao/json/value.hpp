@@ -66,6 +66,7 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
            internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, const char*, type::STRING >,
+           internal::totally_ordered< basic_value< Traits >, std::vector< std::uint8_t >, type::BINARY >,
            internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
@@ -75,6 +76,7 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
       {
       public:
+         using binary_t = std::vector< std::uint8_t >;
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
 
@@ -286,6 +288,18 @@ namespace tao
             return unsafe_get_string();
          }
 
+         binary_t& get_binary()
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BINARY );
+            return unsafe_get_binary();
+         }
+
+         const binary_t& get_binary() const
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BINARY );
+            return unsafe_get_binary();
+         }
+
          array_t& get_array()
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
@@ -393,6 +407,16 @@ namespace tao
          const std::string& unsafe_get_string() const noexcept
          {
             return m_union.s;
+         }
+
+         binary_t& unsafe_get_binary() noexcept
+         {
+            return m_union.x;
+         }
+
+         const binary_t& unsafe_get_binary() const noexcept
+         {
+            return m_union.x;
          }
 
          array_t& unsafe_get_array() noexcept
@@ -691,10 +715,24 @@ namespace tao
          }
 
          template< typename... Ts >
+         void unsafe_emplace_binary( Ts&&... ts )
+         {
+            new( &m_union.x ) std::vector< std::uint8_t >( std::forward< Ts >( ts )... );
+            m_type = json::type::BINARY;
+         }
+
+         template< typename... Ts >
          void emplace_string( Ts&&... ts )
          {
             discard();
             unsafe_emplace_string( std::forward< Ts >( ts )... );
+         }
+
+         template< typename... Ts >
+         void emplace_binary( Ts&&... ts )
+         {
+            discard();
+            unsafe_emplace_binary( std::forward< Ts >( ts )... );
          }
 
          template< typename... Ts >
@@ -896,6 +934,8 @@ namespace tao
                   return false;
                case json::type::STRING:
                   return m_union.s.empty();
+               case json::type::BINARY:
+                  return m_union.x.empty();
                case json::type::ARRAY:
                   return m_union.a.empty();
                case json::type::OBJECT:
@@ -923,6 +963,9 @@ namespace tao
                   return;
                case json::type::STRING:
                   m_union.s.~basic_string();
+                  return;
+               case json::type::BINARY:
+                  m_union.x.~vector();
                   return;
                case json::type::ARRAY:
                   m_union.a.~vector();
@@ -981,6 +1024,10 @@ namespace tao
                   new( &m_union.s ) std::string( std::move( r.m_union.s ) );
                   assert( ( r.discard(), true ) );
                   return;
+               case json::type::BINARY:
+                  new( &m_union.x ) std::vector< std::uint8_t >( std::move( r.m_union.x ) );
+                  assert( ( r.discard(), true ) );
+                  return;
                case json::type::ARRAY:
                   new( &m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
                   assert( ( r.discard(), true ) );
@@ -1020,6 +1067,9 @@ namespace tao
                   return;
                case json::type::STRING:
                   new( &m_union.s ) std::string( r.m_union.s );
+                  return;
+               case json::type::BINARY:
+                  new( &m_union.x ) std::vector< std::uint8_t >( r.m_union.x );
                   return;
                case json::type::ARRAY:
                   new( &m_union.a ) std::vector< basic_value >( r.m_union.a );
@@ -1108,6 +1158,8 @@ namespace tao
                return lhs.unsafe_get_double() == rhs.unsafe_get_double();
             case type::STRING:
                return lhs.unsafe_get_string() == rhs.unsafe_get_string();
+            case type::BINARY:
+               return lhs.unsafe_get_binary() == rhs.unsafe_get_binary();
             case type::ARRAY:
                return lhs.unsafe_get_array() == rhs.unsafe_get_array();
             case type::OBJECT:
@@ -1191,6 +1243,8 @@ namespace tao
                return lhs.unsafe_get_double() < rhs.unsafe_get_double();
             case type::STRING:
                return lhs.unsafe_get_string() < rhs.unsafe_get_string();
+            case type::BINARY:
+               return lhs.unsafe_get_binary() < rhs.unsafe_get_binary();
             case type::ARRAY:
                return lhs.unsafe_get_array() < rhs.unsafe_get_array();
             case type::OBJECT:

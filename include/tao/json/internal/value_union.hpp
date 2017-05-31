@@ -35,6 +35,7 @@ namespace tao
             double d;
 
             std::string s;
+            std::vector< std::uint8_t > x;
             std::vector< Value > a;
             std::map< std::string, Value > o;
 

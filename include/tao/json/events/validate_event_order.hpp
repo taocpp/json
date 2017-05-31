@@ -185,6 +185,11 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
+            void binary( const std::vector< std::uint8_t >& )
+            {
+               // TODO!
+            }
+
             void begin_array( const std::size_t = 0 )
             {
                switch( state ) {

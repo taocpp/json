@@ -59,6 +59,16 @@ namespace tao
                value.unsafe_emplace_string( std::move( v ) );
             }
 
+            void binary( const std::vector< std::uint8_t >& v )
+            {
+               value.unsafe_emplace_binary( v );
+            }
+
+            void binary( std::vector< std::uint8_t >&& v )
+            {
+               value.unsafe_emplace_binary( std::move( v ) );
+            }
+
             void begin_array()
             {
                stack_.push_back( empty_array );

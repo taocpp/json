@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <ostream>
+#include <vector>
 
 #include "../external/double.hpp"
 
@@ -67,6 +68,11 @@ namespace tao
                os << "string: \"";
                internal::escape( os, v );
                os << "\"\n";
+            }
+
+            void binary( const std::vector< std::uint8_t >& )
+            {
+               os<< "binary: TODO hexdump\n";
             }
 
             void begin_array()

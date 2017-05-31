@@ -22,6 +22,7 @@ namespace tao
          UNSIGNED,
          DOUBLE,
          STRING,
+         BINARY,
          ARRAY,
          OBJECT,
          RAW_PTR
@@ -31,6 +32,7 @@ namespace tao
       {
          switch( t ) {
             case type::STRING:
+            case type::BINARY:
             case type::ARRAY:
             case type::OBJECT:
                return true;
@@ -58,6 +60,8 @@ namespace tao
                return "double";
             case type::STRING:
                return "string";
+            case type::BINARY:
+               return "binary";
             case type::ARRAY:
                return "array";
             case type::OBJECT:

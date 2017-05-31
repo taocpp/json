@@ -184,9 +184,11 @@ namespace tao
                return true;
             }
 
-            template< typename Input >
-            static std::string read_string( Input& in, const major m )
+            template< typename Result, typename Input >
+            static Result read_string( Input& in, const major m )
             {
+               using value_t = typename Result::value_type;
+
                // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
                // TODO: Check text strings and text string chunks for valid UTF-8 as per RFC 7049?
@@ -196,11 +198,12 @@ namespace tao
                   if( in.size( size ) < size ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
-                  std::string result( in.current(), size );
+                  const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
+                  Result result( pointer, pointer + size );
                   in.bump_in_this_line( size );
                   return result;
                }
-               std::string result;
+               Result result;
                in.bump_in_this_line();
                while( internal::peek_byte_safe( in ) != 0xff ) {
                   if( internal::peek_major( in ) != m ) {
@@ -210,7 +213,8 @@ namespace tao
                   if( in.size( size ) < size ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
-                  result.append( in.current(), size );
+                  const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
+                  result.insert( result.end(), pointer, pointer + size );
                   in.bump_in_this_line( size );
                }
                in.bump_in_this_line();
@@ -218,16 +222,16 @@ namespace tao
             }
 
             template< typename Input, typename Consumer >
-            static bool match_binary( Input& in, Consumer& consumer )
+            static bool match_string( Input& in, Consumer& consumer )
             {
-               consumer.string( read_string( in, major::BINARY ) );  // TODO: Convert to consumer.binary() if/when available.
+               consumer.string( read_string< std::string >( in, major::STRING ) );
                return true;
             }
 
             template< typename Input, typename Consumer >
-            static bool match_string( Input& in, Consumer& consumer )
+            static bool match_binary( Input& in, Consumer& consumer )
             {
-               consumer.string( read_string( in, major::STRING ) );
+               consumer.binary( read_string< std::vector< std::uint8_t > >( in, major::BINARY ) );
                return true;
             }
 
@@ -268,7 +272,7 @@ namespace tao
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
                      internal::throw_on_empty( in );
-                     consumer.key( read_string( in, major::STRING ) );
+                     consumer.key( read_string< std::string >( in, major::STRING ) );
                      internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.member();
@@ -282,7 +286,7 @@ namespace tao
                      if( internal::peek_major( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
-                     consumer.key( read_string( in, major::STRING ) );
+                     consumer.key( read_string< std::string >( in, major::STRING ) );
                      internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.member();

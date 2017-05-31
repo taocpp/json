@@ -42,6 +42,9 @@ namespace tao
                case type::STRING:
                   consumer.string( v.unsafe_get_string() );
                   return;
+               case type::BINARY:
+                  consumer.binary( v.unsafe_get_binary() );
+                  return;
                case type::ARRAY:
                   consumer.begin_array( v.unsafe_get_array().size() );
                   for( const auto& e : v.unsafe_get_array() ) {
@@ -99,6 +102,9 @@ namespace tao
                   return;
                case type::STRING:
                   consumer.string( std::move( v.unsafe_get_string() ) );
+                  return;
+               case type::BINARY:
+                  consumer.binary( std::move( v.unsafe_get_binary() ) );
                   return;
                case type::ARRAY:
                   consumer.begin_array( v.unsafe_get_array().size() );

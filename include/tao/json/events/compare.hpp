@@ -72,44 +72,37 @@ namespace tao
 
             void null() noexcept
             {
-               if( m_match ) {
-                  m_match = ( m_current.back() != nullptr ) && ( current().is_null() );
-               }
+               m_match = m_match && ( m_current.back() != nullptr ) && ( current().is_null() );
             }
 
             void boolean( const bool v ) noexcept
             {
-               if( m_match ) {
-                  m_match = ( m_current.back() != nullptr ) && ( current() == v );
-               }
+               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
             void number( const std::int64_t v ) noexcept
             {
-               if( m_match ) {
-                  m_match = ( m_current.back() != nullptr ) && ( current() == v );
-               }
+               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
             void number( const std::uint64_t v ) noexcept
             {
-               if( m_match ) {
-                  m_match = ( m_current.back() != nullptr ) && ( current() == v );
-               }
+               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
             void number( const double v ) noexcept
             {
-               if( m_match ) {
-                  m_match = ( m_current.back() != nullptr ) && ( current() == v );
-               }
+               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
             void string( const std::string& v ) noexcept
             {
-               if( m_match ) {
-                  m_match = ( m_current.back() != nullptr ) && ( current() == v );
-               }
+               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
+            }
+
+            void binary( const std::vector< std::uint8_t >& v ) noexcept
+            {
+               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
             void begin_array( const std::size_t = 0 )

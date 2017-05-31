@@ -78,6 +78,12 @@ namespace tao
             }
 
             template< typename... Ts >
+            static void binary( std::tuple< Ts... >& t, const std::vector< std::uint8_t >& v )
+            {
+               (void)sink{ ( std::get< Is >( t ).binary( v ), true )... };
+            }
+
+            template< typename... Ts >
             static void begin_array( std::tuple< Ts... >& t )
             {
                (void)sink{ ( std::get< Is >( t ).begin_array(), true )... };
@@ -204,6 +210,17 @@ namespace tao
             {
                internal::events_apply< H >::string( ts, v );
                std::get< S - 1 >( ts ).string( std::move( v ) );
+            }
+
+            void binary( const std::vector< std::uint8_t >& v )
+            {
+               internal::events_apply< I >::binary( ts, v );
+            }
+
+            void binary( std::vector< std::uint8_t >&& v )
+            {
+               internal::events_apply< H >::binary( ts, v );
+               std::get< S - 1 >( ts ).binary( std::move( v ) );
             }
 
             void begin_array()

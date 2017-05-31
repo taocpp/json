@@ -82,6 +82,11 @@ namespace tao
                os.put( '"' );
             }
 
+            void binary( const std::vector< std::uint8_t >& )
+            {
+               // TODO: What?
+            }
+
             void begin_array( const std::size_t = 0 )
             {
                next();

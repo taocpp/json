@@ -1461,6 +1461,11 @@ namespace tao
                   m_hash->string( v );
             }
 
+            void binary( const std::vector< std::uint8_t >& )
+            {
+               // TODO: What?
+            }
+
             void begin_array( const std::size_t = 0 )
             {
                if( m_match )

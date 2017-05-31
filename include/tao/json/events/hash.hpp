@@ -106,6 +106,14 @@ namespace tao
                m_digests.back()->feed( v );
             }
 
+            void binary( const std::vector< std::uint8_t >& v )
+            {
+               m_digests.back()->feed( 'x' );
+               const auto s = v.size();
+               m_digests.back()->feed( &s, sizeof( s ) );
+               m_digests.back()->feed( v.data(), v.size() );
+            }
+
             void begin_array( const std::size_t = 0 )
             {
                m_digests.back()->feed( '[' );

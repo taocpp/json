@@ -86,6 +86,22 @@ namespace tao
          };
 
          template<>
+         struct get_by_enum< type::BINARY >
+         {
+            template< typename V >
+            static std::vector< std::uint8_t >& get( value_union< V >& u ) noexcept
+            {
+               return u.x;
+            }
+
+            template< typename V >
+            static const std::vector< std::uint8_t >& get( const value_union< V >& u ) noexcept
+            {
+               return u.x;
+            }
+         };
+
+         template<>
          struct get_by_enum< type::ARRAY >
          {
             template< typename V >
