@@ -5,7 +5,6 @@
 #define TAOCPP_JSON_INCLUDE_VALUE_HPP
 
 #include <cassert>
-#include <cmath>
 #include <cstdint>
 #include <stdexcept>
 #include <utility>

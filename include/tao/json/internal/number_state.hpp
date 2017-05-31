@@ -4,9 +4,11 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_NUMBER_STATE_HPP
 #define TAOCPP_JSON_INCLUDE_INTERNAL_NUMBER_STATE_HPP
 
+#include <cmath>
 #include <cstdint>
 #include <cstdlib>
 #include <inttypes.h>
+#include <stdexcept>
 
 #include "../external/double.hpp"
 
