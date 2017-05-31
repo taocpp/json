@@ -46,8 +46,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-7']
       env:
-        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
         - COMPILER=g++-7
+        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - os: linux
       dist: trusty
@@ -57,9 +57,9 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-7']
       env:
+        - COMPILER=g++-7
         - CXXSTD="-std=c++17"
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
-        - COMPILER=g++-7
 
     - os: linux
       compiler: clang
