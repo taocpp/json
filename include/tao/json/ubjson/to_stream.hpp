@@ -74,12 +74,12 @@ namespace tao
                   const std::uint16_t x = internal::h_to_be( std::uint16_t( v ) );
                   os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                }
-               else if ( v <= 2147483647ul ) {
+               else if( v <= 2147483647ul ) {
                   os.put( 'l' );
                   const std::uint32_t x = internal::h_to_be( std::uint32_t( v ) );
                   os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                }
-               else if ( v <= 9223372036854775807ull ) {
+               else if( v <= 9223372036854775807ull ) {
                   os.put( 'L' );
                   const std::uint64_t x = internal::h_to_be( v );
                   os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
@@ -105,7 +105,7 @@ namespace tao
 
             void string( const std::string& v )
             {
-               if( ( v.size() == 1 ) && ( int( v[ 0 ] ) < 128 ) ) {
+               if( ( v.size() == 1 ) && ( ( v[ 0 ] & 0x80 ) == 0 ) ) {
                   os.put( 'C' );
                   os.put( v[ 0 ] );
                }
@@ -179,10 +179,10 @@ namespace tao
             }
          };
 
-      } // ubjson
+      }  // namespace ubjson
 
-   } // json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif
