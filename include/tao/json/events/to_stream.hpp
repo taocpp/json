@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_TO_STREAM_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_TO_STREAM_HPP
 
+#include <cmath>
 #include <cstdint>
 #include <ostream>
 #include <string>
@@ -13,6 +14,7 @@
 
 #include "../byte.hpp"
 #include "../internal/escape.hpp"
+#include "../internal/hexdump.hpp"
 
 namespace tao
 {
@@ -74,6 +76,10 @@ namespace tao
             void number( const double v )
             {
                next();
+               if( !std::isfinite( v ) ) {
+                  // TODO: make configurable
+                  throw std::runtime_error( "non-finite double value invalid for JSON string representation" );
+               }
                json_double_conversion::Dtostr( os, v );
             }
 
@@ -85,9 +91,13 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const std::vector< byte >& )
+            void binary( const std::vector< byte >& v )
             {
-               // TODO: What?
+               // TODO: make configurable
+               next();
+               os.put( '"' );
+               internal::hexdump( os, v );
+               os.put( '"' );
             }
 
             void begin_array( const std::size_t = 0 )
