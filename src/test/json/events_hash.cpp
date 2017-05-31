@@ -61,8 +61,8 @@ namespace tao
          TEST_THROWS( test( { { "a", 0 }, { "b", 1 } }, "{ \"a\": 0, \"a\": 0, \"c\": 1 }" ) );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

@@ -35,8 +35,8 @@ namespace tao
          TEST_ASSERT( to_hex( d.get() ) == "248D6A61D20638B8E5C026930C3E6039A33CE45964FF2167F6ECEDD419DB06C1" );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

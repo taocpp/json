@@ -165,8 +165,8 @@ namespace tao
          TEST_ASSERT( !( p4 >= p3 ) );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

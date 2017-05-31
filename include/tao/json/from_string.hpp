@@ -74,7 +74,7 @@ namespace tao
             return json::from_string( data, size, "literal" );
          }
 
-      }  // literals
+      }  // namespace literals
 
    }  // namespace json
 

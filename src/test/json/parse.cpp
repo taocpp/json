@@ -123,8 +123,8 @@ namespace tao
          TEST_THROWS( from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf\"" ) );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

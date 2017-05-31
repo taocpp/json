@@ -45,8 +45,8 @@ namespace tao
          std::cout << to_string( v3 ) << std::endl;
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

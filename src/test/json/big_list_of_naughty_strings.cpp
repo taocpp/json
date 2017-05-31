@@ -40,8 +40,8 @@ namespace tao
          TEST_ASSERT( v2 == v );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

@@ -39,8 +39,8 @@ namespace tao
          TEST_ASSERT( to_string( from_string( s2 ) ) == s2 );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

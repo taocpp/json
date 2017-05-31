@@ -73,8 +73,8 @@ namespace tao
          TEST_ASSERT( v2.at( "baz" ).at( 3 ).type() == type::NULL_ );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

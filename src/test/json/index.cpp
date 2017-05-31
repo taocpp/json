@@ -86,8 +86,8 @@ namespace tao
          TEST_ASSERT( v2.at( "foo" ) == 2 );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

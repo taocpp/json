@@ -67,8 +67,8 @@ namespace tao
          std::cout << std::setw( 2 ) << value( r ) << std::endl;
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

@@ -49,8 +49,8 @@ namespace tao
          TEST_ASSERT( "#/m~0n" == internal::to_uri_fragment( "/m~0n"_json_pointer ) );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

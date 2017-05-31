@@ -175,8 +175,8 @@ namespace tao
          TEST_THROWS( value( "bar" ).as< int >() );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

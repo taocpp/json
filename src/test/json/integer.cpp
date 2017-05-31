@@ -115,8 +115,8 @@ namespace tao
          test_integer_unsigned< unsigned long long >( 1 );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

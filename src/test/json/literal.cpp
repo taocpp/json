@@ -15,8 +15,8 @@ namespace tao
          TEST_ASSERT( "42"_json.get_unsigned() == 42 );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

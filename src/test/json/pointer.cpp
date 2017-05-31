@@ -35,8 +35,8 @@ namespace tao
          TEST_ASSERT( !cv2.at( "baz" ).empty() );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

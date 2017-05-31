@@ -260,8 +260,8 @@ namespace tao
          TEST_ASSERT( cpatch( b, value::array( { { { "op", "copy" }, { "from", "" }, { "path", "/b/-" } } } ) ) == value( { { "b", value::array( { 1, 2, 3, 4, { { "b", value::array( { 1, 2, 3, 4 } ) } } } ) } } ) );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

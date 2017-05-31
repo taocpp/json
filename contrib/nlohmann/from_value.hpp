@@ -63,8 +63,8 @@ namespace tao
 
       }  // nlohmann
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

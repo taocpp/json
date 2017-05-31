@@ -437,8 +437,8 @@ namespace tao
          test_mixed();
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

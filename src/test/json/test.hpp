@@ -17,8 +17,8 @@ namespace tao
    {
       std::size_t failed = 0;
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

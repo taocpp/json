@@ -611,8 +611,8 @@ namespace tao
          }
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

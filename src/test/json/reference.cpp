@@ -45,8 +45,8 @@ namespace tao
          test_throws( { { "foo", 0 }, { "bar", { { "$ref", "#/foo/bar" } } } } );
       }
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #include "main.hpp"

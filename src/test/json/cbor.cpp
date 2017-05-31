@@ -130,8 +130,8 @@ namespace tao
          cbor_roundtrip( "345e-123" );
       }
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #include "main.hpp"

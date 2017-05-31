@@ -298,7 +298,7 @@ namespace tao
             return pointer( { data, size } );
          }
 
-      }  // literals
+      }  // namespace literals
 
    }  // namespace json
 

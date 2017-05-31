@@ -64,8 +64,8 @@ namespace tao
          ubjson_encode( "-9223372036854775808", "4c8000000000000000" );
       }
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #include "main.hpp"
