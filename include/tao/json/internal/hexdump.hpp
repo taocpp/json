@@ -1,0 +1,33 @@
+// Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+// Please see LICENSE for license or visit https://github.com/taocpp/json/
+
+#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_HEXDUMP_HPP
+#define TAOCPP_JSON_INCLUDE_INTERNAL_HEXDUMP_HPP
+
+#include <iomanip>
+#include <ostream>
+
+namespace tao
+{
+   namespace json
+   {
+      namespace internal
+      {
+         template< typename T >
+         void hexdump( std::ostream& os, const T& v ) noexcept
+         {
+            const auto f = os.flags();
+            os << std::hex << std::setfill( '0' );
+            for( const auto c : v ) {
+               os << std::setw( 2 ) << static_cast< unsigned char >( c );
+            }
+            os.flags( f );
+         }
+
+      }  // namespace internal
+
+   }  // namespace json
+
+}  // namespace tao
+
+#endif
