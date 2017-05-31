@@ -463,10 +463,6 @@ namespace tao
          const double b = std::numeric_limits< double >::quiet_NaN();
          const double c = std::numeric_limits< double >::signaling_NaN();
 
-         TEST_THROWS( v = a );
-         TEST_THROWS( v = b );
-         TEST_THROWS( v = c );
-
          v = null;
 
          TEST_ASSERT( v.type() == type::NULL_ );
@@ -496,15 +492,30 @@ namespace tao
          TEST_ASSERT( v.type() == type::STRING );
          TEST_ASSERT( v.get_string() == "hallo" );
 
+         v = a;
+
+         TEST_ASSERT( v.type() == type::DOUBLE );
+         TEST_ASSERT( v.get_double() == a );
+
          v = std::vector< value >();
 
          TEST_ASSERT( v.type() == type::ARRAY );
          TEST_ASSERT( v.get_array().empty() );
 
+         v = b;
+
+         TEST_ASSERT( v.type() == type::DOUBLE );
+         TEST_ASSERT( std::isnan( v.get_double() ) );
+
          v = std::map< std::string, value >();
 
          TEST_ASSERT( v.type() == type::OBJECT );
          TEST_ASSERT( v.get_object().empty() );
+
+         v = c;
+
+         TEST_ASSERT( v.type() == type::DOUBLE );
+         TEST_ASSERT( std::isnan( v.get_double() ) );
 
          v = nullptr;
 

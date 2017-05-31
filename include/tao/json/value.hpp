@@ -692,19 +692,10 @@ namespace tao
             m_type = json::type::UNSIGNED;
          }
 
-         void unsafe_assign_double_unchecked( const double d ) noexcept
-         {
-            // d must be a finite value!
-            m_union.d = d;
-            m_type = json::type::DOUBLE;
-         }
-
          void unsafe_assign_double( const double d )
          {
-            if( !std::isfinite( d ) ) {
-               throw std::runtime_error( "non-finite double value invalid for JSON" );
-            }
-            unsafe_assign_double_unchecked( d );
+            m_union.d = d;
+            m_type = json::type::DOUBLE;
          }
 
          template< typename... Ts >
