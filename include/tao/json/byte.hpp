@@ -18,7 +18,7 @@ namespace tao
 {
    namespace json
    {
-#if TAOCPP_JSON_HAS_STD_BYTE
+#ifdef TAOCPP_JSON_HAS_STD_BYTE
 
       // if C++17's std::byte is available, use it
       using byte = std::byte;
