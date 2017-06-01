@@ -26,7 +26,7 @@ namespace tao
 
          class to_pretty_stream
          {
-         private:
+         protected:
             std::ostream& os;
             const std::size_t indent;
 
@@ -88,7 +88,6 @@ namespace tao
             {
                next();
                if( !std::isfinite( v ) ) {
-                  // TODO: make configurable
                   throw std::runtime_error( "non-finite double value invalid for JSON string representation" );
                }
                json_double_conversion::Dtostr( os, v );
@@ -102,13 +101,9 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const std::vector< byte >& v )
+            void binary( const std::vector< byte >& )
             {
-               // TODO: make configurable
-               next();
-               os.put( '"' );
-               internal::hexdump( os, v );
-               os.put( '"' );
+               throw std::runtime_error( "binary not valid for JSON string representation" );
             }
 
             void begin_array( const std::size_t = 0 )

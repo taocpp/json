@@ -26,7 +26,7 @@ namespace tao
 
          class to_stream
          {
-         private:
+         protected:
             std::ostream& os;
             bool first;
 
