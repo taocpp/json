@@ -6,30 +6,13 @@
 
 #include <tao/json.hpp>
 
-#include <tao/json/msgpack/to_string.hpp>
-
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      void to_msgpack_stream( std::ostream& os, const basic_value< Traits >& v )
-      {
-         msgpack::to_stream consumer( os );
-         events::from_value( v, consumer );
-      }
-
-      template< template< typename... > class Traits >
-      std::string to_msgpack_string( const basic_value< Traits >& v )
-      {
-         msgpack::to_string consumer;
-         events::from_value( v, consumer );
-         return consumer.value();
-      }
-
       void msgpack_encode( const std::string& text, const std::string& data )
       {
-         TEST_ASSERT( to_msgpack_string( from_string( text ) ) == internal::unhex( data ) );
+         TEST_ASSERT( msgpack::to_string( from_string( text ) ) == internal::unhex( data ) );
       }
 
       void unit_test()

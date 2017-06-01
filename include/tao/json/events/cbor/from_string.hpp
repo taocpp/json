@@ -4,7 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_CBOR_FROM_STRING_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_CBOR_FROM_STRING_HPP
 
-#include "../external/pegtl/parse.hpp"
+#include "../../external/pegtl/parse.hpp"
 
 #include "grammar.hpp"
 

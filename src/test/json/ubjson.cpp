@@ -6,30 +6,13 @@
 
 #include <tao/json.hpp>
 
-#include <tao/json/ubjson/to_string.hpp>
-
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      void to_ubjson_stream( std::ostream& os, const basic_value< Traits >& v )
-      {
-         ubjson::to_stream consumer( os );
-         events::from_value( v, consumer );
-      }
-
-      template< template< typename... > class Traits >
-      std::string to_ubjson_string( const basic_value< Traits >& v )
-      {
-         ubjson::to_string consumer;
-         events::from_value( v, consumer );
-         return consumer.value();
-      }
-
       void ubjson_encode( const std::string& text, const std::string& data )
       {
-         TEST_ASSERT( to_ubjson_string( from_string( text ) ) == internal::unhex( data ) );
+         TEST_ASSERT( ubjson::to_string( from_string( text ) ) == internal::unhex( data ) );
       }
 
       void unit_test()

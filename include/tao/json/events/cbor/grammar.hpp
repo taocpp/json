@@ -9,8 +9,8 @@
 
 #include "major.hpp"
 
-#include "../byte.hpp"
-#include "../internal/temporary.hpp"
+#include "../../byte.hpp"
+#include "../../internal/temporary.hpp"
 
 namespace tao
 {

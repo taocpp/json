@@ -6,50 +6,24 @@
 
 #include <tao/json.hpp>
 
-#include <tao/json/cbor/from_string.hpp>
-#include <tao/json/cbor/to_string.hpp>
-
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      void to_cbor_stream( std::ostream& os, const basic_value< Traits >& v )
-      {
-         cbor::to_stream consumer( os );
-         events::from_value( v, consumer );
-      }
-
-      template< template< typename... > class Traits >
-      std::string to_cbor_string( const basic_value< Traits >& v )
-      {
-         cbor::to_string consumer;
-         events::from_value( v, consumer );
-         return consumer.value();
-      }
-
-      template< template< typename... > class Traits = traits >
-      basic_value< Traits > from_cbor_string( const std::string& text )
-      {
-         events::to_basic_value< Traits > consumer;
-         cbor::from_string( text, consumer, __PRETTY_FUNCTION__ );
-         return std::move( consumer.value );
-      }
-
       void cbor_encode( const std::string& text, const std::string& data )
       {
-         TEST_ASSERT( to_cbor_string( from_string( text ) ) == internal::unhex( data ) );
+         TEST_ASSERT( cbor::to_string( from_string( text ) ) == internal::unhex( data ) );
       }
 
       void cbor_decode( const std::string& data, const std::string& text )
       {
-         TEST_ASSERT( to_string( from_cbor_string( internal::unhex( data ) ) ) == to_string( from_string( text ) ) );
+         TEST_ASSERT( to_string( cbor::from_string( internal::unhex( data ) ) ) == to_string( from_string( text ) ) );
       }
 
       void cbor_roundtrip( const std::string& text )
       {
          const auto a = from_string( text );
-         TEST_ASSERT( to_string( a ) == to_string( from_cbor_string( to_cbor_string( a ) ) ) );
+         TEST_ASSERT( to_string( a ) == to_string( cbor::from_string( cbor::to_string( a ) ) ) );
       }
 
       void unit_test()

@@ -41,4 +41,13 @@
 //#include "json/diff.hpp"
 #include "json/schema.hpp"
 
+// Binary formats
+#include "json/cbor/from_string.hpp"
+#include "json/cbor/to_stream.hpp"
+#include "json/cbor/to_string.hpp"
+#include "json/msgpack/to_stream.hpp"
+#include "json/msgpack/to_string.hpp"
+#include "json/ubjson/to_stream.hpp"
+#include "json/ubjson/to_string.hpp"
+
 #endif
