@@ -31,7 +31,7 @@ namespace tao
 
             void null()
             {
-               os.put( 0xc0 );
+               os.put( char( 0xc0 ) );
             }
 
             void boolean( const bool v )
@@ -39,9 +39,10 @@ namespace tao
                os.put( char( 0xc2 ) + char( v ) );
             }
 
-            template< typename Integer > void number_impl( const char tag, const std::uint64_t v )
+            template< typename Integer >
+            void number_impl( const unsigned char tag, const std::uint64_t v )
             {
-               os.put( tag );
+               os.put( char( tag ) );
                const Integer x = internal::h_to_be( Integer( v ) );
                os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
             }
