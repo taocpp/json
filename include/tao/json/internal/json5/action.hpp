@@ -56,6 +56,16 @@ namespace tao
             };
 
             template<>
+            struct action< rules::ukey >
+            {
+               template< typename Input, typename Consumer >
+               static void apply( const Input& in, Consumer& consumer )
+               {
+                  consumer.key( in.string() );
+               }
+            };
+
+            template<>
             struct action< rules::array::begin >
             {
                template< typename Consumer >

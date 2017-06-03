@@ -77,7 +77,7 @@ namespace tao
             template<> WEAK_PREFIX const std::string errors< rules::end_multi_line_comment >::error_message WEAK_SUFFIX = "unterminated multi-line comment";
 
             template<> WEAK_PREFIX const std::string errors< rules::end_array >::error_message WEAK_SUFFIX = "incomplete array, expected value or ']'";
-            template<> WEAK_PREFIX const std::string errors< rules::end_object >::error_message WEAK_SUFFIX = "incomplete object, expected member or '}'";
+            template<> WEAK_PREFIX const std::string errors< rules::end_object >::error_message WEAK_SUFFIX = "incomplete object, expected key or '}'";
             template<> WEAK_PREFIX const std::string errors< rules::name_separator >::error_message WEAK_SUFFIX = "expected ':'";
             template<> WEAK_PREFIX const std::string errors< rules::value >::error_message WEAK_SUFFIX = "expected value";
 

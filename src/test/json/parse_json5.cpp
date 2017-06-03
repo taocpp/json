@@ -48,7 +48,7 @@ namespace tao
 
       void test_object()
       {
-         const auto v = json5::from_string( "{ \"a\" : null, \"b\" : true, \"c\" : false, \"d\" : 42, \"e\" : +43.0, \"f\" : \"foo\", \"g\" : [ 1, 2, +3 ], \"h\" : { \"a\" : \"b\", \"c\" : \"d\" } }" );
+         const auto v = json5::from_string( "{ \"a\" : null, b: true, \"c\" : false, d : 42, \"e\" : +43.0, \"f\" : \"foo\", \"g\" : [ 1, 2, +3 ], h : { \"a\" : \"b\", c : \"d\" } }" );
 
          TEST_ASSERT( v.type() == type::OBJECT );
 

@@ -117,6 +117,13 @@ namespace tao
                   using content = skey_content;
                };
 
+               // TODO: Check if this is correct/complete wrt JSON5
+               struct identifier_first : ranges< 'a', 'z', 'A', 'Z', '_', '_', '$' > {};
+               struct identifier_other : ranges< 'a', 'z', 'A', 'Z', '0', '9', '_', '_', '$' > {};
+               struct identifier : seq< identifier_first, star< identifier_other > > {};
+
+               struct ukey : identifier {};
+
                struct value;
 
                struct array_element;
@@ -129,7 +136,7 @@ namespace tao
                   using content = array_content;
                };
 
-               struct member : if_must< sor< key, skey >, name_separator, value > {};
+               struct member : if_must< sor< key, skey, ukey >, name_separator, value > {};
                struct object_content : opt< list_tail< member, value_separator > > {};
                struct object : seq< begin_object, object_content, must< end_object > >
                {
