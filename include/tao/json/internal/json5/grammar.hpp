@@ -59,17 +59,18 @@ namespace tao
 
                struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
                struct int_ : sor< zero, idigits > {};
-               struct number : seq< opt< msign >, sor< nan, infinity,
-                                                       seq< int_, opt< seq< one< '.' >, opt< fdigits > >, opt< exp > > >,
-                                                       seq< one< '.' >, must< fdigits >, opt< exp > > > > {};
+               struct number : seq< opt< msign >, sor< nan, infinity, seq< int_, opt< seq< one< '.' >, opt< fdigits > >, opt< exp > > >, seq< one< '.' >, must< fdigits >, opt< exp > > > > {};
 
                struct hexcontent : plus< abnf::HEXDIG > {};
                struct hexnumber : seq< bytes< 2 >, must< hexcontent > > {};
 
                struct xdigit : abnf::HEXDIG {};
+               struct hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
                struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
-               struct escaped_char : one< '\'', '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v' > {};
-               struct escaped : sor< escaped_char, unicode, eol > {};
+
+               struct escaped_char : one< 'b', 'f', 'n', 'r', 't', 'v' > {};
+               struct escaped_any : any {};
+               struct escaped : sor< escaped_char, unicode, eol, escaped_any > {};
 
                template< char D >
                struct unescaped
@@ -96,7 +97,7 @@ namespace tao
                };
 
                template< char D >
-               struct chars : if_then_else< one< '\\' >, must< escaped >, unescaped< D > > {};
+               struct chars : if_then_else< one< '\\' >, escaped, unescaped< D > > {};
 
                template< char D >
                struct string_content : until< at< one< D > >, must< chars< D > > > {};
@@ -168,7 +169,7 @@ namespace tao
                            if( c == 'x' || c == 'X' ) {
                               return Control< hexnumber >::template match< A, M, Action, Control >( in, st... );
                            }
-                           // fall through
+                           return Control< number >::template match< A, M, Action, Control >( in, st... );
                         }
                         default: return Control< number >::template match< A, M, Action, Control >( in, st... );
                      }

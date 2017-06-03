@@ -138,6 +138,9 @@ namespace tao
          TEST_ASSERT( json5::from_string( "'foo'" ) == "foo" );
          TEST_ASSERT( json5::from_string( "'fo\\\"o'" ) == "fo\"o" );
          TEST_ASSERT( json5::from_string( "'fo\\'o'" ) == "fo'o" );
+         TEST_ASSERT( json5::from_string( "'fo\\\\o'" ) == "fo\\o" );
+         TEST_ASSERT( json5::from_string( "'fo\\o'" ) == "foo" );
+         TEST_ASSERT( json5::from_string( "'fo\\/o'" ) == "fo/o" );
 
          test_array();
          test_object();
