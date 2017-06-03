@@ -20,9 +20,9 @@ namespace tao
             // clang-format off
             template< typename Rule > struct unescape_action : json_pegtl::nothing< Rule > {};
 
-            template<> struct unescape_action< rules::hexcode > : json_pegtl::unescape::unescape_x {};
-            template<> struct unescape_action< rules::unicode > : json_pegtl::unescape::unescape_j {};
             template<> struct unescape_action< rules::escaped_char > : json_pegtl::unescape::unescape_c< rules::escaped_char, '\b', '\f', '\n', '\r', '\t' > {};
+            template<> struct unescape_action< rules::escaped_unicode > : json_pegtl::unescape::unescape_j {};
+            // no action for escaped_eol
             template<> struct unescape_action< rules::escaped_any > : json_pegtl::unescape::append_all {};
 
             template<> struct unescape_action< rules::unescaped< '"' > > : json_pegtl::unescape::append_all {};

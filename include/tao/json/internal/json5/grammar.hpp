@@ -65,12 +65,12 @@ namespace tao
                struct hexnumber : seq< bytes< 2 >, must< hexcontent > > {};
 
                struct xdigit : abnf::HEXDIG {};
-               struct hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
-               struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
+               struct escaped_unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
 
                struct escaped_char : one< 'b', 'f', 'n', 'r', 't' > {};
+               struct escaped_eol : eol {};
                struct escaped_any : any {};
-               struct escaped : sor< escaped_char, unicode, eol, escaped_any > {};
+               struct escaped : sor< escaped_char, escaped_unicode, escaped_eol, escaped_any > {};
 
                template< char D >
                struct unescaped
