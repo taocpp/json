@@ -41,8 +41,20 @@ namespace tao
             };
 
             template<>
+            struct control< rules::sstring::content >
+               : json_pegtl::change_state_and_action< rules::sstring::content, string_state, unescape_action, errors >
+            {
+            };
+
+            template<>
             struct control< rules::key::content >
                : json_pegtl::change_state_and_action< rules::key::content, key_state, unescape_action, errors >
+            {
+            };
+
+            template<>
+            struct control< rules::skey::content >
+               : json_pegtl::change_state_and_action< rules::skey::content, key_state, unescape_action, errors >
             {
             };
 

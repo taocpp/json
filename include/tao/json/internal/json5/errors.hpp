@@ -87,7 +87,9 @@ namespace tao
             template<> WEAK_PREFIX const std::string errors< rules::escaped >::error_message WEAK_SUFFIX = "unknown escape sequence";
             template<> WEAK_PREFIX const std::string errors< rules::chars >::error_message WEAK_SUFFIX = "invalid character in string";
             template<> WEAK_PREFIX const std::string errors< rules::string::content >::error_message WEAK_SUFFIX = "unterminated string";
+            template<> WEAK_PREFIX const std::string errors< rules::sstring::content >::error_message WEAK_SUFFIX = "unterminated string";
             template<> WEAK_PREFIX const std::string errors< rules::key::content >::error_message WEAK_SUFFIX = "unterminated key";
+            template<> WEAK_PREFIX const std::string errors< rules::skey::content >::error_message WEAK_SUFFIX = "unterminated key";
 
             template<> WEAK_PREFIX const std::string errors< json_pegtl::eof >::error_message WEAK_SUFFIX = "unexpected character after JSON5 value";
             // clang-format on
