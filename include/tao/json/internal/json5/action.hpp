@@ -66,6 +66,38 @@ namespace tao
             };
 
             template<>
+            struct action< rules::hexcontent >
+            {
+               static char unhex( const char c )
+               {
+                  if( ( '0' <= c ) && ( c <= '9' ) ) {
+                     return c - '0';
+                  }
+                  if( ( 'a' <= c ) && ( c <= 'f' ) ) {
+                     return c - 'a' + 10;
+                  }
+                  if( ( 'A' <= c ) && ( c <= 'F' ) ) {
+                     return c - 'A' + 10;
+                  }
+                  assert( false );
+               }
+
+               template< typename Input, typename Consumer >
+               static void apply( const Input& in, Consumer& consumer )
+               {
+                  std::uint64_t value = 0;
+                  for( char c : in ) {
+                     if( value & 0xF000000000000000 ) {
+                        throw std::runtime_error( "JSON5 hexadecimal number too large" );
+                     }
+                     value <<= 4;
+                     value += unhex( c );
+                  }
+                  consumer.number( value );
+               }
+            };
+
+            template<>
             struct action< rules::array::begin >
             {
                template< typename Consumer >

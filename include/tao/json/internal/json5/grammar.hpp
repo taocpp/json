@@ -63,6 +63,9 @@ namespace tao
                                                        seq< int_, opt< seq< one< '.' >, opt< fdigits > >, opt< exp > > >,
                                                        seq< one< '.' >, must< fdigits >, opt< exp > > > > {};
 
+               struct hexcontent : plus< abnf::HEXDIG > {};
+               struct hexnumber : seq< bytes< 2 >, must< hexcontent > > {};
+
                struct xdigit : abnf::HEXDIG {};
                struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
                struct escaped_char : one< '\'', '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v' > {};
@@ -142,7 +145,7 @@ namespace tao
 
                struct sor_value
                {
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, number, object, array, false_, true_, null >;
+                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, hexnumber, number, object, array, false_, true_, null >;
 
                   template< apply_mode A,
                             rewind_mode M,
@@ -160,6 +163,13 @@ namespace tao
                         case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
                         case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
                         case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
+                        case '0': {
+                           const auto c = in.peek_char( 1 );
+                           if( c == 'x' || c == 'X' ) {
+                              return Control< hexnumber >::template match< A, M, Action, Control >( in, st... );
+                           }
+                           // fall through
+                        }
                         default: return Control< number >::template match< A, M, Action, Control >( in, st... );
                      }
                   }
