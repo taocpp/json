@@ -116,16 +116,6 @@ namespace tao
             };
 
             template<>
-            struct action< rules::msign >
-            {
-               template< typename Input >
-               static void apply( const Input& in, number_state& result )
-               {
-                  result.mneg = ( in.peek_char() == '-' );
-               }
-            };
-
-            template<>
             struct action< rules::nan >
             {
                static void apply0( number_state& result )
@@ -142,6 +132,16 @@ namespace tao
                {
                   result.isfp = true;
                   result.infinity = true;
+               }
+            };
+
+            template<>
+            struct action< rules::msign >
+            {
+               template< typename Input >
+               static void apply( const Input& in, number_state& result )
+               {
+                  result.mneg = ( in.peek_char() == '-' );
                }
             };
 

@@ -57,9 +57,10 @@ namespace tao
                struct idigits : digits {};
 
                struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
-               struct frac : if_must< one< '.' >, fdigits > {};
                struct int_ : sor< zero, idigits > {};
-               struct number : seq< opt< msign >, sor< nan, infinity, seq< int_, opt< frac >, opt< exp > > > > {};
+               struct number : seq< opt< msign >, sor< nan, infinity,
+                                                       seq< int_, opt< seq< one< '.' >, opt< fdigits > >, opt< exp > > >,
+                                                       seq< one< '.' >, must< fdigits >, opt< exp > > > > {};
 
                struct xdigit : abnf::HEXDIG {};
                struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};

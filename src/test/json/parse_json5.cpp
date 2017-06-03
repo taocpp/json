@@ -75,10 +75,17 @@ namespace tao
       void unit_test()
       {
          TEST_ASSERT( json5::from_string( "null" ) == value( null ) );
-         TEST_ASSERT( json5::from_string( "42" ) == value( 42 ) );
-         TEST_ASSERT( json5::from_string( "42.0" ) == value( 42.0 ) );
          TEST_ASSERT( json5::from_string( "true" ) == value( true ) );
          TEST_ASSERT( json5::from_string( "false" ) == value( false ) );
+
+         TEST_ASSERT( json5::from_string( "42" ) == value( 42 ) );
+         TEST_ASSERT( json5::from_string( "42." ) == value( 42.0 ) );
+         TEST_ASSERT( json5::from_string( "42.0" ) == value( 42.0 ) );
+
+         TEST_ASSERT( json5::from_string( "0.5" ) == value( 0.5 ) );
+         TEST_ASSERT( json5::from_string( ".5" ) == value( 0.5 ) );
+         TEST_THROWS( json5::from_string( "." ) );
+         TEST_THROWS( json5::from_string( "00." ) );
 
          TEST_ASSERT( json5::from_string( "0" ).get_unsigned() == 0 );
          TEST_ASSERT( json5::from_string( "1" ).get_unsigned() == 1 );
