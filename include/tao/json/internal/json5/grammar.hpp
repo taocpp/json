@@ -43,6 +43,7 @@ namespace tao
                struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
                struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
                struct true_ : TAOCPP_JSON_PEGTL_STRING( "true" ) {};
+
                struct nan : TAOCPP_JSON_PEGTL_STRING( "NaN" ) {};
                struct infinity : TAOCPP_JSON_PEGTL_STRING( "Infinity" ) {};
 
@@ -65,7 +66,7 @@ namespace tao
                struct xdigit : abnf::HEXDIG {};
                struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
                struct escaped_char : one< '"', '\\', '/', 'b', 'f', 'n', 'r', 't' > {};
-               struct escaped : sor< escaped_char, unicode > {};
+               struct escaped : sor< escaped_char, unicode, eol > {};
 
                struct unescaped
                {
