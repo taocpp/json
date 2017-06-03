@@ -22,7 +22,7 @@ namespace tao
 
       void test_array()
       {
-         const auto v = json5::from_string( "[ null, true, false, //dummy\n42 //*\n, 43.0 ///*\n, \"foo\", [ 1, +2, 3 ], { \"a\"/**/ : \"b\"/*foo/b\nar*b\naz/*b\nla*/, \"c\" : \"d\" } ]" );
+         const auto v = json5::from_string( "[ null, true, false, //dummy\n42 //*\n, 43.0 ///*\n, \"foo\", [ 1, +2, 3, ], { \"a\"/**/ : \"b\"/*foo/b\nar*b\naz/*b\nla*/, \"c\" : \"d\", } ]" );
 
          TEST_ASSERT( v.type() == type::ARRAY );
 
