@@ -22,7 +22,7 @@ namespace tao
 
             template<> struct unescape_action< rules::hexcode > : json_pegtl::unescape::unescape_x {};
             template<> struct unescape_action< rules::unicode > : json_pegtl::unescape::unescape_j {};
-            template<> struct unescape_action< rules::escaped_char > : json_pegtl::unescape::unescape_c< rules::escaped_char, '\b', '\f', '\n', '\r', '\t', '\v' > {};
+            template<> struct unescape_action< rules::escaped_char > : json_pegtl::unescape::unescape_c< rules::escaped_char, '\b', '\f', '\n', '\r', '\t' > {};
             template<> struct unescape_action< rules::escaped_any > : json_pegtl::unescape::append_all {};
 
             template<> struct unescape_action< rules::unescaped< '"' > > : json_pegtl::unescape::append_all {};

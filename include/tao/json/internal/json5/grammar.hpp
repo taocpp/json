@@ -68,7 +68,7 @@ namespace tao
                struct hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
                struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
 
-               struct escaped_char : one< 'b', 'f', 'n', 'r', 't', 'v' > {};
+               struct escaped_char : one< 'b', 'f', 'n', 'r', 't' > {};
                struct escaped_any : any {};
                struct escaped : sor< escaped_char, unicode, eol, escaped_any > {};
 
