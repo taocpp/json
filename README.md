@@ -15,12 +15,12 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Achieves a **100% score** in the [Native JSON Benchmark] conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
-  * Experimental support for [RFC7049]: Concise Binary Object Representation (CBOR).
-  * Experimental support for [Universal Binary JSON (UBJSON)](http://ubjson.org) (encode only).
-  * Experimental support for [Message Pack](http://msgpack.org) (encode only).
-  * Experimental support for [JSON5](http://json5.org), a variant of "relaxed" JSON (currently encode only).
+  * [RFC7049]: Concise Binary Object Representation (CBOR).
+  * [JSON5](http://json5.org), a variant of "relaxed" JSON.
   * Experimental support for [JSON Reference](https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03) (local URI fragments only).
   * Experimental support for [JSON Schema](http://json-schema.org/documentation.html) (draft v4).
+  * Experimental support for [Universal Binary JSON (UBJSON)](http://ubjson.org) (encode only).
+  * Experimental support for [Message Pack](http://msgpack.org) (encode only).
 
 * General
 
