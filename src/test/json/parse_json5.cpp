@@ -22,7 +22,7 @@ namespace tao
 
       void test_array()
       {
-         const auto v = json5::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
+         const auto v = json5::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, +2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
 
          TEST_ASSERT( v.type() == type::ARRAY );
 
@@ -48,7 +48,7 @@ namespace tao
 
       void test_object()
       {
-         const auto v = json5::from_string( "{ \"a\" : null, \"b\" : true, \"c\" : false, \"d\" : 42, \"e\" : 43.0, \"f\" : \"foo\", \"g\" : [ 1, 2, 3 ], \"h\" : { \"a\" : \"b\", \"c\" : \"d\" } }" );
+         const auto v = json5::from_string( "{ \"a\" : null, \"b\" : true, \"c\" : false, \"d\" : 42, \"e\" : +43.0, \"f\" : \"foo\", \"g\" : [ 1, 2, +3 ], \"h\" : { \"a\" : \"b\", \"c\" : \"d\" } }" );
 
          TEST_ASSERT( v.type() == type::OBJECT );
 
@@ -82,24 +82,31 @@ namespace tao
 
          TEST_ASSERT( json5::from_string( "0" ).get_unsigned() == 0 );
          TEST_ASSERT( json5::from_string( "1" ).get_unsigned() == 1 );
+         TEST_ASSERT( json5::from_string( "+1" ).get_unsigned() == 1 );
          TEST_ASSERT( json5::from_string( "-1" ).get_signed() == -1 );
 
          // full signed and unsigned 64 bit integer range
          TEST_ASSERT( json5::from_string( "9223372036854775807" ).get_unsigned() == 9223372036854775807 );
+         TEST_ASSERT( json5::from_string( "+9223372036854775807" ).get_unsigned() == 9223372036854775807 );
          TEST_ASSERT( json5::from_string( "-9223372036854775808" ).get_signed() == -9223372036854775807ll - 1 );
          TEST_ASSERT( json5::from_string( "18446744073709551615" ).get_unsigned() == 18446744073709551615ull );
+         TEST_ASSERT( json5::from_string( "+18446744073709551615" ).get_unsigned() == 18446744073709551615ull );
 
          // anything beyond is double
          TEST_ASSERT( json5::from_string( "-9223372036854775809" ).is_double() );
          TEST_ASSERT( json5::from_string( "18446744073709551616" ).is_double() );
+         TEST_ASSERT( json5::from_string( "+18446744073709551616" ).is_double() );
 
          TEST_ASSERT( json5::from_string( "0" ) == 0 );
          TEST_ASSERT( json5::from_string( "1" ) == 1 );
+         TEST_ASSERT( json5::from_string( "+1" ) == 1 );
          TEST_ASSERT( json5::from_string( "-1" ) == -1 );
 
          TEST_ASSERT( json5::from_string( "9223372036854775807" ) == 9223372036854775807 );
+         TEST_ASSERT( json5::from_string( "+9223372036854775807" ) == 9223372036854775807 );
          TEST_ASSERT( json5::from_string( "-9223372036854775808" ) == -9223372036854775807ll - 1 );
          TEST_ASSERT( json5::from_string( "18446744073709551615" ) == 18446744073709551615ull );
+         TEST_ASSERT( json5::from_string( "+18446744073709551615" ) == 18446744073709551615ull );
 
          test_array();
          test_object();

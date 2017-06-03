@@ -40,7 +40,7 @@ namespace tao
                struct digits : plus< abnf::DIGIT > {};
 
                struct zero : one< '0' > {};
-               struct msign : one< '-' > {};
+               struct msign : one< '-', '+' > {};
                struct esign : one< '-', '+' > {};
 
                struct edigits : digits {};

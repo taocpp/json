@@ -118,9 +118,10 @@ namespace tao
             template<>
             struct action< rules::msign >
             {
-               static void apply0( number_state& result )
+               template< typename Input >
+               static void apply( const Input& in, number_state& result )
                {
-                  result.mneg = true;
+                  result.mneg = ( in.peek_char() == '-' );
                }
             };
 
