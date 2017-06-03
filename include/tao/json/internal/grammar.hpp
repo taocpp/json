@@ -57,7 +57,7 @@ namespace tao
 
             struct unescaped
             {
-               using analyze_t = analysis::generic< analysis::rule_type::ANY >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
 
                template< typename Input >
                static bool match( Input& in )
@@ -116,7 +116,7 @@ namespace tao
 
             struct sor_value
             {
-               using analyze_t = analysis::generic< analysis::rule_type::SOR, string, number, object, array, false_, true_, null >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number, object, array, false_, true_, null >;
 
                template< apply_mode A,
                          rewind_mode M,
