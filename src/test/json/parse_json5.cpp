@@ -124,10 +124,12 @@ namespace tao
          TEST_ASSERT( json5::from_string( "+18446744073709551615" ) == 18446744073709551615ull );
 
          TEST_ASSERT( json5::from_string( "\"\"" ) == "" );
+         TEST_ASSERT( json5::from_string( "\"'\"" ) == "'" );
          TEST_ASSERT( json5::from_string( "\"\\\n\"" ) == "" );
          TEST_ASSERT( json5::from_string( "\"foo\\\nbar\"" ) == "foobar" );
 
          TEST_ASSERT( json5::from_string( "''" ) == "" );
+         TEST_ASSERT( json5::from_string( "'\"'" ) == "\"" );
          TEST_ASSERT( json5::from_string( "'foo'" ) == "foo" );
          TEST_ASSERT( json5::from_string( "'fo\\\"o'" ) == "fo\"o" );
          TEST_ASSERT( json5::from_string( "'fo\\'o'" ) == "fo'o" );
