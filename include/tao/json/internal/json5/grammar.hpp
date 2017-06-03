@@ -27,7 +27,7 @@ namespace tao
 
                struct comment : sor< single_line_comment, multi_line_comment > {};
 
-               struct ws : sor< one< ' ', '\t', '\n', '\r' >, if_must< one< '/' >, comment > > {};
+               struct ws : sor< one< ' ', '\t', '\n', '\r' >, utf8::one< 0xA0, 0xFEFF >, if_must< one< '/' >, comment > > {};
 
                template< typename R, typename P = ws >
                using padr = json_pegtl::internal::seq< R, json_pegtl::internal::star< P > >;
