@@ -73,6 +73,9 @@ namespace tao
             // clang-format off
             template<> WEAK_PREFIX const std::string errors< rules::text >::error_message WEAK_SUFFIX = "no valid JSON5";
 
+            template<> WEAK_PREFIX const std::string errors< rules::comment >::error_message WEAK_SUFFIX = "expected '*' or '/'";
+            template<> WEAK_PREFIX const std::string errors< rules::end_multi_line_comment >::error_message WEAK_SUFFIX = "unterminated multi-line comment";
+
             template<> WEAK_PREFIX const std::string errors< rules::end_array >::error_message WEAK_SUFFIX = "incomplete array, expected ']'";
             template<> WEAK_PREFIX const std::string errors< rules::end_object >::error_message WEAK_SUFFIX = "incomplete object, expected '}'";
             template<> WEAK_PREFIX const std::string errors< rules::member >::error_message WEAK_SUFFIX = "expected member";

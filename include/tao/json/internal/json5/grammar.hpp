@@ -20,7 +20,14 @@ namespace tao
             {
                using namespace json_pegtl;
 
-               struct ws : one< ' ', '\t', '\n', '\r' > {};
+               struct single_line_comment : seq< one< '/' >, until< eolf > > {};
+
+               struct end_multi_line_comment : until< string< '*', '/' > > {};
+               struct multi_line_comment : if_must< one< '*' >, end_multi_line_comment > {};
+
+               struct comment : sor< single_line_comment, multi_line_comment > {};
+
+               struct ws : sor< one< ' ', '\t', '\n', '\r' >, if_must< one< '/' >, comment > > {};
 
                template< typename R, typename P = ws >
                using padr = json_pegtl::internal::seq< R, json_pegtl::internal::star< P > >;
