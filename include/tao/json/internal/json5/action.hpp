@@ -56,7 +56,7 @@ namespace tao
             };
 
             template<>
-            struct action< rules::ukey >
+            struct action< rules::identifier >
             {
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )

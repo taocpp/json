@@ -68,6 +68,7 @@ namespace tao
                struct escaped_char : one< '\'', '"', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v' > {};
                struct escaped : sor< escaped_char, unicode, eol > {};
 
+               template< char D >
                struct unescaped
                {
                   using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
@@ -79,7 +80,7 @@ namespace tao
 
                      while( !in.empty() ) {
                         if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
-                           if( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != '"' ) && ( t.data != '\'' ) ) {
+                           if( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != D ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;
                               continue;
@@ -91,38 +92,31 @@ namespace tao
                   }
                };
 
-               struct chars : if_then_else< one< '\\' >, must< escaped >, unescaped > {};
+               template< char D >
+               struct chars : if_then_else< one< '\\' >, must< escaped >, unescaped< D > > {};
 
-               struct string_content : until< at< one< '"' > >, must< chars > > {};
-               struct string : seq< one< '"' >, must< string_content >, any >
+               template< char D >
+               struct string_content : until< at< one< D > >, must< chars< D > > > {};
+
+               template< char D >
+               struct string : seq< one< D >, must< string_content< D > >, any >
                {
-                  using content = string_content;
+                  using content = string_content< D >;
                };
 
-               struct sstring_content : until< at< one< '\'' > >, must< chars > > {};
-               struct sstring : seq< one< '\'' >, must< sstring_content >, any >
-               {
-                  using content = sstring_content;
-               };
+               template< char D >
+               struct key_content : until< at< one< D > >, must< chars< D > > > {};
 
-               struct key_content : until< at< one< '"' > >, must< chars > > {};
-               struct key : seq< one< '"' >, must< key_content >, any >
+               template< char D >
+               struct key : seq< one< D >, must< key_content< D > >, any >
                {
-                  using content = key_content;
-               };
-
-               struct skey_content : until< at< one< '\'' > >, must< chars > > {};
-               struct skey : seq< one< '"' >, must< skey_content >, any >
-               {
-                  using content = skey_content;
+                  using content = key_content< D >;
                };
 
                // TODO: Check if this is correct/complete wrt JSON5
                struct identifier_first : ranges< 'a', 'z', 'A', 'Z', '_', '_', '$' > {};
                struct identifier_other : ranges< 'a', 'z', 'A', 'Z', '0', '9', '_', '_', '$' > {};
                struct identifier : seq< identifier_first, star< identifier_other > > {};
-
-               struct ukey : identifier {};
 
                struct value;
 
@@ -136,7 +130,7 @@ namespace tao
                   using content = array_content;
                };
 
-               struct member : if_must< sor< key, skey, ukey >, name_separator, value > {};
+               struct member : if_must< sor< key< '"' >, key< '\'' >, identifier >, name_separator, value > {};
                struct object_content : opt< list_tail< member, value_separator > > {};
                struct object : seq< begin_object, object_content, must< end_object > >
                {
@@ -148,7 +142,7 @@ namespace tao
 
                struct sor_value
                {
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, sstring, number, object, array, false_, true_, null >;
+                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, number, object, array, false_, true_, null >;
 
                   template< apply_mode A,
                             rewind_mode M,
@@ -159,8 +153,8 @@ namespace tao
                   static bool match_impl( Input& in, States&&... st )
                   {
                      switch( in.peek_char() ) {
-                        case '\'': return Control< sstring >::template match< A, M, Action, Control >( in, st... );
-                        case '"': return Control< string >::template match< A, M, Action, Control >( in, st... );
+                        case '\'': return Control< string< '\'' > >::template match< A, M, Action, Control >( in, st... );
+                        case '"': return Control< string< '"' > >::template match< A, M, Action, Control >( in, st... );
                         case '{': return Control< object >::template match< A, M, Action, Control >( in, st... );
                         case '[': return Control< array >::template match< A, M, Action, Control >( in, st... );
                         case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
