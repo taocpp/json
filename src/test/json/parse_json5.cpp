@@ -102,6 +102,14 @@ namespace tao
          TEST_ASSERT( json5::from_string( "+1" ) == 1 );
          TEST_ASSERT( json5::from_string( "-1" ) == -1 );
 
+         TEST_ASSERT( std::isnan( json5::from_string( "NaN" ).get_double() ) );
+         TEST_ASSERT( std::isnan( json5::from_string( "+NaN" ).get_double() ) );
+         TEST_ASSERT( std::isnan( json5::from_string( "-NaN" ).get_double() ) );
+
+         TEST_ASSERT( json5::from_string( "Infinity" ).get_double() == INFINITY );
+         TEST_ASSERT( json5::from_string( "+Infinity" ).get_double() == INFINITY );
+         TEST_ASSERT( json5::from_string( "-Infinity" ).get_double() == -INFINITY );
+
          TEST_ASSERT( json5::from_string( "9223372036854775807" ) == 9223372036854775807 );
          TEST_ASSERT( json5::from_string( "+9223372036854775807" ) == 9223372036854775807 );
          TEST_ASSERT( json5::from_string( "-9223372036854775808" ) == -9223372036854775807ll - 1 );

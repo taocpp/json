@@ -38,6 +38,8 @@ namespace tao
             bool mneg = false;
             bool eneg = false;
             bool drop = false;
+            bool nan = false;
+            bool infinity = false;
             char mantissa[ max_mantissa_digits + 1 ];
 
             template< typename Consumer >
@@ -69,9 +71,17 @@ namespace tao
                   mantissa[ msize++ ] = '1';
                   --exponent10;
                }
+               if( nan ) {
+                  consumer.number( mneg ? -NAN : NAN );
+                  return;
+               }
+               if( infinity ) {
+                  consumer.number( mneg ? -INFINITY : INFINITY );
+                  return;
+               }
                const auto d = json_double_conversion::Strtod( json_double_conversion::Vector< const char >( mantissa, msize ), exponent10 );
                if( !std::isfinite( d ) ) {
-                  throw std::runtime_error( "non-finite double value invalid for JSON" );
+                  throw std::runtime_error( "invalid double value" );
                }
                consumer.number( mneg ? -d : d );
             }

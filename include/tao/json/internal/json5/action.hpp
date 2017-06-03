@@ -126,6 +126,26 @@ namespace tao
             };
 
             template<>
+            struct action< rules::nan >
+            {
+               static void apply0( number_state& result )
+               {
+                  result.isfp = true;
+                  result.nan = true;
+               }
+            };
+
+            template<>
+            struct action< rules::infinity >
+            {
+               static void apply0( number_state& result )
+               {
+                  result.isfp = true;
+                  result.infinity = true;
+               }
+            };
+
+            template<>
             struct action< rules::esign >
             {
                template< typename Input >

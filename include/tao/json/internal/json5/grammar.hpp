@@ -43,6 +43,8 @@ namespace tao
                struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
                struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
                struct true_ : TAOCPP_JSON_PEGTL_STRING( "true" ) {};
+               struct nan : TAOCPP_JSON_PEGTL_STRING( "NaN" ) {};
+               struct infinity : TAOCPP_JSON_PEGTL_STRING( "Infinity" ) {};
 
                struct digits : plus< abnf::DIGIT > {};
 
@@ -57,7 +59,7 @@ namespace tao
                struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
                struct frac : if_must< one< '.' >, fdigits > {};
                struct int_ : sor< zero, idigits > {};
-               struct number : seq< opt< msign >, int_, opt< frac >, opt< exp > > {};
+               struct number : seq< opt< msign >, sor< nan, infinity, seq< int_, opt< frac >, opt< exp > > > > {};
 
                struct xdigit : abnf::HEXDIG {};
                struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
