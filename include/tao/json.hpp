@@ -22,9 +22,13 @@
 // Events other
 #include "json/events/debug.hpp"
 #include "json/events/discard.hpp"
+#include "json/events/finite_double.hpp"
 #include "json/events/hash.hpp"
+#include "json/events/prefer_signed.hpp"
+#include "json/events/prefer_unsigned.hpp"
 #include "json/events/tee.hpp"
 #include "json/events/validate_event_order.hpp"
+#include "json/events/validate_keys.hpp"
 
 // Value producers
 #include "json/from_stream.hpp"
