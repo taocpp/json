@@ -8,16 +8,16 @@
 #include "json/value.hpp"
 
 // Events producers
-//#include "json/events/from_stream.hpp" // includes PEGTL header/grammar
-#include "json/events/from_string.hpp"  // includes PEGTL header/grammar
-#include "json/events/from_value.hpp"   // Value to Events
-#include "json/events/parse_file.hpp"   // includes PEGTL header/grammar
+#include "json/events/from_stream.hpp"
+#include "json/events/from_string.hpp"
+#include "json/events/from_value.hpp"
+#include "json/events/parse_file.hpp"
 
 // Events consumers
 #include "json/events/to_pretty_stream.hpp"
 #include "json/events/to_stream.hpp"
 #include "json/events/to_string.hpp"
-#include "json/events/to_value.hpp"  // Events to Value
+#include "json/events/to_value.hpp"
 
 // Events other
 #include "json/events/debug.hpp"
@@ -27,8 +27,9 @@
 #include "json/events/validate_event_order.hpp"
 
 // Value producers
-#include "json/from_string.hpp"  // includes PEGTL header/grammar
-#include "json/parse_file.hpp"   // includes PEGTL header/grammar
+#include "json/from_stream.hpp"
+#include "json/from_string.hpp"
+#include "json/parse_file.hpp"
 
 // Value writers
 #include "json/stream.hpp"  // operator<<
@@ -41,13 +42,12 @@
 //#include "json/diff.hpp"
 #include "json/schema.hpp"
 
+// Relaxed JSON
+#include "json/json5.hpp"
+
 // Binary formats
-#include "json/cbor/from_string.hpp"
-#include "json/cbor/to_stream.hpp"
-#include "json/cbor/to_string.hpp"
-#include "json/msgpack/to_stream.hpp"
-#include "json/msgpack/to_string.hpp"
-#include "json/ubjson/to_stream.hpp"
-#include "json/ubjson/to_string.hpp"
+#include "json/cbor.hpp"
+#include "json/msgpack.hpp"
+#include "json/ubjson.hpp"
 
 #endif
