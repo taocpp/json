@@ -97,10 +97,6 @@ namespace tao
 
                void number( const double v )
                {
-                  if( !std::isfinite( v ) ) {
-                     null();
-                     return;
-                  }
                   os.put( 'D' );
                   const auto x = internal::h_to_be( v );
                   os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );

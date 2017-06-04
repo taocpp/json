@@ -8,6 +8,7 @@
 
 #include "../events/from_value.hpp"
 
+#include "../events/finite_double.hpp"
 #include "../events/ubjson/to_stream.hpp"
 
 namespace tao
@@ -19,7 +20,7 @@ namespace tao
          template< template< typename... > class Traits >
          void to_stream( std::ostream& os, const basic_value< Traits >& v )
          {
-            events::ubjson::to_stream consumer( os );
+            events::finite_double< events::ubjson::to_stream > consumer( os );
             events::from_value( v, consumer );
          }
 
