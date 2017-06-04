@@ -55,7 +55,8 @@ namespace tao
                   for( auto& e : v.unsafe_get_object() ) {
                      resolve_references( r, e.second );
                   }
-                  if( const auto* ref = v.find( "$ref" )->skip_raw_ptr() ) {
+                  if( const auto* ref = v.find( "$ref" ) ) {
+                     ref = ref->skip_raw_ptr();
                      if( ref->is_string() ) {
                         const std::string& s = ref->unsafe_get_string();
                         if( !s.empty() && s[ 0 ] == '#' ) {
