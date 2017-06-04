@@ -183,7 +183,7 @@ namespace tao
                   if( u > 9223372036854775808ull ) {
                      throw json_pegtl::parse_error( "negative integer overflow", in );
                   }
-                  consumer.number( -std::int64_t( u ) - std::int64_t( 1 ) );
+                  consumer.number( std::int64_t( ~u ) );
                   return true;
                }
 
@@ -355,7 +355,7 @@ namespace tao
 
          }  // namespace cbor
 
-      } // namespace events
+      }  // namespace events
 
    }  // namespace json
 
