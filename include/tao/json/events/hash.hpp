@@ -85,10 +85,12 @@ namespace tao
 
             void number( const double v )
             {
-               const std::uint64_t u = v;
-               if( u == v ) {
-                  number( u );
-                  return;
+               if( v >= 0 ) {
+                  const std::uint64_t u = v;
+                  if( u == v ) {
+                     number( u );
+                     return;
+                  }
                }
                const std::int64_t i = v;
                if( i == v ) {

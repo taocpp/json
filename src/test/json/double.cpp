@@ -10,26 +10,10 @@ namespace tao
 {
    namespace json
    {
-      union uint64_double
-      {
-         explicit uint64_double( const uint64_t u )
-            : u( u )
-         {
-         }
-
-         uint64_t u;
-         double d;
-      };
-
-      inline uint64_t d2u( const double d )
-      {
-         return uint64_double( d ).u;
-      }
-
       void test_double( const std::string& input, const double value )
       {
          const double d = json::from_string( input ).get_double();
-         TEST_ASSERT( d2u( d ) == d2u( value ) );
+         TEST_ASSERT( d == value );
       }
 
       void unit_test()
