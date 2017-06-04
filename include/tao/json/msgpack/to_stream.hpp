@@ -23,10 +23,10 @@ namespace tao
             events::from_value( v, consumer );
          }
 
-      } // namespace msgpack
+      }  // namespace msgpack
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

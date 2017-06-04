@@ -209,7 +209,7 @@ namespace tao
 
          }  // namespace msgpack
 
-      } // namespace events
+      }  // namespace events
 
    }  // namespace json
 

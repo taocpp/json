@@ -33,12 +33,12 @@ namespace tao
                }
             };
 
-         } // namespace msgpack
+         }  // namespace msgpack
 
-      } // namespace events
+      }  // namespace events
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

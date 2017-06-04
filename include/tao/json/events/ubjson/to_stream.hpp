@@ -184,7 +184,7 @@ namespace tao
 
          }  // namespace ubjson
 
-      } // namespace events
+      }  // namespace events
 
    }  // namespace json
 

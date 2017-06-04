@@ -24,10 +24,10 @@ namespace tao
             return consumer.value();
          }
 
-      } // namespace cbor
+      }  // namespace cbor
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

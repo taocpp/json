@@ -158,7 +158,7 @@ namespace tao
 
          }  // namespace cbor
 
-      } // namespace events
+      }  // namespace events
 
    }  // namespace json
 
