@@ -125,7 +125,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
           packages: ['clang-4.0']
       env:
-        - COMPILER=clang++-4.0 CXXSTD="-std=c++1z"
+        - COMPILER=clang++-4.0
+        - CXXSTD="-std=c++1z"
 
     - os: osx
       osx_image: xcode6.4
@@ -171,8 +172,9 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-7']
       env:
-        - CPPFLAGS=-fsanitize=undefined
         - COMPILER=g++-7
+        - CPPFLAGS=-fsanitize=undefined
+        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - os: linux
       dist: trusty
@@ -182,8 +184,9 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-7']
       env:
-        - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
         - COMPILER=g++-7
+        - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
+        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - os: linux
       dist: trusty
@@ -193,8 +196,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
           packages: ['clang-4.0']
       env:
+        - COMPILER=clang++-4.0
         - CPPFLAGS=-fsanitize=undefined
-        - COMPILER=clang++-4.0
 
     - os: linux
       dist: trusty
@@ -204,8 +207,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
           packages: ['clang-4.0']
       env:
-        - CPPFLAGS=-fsanitize=address
         - COMPILER=clang++-4.0
+        - CPPFLAGS=-fsanitize=address
 
 script:
   make CXX=$COMPILER -j3
