@@ -14,11 +14,7 @@ namespace tao
          struct finite_double
             : public Consumer
          {
-            template< typename... Ts >
-            finite_double( Ts&&... ts )
-               : Consumer( std::forward< Ts >( ts )... )
-            {
-            }
+            using Consumer::Consumer;
 
             using Consumer::number;
 
@@ -33,10 +29,10 @@ namespace tao
             }
          };
 
-      } // events
+      }  // events
 
-   } // json
+   }  // json
 
-} // tao
+}  // tao
 
 #endif
