@@ -286,14 +286,12 @@ namespace tao
             }
          };
 
-         // make_tee
          template< typename... T >
          tee< internal::decay_and_strip_t< T >... > make_tee( T&&... t )
          {
             return tee< internal::decay_and_strip_t< T >... >( std::forward< T >( t )... );
          }
 
-         // tie
          template< typename... T >
          tee< T&... > tie( T&... t )
          {

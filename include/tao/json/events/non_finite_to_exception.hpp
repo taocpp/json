@@ -26,9 +26,7 @@ namespace tao
                if( !std::isfinite( v ) ) {
                   throw std::runtime_error( "invalid non-finite double value" );
                }
-               else {
-                  Consumer::number( v );
-               }
+               Consumer::number( v );
             }
          };
 

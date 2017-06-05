@@ -16,7 +16,7 @@ namespace tao
          template< typename T >
          inline std::string base64( const T& v )
          {
-            static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
             std::string s;
             s.reserve( ( v.size() + 2 ) / 3 * 4 );
