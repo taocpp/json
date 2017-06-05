@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_EVENTS_FINITE_DOUBLE_HPP
-#define TAOCPP_JSON_INCLUDE_EVENTS_FINITE_DOUBLE_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_NON_FINITE_TO_NULL_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_NON_FINITE_TO_NULL_HPP
 
 namespace tao
 {
@@ -11,7 +11,7 @@ namespace tao
       namespace events
       {
          template< typename Consumer >
-         struct finite_double
+         struct non_finite_to_null
             : public Consumer
          {
             using Consumer::Consumer;

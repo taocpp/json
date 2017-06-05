@@ -22,8 +22,8 @@
 // Events other
 #include "json/events/debug.hpp"
 #include "json/events/discard.hpp"
-#include "json/events/finite_double.hpp"
 #include "json/events/hash.hpp"
+#include "json/events/non_finite_to_null.hpp"
 #include "json/events/prefer_signed.hpp"
 #include "json/events/prefer_unsigned.hpp"
 #include "json/events/tee.hpp"

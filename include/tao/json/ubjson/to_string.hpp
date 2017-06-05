@@ -8,7 +8,7 @@
 
 #include "../events/from_value.hpp"
 
-#include "../events/finite_double.hpp"
+#include "../events/non_finite_to_null.hpp"
 #include "../events/ubjson/to_string.hpp"
 
 namespace tao
@@ -20,7 +20,7 @@ namespace tao
          template< template< typename... > class Traits >
          std::string to_string( const basic_value< Traits >& v )
          {
-            events::finite_double< events::ubjson::to_string > consumer;
+            events::non_finite_to_null< events::ubjson::to_string > consumer;
             events::from_value( v, consumer );
             return consumer.value();
          }
