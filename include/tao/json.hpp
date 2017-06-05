@@ -19,13 +19,17 @@
 #include "json/events/to_string.hpp"
 #include "json/events/to_value.hpp"
 
+// Events transformer
+#include "json/events/binary_to_hex.hpp"
+#include "json/events/non_finite_to_null.hpp"
+#include "json/events/non_finite_to_string.hpp"
+#include "json/events/prefer_signed.hpp"
+#include "json/events/prefer_unsigned.hpp"
+
 // Events other
 #include "json/events/debug.hpp"
 #include "json/events/discard.hpp"
 #include "json/events/hash.hpp"
-#include "json/events/non_finite_to_null.hpp"
-#include "json/events/prefer_signed.hpp"
-#include "json/events/prefer_unsigned.hpp"
 #include "json/events/tee.hpp"
 #include "json/events/validate_event_order.hpp"
 #include "json/events/validate_keys.hpp"
