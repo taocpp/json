@@ -4,8 +4,11 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_DEBUG_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_DEBUG_HPP
 
+#include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <ostream>
+#include <string>
 #include <vector>
 
 #include "../external/double.hpp"
@@ -61,7 +64,12 @@ namespace tao
             void number( const double v )
             {
                os << "double: ";
-               json_double_conversion::Dtostr( os, v );
+               if( !std::isfinite( v ) ) {
+                  os << v;
+               }
+               else {
+                  json_double_conversion::Dtostr( os, v );
+               }
                os << '\n';
             }
 
@@ -74,9 +82,7 @@ namespace tao
 
             void binary( const std::vector< byte >& v )
             {
-               os << "binary: ";
-               internal::hexdump( os, v );
-               os << "\n";
+               os << "binary: " << internal::hexdump( v ) << "\n";
             }
 
             void begin_array()

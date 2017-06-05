@@ -5,7 +5,7 @@
 #define TAOCPP_JSON_INCLUDE_INTERNAL_HEXDUMP_HPP
 
 #include <iomanip>
-#include <ostream>
+#include <sstream>
 
 namespace tao
 {
@@ -14,14 +14,14 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         void hexdump( std::ostream& os, const T& v ) noexcept
+         std::string hexdump( const T& v )
          {
-            const auto f = os.flags();
+            std::ostringstream os;
             os << std::hex << std::setfill( '0' );
             for( const auto c : v ) {
                os << std::setw( 2 ) << static_cast< unsigned char >( c );
             }
-            os.flags( f );
+            return os.str();
          }
 
       }  // namespace internal
