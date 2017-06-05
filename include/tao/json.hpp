@@ -20,6 +20,7 @@
 #include "json/events/to_value.hpp"
 
 // Events transformer
+#include "json/events/binary_to_base64.hpp"
 #include "json/events/binary_to_exception.hpp"
 #include "json/events/binary_to_hex.hpp"
 #include "json/events/non_finite_to_exception.hpp"
