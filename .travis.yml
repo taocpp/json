@@ -177,16 +177,14 @@ matrix:
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - os: linux
-      dist: trusty
       compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-7']
+          packages: ['g++-6']
       env:
-        - COMPILER=g++-7
+        - COMPILER=g++-6
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
-        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - os: linux
       dist: trusty
