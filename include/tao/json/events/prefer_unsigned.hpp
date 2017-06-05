@@ -4,6 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_PREFER_UNSIGNED_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_PREFER_UNSIGNED_HPP
 
+#include <cstdint>
+
 namespace tao
 {
    namespace json
@@ -21,7 +23,7 @@ namespace tao
             void number( const std::int64_t v )
             {
                if( v >= 0 ) {
-                  this->number( std::uint64_t( v ) );
+                  Consumer::number( std::uint64_t( v ) );
                }
                else {
                   Consumer::number( v );
@@ -29,10 +31,10 @@ namespace tao
             }
          };
 
-      }  // events
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

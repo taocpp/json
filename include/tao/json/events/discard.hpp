@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_DISCARD_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_DISCARD_HPP
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <vector>

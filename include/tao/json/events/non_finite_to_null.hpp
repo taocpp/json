@@ -4,6 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_NON_FINITE_TO_NULL_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_NON_FINITE_TO_NULL_HPP
 
+#include <cmath>
+
 namespace tao
 {
    namespace json
@@ -29,10 +31,10 @@ namespace tao
             }
          };
 
-      }  // events
+      }  // namespace events
 
-   }  // json
+   }  // namespace json
 
-}  // tao
+}  // namespace tao
 
 #endif

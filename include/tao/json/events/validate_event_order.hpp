@@ -4,10 +4,13 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_VALIDATE_EVENT_ORDER_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_VALIDATE_EVENT_ORDER_HPP
 
+#include <cstddef>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <vector>
+
+#include "../byte.hpp"
 
 namespace tao
 {

@@ -5,6 +5,8 @@
 #define TAOCPP_JSON_INCLUDE_EVENTS_VALIDATE_KEYS_HPP
 
 #include <stdexcept>
+#include <string>
+#include <utility>
 
 #include "../external/pegtl.hpp"
 
@@ -16,115 +18,35 @@ namespace tao
       {
          template< typename Consumer, typename Rule >
          struct validate_keys
+            : public Consumer
          {
-            template< typename... Ts >
-            validate_keys( Ts&&... ts )
-               : m_consumer( std::forward< Ts >( ts )... )
-            {
-            }
+            using Consumer::Consumer;
 
-            void null()
+            void validate_key( const std::string& v )
             {
-               m_consumer.null();
-            }
-
-            void boolean( const bool v )
-            {
-               m_consumer.boolean( v );
-            }
-
-            void number( const std::int64_t v )
-            {
-               m_consumer.number( v );
-            }
-
-            void number( const std::uint64_t v )
-            {
-               m_consumer.number( v );
-            }
-
-            void number( const double v )
-            {
-               m_consumer.number( v );
-            }
-
-            void string( const std::string& v )
-            {
-               m_consumer.string( v );
-            }
-
-            void binary( const std::vector< byte >& v )
-            {
-               m_consumer.binary( v );
-            }
-
-            void begin_array()
-            {
-               m_consumer.begin_array();
-            }
-
-            void begin_array( const std::size_t v )
-            {
-               m_consumer.begin_array( v );
-            }
-
-            void element()
-            {
-               m_consumer.element();
-            }
-
-            void end_array()
-            {
-               m_consumer.end_array();
-            }
-
-            void end_array( const std::size_t v )
-            {
-               m_consumer.end_array( v );
-            }
-
-            void begin_object()
-            {
-               m_consumer.begin_object();
-            }
-
-            void begin_object( const std::size_t v )
-            {
-               m_consumer.begin_object( v );
+               json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > in( v, __PRETTY_FUNCTION__ );
+               if( !json_pegtl::parse< Rule >( in ) ) {
+                  throw std::runtime_error( "invalid key: " + v );
+               }
             }
 
             void key( const std::string& v )
             {
-               json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > in( v, __PRETTY_FUNCTION__ );
-               if( !json_pegtl::parse< Rule >( in ) ) {
-                  throw std::runtime_error( "key not allowed: " + v );
-               }
-               m_consumer.key( v );
+               validate_key( v );
+               Consumer::key( v );
             }
 
-            void member()
+            void key( std::string&& v )
             {
-               m_consumer.member();
+               validate_key( v );
+               Consumer::key( std::move( v ) );
             }
-
-            void end_object()
-            {
-               m_consumer.end_object();
-            }
-
-            void end_object( const std::size_t v )
-            {
-               m_consumer.end_object( v );
-            }
-
-         private:
-            Consumer m_consumer;
          };
 
-      } // events
+      }  // namespace events
 
-   } // json
+   }  // namespace json
 
-} // tao
+}  // namespace tao
 
 #endif

@@ -4,6 +4,13 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_TO_VALUE_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_TO_VALUE_HPP
 
+#include <cstddef>
+#include <cstdint>
+#include <string>
+#include <utility>
+#include <vector>
+
+#include "../byte.hpp"
 #include "../value.hpp"
 
 namespace tao

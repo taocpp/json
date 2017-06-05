@@ -45,23 +45,29 @@ namespace tao
                case type::BINARY:
                   consumer.binary( v.unsafe_get_binary() );
                   return;
-               case type::ARRAY:
-                  consumer.begin_array( v.unsafe_get_array().size() );
-                  for( const auto& e : v.unsafe_get_array() ) {
+               case type::ARRAY: {
+                  const auto& a = v.unsafe_get_array();
+                  const auto s = a.size();
+                  consumer.begin_array( s );
+                  for( const auto& e : a ) {
                      events::from_value( e, consumer );
                      consumer.element();
                   }
-                  consumer.end_array( v.unsafe_get_array().size() );
+                  consumer.end_array( s );
                   return;
-               case type::OBJECT:
-                  consumer.begin_object( v.unsafe_get_object().size() );
-                  for( const auto& e : v.unsafe_get_object() ) {
+               }
+               case type::OBJECT: {
+                  const auto& o = v.unsafe_get_object();
+                  const auto s = o.size();
+                  consumer.begin_object( s );
+                  for( const auto& e : o ) {
                      consumer.key( e.first );
                      events::from_value( e.second, consumer );
                      consumer.member();
                   }
-                  consumer.end_object( v.unsafe_get_object().size() );
+                  consumer.end_object( s );
                   return;
+               }
                case type::RAW_PTR:
                   if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
                      events::from_value( *p, consumer );

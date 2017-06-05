@@ -8,13 +8,14 @@
 #include <cstddef>
 #include <cstdint>
 #include <ostream>
+#include <stdexcept>
 #include <string>
+#include <vector>
 
 #include "../external/double.hpp"
 
 #include "../byte.hpp"
 #include "../internal/escape.hpp"
-#include "../internal/hexdump.hpp"
 
 namespace tao
 {
@@ -103,7 +104,8 @@ namespace tao
 
             void binary( const std::vector< byte >& )
             {
-               throw std::runtime_error( "binary not valid for JSON string representation" );
+               // if this throws, consider using binary_to_* wrappers
+               throw std::runtime_error( "binary data invalid for JSON string representation" );
             }
 
             void begin_array( const std::size_t = 0 )

@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_HASH_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_HASH_HPP
 
+#include <cstddef>
 #include <cstdint>
 #include <map>
 #include <memory>

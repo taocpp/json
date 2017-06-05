@@ -5,6 +5,7 @@
 #define TAOCPP_JSON_INCLUDE_EVENTS_TO_STRING_HPP
 
 #include <sstream>
+#include <string>
 
 #include "to_stream.hpp"
 
