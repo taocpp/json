@@ -50,7 +50,6 @@ namespace tao
                struct digits : plus< abnf::DIGIT > {};
 
                struct zero : one< '0' > {};
-               struct msign : one< '-', '+' > {};
                struct esign : one< '-', '+' > {};
 
                struct edigits : digits {};
@@ -59,10 +58,23 @@ namespace tao
 
                struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
                struct int_ : sor< zero, idigits > {};
-               struct number : seq< opt< msign >, sor< nan, infinity, seq< int_, opt< seq< one< '.' >, opt< fdigits > >, opt< exp > > >, seq< one< '.' >, must< fdigits >, opt< exp > > > > {};
 
+               template< bool NEG >
+               struct number : seq< sor< seq< int_, opt< seq< one< '.' >, opt< fdigits > > > >,
+                                         seq< one< '.' >, must< fdigits > > >,
+                                    opt< exp > > {};
+
+               template< bool NEG >
                struct hexcontent : plus< abnf::HEXDIG > {};
-               struct hexnumber : seq< bytes< 2 >, must< hexcontent > > {};
+
+               template< bool NEG >
+               struct hexnumber : if_must< istring< '0', 'x' >, hexcontent< NEG > > {};
+
+               struct ninfinity : infinity {};
+
+               struct plain_number : sor< nan, infinity, hexnumber< false >, number< false > > {};
+               struct positive_number : seq< bytes< 1 >, plain_number > {};
+               struct negative_number : seq< bytes< 1 >, sor< nan, ninfinity, hexnumber< true >, number< true > > > {};
 
                struct xdigit : abnf::HEXDIG {};
                struct escaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
@@ -147,7 +159,8 @@ namespace tao
 
                struct sor_value
                {
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, hexnumber, number, object, array, false_, true_, null >;
+                  // TODO: Can we use a short-cut to simply say: Yes, I guarantee progress if match() returns "true"?
+                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, hexnumber< false >, number< false >, object, array, false_, true_, null >;
 
                   template< apply_mode A,
                             rewind_mode M,
@@ -165,14 +178,11 @@ namespace tao
                         case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
                         case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
                         case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
-                        case '0': {
-                           const auto c = in.peek_char( 1 );
-                           if( c == 'x' || c == 'X' ) {
-                              return Control< hexnumber >::template match< A, M, Action, Control >( in, st... );
-                           }
-                           return Control< number >::template match< A, M, Action, Control >( in, st... );
-                        }
-                        default: return Control< number >::template match< A, M, Action, Control >( in, st... );
+                        case 'N': return Control< nan >::template match< A, M, Action, Control >( in, st... );
+                        case 'I': return Control< infinity >::template match< A, M, Action, Control >( in, st... );
+                        case '+': return Control< positive_number >::template match< A, M, Action, Control >( in, st... );
+                        case '-': return Control< negative_number >::template match< A, M, Action, Control >( in, st... );
+                        default: return Control< plain_number >::template match< A, M, Action, Control >( in, st... );
                      }
                   }
 

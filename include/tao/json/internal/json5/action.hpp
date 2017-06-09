@@ -65,8 +65,8 @@ namespace tao
                }
             };
 
-            template<>
-            struct action< rules::hexcontent >
+            template< bool NEG >
+            struct action< rules::hexcontent< NEG > >
             {
                static char unhex( const char c )
                {
@@ -93,7 +93,20 @@ namespace tao
                      value <<= 4;
                      value += unhex( c );
                   }
-                  consumer.number( value );
+                  if( NEG ) {
+                     if( value < 9223372036854775808ull ) {
+                        consumer.number( -static_cast< std::int64_t >( value ) );
+                     }
+                     else if( value == 9223372036854775808ull ) {
+                        consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
+                     }
+                     else {
+                        throw std::runtime_error( "JSON5 hexadecimal number too large to negate" );
+                     }
+                  }
+                  else {
+                     consumer.number( value );
+                  }
                }
             };
 
@@ -160,38 +173,38 @@ namespace tao
             template<>
             struct action< rules::nan >
             {
-               static void apply0( number_state& result )
+               template< typename Consumer >
+               static void apply0( Consumer& consumer )
                {
-                  result.isfp = true;
-                  result.nan = true;
+                  consumer.number( NAN );
                }
             };
 
             template<>
             struct action< rules::infinity >
             {
-               static void apply0( number_state& result )
+               template< typename Consumer >
+               static void apply0( Consumer& consumer )
                {
-                  result.isfp = true;
-                  result.infinity = true;
+                  consumer.number( INFINITY );
                }
             };
 
             template<>
-            struct action< rules::msign >
+            struct action< rules::ninfinity >
             {
-               template< typename Input >
-               static void apply( const Input& in, number_state& result )
+               template< typename Consumer >
+               static void apply0( Consumer& consumer )
                {
-                  result.mneg = ( in.peek_char() == '-' );
+                  consumer.number( -INFINITY );
                }
             };
 
             template<>
             struct action< rules::esign >
             {
-               template< typename Input >
-               static void apply( const Input& in, number_state& result )
+               template< typename Input, bool NEG >
+               static void apply( const Input& in, number_state< NEG >& result )
                {
                   result.eneg = ( in.peek_char() == '-' );
                }
@@ -200,16 +213,16 @@ namespace tao
             template<>
             struct action< rules::idigits >
             {
-               template< typename Input >
-               static void apply( const Input& in, number_state& result )
+               template< typename Input, bool NEG >
+               static void apply( const Input& in, number_state< NEG >& result )
                {
                   if( in.size() > ( 1 << 20 ) ) {
                      throw std::runtime_error( "JSON number with 1 megabyte digits" );
                   }
                   const auto c = std::min( in.size(), max_mantissa_digits );
                   std::memcpy( result.mantissa, in.begin(), c );
-                  result.exponent10 += static_cast< number_state::exponent10_t >( in.size() - c );
-                  result.msize = static_cast< number_state::msize_t >( c );
+                  result.exponent10 += static_cast< typename number_state< NEG >::exponent10_t >( in.size() - c );
+                  result.msize = static_cast< typename number_state< NEG >::msize_t >( c );
 
                   for( std::size_t i = c; i < in.size(); ++i ) {
                      if( in.peek_char( i ) != '0' ) {
@@ -223,8 +236,8 @@ namespace tao
             template<>
             struct action< rules::fdigits >
             {
-               template< typename Input >
-               static void apply( const Input& in, number_state& result )
+               template< typename Input, bool NEG >
+               static void apply( const Input& in, number_state< NEG >& result )
                {
                   result.isfp = true;
 
@@ -242,8 +255,8 @@ namespace tao
                   }
                   const auto c = std::min( std::size_t( e - b ), max_mantissa_digits - result.msize );
                   std::memcpy( result.mantissa + result.msize, b, c );
-                  result.exponent10 -= static_cast< number_state::exponent10_t >( c );
-                  result.msize += static_cast< number_state::msize_t >( c );
+                  result.exponent10 -= static_cast< typename number_state< NEG >::exponent10_t >( c );
+                  result.msize += static_cast< typename number_state< NEG >::msize_t >( c );
 
                   for( const auto* r = b + c; r < e; ++r ) {
                      if( *r != '0' ) {
@@ -257,8 +270,8 @@ namespace tao
             template<>
             struct action< rules::edigits >
             {
-               template< typename Input >
-               static void apply( const Input& in, number_state& result )
+               template< typename Input, bool NEG >
+               static void apply( const Input& in, number_state< NEG >& result )
                {
                   result.isfp = true;
 

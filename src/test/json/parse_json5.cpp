@@ -114,6 +114,10 @@ namespace tao
          TEST_ASSERT( json5::from_string( "0xFF" ).get_unsigned() == 0xff );
          TEST_ASSERT( json5::from_string( "0xabde1234EFAB9876" ).get_unsigned() == 0xabde1234EFAB9876 );
 
+         TEST_ASSERT( json5::from_string( "-0x0" ).get_signed() == 0 );
+         TEST_ASSERT( json5::from_string( "-0xff" ).get_signed() == -0xff );
+         TEST_ASSERT( json5::from_string( "-0xFF" ).get_signed() == -0xff );
+
          TEST_ASSERT( std::isnan( json5::from_string( "NaN" ).get_double() ) );
          TEST_ASSERT( std::isnan( json5::from_string( "+NaN" ).get_double() ) );
          TEST_ASSERT( std::isnan( json5::from_string( "-NaN" ).get_double() ) );

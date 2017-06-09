@@ -20,6 +20,7 @@ namespace tao
       {
          static const std::size_t max_mantissa_digits = 772;
 
+         template< bool NEG >
          struct number_state
          {
             using exponent10_t = int32_t;
@@ -35,11 +36,8 @@ namespace tao
             exponent10_t exponent10 = 0;
             msize_t msize = 0;  // Excluding sign.
             bool isfp = false;
-            bool mneg = false;
             bool eneg = false;
             bool drop = false;
-            bool nan = false;
-            bool infinity = false;
             char mantissa[ max_mantissa_digits + 1 ];
 
             template< typename Consumer >
@@ -51,7 +49,7 @@ namespace tao
                   errno = 0;
                   const std::uint64_t ull = std::strtoull( mantissa, &p, 10 );
                   if( ( errno != ERANGE ) && ( p == mantissa + msize ) ) {
-                     if( mneg ) {
+                     if( NEG ) {
                         if( ull < 9223372036854775808ull ) {
                            consumer.number( -static_cast< std::int64_t >( ull ) );
                            return;
@@ -71,19 +69,11 @@ namespace tao
                   mantissa[ msize++ ] = '1';
                   --exponent10;
                }
-               if( nan ) {
-                  consumer.number( mneg ? -NAN : NAN );
-                  return;
-               }
-               if( infinity ) {
-                  consumer.number( mneg ? -INFINITY : INFINITY );
-                  return;
-               }
                const auto d = json_double_conversion::Strtod( json_double_conversion::Vector< const char >( mantissa, msize ), exponent10 );
                if( !std::isfinite( d ) ) {
                   throw std::runtime_error( "invalid double value" );
                }
-               consumer.number( mneg ? -d : d );
+               consumer.number( NEG ? -d : d );
             }
          };
 

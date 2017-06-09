@@ -38,7 +38,6 @@ namespace tao
             struct digits : plus< abnf::DIGIT > {};
 
             struct zero : one< '0' > {};
-            struct msign : one< '-' > {};
             struct esign : one< '-', '+' > {};
 
             struct edigits : digits {};
@@ -48,7 +47,11 @@ namespace tao
             struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
             struct frac : if_must< one< '.' >, fdigits > {};
             struct int_ : sor< zero, idigits > {};
-            struct number : seq< opt< msign >, int_, opt< frac >, opt< exp > > {};
+
+            template< bool NEG >
+            struct number : seq< int_, opt< frac >, opt< exp > > {};
+
+            struct nnumber : seq< bytes< 1 >, number< true > > {};
 
             struct xdigit : abnf::HEXDIG {};
             struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
@@ -116,7 +119,7 @@ namespace tao
 
             struct sor_value
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number, object, array, false_, true_, null >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number< false >, object, array, false_, true_, null >;
 
                template< apply_mode A,
                          rewind_mode M,
@@ -133,7 +136,8 @@ namespace tao
                      case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
                      case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
                      case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
-                     default: return Control< number >::template match< A, M, Action, Control >( in, st... );
+                     case '-': return Control< nnumber >::template match< A, M, Action, Control >( in, st... );
+                     default: return Control< number< false > >::template match< A, M, Action, Control >( in, st... );
                   }
                }
 
