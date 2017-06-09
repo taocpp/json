@@ -141,6 +141,10 @@ namespace tao
          TEST_ASSERT( json5::from_string( "'fo\\\\o'" ) == "fo\\o" );
          TEST_ASSERT( json5::from_string( "'fo\\o'" ) == "foo" );
          TEST_ASSERT( json5::from_string( "'fo\\/o'" ) == "fo/o" );
+         TEST_ASSERT( json5::from_string( "'f\\äö\\ü'" ) == "fäöü" );
+         TEST_ASSERT( json5::from_string( "'f\\x30o'" ) == "f0o" );
+         TEST_ASSERT( json5::from_string( "'f\\x30\\x4F'" ) == "f0O" );
+         TEST_ASSERT( json5::from_string( "'f\\0o'" ) == std::string( "f\0o", 3 ) );
 
          test_array();
          test_object();
@@ -162,6 +166,10 @@ namespace tao
          TEST_THROWS( json5::from_string( "\"\xfd\xbf\xbf\xbf\xbf\"" ) );
          TEST_THROWS( json5::from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf" ) );
          TEST_THROWS( json5::from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf\"" ) );
+
+         TEST_THROWS( json5::from_string( "'f\\1o'" ) );
+         TEST_THROWS( json5::from_string( "'f\0o'" ) );
+         TEST_THROWS( json5::from_string( "\n\n'123456789\0'" ) );
       }
 
    }  // namespace json

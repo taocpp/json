@@ -65,12 +65,14 @@ namespace tao
                struct hexnumber : seq< bytes< 2 >, must< hexcontent > > {};
 
                struct xdigit : abnf::HEXDIG {};
+               struct escaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
                struct escaped_unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
 
-               struct escaped_char : one< 'b', 'f', 'n', 'r', 't' > {};
+               struct escaped_char : one< '0', 'b', 'f', 'n', 'r', 't', 'v' > {};
                struct escaped_eol : eol {};
-               struct escaped_any : any {};
-               struct escaped : sor< escaped_char, escaped_unicode, escaped_eol, escaped_any > {};
+               struct escaped_invalid : seq< ranges< 0x00, 0x1F, '1', '9', 0x7F >, raise< escaped_invalid > > {};
+               struct escaped_any : utf8::range< 0x20, 0x10FFFF > {};
+               struct escaped : sor< escaped_char, escaped_hexcode, escaped_unicode, escaped_eol, escaped_invalid, escaped_any > {};
 
                template< char D >
                struct unescaped
@@ -84,7 +86,7 @@ namespace tao
 
                      while( !in.empty() ) {
                         if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
-                           if( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != D ) ) {
+                           if( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != 0x7F ) && ( t.data != '\\' ) && ( t.data != D ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;
                               continue;
@@ -92,7 +94,7 @@ namespace tao
                         }
                         return result;
                      }
-                     throw std::logic_error( "code should be unreachable" );  // LCOV_EXCL_LINE
+                     throw json_pegtl::parse_error( "invalid character in string", in );
                   }
                };
 

@@ -86,6 +86,7 @@ namespace tao
             template<> WEAK_PREFIX const std::string errors< rules::hexcontent >::error_message WEAK_SUFFIX = "expected at least one hexadecimal digit";
 
             template<> WEAK_PREFIX const std::string errors< rules::xdigit >::error_message WEAK_SUFFIX = "incomplete universal character name";
+            template<> WEAK_PREFIX const std::string errors< rules::escaped_invalid >::error_message WEAK_SUFFIX = "invalid escape sequence";
             template<> WEAK_PREFIX const std::string errors< rules::chars< '"' > >::error_message WEAK_SUFFIX = "invalid character in string";
             template<> WEAK_PREFIX const std::string errors< rules::chars< '\'' > >::error_message WEAK_SUFFIX = "invalid character in string";
             template<> WEAK_PREFIX const std::string errors< rules::string< '"' >::content >::error_message WEAK_SUFFIX = "unterminated string";
