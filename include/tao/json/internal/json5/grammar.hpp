@@ -117,7 +117,6 @@ namespace tao
                   using content = key_content< D >;
                };
 
-               // TODO: Check if this is correct/complete wrt JSON5
                struct identifier_first : ranges< 'a', 'z', 'A', 'Z', '_', '_', '$' > {};
                struct identifier_other : ranges< 'a', 'z', 'A', 'Z', '0', '9', '_', '_', '$' > {};
                struct identifier : seq< identifier_first, star< identifier_other > > {};
