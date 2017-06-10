@@ -1,0 +1,162 @@
+;--------------------------------------------------------
+; Proposed grammar for JSON5 (http://json5.org/)
+; See RFC 5234 for interpretation and core rules
+;--------------------------------------------------------
+
+eol = LF / CRLF / CR          ; End-of-line
+
+eof = <end-of-file>           ; End-of-input
+
+;--------------------------------------------------------
+
+comment = sl-comment / ml-comment
+
+sl-comment = begin-sl-comment *( p-char / ows ) ( eol / eof )
+
+ml-comment = begin-ml-comment *( p-char-non-star / ( %x2A p-char-non-slash ) / ows / eol ) end-ml-comment
+
+begin-sl-comment = %x2F.2F    ; //
+
+begin-ml-comment = %x2F.2A    ; /*
+
+end-ml-comment   = %x2A.2F    ; */
+
+p-char = %x20-7E / %x80-10FFFF
+                              ; Printable character
+
+p-char-non-star = %x20-29 / %x2B-7E / %x80-10FFFF
+                              ; Printable character except *
+
+p-char-non-slash = %x20-2E / %x30-7E / %x80-10FFFF
+                              ; Printable character except /
+
+;--------------------------------------------------------
+
+ws = *(
+          SP /                ; Space
+          ows /               ; Other space-like characters
+          eol /               ; Line ending
+	  comment             ; Comment
+      )
+
+ows = HTAB /                  ; Horizontal tab
+      %xA0 /                  ; NBSP
+      %xFEFF                  ; BOM
+
+;--------------------------------------------------------
+
+begin-array     = ws %x5B ws  ; [ left square bracket
+
+begin-object    = ws %x7B ws  ; { left curly bracket
+
+end-array       = ws %x5D ws  ; ] right square bracket
+
+end-object      = ws %x7D ws  ; } right curly bracket
+
+name-separator  = ws %x3A ws  ; : colon
+
+value-separator = ws %x2C ws  ; , comma
+
+value-sep-opt   = [ value-separator ]
+
+;--------------------------------------------------------
+
+null  = %x6E.75.6C.6C         ; null
+
+true  = %x74.72.75.65         ; true
+
+false = %x66.61.6C.73.65      ; false
+
+;--------------------------------------------------------
+
+number = [ plus / minus ] ( nan / inf / hex / dec )
+
+nan = %x4E.61.4E              ; NaN
+
+inf = %x49.6E.66.69.6E.69.74.79
+                              ; Infinity
+
+hex = zero x 1*HEXDIG         ; 0xXXX...
+
+dec = ( int [ frac0 ] / frac1 ) [ exp ]
+
+decimal-point = %x2E          ; .
+
+digit1-9 = %x31-39            ; 1-9
+
+e = %x65 / %x45               ; e E
+
+x = %x78 / %x58               ; x X
+
+exp = e [ plus / minus ] 1*DIGIT
+
+frac0 = decimal-point *DIGIT
+
+frac1 = decimal-point 1*DIGIT
+
+int = zero / ( digit1-9 *DIGIT )
+
+plus = %x2B                   ; +
+
+minus = %x2D                  ; -
+
+zero = %x30                   ; 0
+
+;--------------------------------------------------------
+
+string = s-string / d-string
+
+d-string = d-quote *( char / s-quote ) d-quote
+
+s-string = s-quote *( char / d-quote ) s-quote
+
+char = unescaped /
+       escape (
+           %x30 /             ; 0    nul             U+0000
+           %x62 /             ; b    backspace       U+0008
+           %x66 /             ; f    form feed       U+000C
+           %x6E /             ; n    line feed       U+000A
+           %x72 /             ; r    carriage return U+000D
+           %x74 /             ; t    tab             U+0009
+           %x76 /             ; v    vtab            U+000B
+           %x78 2HEXDIG /     ; xXX                  U+00XX
+           %x75 4HEXDIG /     ; uXXXX                U+XXXX
+
+           eol /              ; end-of-line -> empty string
+
+           other-escape )     ; the character itself
+
+escape = %x5C                 ; \ backslash
+
+d-quote = %x22                ; " double quote
+
+s-quote = %x27                ; ' single quote
+
+unescaped = %x20-21 / %x23-26 / %x28-5B / %x5D-7E / %80-10FFFF
+
+other-escaped = %x20-2F / %x3A-61 / %x63-65 / %x67-6D / %x6F-71 / %x73 / %x77 / %x79-7E / %x80-10FFFF
+
+;--------------------------------------------------------
+
+array = begin-array [ value *( value-separator value ) value-sep-opt ] end-array
+
+;--------------------------------------------------------
+
+object = begin-object [ member *( value-separator member ) value-sep-opt ] end-object
+
+member = key name-separator value
+
+key = string / identifier
+
+begin-identifier = ALPHA / %x5F / %x24
+                              ; ALPHA / "_" / "$"
+
+continue-identifier = begin-identifier / DIGIT
+
+identifier = begin-identifier *continue-identifier
+
+;--------------------------------------------------------
+
+value = null / true / false / number / string / array / object
+
+JSON5-text = ws value ws
