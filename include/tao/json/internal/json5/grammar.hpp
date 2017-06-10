@@ -197,7 +197,7 @@ namespace tao
                                     return Control< hexcontent< false > >::template match< A, M, Action, Control >( in, st... );
                               }
                            }
-                           in.bump_in_this_line( 1 );
+                           in.bump_in_this_line();
                            Control< plain_zero >::template apply0< Action >( in, st... );
                            return true;
                         }
