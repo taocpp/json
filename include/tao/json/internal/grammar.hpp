@@ -51,8 +51,6 @@ namespace tao
             template< bool NEG >
             struct number : seq< int_, opt< frac >, opt< exp > > {};
 
-            struct nnumber : seq< bytes< 1 >, number< true > > {};
-
             struct xdigit : abnf::HEXDIG {};
             struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
             struct escaped_char : one< '"', '\\', '/', 'b', 'f', 'n', 'r', 't' > {};
@@ -123,6 +121,43 @@ namespace tao
             {
                using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number< false >, object, array, false_, true_, null >;
 
+               template< bool NEG,
+                         apply_mode A,
+                         rewind_mode M,
+                         template< typename... > class Action,
+                         template< typename... > class Control,
+                         typename Input,
+                         typename... States >
+               static bool match_zero( Input& in, States&&... st )
+               {
+                  if( in.size( 2 ) > 1 ) {
+                     switch( in.peek_char( 1 ) ) {
+                        case '.':
+                        case 'e':
+                        case 'E':
+                           return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+                     }
+                  }
+                  in.bump_in_this_line();
+                  Control< plain_zero >::template apply0< Action >( in, st... );
+                  return true;
+               }
+
+               template< bool NEG,
+                         apply_mode A,
+                         rewind_mode M,
+                         template< typename... > class Action,
+                         template< typename... > class Control,
+                         typename Input,
+                         typename... States >
+               static bool match_number( Input& in, States&&... st )
+               {
+                  switch( in.peek_char() ) {
+                     case '0': return match_zero< NEG, A, M, Action, Control >( in, st... );
+                     default: return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+                  }
+               }
+
                template< apply_mode A,
                          rewind_mode M,
                          template< typename... > class Action,
@@ -138,21 +173,16 @@ namespace tao
                      case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
                      case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
                      case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
-                     case '-': return Control< nnumber >::template match< A, M, Action, Control >( in, st... );
-                     case '0': {
-                        if( in.size( 2 ) > 1 ) {
-                           switch( in.peek_char( 1 ) ) {
-                              case '.':
-                              case 'e':
-                              case 'E':
-                                 return Control< number< false > >::template match< A, M, Action, Control >( in, st... );
-                           }
+
+                     case '-':
+                        if( in.size( 2 ) < 2 ) {
+                           return false;
                         }
                         in.bump_in_this_line();
-                        Control< plain_zero >::template apply0< Action >( in, st... );
-                        return true;
-                     }
-                     default: return Control< number< false > >::template match< A, M, Action, Control >( in, st... );
+                        return match_number< true, A, M, Action, Control >( in, st... );
+
+                     default:
+                        return match_number< false, A, M, Action, Control >( in, st... );
                   }
                }
 

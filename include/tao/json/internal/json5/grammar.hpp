@@ -45,6 +45,8 @@ namespace tao
                struct true_ : TAOCPP_JSON_PEGTL_STRING( "true" ) {};
 
                struct nan : TAOCPP_JSON_PEGTL_STRING( "NaN" ) {};
+
+               template< bool NEG >
                struct infinity : TAOCPP_JSON_PEGTL_STRING( "Infinity" ) {};
 
                struct digits : plus< abnf::DIGIT > {};
@@ -65,16 +67,7 @@ namespace tao
                                     opt< exp > > {};
 
                template< bool NEG >
-               struct hexcontent : plus< abnf::HEXDIG > {};
-
-               template< bool NEG >
-               struct hexnumber : if_must< istring< '0', 'x' >, hexcontent< NEG > > {};
-
-               struct ninfinity : infinity {};
-
-               struct plain_number : sor< nan, infinity, hexnumber< false >, number< false > > {};
-               struct positive_number : seq< bytes< 1 >, plain_number > {};
-               struct negative_number : seq< bytes< 1 >, sor< nan, ninfinity, hexnumber< true >, number< true > > > {};
+               struct hexnum : plus< abnf::HEXDIG > {};
 
                struct xdigit : abnf::HEXDIG {};
                struct escaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
@@ -162,7 +155,50 @@ namespace tao
                struct sor_value
                {
                   // TODO: Can we use a short-cut to simply say: Yes, I guarantee progress if match() returns "true"?
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, hexnumber< false >, number< false >, object, array, false_, true_, null >;
+                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, number< false >, object, array, false_, true_, null >;
+
+                  template< bool NEG,
+                            apply_mode A,
+                            rewind_mode M,
+                            template< typename... > class Action,
+                            template< typename... > class Control,
+                            typename Input,
+                            typename... States >
+                  static bool match_zero( Input& in, States&&... st )
+                  {
+                     if( in.size( 2 ) > 1 ) {
+                        switch( in.peek_char( 1 ) ) {
+                           case '.':
+                           case 'e':
+                           case 'E':
+                              return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+                           case 'x':
+                           case 'X':
+                              in.bump_in_this_line( 2 );
+                              return Control< must< hexnum< NEG > > >::template match< A, M, Action, Control >( in, st... );
+                        }
+                     }
+                     in.bump_in_this_line();
+                     Control< plain_zero >::template apply0< Action >( in, st... );
+                     return true;
+                  }
+
+                  template< bool NEG,
+                            apply_mode A,
+                            rewind_mode M,
+                            template< typename... > class Action,
+                            template< typename... > class Control,
+                            typename Input,
+                            typename... States >
+                  static bool match_number( Input& in, States&&... st )
+                  {
+                     switch( in.peek_char() ) {
+                        case 'N': return Control< nan >::template match< A, M, Action, Control >( in, st... );
+                        case 'I': return Control< infinity< NEG > >::template match< A, M, Action, Control >( in, st... );
+                        case '0': return match_zero< NEG, A, M, Action, Control >( in, st... );
+                        default: return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+                     }
+                  }
 
                   template< apply_mode A,
                             rewind_mode M,
@@ -180,28 +216,23 @@ namespace tao
                         case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
                         case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
                         case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
-                        case 'N': return Control< nan >::template match< A, M, Action, Control >( in, st... );
-                        case 'I': return Control< infinity >::template match< A, M, Action, Control >( in, st... );
-                        case '+': return Control< positive_number >::template match< A, M, Action, Control >( in, st... );
-                        case '-': return Control< negative_number >::template match< A, M, Action, Control >( in, st... );
-                        case '0': {
-                           if( in.size( 2 ) > 1 ) {
-                              switch( in.peek_char( 1 ) ) {
-                                 case '.':
-                                 case 'e':
-                                 case 'E':
-                                    return Control< plain_number >::template match< A, M, Action, Control >( in, st... );
-                                 case 'x':
-                                 case 'X':
-                                    in.bump_in_this_line( 2 );
-                                    return Control< hexcontent< false > >::template match< A, M, Action, Control >( in, st... );
-                              }
+
+                        case '+':
+                           if( in.size( 2 ) < 2 ) {
+                              return false;
                            }
                            in.bump_in_this_line();
-                           Control< plain_zero >::template apply0< Action >( in, st... );
-                           return true;
-                        }
-                        default: return Control< plain_number >::template match< A, M, Action, Control >( in, st... );
+                           return match_number< false, A, M, Action, Control >( in, st... );
+
+                        case '-':
+                           if( in.size( 2 ) < 2 ) {
+                              return false;
+                           }
+                           in.bump_in_this_line();
+                           return match_number< true, A, M, Action, Control >( in, st... );
+
+                        default:
+                           return match_number< false, A, M, Action, Control >( in, st... );
                      }
                   }
 

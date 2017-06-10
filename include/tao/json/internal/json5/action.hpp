@@ -66,7 +66,7 @@ namespace tao
             };
 
             template< bool NEG >
-            struct action< rules::hexcontent< NEG > >
+            struct action< rules::hexnum< NEG > >
             {
                static char unhex( const char c )
                {
@@ -191,7 +191,7 @@ namespace tao
             };
 
             template<>
-            struct action< rules::infinity >
+            struct action< rules::infinity< false > >
             {
                template< typename Consumer >
                static void apply0( Consumer& consumer )
@@ -201,7 +201,7 @@ namespace tao
             };
 
             template<>
-            struct action< rules::ninfinity >
+            struct action< rules::infinity< true > >
             {
                template< typename Consumer >
                static void apply0( Consumer& consumer )
