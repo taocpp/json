@@ -132,7 +132,7 @@ d-quote = %x22                ; " double quote
 
 s-quote = %x27                ; ' single quote
 
-unescaped = %x20-21 / %x23-26 / %x28-5B / %x5D-7E / %80-10FFFF
+unescaped = %x20-21 / %x23-26 / %x28-5B / %x5D-7E / %x80-10FFFF
 
 other-escaped = %x20-2F / %x3A-61 / %x63-65 / %x67-6D / %x6F-71 / %x73 / %x77 / %x79-7E / %x80-10FFFF
 
