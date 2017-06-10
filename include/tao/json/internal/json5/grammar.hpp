@@ -49,6 +49,9 @@ namespace tao
                template< bool NEG >
                struct infinity : TAOCPP_JSON_PEGTL_STRING( "Infinity" ) {};
 
+               template< bool NEG >
+               struct hexnum : plus< abnf::HEXDIG > {};
+
                struct digits : plus< abnf::DIGIT > {};
 
                struct esign : one< '-', '+' > {};
@@ -58,18 +61,15 @@ namespace tao
                struct idigits : digits {};
 
                struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
+               struct frac0 : seq< one< '.' >, opt< fdigits > > {};
+               struct frac1 : if_must< one< '.' >, fdigits > {};
 
                template< bool NEG >
-               struct number : seq< sor< seq< idigits, opt< seq< one< '.' >, opt< fdigits > > > >,
-                                         seq< one< '.' >, must< fdigits > > >,
-                                    opt< exp > > {};
-
-               template< bool NEG >
-               struct hexnum : plus< abnf::HEXDIG > {};
+               struct number : seq< sor< seq< idigits, opt< frac0 > >, frac1 >, opt< exp > > {};
 
                struct xdigit : abnf::HEXDIG {};
-               struct escaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
                struct escaped_unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
+               struct escaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
 
                struct escaped_char : one< '0', 'b', 'f', 'n', 'r', 't', 'v' > {};
                struct escaped_eol : eol {};
@@ -138,7 +138,8 @@ namespace tao
                   using content = array_content;
                };
 
-               struct member : if_must< sor< key< '"' >, key< '\'' >, identifier >, name_separator, value > {};
+               struct mkey : sor< key< '"' >, key< '\'' >, identifier > {};
+               struct member : if_must< mkey, name_separator, value > {};
                struct object_content : opt< list_tail< member, value_separator > > {};
                struct object : seq< begin_object, object_content, must< end_object > >
                {

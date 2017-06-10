@@ -50,9 +50,10 @@ namespace tao
             struct number : seq< idigits, opt< frac >, opt< exp > > {};
 
             struct xdigit : abnf::HEXDIG {};
-            struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
+            struct escaped_unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
+
             struct escaped_char : one< '"', '\\', '/', 'b', 'f', 'n', 'r', 't' > {};
-            struct escaped : sor< escaped_char, unicode > {};
+            struct escaped : sor< escaped_char, escaped_unicode > {};
 
             struct unescaped
             {
@@ -192,7 +193,6 @@ namespace tao
                            return false;
                         }
                         {
-                           // TODO: Is this marker needed?
                            auto m = in.template mark< M >();
                            in.bump_in_this_line();
                            return m( match_number< true, A, M, Action, Control >( in, st... ) );
