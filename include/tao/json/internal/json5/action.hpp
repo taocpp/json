@@ -171,6 +171,16 @@ namespace tao
             };
 
             template<>
+            struct action< rules::plain_zero >
+            {
+               template< typename Consumer >
+               static void apply0( Consumer& consumer )
+               {
+                  consumer.number( std::uint64_t( 0 ) );
+               }
+            };
+
+            template<>
             struct action< rules::nan >
             {
                template< typename Consumer >

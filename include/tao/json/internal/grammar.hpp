@@ -117,6 +117,8 @@ namespace tao
                using content = object_content;
             };
 
+            struct plain_zero {};
+
             struct sor_value
             {
                using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number< false >, object, array, false_, true_, null >;
@@ -137,6 +139,19 @@ namespace tao
                      case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
                      case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
                      case '-': return Control< nnumber >::template match< A, M, Action, Control >( in, st... );
+                     case '0': {
+                        if( in.size( 2 ) > 1 ) {
+                           switch( in.peek_char( 1 ) ) {
+                              case '.':
+                              case 'e':
+                              case 'E':
+                                 return Control< number< false > >::template match< A, M, Action, Control >( in, st... );
+                           }
+                        }
+                        in.bump_in_this_line( 1 );
+                        Control< plain_zero >::template apply0< Action >( in, st... );
+                        return true;
+                     }
                      default: return Control< number< false > >::template match< A, M, Action, Control >( in, st... );
                   }
                }
