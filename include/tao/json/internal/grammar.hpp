@@ -37,7 +37,6 @@ namespace tao
 
             struct digits : plus< abnf::DIGIT > {};
 
-            struct zero : one< '0' > {};
             struct esign : one< '-', '+' > {};
 
             struct edigits : digits {};
@@ -46,10 +45,9 @@ namespace tao
 
             struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
             struct frac : if_must< one< '.' >, fdigits > {};
-            struct int_ : sor< zero, idigits > {};
 
             template< bool NEG >
-            struct number : seq< int_, opt< frac >, opt< exp > > {};
+            struct number : seq< idigits, opt< frac >, opt< exp > > {};
 
             struct xdigit : abnf::HEXDIG {};
             struct unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
@@ -115,7 +113,8 @@ namespace tao
                using content = object_content;
             };
 
-            struct plain_zero {};
+            template< bool NEG >
+            struct zero {};
 
             struct sor_value
             {
@@ -136,10 +135,22 @@ namespace tao
                         case 'e':
                         case 'E':
                            return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+
+                        case '0':
+                        case '1':
+                        case '2':
+                        case '3':
+                        case '4':
+                        case '5':
+                        case '6':
+                        case '7':
+                        case '8':
+                        case '9':
+                           throw json_pegtl::parse_error( "invalid leading zero", in );
                      }
                   }
                   in.bump_in_this_line();
-                  Control< plain_zero >::template apply0< Action >( in, st... );
+                  Control< zero< NEG > >::template apply0< Action >( in, st... );
                   return true;
                }
 
@@ -152,9 +163,11 @@ namespace tao
                          typename... States >
                static bool match_number( Input& in, States&&... st )
                {
-                  switch( in.peek_char() ) {
-                     case '0': return match_zero< NEG, A, M, Action, Control >( in, st... );
-                     default: return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+                  if( in.peek_char() == '0' ) {
+                     return match_zero< NEG, A, M, Action, Control >( in, st... );
+                  }
+                  else {
+                     return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
                   }
                }
 
@@ -178,8 +191,12 @@ namespace tao
                         if( in.size( 2 ) < 2 ) {
                            return false;
                         }
-                        in.bump_in_this_line();
-                        return match_number< true, A, M, Action, Control >( in, st... );
+                        {
+                           // TODO: Is this marker needed?
+                           auto m = in.template mark< M >();
+                           in.bump_in_this_line();
+                           return m( match_number< true, A, M, Action, Control >( in, st... ) );
+                        }
 
                      default:
                         return match_number< false, A, M, Action, Control >( in, st... );

@@ -171,12 +171,22 @@ namespace tao
             };
 
             template<>
-            struct action< rules::plain_zero >
+            struct action< rules::zero< false > >
             {
                template< typename Consumer >
                static void apply0( Consumer& consumer )
                {
                   consumer.number( std::uint64_t( 0 ) );
+               }
+            };
+
+            template<>
+            struct action< rules::zero< true > >
+            {
+               template< typename Consumer >
+               static void apply0( Consumer& consumer )
+               {
+                  consumer.number( std::int64_t( 0 ) );
                }
             };
 
@@ -226,15 +236,22 @@ namespace tao
                template< typename Input, bool NEG >
                static void apply( const Input& in, number_state< NEG >& result )
                {
-                  if( in.size() > ( 1 << 20 ) ) {
+                  const auto s = in.size();
+
+                  if( s == 1 && in.peek_char() == '0' ) {
+                     return;
+                  }
+
+                  if( s > ( 1 << 20 ) ) {
                      throw std::runtime_error( "JSON number with 1 megabyte digits" );
                   }
-                  const auto c = std::min( in.size(), max_mantissa_digits );
+
+                  const auto c = std::min( s, max_mantissa_digits );
                   std::memcpy( result.mantissa, in.begin(), c );
-                  result.exponent10 += static_cast< typename number_state< NEG >::exponent10_t >( in.size() - c );
+                  result.exponent10 += static_cast< typename number_state< NEG >::exponent10_t >( s - c );
                   result.msize = static_cast< typename number_state< NEG >::msize_t >( c );
 
-                  for( std::size_t i = c; i < in.size(); ++i ) {
+                  for( std::size_t i = c; i < s; ++i ) {
                      if( in.peek_char( i ) != '0' ) {
                         result.drop = true;
                         return;

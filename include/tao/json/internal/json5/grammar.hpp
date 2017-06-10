@@ -51,7 +51,6 @@ namespace tao
 
                struct digits : plus< abnf::DIGIT > {};
 
-               struct zero : one< '0' > {};
                struct esign : one< '-', '+' > {};
 
                struct edigits : digits {};
@@ -59,10 +58,9 @@ namespace tao
                struct idigits : digits {};
 
                struct exp : seq< one< 'e', 'E' >, opt< esign >, must< edigits > > {};
-               struct int_ : sor< zero, idigits > {};
 
                template< bool NEG >
-               struct number : seq< sor< seq< int_, opt< seq< one< '.' >, opt< fdigits > > > >,
+               struct number : seq< sor< seq< idigits, opt< seq< one< '.' >, opt< fdigits > > > >,
                                          seq< one< '.' >, must< fdigits > > >,
                                     opt< exp > > {};
 
@@ -150,7 +148,8 @@ namespace tao
                   using content = object_content;
                };
 
-               struct plain_zero {};
+               template< bool NEG >
+               struct zero {};
 
                struct sor_value
                {
@@ -172,14 +171,27 @@ namespace tao
                            case 'e':
                            case 'E':
                               return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+
                            case 'x':
                            case 'X':
                               in.bump_in_this_line( 2 );
                               return Control< must< hexnum< NEG > > >::template match< A, M, Action, Control >( in, st... );
+
+                           case '0':
+                           case '1':
+                           case '2':
+                           case '3':
+                           case '4':
+                           case '5':
+                           case '6':
+                           case '7':
+                           case '8':
+                           case '9':
+                              throw json_pegtl::parse_error( "invalid leading zero", in );
                         }
                      }
                      in.bump_in_this_line();
-                     Control< plain_zero >::template apply0< Action >( in, st... );
+                     Control< zero< NEG > >::template apply0< Action >( in, st... );
                      return true;
                   }
 
@@ -221,15 +233,21 @@ namespace tao
                            if( in.size( 2 ) < 2 ) {
                               return false;
                            }
-                           in.bump_in_this_line();
-                           return match_number< false, A, M, Action, Control >( in, st... );
+                           {
+                              auto m = in.template mark< M >();
+                              in.bump_in_this_line();
+                              return m( match_number< false, A, M, Action, Control >( in, st... ) );
+                           }
 
                         case '-':
                            if( in.size( 2 ) < 2 ) {
                               return false;
                            }
-                           in.bump_in_this_line();
-                           return match_number< true, A, M, Action, Control >( in, st... );
+                           {
+                              auto m = in.template mark< M >();
+                              in.bump_in_this_line();
+                              return m( match_number< true, A, M, Action, Control >( in, st... ) );
+                           }
 
                         default:
                            return match_number< false, A, M, Action, Control >( in, st... );
