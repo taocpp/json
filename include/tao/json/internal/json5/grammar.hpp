@@ -157,6 +157,17 @@ namespace tao
                   // TODO: Can we use a short-cut to simply say: Yes, I guarantee progress if match() returns "true"?
                   using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, number< false >, object, array, false_, true_, null >;
 
+                  template< typename Rule,
+                            apply_mode A,
+                            template< typename... > class Action,
+                            template< typename... > class Control,
+                            typename Input,
+                            typename... States >
+                  static bool match_must( Input& in, States&&... st )
+                  {
+                     return Control< must< Rule > >::template match< A, rewind_mode::DONTCARE, Action, Control >( in, st... );
+                  }
+
                   template< bool NEG,
                             apply_mode A,
                             rewind_mode M,
@@ -206,10 +217,20 @@ namespace tao
                   static bool match_number( Input& in, States&&... st )
                   {
                      switch( in.peek_char() ) {
-                        case 'N': return Control< nan >::template match< A, M, Action, Control >( in, st... );
-                        case 'I': return Control< infinity< NEG > >::template match< A, M, Action, Control >( in, st... );
-                        case '0': return match_zero< NEG, A, M, Action, Control >( in, st... );
-                        default: return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
+                        case 'N':
+                           return Control< must< nan > >::template match< A, M, Action, Control >( in, st... );
+
+                        case 'I':
+                           return Control< must< infinity< NEG > > >::template match< A, M, Action, Control >( in, st... );
+
+                        case '0':
+                           if( !match_zero< NEG, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
+                              throw json_pegtl::parse_error( "incomplete number", in );
+                           }
+                           return true;
+
+                        default:
+                           return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
                      }
                   }
 
@@ -231,24 +252,18 @@ namespace tao
                         case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
 
                         case '+':
-                           if( in.size( 2 ) < 2 ) {
-                              return false;
+                           in.bump_in_this_line();
+                           if( in.empty() || !match_number< false, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
+                              throw json_pegtl::parse_error( "incomplete number", in );
                            }
-                           {
-                              auto m = in.template mark< M >();
-                              in.bump_in_this_line();
-                              return m( match_number< false, A, M, Action, Control >( in, st... ) );
-                           }
+                           return true;
 
                         case '-':
-                           if( in.size( 2 ) < 2 ) {
-                              return false;
+                           in.bump_in_this_line();
+                           if( in.empty() || !match_number< true, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
+                              throw json_pegtl::parse_error( "incomplete number", in );
                            }
-                           {
-                              auto m = in.template mark< M >();
-                              in.bump_in_this_line();
-                              return m( match_number< true, A, M, Action, Control >( in, st... ) );
-                           }
+                           return true;
 
                         default:
                            return match_number< false, A, M, Action, Control >( in, st... );
@@ -263,7 +278,7 @@ namespace tao
                             typename... States >
                   static bool match( Input& in, States&&... st )
                   {
-                     if( in.size( 1 ) && match_impl< A, M, Action, Control >( in, st... ) ) {
+                     if( in.size( 2 ) && match_impl< A, M, Action, Control >( in, st... ) ) {
                         in.discard();
                         return true;
                      }
