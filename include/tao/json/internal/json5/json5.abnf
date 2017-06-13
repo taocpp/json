@@ -40,6 +40,8 @@ ws = *(
       )
 
 ows = HTAB /                  ; Horizontal tab
+      %x0B /                  ; Vertical tab
+      %x0C /                  ; Form feed
       %xA0 /                  ; NBSP
       %xFEFF                  ; BOM
 
