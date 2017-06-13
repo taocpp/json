@@ -38,10 +38,10 @@ namespace tao
          TEST_THROWS( test_file( "tests/json5/comments/unterminated-block-comment.txt" ) );
 
          TEST_THROWS( test_file( "tests/json5/misc/empty.txt" ) );
-         TEST_THROWS( test_file( "tests/json5/misc/invalid-whitespace.txt" ) );
          TEST_ASSERT( test_file( "tests/json5/misc/npm-package.json" ) );
          TEST_ASSERT( test_file( "tests/json5/misc/npm-package.json5" ) );
          TEST_ASSERT( test_file( "tests/json5/misc/readme-example.json5" ) );
+         TEST_ASSERT( test_file( "tests/json5/misc/valid-whitespace.json5" ) );
 
          // TEST_ASSERT( test_file( "tests/json5/new-lines/comment-cr.json5" ) ); // depends on eol-mode
          TEST_ASSERT( test_file( "tests/json5/new-lines/comment-crlf.json5" ) );
