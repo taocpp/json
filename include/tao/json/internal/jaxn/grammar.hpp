@@ -112,7 +112,7 @@ namespace tao
                };
 
                template< char D >
-               struct key_content : until< at< one< D > >, must< chars< D > > > {};
+               struct key_content : string_content< D > {};
 
                template< char D >
                struct key : seq< one< D >, must< key_content< D > >, any >

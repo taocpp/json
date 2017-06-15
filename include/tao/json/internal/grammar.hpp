@@ -86,7 +86,7 @@ namespace tao
                using content = string_content;
             };
 
-            struct key_content : until< at< one< '"' > >, must< chars > > {};
+            struct key_content : string_content {};
             struct key : seq< one< '"' >, must< key_content >, any >
             {
                using content = key_content;
