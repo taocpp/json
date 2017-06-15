@@ -20,14 +20,14 @@ namespace tao
             {
                using namespace json_pegtl;
 
-               struct single_line_comment : seq< one< '/' >, until< eolf > > {};
+               struct line_comment : seq< one< '/' >, until< eolf > > {};
 
-               struct end_multi_line_comment : until< json_pegtl::string< '*', '/' > > {};
-               struct multi_line_comment : if_must< one< '*' >, end_multi_line_comment > {};
+               struct end_block_comment : until< json_pegtl::string< '*', '/' > > {};
+               struct block_comment : if_must< one< '*' >, end_block_comment > {};
 
-               struct comment : sor< single_line_comment, multi_line_comment > {};
+               struct comment : sor< line_comment, block_comment > {};
 
-               struct ws : sor< one< ' ', '\t', '\n', '\r', '\v', '\f' >, utf8::one< 0xA0, 0xFEFF >, if_must< one< '/' >, comment > > {};
+               struct ws : sor< one< ' ', '\t', '\n', '\r' >, if_must< one< '/' >, comment > > {};
 
                template< typename R, typename P = ws >
                using padr = json_pegtl::internal::seq< R, json_pegtl::internal::star< P > >;
@@ -39,6 +39,7 @@ namespace tao
                struct name_separator : pad< one< ':' >, ws > {};
                struct value_separator : padr< one< ',' > > {};
                struct element_separator : padr< one< ',' > > {};
+               struct string_concat : padr< one< '+' > > {};
 
                struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
                struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
@@ -71,11 +72,8 @@ namespace tao
                struct escaped_unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
                struct escaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
 
-               struct escaped_char : one< '0', 'b', 'f', 'n', 'r', 't', 'v' > {};
-               struct escaped_eol : eol {};
-               struct escaped_invalid : seq< ranges< 0x00, 0x1F, '1', '9', 0x7F >, raise< escaped_invalid > > {};
-               struct escaped_any : utf8::range< 0x20, 0x10FFFF > {};
-               struct escaped : sor< escaped_char, escaped_hexcode, escaped_unicode, escaped_eol, escaped_invalid, escaped_any > {};
+               struct escaped_char : one< '"', '\'', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v', '0' > {};
+               struct escaped : sor< escaped_char, escaped_hexcode, escaped_unicode > {};
 
                template< char D >
                struct unescaped
@@ -121,10 +119,6 @@ namespace tao
                {
                   using content = key_content< D >;
                };
-
-               struct identifier_first : ranges< 'a', 'z', 'A', 'Z', '_', '_', '$' > {};
-               struct identifier_other : ranges< 'a', 'z', 'A', 'Z', '0', '9', '_', '_', '$' > {};
-               struct identifier : seq< identifier_first, star< identifier_other > > {};
 
                struct value;
 

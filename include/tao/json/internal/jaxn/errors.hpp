@@ -74,7 +74,7 @@ namespace tao
             template<> WEAK_PREFIX const std::string errors< rules::text >::error_message WEAK_SUFFIX = "no valid JAXN";
 
             template<> WEAK_PREFIX const std::string errors< rules::comment >::error_message WEAK_SUFFIX = "expected '*' or '/'";
-            template<> WEAK_PREFIX const std::string errors< rules::end_multi_line_comment >::error_message WEAK_SUFFIX = "unterminated multi-line comment";
+            template<> WEAK_PREFIX const std::string errors< rules::end_block_comment >::error_message WEAK_SUFFIX = "unterminated multi-line comment";
 
             template<> WEAK_PREFIX const std::string errors< rules::end_array >::error_message WEAK_SUFFIX = "incomplete array, expected value or ']'";
             template<> WEAK_PREFIX const std::string errors< rules::end_object >::error_message WEAK_SUFFIX = "incomplete object, expected key or '}'";
@@ -90,7 +90,6 @@ namespace tao
             template<> WEAK_PREFIX const std::string errors< rules::hexnum< true > >::error_message WEAK_SUFFIX = "expected at least one hexadecimal digit";
 
             template<> WEAK_PREFIX const std::string errors< rules::xdigit >::error_message WEAK_SUFFIX = "incomplete universal character name";
-            template<> WEAK_PREFIX const std::string errors< rules::escaped_invalid >::error_message WEAK_SUFFIX = "invalid escape sequence";
             template<> WEAK_PREFIX const std::string errors< rules::chars< '"' > >::error_message WEAK_SUFFIX = "invalid character in string";
             template<> WEAK_PREFIX const std::string errors< rules::chars< '\'' > >::error_message WEAK_SUFFIX = "invalid character in string";
             template<> WEAK_PREFIX const std::string errors< rules::string< '"' >::content >::error_message WEAK_SUFFIX = "unterminated string";

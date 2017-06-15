@@ -134,8 +134,6 @@ namespace tao
 
          TEST_ASSERT( jaxn::from_string( "\"\"" ) == "" );
          TEST_ASSERT( jaxn::from_string( "\"'\"" ) == "'" );
-         TEST_ASSERT( jaxn::from_string( "\"\\\n\"" ) == "" );
-         TEST_ASSERT( jaxn::from_string( "\"foo\\\nbar\"" ) == "foobar" );
 
          TEST_ASSERT( jaxn::from_string( "''" ) == "" );
          TEST_ASSERT( jaxn::from_string( "'\"'" ) == "\"" );
@@ -143,9 +141,7 @@ namespace tao
          TEST_ASSERT( jaxn::from_string( "'fo\\\"o'" ) == "fo\"o" );
          TEST_ASSERT( jaxn::from_string( "'fo\\'o'" ) == "fo'o" );
          TEST_ASSERT( jaxn::from_string( "'fo\\\\o'" ) == "fo\\o" );
-         TEST_ASSERT( jaxn::from_string( "'fo\\o'" ) == "foo" );
          TEST_ASSERT( jaxn::from_string( "'fo\\/o'" ) == "fo/o" );
-         TEST_ASSERT( jaxn::from_string( "'f\\äö\\ü'" ) == "fäöü" );
          TEST_ASSERT( jaxn::from_string( "'f\\x30o'" ) == "f0o" );
          TEST_ASSERT( jaxn::from_string( "'f\\x30\\x4F'" ) == "f0O" );
          TEST_ASSERT( jaxn::from_string( "'f\\0o'" ) == std::string( "f\0o", 3 ) );
@@ -171,6 +167,7 @@ namespace tao
          TEST_THROWS( jaxn::from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf" ) );
          TEST_THROWS( jaxn::from_string( "\"\xfd\xbf\xbf\xbf\xbf\xbf\"" ) );
 
+         TEST_THROWS( jaxn::from_string( "'fo\\o'" ) );
          TEST_THROWS( jaxn::from_string( "'f\\1o'" ) );
          TEST_THROWS( jaxn::from_string( "'f\0o'" ) );
          TEST_THROWS( jaxn::from_string( "\n\n'123456789\0'" ) );
