@@ -22,7 +22,7 @@ namespace tao
 
       void test_array()
       {
-         const auto v = jaxn::from_string( "[ null, true, false, //dummy\n42 //*\n, 43.0 ///*\n, \"foo\", [ 1, +2, 3, ], { \"a\"/**/ : \"b\"/*foo/b\nar*b\naz/*b\nla*/, \"c\" : \"d\", } ]" );
+         const auto v = jaxn::from_string( "[ null, true, false, //dummy\n42 //*\n, 43.0 ///*\n, \"foo\" + 'bar', [ 1, +2, 3, ], { \"a\"/**/ : \"b\"/*foo/b\nar*b\naz/*b\nla*/, \"c\" : \"d\", } ]" );
 
          TEST_ASSERT( v.type() == type::ARRAY );
 
@@ -34,7 +34,7 @@ namespace tao
          TEST_ASSERT( a[ 2 ] == value( false ) );
          TEST_ASSERT( a[ 3 ] == value( 42 ) );
          TEST_ASSERT( a[ 4 ] == value( 43.0 ) );
-         TEST_ASSERT( a[ 5 ] == value( "foo" ) );
+         TEST_ASSERT( a[ 5 ] == value( "foobar" ) );
          TEST_ASSERT( a[ 6 ].type() == type::ARRAY );
          TEST_ASSERT( a[ 6 ].get_array().size() == 3 );
          TEST_ASSERT( a[ 6 ].get_array()[ 0 ] == value( 1 ) );

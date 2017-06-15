@@ -39,7 +39,7 @@ namespace tao
                struct name_separator : pad< one< ':' >, ws > {};
                struct value_separator : padr< one< ',' > > {};
                struct element_separator : padr< one< ',' > > {};
-               struct string_concat : padr< one< '+' > > {};
+               struct concatenate : pad< one< '+' >, ws > {};
 
                struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
                struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
@@ -100,25 +100,19 @@ namespace tao
                };
 
                template< char D >
-               struct chars : if_then_else< one< '\\' >, escaped, unescaped< D > > {};
+               struct chars : if_then_else< one< '\\' >, must< escaped >, unescaped< D > > {};
 
                template< char D >
-               struct string_content : until< at< one< D > >, must< chars< D > > > {};
+               struct qstring_content : until< at< one< D > >, must< chars< D > > > {};
 
                template< char D >
-               struct string : seq< one< D >, must< string_content< D > >, any >
-               {
-                  using content = string_content< D >;
-               };
+               struct qstring : seq< one< D >, must< qstring_content< D > >, any > {};
 
-               template< char D >
-               struct key_content : string_content< D > {};
+               struct string_fragment : sor< qstring< '"' >, qstring< '\'' > > {};
 
-               template< char D >
-               struct key : seq< one< D >, must< key_content< D > >, any >
-               {
-                  using content = key_content< D >;
-               };
+               struct string : list_must< string_fragment, concatenate > {};
+
+               struct key : string {};
 
                struct value;
 
@@ -132,7 +126,7 @@ namespace tao
                   using content = array_content;
                };
 
-               struct mkey : sor< key< '"' >, key< '\'' >, identifier > {};
+               struct mkey : sor< key, identifier > {};
                struct member : if_must< mkey, name_separator, value > {};
                struct object_content : opt< list_tail< member, value_separator > > {};
                struct object : seq< begin_object, object_content, must< end_object > >
@@ -149,7 +143,7 @@ namespace tao
                struct sor_value
                {
                   // TODO: Can we use a short-cut to simply say: Yes, I guarantee progress if match() returns "true"?
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string< '"' >, string< '\'' >, number< false >, object, array, false_, true_, null >;
+                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number< false >, object, array, false_, true_, null >;
 
                   template< typename Rule,
                             apply_mode A,
@@ -237,8 +231,10 @@ namespace tao
                   static bool match_impl( Input& in, States&&... st )
                   {
                      switch( in.peek_char() ) {
-                        case '\'': return Control< string< '\'' > >::template match< A, M, Action, Control >( in, st... );
-                        case '"': return Control< string< '"' > >::template match< A, M, Action, Control >( in, st... );
+                        case '"':
+                        case '\'':
+                           return Control< string >::template match< A, M, Action, Control >( in, st... );
+
                         case '{': return Control< object >::template match< A, M, Action, Control >( in, st... );
                         case '[': return Control< array >::template match< A, M, Action, Control >( in, st... );
                         case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
