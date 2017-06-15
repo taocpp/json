@@ -28,6 +28,26 @@ namespace tao
             template<> struct unescape_action< rules::unescaped< '\'' > > : json_pegtl::unescape::append_all {};
             // clang-format on
 
+            template<>
+            struct unescape_action< rules::binary_prefix >
+            {
+               template< typename State >
+               static void apply0( State& st )
+               {
+                  st.is_binary = true;
+               }
+            };
+
+            template<>
+            struct unescape_action< rules::binary_hexcode >
+            {
+               template< typename Input, typename State >
+               static void apply( const Input& in, State& st )
+               {
+                  st.unescaped += json_pegtl::unescape::unhex_string< char >( in.begin(), in.end() );
+               }
+            };
+
          }  // namespace jaxn
 
       }  // namespace internal

@@ -108,11 +108,23 @@ namespace tao
                template< char D >
                struct qstring : seq< one< D >, must< qstring_content< D > >, any > {};
 
-               struct string_fragment : sor< qstring< '"' >, qstring< '\'' > > {};
+               struct qstring_fragment : sor< qstring< '"' >, qstring< '\'' > > {};
+
+               struct binary_prefix : one< '$' > {};
+
+               struct binary_hexcode : rep< 2, abnf::HEXDIG > {};
+
+               struct binary_part : plus< binary_hexcode > {};
+
+               struct binary_value : list_must< binary_part, one< '.' > > {};
+
+               struct binary_string : seq< binary_prefix, opt< binary_value > > {};
+
+               struct string_fragment : sor< qstring< '"' >, qstring< '\'' >, binary_string > {};
 
                struct string : list_must< string_fragment, concatenate > {};
 
-               struct key : string {};
+               struct key : list_must< qstring_fragment, concatenate > {};
 
                struct value;
 
@@ -231,6 +243,7 @@ namespace tao
                   static bool match_impl( Input& in, States&&... st )
                   {
                      switch( in.peek_char() ) {
+                        case '$':
                         case '"':
                         case '\'':
                            return Control< string >::template match< A, M, Action, Control >( in, st... );

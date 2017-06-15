@@ -7,12 +7,11 @@
 #include "../../external/pegtl/contrib/changes.hpp"
 
 #include "errors.hpp"
-
+#include "string_state.hpp"
 #include "unescape_action.hpp"
 
 #include "../key_state.hpp"
 #include "../number_state.hpp"
-#include "../string_state.hpp"
 
 namespace tao
 {
