@@ -16,7 +16,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
   * [RFC7049]: Concise Binary Object Representation (CBOR).
-  * [JSON5](http://json5.org), a variant of "relaxed" JSON.
+  * [JAXN], a standard for relaxed JSON.
   * Experimental support for [JSON Reference](https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03) (local URI fragments only).
   * Experimental support for [JSON Schema](http://json-schema.org/documentation.html) (draft v4).
   * Experimental support for [Universal Binary JSON (UBJSON)](http://ubjson.org) (encode only).
@@ -116,6 +116,7 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 > THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 [ECMA-404]: http://www.ecma-international.org/publications/standards/Ecma-404.htm
+[JAXN]: https://github.com/stand-art/jaxn
 [Native JSON Benchmark]: https://github.com/miloyip/nativejson-benchmark
 [RFC6901]: https://tools.ietf.org/html/rfc6901
 [RFC6902]: https://tools.ietf.org/html/rfc6902

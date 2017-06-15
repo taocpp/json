@@ -55,7 +55,7 @@
 #include "json/schema.hpp"
 
 // Relaxed JSON
-#include "json/json5.hpp"
+#include "json/jaxn.hpp"
 
 // Binary formats
 #include "json/cbor.hpp"
