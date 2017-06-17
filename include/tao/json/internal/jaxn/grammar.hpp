@@ -69,10 +69,12 @@ namespace tao
                struct number : seq< sor< seq< idigits, opt< frac0 > >, frac1 >, opt< exp > > {};
 
                struct xdigit : abnf::HEXDIG {};
-               struct escaped_unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
+               struct escaped_unicode_code_point_content : seq< one< '{' >, plus< xdigit > > {};
+               struct escaped_unicode_code_point : seq< one< 'u' >, escaped_unicode_code_point_content, one< '}' > > {};
+               struct escaped_unicode : list< seq< one< 'u' >, rep< 4, xdigit > >, one< '\\' > > {};
 
                struct escaped_char : one< '"', '\'', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v', '0' > {};
-               struct escaped : sor< escaped_char, escaped_unicode > {};
+               struct escaped : sor< escaped_char, escaped_unicode_code_point, escaped_unicode > {};
 
                template< char D >
                struct unescaped

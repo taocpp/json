@@ -143,6 +143,9 @@ namespace tao
          TEST_ASSERT( jaxn::from_string( "'fo\\\\o'" ) == "fo\\o" );
          TEST_ASSERT( jaxn::from_string( "'fo\\/o'" ) == "fo/o" );
          TEST_ASSERT( jaxn::from_string( "'f\\0o'" ) == std::string( "f\0o", 3 ) );
+         TEST_ASSERT( jaxn::from_string( "'\\uD834\\uDF06'" ) == "𝌆" );
+         TEST_ASSERT( jaxn::from_string( "'\\u{1D306}'" ) == "𝌆" );
+         TEST_ASSERT( jaxn::from_string( "'x\\uD834\\uDF06\\u{000000000000001D306}y'" ) == "x𝌆𝌆y" );
 
          test_array();
          test_object();
