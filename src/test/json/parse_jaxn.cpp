@@ -142,8 +142,6 @@ namespace tao
          TEST_ASSERT( jaxn::from_string( "'fo\\'o'" ) == "fo'o" );
          TEST_ASSERT( jaxn::from_string( "'fo\\\\o'" ) == "fo\\o" );
          TEST_ASSERT( jaxn::from_string( "'fo\\/o'" ) == "fo/o" );
-         TEST_ASSERT( jaxn::from_string( "'f\\x30o'" ) == "f0o" );
-         TEST_ASSERT( jaxn::from_string( "'f\\x30\\x4F'" ) == "f0O" );
          TEST_ASSERT( jaxn::from_string( "'f\\0o'" ) == std::string( "f\0o", 3 ) );
 
          test_array();
@@ -172,22 +170,21 @@ namespace tao
          TEST_THROWS( jaxn::from_string( "'f\0o'" ) );
          TEST_THROWS( jaxn::from_string( "\n\n'123456789\0'" ) );
 
-         TEST_ASSERT( jaxn::from_string( "''" ) != std::vector< json::byte >{} );
          TEST_ASSERT( jaxn::from_string( "$" ) == std::vector< json::byte >{} );
-         TEST_ASSERT( jaxn::from_string( "$+''" ) == std::vector< json::byte >{} );
-         TEST_ASSERT( jaxn::from_string( "''+$" ) == std::vector< json::byte >{} );
+         TEST_ASSERT( jaxn::from_string( "$''" ) == std::vector< json::byte >{} );
+         TEST_ASSERT( jaxn::from_string( "$+$''" ) == std::vector< json::byte >{} );
+         TEST_ASSERT( jaxn::from_string( "$''+$" ) == std::vector< json::byte >{} );
 
-         const auto a = json::byte( 97 );
-         const auto b = json::byte( 98 );
+         const auto a = json::byte( 'a' );
+         const auto b = json::byte( 'b' );
 
-         TEST_ASSERT( jaxn::from_string( "'a'" ) != std::vector< json::byte >{ a } );
-         TEST_ASSERT( jaxn::from_string( "$" ) == std::vector< json::byte >{} );
-         TEST_ASSERT( jaxn::from_string( "$+'a'" ) == std::vector< json::byte >{ a } );
-         TEST_ASSERT( jaxn::from_string( "'a'+$" ) == std::vector< json::byte >{ a } );
+         TEST_ASSERT( jaxn::from_string( "$'a'" ) == std::vector< json::byte >{ a } );
+         TEST_ASSERT( jaxn::from_string( "$+$'a'" ) == std::vector< json::byte >{ a } );
+         TEST_ASSERT( jaxn::from_string( "$'a'+$" ) == std::vector< json::byte >{ a } );
 
          TEST_ASSERT( jaxn::from_string( "$62" ) == std::vector< json::byte >{ b } );
-         TEST_ASSERT( jaxn::from_string( "$62+'a'" ) == std::vector< json::byte >{ b, a } );
-         TEST_ASSERT( jaxn::from_string( "'a'+$62" ) == std::vector< json::byte >{ a, b } );
+         TEST_ASSERT( jaxn::from_string( "$62+$'a'" ) == std::vector< json::byte >{ b, a } );
+         TEST_ASSERT( jaxn::from_string( "$'a'+$62" ) == std::vector< json::byte >{ a, b } );
 
          TEST_ASSERT( jaxn::from_string( "$6162" ) == std::vector< json::byte >{ a, b } );
          TEST_ASSERT( jaxn::from_string( "$61.62" ) == std::vector< json::byte >{ a, b } );

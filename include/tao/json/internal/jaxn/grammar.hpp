@@ -39,7 +39,7 @@ namespace tao
                struct name_separator : pad< one< ':' >, ws > {};
                struct value_separator : padr< one< ',' > > {};
                struct element_separator : padr< one< ',' > > {};
-               struct concatenate : pad< one< '+' >, ws > {};
+               struct value_concat : pad< one< '+' >, ws > {};
 
                struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
                struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
@@ -70,10 +70,9 @@ namespace tao
 
                struct xdigit : abnf::HEXDIG {};
                struct escaped_unicode : list< seq< one< 'u' >, rep< 4, must< xdigit > > >, one< '\\' > > {};
-               struct escaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
 
                struct escaped_char : one< '"', '\'', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v', '0' > {};
-               struct escaped : sor< escaped_char, escaped_hexcode, escaped_unicode > {};
+               struct escaped : sor< escaped_char, escaped_unicode > {};
 
                template< char D >
                struct unescaped
@@ -108,23 +107,61 @@ namespace tao
                template< char D >
                struct qstring : seq< one< D >, must< qstring_content< D > >, any > {};
 
-               struct qstring_fragment : sor< qstring< '"' >, qstring< '\'' > > {};
+               struct string_fragment : sor< qstring< '"' >, qstring< '\'' > > {};
+
+               struct string : list_must< string_fragment, value_concat > {};
 
                struct binary_prefix : one< '$' > {};
 
-               struct binary_hexcode : rep< 2, abnf::HEXDIG > {};
+               struct bescaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
 
-               struct binary_part : plus< binary_hexcode > {};
+               struct bescaped_char : one< '"', '\'', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v', '0' > {};
+               struct bescaped : sor< bescaped_char, bescaped_hexcode > {};
 
-               struct binary_value : list_must< binary_part, one< '.' > > {};
+               template< char D >
+               struct bunescaped
+               {
+                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
 
-               struct binary_string : seq< binary_prefix, opt< binary_value > > {};
+                  template< typename Input >
+                  static bool match( Input& in )
+                  {
+                     bool result = false;
 
-               struct string_fragment : sor< qstring< '"' >, qstring< '\'' >, binary_string > {};
+                     while( !in.empty() ) {
+                        if( const auto t = in.peek_char() ) {
+                           if( ( 0x20 <= t ) && ( t <= 0x7E ) && ( t != '\\' ) && ( t != D ) ) {
+                              in.bump_in_this_line( 1 );
+                              result = true;
+                              continue;
+                           }
+                        }
+                        return result;
+                     }
+                     throw json_pegtl::parse_error( "invalid character in string", in );
+                  }
+               };
 
-               struct string : list_must< string_fragment, concatenate > {};
+               template< char D >
+               struct bchars : if_then_else< one< '\\' >, must< bescaped >, bunescaped< D > > {};
 
-               struct key : list_must< qstring_fragment, concatenate > {};
+               template< char D >
+               struct bqstring_content : until< at< one< D > >, must< bchars< D > > > {};
+
+               template< char D >
+               struct bqstring : seq< one< D >, must< bqstring_content< D > >, any > {};
+
+               struct bstring : sor< bqstring< '"' >, bqstring< '\'' > > {};
+
+               struct bbyte : rep< 2, abnf::HEXDIG > {};
+
+               struct bpart : plus< bbyte > {};
+
+               struct bdirect : list_must< bpart, one< '.' > > {};
+
+               struct bvalue : seq< binary_prefix, opt< sor< bstring, bdirect > > > {};
+
+               struct binary : list_must< bvalue, value_concat > {};
 
                struct value;
 
@@ -137,6 +174,8 @@ namespace tao
                   using element = array_element;
                   using content = array_content;
                };
+
+               struct key : string {};
 
                struct mkey : sor< key, identifier > {};
                struct member : if_must< mkey, name_separator, value > {};
@@ -243,16 +282,18 @@ namespace tao
                   static bool match_impl( Input& in, States&&... st )
                   {
                      switch( in.peek_char() ) {
-                        case '$':
-                        case '"':
-                        case '\'':
-                           return Control< string >::template match< A, M, Action, Control >( in, st... );
-
                         case '{': return Control< object >::template match< A, M, Action, Control >( in, st... );
                         case '[': return Control< array >::template match< A, M, Action, Control >( in, st... );
                         case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
                         case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
                         case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
+
+                        case '"':
+                        case '\'':
+                           return Control< string >::template match< A, M, Action, Control >( in, st... );
+
+                        case '$':
+                           return Control< binary >::template match< A, M, Action, Control >( in, st... );
 
                         case '+':
                            in.bump_in_this_line();

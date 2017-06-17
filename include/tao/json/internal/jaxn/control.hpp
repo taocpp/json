@@ -6,12 +6,14 @@
 
 #include "../../external/pegtl/contrib/changes.hpp"
 
+#include "binary_state.hpp"
+#include "bunescape_action.hpp"
 #include "errors.hpp"
-#include "string_state.hpp"
 #include "unescape_action.hpp"
 
 #include "../key_state.hpp"
 #include "../number_state.hpp"
+#include "../string_state.hpp"
 
 namespace tao
 {
@@ -42,6 +44,12 @@ namespace tao
             template<>
             struct control< rules::key >
                : json_pegtl::change_state_and_action< rules::key, key_state, unescape_action, errors >
+            {
+            };
+
+            template<>
+            struct control< rules::binary >
+               : json_pegtl::change_state_and_action< rules::binary, binary_state, bunescape_action, errors >
             {
             };
 
