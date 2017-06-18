@@ -194,7 +194,6 @@ namespace tao
 
                struct sor_value
                {
-                  // TODO: Can we use a short-cut to simply say: Yes, I guarantee progress if match() returns "true"?
                   using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number< false >, object, array, false_, true_, null >;
 
                   template< typename Rule,
