@@ -45,6 +45,7 @@ namespace tao
          test_simple( INFINITY, "Infinity" );
          test_simple( -INFINITY, "-Infinity" );
          test_simple( "foo", "\"foo\"" );
+         test_simple( std::vector< byte >( { byte( 1 ), byte( 2 ), byte( 3 ) } ), "$010203" );
          test_simple( empty_array, "[]" );
          test_simple( value::array( {} ), "[]" );
          test_simple( value::array( { 1 } ), "[1]" );
@@ -65,6 +66,7 @@ namespace tao
          test_pretty( 42, "42" );
          test_pretty( 42.1, "42.1" );
          test_pretty( "foo", "\"foo\"" );
+         test_pretty( std::vector< byte >( { byte( 1 ), byte( 2 ), byte( 3 ) } ), "$010203" );
          test_pretty( empty_array, "[]" );
          test_pretty( value::array( {} ), "[]" );
          test_pretty( value::array( { 1 } ), "[\n  1\n]" );

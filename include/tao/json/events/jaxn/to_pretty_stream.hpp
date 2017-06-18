@@ -56,7 +56,16 @@ namespace tao
                   after_key = true;
                }
 
-               // TODO: Binary strings!
+               void binary( const std::vector< byte >& v )
+               {
+                  static const char h[] = "0123456789ABCDEF";
+                  next();
+                  os.put( '$' );
+                  for( const auto b : v ) {
+                     os.put( h[ static_cast< unsigned char >( b ) >> 4 ] );
+                     os.put( h[ static_cast< unsigned char >( b ) & 0xF ] );
+                  }
+               }
             };
 
          }  // namespace jaxn
