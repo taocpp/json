@@ -310,8 +310,7 @@ namespace tao
                template< typename Floating, typename Input >
                static double read_floating_impl( Input& in )
                {
-                  // TODO: Map NaN/Inf to JSON null.
-                  if( in.size( sizeof( Floating ) ) > sizeof( Floating ) ) {
+                  if( in.size( sizeof( Floating ) ) >= 1 + sizeof( Floating ) ) {
                      const Floating result = json::internal::be_to_h< Floating >( in.current() + 1 );
                      in.bump_in_this_line( 1 + sizeof( Floating ) );
                      return result;
