@@ -329,6 +329,16 @@ namespace tao
          }
       };
 
+      template<>
+      struct traits< std::vector< byte > >
+      {
+         template< template< typename... > class Traits, typename T >
+         static void assign( basic_value< Traits >& v, T&& b )
+         {
+            v.unsafe_emplace_binary( std::forward< T >( b ) );
+         }
+      };
+
       template< template< typename... > class Traits >
       struct traits< std::vector< basic_value< Traits > > >
       {
