@@ -131,16 +131,15 @@ namespace tao
                      bool result = false;
 
                      while( !in.empty() ) {
-                        if( const auto t = in.peek_char() ) {
-                           if( ( 0x20 <= t ) && ( t <= 0x7E ) && ( t != '\\' ) && ( t != D ) ) {
-                              in.bump_in_this_line( 1 );
-                              result = true;
-                              continue;
-                           }
+                        const auto t = in.peek_char();
+                        if( ( 0x20 <= t ) && ( t <= 0x7E ) && ( t != '\\' ) && ( t != D ) ) {
+                           in.bump_in_this_line( 1 );
+                           result = true;
+                           continue;
                         }
                         return result;
                      }
-                     throw json_pegtl::parse_error( "invalid character in string", in );
+                     throw json_pegtl::parse_error( "invalid character in binary string", in );
                   }
                };
 
