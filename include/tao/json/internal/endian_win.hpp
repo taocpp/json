@@ -82,10 +82,10 @@ namespace tao
             }
          };
 
-      } // namespace internal
+      }  // namespace internal
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif

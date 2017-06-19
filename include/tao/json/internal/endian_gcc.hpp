@@ -153,10 +153,10 @@ namespace tao
 #else
 #error Unknown host byte order!
 #endif
-      } // internal
+      }  // namespace internal
 
-   } // json
+   }  // namespace json
 
-} // tao
+}  // namespace tao
 
 #endif
