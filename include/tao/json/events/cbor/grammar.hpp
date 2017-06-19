@@ -10,7 +10,7 @@
 #include "major.hpp"
 
 #include "../../byte.hpp"
-#include "../../internal/temporary.hpp"
+#include "../../internal/endian.hpp"
 
 namespace tao
 {
