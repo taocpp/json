@@ -6,6 +6,7 @@
 
 #include "../json.hpp"
 
+#include "msgpack/from_string.hpp"
 #include "msgpack/to_stream.hpp"
 #include "msgpack/to_string.hpp"
 

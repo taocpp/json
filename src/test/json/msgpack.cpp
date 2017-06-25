@@ -15,6 +15,11 @@ namespace tao
          TEST_ASSERT( msgpack::to_string( from_string( text ) ) == internal::unhex( data ) );
       }
 
+      void msgpack_decode( const std::string& data, const std::string& text )
+      {
+         TEST_ASSERT( to_string( msgpack::from_string( internal::unhex( data ) ) ) == to_string( from_string( text ) ) );
+      }
+
       void unit_test()
       {
          msgpack_encode( "null", "c0" );
@@ -52,6 +57,25 @@ namespace tao
          msgpack_encode( "-2147483648", "d280000000" );
          msgpack_encode( "-2147483649", "d3ffffffff7fffffff" );
          msgpack_encode( "-9223372036854775808", "d38000000000000000" );
+
+         msgpack_decode( "00", "0" );
+         msgpack_decode( "01", "1" );
+         msgpack_decode( "40", "64" );
+         msgpack_decode( "7f", "127" );
+         msgpack_decode( "ff", "-1" );
+         msgpack_decode( "f0", "-16" );
+
+         msgpack_decode( "c0", "null" );
+         msgpack_decode( "c2", "false" );
+         msgpack_decode( "c3", "true" );
+
+         msgpack_decode( "d900", "\"\"" );
+         msgpack_decode( "d90130", "\"0\"" );
+         msgpack_decode( "d90430313233", "\"0123\"" );
+         msgpack_decode( "da0000", "\"\"" );
+         msgpack_decode( "da000139", "\"9\"" );
+         msgpack_decode( "db00000000", "\"\"" );
+         msgpack_decode( "db0000000138", "\"8\"" );
       }
 
    }  // namespace json

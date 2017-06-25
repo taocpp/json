@@ -34,11 +34,21 @@ namespace tao
             {
                return n;
             }
+
+            static std::int8_t convert( const std::int8_t n ) noexcept
+            {
+               return n;
+            }
          };
 
          template<>
          struct to_and_from_le< 2 >
          {
+            static std::int16_t convert( const std::int16_t n ) noexcept
+            {
+               return __builtin_bswap16( n );
+            }
+
             static std::uint16_t convert( const std::uint16_t n ) noexcept
             {
                return __builtin_bswap16( n );
@@ -57,6 +67,11 @@ namespace tao
                return n;
             }
 
+            static std::int32_t convert( const std::int32_t n ) noexcept
+            {
+               return __builtin_bswap32( n );
+            }
+
             static std::uint32_t convert( const std::uint32_t n ) noexcept
             {
                return __builtin_bswap32( n );
@@ -73,6 +88,11 @@ namespace tao
                u = convert( u );
                std::memcpy( &n, &u, 8 );
                return n;
+            }
+
+            static std::int64_t convert( const std::int64_t n ) noexcept
+            {
+               return __builtin_bswap64( n );
             }
 
             static std::uint64_t convert( const std::uint64_t n ) noexcept
@@ -99,6 +119,11 @@ namespace tao
          template<>
          struct to_and_from_be< 1 >
          {
+            static std::int8_t convert( const std::int8_t n ) noexcept
+            {
+               return n;
+            }
+
             static std::uint8_t convert( const std::uint8_t n ) noexcept
             {
                return n;
@@ -108,6 +133,11 @@ namespace tao
          template<>
          struct to_and_from_be< 2 >
          {
+            static std::int16_t convert( const std::int16_t n ) noexcept
+            {
+               return __builtin_bswap16( n );
+            }
+
             static std::uint16_t convert( const std::uint16_t n ) noexcept
             {
                return __builtin_bswap16( n );
@@ -124,6 +154,11 @@ namespace tao
                u = convert( u );
                std::memcpy( &n, &u, 4 );
                return n;
+            }
+
+            static std::int32_t convert( const std::int32_t n ) noexcept
+            {
+               return __builtin_bswap32( n );
             }
 
             static std::uint32_t convert( const std::uint32_t n ) noexcept
@@ -145,6 +180,11 @@ namespace tao
             }
 
             static std::uint64_t convert( const std::uint64_t n ) noexcept
+            {
+               return __builtin_bswap64( n );
+            }
+
+            static std::int64_t convert( const std::int64_t n ) noexcept
             {
                return __builtin_bswap64( n );
             }

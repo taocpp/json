@@ -20,7 +20,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Experimental support for [JSON Reference](https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03) (local URI fragments only).
   * Experimental support for [JSON Schema](http://json-schema.org/documentation.html) (draft v4).
   * Experimental support for [Universal Binary JSON (UBJSON)](http://ubjson.org) (encode only).
-  * Experimental support for [Message Pack](http://msgpack.org) (encode only).
+  * Experimental support for [Message Pack](http://msgpack.org) (no extensions).
 
 * General
 
