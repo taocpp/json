@@ -22,11 +22,11 @@
             ++failed;                                              \
          }                                                         \
       }                                                            \
-      catch( const std::exception& e ) {                           \
+      catch( const std::exception& ex ) {                          \
          std::cerr << "json: unit test [ "                         \
                    << ( #__VA_ARGS__ )                             \
                    << " ] threw an exception [ "                   \
-                   << e.what()                                     \
+                   << ex.what()                                    \
                    << " ] in line [ "                              \
                    << __LINE__                                     \
                    << " ] file [ "                                 \

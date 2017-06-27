@@ -32,15 +32,15 @@ namespace tao
          std::string m_key;
 
       public:
-         explicit token( const std::string& key )
-            : m_index( internal::token_to_index( key ) ),
-              m_key( key )
+         explicit token( const std::string& in_key )
+            : m_index( internal::token_to_index( in_key ) ),
+              m_key( in_key )
          {
          }
 
-         explicit token( std::string&& key )
-            : m_index( internal::token_to_index( key ) ),
-              m_key( std::move( key ) )
+         explicit token( std::string&& in_key )
+            : m_index( internal::token_to_index( in_key ) ),
+              m_key( std::move( in_key ) )
          {
          }
 

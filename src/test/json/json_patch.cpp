@@ -11,9 +11,9 @@ namespace tao
    namespace json
    {
       template< template< typename... > class Traits >
-      basic_value< Traits > cpatch( const basic_value< Traits >& value, const basic_value< Traits >& patch )
+      basic_value< Traits > cpatch( const basic_value< Traits >& v, const basic_value< Traits >& patch )
       {
-         return json::patch( value, patch );
+         return json::patch( v, patch );
       }
 
       void unit_test()

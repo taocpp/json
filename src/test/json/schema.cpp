@@ -60,16 +60,16 @@ namespace tao
                               }
                            }
                         }
-                        catch( const std::exception& e ) {
+                        catch( const std::exception& ex ) {
                            ++failed;
-                           std::cout << "    Failed with exception: " << e.what() << std::endl;
+                           std::cout << "    Failed with exception: " << ex.what() << std::endl;
                         }
                      }
                }
-               catch( const std::exception& e ) {
+               catch( const std::exception& ex ) {
                   if( expected_schema ) {
                      ++failed;
-                     std::cout << "  Failed with exception: " << e.what() << std::endl;
+                     std::cout << "  Failed with exception: " << ex.what() << std::endl;
                   }
                   else {
                      ++tests;
@@ -77,9 +77,9 @@ namespace tao
                }
             }
          }
-         catch( const std::exception& e ) {
+         catch( const std::exception& ex ) {
             ++failed;
-            std::cout << "Failed with exception: " << e.what() << std::endl;
+            std::cout << "Failed with exception: " << ex.what() << std::endl;
          }
       }
 

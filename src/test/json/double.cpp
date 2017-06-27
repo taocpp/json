@@ -10,10 +10,10 @@ namespace tao
 {
    namespace json
    {
-      void test_double( const std::string& input, const double value )
+      void test_double( const std::string& input, const double v )
       {
          const double d = json::from_string( input ).get_double();
-         TEST_ASSERT( d == value );
+         TEST_ASSERT( d == v );
       }
 
       void unit_test()

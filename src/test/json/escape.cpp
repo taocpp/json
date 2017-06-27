@@ -10,9 +10,9 @@ namespace tao
 {
    namespace json
    {
-      void roundtrip( const std::string& value )
+      void roundtrip( const std::string& v )
       {
-         TEST_ASSERT( to_string( from_string( value ) ) == value );
+         TEST_ASSERT( to_string( from_string( v ) ) == v );
       }
 
       void unit_test()

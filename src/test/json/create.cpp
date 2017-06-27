@@ -458,71 +458,72 @@ namespace tao
          test_double( 42.0 );
 
          value v;
+         {
+            const double a = std::numeric_limits< double >::infinity();
+            const double b = std::numeric_limits< double >::quiet_NaN();
+            const double c = std::numeric_limits< double >::signaling_NaN();
 
-         const double a = std::numeric_limits< double >::infinity();
-         const double b = std::numeric_limits< double >::quiet_NaN();
-         const double c = std::numeric_limits< double >::signaling_NaN();
+            v = null;
 
-         v = null;
+            TEST_ASSERT( v.type() == type::NULL_ );
 
-         TEST_ASSERT( v.type() == type::NULL_ );
+            v = true;
 
-         v = true;
+            TEST_ASSERT( v.type() == type::BOOLEAN );
+            TEST_ASSERT( v.get_boolean() );
 
-         TEST_ASSERT( v.type() == type::BOOLEAN );
-         TEST_ASSERT( v.get_boolean() );
+            v = 1;
 
-         v = 1;
+            TEST_ASSERT( v.type() == type::SIGNED );
+            TEST_ASSERT( v.get_signed() == 1 );
 
-         TEST_ASSERT( v.type() == type::SIGNED );
-         TEST_ASSERT( v.get_signed() == 1 );
+            v = 1u;
 
-         v = 1u;
+            TEST_ASSERT( v.type() == type::UNSIGNED );
+            TEST_ASSERT( v.get_unsigned() == 1u );
 
-         TEST_ASSERT( v.type() == type::UNSIGNED );
-         TEST_ASSERT( v.get_unsigned() == 1u );
+            v = 2.0;
 
-         v = 2.0;
+            TEST_ASSERT( v.type() == type::DOUBLE );
+            TEST_ASSERT( v.get_double() == 2.0 );
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
-         TEST_ASSERT( v.get_double() == 2.0 );
+            v = "hallo";
 
-         v = "hallo";
+            TEST_ASSERT( v.type() == type::STRING );
+            TEST_ASSERT( v.get_string() == "hallo" );
 
-         TEST_ASSERT( v.type() == type::STRING );
-         TEST_ASSERT( v.get_string() == "hallo" );
+            v = a;
 
-         v = a;
+            TEST_ASSERT( v.type() == type::DOUBLE );
+            TEST_ASSERT( v.get_double() == a );
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
-         TEST_ASSERT( v.get_double() == a );
+            v = std::vector< value >();
 
-         v = std::vector< value >();
+            TEST_ASSERT( v.type() == type::ARRAY );
+            TEST_ASSERT( v.get_array().empty() );
 
-         TEST_ASSERT( v.type() == type::ARRAY );
-         TEST_ASSERT( v.get_array().empty() );
+            v = b;
 
-         v = b;
+            TEST_ASSERT( v.type() == type::DOUBLE );
+            TEST_ASSERT( std::isnan( v.get_double() ) );
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
-         TEST_ASSERT( std::isnan( v.get_double() ) );
+            v = std::map< std::string, value >();
 
-         v = std::map< std::string, value >();
+            TEST_ASSERT( v.type() == type::OBJECT );
+            TEST_ASSERT( v.get_object().empty() );
 
-         TEST_ASSERT( v.type() == type::OBJECT );
-         TEST_ASSERT( v.get_object().empty() );
+            v = c;
 
-         v = c;
+            TEST_ASSERT( v.type() == type::DOUBLE );
+            TEST_ASSERT( std::isnan( v.get_double() ) );
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
-         TEST_ASSERT( std::isnan( v.get_double() ) );
+            v = nullptr;
 
-         v = nullptr;
-
-         TEST_ASSERT( v.type() == type::RAW_PTR );
-         TEST_ASSERT( v.get_raw_ptr() == nullptr );
-         TEST_ASSERT( v.empty() );
-         TEST_ASSERT( v == null );
+            TEST_ASSERT( v.type() == type::RAW_PTR );
+            TEST_ASSERT( v.get_raw_ptr() == nullptr );
+            TEST_ASSERT( v.empty() );
+            TEST_ASSERT( v == null );
+         }
 
          {
             value v2( v );
@@ -594,20 +595,20 @@ namespace tao
             TEST_ASSERT( b == 4.0 );
          }
          {
-            value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
-            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
-            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
-            v = v.at( "foo" ).at( "bar" );
-            TEST_ASSERT( v.at( "baz" ).is_signed() );
-            TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
+            value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+            TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
+            TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
+            v2 = v2.at( "foo" ).at( "bar" );
+            TEST_ASSERT( v2.at( "baz" ).is_signed() );
+            TEST_ASSERT( v2.at( "baz" ).unsafe_get_signed() == 42 );
          }
          {
-            value v = { { "foo", { { "bar", { { "baz", 42 } } } } } };
-            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
-            TEST_ASSERT( v.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
-            v = std::move( v.at( "foo" ).at( "bar" ) );
-            TEST_ASSERT( v.at( "baz" ).is_signed() );
-            TEST_ASSERT( v.at( "baz" ).unsafe_get_signed() == 42 );
+            value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+            TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
+            TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
+            v2 = std::move( v2.at( "foo" ).at( "bar" ) );
+            TEST_ASSERT( v2.at( "baz" ).is_signed() );
+            TEST_ASSERT( v2.at( "baz" ).unsafe_get_signed() == 42 );
          }
       }
 
