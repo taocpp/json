@@ -1,42 +1,56 @@
 version: '{branch}-{build}'
 
+branches:
+  only:
+    - master
+
 os:
 - Visual Studio 2015
-- Visual Studio 2017
-
-platform:
-- x86
-- x64
 
 configuration:
 - Release
 - Debug
 
-branches:
-  only:
-    - master
+environment:
+  matrix:
+    - GENERATOR: Visual Studio 14 2015
 
-build:
-  verbosity: minimal
+    - GENERATOR: Visual Studio 14 2015 Win64
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR: Visual Studio 15 2017
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR: Visual Studio 15 2017 Win64
+
+    - GENERATOR: MinGW Makefiles
+      BINDIR: C:\MinGW\bin
+
+    - GENERATOR: MinGW Makefiles
+      COMPILER: MinGW 5
+      BINDIR: C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin
+
+    - GENERATOR: MinGW Makefiles
+      COMPILER: MinGW 6
+      BINDIR: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
+
+    - GENERATOR: MinGW Makefiles
+      COMPILER: MinGW 6
+      BINDIR: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
 
 init: []
 
-before_build:
-- ps: |
-    if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015")
-    {
-      del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets"
-    }
+install: []
 
-build_script:
+before_build:
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" (del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets")
+- if defined BINDIR (set "PATH=%BINDIR%;%PATH:C:\Program Files\Git\usr\bin;=%")
 - md build
 - cd build
-- IF "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" (SET GEN="Visual Studio 14 2015")
-- IF "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" (SET GEN="Visual Studio 15 2017")
-- cmake -Wno-dev --config "%CONFIGURATION%" .. -G%GEN%
+- cmake -Wno-dev --config "%CONFIGURATION%" -G "%GENERATOR%" ..
+
+build_script:
 - cmake --build . --config "%CONFIGURATION%"
 
 test_script:
 - ctest -C "%CONFIGURATION%" --output-on-failure
-
-install: []
