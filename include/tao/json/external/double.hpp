@@ -1633,7 +1633,6 @@ namespace json_double_conversion
    {
       const int kBase10MaximalLength = 17;
       const int kMaxExponentialDigits = 120;
-      const int kDecimalRepCapacity = kMaxExponentialDigits + 2;
       const int kFastDtoaMaximalLength = 17;
       const int kMinimalTargetExponent = -60;
       const int kMaximalTargetExponent = -32;
