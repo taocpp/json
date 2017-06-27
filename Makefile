@@ -7,11 +7,14 @@
 
 ifeq ($(OS),Windows_NT)
 UNAME_S := $(OS)
+ifeq ($(shell gcc -dumpmachine),mingw32)
+MINGW_CXXFLAGS = -U__STRICT_ANSI__
+endif
 else
 UNAME_S := $(shell uname -s)
 endif
 
-# For Darwin (Mac OS X) we assume that the default compiler
+# For Darwin (Mac OS X / macOS) we assume that the default compiler
 # clang++ is used; when $(CXX) is some version of g++, then
 # $(CXXSTD) has to be set to -std=c++11 (or newer) so
 # that -stdlib=libc++ is not automatically added.
@@ -27,9 +30,7 @@ endif
 # changed if desired.
 
 CPPFLAGS ?= -pedantic
-CXXFLAGS ?= -Wall -Wextra -Werror -O3
-
-.PHONY: all compile check clean
+CXXFLAGS ?= -Wall -Wextra -Wshadow -Werror -O3 $(MINGW_CXXFLAGS)
 
 SOURCES := $(shell find src -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=build/%.d)
@@ -37,13 +38,17 @@ BINARIES := $(SOURCES:%.cpp=build/%)
 
 UNIT_TESTS := $(filter build/src/test/%,$(BINARIES))
 
+.PHONY: all
 all: compile check
 
+.PHONY: compile
 compile: $(BINARIES)
 
+.PHONY: check
 check: $(UNIT_TESTS)
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T > /dev/null; done
 
+.PHONY: clean
 clean:
 	@rm -rf build
 	@find . -name '*~' -delete
