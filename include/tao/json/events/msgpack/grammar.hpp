@@ -153,7 +153,10 @@ namespace tao
                      case 0xdf:
                         return match_object( in, consumer, read_number< std::size_t, std::uint32_t >( in ) );
                   }
-                  assert( !"unreachable" );
+                  // LCOV_EXCL_START
+                  assert( false );
+                  return false;
+                  // LCOV_EXCL_STOP
                }
 
                template< typename Input >
