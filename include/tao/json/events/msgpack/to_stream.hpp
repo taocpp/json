@@ -160,7 +160,7 @@ namespace tao
 
                void end_array()
                {
-                  assert( false );
+                  assert( false );  // LCOV_EXCL_LINE
                }
 
                void end_array( const std::size_t ) noexcept
@@ -199,7 +199,7 @@ namespace tao
 
                void end_object()
                {
-                  assert( false );
+                  assert( false );  // LCOV_EXCL_LINE
                }
 
                void end_object( const std::size_t ) noexcept

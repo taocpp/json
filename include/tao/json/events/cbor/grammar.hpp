@@ -94,7 +94,10 @@ namespace tao
                      case major::OTHER:
                         return match_other( in, consumer );
                   }
+                  // LCOV_EXCL_START
                   assert( false );
+                  return false;
+                  // LCOV_EXCL_STOP
                }
 
                template< typename Input >

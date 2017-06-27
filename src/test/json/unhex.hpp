@@ -24,7 +24,10 @@ namespace tao
             if( ( 'A' <= c ) && ( c <= 'F' ) ) {
                return c - 'A' + 10;
             }
+            // LCOV_EXCL_START
             assert( false );
+            return 0;
+            // LCOV_EXCL_STOP
          }
 
          inline std::string unhex( const std::string& data )

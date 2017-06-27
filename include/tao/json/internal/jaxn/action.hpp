@@ -79,7 +79,10 @@ namespace tao
                   if( ( 'A' <= c ) && ( c <= 'F' ) ) {
                      return c - 'A' + 10;
                   }
+                  // LCOV_EXCL_START
                   assert( false );
+                  return false;
+                  // LCOV_EXCL_STOP
                }
 
                template< typename Input, typename Consumer >
