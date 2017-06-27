@@ -49,9 +49,9 @@ namespace tao
             }
 
          public:
-            to_pretty_stream( std::ostream& os, const std::size_t indent )
-               : os( os ),
-                 indent( indent ),
+            to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
+               : os( in_os ),
+                 indent( in_indent ),
                  first( true )
             {
             }

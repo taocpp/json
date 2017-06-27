@@ -605,10 +605,10 @@ namespace tao
                   return v.m_union.a.at( i );
                } break;
                case json::type::OBJECT: {
-                  const auto& k = e->key();
-                  const auto it = v.m_union.o.find( k );
+                  const auto& key = e->key();
+                  const auto it = v.m_union.o.find( key );
                   if( it == v.m_union.o.end() ) {
-                     const auto r = v.unsafe_emplace( k, std::move( value ) );
+                     const auto r = v.unsafe_emplace( key, std::move( value ) );
                      assert( r.second );
                      return r.first->second;
                   }
@@ -894,10 +894,10 @@ namespace tao
                   return v.at( e->index() );
                } break;
                case json::type::OBJECT: {
-                  const auto& k = e->key();
-                  const auto it = v.m_union.o.find( k );
+                  const auto& key = e->key();
+                  const auto it = v.m_union.o.find( key );
                   if( it == v.m_union.o.end() ) {
-                     const auto r = v.unsafe_emplace( k, null );
+                     const auto r = v.unsafe_emplace( key, null );
                      assert( r.second );
                      return r.first->second;
                   }

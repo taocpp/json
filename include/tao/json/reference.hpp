@@ -69,8 +69,8 @@ namespace tao
                                     p = p->at( it->index() ).skip_raw_ptr();
                                     break;
                                  case type::OBJECT:
-                                    if( const auto* r = p->find( "$ref" ) ) {
-                                       if( r->is_string() ) {
+                                    if( const auto* t = p->find( "$ref" ) ) {
+                                       if( t->is_string() ) {
                                           throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );
                                        }
                                     }

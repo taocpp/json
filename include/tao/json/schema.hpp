@@ -727,8 +727,8 @@ namespace tao
                      try {
                         m_pattern_properties.emplace_back( std::regex( e.first ), e.second.skip_raw_ptr() );
                      }
-                     catch( const std::regex_error& e ) {
-                        throw std::runtime_error( "invalid JSON Schema: keys in object \"patternProperties\" must be regular expressions: " + std::string( e.what() ) );
+                     catch( const std::regex_error& ex ) {
+                        throw std::runtime_error( "invalid JSON Schema: keys in object \"patternProperties\" must be regular expressions: " + std::string( ex.what() ) );
                      }
                      m_referenced_pointers.insert( e.second.skip_raw_ptr() );
                   }

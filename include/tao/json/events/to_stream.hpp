@@ -39,8 +39,8 @@ namespace tao
             }
 
          public:
-            explicit to_stream( std::ostream& os ) noexcept
-               : os( os ),
+            explicit to_stream( std::ostream& in_os ) noexcept
+               : os( in_os ),
                  first( true )
             {
             }

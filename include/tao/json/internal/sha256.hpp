@@ -189,15 +189,15 @@ namespace tao
 
                process();
 
-               for( std::size_t i = 0; i < 4; ++i ) {
-                  buffer[ i ] = ( H[ 0 ] >> ( 24 - i * 8 ) ) & 0xff;
-                  buffer[ i + 4 ] = ( H[ 1 ] >> ( 24 - i * 8 ) ) & 0xff;
-                  buffer[ i + 8 ] = ( H[ 2 ] >> ( 24 - i * 8 ) ) & 0xff;
-                  buffer[ i + 12 ] = ( H[ 3 ] >> ( 24 - i * 8 ) ) & 0xff;
-                  buffer[ i + 16 ] = ( H[ 4 ] >> ( 24 - i * 8 ) ) & 0xff;
-                  buffer[ i + 20 ] = ( H[ 5 ] >> ( 24 - i * 8 ) ) & 0xff;
-                  buffer[ i + 24 ] = ( H[ 6 ] >> ( 24 - i * 8 ) ) & 0xff;
-                  buffer[ i + 28 ] = ( H[ 7 ] >> ( 24 - i * 8 ) ) & 0xff;
+               for( std::size_t j = 0; j < 4; ++j ) {
+                  buffer[ j ] = ( H[ 0 ] >> ( 24 - j * 8 ) ) & 0xff;
+                  buffer[ j + 4 ] = ( H[ 1 ] >> ( 24 - j * 8 ) ) & 0xff;
+                  buffer[ j + 8 ] = ( H[ 2 ] >> ( 24 - j * 8 ) ) & 0xff;
+                  buffer[ j + 12 ] = ( H[ 3 ] >> ( 24 - j * 8 ) ) & 0xff;
+                  buffer[ j + 16 ] = ( H[ 4 ] >> ( 24 - j * 8 ) ) & 0xff;
+                  buffer[ j + 20 ] = ( H[ 5 ] >> ( 24 - j * 8 ) ) & 0xff;
+                  buffer[ j + 24 ] = ( H[ 6 ] >> ( 24 - j * 8 ) ) & 0xff;
+                  buffer[ j + 28 ] = ( H[ 7 ] >> ( 24 - j * 8 ) ) & 0xff;
                }
             }
 

@@ -31,8 +31,8 @@ namespace tao
             std::ostream& os;
 
          public:
-            explicit debug( std::ostream& os ) noexcept
-               : os( os )
+            explicit debug( std::ostream& in_os ) noexcept
+               : os( in_os )
             {
             }
 

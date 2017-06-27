@@ -15,35 +15,35 @@ namespace tao
    namespace json
    {
       template< template< typename... > class Traits >
-      void patch_inplace( basic_value< Traits >& value, const basic_value< Traits >& patch )
+      void patch_inplace( basic_value< Traits >& v, const basic_value< Traits >& patch )
       {
          for( const auto& entry : patch.get_array() ) {
             const auto& op = entry.at( "op" ).get_string();
             const auto& path = entry.at( "path" ).get_string();
             const pointer path_pointer( path );
             if( op == "test" ) {
-               if( value.at( path_pointer ) != entry.at( "value" ) ) {
+               if( v.at( path_pointer ) != entry.at( "value" ) ) {
                   throw std::runtime_error( "test failed for: " + path );
                }
             }
             else if( op == "remove" ) {
-               value.erase( path_pointer );
+               v.erase( path_pointer );
             }
             else if( op == "add" ) {
-               value.insert( path_pointer, entry.at( "value" ) );
+               v.insert( path_pointer, entry.at( "value" ) );
             }
             else if( op == "replace" ) {
-               value.at( path_pointer ) = entry.at( "value" );
+               v.at( path_pointer ) = entry.at( "value" );
             }
             else if( op == "move" ) {
                const pointer from( entry.at( "from" ).get_string() );
-               auto v = std::move( value.at( from ) );
-               value.erase( from );
-               value.insert( path_pointer, std::move( v ) );
+               auto t = std::move( v.at( from ) );
+               v.erase( from );
+               v.insert( path_pointer, std::move( t ) );
             }
             else if( op == "copy" ) {
                const pointer from( entry.at( "from" ).get_string() );
-               value.insert( path_pointer, value.at( from ) );
+               v.insert( path_pointer, v.at( from ) );
             }
             else {
                throw std::runtime_error( "unknown patch operation: '" + op + '\'' );
@@ -52,35 +52,35 @@ namespace tao
       }
 
       template< template< typename... > class Traits >
-      void patch_inplace( basic_value< Traits >& value, basic_value< Traits >&& patch )
+      void patch_inplace( basic_value< Traits >& v, basic_value< Traits >&& patch )
       {
          for( const auto& entry : patch.get_array() ) {
             const auto& op = entry.at( "op" ).get_string();
             const auto& path = entry.at( "path" ).get_string();
             const pointer path_pointer( path );
             if( op == "test" ) {
-               if( value.at( path_pointer ) != entry.at( "value" ) ) {
+               if( v.at( path_pointer ) != entry.at( "value" ) ) {
                   throw std::runtime_error( "test failed for: " + path );
                }
             }
             else if( op == "remove" ) {
-               value.erase( path_pointer );
+               v.erase( path_pointer );
             }
             else if( op == "add" ) {
-               value.insert( path_pointer, std::move( entry.at( "value" ) ) );
+               v.insert( path_pointer, std::move( entry.at( "value" ) ) );
             }
             else if( op == "replace" ) {
-               value.at( path_pointer ) = std::move( entry.at( "value" ) );
+               v.at( path_pointer ) = std::move( entry.at( "value" ) );
             }
             else if( op == "move" ) {
                const pointer from( entry.at( "from" ).get_string() );
-               auto v = std::move( value.at( from ) );
-               value.erase( from );
-               value.insert( path_pointer, std::move( v ) );
+               auto t = std::move( v.at( from ) );
+               v.erase( from );
+               v.insert( path_pointer, std::move( t ) );
             }
             else if( op == "copy" ) {
                const pointer from( entry.at( "from" ).get_string() );
-               value.insert( path_pointer, value.at( from ) );
+               v.insert( path_pointer, v.at( from ) );
             }
             else {
                throw std::runtime_error( "unknown patch operation: '" + op + '\'' );
@@ -89,17 +89,17 @@ namespace tao
       }
 
       template< template< typename... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > value, const basic_value< Traits >& patch )
+      basic_value< Traits > patch( basic_value< Traits > v, const basic_value< Traits >& patch )
       {
-         patch_inplace( value, patch );
-         return std::move( value );
+         patch_inplace( v, patch );
+         return std::move( v );
       }
 
       template< template< typename... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > value, basic_value< Traits >&& patch )
+      basic_value< Traits > patch( basic_value< Traits > v, basic_value< Traits >&& patch )
       {
-         patch_inplace( value, std::move( patch ) );
-         return std::move( value );
+         patch_inplace( v, std::move( patch ) );
+         return std::move( v );
       }
 
    }  // namespace json
