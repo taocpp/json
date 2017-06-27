@@ -58,7 +58,7 @@ namespace tao
          return byte( static_cast< unsigned char >( b ) >> shift );
       }
 
-      byte& operator|=( byte& l, byte r ) noexcept
+      inline byte& operator|=( byte& l, byte r ) noexcept
       {
          return l = byte( static_cast< unsigned char >( l ) | static_cast< unsigned char >( r ) );
       }
@@ -68,7 +68,7 @@ namespace tao
          return byte( static_cast< unsigned char >( l ) | static_cast< unsigned char >( r ) );
       }
 
-      byte& operator&=( byte& l, byte r ) noexcept
+      inline byte& operator&=( byte& l, byte r ) noexcept
       {
          return l = byte( static_cast< unsigned char >( l ) & static_cast< unsigned char >( r ) );
       }
@@ -78,7 +78,7 @@ namespace tao
          return byte( static_cast< unsigned char >( l ) & static_cast< unsigned char >( r ) );
       }
 
-      byte& operator^=( byte& l, byte r ) noexcept
+      inline byte& operator^=( byte& l, byte r ) noexcept
       {
          return l = byte( static_cast< unsigned char >( l ) ^ static_cast< unsigned char >( r ) );
       }
