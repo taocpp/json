@@ -72,6 +72,10 @@ namespace tao
          cbor_decode( "9f80ff", "[[]]" );
          cbor_decode( "9f9fffff", "[[]]" );
          cbor_decode( "819fff", "[[]]" );
+
+         cbor_decode( "f90400", "0.00006103515625" );
+         cbor_decode( "f9c400", "-4.0" );
+
          cbor_decode( "8a00010203040506070809", "[0,1,2,3,4,5,6,7,8,9]" );
          cbor_decode( "9f00010203040506070809ff", "[0,1,2,3,4,5,6,7,8,9]" );
          cbor_decode( "a0", "{}" );

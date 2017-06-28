@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_CBOR_GRAMMAR_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_CBOR_GRAMMAR_HPP
 
+#include <cmath>
 #include <cstdint>
 #include <utility>
 
@@ -321,6 +322,32 @@ namespace tao
                   throw json_pegtl::parse_error( "unexpected end of input", in );
                }
 
+               template< typename Input >
+               static double read_floating_half_impl( Input& in )
+               {
+                  if( in.size( 3 ) < 3 ) {
+                     throw json_pegtl::parse_error( "unexpected end of input", in );
+                  }
+
+                  const int half = ( in.peek_byte( 1 ) << 8 ) + in.peek_byte( 2 );
+                  const int exp = ( half >> 10 ) & 0x1f;
+                  const int mant = half & 0x3ff;
+
+                  double val;
+                  if( exp == 0 ) {
+                     val = std::ldexp( mant, -24 );
+                  }
+                  else if( exp != 31 ) {
+                     val = std::ldexp( mant + 1024, exp - 25 );
+                  }
+                  else {
+                     val = ( mant == 0 ) ? INFINITY : NAN;
+                  }
+
+                  in.bump_in_this_line( 3 );
+                  return half & 0x8000 ? -val : val;
+               }
+
                template< typename Input, typename Consumer >
                static bool match_other( Input& in, Consumer& consumer )
                {
@@ -337,6 +364,9 @@ namespace tao
                         consumer.null();
                         in.bump_in_this_line();
                         return true;
+                     case 25:
+                        consumer.number( read_floating_half_impl( in ) );
+                        return true;
                      case 26:
                         consumer.number( read_floating_impl< float >( in ) );
                         return true;
@@ -344,7 +374,6 @@ namespace tao
                         consumer.number( read_floating_impl< double >( in ) );
                         return true;
                      case 24:
-                     case 25:  // TODO: 16bit float?
                      default:
                         throw json_pegtl::parse_error( "unsupported minor for major 7", in );
                   }
