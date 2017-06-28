@@ -15,7 +15,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Achieves a **100% score** in the [Native JSON Benchmark] conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
-  * [RFC7049]: Concise Binary Object Representation (CBOR).
+  * [RFC7049]: Concise Binary Object Representation ([CBOR](http://cbor.io)).
   * [JAXN], a standard for relaxed JSON.
   * Experimental support for [JSON Reference](https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03) (local URI fragments only).
   * Experimental support for [JSON Schema](http://json-schema.org/documentation.html) (draft v4).
