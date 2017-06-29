@@ -36,6 +36,12 @@ namespace tao
             return unhex< T, V, Cs... >( make_index_sequence< sizeof...( Cs ) / 2 >(), { unhex_char( Cs )... } );
          }
 
+         template< typename T, char... Cs >
+         constexpr T unhex()
+         {
+            return unhex< T, typename T::value_type, Cs... >();
+         }
+
       }  // namespace internal
 
       inline namespace literals
@@ -43,7 +49,7 @@ namespace tao
          template< char... Cs >
          std::vector< byte > operator"" _binary()
          {
-            return internal::unhex< std::vector< byte >, byte, Cs... >();
+            return internal::unhex< std::vector< byte >, Cs... >();
          }
 
       }  // namespace literals
