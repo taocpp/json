@@ -2,7 +2,7 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include "test.hpp"
-#include "unhex.hpp"
+#include "test_unhex.hpp"
 
 #include <tao/json.hpp>
 
@@ -12,12 +12,12 @@ namespace tao
    {
       void msgpack_encode( const std::string& text, const std::string& data )
       {
-         TEST_ASSERT( msgpack::to_string( from_string( text ) ) == internal::unhex( data ) );
+         TEST_ASSERT( msgpack::to_string( from_string( text ) ) == test_unhex( data ) );
       }
 
       void msgpack_decode( const std::string& data, const std::string& text )
       {
-         TEST_ASSERT( to_string( msgpack::from_string( internal::unhex( data ) ) ) == to_string( from_string( text ) ) );
+         TEST_ASSERT( to_string( msgpack::from_string( test_unhex( data ) ) ) == to_string( from_string( text ) ) );
       }
 
       void unit_test()

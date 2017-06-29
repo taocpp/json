@@ -3,6 +3,7 @@
 
 #include "test.hpp"
 
+#include <tao/json/binary.hpp>
 #include <tao/json/jaxn/from_string.hpp>
 #include <tao/json/value.hpp>
 
@@ -178,20 +179,17 @@ namespace tao
          TEST_ASSERT( jaxn::from_string( "$+$''" ) == std::vector< json::byte >{} );
          TEST_ASSERT( jaxn::from_string( "$''+$" ) == std::vector< json::byte >{} );
 
-         const auto a = json::byte( 'a' );
-         const auto b = json::byte( 'b' );
+         TEST_ASSERT( jaxn::from_string( "$'a'" ) == 0x61_binary );
+         TEST_ASSERT( jaxn::from_string( "$+$'a'" ) == 0x61_binary );
+         TEST_ASSERT( jaxn::from_string( "$'a'+$" ) == 0x61_binary );
 
-         TEST_ASSERT( jaxn::from_string( "$'a'" ) == std::vector< json::byte >{ a } );
-         TEST_ASSERT( jaxn::from_string( "$+$'a'" ) == std::vector< json::byte >{ a } );
-         TEST_ASSERT( jaxn::from_string( "$'a'+$" ) == std::vector< json::byte >{ a } );
+         TEST_ASSERT( jaxn::from_string( "$62" ) == 0x62_binary );
+         TEST_ASSERT( jaxn::from_string( "$62+$'a'" ) == 0x6261_binary );
+         TEST_ASSERT( jaxn::from_string( "$'a'+$62" ) == 0x6162_binary );
 
-         TEST_ASSERT( jaxn::from_string( "$62" ) == std::vector< json::byte >{ b } );
-         TEST_ASSERT( jaxn::from_string( "$62+$'a'" ) == std::vector< json::byte >{ b, a } );
-         TEST_ASSERT( jaxn::from_string( "$'a'+$62" ) == std::vector< json::byte >{ a, b } );
-
-         TEST_ASSERT( jaxn::from_string( "$6162" ) == std::vector< json::byte >{ a, b } );
-         TEST_ASSERT( jaxn::from_string( "$61.62" ) == std::vector< json::byte >{ a, b } );
-         TEST_ASSERT( jaxn::from_string( "$61+$62" ) == std::vector< json::byte >{ a, b } );
+         TEST_ASSERT( jaxn::from_string( "$6162" ) == 0x6162_binary );
+         TEST_ASSERT( jaxn::from_string( "$61.62" ) == 0x6162_binary );
+         TEST_ASSERT( jaxn::from_string( "$61+$62" ) == 0x6162_binary );
       }
 
    }  // namespace json

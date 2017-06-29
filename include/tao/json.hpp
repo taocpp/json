@@ -57,6 +57,9 @@
 // Relaxed JSON
 #include "json/jaxn.hpp"
 
+// Binary literals
+#include "json/binary.hpp"
+
 // Binary formats
 #include "json/cbor.hpp"
 #include "json/msgpack.hpp"
