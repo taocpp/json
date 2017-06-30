@@ -27,6 +27,8 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Provides JSON Value (DOM-style).
   * Provides JSON Events (SAX-style).
   * Numeric values are stored as `std::int64_t`, `std::uint64_t` or `double`.
+  * Allows storing and handling non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
+  * Allows storing and handling of binary data.
   * Does *not* support duplicate keys in JSON objects.
   * Currently only supports UTF-8 as input and output encoding.
 
@@ -34,18 +36,25 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
   * Construction of objects and arrays via `std::initializer_list`.
   * Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
-  * Standard STL containers `std::string` for JSON strings, `std::vector< tao::json::value >` for JSON arrays, and `std::map< std::string, tao::json::value >` for JSON objects.
+  * Standard STL containers:
+    * `std::string` for JSON strings
+    * `std::vector< tao::json::value >` for JSON arrays
+    * `std::map< std::string, tao::json::value >` for JSON objects
+    * `std::vector< tao::json::byte >` for JAXN binary data. (`tao::json::byte` is an alias for `std::byte` when available).
   * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
   * Indirect JSON values via non-owning C++ raw pointers for object sharing, reference resolution, and important optimization opportunities.
-  * C++11 literal operator for JSON values.
+  * C++11 literal operator for JSON values, including binary data.
 
 * Events API
 
   * Simple, straightforward JSON Events API.
-  * Parse JSON string representation to JSON Events.
-  * Stream JSON Events to (prettified) JSON string representation.
   * JSON Events-to-Value and Value-to-Events interfaces.
-  * Supports conversion from and to *other* JSON objects (check [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
+  * Parse JSON string representation to JSON Events.
+  * Parse JAXN string representation to JSON Events.
+  * Stream JSON Events to (prettified) JSON string representation.
+  * Stream JSON Events to (prettified) JAXN string representation.
+  * Supports conversion from and to binary formats, e.g. CBOR, UBJSON, MsgPack, etc.
+  * Supports conversion from and to *other* JSON value objects (check [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
   * JSON Events comparison (against an existing JSON Value).
   * JSON Events hash algorithm (SHA-256 based).
   * JSON Events schema validator.
@@ -63,6 +72,7 @@ The documentation will be finished once the functionality and interfaces are fin
 Until then, here are a few short indications on how to use this library:
 
 * Requires Clang or GCC with `-std=c++11` (or other compiler with sufficient C++11 support).
+* Currently requires a 64 bits environment.
 * The library is header-only, to install and use simply copy the directory [`include/tao`](include/tao) to a convenient place and include the file [`include/tao/json.hpp`](include/tao/json.hpp).
 * The generic JSON value class, the main part of this library, is in [`include/tao/json/value.hpp`](include/tao/json/value.hpp).
 * To parse a JSON string representation to a JSON Value, use one of the functions in [`include/tao/json/from_string.hpp`](include/tao/json/from_string.hpp) or [`include/tao/json/parse_file.hpp`](include/tao/json/parse_file.hpp).
