@@ -190,6 +190,8 @@ namespace tao
          TEST_ASSERT( jaxn::from_string( "$6162" ) == 0x6162_binary );
          TEST_ASSERT( jaxn::from_string( "$61.62" ) == 0x6162_binary );
          TEST_ASSERT( jaxn::from_string( "$61+$62" ) == 0x6162_binary );
+
+         TEST_ASSERT( jaxn::from_string( "$'Hello, world!'" ) == 0x48656c6c6f2c20776f726c6421_binary );
       }
 
    }  // namespace json
