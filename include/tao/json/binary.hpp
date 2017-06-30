@@ -4,11 +4,9 @@
 #ifndef TAOCPP_JSON_INCLUDE_BINARY_HPP
 #define TAOCPP_JSON_INCLUDE_BINARY_HPP
 
-#include <initializer_list>
 #include <vector>
 
 #include "byte.hpp"
-#include "internal/integer_sequence.hpp"
 
 namespace tao
 {
@@ -21,11 +19,26 @@ namespace tao
             return ( c < 'A' ) ? ( c - '0' ) : ( ( c < 'a' ) ? ( c - 'A' + 10 ) : ( c - 'a' + 10 ) );
          }
 
-         template< typename T, typename V, char... Cs, std::size_t... Is >
-         constexpr T unhex( index_sequence< Is... >, std::initializer_list< char > a )
+         template< typename V, V... >
+         struct vlist;
+
+         template< typename T, typename L, char... Cs >
+         struct unhex_helper;
+
+         template< typename T, typename V, V... Vs >
+         struct unhex_helper< T, vlist< V, Vs... > >
          {
-            return T{ V( ( a.begin()[ 2 * Is ] << 4 ) + a.begin()[ 2 * Is + 1 ] )... };
-         }
+            static constexpr T unhex()
+            {
+               return T{ Vs... };
+            }
+         };
+
+         template< typename T, typename V, char C0, char C1, char... Cs, V... Vs >
+         struct unhex_helper< T, vlist< V, Vs... >, C0, C1, Cs... >
+            : unhex_helper< T, vlist< V, Vs..., V( ( C0 << 4 ) + C1 ) >, Cs... >
+         {
+         };
 
          template< typename T, typename V, char C0, char C1, char... Cs >
          constexpr T unhex()
@@ -33,7 +46,7 @@ namespace tao
             static_assert( C0 == '0', "not a hex literal" );
             static_assert( C1 == 'x' || C1 == 'X', "not a hex literal" );
             static_assert( sizeof...( Cs ) % 2 == 0, "invalid number of hexadecimal digits" );
-            return unhex< T, V, Cs... >( make_index_sequence< sizeof...( Cs ) / 2 >(), { unhex_char( Cs )... } );
+            return unhex_helper< T, vlist< V >, unhex_char( Cs )... >::unhex();
          }
 
          template< typename T, char... Cs >
