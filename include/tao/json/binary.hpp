@@ -34,7 +34,7 @@ namespace tao
             }
          };
 
-         template< typename T, typename V, char C0, char C1, char... Cs, V... Vs >
+         template< typename T, typename V, V... Vs, char C0, char C1, char... Cs >
          struct unhex_helper< T, vlist< V, Vs... >, C0, C1, Cs... >
             : unhex_helper< T, vlist< V, Vs..., V( ( C0 << 4 ) + C1 ) >, Cs... >
          {
