@@ -68,6 +68,7 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, const char*, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, std::vector< byte >, type::BINARY >,
+           internal::totally_ordered< basic_value< Traits >, empty_binary_t, type::BINARY >,
            internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,

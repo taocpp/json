@@ -174,10 +174,10 @@ namespace tao
          TEST_THROWS( jaxn::from_string( "'f\0o'" ) );
          TEST_THROWS( jaxn::from_string( "\n\n'123456789\0'" ) );
 
-         TEST_ASSERT( jaxn::from_string( "$" ) == std::vector< json::byte >{} );
-         TEST_ASSERT( jaxn::from_string( "$''" ) == std::vector< json::byte >{} );
-         TEST_ASSERT( jaxn::from_string( "$+$''" ) == std::vector< json::byte >{} );
-         TEST_ASSERT( jaxn::from_string( "$''+$" ) == std::vector< json::byte >{} );
+         TEST_ASSERT( jaxn::from_string( "$" ) == empty_binary );
+         TEST_ASSERT( jaxn::from_string( "$''" ) == empty_binary );
+         TEST_ASSERT( jaxn::from_string( "$+$''" ) == empty_binary );
+         TEST_ASSERT( jaxn::from_string( "$''+$" ) == empty_binary );
 
          TEST_ASSERT( jaxn::from_string( "$'a'" ) == 0x61_binary );
          TEST_ASSERT( jaxn::from_string( "$+$'a'" ) == 0x61_binary );

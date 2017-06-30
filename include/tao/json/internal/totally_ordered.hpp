@@ -315,6 +315,26 @@ namespace tao
          };
 
          template< typename T >
+         struct totally_ordered< T, empty_binary_t, type::BINARY >
+            : operators::totally_ordered< T, empty_binary_t >
+         {
+            friend bool operator==( const T& lhs, empty_binary_t rhs ) noexcept
+            {
+               return lhs == T( rhs );
+            }
+
+            friend bool operator<( const T& lhs, empty_binary_t rhs ) noexcept
+            {
+               return lhs < T( rhs );
+            }
+
+            friend bool operator>( const T& lhs, empty_binary_t rhs ) noexcept
+            {
+               return lhs > T( rhs );
+            }
+         };
+
+         template< typename T >
          struct totally_ordered< T, empty_array_t, type::ARRAY >
             : operators::totally_ordered< T, empty_array_t >
          {

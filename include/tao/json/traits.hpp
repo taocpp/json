@@ -268,6 +268,16 @@ namespace tao
       };
 
       template<>
+      struct traits< empty_binary_t >
+      {
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, empty_binary_t )
+         {
+            v.unsafe_emplace_binary();
+         }
+      };
+
+      template<>
       struct traits< empty_array_t >
       {
          template< template< typename... > class Traits >

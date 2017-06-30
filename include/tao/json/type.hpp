@@ -79,6 +79,13 @@ namespace tao
          }
       };
 
+      struct empty_binary_t
+      {
+         constexpr explicit empty_binary_t( int )
+         {
+         }
+      };
+
       struct empty_array_t
       {
          constexpr explicit empty_array_t( int )
@@ -94,6 +101,7 @@ namespace tao
       };
 
       constexpr null_t null{ 0 };
+      constexpr empty_binary_t empty_binary{ 0 };
       constexpr empty_array_t empty_array{ 0 };
       constexpr empty_object_t empty_object{ 0 };
 
