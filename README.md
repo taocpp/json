@@ -15,7 +15,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Achieves a **100% score** in the [Native JSON Benchmark] conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
-  * [RFC7049]: [CBOR], Concise Binary Object Representation.
+  * [RFC7049]: Concise Binary Object Representation ([CBOR]).
   * [JAXN], a standard for relaxed JSON.
   * Experimental support for [JSON Reference] (local URI fragments only).
   * Experimental support for [JSON Schema] (draft v4).
@@ -74,7 +74,7 @@ Until then, here are a few short indications on how to use this library:
 * Requires Clang or GCC with `-std=c++11` (or other compiler with sufficient C++11 support).
 * Currently requires a 64 bits environment.
 * The library is header-only, to install and use simply copy the directory [`include/tao`](include/tao) to a convenient place and include the file [`include/tao/json.hpp`](include/tao/json.hpp).
-* The generic JSON value class, the main part of this library, is in [`include/tao/json/value.hpp`](include/tao/json/value.hpp).
+* The generic JSON value class is in [`include/tao/json/value.hpp`](include/tao/json/value.hpp).
 * To parse a JSON string representation to a JSON Value, use one of the functions in [`include/tao/json/from_string.hpp`](include/tao/json/from_string.hpp) or [`include/tao/json/parse_file.hpp`](include/tao/json/parse_file.hpp).
 * To produce a JSON string representation from a JSON Value, use one of the appropriate functions in [`include/tao/json/to_string.hpp`](include/tao/json/to_string.hpp) or [`include/tao/json/stream.hpp`](include/tao/json/stream.hpp).
 
