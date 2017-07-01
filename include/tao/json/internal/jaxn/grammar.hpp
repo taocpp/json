@@ -20,9 +20,11 @@ namespace tao
             {
                using namespace json_pegtl;
 
-               struct line_comment : seq< one< '/' >, until< eolf > > {};
+               struct line_comment_char : sor< one< '\t' >, utf8::range< 0x20, 0x10FFFF > > {};
+               struct line_comment : seq< one< '/' >, until< eolf, line_comment_char > > {};
 
-               struct end_block_comment : until< json_pegtl::string< '*', '/' > > {};
+               struct block_comment_char : sor< one< '\t' >, utf8::range< 0x20, 0x10FFFF >, eol > {};
+               struct end_block_comment : until< json_pegtl::string< '*', '/' >, block_comment_char > {};
                struct block_comment : if_must< one< '*' >, end_block_comment > {};
 
                struct comment : sor< line_comment, block_comment > {};
@@ -88,7 +90,7 @@ namespace tao
 
                      while( !in.empty() ) {
                         if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
-                           if( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != D ) ) {
+                           if( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != '\\' ) && ( t.data != D ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;
                               continue;
