@@ -20,7 +20,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Experimental support for [JSON Reference] (local URI fragments only).
   * Experimental support for [JSON Schema] (draft v4).
   * Experimental support for [UBJSON], Universal Binary JSON (encode only).
-  * Experimental support for [Message Pack] (no extensions).
+  * Experimental support for [MessagePack] (no extensions).
 
 * General
 
@@ -53,7 +53,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Parse JAXN string representation to JSON Events.
   * Stream JSON Events to (prettified) JSON string representation.
   * Stream JSON Events to (prettified) JAXN string representation.
-  * Supports conversion from and to binary formats, e.g. [CBOR], [UBJSON], [Message Pack], etc.
+  * Supports conversion from and to binary formats, e.g. [CBOR], [UBJSON], [MessagePack], etc.
   * Supports conversion from and to *other* JSON value objects (check [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
   * JSON Events comparison (against an existing JSON Value).
   * JSON Events hash algorithm (SHA-256 based).
@@ -116,7 +116,7 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 [JAXN]: https://github.com/stand-art/jaxn
 [JSON Reference]: https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
 [JSON Schema]: http://json-schema.org/documentation.html
-[Message Pack]: http://msgpack.org
+[MessagePack]: http://msgpack.org
 [MIT license]: http://www.opensource.org/licenses/mit-license.html
 [Native JSON Benchmark]: https://github.com/miloyip/nativejson-benchmark
 [Open Source]: http://www.opensource.org/docs/definition.html
