@@ -15,19 +15,19 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Achieves a **100% score** in the [Native JSON Benchmark] conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
-  * [RFC7049]: Concise Binary Object Representation ([CBOR](http://cbor.io)).
+  * [RFC7049]: [CBOR], Concise Binary Object Representation.
   * [JAXN], a standard for relaxed JSON.
-  * Experimental support for [JSON Reference](https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03) (local URI fragments only).
-  * Experimental support for [JSON Schema](http://json-schema.org/documentation.html) (draft v4).
-  * Experimental support for [Universal Binary JSON (UBJSON)](http://ubjson.org) (encode only).
-  * Experimental support for [Message Pack](http://msgpack.org) (no extensions).
+  * Experimental support for [JSON Reference] (local URI fragments only).
+  * Experimental support for [JSON Schema] (draft v4).
+  * Experimental support for [UBJSON], Universal Binary JSON (encode only).
+  * Experimental support for [Message Pack] (no extensions).
 
 * General
 
   * Provides JSON Value (DOM-style).
   * Provides JSON Events (SAX-style).
   * Numeric values are stored as `std::int64_t`, `std::uint64_t` or `double`.
-  * Allows storing and handling non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
+  * Allows storing and handling of non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
   * Allows storing and handling of binary data.
   * Does *not* support duplicate keys in JSON objects.
   * Currently only supports UTF-8 as input and output encoding.
@@ -53,7 +53,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Parse JAXN string representation to JSON Events.
   * Stream JSON Events to (prettified) JSON string representation.
   * Stream JSON Events to (prettified) JAXN string representation.
-  * Supports conversion from and to binary formats, e.g. CBOR, UBJSON, MsgPack, etc.
+  * Supports conversion from and to binary formats, e.g. [CBOR], [UBJSON], [Message Pack], etc.
   * Supports conversion from and to *other* JSON value objects (check [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
   * JSON Events comparison (against an existing JSON Value).
   * JSON Events hash algorithm (SHA-256 based).
@@ -63,7 +63,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 While most parts have stabilized, some parts of the API are still under discussion and development and might change and/or be extended before the first release.
 
-The library currently serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)](https://github.com/taocpp/PEGTL), which is used for parsing JSON string representations.
+The library currently serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing JSON string representations.
 
 ## Documentation
 
@@ -80,7 +80,7 @@ Until then, here are a few short indications on how to use this library:
 
 ## License
 
-The Art of C++ is certified [Open Source](http://www.opensource.org/docs/definition.html) software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
+The Art of C++ is certified [Open Source] software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license] reproduced here.
 
 > Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 >
@@ -111,10 +111,18 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 >
 > THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+[CBOR]: http://cbor.io
 [ECMA-404]: http://www.ecma-international.org/publications/standards/Ecma-404.htm
 [JAXN]: https://github.com/stand-art/jaxn
+[JSON Reference]: https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
+[JSON Schema]: http://json-schema.org/documentation.html
+[Message Pack]: http://msgpack.org
+[MIT license]: http://www.opensource.org/licenses/mit-license.html
 [Native JSON Benchmark]: https://github.com/miloyip/nativejson-benchmark
+[Open Source]: http://www.opensource.org/docs/definition.html
+[Parsing Expression Grammar Template Library (PEGTL)]: https://github.com/taocpp/PEGTL
 [RFC6901]: https://tools.ietf.org/html/rfc6901
 [RFC6902]: https://tools.ietf.org/html/rfc6902
 [RFC7049]: https://tools.ietf.org/html/rfc7049
 [RFC7159]: https://tools.ietf.org/html/rfc7159
+[UBJSON]: http://ubjson.org
