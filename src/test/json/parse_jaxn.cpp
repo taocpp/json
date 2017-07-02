@@ -174,6 +174,30 @@ namespace tao
          TEST_THROWS( jaxn::from_string( "'f\0o'" ) );
          TEST_THROWS( jaxn::from_string( "\n\n'123456789\0'" ) );
 
+         TEST_ASSERT( jaxn::from_string( "//\n42" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "//comment\n42" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "/**/42" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "/***/42" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "/****/42" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "/*****/42" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "/*comment*/42" ) );
+         TEST_ASSERT( jaxn::from_string( "42//" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42//\n" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42//comment" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42//comment\n" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42/**/" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42/**/\n" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42/*comment*/" ) );
+         TEST_ASSERT( jaxn::from_string( "42/*comment*/\n" ) );
+         TEST_ASSERT( jaxn::from_string( "42/**/" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42/*\n*/" ) == 42 );
+         TEST_ASSERT( jaxn::from_string( "42/*comment*/" ) );
+         TEST_ASSERT( jaxn::from_string( "42/*comment\n*/" ) );
+
+         TEST_THROWS( jaxn::from_string( "//\v\n42" ) );
+         TEST_THROWS( jaxn::from_string( "/*\v*/42" ) );
+         TEST_THROWS( jaxn::from_string( "4/*comment*/2" ) );
+
          TEST_ASSERT( jaxn::from_string( "$" ) == empty_binary );
          TEST_ASSERT( jaxn::from_string( "$''" ) == empty_binary );
          TEST_ASSERT( jaxn::from_string( "$+$''" ) == empty_binary );

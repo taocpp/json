@@ -21,10 +21,10 @@ namespace tao
                using namespace json_pegtl;
 
                struct line_comment_char : sor< one< '\t' >, utf8::range< 0x20, 0x10FFFF > > {};
-               struct line_comment : seq< one< '/' >, until< eolf, line_comment_char > > {};
+               struct line_comment : seq< one< '/' >, until< eolf, must< line_comment_char > > > {};
 
                struct block_comment_char : sor< one< '\t' >, utf8::range< 0x20, 0x10FFFF >, eol > {};
-               struct end_block_comment : until< json_pegtl::string< '*', '/' >, block_comment_char > {};
+               struct end_block_comment : until< json_pegtl::string< '*', '/' >, must< block_comment_char > > {};
                struct block_comment : if_must< one< '*' >, end_block_comment > {};
 
                struct comment : sor< line_comment, block_comment > {};

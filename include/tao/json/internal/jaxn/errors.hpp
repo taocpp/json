@@ -74,6 +74,8 @@ namespace tao
             template<> WEAK_PREFIX const std::string errors< rules::text >::error_message WEAK_SUFFIX = "no valid JAXN";
 
             template<> WEAK_PREFIX const std::string errors< rules::comment >::error_message WEAK_SUFFIX = "expected '*' or '/'";
+            template<> WEAK_PREFIX const std::string errors< rules::line_comment_char >::error_message WEAK_SUFFIX = "invalid character in line comment";
+            template<> WEAK_PREFIX const std::string errors< rules::block_comment_char >::error_message WEAK_SUFFIX = "invalid character in block comment";
             template<> WEAK_PREFIX const std::string errors< rules::end_block_comment >::error_message WEAK_SUFFIX = "unterminated multi-line comment";
 
             template<> WEAK_PREFIX const std::string errors< rules::end_array >::error_message WEAK_SUFFIX = "incomplete array, expected value or ']'";
