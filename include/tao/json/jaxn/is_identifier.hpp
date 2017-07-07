@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_JAXN_IS_IDENTIFIER_HPP
 #define TAOCPP_JSON_INCLUDE_JAXN_IS_IDENTIFIER_HPP
 
+#include <cctype>
 #include <string>
 
 namespace tao
