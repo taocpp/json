@@ -80,7 +80,7 @@ Until then, here are a few short indications on how to use this library:
 
 ## License
 
-The Art of C++ is certified [Open Source] software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license] reproduced here.
+The Art of C++ / JSON is certified [Open Source] software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license] reproduced here.
 
 > Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 >
@@ -92,7 +92,7 @@ The Art of C++ is certified [Open Source] software. It may be used for any purpo
 
 ## Contact
 
-For questions and suggestions about the Art of C++ / JSON please contact the authors at `jsonl(at)colin-hirsch.net`.
+For questions and suggestions about the Art of C++ / JSON please contact the authors at `taocpp(at)icemx.net`.
 
 ## Thank You
 
