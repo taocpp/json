@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-#include "../internal/integer_sequence.hpp"
+#include "../external/pegtl/internal/integer_sequence.hpp"
 
 namespace tao
 {
@@ -38,7 +38,7 @@ namespace tao
          struct events_apply;
 
          template< std::size_t... Is >
-         struct events_apply< index_sequence< Is... > >
+         struct events_apply< TAOCPP_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
          {
             using sink = bool[];
 
@@ -165,8 +165,8 @@ namespace tao
 
             static constexpr std::size_t S = sizeof...( Ts );
 
-            using I = internal::make_index_sequence< S >;
-            using H = internal::make_index_sequence< S - 1 >;
+            using I = TAOCPP_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S >;
+            using H = TAOCPP_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S - 1 >;
 
             std::tuple< Ts... > ts;
 
