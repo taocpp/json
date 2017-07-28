@@ -10,23 +10,24 @@
 #include "events/from_value.hpp"
 #include "events/to_pretty_stream.hpp"
 #include "events/to_stream.hpp"
+#include "events/transformer.hpp"
 #include "value.hpp"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
+      template< template< typename... > class... Transformer, template< typename... > class Traits >
       void to_stream( std::ostream& os, const basic_value< Traits >& v )
       {
-         events::to_stream consumer( os );
+         events::transformer< events::to_stream, Transformer... > consumer( os );
          events::from_value( v, consumer );
       }
 
-      template< template< typename... > class Traits >
+      template< template< typename... > class... Transformer, template< typename... > class Traits >
       void to_stream( std::ostream& os, const basic_value< Traits >& v, const std::size_t indent )
       {
-         events::to_pretty_stream consumer( os, indent );
+         events::transformer< events::to_pretty_stream, Transformer... > consumer( os, indent );
          events::from_value( v, consumer );
       }
 
