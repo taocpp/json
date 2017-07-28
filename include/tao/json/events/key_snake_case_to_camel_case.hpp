@@ -1,10 +1,9 @@
 // Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_EVENTS_KEY_CAMEL_CASE_TO_SNAKE_CASE_HPP
-#define TAOCPP_JSON_INCLUDE_EVENTS_KEY_CAMEL_CASE_TO_SNAKE_CASE_HPP
+#ifndef TAOCPP_JSON_INCLUDE_EVENTS_KEY_SNAKE_CASE_TO_CAMEL_CASE_HPP
+#define TAOCPP_JSON_INCLUDE_EVENTS_KEY_SNAKE_CASE_TO_CAMEL_CASE_HPP
 
-#include <cctype>
 #include <string>
 
 namespace tao
@@ -14,7 +13,7 @@ namespace tao
       namespace events
       {
          template< typename Consumer >
-         struct key_camel_case_to_snake_case
+         struct key_snake_case_to_camel_case
             : public Consumer
          {
             using Consumer::Consumer;
