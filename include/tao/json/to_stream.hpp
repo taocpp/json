@@ -17,17 +17,17 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename... > class... Transformer, template< typename... > class Traits >
+      template< template< typename... > class... Transformers, template< typename... > class Traits >
       void to_stream( std::ostream& os, const basic_value< Traits >& v )
       {
-         events::transformer< events::to_stream, Transformer... > consumer( os );
+         events::transformer< events::to_stream, Transformers... > consumer( os );
          events::from_value( v, consumer );
       }
 
-      template< template< typename... > class... Transformer, template< typename... > class Traits >
+      template< template< typename... > class... Transformers, template< typename... > class Traits >
       void to_stream( std::ostream& os, const basic_value< Traits >& v, const std::size_t indent )
       {
-         events::transformer< events::to_pretty_stream, Transformer... > consumer( os, indent );
+         events::transformer< events::to_pretty_stream, Transformers... > consumer( os, indent );
          events::from_value( v, consumer );
       }
 

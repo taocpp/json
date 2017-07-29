@@ -13,19 +13,19 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename... > class... Transformer, template< typename... > class Traits >
+      template< template< typename... > class... Transformers, template< typename... > class Traits >
       std::string to_string( const basic_value< Traits >& v )
       {
          std::ostringstream o;
-         json::to_stream< Transformer... >( o, v );
+         json::to_stream< Transformers... >( o, v );
          return o.str();
       }
 
-      template< template< typename... > class... Transformer, template< typename... > class Traits >
+      template< template< typename... > class... Transformers, template< typename... > class Traits >
       std::string to_string( const basic_value< Traits >& v, const unsigned indent )
       {
          std::ostringstream o;
-         json::to_stream< Transformer... >( o, v, indent );
+         json::to_stream< Transformers... >( o, v, indent );
          return o.str();
       }
 
