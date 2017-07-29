@@ -6,9 +6,10 @@
 
 #include <string>
 
-#include "../events/from_value.hpp"
-
 #include "../events/cbor/to_string.hpp"
+#include "../events/from_value.hpp"
+#include "../events/transformer.hpp"
+#include "../value.hpp"
 
 namespace tao
 {
@@ -16,12 +17,12 @@ namespace tao
    {
       namespace cbor
       {
-         template< template< typename... > class Traits >
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
          std::string to_string( const basic_value< Traits >& v )
          {
-            events::cbor::to_string consumer;
+            events::transformer< events::cbor::to_string, Transformers... > consumer;
             events::from_value( v, consumer );
-            return consumer.value();
+            return std::move( consumer.value() );
          }
 
       }  // namespace cbor
