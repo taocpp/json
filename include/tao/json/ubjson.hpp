@@ -6,6 +6,7 @@
 
 #include "../json.hpp"
 
+#include "ubjson/from_string.hpp"
 #include "ubjson/to_stream.hpp"
 #include "ubjson/to_string.hpp"
 

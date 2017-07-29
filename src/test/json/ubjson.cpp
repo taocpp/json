@@ -15,8 +15,15 @@ namespace tao
          TEST_ASSERT( ubjson::to_string( from_string( text ) ) == test_unhex( data ) );
       }
 
+      void ubjson_decode( const std::string& data, const std::string& text )
+      {
+         TEST_ASSERT( to_string( ubjson::from_string( test_unhex( data ) ) ) == to_string( from_string( text ) ) );
+      }
+
       void unit_test()
       {
+         ubjson_decode( "5a", "null" );
+
          ubjson_encode( "null", "5a" );
          ubjson_encode( "true", "54" );
          ubjson_encode( "false", "46" );
