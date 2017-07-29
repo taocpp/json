@@ -10,39 +10,42 @@
 
 #include "events/from_stream.hpp"
 #include "events/to_value.hpp"
+#include "events/transformer.hpp"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      basic_value< Traits > from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+      template< template< typename... > class Traits, template< typename... > class... Transformers >
+      basic_value< Traits > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
       {
-         events::to_basic_value< Traits > consumer;
+         events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
          events::from_stream( stream, consumer, source, maximum_buffer_size );
          return std::move( consumer.value );
       }
 
-      template< template< typename... > class Traits >
-      basic_value< Traits > from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+      template< template< typename... > class Traits, template< typename... > class... Transformers >
+      basic_value< Traits > basic_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
       {
-         return from_stream< Traits >( stream, source.c_str(), maximum_buffer_size );
+         return basic_from_stream< Traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
       }
 
-      inline value from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+      template< template< typename... > class... Transformers >
+      value from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
       {
-         return from_stream< traits >( stream, source, maximum_buffer_size );
+         return basic_from_stream< traits, Transformers... >( stream, source, maximum_buffer_size );
       }
 
-      inline value from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+      template< template< typename... > class... Transformers >
+      value from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
       {
-         return from_stream< traits >( stream, source.c_str(), maximum_buffer_size );
+         return basic_from_stream< traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
       }
 
-      template< template< typename... > class Traits, typename... Ts >
+      template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
       void from_stream( basic_value< Traits >& output, Ts&&... ts )
       {
-         output = from_stream< Traits >( std::forward< Ts >( ts )... );
+         output = basic_from_stream< Traits, Transformers... >( std::forward< Ts >( ts )... );
       }
 
    }  // namespace json

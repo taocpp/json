@@ -9,28 +9,30 @@
 
 #include "events/parse_file.hpp"
 #include "events/to_value.hpp"
+#include "events/transformer.hpp"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      basic_value< Traits > parse_file( const std::string& filename )
+      template< template< typename... > class Traits, template< typename... > class... Transformers >
+      basic_value< Traits > basic_parse_file( const std::string& filename )
       {
-         events::to_basic_value< Traits > consumer;
+         events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
          events::parse_file( filename, consumer );
          return std::move( consumer.value );
       }
 
-      template< template< typename... > class Traits >
+      template< template< typename... > class... Transformers, template< typename... > class Traits >
       void parse_file( basic_value< Traits >& output, const std::string& filename )
       {
-         output = parse_file< Traits >( filename );
+         output = basic_parse_file< Traits, Transformers... >( filename );
       }
 
-      inline value parse_file( const std::string& filename )
+      template< template< typename... > class... Transformers >
+      value parse_file( const std::string& filename )
       {
-         return parse_file< traits >( filename );
+         return basic_parse_file< traits, Transformers... >( filename );
       }
 
    }  // namespace json
