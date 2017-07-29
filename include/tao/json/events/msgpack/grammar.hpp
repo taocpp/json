@@ -169,7 +169,7 @@ namespace tao
                }
 
                template< typename Result, typename Number, typename Input >
-               static std::uint64_t read_number( Input& in )
+               static Result read_number( Input& in )
                {
                   if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
                      const Result result = json::internal::be_to_h< Number >( in.current() + 1 );
