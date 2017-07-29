@@ -76,7 +76,7 @@ namespace tao
       {
          inline value operator"" _json( const char* data, const std::size_t size )
          {
-            return from_string( data, size, "literal" );
+            return json::from_string( data, size, "literal" );
          }
 
       }  // namespace literals
