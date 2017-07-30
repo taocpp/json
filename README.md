@@ -19,7 +19,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * [JAXN], a standard for relaxed JSON.
   * Experimental support for [JSON Reference] (local URI fragments only).
   * Experimental support for [JSON Schema] (draft v4).
-  * Experimental support for [UBJSON], Universal Binary JSON (encode only).
+  * Experimental support for [UBJSON], Universal Binary JSON.
   * Experimental support for [MessagePack] (no extensions).
 
 * General
