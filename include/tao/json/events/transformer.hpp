@@ -10,7 +10,7 @@ namespace tao
    {
       namespace events
       {
-         namespace detail
+         namespace internal
          {
             template< typename Consumer, template< typename... > class... Transformer >
             struct transformer;
@@ -27,10 +27,10 @@ namespace tao
                using type = Head< typename transformer< Consumer, Tail... >::type >;
             };
 
-         }  // namespace detail
+         }  // namespace internal
 
          template< typename Consumer, template< typename... > class... Transformer >
-         using transformer = typename detail::transformer< Consumer, Transformer... >::type;
+         using transformer = typename internal::transformer< Consumer, Transformer... >::type;
 
       }  // namespace events
 
