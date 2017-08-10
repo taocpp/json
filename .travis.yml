@@ -1,4 +1,6 @@
 language: cpp
+os: linux
+dist: trusty
 
 branches:
   only:
@@ -6,17 +8,9 @@ branches:
 
 matrix:
   include:
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.8']
-      env:
-        - COMPILER=g++-4.8
+    - compiler: gcc
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -24,8 +18,7 @@ matrix:
       env:
         - COMPILER=g++-4.9
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -33,8 +26,7 @@ matrix:
       env:
         - COMPILER=g++-5
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -42,9 +34,7 @@ matrix:
       env:
         - COMPILER=g++-6
 
-    - os: linux
-      dist: trusty
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -53,9 +43,7 @@ matrix:
         - COMPILER=g++-7
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
-    - os: linux
-      dist: trusty
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -65,25 +53,21 @@ matrix:
         - CXXSTD="-std=c++17"
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
-    - os: linux
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
           packages: ['clang-3.5', 'g++-4.9']
       env:
         - COMPILER=clang++-3.5
 
-    - os: linux
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
           packages: ['clang-3.6']
       env:
         - COMPILER=clang++-3.6
 
-    - os: linux
+    - dist: precise
       compiler: clang
       addons:
         apt:
@@ -92,18 +76,14 @@ matrix:
       env:
         - COMPILER=clang++-3.7
 
-    - os: linux
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
           packages: ['clang-3.8']
       env:
         - COMPILER=clang++-3.8
 
-    - os: linux
-      dist: trusty
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.9']
@@ -111,9 +91,7 @@ matrix:
       env:
         - COMPILER=clang++-3.9
 
-    - os: linux
-      dist: trusty
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
@@ -121,9 +99,7 @@ matrix:
       env:
         - COMPILER=clang++-4.0
 
-    - os: linux
-      dist: trusty
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
@@ -150,9 +126,7 @@ matrix:
       env:
         - COMPILER=clang++
 
-    - os: linux
-      dist: trusty
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -165,9 +139,7 @@ matrix:
       after_success:
         - coveralls --gcov gcov-7 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
 
-    - os: linux
-      dist: trusty
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -177,8 +149,7 @@ matrix:
         - CPPFLAGS=-fsanitize=undefined
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -187,9 +158,7 @@ matrix:
         - COMPILER=g++-6
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
 
-    - os: linux
-      dist: trusty
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
@@ -198,9 +167,7 @@ matrix:
         - COMPILER=clang++-4.0
         - CPPFLAGS=-fsanitize=undefined
 
-    - os: linux
-      dist: trusty
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
@@ -210,4 +177,5 @@ matrix:
         - CPPFLAGS=-fsanitize=address
 
 script:
-  make CXX=$COMPILER -j3
+  - $COMPILER --version
+  - make CXX=$COMPILER -j3
