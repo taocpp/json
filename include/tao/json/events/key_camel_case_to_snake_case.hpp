@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_KEY_CAMEL_CASE_TO_SNAKE_CASE_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_KEY_CAMEL_CASE_TO_SNAKE_CASE_HPP
 
+#include <cctype>
 #include <string>
 
 namespace tao
