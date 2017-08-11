@@ -13,7 +13,7 @@ namespace tao
       // recursively checks for the existence if RAW_PTR nodes,
       // returns true is no RAW_PTR nodes were found.
       template< template< typename... > class Traits >
-      bool is_self_contained( basic_value< Traits >& v ) noexcept
+      bool is_self_contained( const basic_value< Traits >& v ) noexcept
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
