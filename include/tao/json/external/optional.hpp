@@ -6,18 +6,30 @@
 
 #ifndef TAOCPP_USE_STD_OPTIONAL
 #if __cplusplus >= 201703L
-#include <optional>
 #define TAOCPP_USE_STD_OPTIONAL
-#elif( __cplusplus >= 201402L ) && ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 )
+#endif
+#endif
+
+#ifndef TAOCPP_USE_STD_OPTIONAL
+#ifndef TAOCPP_USE_TS_OPTIONAL
+#if( __cplusplus >= 201402L ) && ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 )
+#define TAOCPP_USE_TR1_OPTIONAL
+#endif
+#endif
+#endif
+
+#if defined( TAOCPP_USE_STD_OPTIONAL )
+#include <optional>
+#elif defined( TAOCPP_USE_TS_OPTIONAL )
 #include <experimental/optional>
 #else
 #include "akrzemi1/optional.hpp"
 #endif
-#endif
 
 namespace tao
 {
-#ifdef TAOCPP_USE_STD_OPTIONAL
+
+#if defined( TAOCPP_USE_STD_OPTIONAL )
    using std::optional;
    using std::nullopt;
    using std::in_place;
@@ -28,6 +40,7 @@ namespace tao
    using std::experimental::in_place;
    using std::experimental::make_optional;
 #endif
-}
+
+}  // namespace tao
 
 #endif
