@@ -92,7 +92,7 @@ namespace tao
                   os.write( reinterpret_cast< const char* >( &n ), sizeof( n ) );
                }
 
-               void string( const std::string& v )
+               void string( const string_view v )
                {
                   number( major::STRING, v.size() );
                   os.write( v.data(), v.size() );

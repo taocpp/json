@@ -95,7 +95,7 @@ namespace tao
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
-            void string( const std::string& v ) noexcept
+            void string( const string_view v ) noexcept
             {
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }

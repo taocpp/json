@@ -102,12 +102,12 @@ namespace tao
                m_digests.back()->feed( &v, sizeof( v ) );
             }
 
-            void string( const std::string& v )
+            void string( const string_view v )
             {
                m_digests.back()->feed( 's' );
                const auto s = v.size();
                m_digests.back()->feed( &s, sizeof( s ) );
-               m_digests.back()->feed( v );
+               m_digests.back()->feed( v.data(), v.size() );
             }
 
             void binary( const std::vector< byte >& v )

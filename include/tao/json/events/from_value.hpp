@@ -42,6 +42,9 @@ namespace tao
                case type::STRING:
                   consumer.string( v.unsafe_get_string() );
                   return;
+               case type::STRING_VIEW:
+                  consumer.string( v.unsafe_get_string_view() );
+                  return;
                case type::BINARY:
                   consumer.binary( v.unsafe_get_binary() );
                   return;

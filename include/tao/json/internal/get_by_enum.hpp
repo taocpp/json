@@ -87,6 +87,16 @@ namespace tao
          };
 
          template<>
+         struct get_by_enum< type::STRING_VIEW >
+         {
+            template< typename V >
+            static string_view get( value_union< V >& u )
+            {
+               return u.sv;
+            }
+         };
+
+         template<>
          struct get_by_enum< type::BINARY >
          {
             template< typename V >

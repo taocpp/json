@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "../byte.hpp"
+#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -32,13 +33,18 @@ namespace tao
             }
 
             bool b;
+
             std::int64_t i;
             std::uint64_t u;
             double d;
 
             std::string s;
+            string_view sv;
+
             std::vector< json::byte > x;
+
             std::vector< Value > a;
+
             std::map< std::string, Value > o;
 
             const Value* p;

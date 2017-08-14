@@ -6,8 +6,6 @@
 
 #include <cstdint>
 
-#include "external/operators.hpp"
-
 namespace tao
 {
    namespace json
@@ -22,6 +20,7 @@ namespace tao
          UNSIGNED,
          DOUBLE,
          STRING,
+         STRING_VIEW,
          BINARY,
          ARRAY,
          OBJECT,
@@ -60,6 +59,8 @@ namespace tao
                return "double";
             case type::STRING:
                return "string";
+            case type::STRING_VIEW:
+               return "string_view";
             case type::BINARY:
                return "binary";
             case type::ARRAY:

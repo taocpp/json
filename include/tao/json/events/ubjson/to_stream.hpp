@@ -102,7 +102,7 @@ namespace tao
                   os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                }
 
-               void string( const std::string& v )
+               void string( const string_view v )
                {
                   if( ( v.size() == 1 ) && ( ( v[ 0 ] & 0x80 ) == 0 ) ) {
                      os.put( 'C' );

@@ -56,9 +56,9 @@ namespace tao
                value.unsafe_assign_double( v );
             }
 
-            void string( const std::string& v )
+            void string( const string_view v )
             {
-               value.unsafe_emplace_string( v );
+               value.unsafe_emplace_string( v.data(), v.size() );
             }
 
             void string( std::string&& v )

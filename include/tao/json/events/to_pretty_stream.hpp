@@ -94,7 +94,7 @@ namespace tao
                json_double_conversion::Dtostr( os, v );
             }
 
-            void string( const std::string& v )
+            void string( const string_view v )
             {
                next();
                os.put( '"' );

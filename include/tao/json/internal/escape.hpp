@@ -5,7 +5,8 @@
 #define TAOCPP_JSON_INCLUDE_INTERNAL_ESCAPE_HPP
 
 #include <ostream>
-#include <string>
+
+#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -13,7 +14,7 @@ namespace tao
    {
       namespace internal
       {
-         inline void escape( std::ostream& os, const std::string& s )
+         inline void escape( std::ostream& os, const string_view s )
          {
             static const char* h = "0123456789abcdef";
 

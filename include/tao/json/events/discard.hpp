@@ -41,7 +41,7 @@ namespace tao
             {
             }
 
-            void string( const std::string& ) noexcept
+            void string( const string_view ) noexcept
             {
             }
 

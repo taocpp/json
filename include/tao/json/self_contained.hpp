@@ -31,6 +31,8 @@ namespace tao
             case type::STRING:
             case type::BINARY:
                return true;
+            case type::STRING_VIEW:
+               return false;
             case type::ARRAY:
                for( auto& e : v.unsafe_get_array() ) {
                   if( !is_self_contained( e ) ) {
@@ -72,6 +74,11 @@ namespace tao
             case type::STRING:
             case type::BINARY:
                return;
+            case type::STRING_VIEW: {
+               const auto sv = v.unsafe_get_string_view();
+               v.unsafe_emplace_string( sv.data(), sv.size() );
+               return;
+            }
             case type::ARRAY:
                for( auto& e : v.unsafe_get_array() ) {
                   make_self_contained( e );
