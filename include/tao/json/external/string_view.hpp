@@ -182,18 +182,18 @@ namespace tao
       }
 
       // 24.4.2.5, modifiers
-      constexpr void remove_prefix( size_type n ) noexcept
+      /*constexpr*/ void remove_prefix( size_type n ) noexcept
       {
          data_ += n;
          size_ -= n;
       }
 
-      constexpr void remove_suffix( size_type n ) noexcept
+      /*constexpr*/ void remove_suffix( size_type n ) noexcept
       {
          size_ -= n;
       }
 
-      constexpr void swap( basic_string_view& s ) noexcept
+      /*constexpr*/ void swap( basic_string_view& s ) noexcept
       {
          std::swap( data_, s.data_ );
          std::swap( size_, s.size_ );
@@ -541,22 +541,22 @@ namespace tao
       {
          // 24.4.6, suffix for basic_string_view literals
          // NOTE: We are not the real STL, we use '_sv' instead of 'sv' as the suffix
-         constexpr string_view operator""_sv( const char* str, size_t len ) noexcept
+         constexpr string_view operator"" _sv( const char* str, size_t len ) noexcept
          {
             return string_view( str, len );
          }
 
-         constexpr u16string_view operator""_sv( const char16_t* str, size_t len ) noexcept
+         constexpr u16string_view operator"" _sv( const char16_t* str, size_t len ) noexcept
          {
             return u16string_view( str, len );
          }
 
-         constexpr u32string_view operator""_sv( const char32_t* str, size_t len ) noexcept
+         constexpr u32string_view operator"" _sv( const char32_t* str, size_t len ) noexcept
          {
             return u32string_view( str, len );
          }
 
-         constexpr wstring_view operator""_sv( const wchar_t* str, size_t len ) noexcept
+         constexpr wstring_view operator"" _sv( const wchar_t* str, size_t len ) noexcept
          {
             return wstring_view( str, len );
          }
