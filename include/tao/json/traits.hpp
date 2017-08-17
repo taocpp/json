@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "external/string_view.hpp"
 #include "type.hpp"
 
 namespace tao
@@ -309,7 +310,18 @@ namespace tao
          template< template< typename... > class Traits >
          static void extract( const basic_value< Traits >& v, std::string& s )
          {
-            s = v.get_string();
+            switch( v.type() ) {
+               case type::STRING:
+                  s = v.unsafe_get_string();
+                  break;
+               case type::STRING_VIEW: {
+                  const auto sv = v.unsafe_get_string_view();
+                  s.assign( sv.data(), sv.size() );
+                  break;
+               }
+               default:
+                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+            }
          }
       };
 
@@ -317,7 +329,7 @@ namespace tao
       struct traits< const std::string& >
       {
          template< template< typename... > class Traits >
-         static const std::string& extract( const basic_value< Traits >& v )
+         static const std::string& as( const basic_value< Traits >& v )
          {
             return v.get_string();
          }
@@ -333,9 +345,32 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static const char* extract( const basic_value< Traits >& v )
+         static const char* as( const basic_value< Traits >& v )
          {
             return v.get_string().c_str();
+         }
+      };
+
+      template<>
+      struct traits< string_view >
+      {
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, string_view sv )
+         {
+            v.unsafe_assign_string_view( sv );
+         }
+
+         template< template< typename... > class Traits >
+         static string_view as( const basic_value< Traits >& v )
+         {
+            switch( v.type() ) {
+               case type::STRING:
+                  return v.unsafe_get_string();
+               case type::STRING_VIEW:
+                  return v.unsafe_get_string_view();
+               default:
+                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+            }
          }
       };
 
