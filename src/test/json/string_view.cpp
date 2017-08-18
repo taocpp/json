@@ -28,13 +28,14 @@ namespace tao
          TEST_ASSERT( sv.find( '!' ) == 12 );
          TEST_ASSERT( sv.find_first_not_of( "elo, word", 1 ) == 12 );
 
+         // the default is copying all string_views
          const value vp = p;
          const value vs = s;
          const value vsv = sv;
 
          TEST_ASSERT( vp.type() == type::STRING );
          TEST_ASSERT( vs.type() == type::STRING );
-         TEST_ASSERT( vsv.type() == type::STRING_VIEW );
+         TEST_ASSERT( vsv.type() == type::STRING );
 
          TEST_ASSERT( vp.as< const char* >() == s );
          TEST_ASSERT( vp.as< string_view >() == s );
@@ -46,8 +47,18 @@ namespace tao
          TEST_ASSERT( vs.as< std::string >() == s );
          TEST_ASSERT( vs.as< const std::string& >() == s );
 
+         TEST_ASSERT( vsv.as< const char* >() == s );
          TEST_ASSERT( vsv.as< string_view >() == s );
          TEST_ASSERT( vsv.as< std::string >() == s );
+         TEST_ASSERT( vsv.as< const std::string& >() == s );
+
+         value v;
+         v.unsafe_assign_string_view( sv );
+
+         TEST_ASSERT( v.type() == type::STRING_VIEW );
+
+         TEST_ASSERT( v.as< string_view >() == s );
+         TEST_ASSERT( v.as< std::string >() == s );
       }
 
    }  // namespace json

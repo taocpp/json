@@ -357,7 +357,7 @@ namespace tao
          template< template< typename... > class Traits >
          static void assign( basic_value< Traits >& v, string_view sv )
          {
-            v.unsafe_assign_string_view( sv );
+            v.unsafe_emplace_string( sv.data(), sv.size() );
          }
 
          template< template< typename... > class Traits >
