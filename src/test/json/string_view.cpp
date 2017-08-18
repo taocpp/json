@@ -4,6 +4,8 @@
 #include "test.hpp"
 
 #include <tao/json/external/string_view.hpp>
+#include <tao/json/traits_always_string_view.hpp>
+#include <tao/json/traits_store_views.hpp>
 #include <tao/json/value.hpp>
 
 namespace tao
@@ -59,6 +61,20 @@ namespace tao
 
          TEST_ASSERT( v.as< string_view >() == s );
          TEST_ASSERT( v.as< std::string >() == s );
+
+         basic_value< traits_store_views > v2 = sv;
+
+         TEST_ASSERT( v2.type() == type::STRING_VIEW );
+
+         TEST_ASSERT( v2.as< string_view >() == s );
+         TEST_ASSERT( v2.as< std::string >() == s );
+
+         basic_value< traits_always_string_view > v3 = s;
+
+         TEST_ASSERT( v3.type() == type::STRING_VIEW );
+
+         TEST_ASSERT( v3.as< string_view >() == s );
+         TEST_ASSERT( v3.as< std::string >() == s );
       }
 
    }  // namespace json
