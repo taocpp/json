@@ -28,7 +28,7 @@ namespace tao
          TEST_ASSERT( sv == sv );
 
          TEST_ASSERT( sv.find( '!' ) == 12 );
-         TEST_ASSERT( sv.find_first_not_of( "elo, word", 1 ) == 12 );
+         TEST_ASSERT( sv.find_first_not_of( "elo, wrd", 1 ) == 12 );
 
          // the default is copying all string_views
          const value vp = p;
@@ -54,6 +54,7 @@ namespace tao
          TEST_ASSERT( vsv.as< std::string >() == s );
          TEST_ASSERT( vsv.as< const std::string& >() == s );
 
+         // even in default mode, storing a string_view is possible
          value v;
          v.unsafe_assign_string_view( sv );
 
@@ -62,6 +63,7 @@ namespace tao
          TEST_ASSERT( v.as< string_view >() == s );
          TEST_ASSERT( v.as< std::string >() == s );
 
+         // if you don't like the default, use a different trait class
          basic_value< traits_store_views > v2 = sv;
 
          TEST_ASSERT( v2.type() == type::STRING_VIEW );
@@ -69,6 +71,7 @@ namespace tao
          TEST_ASSERT( v2.as< string_view >() == s );
          TEST_ASSERT( v2.as< std::string >() == s );
 
+         // there's even one for always storing a string_view
          basic_value< traits_always_string_view > v3 = s;
 
          TEST_ASSERT( v3.type() == type::STRING_VIEW );
