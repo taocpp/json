@@ -50,6 +50,9 @@ namespace tao
                case type::BINARY:
                   consumer.binary( v.unsafe_get_binary() );
                   return;
+               case type::BINARY_VIEW:
+                  consumer.binary( v.unsafe_get_binary_view() );
+                  return;
                case type::ARRAY: {
                   const auto& a = v.unsafe_get_array();
                   const auto s = a.size();
@@ -116,8 +119,14 @@ namespace tao
                case type::STRING:
                   consumer.string( std::move( v.unsafe_get_string() ) );
                   return;
+               case type::STRING_VIEW:
+                  consumer.string( v.unsafe_get_string_view() );
+                  return;
                case type::BINARY:
                   consumer.binary( std::move( v.unsafe_get_binary() ) );
+                  return;
+               case type::BINARY_VIEW:
+                  consumer.binary( v.unsafe_get_binary_view() );
                   return;
                case type::ARRAY:
                   consumer.begin_array( v.unsafe_get_array().size() );

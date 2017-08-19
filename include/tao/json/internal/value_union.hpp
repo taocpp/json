@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include "../byte_view.hpp"
+
 #include "../external/byte.hpp"
 #include "../external/string_view.hpp"
 
@@ -39,9 +41,10 @@ namespace tao
             double d;
 
             std::string s;
-            string_view sv;
+            tao::string_view sv;
 
             std::vector< tao::byte > x;
+            tao::byte_view xv;
 
             std::vector< Value > a;
 

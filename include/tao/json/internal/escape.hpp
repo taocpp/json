@@ -14,7 +14,7 @@ namespace tao
    {
       namespace internal
       {
-         inline void escape( std::ostream& os, const string_view s )
+         inline void escape( std::ostream& os, const tao::string_view s )
          {
             static const char* h = "0123456789abcdef";
 

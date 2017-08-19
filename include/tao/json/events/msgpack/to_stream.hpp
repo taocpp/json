@@ -96,7 +96,7 @@ namespace tao
                   os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                }
 
-               void string( const string_view v )
+               void string( const tao::string_view v )
                {
                   if( v.size() <= 31 ) {
                      os.put( char( v.size() + 0xa0 ) );
@@ -116,7 +116,7 @@ namespace tao
                   os.write( v.data(), v.size() );
                }
 
-               void binary( const std::vector< tao::byte >& v )
+               void binary( const tao::byte_view v )
                {
                   if( v.size() <= 255 ) {
                      number_impl< std::uint8_t >( 0xc4, v.size() );

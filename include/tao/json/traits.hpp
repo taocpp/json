@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "byte_view.hpp"
 #include "type.hpp"
 
 #include "internal/throw.hpp"
@@ -331,16 +332,16 @@ namespace tao
       };
 
       template<>
-      struct traits< string_view >
+      struct traits< tao::string_view >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const string_view sv )
+         static void assign( basic_value< Traits >& v, const tao::string_view sv )
          {
             v.unsafe_emplace_string( sv.data(), sv.size() );
          }
 
          template< template< typename... > class Traits >
-         static string_view as( const basic_value< Traits >& v )
+         static tao::string_view as( const basic_value< Traits >& v )
          {
             switch( v.type() ) {
                case type::STRING:
@@ -386,6 +387,56 @@ namespace tao
          static void assign( basic_value< Traits >& v, T&& b )
          {
             v.unsafe_emplace_binary( std::forward< T >( b ) );
+         }
+
+         template< template< typename... > class Traits >
+         static void extract( const basic_value< Traits >& v, std::vector< tao::byte >& x )
+         {
+            switch( v.type() ) {
+               case type::BINARY:
+                  x = v.unsafe_get_binary();
+                  break;
+               case type::BINARY_VIEW: {
+                  const auto xv = v.unsafe_get_binary_view();
+                  x.assign( xv.data(), xv.size() );
+                  break;
+               }
+               default:
+                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+            }
+         }
+      };
+
+      template<>
+      struct traits< tao::byte_view >
+      {
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const tao::byte_view xv )
+         {
+            v.unsafe_emplace_binary( xv.data(), xv.size() );
+         }
+
+         template< template< typename... > class Traits >
+         static tao::byte_view as( const basic_value< Traits >& v )
+         {
+            switch( v.type() ) {
+               case type::BINARY:
+                  return v.unsafe_get_binary();
+               case type::BINARY_VIEW:
+                  return v.unsafe_get_binary_view();
+               default:
+                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+            }
+         }
+      };
+
+      template<>
+      struct traits< const std::vector< tao::byte >& >
+      {
+         template< template< typename... > class Traits >
+         static const std::vector< tao::byte >& as( const basic_value< Traits >& v )
+         {
+            return v.get_binary();
          }
       };
 

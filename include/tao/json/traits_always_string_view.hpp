@@ -21,18 +21,18 @@ namespace tao
          : traits< std::string >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const string_view sv )
+         static void assign( basic_value< Traits >& v, const tao::string_view sv )
          {
             v.unsafe_assign_string_view( sv );
          }
       };
 
       template<>
-      struct traits_always_string_view< string_view >
-         : traits< string_view >
+      struct traits_always_string_view< tao::string_view >
+         : traits< tao::string_view >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const string_view sv )
+         static void assign( basic_value< Traits >& v, const tao::string_view sv )
          {
             v.unsafe_assign_string_view( sv );
          }

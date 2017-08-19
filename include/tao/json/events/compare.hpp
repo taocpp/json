@@ -95,12 +95,12 @@ namespace tao
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
-            void string( const string_view v ) noexcept
+            void string( const tao::string_view v ) noexcept
             {
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
-            void binary( const std::vector< tao::byte >& v ) noexcept
+            void binary( const tao::byte_view v ) noexcept
             {
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }

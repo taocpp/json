@@ -9,7 +9,6 @@
 #include <ostream>
 #include <string>
 
-#include "../../external/byte.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao
@@ -102,7 +101,7 @@ namespace tao
                   os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                }
 
-               void string( const string_view v )
+               void string( const tao::string_view v )
                {
                   if( ( v.size() == 1 ) && ( ( v[ 0 ] & 0x80 ) == 0 ) ) {
                      os.put( 'C' );
@@ -115,7 +114,7 @@ namespace tao
                   }
                }
 
-               void binary( const std::vector< tao::byte >& v )
+               void binary( const tao::byte_view v )
                {
                   // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
                   os.write( "[$U#", 4 );

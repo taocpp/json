@@ -19,6 +19,7 @@
 #include "internal/totally_ordered.hpp"
 #include "internal/value_union.hpp"
 
+#include "byte_view.hpp"
 #include "pair.hpp"
 #include "pointer.hpp"
 #include "single.hpp"
@@ -68,9 +69,10 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
            internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, const char*, type::STRING >,
-           internal::totally_ordered< basic_value< Traits >, string_view, type::STRING >,
+           internal::totally_ordered< basic_value< Traits >, tao::string_view, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, std::vector< tao::byte >, type::BINARY >,
            internal::totally_ordered< basic_value< Traits >, empty_binary_t, type::BINARY >,
+           internal::totally_ordered< basic_value< Traits >, tao::byte_view, type::BINARY_VIEW >,
            internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
@@ -247,6 +249,16 @@ namespace tao
             return m_type == json::type::STRING_VIEW;
          }
 
+         bool is_binary() const noexcept
+         {
+            return m_type == json::type::BINARY;
+         }
+
+         bool is_binary_view() const noexcept
+         {
+            return m_type == json::type::BINARY_VIEW;
+         }
+
          bool is_array() const noexcept
          {
             return m_type == json::type::ARRAY;
@@ -298,7 +310,7 @@ namespace tao
             return unsafe_get_string();
          }
 
-         string_view get_string_view()
+         tao::string_view get_string_view() const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING_VIEW );
             return unsafe_get_string_view();
@@ -314,6 +326,12 @@ namespace tao
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BINARY );
             return unsafe_get_binary();
+         }
+
+         tao::byte_view get_binary_view() const
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BINARY_VIEW );
+            return unsafe_get_binary_view();
          }
 
          array_t& get_array()
@@ -425,7 +443,7 @@ namespace tao
             return m_union.s;
          }
 
-         string_view unsafe_get_string_view() const noexcept
+         tao::string_view unsafe_get_string_view() const noexcept
          {
             return m_union.sv;
          }
@@ -438,6 +456,11 @@ namespace tao
          const binary_t& unsafe_get_binary() const noexcept
          {
             return m_union.x;
+         }
+
+         tao::byte_view unsafe_get_binary_view() const noexcept
+         {
+            return m_union.xv;
          }
 
          array_t& unsafe_get_array() noexcept
@@ -726,7 +749,7 @@ namespace tao
             m_type = json::type::STRING;
          }
 
-         void unsafe_assign_string_view( const string_view sv )
+         void unsafe_assign_string_view( const tao::string_view sv )
          {
             m_union.sv = sv;
             m_type = json::type::STRING_VIEW;
@@ -737,6 +760,12 @@ namespace tao
          {
             new( &m_union.x ) std::vector< tao::byte >( std::forward< Ts >( ts )... );
             m_type = json::type::BINARY;
+         }
+
+         void unsafe_assign_binary_view( const tao::byte_view xv )
+         {
+            m_union.xv = xv;
+            m_type = json::type::BINARY_VIEW;
          }
 
          template< typename... Ts >
@@ -751,6 +780,18 @@ namespace tao
          {
             discard();
             unsafe_emplace_binary( std::forward< Ts >( ts )... );
+         }
+
+         void assign_string_view( const tao::string_view sv )
+         {
+            discard();
+            unsafe_assign_string_view( sv );
+         }
+
+         void assign_binary_view( const tao::byte_view xv )
+         {
+            discard();
+            unsafe_assign_binary_view( xv );
          }
 
          template< typename... Ts >
@@ -966,6 +1007,9 @@ namespace tao
                case json::type::BINARY:
                   return m_union.x.empty();
 
+               case json::type::BINARY_VIEW:
+                  return m_union.xv.empty();
+
                case json::type::ARRAY:
                   return m_union.a.empty();
 
@@ -995,6 +1039,7 @@ namespace tao
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
                case json::type::STRING_VIEW:
+               case json::type::BINARY_VIEW:
                case json::type::RAW_PTR:
                   return;
 
@@ -1079,13 +1124,18 @@ namespace tao
                   return;
 
                case json::type::STRING_VIEW:
-                  new( &m_union.sv ) string_view( r.m_union.sv );
+                  new( &m_union.sv ) tao::string_view( r.m_union.sv );
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
 
                case json::type::BINARY:
                   new( &m_union.x ) std::vector< tao::byte >( std::move( r.m_union.x ) );
                   assert( ( r.discard(), true ) );
+                  return;
+
+               case json::type::BINARY_VIEW:
+                  new( &m_union.xv ) tao::byte_view( r.m_union.xv );
+                  assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
 
                case json::type::ARRAY:
@@ -1144,11 +1194,15 @@ namespace tao
                   return;
 
                case json::type::STRING_VIEW:
-                  new( &m_union.sv ) string_view( r.m_union.sv );
+                  new( &m_union.sv ) tao::string_view( r.m_union.sv );
                   return;
 
                case json::type::BINARY:
                   new( &m_union.x ) std::vector< tao::byte >( r.m_union.x );
+                  return;
+
+               case json::type::BINARY_VIEW:
+                  new( &m_union.xv ) tao::byte_view( r.m_union.xv );
                   return;
 
                case json::type::ARRAY:
@@ -1226,6 +1280,16 @@ namespace tao
                   return lhs.unsafe_get_string_view() == rhs.unsafe_get_string();
                }
             }
+            else if( lhs.type() == type::BINARY ) {
+               if( rhs.type() == type::BINARY_VIEW ) {
+                  return lhs.unsafe_get_binary() == rhs.unsafe_get_binary_view();
+               }
+            }
+            else if( lhs.type() == type::BINARY_VIEW ) {
+               if( rhs.type() == type::BINARY ) {
+                  return lhs.unsafe_get_binary_view() == rhs.unsafe_get_binary();
+               }
+            }
             assert( lhs.type() != type::DISCARDED );
             assert( lhs.type() != type::DESTROYED );
             assert( rhs.type() != type::DISCARDED );
@@ -1269,6 +1333,9 @@ namespace tao
 
             case type::BINARY:
                return lhs.unsafe_get_binary() == rhs.unsafe_get_binary();
+
+            case type::BINARY_VIEW:
+               return lhs.unsafe_get_binary_view() == rhs.unsafe_get_binary_view();
 
             case type::ARRAY:
                return lhs.unsafe_get_array() == rhs.unsafe_get_array();
@@ -1341,6 +1408,16 @@ namespace tao
                   return lhs.unsafe_get_string_view() < rhs.unsafe_get_string();
                }
             }
+            else if( lhs.type() == type::BINARY ) {
+               if( rhs.type() == type::BINARY_VIEW ) {
+                  return lhs.unsafe_get_binary() < rhs.unsafe_get_binary_view();
+               }
+            }
+            else if( lhs.type() == type::BINARY_VIEW ) {
+               if( rhs.type() == type::BINARY ) {
+                  return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary();
+               }
+            }
             assert( lhs.type() != type::DISCARDED );
             assert( lhs.type() != type::DESTROYED );
             assert( rhs.type() != type::DISCARDED );
@@ -1384,6 +1461,9 @@ namespace tao
 
             case type::BINARY:
                return lhs.unsafe_get_binary() < rhs.unsafe_get_binary();
+
+            case type::BINARY_VIEW:
+               return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary_view();
 
             case type::ARRAY:
                return lhs.unsafe_get_array() < rhs.unsafe_get_array();

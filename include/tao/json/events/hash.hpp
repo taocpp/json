@@ -12,7 +12,6 @@
 #include <utility>
 #include <vector>
 
-#include "../external/byte.hpp"
 #include "../internal/sha256.hpp"
 
 namespace tao
@@ -102,7 +101,7 @@ namespace tao
                m_digests.back()->feed( &v, sizeof( v ) );
             }
 
-            void string( const string_view v )
+            void string( const tao::string_view v )
             {
                m_digests.back()->feed( 's' );
                const auto s = v.size();
@@ -110,7 +109,7 @@ namespace tao
                m_digests.back()->feed( v.data(), v.size() );
             }
 
-            void binary( const std::vector< tao::byte >& v )
+            void binary( const tao::byte_view v )
             {
                m_digests.back()->feed( 'x' );
                const auto s = v.size();

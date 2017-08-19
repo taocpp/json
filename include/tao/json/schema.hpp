@@ -58,13 +58,13 @@ namespace tao
          };
 
          template< typename Rule >
-         bool parse( const string_view v )
+         bool parse( const tao::string_view v )
          {
             json_pegtl::memory_input<> in( v.data(), v.size(), "" );
             return json_pegtl::parse< json_pegtl::seq< Rule, json_pegtl::eof > >( in );
          }
 
-         inline bool parse_date_time( const string_view v )
+         inline bool parse_date_time( const tao::string_view v )
          {
             static std::regex re( "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]\\d{2}:[0-5]\\d)$" );
             if( !std::regex_search( v.begin(), v.end(), re ) ) {
@@ -1220,7 +1220,7 @@ namespace tao
                }
             }
 
-            void validate_string( const string_view v )
+            void validate_string( const tao::string_view v )
             {
                if( m_node->m_flags & HAS_MAX_LENGTH && v.size() > m_node->m_max_length ) {
                   m_match = false;
@@ -1447,7 +1447,7 @@ namespace tao
                   m_hash->number( v );
             }
 
-            void string( const string_view v )
+            void string( const tao::string_view v )
             {
                if( m_match )
                   validate_type( STRING );
@@ -1461,7 +1461,7 @@ namespace tao
                   m_hash->string( v );
             }
 
-            void binary( const std::vector< tao::byte >& )
+            void binary( const tao::byte_view )
             {
                // TODO: What?
             }

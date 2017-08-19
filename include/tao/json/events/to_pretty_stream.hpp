@@ -94,7 +94,7 @@ namespace tao
                json_double_conversion::Dtostr( os, v );
             }
 
-            void string( const string_view v )
+            void string( const tao::string_view v )
             {
                next();
                os.put( '"' );
@@ -102,7 +102,7 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const std::vector< tao::byte >& )
+            void binary( const tao::byte_view )
             {
                // if this throws, consider using binary_to_* wrappers
                throw std::runtime_error( "binary data invalid for JSON string representation" );

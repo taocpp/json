@@ -48,6 +48,7 @@ namespace tao
                case type::STRING:
                case type::STRING_VIEW:
                case type::BINARY:
+               case type::BINARY_VIEW:
                   return;
                case type::ARRAY:
                   for( auto& e : v.unsafe_get_array() ) {

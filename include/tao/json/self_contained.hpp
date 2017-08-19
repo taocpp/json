@@ -39,6 +39,7 @@ namespace tao
                return true;
 
             case type::STRING_VIEW:
+            case type::BINARY_VIEW:
                return false;
 
             case type::ARRAY:
@@ -68,6 +69,7 @@ namespace tao
 
       // removes all RAW_PTR nodes, recursively, by copying their pointed-to content
       // or replacing a nullptr RAW_PTR node with a null node.
+      // replaces STRING_VIEW and BINARY_VIEW with copies.
       template< template< typename... > class Traits >
       void make_self_contained( basic_value< Traits >& v )
       {
@@ -93,6 +95,12 @@ namespace tao
             case type::STRING_VIEW: {
                const auto sv = v.unsafe_get_string_view();
                v.unsafe_emplace_string( sv.data(), sv.size() );
+               return;
+            }
+
+            case type::BINARY_VIEW: {
+               const auto xv = v.unsafe_get_binary_view();
+               v.unsafe_emplace_binary( xv.data(), xv.data() + xv.size() );
                return;
             }
 

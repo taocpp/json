@@ -23,6 +23,7 @@ namespace tao
          STRING,
          STRING_VIEW,
          BINARY,
+         BINARY_VIEW,
          ARRAY,
          OBJECT,
          RAW_PTR
@@ -66,6 +67,8 @@ namespace tao
                return "string_view";
             case type::BINARY:
                return "binary";
+            case type::BINARY_VIEW:
+               return "binary_view";
             case type::ARRAY:
                return "array";
             case type::OBJECT:

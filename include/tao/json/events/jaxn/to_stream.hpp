@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_JAXN_TO_STREAM_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_JAXN_TO_STREAM_HPP
 
+#include "../../internal/hexdump.hpp"
 #include "../../jaxn/is_identifier.hpp"
 #include "../to_stream.hpp"
 
@@ -55,15 +56,11 @@ namespace tao
                   first = true;
                }
 
-               void binary( const std::vector< tao::byte >& v )
+               void binary( const tao::byte_view v )
                {
-                  static const char h[] = "0123456789ABCDEF";
                   next();
                   os.put( '$' );
-                  for( const auto b : v ) {
-                     os.put( h[ static_cast< unsigned char >( b ) >> 4 ] );
-                     os.put( h[ static_cast< unsigned char >( b ) & 0xF ] );
-                  }
+                  internal::hexdump( os, v );
                }
             };
 

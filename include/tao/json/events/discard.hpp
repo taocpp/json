@@ -7,9 +7,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
-#include <vector>
 
-#include "../external/byte.hpp"
+#include "../byte_view.hpp"
+
+#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -41,11 +42,11 @@ namespace tao
             {
             }
 
-            void string( const string_view ) noexcept
+            void string( const tao::string_view ) noexcept
             {
             }
 
-            void binary( const std::vector< tao::byte >& ) noexcept
+            void binary( const tao::byte_view ) noexcept
             {
             }
 
