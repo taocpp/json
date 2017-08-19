@@ -14,6 +14,7 @@ namespace tao
       {
          UNINITIALIZED,
          DISCARDED,
+         DESTROYED,
          NULL_,
          BOOLEAN,
          SIGNED,
@@ -47,6 +48,8 @@ namespace tao
                return "uninitialized";
             case type::DISCARDED:
                return "discarded";
+            case type::DESTROYED:
+               return "destroyed";
             case type::NULL_:
                return "null";
             case type::BOOLEAN:

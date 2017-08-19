@@ -121,7 +121,7 @@ namespace tao
             }
             catch( ... ) {
                unsafe_discard();
-               const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED;
+               const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
                internal::rethrow();
             }
          }
@@ -133,7 +133,7 @@ namespace tao
             }
             catch( ... ) {
                unsafe_discard();
-               const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED;
+               const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
                throw;
             }
          }
@@ -145,7 +145,7 @@ namespace tao
             }
             catch( ... ) {
                unsafe_discard();
-               const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED;
+               const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
                throw;
             }
          }
@@ -158,7 +158,7 @@ namespace tao
          ~basic_value() noexcept
          {
             unsafe_discard();
-            assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DISCARDED, true ) );
+            assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
          }
 
          static basic_value array( std::initializer_list< single< Traits > >&& l )
@@ -198,6 +198,7 @@ namespace tao
          explicit operator bool() const noexcept
          {
             assert( m_type != json::type::DISCARDED );
+            assert( m_type != json::type::DESTROYED );
             return m_type != json::type::UNINITIALIZED;
          }
 
@@ -938,27 +939,39 @@ namespace tao
             switch( m_type ) {
                case json::type::UNINITIALIZED:
                   return true;
+
+               // LCOV_EXCL_START
                case json::type::DISCARDED:
-                  // LCOV_EXCL_START
                   assert( m_type != json::type::DISCARDED );
                   return true;
+
+               case json::type::DESTROYED:
+                  assert( m_type != json::type::DESTROYED );
+                  return true;
                // LCOV_EXCL_STOP
+
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
                   return false;
+
                case json::type::STRING:
                   return m_union.s.empty();
+
                case json::type::STRING_VIEW:
                   return m_union.sv.empty();
+
                case json::type::BINARY:
                   return m_union.x.empty();
+
                case json::type::ARRAY:
                   return m_union.a.empty();
+
                case json::type::OBJECT:
                   return m_union.o.empty();
+
                case json::type::RAW_PTR:
                   return !m_union.p;
             }
@@ -970,9 +983,12 @@ namespace tao
 
          void unsafe_discard() noexcept
          {
+            assert( m_type != json::type::DESTROYED );
+
             switch( m_type ) {
                case json::type::UNINITIALIZED:
                case json::type::DISCARDED:
+               case json::type::DESTROYED:
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
@@ -981,15 +997,19 @@ namespace tao
                case json::type::STRING_VIEW:
                case json::type::RAW_PTR:
                   return;
+
                case json::type::STRING:
                   m_union.s.~basic_string();
                   return;
+
                case json::type::BINARY:
                   m_union.x.~vector();
                   return;
+
                case json::type::ARRAY:
                   m_union.a.~vector();
                   return;
+
                case json::type::OBJECT:
                   m_union.o.~map();
                   return;
@@ -1012,54 +1032,72 @@ namespace tao
       private:
          void seize( basic_value&& r ) noexcept
          {
+            assert( m_type != json::type::DESTROYED );
+
             switch( r.m_type ) {
                case json::type::UNINITIALIZED:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
+
+               // LCOV_EXCL_START
                case json::type::DISCARDED:
-                  // LCOV_EXCL_START
                   assert( r.m_type != json::type::DISCARDED );
                   return;
+
+               case json::type::DESTROYED:
+                  assert( r.m_type != json::type::DESTROYED );
+                  return;
                // LCOV_EXCL_STOP
+
                case json::type::NULL_:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
+
                case json::type::BOOLEAN:
                   m_union.b = r.m_union.b;
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
+
                case json::type::SIGNED:
                   m_union.i = r.m_union.i;
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
+
                case json::type::UNSIGNED:
                   m_union.u = r.m_union.u;
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
+
                case json::type::DOUBLE:
                   m_union.d = r.m_union.d;
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
+
                case json::type::STRING:
                   new( &m_union.s ) std::string( std::move( r.m_union.s ) );
                   assert( ( r.discard(), true ) );
                   return;
+
                case json::type::STRING_VIEW:
                   new( &m_union.sv ) string_view( r.m_union.sv );
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
+
                case json::type::BINARY:
                   new( &m_union.x ) std::vector< tao::byte >( std::move( r.m_union.x ) );
                   assert( ( r.discard(), true ) );
                   return;
+
                case json::type::ARRAY:
                   new( &m_union.a ) std::vector< basic_value >( std::move( r.m_union.a ) );
                   assert( ( r.discard(), true ) );
                   return;
+
                case json::type::OBJECT:
                   new( &m_union.o ) std::map< std::string, basic_value >( std::move( r.m_union.o ) );
                   assert( ( r.discard(), true ) );
                   return;
+
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
@@ -1070,40 +1108,57 @@ namespace tao
 
          void embed( const basic_value& r )
          {
+            assert( m_type != json::type::DESTROYED );
+
             switch( r.m_type ) {
                case json::type::UNINITIALIZED:
                   return;
+
                case json::type::DISCARDED:
                   throw std::logic_error( "attempt to use a discarded value" );
+
+               case json::type::DESTROYED:
+                  throw std::logic_error( "attempt to use a destroyed value" );
+
                case json::type::NULL_:
                   return;
+
                case json::type::BOOLEAN:
                   m_union.b = r.m_union.b;
                   return;
+
                case json::type::SIGNED:
                   m_union.i = r.m_union.i;
                   return;
+
                case json::type::UNSIGNED:
                   m_union.u = r.m_union.u;
                   return;
+
                case json::type::DOUBLE:
                   m_union.d = r.m_union.d;
                   return;
+
                case json::type::STRING:
                   new( &m_union.s ) std::string( r.m_union.s );
                   return;
+
                case json::type::STRING_VIEW:
                   new( &m_union.sv ) string_view( r.m_union.sv );
                   return;
+
                case json::type::BINARY:
                   new( &m_union.x ) std::vector< tao::byte >( r.m_union.x );
                   return;
+
                case json::type::ARRAY:
                   new( &m_union.a ) std::vector< basic_value >( r.m_union.a );
                   return;
+
                case json::type::OBJECT:
                   new( &m_union.o ) std::map< std::string, basic_value >( r.m_union.o );
                   return;
+
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
                   return;
@@ -1172,37 +1227,55 @@ namespace tao
                }
             }
             assert( lhs.type() != type::DISCARDED );
+            assert( lhs.type() != type::DESTROYED );
             assert( rhs.type() != type::DISCARDED );
+            assert( rhs.type() != type::DESTROYED );
             return false;
          }
          switch( lhs.type() ) {
             case type::UNINITIALIZED:
                return true;
+
+            // LCOV_EXCL_START
             case type::DISCARDED:
-               // LCOV_EXCL_START
                assert( lhs.type() != type::DISCARDED );
                break;
+
+            case type::DESTROYED:
+               assert( lhs.type() != type::DESTROYED );
+               break;
             // LCOV_EXCL_STOP
+
             case type::NULL_:
                return true;
+
             case type::BOOLEAN:
                return lhs.unsafe_get_boolean() == rhs.unsafe_get_boolean();
+
             case type::SIGNED:
                return lhs.unsafe_get_signed() == rhs.unsafe_get_signed();
+
             case type::UNSIGNED:
                return lhs.unsafe_get_unsigned() == rhs.unsafe_get_unsigned();
+
             case type::DOUBLE:
                return lhs.unsafe_get_double() == rhs.unsafe_get_double();
+
             case type::STRING:
                return lhs.unsafe_get_string() == rhs.unsafe_get_string();
+
             case type::STRING_VIEW:
                return lhs.unsafe_get_string_view() == rhs.unsafe_get_string_view();
+
             case type::BINARY:
                return lhs.unsafe_get_binary() == rhs.unsafe_get_binary();
+
             case type::ARRAY:
                return lhs.unsafe_get_array() == rhs.unsafe_get_array();
+
             case type::OBJECT:
                return lhs.unsafe_get_object() == rhs.unsafe_get_object();
+
             case type::RAW_PTR:
                break;  // LCOV_EXCL_LINE
          }
@@ -1269,37 +1342,55 @@ namespace tao
                }
             }
             assert( lhs.type() != type::DISCARDED );
+            assert( lhs.type() != type::DESTROYED );
             assert( rhs.type() != type::DISCARDED );
+            assert( rhs.type() != type::DESTROYED );
             return lhs.type() < rhs.type();
          }
          switch( lhs.type() ) {
             case type::UNINITIALIZED:
                return false;
+
+            // LCOV_EXCL_START
             case type::DISCARDED:
-               // LCOV_EXCL_START
                assert( lhs.type() != type::DISCARDED );
                break;
+
+            case type::DESTROYED:
+               assert( lhs.type() != type::DESTROYED );
+               break;
             // LCOV_EXCL_STOP
+
             case type::NULL_:
                return false;
+
             case type::BOOLEAN:
                return lhs.unsafe_get_boolean() < rhs.unsafe_get_boolean();
+
             case type::SIGNED:
                return lhs.unsafe_get_signed() < rhs.unsafe_get_signed();
+
             case type::UNSIGNED:
                return lhs.unsafe_get_unsigned() < rhs.unsafe_get_unsigned();
+
             case type::DOUBLE:
                return lhs.unsafe_get_double() < rhs.unsafe_get_double();
+
             case type::STRING:
                return lhs.unsafe_get_string() < rhs.unsafe_get_string();
+
             case type::STRING_VIEW:
                return lhs.unsafe_get_string_view() < rhs.unsafe_get_string_view();
+
             case type::BINARY:
                return lhs.unsafe_get_binary() < rhs.unsafe_get_binary();
+
             case type::ARRAY:
                return lhs.unsafe_get_array() < rhs.unsafe_get_array();
+
             case type::OBJECT:
                return lhs.unsafe_get_object() < rhs.unsafe_get_object();
+
             case type::RAW_PTR:
                break;  // LCOV_EXCL_LINE
          }

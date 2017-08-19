@@ -18,11 +18,17 @@ namespace tao
          switch( v.type() ) {
             case type::UNINITIALIZED:
                return true;
+
+            // LCOV_EXCL_START
             case type::DISCARDED:
-               // LCOV_EXCL_START
                assert( v.type() != type::DISCARDED );
                return false;
+
+            case type::DESTROYED:
+               assert( v.type() != type::DESTROYED );
+               return false;
             // LCOV_EXCL_STOP
+
             case type::NULL_:
             case type::BOOLEAN:
             case type::SIGNED:
@@ -31,8 +37,10 @@ namespace tao
             case type::STRING:
             case type::BINARY:
                return true;
+
             case type::STRING_VIEW:
                return false;
+
             case type::ARRAY:
                for( auto& e : v.unsafe_get_array() ) {
                   if( !is_self_contained( e ) ) {
@@ -40,6 +48,7 @@ namespace tao
                   }
                }
                return true;
+
             case type::OBJECT:
                for( auto& e : v.unsafe_get_object() ) {
                   if( !is_self_contained( e.second ) ) {
@@ -47,6 +56,7 @@ namespace tao
                   }
                }
                return true;
+
             case type::RAW_PTR:
                return false;
          }
@@ -64,8 +74,13 @@ namespace tao
          switch( v.type() ) {
             case type::UNINITIALIZED:
                return;
+
             case type::DISCARDED:
                throw std::logic_error( "attempt to use a discarded value" );
+
+            case type::DESTROYED:
+               throw std::logic_error( "attempt to use a destroyed value" );
+
             case type::NULL_:
             case type::BOOLEAN:
             case type::SIGNED:
@@ -74,21 +89,25 @@ namespace tao
             case type::STRING:
             case type::BINARY:
                return;
+
             case type::STRING_VIEW: {
                const auto sv = v.unsafe_get_string_view();
                v.unsafe_emplace_string( sv.data(), sv.size() );
                return;
             }
+
             case type::ARRAY:
                for( auto& e : v.unsafe_get_array() ) {
                   make_self_contained( e );
                }
                return;
+
             case type::OBJECT:
                for( auto& e : v.unsafe_get_object() ) {
                   make_self_contained( e.second );
                }
                return;
+
             case type::RAW_PTR:
                if( const auto* p = v.unsafe_get_raw_ptr() ) {
                   v = *p;

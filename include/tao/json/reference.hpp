@@ -38,6 +38,8 @@ namespace tao
                   return;
                case type::DISCARDED:
                   throw std::logic_error( "attempt to use a discarded value" );
+               case type::DESTROYED:
+                  throw std::logic_error( "attempt to use a destroyed value" );
                case type::NULL_:
                case type::BOOLEAN:
                case type::SIGNED:

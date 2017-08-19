@@ -70,6 +70,15 @@ namespace tao
          u.reset();
          TEST_ASSERT( u.type() == type::UNINITIALIZED );
          TEST_ASSERT( u == v );
+
+#ifndef NDEBUG
+         {
+            value* memory = static_cast< value* >( static_cast< void* >( new char[ sizeof( value ) ] ) );
+            new( memory ) value( "dummy" );
+            memory->~value();
+            TEST_ASSERT( memory->type() == type::DESTROYED );
+         }
+#endif
       }
 
       void test_null()
