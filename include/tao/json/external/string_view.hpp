@@ -213,7 +213,7 @@ namespace tao
 
       constexpr basic_string_view substr( size_type pos = 0, size_type n = npos ) const
       {
-         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_string_view::copy" ) : basic_string_view( data() + pos, std::min( n, size() - pos ) );
+         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_string_view::substr" ) : basic_string_view( data() + pos, std::min( n, size() - pos ) );
       }
 
       /*constexpr*/ int compare( basic_string_view s ) const noexcept
