@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "../byte.hpp"
+#include "../external/byte.hpp"
 
 namespace tao
 {
@@ -188,7 +188,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            void binary( const std::vector< byte >& )
+            void binary( const std::vector< tao::byte >& )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:

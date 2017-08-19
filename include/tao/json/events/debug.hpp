@@ -11,9 +11,9 @@
 #include <string>
 #include <vector>
 
+#include "../external/byte.hpp"
 #include "../external/double.hpp"
 
-#include "../byte.hpp"
 #include "../internal/escape.hpp"
 #include "../internal/hexdump.hpp"
 
@@ -80,7 +80,7 @@ namespace tao
                os << "\"\n";
             }
 
-            void binary( const std::vector< byte >& v )
+            void binary( const std::vector< tao::byte >& v )
             {
                os << "binary: " << internal::hexdump( v ) << "\n";
             }

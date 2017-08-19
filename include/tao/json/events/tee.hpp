@@ -79,7 +79,7 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void binary( std::tuple< Ts... >& t, const std::vector< byte >& v )
+            static void binary( std::tuple< Ts... >& t, const std::vector< tao::byte >& v )
             {
                (void)sink{ ( std::get< Is >( t ).binary( v ), true )... };
             }
@@ -213,12 +213,12 @@ namespace tao
                std::get< S - 1 >( ts ).string( std::move( v ) );
             }
 
-            void binary( const std::vector< byte >& v )
+            void binary( const std::vector< tao::byte >& v )
             {
                internal::events_apply< I >::binary( ts, v );
             }
 
-            void binary( std::vector< byte >&& v )
+            void binary( std::vector< tao::byte >&& v )
             {
                internal::events_apply< H >::binary( ts, v );
                std::get< S - 1 >( ts ).binary( std::move( v ) );

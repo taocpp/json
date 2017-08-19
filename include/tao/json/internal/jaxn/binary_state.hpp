@@ -7,7 +7,7 @@
 #include <utility>
 #include <vector>
 
-#include "../../byte.hpp"
+#include "../../external/byte.hpp"
 
 namespace tao
 {
@@ -29,7 +29,7 @@ namespace tao
                   consumer.binary( std::move( value ) );
                }
 
-               std::vector< byte > value;
+               std::vector< tao::byte > value;
             };
 
          }  // namespace jaxn

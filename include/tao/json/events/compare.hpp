@@ -100,7 +100,7 @@ namespace tao
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
-            void binary( const std::vector< byte >& v ) noexcept
+            void binary( const std::vector< tao::byte >& v ) noexcept
             {
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }

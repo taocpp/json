@@ -10,7 +10,8 @@
 #include <utility>
 #include <vector>
 
-#include "../byte.hpp"
+#include "../external/byte.hpp"
+
 #include "../value.hpp"
 
 namespace tao
@@ -66,12 +67,12 @@ namespace tao
                value.unsafe_emplace_string( std::move( v ) );
             }
 
-            void binary( const std::vector< byte >& v )
+            void binary( const std::vector< tao::byte >& v )
             {
                value.unsafe_emplace_binary( v );
             }
 
-            void binary( std::vector< byte >&& v )
+            void binary( std::vector< tao::byte >&& v )
             {
                value.unsafe_emplace_binary( std::move( v ) );
             }

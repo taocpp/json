@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-#include "../../byte.hpp"
+#include "../../external/byte.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao
@@ -73,13 +73,13 @@ namespace tao
                         in.bump_in_this_line();
                         return true;
                      case 0xc4:
-                        consumer.binary( read_container< std::vector< byte > >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
+                        consumer.binary( read_container< std::vector< tao::byte > >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
                         return true;
                      case 0xc5:
-                        consumer.binary( read_container< std::vector< byte > >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
+                        consumer.binary( read_container< std::vector< tao::byte > >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
                         return true;
                      case 0xc6:
-                        consumer.binary( read_container< std::vector< byte > >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
+                        consumer.binary( read_container< std::vector< tao::byte > >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
                         return true;
                      case 0xc7:
                         discard( in, read_number< std::size_t, std::uint8_t >( in ) + 1 );

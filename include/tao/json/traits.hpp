@@ -8,11 +8,11 @@
 #include <string>
 #include <vector>
 
-#include "byte.hpp"
 #include "type.hpp"
 
 #include "internal/throw.hpp"
 
+#include "external/byte.hpp"
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
@@ -380,7 +380,7 @@ namespace tao
       };
 
       template<>
-      struct traits< std::vector< byte > >
+      struct traits< std::vector< tao::byte > >
       {
          template< template< typename... > class Traits, typename T >
          static void assign( basic_value< Traits >& v, T&& b )

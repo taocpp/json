@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "../byte.hpp"
+#include "../external/byte.hpp"
 #include "../external/string_view.hpp"
 
 namespace tao
@@ -41,7 +41,7 @@ namespace tao
             std::string s;
             string_view sv;
 
-            std::vector< json::byte > x;
+            std::vector< tao::byte > x;
 
             std::vector< Value > a;
 

@@ -6,8 +6,9 @@
 
 #include <cstdint>
 
-#include "../byte.hpp"
 #include "../type.hpp"
+
+#include "../external/byte.hpp"
 
 #include "value_union.hpp"
 
@@ -100,13 +101,13 @@ namespace tao
          struct get_by_enum< type::BINARY >
          {
             template< typename V >
-            static std::vector< byte >& get( value_union< V >& u ) noexcept
+            static std::vector< tao::byte >& get( value_union< V >& u ) noexcept
             {
                return u.x;
             }
 
             template< typename V >
-            static const std::vector< byte >& get( const value_union< V >& u ) noexcept
+            static const std::vector< tao::byte >& get( const value_union< V >& u ) noexcept
             {
                return u.x;
             }

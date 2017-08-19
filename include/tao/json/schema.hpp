@@ -1461,7 +1461,7 @@ namespace tao
                   m_hash->string( v );
             }
 
-            void binary( const std::vector< byte >& )
+            void binary( const std::vector< tao::byte >& )
             {
                // TODO: What?
             }

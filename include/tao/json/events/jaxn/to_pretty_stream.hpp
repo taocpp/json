@@ -56,7 +56,7 @@ namespace tao
                   after_key = true;
                }
 
-               void binary( const std::vector< byte >& v )
+               void binary( const std::vector< tao::byte >& v )
                {
                   static const char h[] = "0123456789ABCDEF";
                   next();

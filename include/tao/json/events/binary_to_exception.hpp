@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include "../byte.hpp"
+#include "../external/byte.hpp"
 
 namespace tao
 {
@@ -21,7 +21,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const std::vector< byte >& )
+            void binary( const std::vector< tao::byte >& )
             {
                throw std::runtime_error( "invalid binary data" );
             }

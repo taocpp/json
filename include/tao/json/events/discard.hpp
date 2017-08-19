@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "../byte.hpp"
+#include "../external/byte.hpp"
 
 namespace tao
 {
@@ -45,7 +45,7 @@ namespace tao
             {
             }
 
-            void binary( const std::vector< byte >& ) noexcept
+            void binary( const std::vector< tao::byte >& ) noexcept
             {
             }
 

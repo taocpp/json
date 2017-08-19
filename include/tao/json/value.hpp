@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <utility>
 
+#include "external/byte.hpp"
 #include "external/operators.hpp"
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
@@ -18,7 +19,6 @@
 #include "internal/totally_ordered.hpp"
 #include "internal/value_union.hpp"
 
-#include "byte.hpp"
 #include "pair.hpp"
 #include "pointer.hpp"
 #include "single.hpp"
@@ -69,7 +69,7 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, const char*, type::STRING >,
            internal::totally_ordered< basic_value< Traits >, string_view, type::STRING >,
-           internal::totally_ordered< basic_value< Traits >, std::vector< byte >, type::BINARY >,
+           internal::totally_ordered< basic_value< Traits >, std::vector< tao::byte >, type::BINARY >,
            internal::totally_ordered< basic_value< Traits >, empty_binary_t, type::BINARY >,
            internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
            internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
@@ -80,7 +80,7 @@ namespace tao
            internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
       {
       public:
-         using binary_t = std::vector< byte >;
+         using binary_t = std::vector< tao::byte >;
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
 
@@ -734,7 +734,7 @@ namespace tao
          template< typename... Ts >
          void unsafe_emplace_binary( Ts&&... ts )
          {
-            new( &m_union.x ) std::vector< byte >( std::forward< Ts >( ts )... );
+            new( &m_union.x ) std::vector< tao::byte >( std::forward< Ts >( ts )... );
             m_type = json::type::BINARY;
          }
 
@@ -1049,7 +1049,7 @@ namespace tao
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
                   return;
                case json::type::BINARY:
-                  new( &m_union.x ) std::vector< byte >( std::move( r.m_union.x ) );
+                  new( &m_union.x ) std::vector< tao::byte >( std::move( r.m_union.x ) );
                   assert( ( r.discard(), true ) );
                   return;
                case json::type::ARRAY:
@@ -1096,7 +1096,7 @@ namespace tao
                   new( &m_union.sv ) string_view( r.m_union.sv );
                   return;
                case json::type::BINARY:
-                  new( &m_union.x ) std::vector< byte >( r.m_union.x );
+                  new( &m_union.x ) std::vector< tao::byte >( r.m_union.x );
                   return;
                case json::type::ARRAY:
                   new( &m_union.a ) std::vector< basic_value >( r.m_union.a );

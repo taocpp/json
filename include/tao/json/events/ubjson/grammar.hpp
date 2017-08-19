@@ -6,8 +6,6 @@
 
 #include <cstdint>
 
-#include "../../byte.hpp"
-
 #include "../../internal/action.hpp"
 #include "../../internal/control.hpp"
 #include "../../internal/endian.hpp"
@@ -59,9 +57,9 @@ namespace tao
                }
             };
 
-         } // namespace ubjson
+         }  // namespace ubjson
 
-      } // namespace events
+      }  // namespace events
 
       namespace internal
       {
@@ -69,7 +67,7 @@ namespace tao
          template<> WEAK_PREFIX const std::string errors< events::ubjson::number >::error_message WEAK_SUFFIX = "invalid ubjson high-precision number";
          // clang-format on
 
-      } // namespace internal
+      }  // namespace internal
 
       namespace events
       {

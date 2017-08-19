@@ -12,9 +12,9 @@
 #include <string>
 #include <vector>
 
+#include "../external/byte.hpp"
 #include "../external/double.hpp"
 
-#include "../byte.hpp"
 #include "../internal/escape.hpp"
 
 namespace tao
@@ -102,7 +102,7 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const std::vector< byte >& )
+            void binary( const std::vector< tao::byte >& )
             {
                // if this throws, consider using binary_to_* wrappers
                throw std::runtime_error( "binary data invalid for JSON string representation" );

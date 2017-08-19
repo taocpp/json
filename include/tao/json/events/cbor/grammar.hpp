@@ -10,7 +10,7 @@
 
 #include "major.hpp"
 
-#include "../../byte.hpp"
+#include "../../external/byte.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao
@@ -238,7 +238,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_binary( Input& in, Consumer& consumer )
                {
-                  consumer.binary( read_string< std::vector< byte > >( in, major::BINARY ) );
+                  consumer.binary( read_string< std::vector< tao::byte > >( in, major::BINARY ) );
                   return true;
                }
 

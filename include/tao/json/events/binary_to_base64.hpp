@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include "../byte.hpp"
+#include "../external/byte.hpp"
 #include "../internal/base64.hpp"
 
 namespace tao
@@ -21,7 +21,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const std::vector< byte >& v )
+            void binary( const std::vector< tao::byte >& v )
             {
                Consumer::string( internal::base64( v ) );
             }

@@ -9,7 +9,7 @@
 #include <ostream>
 #include <string>
 
-#include "../../byte.hpp"
+#include "../../external/byte.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao
@@ -116,7 +116,7 @@ namespace tao
                   os.write( v.data(), v.size() );
                }
 
-               void binary( const std::vector< byte >& v )
+               void binary( const std::vector< tao::byte >& v )
                {
                   if( v.size() <= 255 ) {
                      number_impl< std::uint8_t >( 0xc4, v.size() );

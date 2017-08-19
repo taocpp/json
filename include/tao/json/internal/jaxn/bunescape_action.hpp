@@ -30,47 +30,47 @@ namespace tao
                {
                   switch( *in.begin() ) {
                      case '"':
-                        st.value.push_back( byte( '"' ) );
+                        st.value.push_back( tao::byte( '"' ) );
                         break;
 
                      case '\'':
-                        st.value.push_back( byte( '\'' ) );
+                        st.value.push_back( tao::byte( '\'' ) );
                         break;
 
                      case '\\':
-                        st.value.push_back( byte( '\\' ) );
+                        st.value.push_back( tao::byte( '\\' ) );
                         break;
 
                      case '/':
-                        st.value.push_back( byte( '/' ) );
+                        st.value.push_back( tao::byte( '/' ) );
                         break;
 
                      case 'b':
-                        st.value.push_back( byte( '\b' ) );
+                        st.value.push_back( tao::byte( '\b' ) );
                         break;
 
                      case 'f':
-                        st.value.push_back( byte( '\f' ) );
+                        st.value.push_back( tao::byte( '\f' ) );
                         break;
 
                      case 'n':
-                        st.value.push_back( byte( '\n' ) );
+                        st.value.push_back( tao::byte( '\n' ) );
                         break;
 
                      case 'r':
-                        st.value.push_back( byte( '\r' ) );
+                        st.value.push_back( tao::byte( '\r' ) );
                         break;
 
                      case 't':
-                        st.value.push_back( byte( '\t' ) );
+                        st.value.push_back( tao::byte( '\t' ) );
                         break;
 
                      case 'v':
-                        st.value.push_back( byte( '\v' ) );
+                        st.value.push_back( tao::byte( '\v' ) );
                         break;
 
                      case '0':
-                        st.value.push_back( byte( '\0' ) );
+                        st.value.push_back( tao::byte( '\0' ) );
                         break;
 
                      default:
@@ -86,7 +86,7 @@ namespace tao
                static void apply( const Input& in, State& st )
                {
                   assert( !in.empty() );  // First character MUST be present, usually 'x'.
-                  st.value.push_back( static_cast< byte >( json_pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
+                  st.value.push_back( static_cast< tao::byte >( json_pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
                }
             };
 
@@ -96,7 +96,7 @@ namespace tao
                template< typename Input, typename State >
                static void apply( const Input& in, State& st )
                {
-                  const auto begin = reinterpret_cast< const byte* >( in.begin() );
+                  const auto begin = reinterpret_cast< const tao::byte* >( in.begin() );
                   const auto end = begin + in.size();
                   st.value.insert( st.value.end(), begin, end );
                }
@@ -108,7 +108,7 @@ namespace tao
                template< typename Input, typename State >
                static void apply( const Input& in, State& st )
                {
-                  st.value.push_back( static_cast< byte >( json_pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
+                  st.value.push_back( static_cast< tao::byte >( json_pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
                }
             };
 
