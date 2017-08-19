@@ -23,6 +23,7 @@
 #elif defined( TAOCPP_USE_TS_STRING_VIEW )
 #include <experimental/string_view>
 #else
+#include "../internal/identity.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
@@ -163,7 +164,7 @@ namespace tao
 
       constexpr const_reference at( size_type pos ) const
       {
-         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::json::basic_string_view::at" ) : data_[ pos ];
+         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::basic_string_view::at" ) : data_[ pos ];
       }
 
       constexpr const_reference front() const noexcept
@@ -203,7 +204,7 @@ namespace tao
       size_type copy( charT* s, size_type n, size_type pos = 0 ) const
       {
          if( pos > size() ) {
-            throw std::out_of_range( "index out of range in tao::json::basic_string_view::copy" );
+            throw std::out_of_range( "index out of range in tao::basic_string_view::copy" );
          }
          const size_type rlen = std::min( n, size() - pos );
          traits::copy( s, data() + pos, rlen );
@@ -212,7 +213,7 @@ namespace tao
 
       constexpr basic_string_view substr( size_type pos = 0, size_type n = npos ) const
       {
-         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::json::basic_string_view::copy" ) : basic_string_view( data() + pos, std::min( n, size() - pos ) );
+         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_string_view::copy" ) : basic_string_view( data() + pos, std::min( n, size() - pos ) );
       }
 
       /*constexpr*/ int compare( basic_string_view s ) const noexcept
@@ -402,12 +403,6 @@ namespace tao
       const_pointer data_;
       size_type size_;
    };
-
-   namespace internal
-   {
-      template< typename T >
-      using identity = typename std::decay< T >::type;
-   }
 
    // 24.4.3, non-member comparison functions
    template< class charT, class traits >
