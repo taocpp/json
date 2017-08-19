@@ -16,7 +16,7 @@ namespace tao
       {
          const char* p = "Hello, world!";
          const std::string s = p;
-         const string_view sv = p;
+         const tao::string_view sv = p;
 
          TEST_ASSERT( s == p );
          TEST_ASSERT( p == s );
@@ -40,17 +40,17 @@ namespace tao
          TEST_ASSERT( vsv.type() == type::STRING );
 
          TEST_ASSERT( vp.as< const char* >() == s );
-         TEST_ASSERT( vp.as< string_view >() == s );
+         TEST_ASSERT( vp.as< tao::string_view >() == s );
          TEST_ASSERT( vp.as< std::string >() == s );
          TEST_ASSERT( vp.as< const std::string& >() == s );
 
          TEST_ASSERT( vs.as< const char* >() == s );
-         TEST_ASSERT( vs.as< string_view >() == s );
+         TEST_ASSERT( vs.as< tao::string_view >() == s );
          TEST_ASSERT( vs.as< std::string >() == s );
          TEST_ASSERT( vs.as< const std::string& >() == s );
 
          TEST_ASSERT( vsv.as< const char* >() == s );
-         TEST_ASSERT( vsv.as< string_view >() == s );
+         TEST_ASSERT( vsv.as< tao::string_view >() == s );
          TEST_ASSERT( vsv.as< std::string >() == s );
          TEST_ASSERT( vsv.as< const std::string& >() == s );
 
@@ -60,7 +60,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::STRING_VIEW );
 
-         TEST_ASSERT( v.as< string_view >() == s );
+         TEST_ASSERT( v.as< tao::string_view >() == s );
          TEST_ASSERT( v.as< std::string >() == s );
 
          // if you don't like the default, use a different trait class
@@ -68,7 +68,7 @@ namespace tao
 
          TEST_ASSERT( v2.type() == type::STRING_VIEW );
 
-         TEST_ASSERT( v2.as< string_view >() == s );
+         TEST_ASSERT( v2.as< tao::string_view >() == s );
          TEST_ASSERT( v2.as< std::string >() == s );
 
          // there's even one for always storing a string_view
@@ -76,7 +76,7 @@ namespace tao
 
          TEST_ASSERT( v3.type() == type::STRING_VIEW );
 
-         TEST_ASSERT( v3.as< string_view >() == s );
+         TEST_ASSERT( v3.as< tao::string_view >() == s );
          TEST_ASSERT( v3.as< std::string >() == s );
       }
 

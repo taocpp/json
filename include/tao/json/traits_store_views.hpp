@@ -17,11 +17,11 @@ namespace tao
       };
 
       template<>
-      struct traits_store_views< string_view >
-         : traits< string_view >
+      struct traits_store_views< tao::string_view >
+         : traits< tao::string_view >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const string_view sv )
+         static void assign( basic_value< Traits >& v, const tao::string_view sv )
          {
             v.unsafe_assign_string_view( sv );
          }
