@@ -73,10 +73,11 @@ namespace tao
 
 #ifndef NDEBUG
          {
-            value* memory = static_cast< value* >( static_cast< void* >( new char[ sizeof( value ) ] ) );
-            new( memory ) value( "dummy" );
-            memory->~value();
-            TEST_ASSERT( memory->type() == type::DESTROYED );
+            char memory[ sizeof( value ) ];
+            value* ptr = static_cast< value* >( static_cast< void* >( memory ) );
+            new( ptr ) value( "dummy" );
+            ptr->~value();
+            TEST_ASSERT( ptr->type() == type::DESTROYED );
          }
 #endif
       }
