@@ -57,7 +57,7 @@ namespace tao
                   }
                   else if( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
                      in.bump_in_this_line();
-                     consumer.string( read_container< std::string >( in, b - 0xa0 ) );
+                     consumer.string( read_container< tao::string_view >( in, b - 0xa0 ) );
                      return true;
                   }
                   switch( b ) {
@@ -73,13 +73,13 @@ namespace tao
                         in.bump_in_this_line();
                         return true;
                      case 0xc4:
-                        consumer.binary( read_container< std::vector< tao::byte > >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
+                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
                         return true;
                      case 0xc5:
-                        consumer.binary( read_container< std::vector< tao::byte > >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
+                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
                         return true;
                      case 0xc6:
-                        consumer.binary( read_container< std::vector< tao::byte > >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
+                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
                         return true;
                      case 0xc7:
                         discard( in, read_number< std::size_t, std::uint8_t >( in ) + 1 );
@@ -136,13 +136,13 @@ namespace tao
                         discard( in, 18 );
                         return true;
                      case 0xd9:
-                        consumer.string( read_container< std::string >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
+                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
                         return true;
                      case 0xda:
-                        consumer.string( read_container< std::string >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
+                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
                         return true;
                      case 0xdb:
-                        consumer.string( read_container< std::string >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
+                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
                         return true;
                      case 0xdc:
                         return match_array( in, consumer, read_number< std::size_t, std::uint16_t >( in ) );
@@ -187,24 +187,24 @@ namespace tao
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
                   const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
-                  Result result( pointer, pointer + size );
+                  Result result( pointer, size );
                   in.bump_in_this_line( size );
                   return result;
                }
 
                template< typename Input >
-               static std::string read_key( Input& in )
+               static tao::string_view read_key( Input& in )
                {
                   if( in.empty() ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
                   switch( in.peek_byte() ) {
                      case 0xd9:
-                        return read_container< std::string >( in, read_number< std::size_t, std::uint8_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) );
                      case 0xda:
-                        return read_container< std::string >( in, read_number< std::size_t, std::uint16_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t >( in ) );
                      case 0xdb:
-                        return read_container< std::string >( in, read_number< std::size_t, std::uint32_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t >( in ) );
                   }
                   throw json_pegtl::parse_error( "unexpected key type", in );
                }

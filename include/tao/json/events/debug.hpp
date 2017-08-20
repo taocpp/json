@@ -9,9 +9,8 @@
 #include <cstdint>
 #include <ostream>
 #include <string>
-#include <vector>
 
-#include "../external/byte.hpp"
+#include "../byte_view.hpp"
 #include "../external/double.hpp"
 
 #include "../internal/escape.hpp"
@@ -73,16 +72,18 @@ namespace tao
                os << '\n';
             }
 
-            void string( const std::string& v )
+            void string( const tao::string_view v )
             {
                os << "string: \"";
                internal::escape( os, v );
                os << "\"\n";
             }
 
-            void binary( const std::vector< tao::byte >& v )
+            void binary( const tao::byte_view v )
             {
-               os << "binary: " << internal::hexdump( v ) << "\n";
+               os << "binary: ";
+               internal::hexdump( os, v );
+               os << '\n';
             }
 
             void begin_array()
@@ -120,7 +121,7 @@ namespace tao
                os << "begin object " << size << '\n';
             }
 
-            void key( const std::string& v )
+            void key( const tao::string_view v )
             {
                os << "key: \"";
                internal::escape( os, v );

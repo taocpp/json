@@ -43,11 +43,11 @@ namespace tao
                   }
                }
 
-               void key( const std::string& v )
+               void key( const tao::string_view v )
                {
                   if( json::jaxn::is_identifier( v ) ) {
                      next();
-                     os << v;
+                     os.write( v.data(), v.size() );
                   }
                   else {
                      string( v );

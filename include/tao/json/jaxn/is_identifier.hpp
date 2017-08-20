@@ -13,9 +13,17 @@ namespace tao
    {
       namespace jaxn
       {
-         inline bool is_identifier( const std::string& v ) noexcept
+         inline bool is_identifier( const tao::string_view v ) noexcept
          {
-            return !v.empty() && v.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string::npos && !std::isdigit( v[ 0 ] );
+            if( v.empty() || std::isdigit( v[ 0 ] ) ) {
+               return false;
+            }
+            for( const auto c : v ) {
+               if( !std::isalnum( c ) && c != '_' ) {
+                  return false;
+               }
+            }
+            return true;
          }
 
       }  // namespace jaxn

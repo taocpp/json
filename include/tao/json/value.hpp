@@ -509,24 +509,28 @@ namespace tao
             return p;
          }
 
+         // TODO: If C++14 is enabled, allow other key types...
          basic_value* unsafe_find( const std::string& key ) noexcept
          {
             const auto it = m_union.o.find( key );
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
+         // TODO: If C++14 is enabled, allow other key types...
          const basic_value* unsafe_find( const std::string& key ) const noexcept
          {
             const auto it = m_union.o.find( key );
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
+         // TODO: If C++14 is enabled, allow other key types...
          basic_value* find( const std::string& key )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_find( key );
          }
 
+         // TODO: If C++14 is enabled, allow other key types...
          const basic_value* find( const std::string& key ) const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
@@ -663,6 +667,7 @@ namespace tao
             }
          }
 
+         // TODO: If C++14 is enabled, allow other key types...
          template< typename T >
          tao::optional< T > optional( const std::string& key ) const
          {

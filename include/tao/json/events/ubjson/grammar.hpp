@@ -134,7 +134,7 @@ namespace tao
                      case 'C':
                         return match_char( in, consumer );
                      case 'S':
-                        consumer.string( read_container< std::string >( in, read_size( in ) ) );
+                        consumer.string( read_container< tao::string_view >( in, read_size( in ) ) );
                   }
                   throw json_pegtl::parse_error( "unknown ubjson marker", in );
                }
@@ -210,24 +210,24 @@ namespace tao
                      throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
                   }
                   const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
-                  Result result( pointer, pointer + size );
+                  Result result( pointer, size );
                   in.bump_in_this_line( size );
                   return result;
                }
 
                template< typename Input >
-               static std::string read_key( Input& in )
+               static tao::string_view read_key( Input& in )
                {
                   if( in.empty() ) {
                      throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
                   }
                   switch( in.peek_byte() ) {
                      case 0xd9:
-                        return read_container< std::string >( in, read_number< std::size_t, std::uint8_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) );
                      case 0xda:
-                        return read_container< std::string >( in, read_number< std::size_t, std::uint16_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t >( in ) );
                      case 0xdb:
-                        return read_container< std::string >( in, read_number< std::size_t, std::uint32_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t >( in ) );
                   }
                   throw json_pegtl::parse_error( "unexpected key type", in );
                }

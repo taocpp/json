@@ -198,6 +198,7 @@ namespace tao
 
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
+                  // TODO: Do not copy data if there is only one chunk, support tao::string_view/byte_view.
                   // TODO: Check text strings and text string chunks for valid UTF-8 as per RFC 7049?
 
                   if( internal::peek_minor( in ) != minor_mask ) {

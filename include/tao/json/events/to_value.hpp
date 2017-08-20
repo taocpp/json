@@ -11,7 +11,9 @@
 #include <vector>
 
 #include "../external/byte.hpp"
+#include "../external/string_view.hpp"
 
+#include "../byte_view.hpp"
 #include "../value.hpp"
 
 namespace tao
@@ -69,7 +71,7 @@ namespace tao
 
             void binary( const tao::byte_view v )
             {
-               value.unsafe_emplace_binary( v );
+               value.unsafe_emplace_binary( v.begin(), v.end() );
             }
 
             void binary( std::vector< tao::byte >&& v )
@@ -105,9 +107,9 @@ namespace tao
                stack_.push_back( empty_object );
             }
 
-            void key( const std::string& v )
+            void key( const tao::string_view v )
             {
-               keys_.push_back( v );
+               keys_.emplace_back( v.data(), v.size() );
             }
 
             void key( std::string&& v )

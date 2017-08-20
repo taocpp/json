@@ -157,7 +157,7 @@ namespace tao
                   number( std::uint64_t( size ) );
                }
 
-               void key( const std::string& v )
+               void key( const tao::string_view v )
                {
                   number( std::uint64_t( v.size() ) );
                   os.write( v.data(), v.size() );

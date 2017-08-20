@@ -4,9 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_BINARY_TO_HEX_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_BINARY_TO_HEX_HPP
 
-#include <vector>
-
-#include "../external/byte.hpp"
+#include "../byte_view.hpp"
 #include "../internal/hexdump.hpp"
 
 namespace tao
@@ -21,7 +19,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const std::vector< tao::byte >& v )
+            void binary( const tao::byte_view v )
             {
                Consumer::string( internal::hexdump( v ) );
             }

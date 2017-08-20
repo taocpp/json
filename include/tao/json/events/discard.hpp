@@ -22,59 +22,59 @@ namespace tao
 
          struct discard
          {
-            void null() noexcept
+            void null() const noexcept
             {
             }
 
-            void boolean( const bool ) noexcept
+            void boolean( const bool ) const noexcept
             {
             }
 
-            void number( const std::int64_t ) noexcept
+            void number( const std::int64_t ) const noexcept
             {
             }
 
-            void number( const std::uint64_t ) noexcept
+            void number( const std::uint64_t ) const noexcept
             {
             }
 
-            void number( const double ) noexcept
+            void number( const double ) const noexcept
             {
             }
 
-            void string( const tao::string_view ) noexcept
+            void string( const tao::string_view ) const noexcept
             {
             }
 
-            void binary( const tao::byte_view ) noexcept
+            void binary( const tao::byte_view ) const noexcept
             {
             }
 
-            void begin_array( const std::size_t = 0 ) noexcept
+            void begin_array( const std::size_t = 0 ) const noexcept
             {
             }
 
-            void element() noexcept
+            void element() const noexcept
             {
             }
 
-            void end_array( const std::size_t = 0 ) noexcept
+            void end_array( const std::size_t = 0 ) const noexcept
             {
             }
 
-            void begin_object( const std::size_t = 0 ) noexcept
+            void begin_object( const std::size_t = 0 ) const noexcept
             {
             }
 
-            void key( const std::string& ) noexcept
+            void key( const tao::string_view ) const noexcept
             {
             }
 
-            void member() noexcept
+            void member() const noexcept
             {
             }
 
-            void end_object( const std::size_t = 0 ) noexcept
+            void end_object( const std::size_t = 0 ) const noexcept
             {
             }
          };

@@ -138,12 +138,12 @@ namespace tao
                push();
             }
 
-            void key( const std::string& v )
+            void key( const tao::string_view v )
             {
-               m_digests.back()->feed( v );
+               m_digests.back()->feed( v.data(), v.size() );
                m_keys.emplace_back( m_digests.back()->get() );
                if( m_properties.back().find( m_keys.back() ) != m_properties.back().end() ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + v );
+                  throw std::runtime_error( "duplicate JSON object key: " + std::string( v.data(), v.size() ) );
                }
                m_digests.back()->reset();
             }

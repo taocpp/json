@@ -22,15 +22,15 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void validate_key( const std::string& v )
+            void validate_key( const tao::string_view v )
             {
-               json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > in( v, __PRETTY_FUNCTION__ );
+               json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > in( v.data(), v.size(), __PRETTY_FUNCTION__ );
                if( !json_pegtl::parse< Rule >( in ) ) {
-                  throw std::runtime_error( "invalid key: " + v );
+                  throw std::runtime_error( "invalid key: " + std::string( v.data(), v.size() ) );
                }
             }
 
-            void key( const std::string& v )
+            void key( const tao::string_view v )
             {
                validate_key( v );
                Consumer::key( v );

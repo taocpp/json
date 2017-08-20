@@ -5,6 +5,7 @@
 #define TAOCPP_JSON_INCLUDE_INTERNAL_JAXN_ACTION_HPP
 
 #include "../../external/pegtl/nothing.hpp"
+#include "../../external/string_view.hpp"
 
 #include "errors.hpp"
 #include "grammar.hpp"
@@ -61,7 +62,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )
                {
-                  consumer.key( in.string() );
+                  consumer.key( tao::string_view( in.begin(), in.size() ) );
                }
             };
 

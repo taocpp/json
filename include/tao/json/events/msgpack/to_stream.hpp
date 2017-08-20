@@ -188,7 +188,7 @@ namespace tao
                   }
                }
 
-               void key( const std::string& v )
+               void key( const tao::string_view v )
                {
                   string( v );
                }

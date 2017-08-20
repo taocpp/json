@@ -116,7 +116,7 @@ namespace tao
                first = true;
             }
 
-            void element()
+            void element() noexcept
             {
                first = false;
             }
@@ -138,7 +138,7 @@ namespace tao
                first = true;
             }
 
-            void key( const std::string& v )
+            void key( const tao::string_view v )
             {
                string( v );
                os.write( ": ", 2 );
@@ -146,7 +146,7 @@ namespace tao
                after_key = true;
             }
 
-            void member()
+            void member() noexcept
             {
                first = false;
             }

@@ -164,7 +164,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            void string( const std::string& )
+            void string( const tao::string_view )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -188,7 +188,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            void binary( const std::vector< tao::byte >& )
+            void binary( const tao::byte_view )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -310,7 +310,7 @@ namespace tao
                throw std::logic_error( "invalid state" );
             }
 
-            void key( const std::string& )
+            void key( const tao::string_view )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:

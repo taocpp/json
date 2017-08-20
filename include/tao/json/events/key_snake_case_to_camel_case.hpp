@@ -7,6 +7,8 @@
 #include <cctype>
 #include <string>
 
+#include "../external/string_view.hpp"
+
 namespace tao
 {
    namespace json
@@ -19,7 +21,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void key( const std::string& v )
+            void key( const tao::string_view v )
             {
                std::string r;
                r.reserve( v.size() );

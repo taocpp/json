@@ -5,9 +5,8 @@
 #define TAOCPP_JSON_INCLUDE_EVENTS_BINARY_TO_EXCEPTION_HPP
 
 #include <stdexcept>
-#include <vector>
 
-#include "../external/byte.hpp"
+#include "../byte_view.hpp"
 
 namespace tao
 {
@@ -21,7 +20,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const std::vector< tao::byte >& )
+            void binary( const tao::byte_view )
             {
                throw std::runtime_error( "invalid binary data" );
             }

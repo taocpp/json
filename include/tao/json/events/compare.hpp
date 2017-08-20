@@ -188,6 +188,11 @@ namespace tao
                }
             }
 
+            void key( const tao::string_view v )
+            {
+               key( std::string( v.data(), v.size() ) );
+            }
+
             void member() noexcept
             {
                m_current.pop_back();

@@ -73,13 +73,13 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void string( std::tuple< Ts... >& t, const std::string& v )
+            static void string( std::tuple< Ts... >& t, const tao::string_view v )
             {
                (void)sink{ ( std::get< Is >( t ).string( v ), true )... };
             }
 
             template< typename... Ts >
-            static void binary( std::tuple< Ts... >& t, const std::vector< tao::byte >& v )
+            static void binary( std::tuple< Ts... >& t, const tao::byte_view v )
             {
                (void)sink{ ( std::get< Is >( t ).binary( v ), true )... };
             }
@@ -127,7 +127,7 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void key( std::tuple< Ts... >& t, const std::string& v )
+            static void key( std::tuple< Ts... >& t, const tao::string_view v )
             {
                (void)sink{ ( std::get< Is >( t ).key( v ), true )... };
             }
@@ -202,7 +202,7 @@ namespace tao
                internal::events_apply< I >::number( ts, v );
             }
 
-            void string( const std::string& v )
+            void string( const tao::string_view v )
             {
                internal::events_apply< I >::string( ts, v );
             }
@@ -213,7 +213,7 @@ namespace tao
                std::get< S - 1 >( ts ).string( std::move( v ) );
             }
 
-            void binary( const std::vector< tao::byte >& v )
+            void binary( const tao::byte_view v )
             {
                internal::events_apply< I >::binary( ts, v );
             }
@@ -259,7 +259,7 @@ namespace tao
                internal::events_apply< I >::begin_object( ts, size );
             }
 
-            void key( const std::string& v )
+            void key( const tao::string_view v )
             {
                internal::events_apply< I >::key( ts, v );
             }
