@@ -22,37 +22,49 @@ namespace tao
             switch( v.type() ) {
                case type::UNINITIALIZED:
                   throw std::logic_error( "unable to produce events from uninitialized values" );
+
                case type::DISCARDED:
                   throw std::logic_error( "unable to produce events from discarded values" );
+
                case type::DESTROYED:
                   throw std::logic_error( "unable to produce events from destroyed values" );
+
                case type::NULL_:
                   consumer.null();
                   return;
+
                case type::BOOLEAN:
                   consumer.boolean( v.unsafe_get_boolean() );
                   return;
+
                case type::SIGNED:
                   consumer.number( v.unsafe_get_signed() );
                   return;
+
                case type::UNSIGNED:
                   consumer.number( v.unsafe_get_unsigned() );
                   return;
+
                case type::DOUBLE:
                   consumer.number( v.unsafe_get_double() );
                   return;
+
                case type::STRING:
                   consumer.string( v.unsafe_get_string() );
                   return;
+
                case type::STRING_VIEW:
                   consumer.string( v.unsafe_get_string_view() );
                   return;
+
                case type::BINARY:
                   consumer.binary( v.unsafe_get_binary() );
                   return;
+
                case type::BINARY_VIEW:
                   consumer.binary( v.unsafe_get_binary_view() );
                   return;
+
                case type::ARRAY: {
                   const auto& a = v.unsafe_get_array();
                   const auto s = a.size();
@@ -64,6 +76,7 @@ namespace tao
                   consumer.end_array( s );
                   return;
                }
+
                case type::OBJECT: {
                   const auto& o = v.unsafe_get_object();
                   const auto s = o.size();
@@ -76,6 +89,7 @@ namespace tao
                   consumer.end_object( s );
                   return;
                }
+
                case type::RAW_PTR:
                   if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
                      events::from_value( *p, consumer );
@@ -97,37 +111,49 @@ namespace tao
             switch( v.type() ) {
                case type::UNINITIALIZED:
                   throw std::logic_error( "unable to produce events from uninitialized values" );
+
                case type::DISCARDED:
                   throw std::logic_error( "unable to produce events from discarded values" );
+
                case type::DESTROYED:
                   throw std::logic_error( "unable to produce events from destroyed values" );
+
                case type::NULL_:
                   consumer.null();
                   return;
+
                case type::BOOLEAN:
                   consumer.boolean( v.unsafe_get_boolean() );
                   return;
+
                case type::SIGNED:
                   consumer.number( v.unsafe_get_signed() );
                   return;
+
                case type::UNSIGNED:
                   consumer.number( v.unsafe_get_unsigned() );
                   return;
+
                case type::DOUBLE:
                   consumer.number( v.unsafe_get_double() );
                   return;
+
                case type::STRING:
                   consumer.string( std::move( v.unsafe_get_string() ) );
                   return;
+
                case type::STRING_VIEW:
                   consumer.string( v.unsafe_get_string_view() );
                   return;
+
                case type::BINARY:
                   consumer.binary( std::move( v.unsafe_get_binary() ) );
                   return;
+
                case type::BINARY_VIEW:
                   consumer.binary( v.unsafe_get_binary_view() );
                   return;
+
                case type::ARRAY:
                   consumer.begin_array( v.unsafe_get_array().size() );
                   for( auto&& e : v.unsafe_get_array() ) {
@@ -136,15 +162,17 @@ namespace tao
                   }
                   consumer.end_array( v.unsafe_get_array().size() );
                   return;
+
                case type::OBJECT:
                   consumer.begin_object( v.unsafe_get_object().size() );
                   for( auto&& e : v.unsafe_get_object() ) {
-                     consumer.key( std::move( e.first ) );
+                     consumer.key( e.first );
                      events::from_value( std::move( e.second ), consumer );
                      consumer.member();
                   }
                   consumer.end_object( v.unsafe_get_object().size() );
                   return;
+
                case type::RAW_PTR:
                   if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
                      events::from_value( *p, consumer );
