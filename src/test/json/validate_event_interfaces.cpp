@@ -13,7 +13,21 @@
 #include <tao/json/events/to_stream.hpp>
 #include <tao/json/events/to_string.hpp>
 #include <tao/json/events/to_value.hpp>
+#include <tao/json/events/transformer.hpp>
 #include <tao/json/events/validate_event_order.hpp>
+#include <tao/json/events/validate_keys.hpp>
+
+#include <tao/json/events/binary_to_base64.hpp>
+#include <tao/json/events/binary_to_base64url.hpp>
+#include <tao/json/events/binary_to_exception.hpp>
+#include <tao/json/events/binary_to_hex.hpp>
+#include <tao/json/events/key_camel_case_to_snake_case.hpp>
+#include <tao/json/events/key_snake_case_to_camel_case.hpp>
+#include <tao/json/events/non_finite_to_exception.hpp>
+#include <tao/json/events/non_finite_to_null.hpp>
+#include <tao/json/events/non_finite_to_string.hpp>
+#include <tao/json/events/prefer_signed.hpp>
+#include <tao/json/events/prefer_unsigned.hpp>
 
 #include <tao/json/events/cbor/to_stream.hpp>
 #include <tao/json/events/cbor/to_string.hpp>
@@ -100,6 +114,20 @@ namespace tao
          check_consumer< events::to_string >();
          check_consumer< events::to_value >();
          check_consumer< events::validate_event_order >();
+         check_consumer< events::validate_keys< events::discard, json_pegtl::success > >();
+
+         check_consumer< events::transformer< events::discard > >();
+         check_consumer< events::transformer< events::discard, events::binary_to_base64 > >();
+         check_consumer< events::transformer< events::discard, events::binary_to_base64url > >();
+         check_consumer< events::transformer< events::discard, events::binary_to_exception > >();
+         check_consumer< events::transformer< events::discard, events::binary_to_hex > >();
+         check_consumer< events::transformer< events::discard, events::key_camel_case_to_snake_case > >();
+         check_consumer< events::transformer< events::discard, events::key_snake_case_to_camel_case > >();
+         check_consumer< events::transformer< events::discard, events::non_finite_to_exception > >();
+         check_consumer< events::transformer< events::discard, events::non_finite_to_null > >();
+         check_consumer< events::transformer< events::discard, events::non_finite_to_string > >();
+         check_consumer< events::transformer< events::discard, events::prefer_signed > >();
+         check_consumer< events::transformer< events::discard, events::prefer_unsigned > >();
 
          check_consumer< events::cbor::to_stream >();
          check_consumer< events::cbor::to_string >();

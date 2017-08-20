@@ -36,6 +36,12 @@ namespace tao
                Consumer::key( v );
             }
 
+            void key( const char* v )
+            {
+               validate_key( v );
+               Consumer::key( v );
+            }
+
             void key( std::string&& v )
             {
                validate_key( v );
