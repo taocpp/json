@@ -64,6 +64,11 @@ namespace tao
                value.unsafe_emplace_string( v.data(), v.size() );
             }
 
+            void string( const char* v )
+            {
+               value.unsafe_emplace_string( v );
+            }
+
             void string( std::string&& v )
             {
                value.unsafe_emplace_string( std::move( v ) );
@@ -110,6 +115,11 @@ namespace tao
             void key( const tao::string_view v )
             {
                keys_.emplace_back( v.data(), v.size() );
+            }
+
+            void key( const char* v )
+            {
+               keys_.emplace_back( v );
             }
 
             void key( std::string&& v )

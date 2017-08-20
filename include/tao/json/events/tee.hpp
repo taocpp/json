@@ -11,6 +11,8 @@
 #include <utility>
 #include <vector>
 
+#include "discard.hpp"
+
 #include "../external/pegtl/internal/integer_sequence.hpp"
 
 namespace tao
@@ -36,6 +38,100 @@ namespace tao
 
          template< typename >
          struct events_apply;
+
+         template<>
+         struct events_apply< TAOCPP_JSON_PEGTL_NAMESPACE::internal::index_sequence<> >
+         {
+            template< typename... Ts >
+            static void null( std::tuple< Ts... >& )
+            {
+            }
+
+            template< typename... Ts >
+            static void boolean( std::tuple< Ts... >&, const bool )
+            {
+            }
+
+            template< typename... Ts >
+            static void number( std::tuple< Ts... >&, const std::int64_t )
+            {
+            }
+
+            template< typename... Ts >
+            static void number( std::tuple< Ts... >&, const std::uint64_t )
+            {
+            }
+
+            template< typename... Ts >
+            static void number( std::tuple< Ts... >&, const double )
+            {
+            }
+
+            template< typename... Ts >
+            static void string( std::tuple< Ts... >&, const tao::string_view )
+            {
+            }
+
+            template< typename... Ts >
+            static void binary( std::tuple< Ts... >&, const tao::byte_view )
+            {
+            }
+
+            template< typename... Ts >
+            static void begin_array( std::tuple< Ts... >& )
+            {
+            }
+
+            template< typename... Ts >
+            static void begin_array( std::tuple< Ts... >&, const std::size_t )
+            {
+            }
+
+            template< typename... Ts >
+            static void element( std::tuple< Ts... >& )
+            {
+            }
+
+            template< typename... Ts >
+            static void end_array( std::tuple< Ts... >& )
+            {
+            }
+
+            template< typename... Ts >
+            static void end_array( std::tuple< Ts... >&, const std::size_t )
+            {
+            }
+
+            template< typename... Ts >
+            static void begin_object( std::tuple< Ts... >& )
+            {
+            }
+
+            template< typename... Ts >
+            static void begin_object( std::tuple< Ts... >&, const std::size_t )
+            {
+            }
+
+            template< typename... Ts >
+            static void key( std::tuple< Ts... >&, const tao::string_view )
+            {
+            }
+
+            template< typename... Ts >
+            static void member( std::tuple< Ts... >& )
+            {
+            }
+
+            template< typename... Ts >
+            static void end_object( std::tuple< Ts... >& )
+            {
+            }
+
+            template< typename... Ts >
+            static void end_object( std::tuple< Ts... >&, const std::size_t )
+            {
+            }
+         };
 
          template< std::size_t... Is >
          struct events_apply< TAOCPP_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
@@ -155,14 +251,12 @@ namespace tao
 
       namespace events
       {
-         // Events consumer that forwards to two nested consumers.
+         // Events consumer that forwards to multiple nested consumers.
 
          template< typename... Ts >
          class tee
          {
          private:
-            static_assert( sizeof...( Ts ) >= 1, "tao::json::events::tee requires at least one consumer" );
-
             static constexpr std::size_t S = sizeof...( Ts );
 
             using I = TAOCPP_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S >;
@@ -203,6 +297,11 @@ namespace tao
             }
 
             void string( const tao::string_view v )
+            {
+               internal::events_apply< I >::string( ts, v );
+            }
+
+            void string( const char* v )
             {
                internal::events_apply< I >::string( ts, v );
             }
@@ -264,6 +363,11 @@ namespace tao
                internal::events_apply< I >::key( ts, v );
             }
 
+            void key( const char* v )
+            {
+               internal::events_apply< I >::key( ts, v );
+            }
+
             void key( std::string&& v )
             {
                internal::events_apply< H >::key( ts, v );
@@ -284,6 +388,12 @@ namespace tao
             {
                internal::events_apply< I >::end_object( ts, size );
             }
+         };
+
+         template<>
+         class tee<>
+            : public discard
+         {
          };
 
          template< typename... T >

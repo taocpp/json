@@ -193,6 +193,11 @@ namespace tao
                key( std::string( v.data(), v.size() ) );
             }
 
+            void key( const char* v )
+            {
+               key( std::string( v ) );
+            }
+
             void member() noexcept
             {
                m_current.pop_back();
