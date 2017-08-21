@@ -46,7 +46,7 @@ namespace tao
    namespace json
    {
       template< typename Consumer >
-      void check_consumer( Consumer* c = nullptr )
+      void check_consumer_impl( Consumer* c = nullptr )
       {
          if( c == nullptr ) {
             return;
@@ -98,36 +98,47 @@ namespace tao
          c->end_object( std::size_t( 0 ) );
       }
 
+      template< typename Consumer >
+      void check_consumer()
+      {
+         check_consumer_impl< Consumer >();
+
+         check_consumer_impl< events::ref< Consumer > >();
+
+         check_consumer_impl< events::tee<> >();
+         check_consumer_impl< events::tee< Consumer > >();
+         check_consumer_impl< events::tee< events::discard, Consumer > >();
+         check_consumer_impl< events::tee< Consumer, events::discard > >();
+         check_consumer_impl< events::tee< Consumer, Consumer > >();
+         check_consumer_impl< events::tee< Consumer, events::discard, Consumer > >();
+
+         check_consumer_impl< events::validate_keys< Consumer, json_pegtl::success > >();
+
+         check_consumer_impl< events::transformer< Consumer > >();
+         check_consumer_impl< events::transformer< Consumer, events::binary_to_base64 > >();
+         check_consumer_impl< events::transformer< Consumer, events::binary_to_base64url > >();
+         check_consumer_impl< events::transformer< Consumer, events::binary_to_exception > >();
+         check_consumer_impl< events::transformer< Consumer, events::binary_to_hex > >();
+         check_consumer_impl< events::transformer< Consumer, events::key_camel_case_to_snake_case > >();
+         check_consumer_impl< events::transformer< Consumer, events::key_snake_case_to_camel_case > >();
+         check_consumer_impl< events::transformer< Consumer, events::non_finite_to_exception > >();
+         check_consumer_impl< events::transformer< Consumer, events::non_finite_to_null > >();
+         check_consumer_impl< events::transformer< Consumer, events::non_finite_to_string > >();
+         check_consumer_impl< events::transformer< Consumer, events::prefer_signed > >();
+         check_consumer_impl< events::transformer< Consumer, events::prefer_unsigned > >();
+      }
+
       void unit_test()
       {
          check_consumer< events::compare >();
          check_consumer< events::debug >();
          check_consumer< events::discard >();
          check_consumer< events::hash >();
-         check_consumer< events::ref< events::discard > >();
-         check_consumer< events::tee<> >();
-         check_consumer< events::tee< events::discard > >();
-         check_consumer< events::tee< events::discard, events::discard > >();
-         check_consumer< events::tee< events::discard, events::discard, events::discard > >();
          check_consumer< events::to_pretty_stream >();
          check_consumer< events::to_stream >();
          check_consumer< events::to_string >();
          check_consumer< events::to_value >();
          check_consumer< events::validate_event_order >();
-         check_consumer< events::validate_keys< events::discard, json_pegtl::success > >();
-
-         check_consumer< events::transformer< events::discard > >();
-         check_consumer< events::transformer< events::discard, events::binary_to_base64 > >();
-         check_consumer< events::transformer< events::discard, events::binary_to_base64url > >();
-         check_consumer< events::transformer< events::discard, events::binary_to_exception > >();
-         check_consumer< events::transformer< events::discard, events::binary_to_hex > >();
-         check_consumer< events::transformer< events::discard, events::key_camel_case_to_snake_case > >();
-         check_consumer< events::transformer< events::discard, events::key_snake_case_to_camel_case > >();
-         check_consumer< events::transformer< events::discard, events::non_finite_to_exception > >();
-         check_consumer< events::transformer< events::discard, events::non_finite_to_null > >();
-         check_consumer< events::transformer< events::discard, events::non_finite_to_string > >();
-         check_consumer< events::transformer< events::discard, events::prefer_signed > >();
-         check_consumer< events::transformer< events::discard, events::prefer_unsigned > >();
 
          check_consumer< events::cbor::to_stream >();
          check_consumer< events::cbor::to_string >();
