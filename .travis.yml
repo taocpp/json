@@ -43,7 +43,7 @@ matrix:
           packages: ['g++-7']
       env:
         - COMPILER=g++-7
-        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
+#        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - compiler: gcc
       addons:
@@ -105,11 +105,19 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-          packages: ['clang-4.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']
       env:
-        - COMPILER=clang++-4.0
-        - CXXSTD="-std=c++1z"
+        - COMPILER=clang++-5.0
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']
+      env:
+        - COMPILER=clang++-5.0
+        - CXXSTD="-std=c++17"
 
     - os: osx
       osx_image: xcode6.4
@@ -156,27 +164,28 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-6']
+          packages: ['g++-7']
       env:
-        - COMPILER=g++-6
+        - COMPILER=g++-7
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
+        - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-          packages: ['clang-4.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']
       env:
-        - COMPILER=clang++-4.0
+        - COMPILER=clang++-5.0
         - CPPFLAGS=-fsanitize=undefined
 
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-          packages: ['clang-4.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']
       env:
-        - COMPILER=clang++-4.0
+        - COMPILER=clang++-5.0
         - CPPFLAGS=-fsanitize=address
 
 script:
