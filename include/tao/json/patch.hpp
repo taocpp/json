@@ -89,13 +89,13 @@ namespace tao
       data patch( data v, const data& patch )
       {
          patch_inplace( v, patch );
-         return std::move( v );
+         return v;
       }
 
       data patch( data v, data&& patch )
       {
          patch_inplace( v, std::move( patch ) );
-         return std::move( v );
+         return v;
       }
 
    }  // namespace json
