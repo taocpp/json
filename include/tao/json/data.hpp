@@ -1185,6 +1185,7 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
+      protected:
          json::type m_type = json::type::UNINITIALIZED;
          internal::data_union m_union;
       };
