@@ -40,9 +40,10 @@ namespace tao
       }  // namespace internal
 
       template< template< typename... > class Traits >
-      struct basic_custom_value
-         : data
+      class basic_custom_value
+         : public data
       {
+      public:
          using data::data;
 
          basic_custom_value() noexcept = default;
