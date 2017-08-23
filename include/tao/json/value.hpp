@@ -161,7 +161,8 @@ namespace tao
                return tao::nullopt;
             }
             else {
-               return it->second.template as< T >();
+               // TODO: This static_cast is probably illegal - use a proxy?
+               return static_cast< const basic_custom_value& >( it->second ).template as< T >();
             }
          }
 
@@ -274,92 +275,92 @@ namespace tao
 
          basic_custom_value& unsafe_at( const std::size_t index ) noexcept
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::unsafe_at( index ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::unsafe_at( index ) );
          }
 
          const basic_custom_value& unsafe_at( const std::size_t index ) const noexcept
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< const basic_custom_value& >( data::unsafe_at( index ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< const basic_custom_value& >( data::unsafe_at( index ) );
          }
 
          basic_custom_value& unsafe_at( const std::string& key ) noexcept
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::unsafe_at( key ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::unsafe_at( key ) );
          }
 
          const basic_custom_value& unsafe_at( const std::string& key ) const noexcept
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< const basic_custom_value& >( data::unsafe_at( key ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< const basic_custom_value& >( data::unsafe_at( key ) );
          }
 
          basic_custom_value& at( const std::size_t index )
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::at( index ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::at( index ) );
          }
 
          const basic_custom_value& at( const std::size_t index ) const
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< const basic_custom_value& >( data::at( index ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< const basic_custom_value& >( data::at( index ) );
          }
 
          basic_custom_value& at( const std::string& key )
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::at( key ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::at( key ) );
          }
 
          const basic_custom_value& at( const std::string& key ) const
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< const basic_custom_value& >( data::at( key ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< const basic_custom_value& >( data::at( key ) );
          }
 
          basic_custom_value& at( const pointer& k )
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::at( k ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::at( k ) );
          }
 
          const basic_custom_value& at( const pointer& k ) const
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< const basic_custom_value& >( data::at( k ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< const basic_custom_value& >( data::at( k ) );
          }
 
          basic_custom_value& operator[]( const std::size_t index ) noexcept
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::operator[]( index ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::operator[]( index ) );
          }
 
          const basic_custom_value& operator[]( const std::size_t index ) const noexcept
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< const basic_custom_value& >( data::operator[]( index ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< const basic_custom_value& >( data::operator[]( index ) );
          }
 
          basic_custom_value& operator[]( const std::string& key )
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::operator[]( key ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::operator[]( key ) );
          }
 
          basic_custom_value& operator[]( std::string&& key )
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::operator[]( key ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::operator[]( key ) );
          }
 
          basic_custom_value& operator[]( const pointer& k )
          {
-            // TODO: This reinterpret_cast is probably illegal - use a proxy?
-            return reinterpret_cast< basic_custom_value& >( data::operator[]( k ) );
+            // TODO: This static_cast is probably illegal - use a proxy?
+            return static_cast< basic_custom_value& >( data::operator[]( k ) );
          }
       };
 
