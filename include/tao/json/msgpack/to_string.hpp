@@ -6,7 +6,10 @@
 
 #include <string>
 
+#include "../data.hpp"
+
 #include "../events/from_value.hpp"
+#include "../events/transformer.hpp"
 
 #include "../events/msgpack/to_string.hpp"
 
@@ -16,10 +19,10 @@ namespace tao
    {
       namespace msgpack
       {
-         template< template< typename... > class Traits >
-         std::string to_string( const basic_value< Traits >& v )
+         template< template< typename... > class... Transformers >
+         std::string to_string( const data& v )
          {
-            events::msgpack::to_string consumer;
+            events::transformer< events::msgpack::to_string, Transformers... > consumer;
             events::from_value( v, consumer );
             return consumer.value();
          }

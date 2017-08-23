@@ -7,11 +7,11 @@
 #include <iomanip>
 #include <iostream>
 
+#include <tao/json/data.hpp>
 #include <tao/json/from_stream.hpp>
 #include <tao/json/parse_file.hpp>
 #include <tao/json/pointer.hpp>
 #include <tao/json/schema.hpp>
-#include <tao/json/value.hpp>
 
 namespace tao
 {
@@ -19,7 +19,7 @@ namespace tao
    {
       std::size_t tests = 0;
 
-      value parse_stream( const std::string& name )
+      data parse_stream( const std::string& name )
       {
          std::ifstream ifs( name.c_str() );
          return from_stream( ifs, name, 192 );
@@ -29,8 +29,8 @@ namespace tao
       {
          std::cout << "File: " << name << std::endl;
          try {
-            const value v = parse_stream( name );
-            // const value v = parse_file( name );
+            const data v = parse_stream( name );
+            // const data v = parse_file( name );
             for( const auto& e : v.get_array() ) {
                std::cout << "  Schema: " << e.at( "description" ).get_string() << std::endl;
                bool expected_schema = true;

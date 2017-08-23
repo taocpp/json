@@ -8,9 +8,12 @@
 #include <string>
 #include <utility>
 
-#include "../events/jaxn/from_stream.hpp"
+#include "../value.hpp"
+
 #include "../events/to_stream.hpp"
 #include "../events/transformer.hpp"
+
+#include "../events/jaxn/from_stream.hpp"
 
 namespace tao
 {
@@ -18,36 +21,48 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_value< Traits > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+         template< template< typename... > class... Transformers >
+         data from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
+            events::transformer< events::to_value, Transformers... > consumer;
             events::jaxn::from_stream( stream, consumer, source, maximum_buffer_size );
             return std::move( consumer.value );
          }
 
+         template< template< typename... > class... Transformers >
+         data from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+         {
+            return from_stream< Transformers... >( stream, source.c_str(), maximum_buffer_size );
+         }
+
          template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_value< Traits > basic_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+         basic_custom_value< Traits > basic_custom_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            return basic_from_stream< Traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
+            return from_stream< Transformers... >( stream, source, maximum_buffer_size );
+         }
+
+         template< template< typename... > class Traits, template< typename... > class... Transformers >
+         basic_custom_value< Traits > basic_custom_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+         {
+            return from_stream< Transformers... >( stream, source.c_str(), maximum_buffer_size );
          }
 
          template< template< typename... > class... Transformers >
-         value from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+         custom_value custom_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            return basic_from_stream< traits, Transformers... >( stream, source, maximum_buffer_size );
+            return from_stream< Transformers... >( stream, source, maximum_buffer_size );
          }
 
          template< template< typename... > class... Transformers >
-         value from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+         custom_value custom_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
          {
-            return basic_from_stream< traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
+            return from_stream< Transformers... >( stream, source.c_str(), maximum_buffer_size );
          }
 
          template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
-         void from_stream( basic_value< Traits >& output, Ts&&... ts )
+         void from_stream( basic_custom_value< Traits >& output, Ts&&... ts )
          {
-            output = basic_from_stream< Traits, Transformers... >( std::forward< Ts >( ts )... );
+            output = from_stream< Transformers... >( std::forward< Ts >( ts )... );
          }
 
       }  // namespace jaxn

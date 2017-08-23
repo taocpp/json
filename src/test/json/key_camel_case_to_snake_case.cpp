@@ -3,16 +3,17 @@
 
 #include "test.hpp"
 
-#include <tao/json/events/key_camel_case_to_snake_case.hpp>
 #include <tao/json/to_string.hpp>
+#include <tao/json/value.hpp>
+
+#include <tao/json/events/key_camel_case_to_snake_case.hpp>
 
 namespace tao
 {
    namespace json
    {
-      void test( const value& v, const std::string& s )
+      void test( const custom_value& v, const std::string& s )
       {
-         std::cout << to_string( v ) << ": " << s << " == " << to_string< events::key_camel_case_to_snake_case >( v ) << std::endl;
          TEST_ASSERT( to_string< events::key_camel_case_to_snake_case >( v ) == s );
       }
 

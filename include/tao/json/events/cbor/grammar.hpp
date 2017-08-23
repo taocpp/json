@@ -11,6 +11,7 @@
 #include "major.hpp"
 
 #include "../../external/byte.hpp"
+#include "../../external/pegtl.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao

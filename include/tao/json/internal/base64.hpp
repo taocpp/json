@@ -14,7 +14,7 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         inline std::string base64( const T& v )
+         std::string base64( const T& v )
          {
             static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

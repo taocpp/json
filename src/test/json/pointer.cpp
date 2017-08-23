@@ -12,11 +12,11 @@ namespace tao
    {
       void unit_test()
       {
-         value v{ { "foo", 1 } };
-         const value cv{ { "fuu", 2 } };
+         custom_value v{ { "foo", 1 } };
+         const custom_value cv{ { "fuu", 2 } };
 
-         const value v2{ { "bar", &v }, { "baz", nullptr } };  // Store a non-owning const pointer to v.
-         const value cv2{ { "baz", &cv } };                    // Store a non-owning const pointer to cv.
+         const custom_value v2{ { "bar", &v }, { "baz", nullptr } };  // Store a non-owning const pointer to v.
+         const custom_value cv2{ { "baz", &cv } };                    // Store a non-owning const pointer to cv.
 
          TEST_ASSERT( to_string( v ) == "{\"foo\":1}" );
          TEST_ASSERT( to_string( cv ) == "{\"fuu\":2}" );

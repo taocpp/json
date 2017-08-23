@@ -3,16 +3,17 @@
 
 #include "test.hpp"
 
+#include <tao/json/value.hpp>
+
 #include <tao/json/events/from_string.hpp>
 #include <tao/json/events/from_value.hpp>
 #include <tao/json/events/hash.hpp>
-#include <tao/json/value.hpp>
 
 namespace tao
 {
    namespace json
    {
-      std::string hash_value( const value& v )
+      std::string hash_value( const data& v )
       {
          events::hash h;
          events::from_value( v, h );
@@ -26,7 +27,7 @@ namespace tao
          return h.value();
       }
 
-      bool test( const value& v, const std::string& s )
+      bool test( const custom_value& v, const std::string& s )
       {
          return hash_value( v ) == hash_parse( s );
       }
@@ -38,7 +39,7 @@ namespace tao
          TEST_ASSERT( !test( 0, "null" ) );
 
          TEST_ASSERT( test( empty_array, "[]" ) );
-         TEST_ASSERT( test( value::array( { 1, 2u, 3 } ), "[1,2,3.0]" ) );
+         TEST_ASSERT( test( custom_value::array( { 1, 2u, 3 } ), "[1,2,3.0]" ) );
 
          TEST_ASSERT( test( empty_object, "{}" ) );
          TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{\"a\":0,\"b\":1}" ) );

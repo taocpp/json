@@ -20,14 +20,14 @@ namespace tao
       namespace events
       {
          template< typename Consumer >
-         inline void from_stream( std::istream& stream, Consumer& consumer, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+         void from_stream( std::istream& stream, Consumer& consumer, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
             json_pegtl::istream_input<> in( stream, maximum_buffer_size, source ? source : "tao::json::events::from_stream" );
             json_pegtl::parse< internal::grammar, internal::action, internal::control >( in, consumer );
          }
 
          template< typename Consumer >
-         inline void from_stream( std::istream& stream, Consumer& consumer, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+         void from_stream( std::istream& stream, Consumer& consumer, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
          {
             events::from_stream( stream, consumer, source.c_str(), maximum_buffer_size );
          }

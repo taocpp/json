@@ -7,15 +7,14 @@
 #include <stdexcept>
 #include <utility>
 
+#include "data.hpp"
 #include "pointer.hpp"
-#include "value.hpp"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      void patch_inplace( basic_value< Traits >& v, const basic_value< Traits >& patch )
+      inline void patch_inplace( data& v, const data& patch )
       {
          for( const auto& entry : patch.get_array() ) {
             const auto& op = entry.at( "op" ).get_string();
@@ -51,8 +50,7 @@ namespace tao
          }
       }
 
-      template< template< typename... > class Traits >
-      void patch_inplace( basic_value< Traits >& v, basic_value< Traits >&& patch )
+      inline void patch_inplace( data& v, data&& patch )
       {
          for( const auto& entry : patch.get_array() ) {
             const auto& op = entry.at( "op" ).get_string();
@@ -88,15 +86,13 @@ namespace tao
          }
       }
 
-      template< template< typename... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > v, const basic_value< Traits >& patch )
+      data patch( data v, const data& patch )
       {
          patch_inplace( v, patch );
          return std::move( v );
       }
 
-      template< template< typename... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > v, basic_value< Traits >&& patch )
+      data patch( data v, data&& patch )
       {
          patch_inplace( v, std::move( patch ) );
          return std::move( v );

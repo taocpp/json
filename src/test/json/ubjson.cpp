@@ -4,7 +4,11 @@
 #include "test.hpp"
 #include "test_unhex.hpp"
 
-#include <tao/json.hpp>
+#include <tao/json/from_string.hpp>
+#include <tao/json/to_string.hpp>
+
+#include <tao/json/ubjson/from_string.hpp>
+#include <tao/json/ubjson/to_string.hpp>
 
 namespace tao
 {

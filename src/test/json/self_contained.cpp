@@ -12,15 +12,15 @@ namespace tao
    {
       void unit_test()
       {
-         value e;
+         custom_value e;
 
-         value d = { { "foo", 1 } };
-         value v = std::move( d );
+         custom_value d = { { "foo", 1 } };
+         custom_value v = std::move( d );
 
-         value v1 = { { "bar", v }, { "baz", value::array( { 2, v, 3, nullptr } ) } };
-         value v2 = { { "bar", &v }, { "baz", value::array( { 2, &v, 3, nullptr } ) } };
-         value v3 = { { "bar", v }, { "baz", value::array( { 2, v, 3, null } ) } };
-         value v4 = { { "bar", { { "foo", 1 } } }, { "baz", value::array( { 2, { { "foo", 1 } }, 3, null } ) } };
+         custom_value v1 = { { "bar", v }, { "baz", custom_value::array( { 2, v, 3, nullptr } ) } };
+         custom_value v2 = { { "bar", &v }, { "baz", custom_value::array( { 2, &v, 3, nullptr } ) } };
+         custom_value v3 = { { "bar", v }, { "baz", custom_value::array( { 2, v, 3, null } ) } };
+         custom_value v4 = { { "bar", { { "foo", 1 } } }, { "baz", custom_value::array( { 2, { { "foo", 1 } }, 3, null } ) } };
 
          TEST_ASSERT( v1 == v2 );
          TEST_ASSERT( v1 == v3 );

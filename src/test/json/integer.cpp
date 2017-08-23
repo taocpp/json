@@ -13,14 +13,14 @@ namespace tao
       template< typename T >
       void test_integer_s( const std::string& input, const T v )
       {
-         const auto j = json::from_string( input );
+         const auto j = json::custom_from_string( input );
          TEST_ASSERT( j.as< T >() == v );
       }
 
       template< typename T, typename U >
       void test_integer( const U input, const T v )
       {
-         const json::value j = input;
+         const json::custom_value j = input;
          TEST_ASSERT( j.as< T >() == v );
       }
 

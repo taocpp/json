@@ -29,13 +29,13 @@ namespace tao
                   next();
                   if( !std::isfinite( v ) ) {
                      if( std::isnan( v ) ) {
-                        os << "NaN";
+                        os.write( "NaN", 3 );
                      }
                      else if( v < 0 ) {
-                        os << "-Infinity";
+                        os.write( "-Infinity", 9 );
                      }
                      else {
-                        os << "Infinity";
+                        os.write( "Infinity", 8 );
                      }
                   }
                   else {

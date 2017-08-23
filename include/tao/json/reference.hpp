@@ -4,9 +4,9 @@
 #ifndef TAOCPP_JSON_INCLUDE_REFERENCE_HPP
 #define TAOCPP_JSON_INCLUDE_REFERENCE_HPP
 
+#include "data.hpp"
 #include "internal/uri_fragment.hpp"
 #include "pointer.hpp"
-#include "value.hpp"
 
 namespace tao
 {
@@ -30,8 +30,7 @@ namespace tao
          // references into JSON Reference additional members
          // (which shall be ignored as per the specification).
 
-         template< template< typename... > class Traits >
-         void resolve_references( basic_value< Traits >& r, basic_value< Traits >& v )
+         void resolve_references( data& r, data& v )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -61,6 +60,7 @@ namespace tao
                   }
                   if( const auto* ref = v.find( "$ref" ) ) {
                      ref = ref->skip_raw_ptr();
+                     // TODO: support is_string_view
                      if( ref->is_string() ) {
                         const std::string& s = ref->unsafe_get_string();
                         if( !s.empty() && s[ 0 ] == '#' ) {
@@ -88,7 +88,7 @@ namespace tao
                            if( p == &v ) {
                               throw std::runtime_error( "JSON Reference: invalid self reference" );
                            }
-                           v = p;
+                           v.assign_raw_ptr( p );
                            resolve_references( r, v );
                            return;
                         }
@@ -107,8 +107,7 @@ namespace tao
 
       }  // namespace internal
 
-      template< template< typename... > class Traits >
-      void resolve_references( basic_value< Traits >& r )
+      void resolve_references( data& r )
       {
          resolve_references( r, r );
       }

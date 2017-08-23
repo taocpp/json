@@ -27,8 +27,8 @@ namespace tao
          // create test vector
          const std::string ezp( "o\0p", 3 );
          const std::string ezq( "o\0q", 3 );
-         value v{
-            { "foo", value::array( { "bar", "baz" } ) },
+         custom_value v{
+            { "foo", custom_value::array( { "bar", "baz" } ) },
             { "", 0 },
             { "a/b", 1 },
             { "c%d", 2 },
@@ -47,7 +47,7 @@ namespace tao
          // check access
          TEST_ASSERT( v.at( ""_json_pointer ) == v );
 
-         TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz" } ) );
+         TEST_ASSERT( v.at( "/foo"_json_pointer ) == custom_value::array( { "bar", "baz" } ) );
          TEST_THROWS( v.at( "/bar"_json_pointer ) );
          TEST_THROWS( v.erase( "/foo/0/baz"_json_pointer ) );
          TEST_THROWS( v.insert( "/foo/0/baz"_json_pointer, null ) );
@@ -84,12 +84,12 @@ namespace tao
 
          // check modifications
          v[ "/foo/-"_json_pointer ] = "bat";
-         TEST_ASSERT( v.at( "/foo"_json_pointer ) != value::array( { "bar", "baz" } ) );
-         TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz", "bat" } ) );
+         TEST_ASSERT( v.at( "/foo"_json_pointer ) != custom_value::array( { "bar", "baz" } ) );
+         TEST_ASSERT( v.at( "/foo"_json_pointer ) == custom_value::array( { "bar", "baz", "bat" } ) );
 
          v[ "/foo/-"_json_pointer ];  // no assignment, but the null is appended anyways... TODO: change that to require an assignment?
-         TEST_ASSERT( v.at( "/foo"_json_pointer ) != value::array( { "bar", "baz", "bat" } ) );
-         TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz", "bat", null } ) );
+         TEST_ASSERT( v.at( "/foo"_json_pointer ) != custom_value::array( { "bar", "baz", "bat" } ) );
+         TEST_ASSERT( v.at( "/foo"_json_pointer ) == custom_value::array( { "bar", "baz", "bat", null } ) );
 
          TEST_THROWS( v.at( "bar" ) );
          v[ "/bar"_json_pointer ] = 42;
@@ -127,7 +127,7 @@ namespace tao
          TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_null() );
          TEST_ASSERT( v.at( "/o\0r"_json_pointer ).is_null() );
 
-         const value v2( { { "x~y/z", 0 } } );
+         const custom_value v2( { { "x~y/z", 0 } } );
          TEST_ASSERT( v2.at( "/x~0y~1z"_json_pointer ) == 0 );
          TEST_THROWS( v2.at( "/x~0y~1z/0"_json_pointer ) );
 

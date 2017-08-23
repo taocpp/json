@@ -14,7 +14,7 @@ namespace tao
    {
       void test_uninitialized()
       {
-         const value v;
+         const custom_value v;
 
          TEST_ASSERT( !v );
          TEST_ASSERT( v.empty() );
@@ -44,7 +44,7 @@ namespace tao
          TEST_THROWS( v.at( 0 ) );
          TEST_THROWS( v.at( "foo" ) );
 
-         value u = v;
+         custom_value u = v;
          TEST_ASSERT( u.type() == type::UNINITIALIZED );
          TEST_ASSERT( u == v );
          TEST_ASSERT( u <= v );
@@ -53,7 +53,7 @@ namespace tao
          TEST_ASSERT( !( u < v ) );
          TEST_ASSERT( !( u > v ) );
 
-         const value w = std::move( u );
+         const custom_value w = std::move( u );
          TEST_ASSERT( w.type() == type::UNINITIALIZED );
          TEST_ASSERT( w == v );
          TEST_ASSERT( w <= v );
@@ -73,10 +73,10 @@ namespace tao
 
 #ifndef NDEBUG
          {
-            char memory[ sizeof( value ) ];
-            value* ptr = static_cast< value* >( static_cast< void* >( memory ) );
-            new( ptr ) value( "dummy" );
-            ptr->~value();
+            char memory[ sizeof( custom_value ) ];
+            custom_value* ptr = static_cast< custom_value* >( static_cast< void* >( memory ) );
+            new( ptr ) custom_value( "dummy" );
+            ptr->~custom_value();
             TEST_ASSERT( ptr->type() == type::DESTROYED );
          }
 #endif
@@ -84,8 +84,8 @@ namespace tao
 
       void test_null()
       {
-         const value v = null;
-         const value v2( v );
+         const custom_value v = null;
+         const custom_value v2( v );
 
          TEST_ASSERT( v );
          TEST_ASSERT( !v.empty() );
@@ -112,7 +112,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::NULL_ );
 
-         const value u( null );
+         const custom_value u( null );
 
          TEST_ASSERT( u.type() == type::NULL_ );
          TEST_ASSERT( u == v );
@@ -123,8 +123,8 @@ namespace tao
 
       void test_bool( const bool b )
       {
-         const value v( b );
-         const value v2( v );
+         const custom_value v( b );
+         const custom_value v2( v );
 
          TEST_ASSERT( !v.empty() );
 
@@ -153,8 +153,8 @@ namespace tao
          TEST_ASSERT( v.unsafe_get_boolean() == b );
 
          TEST_ASSERT( v == v );
-         TEST_ASSERT( value( b ) == v );
-         TEST_ASSERT( value( !b ) != v );
+         TEST_ASSERT( custom_value( b ) == v );
+         TEST_ASSERT( custom_value( !b ) != v );
 
          TEST_THROWS( v.at( 0 ) );
          TEST_THROWS( v.at( "foo" ) );
@@ -163,8 +163,8 @@ namespace tao
       template< typename T >
       void test_signed( const T t )
       {
-         const value v( t );
-         const value v2( v );
+         const custom_value v( t );
+         const custom_value v2( v );
 
          TEST_ASSERT( !v.empty() );
 
@@ -211,8 +211,8 @@ namespace tao
       template< typename T >
       void test_unsigned( const T t )
       {
-         const value v( t );
-         const value v2( v );
+         const custom_value v( t );
+         const custom_value v2( v );
 
          TEST_ASSERT( !v.empty() );
 
@@ -256,8 +256,8 @@ namespace tao
 
       void test_double( const double d )
       {
-         const value v( d );
-         const value v2( v );
+         const custom_value v( d );
+         const custom_value v2( v );
 
          TEST_ASSERT( !v.empty() );
 
@@ -291,8 +291,8 @@ namespace tao
       template< unsigned N >
       void test_string( const char ( &s )[ N ] )
       {
-         const value v( s );
-         const value v2( v );
+         const custom_value v( s );
+         const custom_value v2( v );
 
          TEST_ASSERT( v.empty() == ( N == 1 ) );
 
@@ -321,18 +321,18 @@ namespace tao
 
          const std::string t = s;
 
-         TEST_ASSERT( v.get_string() == value( t ).get_string() );
-         TEST_ASSERT( v.get_string() == value( std::string( s ) ).get_string() );
-         TEST_ASSERT( v.get_string() == value( std::string( s, N - 1 ) ).get_string() );
-         TEST_ASSERT( v.get_string() == value( std::string( s + 0 ) ).get_string() );
+         TEST_ASSERT( v.get_string() == custom_value( t ).get_string() );
+         TEST_ASSERT( v.get_string() == custom_value( std::string( s ) ).get_string() );
+         TEST_ASSERT( v.get_string() == custom_value( std::string( s, N - 1 ) ).get_string() );
+         TEST_ASSERT( v.get_string() == custom_value( std::string( s + 0 ) ).get_string() );
 
          TEST_THROWS( v.at( 0 ) );
          TEST_THROWS( v.at( "foo" ) );
       }
 
-      void test_empty_array( const value v )
+      void test_empty_array( const custom_value v )
       {
-         const value v2( v );
+         const custom_value v2( v );
 
          TEST_ASSERT( v.empty() );
 
@@ -364,9 +364,9 @@ namespace tao
          TEST_THROWS( v.at( "foo" ) );
       }
 
-      void test_empty_object( const value v )
+      void test_empty_object( const custom_value v )
       {
-         const value v2( v );
+         const custom_value v2( v );
 
          TEST_ASSERT( v.empty() );
 
@@ -399,8 +399,8 @@ namespace tao
 
       void test_array_1234()
       {
-         const value v = value::array( { 1, 2, 3, 4 } );
-         const value v2( v );
+         const custom_value v = custom_value::array( { 1, 2, 3, 4 } );
+         const custom_value v2( v );
 
          TEST_ASSERT( !v.empty() );
 
@@ -408,9 +408,9 @@ namespace tao
          TEST_ASSERT( !v.is_number() );
          TEST_ASSERT( v.type() == type::ARRAY );
 
-         const std::vector< value > r = { value( 1 ), value( 2 ), value( 3 ), value( 4 ) };
+         const std::vector< data > r = { custom_value( 1 ), custom_value( 2 ), custom_value( 3 ), custom_value( 4 ) };
 
-         TEST_ASSERT( v == value( r ) );
+         TEST_ASSERT( v == custom_value( r ) );
          TEST_ASSERT( v.get_array() == r );
 
          TEST_ASSERT( v.at( 0 ).get_signed() == 1 );
@@ -429,8 +429,8 @@ namespace tao
 
       void test_object_1234()
       {
-         const value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
-         const value v2( v );
+         const custom_value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", custom_value::array( { true, false, 0 } ) } } } };
+         const custom_value v2( v );
 
          TEST_ASSERT( !v.empty() );
 
@@ -440,7 +440,7 @@ namespace tao
 
          // TODO: Add more tests
 
-         TEST_THROWS( value{ { "foo", 1 }, { "foo", 2 } } );
+         TEST_THROWS( custom_value{ { "foo", 1 }, { "foo", 2 } } );
       }
 
       void unit_test()
@@ -467,7 +467,7 @@ namespace tao
          test_double( 0.0 );
          test_double( 42.0 );
 
-         value v;
+         custom_value v;
          {
             const double a = std::numeric_limits< double >::infinity();
             const double b = std::numeric_limits< double >::quiet_NaN();
@@ -507,7 +507,7 @@ namespace tao
             TEST_ASSERT( v.type() == type::DOUBLE );
             TEST_ASSERT( v.get_double() == a );
 
-            v = std::vector< value >();
+            v = std::vector< data >();
 
             TEST_ASSERT( v.type() == type::ARRAY );
             TEST_ASSERT( v.get_array().empty() );
@@ -517,7 +517,7 @@ namespace tao
             TEST_ASSERT( v.type() == type::DOUBLE );
             TEST_ASSERT( std::isnan( v.get_double() ) );
 
-            v = std::map< std::string, value >();
+            v = std::map< std::string, data >();
 
             TEST_ASSERT( v.type() == type::OBJECT );
             TEST_ASSERT( v.get_object().empty() );
@@ -536,7 +536,7 @@ namespace tao
          }
 
          {
-            value v2( v );
+            custom_value v2( v );
             TEST_ASSERT( v2.type() == type::RAW_PTR );
             TEST_ASSERT( v2.get_raw_ptr() == nullptr );
             TEST_ASSERT( v2.empty() );
@@ -544,7 +544,7 @@ namespace tao
          }
 
          {
-            value v2( &v );
+            custom_value v2( &v );
             TEST_ASSERT( v2.type() == type::RAW_PTR );
             TEST_ASSERT( v2.get_raw_ptr() != nullptr );
             TEST_ASSERT( v2.get_raw_ptr()->type() == type::RAW_PTR );
@@ -558,46 +558,46 @@ namespace tao
          test_string( "foo" );
          test_string( "abcdefghijklmnpqrstuvwxyz" );
 
-         TEST_ASSERT( value( "\0" ).get_string().empty() );  // TODO?
+         TEST_ASSERT( custom_value( "\0" ).get_string().empty() );  // TODO?
 
-         TEST_ASSERT( value( "baz" ).get_string().size() == 3 );
+         TEST_ASSERT( custom_value( "baz" ).get_string().size() == 3 );
 
-         test_empty_array( value( empty_array ) );
-         test_empty_array( value( std::vector< value >() ) );
+         test_empty_array( custom_value( empty_array ) );
+         test_empty_array( custom_value( std::vector< data >() ) );
 
-         test_empty_object( value( empty_object ) );
-         test_empty_object( value( std::map< std::string, value >() ) );
+         test_empty_object( custom_value( empty_object ) );
+         test_empty_object( custom_value( std::map< std::string, data >() ) );
 
          test_array_1234();
          test_object_1234();
 
-         TEST_THROWS( from_string( "1" ).emplace_back( 2 ) );
-         TEST_THROWS( from_string( "1" ).emplace( "foo", value( 3 ) ) );
+         TEST_THROWS( custom_from_string( "1" ).emplace_back( 2 ) );
+         TEST_THROWS( custom_from_string( "1" ).emplace( "foo", 3 ) );
          {
-            value a;
+            custom_value a;
             a.emplace_back( 4 );
             TEST_ASSERT( a.type() == type::ARRAY );
             TEST_ASSERT( a.at( 0 ) == 4 );
-            value b( a );
+            custom_value b( a );
             TEST_ASSERT( a.get_array() == b.get_array() );
          }
          {
-            value a;
+            custom_value a;
             a.emplace( "foo", 5 );
             TEST_ASSERT( a.type() == type::OBJECT );
             TEST_ASSERT( a.at( "foo" ) == 5 );
-            value b( a );
+            custom_value b( a );
             TEST_ASSERT( a == b );
             TEST_ASSERT( a.get_object() == b.get_object() );
          }
          {
-            const value a( "foo" );
-            const value b( a );
+            const custom_value a( "foo" );
+            const custom_value b( a );
             TEST_ASSERT( a.get_string() == b.get_string() );
          }
          {
-            const value a( 4 );
-            const value b( 4.0 );
+            const custom_value a( 4 );
+            const custom_value b( 4.0 );
             TEST_ASSERT( a == b );
             TEST_ASSERT( a == 4 );
             TEST_ASSERT( a == 4.0 );
@@ -605,7 +605,7 @@ namespace tao
             TEST_ASSERT( b == 4.0 );
          }
          {
-            value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+            custom_value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
             TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
             TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
             v2 = v2.at( "foo" ).at( "bar" );
@@ -613,7 +613,7 @@ namespace tao
             TEST_ASSERT( v2.at( "baz" ).unsafe_get_signed() == 42 );
          }
          {
-            value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
+            custom_value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
             TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
             TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
             v2 = std::move( v2.at( "foo" ).at( "bar" ) );

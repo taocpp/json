@@ -13,13 +13,13 @@ namespace tao
    namespace json
    {
       template< template< typename... > class >
-      class basic_value;
+      class basic_custom_value;
 
       template< template< typename... > class Traits >
       struct pair
       {
          mutable std::string key;
-         mutable basic_value< Traits > value;
+         mutable basic_custom_value< Traits > value;
 
          template< typename U >
          pair( U&& v )
@@ -28,32 +28,32 @@ namespace tao
          {
          }
 
-         pair( std::string&& k, basic_value< Traits >&& v )
+         pair( std::string&& k, basic_custom_value< Traits >&& v )
             : key( std::move( k ) ), value( std::move( v ) )
          {
          }
 
-         pair( std::string&& k, const basic_value< Traits >& v )
+         pair( std::string&& k, const basic_custom_value< Traits >& v )
             : key( std::move( k ) ), value( v )
          {
          }
 
-         pair( const std::string& k, basic_value< Traits >&& v )
+         pair( const std::string& k, basic_custom_value< Traits >&& v )
             : key( k ), value( std::move( v ) )
          {
          }
 
-         pair( const std::string& k, const basic_value< Traits >& v )
+         pair( const std::string& k, const basic_custom_value< Traits >& v )
             : key( k ), value( v )
          {
          }
 
-         pair( const char* k, basic_value< Traits >&& v )
+         pair( const char* k, basic_custom_value< Traits >&& v )
             : key( k ), value( std::move( v ) )
          {
          }
 
-         pair( const char* k, const basic_value< Traits >& v )
+         pair( const char* k, const basic_custom_value< Traits >& v )
             : key( k ), value( v )
          {
          }

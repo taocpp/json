@@ -13,12 +13,12 @@ namespace tao
    namespace json
    {
       template< template< typename... > class >
-      class basic_value;
+      class basic_custom_value;
 
       template< template< typename... > class Traits >
       struct single
       {
-         mutable basic_value< Traits > value;
+         mutable basic_custom_value< Traits > value;
 
          template< typename U >
          single( U&& v )

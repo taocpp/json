@@ -4,7 +4,9 @@
 #ifndef TAOCPP_JSON_INCLUDE_MSGPACK_FROM_STRING_HPP
 #define TAOCPP_JSON_INCLUDE_MSGPACK_FROM_STRING_HPP
 
-#include "../traits.hpp"
+#include <string>
+
+#include "../value.hpp"
 
 #include "../events/to_value.hpp"
 
@@ -17,9 +19,9 @@ namespace tao
       namespace msgpack
       {
          template< template< typename... > class Traits = traits >
-         basic_value< Traits > from_string( const std::string& text )
+         basic_custom_value< Traits > from_string( const std::string& text )
          {
-            events::to_basic_value< Traits > consumer;
+            events::to_value consumer;
             events::msgpack::from_string( text, consumer, __PRETTY_FUNCTION__ );  // TODO: Source.
             return std::move( consumer.value );
          }

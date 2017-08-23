@@ -7,9 +7,10 @@
 #include <string>
 #include <utility>
 
-#include "../events/jaxn/parse_file.hpp"
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
+
+#include "../events/jaxn/parse_file.hpp"
 
 namespace tao
 {
@@ -17,24 +18,24 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_value< Traits > basic_parse_file( const std::string& filename )
+         template< template< typename... > class... Transformers >
+         data parse_file( const std::string& filename )
          {
-            events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
+            events::transformer< events::to_value, Transformers... > consumer;
             events::jaxn::parse_file( filename, consumer );
             return std::move( consumer.value );
          }
 
-         template< template< typename... > class... Transformers, template< typename... > class Traits >
-         void parse_file( basic_value< Traits >& output, const std::string& filename )
+         template< template< typename... > class... Transformers >
+         void parse_file( data& output, const std::string& filename )
          {
-            output = basic_parse_file< Traits, Transformers... >( filename );
+            output = parse_file< Transformers... >( filename );
          }
 
-         template< template< typename... > class... Transformers >
-         value parse_file( const std::string& filename )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         void parse_file( basic_custom_value< Traits >& output, const std::string& filename )
          {
-            return basic_parse_file< traits, Transformers... >( filename );
+            output = parse_file< Transformers... >( filename );
          }
 
       }  // namespace jaxn

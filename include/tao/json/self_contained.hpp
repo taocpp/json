@@ -4,7 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_SELF_CONTAINED_HPP
 #define TAOCPP_JSON_INCLUDE_SELF_CONTAINED_HPP
 
-#include "value.hpp"
+#include "data.hpp"
 
 namespace tao
 {
@@ -12,8 +12,7 @@ namespace tao
    {
       // recursively checks for the existence if RAW_PTR nodes,
       // returns true is no RAW_PTR nodes were found.
-      template< template< typename... > class Traits >
-      bool is_self_contained( const basic_value< Traits >& v ) noexcept
+      inline bool is_self_contained( const data& v ) noexcept
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
@@ -70,8 +69,7 @@ namespace tao
       // removes all RAW_PTR nodes, recursively, by copying their pointed-to content
       // or replacing a nullptr RAW_PTR node with a null node.
       // replaces STRING_VIEW and BINARY_VIEW with copies.
-      template< template< typename... > class Traits >
-      void make_self_contained( basic_value< Traits >& v )
+      void make_self_contained( data& v )
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
@@ -100,7 +98,7 @@ namespace tao
 
             case type::BINARY_VIEW: {
                const auto xv = v.unsafe_get_binary_view();
-               v.unsafe_emplace_binary( xv.data(), xv.data() + xv.size() );
+               v.unsafe_emplace_binary( xv.begin(), xv.end() );
                return;
             }
 
@@ -122,7 +120,7 @@ namespace tao
                   make_self_contained( v );
                }
                else {
-                  v = null;
+                  v.unsafe_assign_null();
                }
                return;
          }

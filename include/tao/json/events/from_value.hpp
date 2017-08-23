@@ -6,7 +6,7 @@
 
 #include <stdexcept>
 
-#include "../value.hpp"
+#include "../data.hpp"
 
 namespace tao
 {
@@ -16,8 +16,8 @@ namespace tao
       {
          // Events producer to generate events from a JSON Value.
 
-         template< template< typename... > class Traits, typename Consumer >
-         void from_value( const basic_value< Traits >& v, Consumer& consumer )
+         template< typename Consumer >
+         void from_value( const data& v, Consumer& consumer )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -91,7 +91,7 @@ namespace tao
                }
 
                case type::RAW_PTR:
-                  if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
+                  if( const data* p = v.unsafe_get_raw_ptr() ) {
                      events::from_value( *p, consumer );
                   }
                   else {
@@ -105,8 +105,8 @@ namespace tao
          // Events producer to generate events from an rvalue JSON value.
          // Note: Strings from the source might be moved to the consumer.
 
-         template< template< typename... > class Traits, typename Consumer >
-         void from_value( basic_value< Traits >&& v, Consumer& consumer )
+         template< typename Consumer >
+         void from_value( data&& v, Consumer& consumer )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -174,7 +174,7 @@ namespace tao
                   return;
 
                case type::RAW_PTR:
-                  if( const basic_value< Traits >* p = v.unsafe_get_raw_ptr() ) {
+                  if( const data* p = v.unsafe_get_raw_ptr() ) {
                      events::from_value( *p, consumer );
                   }
                   else {

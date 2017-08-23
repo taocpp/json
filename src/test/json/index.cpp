@@ -53,7 +53,7 @@ namespace tao
 
          TEST_ASSERT( "[1, [2, [3, [[[4]], 5, 6]]]]"_json[ 1 ][ 1 ][ 1 ][ 1 ] == 5 );
 
-         value v = value::array( { 42 } );
+         custom_value v = custom_value::array( { 42 } );
          TEST_ASSERT( v[ 0 ] == 42 );
          v.at( 0 ) = 1;
          TEST_ASSERT( v[ 0 ] == 1 );
@@ -77,7 +77,7 @@ namespace tao
 
          TEST_ASSERT( !"{}"_json[ "foo" ] );
 
-         value v2 = empty_object;
+         custom_value v2 = empty_object;
          TEST_THROWS( v2.at( "foo" ) );
          v2[ "foo" ] = 1;
          TEST_ASSERT( v2.at( "foo" ) == 1 );

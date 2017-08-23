@@ -57,13 +57,13 @@ namespace tao
 
       void test_null()
       {
-         const value a = null;
-         const value b( null );
-         const value* p = nullptr;
+         const custom_value a = null;
+         const custom_value b( null );
+         const custom_value* p = nullptr;
 
-         const value pa( &a );
-         const value pb( &b );
-         const value pz( nullptr );
+         const custom_value pa( &a );
+         const custom_value pb( &b );
+         const custom_value pz( nullptr );
 
          TEST_ASSERT( a.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::NULL_ );
@@ -236,11 +236,11 @@ namespace tao
 
       void test_bool()
       {
-         const value t( true );
-         const value f( false );
+         const custom_value t( true );
+         const custom_value f( false );
 
-         const value pt( &t );
-         const value pf( &f );
+         const custom_value pt( &t );
+         const custom_value pf( &f );
 
          TEST_ASSERT( t.type() == type::BOOLEAN );
          TEST_ASSERT( f.type() == type::BOOLEAN );
@@ -257,11 +257,11 @@ namespace tao
       template< typename N >
       void test_number()
       {
-         const value a( N( 42 ) );
-         const value b( N( 43 ) );
+         const custom_value a( N( 42 ) );
+         const custom_value b( N( 43 ) );
 
-         const value pa( &a );
-         const value pb( &b );
+         const custom_value pa( &a );
+         const custom_value pb( &b );
 
          test_lt( a, b );
          test_lt( pa, b );
@@ -272,42 +272,42 @@ namespace tao
          test_lt( 42, b );
          test_lt( 42u, b );
          test_lt( 42.0, b );
-         test_lt( value( 42 ), b );
-         test_lt( value( 42u ), b );
-         test_lt( value( 42.0 ), b );
+         test_lt( custom_value( 42 ), b );
+         test_lt( custom_value( 42u ), b );
+         test_lt( custom_value( 42.0 ), b );
 
          test_lt( N( 42 ), pb );
          test_lt( 42, pb );
          test_lt( 42u, pb );
          test_lt( 42.0, pb );
-         test_lt( value( 42 ), pb );
-         test_lt( value( 42u ), pb );
-         test_lt( value( 42.0 ), pb );
+         test_lt( custom_value( 42 ), pb );
+         test_lt( custom_value( 42u ), pb );
+         test_lt( custom_value( 42.0 ), pb );
 
          test_lt( a, N( 43 ) );
          test_lt( a, 43 );
          test_lt( a, 43u );
          test_lt( a, 43.0 );
-         test_lt( a, value( 43 ) );
-         test_lt( a, value( 43u ) );
-         test_lt( a, value( 43.0 ) );
+         test_lt( a, custom_value( 43 ) );
+         test_lt( a, custom_value( 43u ) );
+         test_lt( a, custom_value( 43.0 ) );
 
          test_lt( pa, N( 43 ) );
          test_lt( pa, 43 );
          test_lt( pa, 43u );
          test_lt( pa, 43.0 );
-         test_lt( pa, value( 43 ) );
-         test_lt( pa, value( 43u ) );
-         test_lt( pa, value( 43.0 ) );
+         test_lt( pa, custom_value( 43 ) );
+         test_lt( pa, custom_value( 43u ) );
+         test_lt( pa, custom_value( 43.0 ) );
       }
 
       void test_string()
       {
-         const value a( "bar" );
-         const value b( "foo" );
+         const custom_value a( "bar" );
+         const custom_value b( "foo" );
 
-         const value pa( &a );
-         const value pb( &b );
+         const custom_value pa( &a );
+         const custom_value pb( &b );
 
          TEST_ASSERT( a.type() == type::STRING );
          TEST_ASSERT( b.type() == type::STRING );
@@ -325,9 +325,9 @@ namespace tao
 
       void test_array()
       {
-         const value a = from_string( "[ 1, 2 ]" );
-         const value b = from_string( "[ 1, 3 ]" );
-         const value c = from_string( "[ 2, 1 ]" );
+         const custom_value a = from_string( "[ 1, 2 ]" );
+         const custom_value b = from_string( "[ 1, 3 ]" );
+         const custom_value c = from_string( "[ 2, 1 ]" );
 
          TEST_ASSERT( a.type() == type::ARRAY );
          TEST_ASSERT( b.type() == type::ARRAY );
@@ -340,13 +340,13 @@ namespace tao
 
       void test_object()
       {
-         const value a = from_string( "{ \"a\" : null }" );
-         const value b = from_string( "{ \"a\" : true }" );
-         const value c = from_string( "{ \"c\" : null }" );
-         const value d = from_string( "{ \"d\" : 1, \"e\" : 2 }" );
-         const value e = from_string( "{ \"d\" : 1, \"e\" : 3 }" );
-         const value f = from_string( "{ \"d\" : 2, \"e\" : 3 }" );
-         const value g = from_string( "{ \"z\" : 2, \"e\" : 3 }" );
+         const custom_value a = from_string( "{ \"a\" : null }" );
+         const custom_value b = from_string( "{ \"a\" : true }" );
+         const custom_value c = from_string( "{ \"c\" : null }" );
+         const custom_value d = from_string( "{ \"d\" : 1, \"e\" : 2 }" );
+         const custom_value e = from_string( "{ \"d\" : 1, \"e\" : 3 }" );
+         const custom_value f = from_string( "{ \"d\" : 2, \"e\" : 3 }" );
+         const custom_value g = from_string( "{ \"z\" : 2, \"e\" : 3 }" );
 
          TEST_ASSERT( a.type() == type::OBJECT );
          TEST_ASSERT( b.type() == type::OBJECT );
@@ -381,24 +381,24 @@ namespace tao
 
       void test_mixed()
       {
-         const value n = from_string( "null" );
-         const value b = from_string( "true" );
-         const value i = from_string( "-42" );
-         const value u = from_string( "42" );
-         const value d = from_string( "43.0" );
-         const value s = from_string( "\"string\"" );
-         const value a = from_string( "[]" );
-         const value o = from_string( "{}" );
+         const custom_value n = from_string( "null" );
+         const custom_value b = from_string( "true" );
+         const custom_value i = from_string( "-42" );
+         const custom_value u = from_string( "42" );
+         const custom_value d = from_string( "43.0" );
+         const custom_value s = from_string( "\"string\"" );
+         const custom_value a = from_string( "[]" );
+         const custom_value o = from_string( "{}" );
 
-         const value pz = nullptr;
-         const value pn = &n;
-         const value pb = &b;
-         const value pi = &i;
-         const value pu = &u;
-         const value pd = &d;
-         const value ps = &s;
-         const value pa = &a;
-         const value po = &o;
+         const custom_value pz = nullptr;
+         const custom_value pn = &n;
+         const custom_value pb = &b;
+         const custom_value pi = &i;
+         const custom_value pu = &u;
+         const custom_value pd = &d;
+         const custom_value ps = &s;
+         const custom_value pa = &a;
+         const custom_value po = &o;
 
          TEST_ASSERT( n.type() == type::NULL_ );
          TEST_ASSERT( b.type() == type::BOOLEAN );

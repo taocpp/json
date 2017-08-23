@@ -7,11 +7,13 @@
 #include <cstddef>
 #include <ostream>
 
+#include "../data.hpp"
+
 #include "../events/from_value.hpp"
+#include "../events/transformer.hpp"
+
 #include "../events/jaxn/to_pretty_stream.hpp"
 #include "../events/jaxn/to_stream.hpp"
-#include "../events/transformer.hpp"
-#include "../value.hpp"
 
 namespace tao
 {
@@ -19,15 +21,15 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class... Transformers, template< typename... > class Traits >
-         void to_stream( std::ostream& os, const basic_value< Traits >& v )
+         template< template< typename... > class... Transformers >
+         void to_stream( std::ostream& os, const data& v )
          {
             events::transformer< events::jaxn::to_stream, Transformers... > consumer( os );
             events::from_value( v, consumer );
          }
 
-         template< template< typename... > class... Transformers, template< typename... > class Traits >
-         void to_stream( std::ostream& os, const basic_value< Traits >& v, const std::size_t indent )
+         template< template< typename... > class... Transformers >
+         void to_stream( std::ostream& os, const data& v, const std::size_t indent )
          {
             events::transformer< events::jaxn::to_pretty_stream, Transformers... > consumer( os, indent );
             events::from_value( v, consumer );

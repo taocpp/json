@@ -19,19 +19,19 @@ namespace tao
          TEST_ASSERT( v1 == v2 );
       }
 
-      void test_throws( const value& v )
+      void test_throws( const custom_value& v )
       {
-         value v2( v );
+         data v2( v );
          TEST_THROWS( resolve_references( v2 ) );
       }
 
       void unit_test()
       {
          {
-            value e;
+            data e;
             resolve_references( e );
 #ifndef NDEBUG
-            value e2 = std::move( e );
+            data e2 = std::move( e );
             TEST_THROWS( resolve_references( e ) );
 #endif
          }
