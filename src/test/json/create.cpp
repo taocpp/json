@@ -14,7 +14,7 @@ namespace tao
    {
       void test_uninitialized()
       {
-         const custom_value v;
+         const custom_value v{};
 
          TEST_ASSERT( !v );
          TEST_ASSERT( v.empty() );
