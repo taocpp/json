@@ -16,7 +16,7 @@ namespace tao
       {
          std::ostringstream oss;
          events::to_stream consumer( oss );
-         events::from_string( v, consumer );
+         events::from_string( consumer, v );
          TEST_ASSERT( oss.str() == v );
       }
 

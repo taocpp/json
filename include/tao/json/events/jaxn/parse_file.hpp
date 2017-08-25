@@ -23,7 +23,7 @@ namespace tao
             // Events producer to parse a file containing a JAXN string representation.
 
             template< typename T, typename Consumer >
-            void parse_file( T&& filename, Consumer& consumer )
+            void parse_file( Consumer& consumer, T&& filename )
             {
                json_pegtl::file_input< json_pegtl::tracking_mode::LAZY > in( std::forward< T >( filename ) );
                json_pegtl::parse< internal::jaxn::grammar, internal::jaxn::action, internal::jaxn::control >( in, consumer );

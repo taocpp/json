@@ -24,7 +24,7 @@ namespace tao
          void to_stream( std::ostream& os, const data& v )
          {
             events::transformer< events::ubjson::to_stream, Transformers..., events::non_finite_to_null > consumer( os );
-            events::from_value( v, consumer );
+            events::from_value( consumer, v );
          }
 
       }  // namespace ubjson

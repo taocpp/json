@@ -17,7 +17,7 @@ namespace tao
          // Events producer to generate events from a JSON Value.
 
          template< typename Consumer >
-         void from_value( const data& v, Consumer& consumer )
+         void from_value( Consumer& consumer, const data& v )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -70,7 +70,7 @@ namespace tao
                   const auto s = a.size();
                   consumer.begin_array( s );
                   for( const auto& e : a ) {
-                     events::from_value( e, consumer );
+                     events::from_value( consumer, e );
                      consumer.element();
                   }
                   consumer.end_array( s );
@@ -83,7 +83,7 @@ namespace tao
                   consumer.begin_object( s );
                   for( const auto& e : o ) {
                      consumer.key( e.first );
-                     events::from_value( e.second, consumer );
+                     events::from_value( consumer, e.second );
                      consumer.member();
                   }
                   consumer.end_object( s );
@@ -92,7 +92,7 @@ namespace tao
 
                case type::RAW_PTR:
                   if( const data* p = v.unsafe_get_raw_ptr() ) {
-                     events::from_value( *p, consumer );
+                     events::from_value( consumer, *p );
                   }
                   else {
                      consumer.null();
@@ -106,7 +106,7 @@ namespace tao
          // Note: Strings from the source might be moved to the consumer.
 
          template< typename Consumer >
-         void from_value( data&& v, Consumer& consumer )
+         void from_value( Consumer& consumer, data&& v )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -157,7 +157,7 @@ namespace tao
                case type::ARRAY:
                   consumer.begin_array( v.unsafe_get_array().size() );
                   for( auto&& e : v.unsafe_get_array() ) {
-                     events::from_value( std::move( e ), consumer );
+                     events::from_value( consumer, std::move( e ) );
                      consumer.element();
                   }
                   consumer.end_array( v.unsafe_get_array().size() );
@@ -167,7 +167,7 @@ namespace tao
                   consumer.begin_object( v.unsafe_get_object().size() );
                   for( auto&& e : v.unsafe_get_object() ) {
                      consumer.key( e.first );
-                     events::from_value( std::move( e.second ), consumer );
+                     events::from_value( consumer, std::move( e.second ) );
                      consumer.member();
                   }
                   consumer.end_object( v.unsafe_get_object().size() );
@@ -175,7 +175,7 @@ namespace tao
 
                case type::RAW_PTR:
                   if( const data* p = v.unsafe_get_raw_ptr() ) {
-                     events::from_value( *p, consumer );
+                     events::from_value( consumer, *p );
                   }
                   else {
                      consumer.null();

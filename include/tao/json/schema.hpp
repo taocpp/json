@@ -1770,7 +1770,7 @@ namespace tao
             // TODO: Value validation should be implemented independently,
             // as it could be more efficient than Events validation!
             const auto c = consumer();
-            events::from_value( v, *c );
+            events::from_value( *c, v );
             return c->finalize();
          }
       };

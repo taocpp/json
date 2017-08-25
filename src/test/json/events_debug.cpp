@@ -13,7 +13,7 @@ namespace tao
       void test( const std::string& v )
       {
          events::debug consumer( std::cout );
-         events::from_string( v, consumer );
+         events::from_string( consumer, v );
       }
 
       void unit_test()

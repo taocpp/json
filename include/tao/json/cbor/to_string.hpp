@@ -23,7 +23,7 @@ namespace tao
          std::string to_string( const data& v )
          {
             events::transformer< events::cbor::to_string, Transformers... > consumer;
-            events::from_value( v, consumer );
+            events::from_value( consumer, v );
             return consumer.value();
          }
 

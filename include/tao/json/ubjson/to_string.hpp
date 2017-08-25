@@ -24,7 +24,7 @@ namespace tao
          std::string to_string( const data& v )
          {
             events::transformer< events::ubjson::to_string, Transformers..., events::non_finite_to_null > consumer;
-            events::from_value( v, consumer );
+            events::from_value( consumer, v );
             return consumer.value();
          }
 

@@ -13,7 +13,7 @@ namespace tao
       void test( const std::string& v )
       {
          events::to_string consumer;
-         events::from_string( v, consumer );
+         events::from_string( consumer, v );
          TEST_ASSERT( consumer.value() == v );
       }
 

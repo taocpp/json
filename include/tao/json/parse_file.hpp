@@ -21,7 +21,7 @@ namespace tao
       data parse_file( const std::string& filename )
       {
          events::transformer< events::to_value, Transformers... > consumer;
-         events::parse_file( filename, consumer );
+         events::parse_file( consumer, filename );
          return std::move( consumer.value );
       }
 

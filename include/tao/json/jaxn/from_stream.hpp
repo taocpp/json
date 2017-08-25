@@ -25,7 +25,7 @@ namespace tao
          data from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
             events::transformer< events::to_value, Transformers... > consumer;
-            events::jaxn::from_stream( stream, consumer, source, maximum_buffer_size );
+            events::jaxn::from_stream( consumer, stream, source, maximum_buffer_size );
             return std::move( consumer.value );
          }
 
@@ -35,28 +35,16 @@ namespace tao
             return from_stream< Transformers... >( stream, source.c_str(), maximum_buffer_size );
          }
 
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_custom_value< Traits > basic_custom_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
+         basic_custom_value< Traits > basic_custom_from_stream( Ts&&... ts )
          {
-            return from_stream< Transformers... >( stream, source, maximum_buffer_size );
+            return from_stream< Transformers... >( std::forward< Ts >( ts )... );
          }
 
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_custom_value< Traits > basic_custom_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+         template< template< typename... > class... Transformers, typename... Ts >
+         custom_value custom_from_stream( Ts&&... ts )
          {
-            return from_stream< Transformers... >( stream, source.c_str(), maximum_buffer_size );
-         }
-
-         template< template< typename... > class... Transformers >
-         custom_value custom_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
-         {
-            return from_stream< Transformers... >( stream, source, maximum_buffer_size );
-         }
-
-         template< template< typename... > class... Transformers >
-         custom_value custom_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
-         {
-            return from_stream< Transformers... >( stream, source.c_str(), maximum_buffer_size );
+            return from_stream< Transformers... >( std::forward< Ts >( ts )... );
          }
 
          template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >

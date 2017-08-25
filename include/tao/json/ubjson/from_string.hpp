@@ -18,12 +18,30 @@ namespace tao
    {
       namespace ubjson
       {
-         template< template< typename... > class Traits = traits >
-         basic_custom_value< Traits > from_string( const std::string& text )
+         template< template< typename... > class... Transformers, typename... Ts >
+         data from_string( Ts&&... ts )
          {
-            events::to_value consumer;
-            events::ubjson::from_string( text, consumer, __PRETTY_FUNCTION__ );  // TODO: Source.
+            events::transformer< events::to_value, Transformers... > consumer;
+            events::ubjson::from_string( consumer, std::forward< Ts >( ts )... );
             return std::move( consumer.value );
+         }
+
+         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
+         basic_custom_value< Traits > basic_custom_from_string( Ts&&... ts )
+         {
+            return from_string< Transformers... >( std::forward< Ts >( ts )... );
+         }
+
+         template< template< typename... > class... Transformers, typename... Ts >
+         custom_value custom_from_string( Ts&&... ts )
+         {
+            return from_string< Transformers... >( std::forward< Ts >( ts )... );
+         }
+
+         template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
+         void from_string( basic_custom_value< Traits >& output, Ts&&... ts )
+         {
+            output = from_string< Transformers... >( std::forward< Ts >( ts )... );
          }
 
       }  // namespace ubjson

@@ -16,14 +16,14 @@ namespace tao
       std::string hash_value( const data& v )
       {
          events::hash h;
-         events::from_value( v, h );
+         events::from_value( h, v );
          return h.value();
       }
 
       std::string hash_parse( const std::string& v )
       {
          events::hash h;
-         events::from_string( v, h );
+         events::from_string( h, v );
          return h.value();
       }
 

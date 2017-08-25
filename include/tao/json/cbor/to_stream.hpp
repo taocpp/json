@@ -23,7 +23,7 @@ namespace tao
          void to_stream( std::ostream& os, const data& v )
          {
             events::transformer< events::cbor::to_stream, Transformers... > consumer( os );
-            events::from_value( v, consumer );
+            events::from_value( consumer, v );
          }
 
       }  // namespace cbor

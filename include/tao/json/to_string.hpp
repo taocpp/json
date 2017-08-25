@@ -6,26 +6,17 @@
 
 #include <sstream>
 
-#include "data.hpp"
 #include "to_stream.hpp"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class... Transformers >
-      std::string to_string( const data& v )
+      template< template< typename... > class... Transformers, typename... Ts >
+      std::string to_string( Ts&&... ts )
       {
          std::ostringstream o;
-         json::to_stream< Transformers... >( o, v );
-         return o.str();
-      }
-
-      template< template< typename... > class... Transformers >
-      std::string to_string( const data& v, const unsigned indent )
-      {
-         std::ostringstream o;
-         json::to_stream< Transformers... >( o, v, indent );
+         json::to_stream< Transformers... >( o, std::forward< Ts >( ts )... );
          return o.str();
       }
 

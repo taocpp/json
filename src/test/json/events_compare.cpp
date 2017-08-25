@@ -16,14 +16,14 @@ namespace tao
       bool test_value( const custom_value& v, events::compare& c )
       {
          c.reset();
-         events::from_value( v, c );
+         events::from_value( c, v );
          return c.match();
       }
 
       bool test_parse( const std::string& v, events::compare& c )
       {
          c.reset();
-         events::from_string( v, c );
+         events::from_string( c, v );
          return c.match();
       }
 
@@ -399,32 +399,32 @@ namespace tao
          custom_value v = { { "foo", 0 }, { "bar", &b }, { "baz", custom_value::array( { null, &b, false, 0, 1, &s } ) } };
 
          events::compare c( v );
-         events::from_value( v, c );
+         events::from_value( c, v );
          TEST_ASSERT( c.match() );
 
          c.reset();
          v.at( "foo" ) = 42;
-         events::from_value( v, c );
+         events::from_value( c, v );
          TEST_ASSERT( !c.match() );
 
          c.reset();
          v.at( "foo" ) = 0;
-         events::from_value( v, c );
+         events::from_value( c, v );
          TEST_ASSERT( c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = 42;
-         events::from_value( v, c );
+         events::from_value( c, v );
          TEST_ASSERT( !c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = true;
-         events::from_value( v, c );
+         events::from_value( c, v );
          TEST_ASSERT( !c.match() );
 
          c.reset();
          v.at( "baz" ).at( 2 ) = false;
-         events::from_value( v, c );
+         events::from_value( c, v );
          TEST_ASSERT( c.match() );
       }
 

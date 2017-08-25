@@ -22,7 +22,7 @@ namespace tao
       data from_string( const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
       {
          events::transformer< events::to_value, Transformers... > consumer;
-         events::from_string( data, size, consumer, source, byte, line, column );
+         events::from_string( consumer, data, size, source, byte, line, column );
          return std::move( consumer.value );
       }
 
@@ -32,16 +32,10 @@ namespace tao
          return from_string< Transformers... >( data, size, source.c_str(), byte, line, column );
       }
 
-      template< template< typename... > class... Transformers >
-      data from_string( const std::string& data, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
+      template< template< typename... > class... Transformers, typename... Ts >
+      data from_string( const tao::string_view data, Ts&&... ts )
       {
-         return from_string< Transformers... >( data.data(), data.size(), source, byte, line, column );
-      }
-
-      template< template< typename... > class... Transformers >
-      data from_string( const std::string& data, const std::string& source, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
-      {
-         return from_string< Transformers... >( data.data(), data.size(), source.c_str(), byte, line, column );
+         return from_string< Transformers... >( data.data(), data.size(), std::forward< Ts >( ts )... );
       }
 
       template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
