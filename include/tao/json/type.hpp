@@ -33,7 +33,9 @@ namespace tao
       {
          switch( t ) {
             case type::STRING:
+            case type::STRING_VIEW:
             case type::BINARY:
+            case type::BINARY_VIEW:
             case type::ARRAY:
             case type::OBJECT:
                return true;

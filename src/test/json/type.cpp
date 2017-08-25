@@ -26,6 +26,7 @@ namespace tao
          TEST_ASSERT( to_string( type::STRING ) == std::string( "string" ) );
          TEST_ASSERT( to_string( type::STRING_VIEW ) == std::string( "string_view" ) );
          TEST_ASSERT( to_string( type::BINARY ) == std::string( "binary" ) );
+         TEST_ASSERT( to_string( type::BINARY_VIEW ) == std::string( "binary_view" ) );
          TEST_ASSERT( to_string( type::ARRAY ) == std::string( "array" ) );
          TEST_ASSERT( to_string( type::OBJECT ) == std::string( "object" ) );
 
@@ -42,10 +43,11 @@ namespace tao
          TEST_ASSERT( needs_discard( type::SIGNED ) == false );
          TEST_ASSERT( needs_discard( type::UNSIGNED ) == false );
          TEST_ASSERT( needs_discard( type::DOUBLE ) == false );
-         TEST_ASSERT( needs_discard( type::STRING_VIEW ) == false );
 
          TEST_ASSERT( needs_discard( type::STRING ) == true );
+         TEST_ASSERT( needs_discard( type::STRING_VIEW ) == true );
          TEST_ASSERT( needs_discard( type::BINARY ) == true );
+         TEST_ASSERT( needs_discard( type::BINARY_VIEW ) == true );
          TEST_ASSERT( needs_discard( type::ARRAY ) == true );
          TEST_ASSERT( needs_discard( type::OBJECT ) == true );
 

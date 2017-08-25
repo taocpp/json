@@ -77,6 +77,11 @@ namespace tao
             seize( std::move( r ) );
          }
 
+         data( null_t ) noexcept
+         {
+            unsafe_assign_null();
+         }
+
          data( empty_binary_t ) noexcept
          {
             unsafe_emplace_binary();
@@ -103,6 +108,13 @@ namespace tao
             unsafe_discard();
             m_type = v.m_type;
             seize( std::move( v ) );
+            return *this;
+         }
+
+         data& operator=( null_t ) noexcept
+         {
+            unsafe_discard();
+            unsafe_assign_null();
             return *this;
          }
 
@@ -723,29 +735,53 @@ namespace tao
             return p;
          }
 
-         // TODO: If C++14 is enabled, allow other key types...
          data* unsafe_find( const std::string& key ) noexcept
          {
             const auto it = m_union.o.find( key );
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
-         // TODO: If C++14 is enabled, allow other key types...
+         template< typename T >
+         data* unsafe_find( const T& key ) noexcept
+         {
+            const auto it = m_union.o.find( key );
+            return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
+         }
+
          const data* unsafe_find( const std::string& key ) const noexcept
          {
             const auto it = m_union.o.find( key );
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
-         // TODO: If C++14 is enabled, allow other key types...
+         template< typename T >
+         const data* unsafe_find( const T& key ) const noexcept
+         {
+            const auto it = m_union.o.find( key );
+            return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
+         }
+
          data* find( const std::string& key )
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_find( key );
          }
 
-         // TODO: If C++14 is enabled, allow other key types...
+         template< typename T >
+         data* find( const T& key )
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            return unsafe_find( key );
+         }
+
          const data* find( const std::string& key ) const
+         {
+            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            return unsafe_find( key );
+         }
+
+         template< typename T >
+         const data* find( const T& key ) const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             return unsafe_find( key );
@@ -1003,8 +1039,6 @@ namespace tao
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
-               case json::type::STRING_VIEW:
-               case json::type::BINARY_VIEW:
                case json::type::RAW_PTR:
                   return;
 
@@ -1012,8 +1046,16 @@ namespace tao
                   m_union.s.~basic_string();
                   return;
 
+               case json::type::STRING_VIEW:
+                  m_union.sv.~string_view();
+                  return;
+
                case json::type::BINARY:
                   m_union.x.~vector();
+                  return;
+
+               case json::type::BINARY_VIEW:
+                  m_union.xv.~byte_view();
                   return;
 
                case json::type::ARRAY:

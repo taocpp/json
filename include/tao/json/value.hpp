@@ -151,9 +151,8 @@ namespace tao
             return data::insert( k, std::move( value ) );
          }
 
-         // TODO: If C++14 is enabled, allow other key types...
-         template< typename T >
-         tao::optional< T > optional( const std::string& key ) const
+         template< typename T, typename K >
+         tao::optional< T > optional( const K& key ) const
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             const auto it = m_union.o.find( key );
@@ -164,6 +163,12 @@ namespace tao
                // TODO: This static_cast is probably illegal - use a proxy?
                return static_cast< const basic_custom_value& >( it->second ).template as< T >();
             }
+         }
+
+         template< typename T >
+         tao::optional< T > optional( const std::string& key ) const
+         {
+            return optional< T, std::string >( key );
          }
 
          // The unsafe_assign()-functions MUST NOT be called on a
