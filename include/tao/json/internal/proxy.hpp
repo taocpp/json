@@ -805,7 +805,7 @@ namespace tao
                   return tao::nullopt;
                }
                else {
-                  return const_proxy< Traits >( *p ).as< T >();
+                  return const_proxy< Traits >( *p ).template as< T >();
                }
             }
 

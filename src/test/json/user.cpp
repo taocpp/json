@@ -42,7 +42,7 @@ namespace tao
          {
             return user( v.at( "is_human" ).get_boolean(),
                          v.at( "name" ).get_string(),
-                         v.at( "age" ).as< unsigned >() );
+                         v.at( "age" ).template as< unsigned >() );
          }
       };
 

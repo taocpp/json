@@ -171,7 +171,7 @@ namespace tao
          template< typename T, typename K >
          tao::optional< T > optional( const K& key ) const
          {
-            return const_proxy_t( *this ).optional< T >( key );
+            return const_proxy_t( *this ).template optional< T >( key );
          }
 
          template< typename T >
