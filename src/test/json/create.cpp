@@ -612,14 +612,6 @@ namespace tao
             TEST_ASSERT( v2.at( "baz" ).is_signed() );
             TEST_ASSERT( v2.at( "baz" ).unsafe_get_signed() == 42 );
          }
-         {
-            custom_value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
-            TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
-            TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
-            v2 = std::move( v2.at( "foo" ).at( "bar" ) );
-            TEST_ASSERT( v2.at( "baz" ).is_signed() );
-            TEST_ASSERT( v2.at( "baz" ).unsafe_get_signed() == 42 );
-         }
       }
 
    }  // namespace json
