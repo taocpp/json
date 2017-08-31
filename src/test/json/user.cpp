@@ -37,7 +37,8 @@ namespace tao
             };
          }
 
-         static user as( const custom_value& v )
+         template< typename T >
+         static user as( const T& v )
          {
             return user( v.at( "is_human" ).get_boolean(),
                          v.at( "name" ).get_string(),

@@ -13,6 +13,9 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
+#include "internal/const_proxy.hpp"
+#include "internal/proxy.hpp"
+
 #include "byte_view.hpp"
 #include "data.hpp"
 #include "pair.hpp"
@@ -25,24 +28,14 @@ namespace tao
 {
    namespace json
    {
-      namespace internal
-      {
-         template< typename, typename, typename = void >
-         struct has_as : std::false_type
-         {
-         };
-
-         template< typename T, typename V >
-         struct has_as< T, V, decltype( T::as( std::declval< const V& >() ), void() ) > : std::true_type
-         {
-         };
-
-      }  // namespace internal
-
       template< template< typename... > class Traits >
       class basic_custom_value
          : public data
       {
+      private:
+         using proxy_t = internal::proxy< Traits >;
+         using const_proxy_t = internal::const_proxy< Traits >;
+
       public:
          using data::data;
 
@@ -68,6 +61,16 @@ namespace tao
 
          basic_custom_value( data&& v ) noexcept
             : data( std::move( v ) )
+         {
+         }
+
+         basic_custom_value( proxy_t v )
+            : data( static_cast< const data& >( v ) )
+         {
+         }
+
+         basic_custom_value( const_proxy_t v )
+            : data( static_cast< const data& >( v ) )
          {
          }
 
@@ -111,28 +114,42 @@ namespace tao
 
          basic_custom_value& operator=( basic_custom_value v ) noexcept
          {
-            data::operator=( std::move( v ) );
+            data::operator=( static_cast< data&& >( v ) );
             return *this;
+         }
+
+         basic_custom_value& operator=( proxy_t v )
+         {
+            data::operator=( static_cast< const data& >( v ) );
+            return *this;
+         }
+
+         basic_custom_value& operator=( const_proxy_t v )
+         {
+            data::operator=( static_cast< const data& >( v ) );
+            return *this;
+         }
+
+         proxy_t proxy() noexcept
+         {
+            return proxy_t( *this );
+         }
+
+         const_proxy_t proxy() const noexcept
+         {
+            return const_proxy_t( *this );
          }
 
          template< typename T >
          void extract( T& v ) const
          {
-            Traits< typename std::decay< T >::type >::extract( *this, v );
+            proxy().extract( v );
          }
 
          template< typename T >
-         typename std::enable_if< internal::has_as< Traits< T >, basic_custom_value >::value, T >::type as() const
+         T as() const
          {
-            return Traits< T >::as( *this );
-         }
-
-         template< typename T >
-         typename std::enable_if< !internal::has_as< Traits< T >, basic_custom_value >::value, T >::type as() const
-         {
-            T nrv;
-            this->extract( nrv );
-            return nrv;
+            return proxy().template as< T >();
          }
 
          template< typename T >
@@ -154,15 +171,7 @@ namespace tao
          template< typename T, typename K >
          tao::optional< T > optional( const K& key ) const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
-            const auto it = m_union.o.find( key );
-            if( it == m_union.o.end() ) {
-               return tao::nullopt;
-            }
-            else {
-               // TODO: This static_cast is probably illegal - use a proxy?
-               return static_cast< const basic_custom_value& >( it->second ).template as< T >();
-            }
+            return const_proxy_t( *this ).optional< T >( key );
          }
 
          template< typename T >
@@ -276,96 +285,79 @@ namespace tao
             }
          }
 
-         // TODO: more forwarders that fix the return type? or drop this?
-
-         basic_custom_value& unsafe_at( const std::size_t index ) noexcept
+         proxy_t unsafe_at( const std::size_t index ) noexcept
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::unsafe_at( index ) );
+            return proxy_t( data::unsafe_at( index ) );
          }
 
-         const basic_custom_value& unsafe_at( const std::size_t index ) const noexcept
+         const_proxy_t unsafe_at( const std::size_t index ) const noexcept
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< const basic_custom_value& >( data::unsafe_at( index ) );
+            return const_proxy_t( data::unsafe_at( index ) );
          }
 
-         basic_custom_value& unsafe_at( const std::string& key ) noexcept
+         proxy_t unsafe_at( const std::string& key ) noexcept
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::unsafe_at( key ) );
+            return proxy_t( data::unsafe_at( key ) );
          }
 
-         const basic_custom_value& unsafe_at( const std::string& key ) const noexcept
+         const_proxy_t unsafe_at( const std::string& key ) const noexcept
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< const basic_custom_value& >( data::unsafe_at( key ) );
+            return const_proxy_t( data::unsafe_at( key ) );
          }
 
-         basic_custom_value& at( const std::size_t index )
+         proxy_t at( const std::size_t index )
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::at( index ) );
+            return proxy_t( data::at( index ) );
          }
 
-         const basic_custom_value& at( const std::size_t index ) const
+         const_proxy_t at( const std::size_t index ) const
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< const basic_custom_value& >( data::at( index ) );
+            return const_proxy_t( data::at( index ) );
          }
 
-         basic_custom_value& at( const std::string& key )
+         proxy_t at( const std::string& key )
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::at( key ) );
+            return proxy_t( data::at( key ) );
          }
 
-         const basic_custom_value& at( const std::string& key ) const
+         const_proxy_t at( const std::string& key ) const
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< const basic_custom_value& >( data::at( key ) );
+            return const_proxy_t( data::at( key ) );
          }
 
-         basic_custom_value& at( const pointer& k )
+         proxy_t at( const pointer& k )
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::at( k ) );
+            return proxy_t( data::at( k ) );
          }
 
-         const basic_custom_value& at( const pointer& k ) const
+         const_proxy_t at( const pointer& k ) const
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< const basic_custom_value& >( data::at( k ) );
+            return const_proxy_t( data::at( k ) );
          }
 
-         basic_custom_value& operator[]( const std::size_t index ) noexcept
+         proxy_t operator[]( const std::size_t index ) noexcept
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::operator[]( index ) );
+            return proxy_t( data::operator[]( index ) );
          }
 
-         const basic_custom_value& operator[]( const std::size_t index ) const noexcept
+         const_proxy_t operator[]( const std::size_t index ) const noexcept
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< const basic_custom_value& >( data::operator[]( index ) );
+            return const_proxy_t( data::operator[]( index ) );
          }
 
-         basic_custom_value& operator[]( const std::string& key )
+         proxy_t operator[]( const std::string& key )
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::operator[]( key ) );
+            return proxy_t( data::operator[]( key ) );
          }
 
-         basic_custom_value& operator[]( std::string&& key )
+         proxy_t operator[]( std::string&& key )
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::operator[]( key ) );
+            return proxy_t( data::operator[]( std::move( key ) ) );
          }
 
-         basic_custom_value& operator[]( const pointer& k )
+         proxy_t operator[]( const pointer& k )
          {
-            // TODO: This static_cast is probably illegal - use a proxy?
-            return static_cast< basic_custom_value& >( data::operator[]( k ) );
+            return proxy_t( data::operator[]( k ) );
          }
       };
 
