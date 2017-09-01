@@ -12,8 +12,8 @@
 
 #ifndef TAOCPP_USE_STD_OPTIONAL
 #ifndef TAOCPP_USE_TS_OPTIONAL
-#if( __cplusplus >= 201402L ) && ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 )
-#define TAOCPP_USE_TR1_OPTIONAL
+#if( __cplusplus >= 201402L ) && ( ( __GNUC__ > 4 ) || ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 ) )
+#define TAOCPP_USE_TS_OPTIONAL
 #endif
 #endif
 #endif
