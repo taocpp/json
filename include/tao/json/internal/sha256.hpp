@@ -203,10 +203,9 @@ namespace tao
 
             std::string get()
             {
-               std::string result;
-               result.resize( 32 );
-               store_unsafe( (unsigned char*)( result.data() ) );
-               return result;
+               unsigned char result[ 32 ];
+               store_unsafe( result );
+               return std::string( reinterpret_cast< const char* >( result ), 32 );
             }
          };
 
