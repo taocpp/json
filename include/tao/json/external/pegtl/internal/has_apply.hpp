@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_HAS_APPLY0_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_HAS_APPLY0_HPP
+#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_HAS_APPLY_HPP
+#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_HAS_APPLY_HPP
 
 #include <type_traits>
 
@@ -15,12 +15,12 @@ namespace tao
       namespace internal
       {
          template< typename, typename, typename... >
-         struct has_apply0 : std::false_type
+         struct has_apply : std::false_type
          {
          };
 
          template< typename A, typename... S >
-         struct has_apply0< A, decltype( A::apply0( std::declval< S >()... ) ), S... > : std::true_type
+         struct has_apply< A, decltype( A::apply( std::declval< S >()... ) ), S... > : std::true_type
          {
          };
 
