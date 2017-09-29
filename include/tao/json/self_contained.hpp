@@ -69,7 +69,7 @@ namespace tao
       // removes all RAW_PTR nodes, recursively, by copying their pointed-to content
       // or replacing a nullptr RAW_PTR node with a null node.
       // replaces STRING_VIEW and BINARY_VIEW with copies.
-      void make_self_contained( data& v )
+      inline void make_self_contained( data& v )
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
