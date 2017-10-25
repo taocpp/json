@@ -527,6 +527,11 @@ namespace tao
             unsafe_emplace_array( std::move( a ) );
          }
 
+         void unsafe_push_back( data v )
+         {
+            m_union.a.push_back( std::move( v ) );
+         }
+
          template< typename V >
          void unsafe_emplace_back( V&& v )
          {
