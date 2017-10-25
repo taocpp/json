@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2012 Andrzej Krzemienski.
+// Copyright (C) 2011 - 2016 Andrzej Krzemienski.
 //
 // Use, modification, and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -689,6 +689,19 @@ TEST(value_or)
   assert (os.value_or("BBB") == "BBB");
 };
 
+TEST(reset)
+{
+  using namespace std::experimental;
+  optional<int> oi {1};
+  oi.reset();
+  assert (!oi);
+
+  int i = 1;
+  optional<const int&> oir {i};
+  oir.reset();
+  assert (!oir);
+};
+
 TEST(mixed_order)
 {
   using namespace std::experimental;
@@ -1258,6 +1271,54 @@ TEST(exception_safety)
     //
   }
   assert(CountedObject::_counter == 0);
+};
+
+TEST(nested_optional)
+{
+   using namespace std::experimental;
+	
+   optional<optional<optional<int>>> o1 {nullopt};
+   assert (!o1);
+    
+   optional<optional<optional<int>>> o2 {in_place, nullopt};
+   assert (o2);
+   assert (!*o2);
+    
+   optional<optional<optional<int>>> o3 (in_place, in_place, nullopt);
+   assert (o3);
+   assert (*o3);
+   assert (!**o3);
+};
+
+TEST(three_ways_of_having_value)
+{
+  using namespace std::experimental;
+  optional<int> oN, o1 (1);
+  
+  assert (!oN);
+  assert (!oN.has_value());
+  assert (oN == nullopt);
+  
+  assert (o1);
+  assert (o1.has_value());
+  assert (o1 != nullopt);
+  
+  assert (bool(oN) == oN.has_value());
+  assert (bool(o1) == o1.has_value());
+  
+  int i = 1;
+  optional<int&> rN, r1 (i);
+  
+  assert (!rN);
+  assert (!rN.has_value());
+  assert (rN == nullopt);
+  
+  assert (r1);
+  assert (r1.has_value());
+  assert (r1 != nullopt);
+  
+  assert (bool(rN) == rN.has_value());
+  assert (bool(r1) == r1.has_value());
 };
 
 //// constexpr tests

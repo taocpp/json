@@ -234,7 +234,7 @@ T* static_addressof(T& ref)
 
 // the call to convert<A>(b) has return type A and converts b to type A iff b decltype(b) is implicitly convertible to A  
 template <class U>
-U convert(U v) { return v; }
+constexpr U convert(U v) { return v; }
   
 } // namespace detail
 
@@ -340,9 +340,9 @@ struct constexpr_optional_base
 
 template <class T>
 using OptionalBase = typename std::conditional<
-    is_trivially_destructible<T>::value,
-    constexpr_optional_base<T>,
-    optional_base<T>
+    is_trivially_destructible<T>::value,                          // if possible
+    constexpr_optional_base<typename std::remove_const<T>::type>, // use base with trivial destructor
+    optional_base<typename std::remove_const<T>::type>
 >::type;
 
 
@@ -355,7 +355,7 @@ class optional : private OptionalBase<T>
   
 
   constexpr bool initialized() const noexcept { return OptionalBase<T>::init_; }
-  T* dataptr() {  return std::addressof(OptionalBase<T>::storage_.value_); }
+  typename std::remove_const<T>::type* dataptr() {  return std::addressof(OptionalBase<T>::storage_.value_); }
   constexpr const T* dataptr() const { return detail_::static_addressof(OptionalBase<T>::storage_.value_); }
   
 # if OPTIONAL_HAS_THIS_RVALUE_REFS == 1
@@ -496,6 +496,7 @@ public:
   // 20.5.4.5, Observers
   
   explicit constexpr operator bool() const noexcept { return initialized(); }
+  constexpr bool has_value() const noexcept { return initialized(); }
   
   constexpr T const* operator ->() const {
     return TR2_OPTIONAL_ASSERTED_EXPRESSION(initialized(), dataptr());
@@ -597,6 +598,8 @@ public:
 
 # endif
 
+  // 20.6.3.6, modifiers
+  void reset() noexcept { clear(); }
 };
 
 
@@ -691,12 +694,19 @@ public:
   explicit constexpr operator bool() const noexcept {
     return ref != nullptr;
   }
+ 
+  constexpr bool has_value() const noexcept {
+    return ref != nullptr;
+  }
   
   template <class V>
   constexpr typename decay<T>::type value_or(V&& v) const
   {
     return *this ? **this : detail_::convert<typename decay<T>::type>(constexpr_forward<V>(v));
   }
+
+  // x.x.x.x, modifiers
+  void reset() noexcept { ref = nullptr; }
 };
 
 
