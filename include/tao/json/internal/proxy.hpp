@@ -444,6 +444,11 @@ namespace tao
                v_.unsafe_emplace_array( std::forward< Ts >( ts )... );
             }
 
+            void unsafe_push_back( basic_custom_value< Traits > v )
+            {
+               v_.unsafe_emplace_back( std::move( v ) );
+            }
+
             template< typename V >
             void unsafe_emplace_back( V&& v )
             {
