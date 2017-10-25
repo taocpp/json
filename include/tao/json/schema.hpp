@@ -1325,7 +1325,7 @@ namespace tao
                }
                if( m_match && m_node->m_flags & HAS_DEPENDENCIES ) {
                   for( const auto& e : m_node->m_schema_dependencies ) {
-                     if( m_keys.find( e.first ) != m_keys.end() ) {
+                     if( m_keys.count( e.first ) != 0 ) {
                         const auto it = m_schema_dependencies.find( e.first );
                         if( it == m_schema_dependencies.end() ) {
                            m_match = false;
@@ -1517,7 +1517,7 @@ namespace tao
                }
                if( m_match && ( m_count.size() == 1 ) && m_node->m_flags & HAS_DEPENDENCIES ) {
                   for( const auto& e : m_node->m_property_dependencies ) {
-                     if( m_keys.find( e.first ) != m_keys.end() ) {
+                     if( m_keys.count( e.first ) != 0 ) {
                         if( !std::includes( m_keys.begin(), m_keys.end(), e.second.begin(), e.second.end() ) ) {
                            m_match = false;
                            break;
