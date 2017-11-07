@@ -375,15 +375,15 @@ namespace tao
             }
 
             template< json::type E >
-            decltype( std::declval< const data& >().unsafe_get< E >() ) unsafe_get() noexcept
+            decltype( std::declval< const data& >().template unsafe_get< E >() ) unsafe_get() noexcept
             {
-               return this->v_.unsafe_get< E >();
+               return this->v_.template unsafe_get< E >();
             }
 
             template< json::type E >
-            decltype( std::declval< const data& >().unsafe_get< E >() ) unsafe_get() const noexcept
+            decltype( std::declval< const data& >().template unsafe_get< E >() ) unsafe_get() const noexcept
             {
-               return this->v_.unsafe_get< E >();
+               return this->v_.template unsafe_get< E >();
             }
 
             bool get_boolean() const
@@ -462,15 +462,15 @@ namespace tao
             }
 
             template< json::type E >
-            decltype( std::declval< const data& >().get< E >() ) get() noexcept
+            decltype( std::declval< const data& >().template get< E >() ) get() noexcept
             {
-               return this->v_.get< E >();
+               return this->v_.template get< E >();
             }
 
             template< json::type E >
-            decltype( std::declval< const data& >().get< E >() ) get() const noexcept
+            decltype( std::declval< const data& >().template get< E >() ) get() const noexcept
             {
-               return this->v_.get< E >();
+               return this->v_.template get< E >();
             }
 
             void unsafe_assign_null() noexcept
