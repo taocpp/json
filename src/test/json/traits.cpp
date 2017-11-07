@@ -19,7 +19,7 @@ namespace tao
       {
          static const char* default_key;
 
-         static void assign( custom_value& v, const my_data& )
+         static void assign( value& v, const my_data& )
          {
             v = {
                { "fuh", "bar" },
@@ -33,15 +33,15 @@ namespace tao
 
       void unit_test()
       {
-         const custom_value v{ { "foo", my_data() }, my_data() };
+         const value v{ { "foo", my_data() }, my_data() };
          std::cout << to_string( v ) << std::endl;
 
          std::string s2 = "bar";
-         const custom_value v2{ { s2, my_data() }, my_data() };
+         const value v2{ { s2, my_data() }, my_data() };
          std::cout << to_string( v2 ) << std::endl;
 
          const std::string s3 = "baz";
-         const custom_value v3{ { s3, my_data() }, my_data() };
+         const value v3{ { s3, my_data() }, my_data() };
          std::cout << to_string( v3 ) << std::endl;
       }
 

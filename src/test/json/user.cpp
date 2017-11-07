@@ -28,7 +28,7 @@ namespace tao
       {
          static const char* default_key;
 
-         static void assign( custom_value& v, const user& u )
+         static void assign( value& v, const user& u )
          {
             v = {
                { "is_human", u.is_human },
@@ -57,15 +57,15 @@ namespace tao
          user u4( false, "Milow", 2 );
          user u5( false, "Jessy", 1 );
 
-         custom_value v = {
+         value v = {
             u,
-            { "cats", custom_value::array( { u2, u3, u4, u5 } ) }
+            { "cats", value::array( { u2, u3, u4, u5 } ) }
          };
 
          std::cout << std::setw( 2 ) << v << std::endl;
 
          user r = v.at( "user" ).as< user >();
-         std::cout << std::setw( 2 ) << custom_value( r ) << std::endl;
+         std::cout << std::setw( 2 ) << value( r ) << std::endl;
       }
 
    }  // namespace json

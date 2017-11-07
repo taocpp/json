@@ -17,7 +17,7 @@ namespace tao
       void unit_test()
       {
          std::cout << "json::data: " << sizeof( data ) << std::endl;
-         std::cout << "json::custom_value: " << sizeof( custom_value ) << std::endl;
+         std::cout << "json::value: " << sizeof( value ) << std::endl;
          std::cout << "json::pointer: " << sizeof( pointer ) << std::endl;
 
          std::cout << "json::internal::data_union: " << sizeof( internal::data_union ) << std::endl;

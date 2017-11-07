@@ -12,7 +12,7 @@ namespace tao
 {
    namespace json
    {
-      void test( const custom_value& v, const std::string& s )
+      void test( const value& v, const std::string& s )
       {
          TEST_ASSERT( to_string< events::key_snake_case_to_camel_case >( v ) == s );
       }

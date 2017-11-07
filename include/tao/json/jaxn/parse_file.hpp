@@ -33,7 +33,7 @@ namespace tao
          }
 
          template< template< typename... > class... Transformers, template< typename... > class Traits >
-         void parse_file( basic_custom_value< Traits >& output, const std::string& filename )
+         void parse_file( basic_value< Traits >& output, const std::string& filename )
          {
             output = parse_file< Transformers... >( filename );
          }

@@ -12,7 +12,7 @@ namespace tao
    {
       void test_string()
       {
-         TEST_ASSERT( custom_from_string( "\"\"" ) == custom_value( "" ) );
+         TEST_ASSERT( custom_from_string( "\"\"" ) == value( "" ) );
 
          TEST_THROWS( custom_from_string( "\"" ) );
          TEST_THROWS( custom_from_string( "\"\r\n\"" ) );
@@ -29,17 +29,17 @@ namespace tao
          const auto& a = v.get_array();
 
          TEST_ASSERT( a.size() == 8 );
-         TEST_ASSERT( a[ 0 ] == custom_value( null ) );
-         TEST_ASSERT( a[ 1 ] == custom_value( true ) );
-         TEST_ASSERT( a[ 2 ] == custom_value( false ) );
-         TEST_ASSERT( a[ 3 ] == custom_value( 42 ) );
-         TEST_ASSERT( a[ 4 ] == custom_value( 43.0 ) );
-         TEST_ASSERT( a[ 5 ] == custom_value( "foo" ) );
+         TEST_ASSERT( a[ 0 ] == value( null ) );
+         TEST_ASSERT( a[ 1 ] == value( true ) );
+         TEST_ASSERT( a[ 2 ] == value( false ) );
+         TEST_ASSERT( a[ 3 ] == value( 42 ) );
+         TEST_ASSERT( a[ 4 ] == value( 43.0 ) );
+         TEST_ASSERT( a[ 5 ] == value( "foo" ) );
          TEST_ASSERT( a[ 6 ].type() == type::ARRAY );
          TEST_ASSERT( a[ 6 ].get_array().size() == 3 );
-         TEST_ASSERT( a[ 6 ].get_array()[ 0 ] == custom_value( 1 ) );
-         TEST_ASSERT( a[ 6 ].get_array()[ 1 ] == custom_value( 2 ) );
-         TEST_ASSERT( a[ 6 ].get_array()[ 2 ] == custom_value( 3 ) );
+         TEST_ASSERT( a[ 6 ].get_array()[ 0 ] == value( 1 ) );
+         TEST_ASSERT( a[ 6 ].get_array()[ 1 ] == value( 2 ) );
+         TEST_ASSERT( a[ 6 ].get_array()[ 2 ] == value( 3 ) );
          TEST_ASSERT( a[ 7 ].type() == type::OBJECT );
          TEST_ASSERT( a[ 7 ].get_object().size() == 2 );
          TEST_ASSERT( a[ 7 ].get_object().at( "a" ).get_string() == "b" );
@@ -55,17 +55,17 @@ namespace tao
          const auto& o = v.get_object();
 
          TEST_ASSERT( o.size() == 8 );
-         TEST_ASSERT( o.at( "a" ) == custom_value( null ) );
-         TEST_ASSERT( o.at( "b" ) == custom_value( true ) );
-         TEST_ASSERT( o.at( "c" ) == custom_value( false ) );
-         TEST_ASSERT( o.at( "d" ) == custom_value( 42 ) );
-         TEST_ASSERT( o.at( "e" ) == custom_value( 43.0 ) );
-         TEST_ASSERT( o.at( "f" ) == custom_value( "foo" ) );
+         TEST_ASSERT( o.at( "a" ) == value( null ) );
+         TEST_ASSERT( o.at( "b" ) == value( true ) );
+         TEST_ASSERT( o.at( "c" ) == value( false ) );
+         TEST_ASSERT( o.at( "d" ) == value( 42 ) );
+         TEST_ASSERT( o.at( "e" ) == value( 43.0 ) );
+         TEST_ASSERT( o.at( "f" ) == value( "foo" ) );
          TEST_ASSERT( o.at( "g" ).type() == type::ARRAY );
          TEST_ASSERT( o.at( "g" ).get_array().size() == 3 );
-         TEST_ASSERT( o.at( "g" ).get_array()[ 0 ] == custom_value( 1 ) );
-         TEST_ASSERT( o.at( "g" ).get_array()[ 1 ] == custom_value( 2 ) );
-         TEST_ASSERT( o.at( "g" ).get_array()[ 2 ] == custom_value( 3 ) );
+         TEST_ASSERT( o.at( "g" ).get_array()[ 0 ] == value( 1 ) );
+         TEST_ASSERT( o.at( "g" ).get_array()[ 1 ] == value( 2 ) );
+         TEST_ASSERT( o.at( "g" ).get_array()[ 2 ] == value( 3 ) );
          TEST_ASSERT( o.at( "h" ).type() == type::OBJECT );
          TEST_ASSERT( o.at( "h" ).get_object().size() == 2 );
          TEST_ASSERT( o.at( "h" ).get_object().at( "a" ).get_string() == "b" );
@@ -74,11 +74,11 @@ namespace tao
 
       void unit_test()
       {
-         TEST_ASSERT( custom_from_string( "null" ) == custom_value( null ) );
-         TEST_ASSERT( custom_from_string( "42" ) == custom_value( 42 ) );
-         TEST_ASSERT( custom_from_string( "42.0" ) == custom_value( 42.0 ) );
-         TEST_ASSERT( custom_from_string( "true" ) == custom_value( true ) );
-         TEST_ASSERT( custom_from_string( "false" ) == custom_value( false ) );
+         TEST_ASSERT( custom_from_string( "null" ) == value( null ) );
+         TEST_ASSERT( custom_from_string( "42" ) == value( 42 ) );
+         TEST_ASSERT( custom_from_string( "42.0" ) == value( 42.0 ) );
+         TEST_ASSERT( custom_from_string( "true" ) == value( true ) );
+         TEST_ASSERT( custom_from_string( "false" ) == value( false ) );
 
          TEST_ASSERT( custom_from_string( "0" ).get_unsigned() == 0 );
          TEST_ASSERT( custom_from_string( "1" ).get_unsigned() == 1 );

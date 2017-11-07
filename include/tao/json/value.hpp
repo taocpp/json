@@ -13,9 +13,9 @@ namespace tao
    namespace json
    {
       template< template< typename... > class Traits >
-      using basic_custom_value = internal::proxy< internal::data_holder, Traits >;
+      using basic_value = internal::proxy< internal::data_holder, Traits >;
 
-      using custom_value = basic_custom_value< traits >;
+      using value = basic_value< traits >;
 
    }  // namespace json
 

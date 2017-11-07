@@ -39,19 +39,19 @@ namespace tao
       }
 
       template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-      basic_custom_value< Traits > basic_custom_from_string( Ts&&... ts )
+      basic_value< Traits > basic_custom_from_string( Ts&&... ts )
       {
          return from_string< Transformers... >( std::forward< Ts >( ts )... );
       }
 
       template< template< typename... > class... Transformers, typename... Ts >
-      custom_value custom_from_string( Ts&&... ts )
+      value custom_from_string( Ts&&... ts )
       {
          return from_string< Transformers... >( std::forward< Ts >( ts )... );
       }
 
       template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
-      void from_string( basic_custom_value< Traits >& output, Ts&&... ts )
+      void from_string( basic_value< Traits >& output, Ts&&... ts )
       {
          output = from_string< Transformers... >( std::forward< Ts >( ts )... );
       }

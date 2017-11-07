@@ -26,19 +26,19 @@ namespace tao
       }
 
       template< template< typename... > class Traits, template< typename... > class... Transformers >
-      basic_custom_value< Traits > basic_custom_parse_file( const std::string& filename )
+      basic_value< Traits > basic_custom_parse_file( const std::string& filename )
       {
          return parse_file< Transformers... >( filename );
       }
 
       template< template< typename... > class... Transformers >
-      custom_value custom_parse_file( const std::string& filename )
+      value custom_parse_file( const std::string& filename )
       {
          return parse_file< Transformers... >( filename );
       }
 
       template< template< typename... > class... Transformers, template< typename... > class Traits >
-      void parse_file( basic_custom_value< Traits >& output, const std::string& filename )
+      void parse_file( basic_value< Traits >& output, const std::string& filename )
       {
          output = parse_file< Transformers... >( filename );
       }

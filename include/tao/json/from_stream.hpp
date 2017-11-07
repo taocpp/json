@@ -33,19 +33,19 @@ namespace tao
       }
 
       template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-      basic_custom_value< Traits > basic_custom_from_stream( Ts&&... ts )
+      basic_value< Traits > basic_custom_from_stream( Ts&&... ts )
       {
          return from_stream< Transformers... >( std::forward< Ts >( ts )... );
       }
 
       template< template< typename... > class... Transformers, typename... Ts >
-      custom_value custom_from_stream( Ts&&... ts )
+      value custom_from_stream( Ts&&... ts )
       {
          return from_stream< Transformers... >( std::forward< Ts >( ts )... );
       }
 
       template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
-      void from_stream( basic_custom_value< Traits >& output, Ts&&... ts )
+      void from_stream( basic_value< Traits >& output, Ts&&... ts )
       {
          output = from_stream< Transformers... >( std::forward< Ts >( ts )... );
       }

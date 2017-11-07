@@ -20,7 +20,7 @@ namespace tao
       template< typename T, typename U >
       void test_integer( const U input, const T v )
       {
-         const json::custom_value j = input;
+         const json::value j = input;
          TEST_ASSERT( j.as< T >() == v );
       }
 

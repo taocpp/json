@@ -11,7 +11,7 @@ namespace tao
    {
       void unit_test()
       {
-         custom_value v = empty_object;
+         value v = empty_object;
          TEST_ASSERT( v.get_object().size() == 0 );
          v += {};
          TEST_ASSERT( v.get_object().size() == 0 );

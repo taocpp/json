@@ -19,7 +19,7 @@ namespace tao
          TEST_ASSERT( v1 == v2 );
       }
 
-      void test_throws( const custom_value& v )
+      void test_throws( const value& v )
       {
          data v2( v );
          TEST_THROWS( resolve_references( v2 ) );

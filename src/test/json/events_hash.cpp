@@ -27,7 +27,7 @@ namespace tao
          return h.value();
       }
 
-      bool test( const custom_value& v, const std::string& s )
+      bool test( const value& v, const std::string& s )
       {
          return hash_value( v ) == hash_parse( s );
       }
@@ -39,7 +39,7 @@ namespace tao
          TEST_ASSERT( !test( 0, "null" ) );
 
          TEST_ASSERT( test( empty_array, "[]" ) );
-         TEST_ASSERT( test( custom_value::array( { 1, 2u, 3 } ), "[1,2,3.0]" ) );
+         TEST_ASSERT( test( value::array( { 1, 2u, 3 } ), "[1,2,3.0]" ) );
 
          TEST_ASSERT( test( empty_object, "{}" ) );
          TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{\"a\":0,\"b\":1}" ) );

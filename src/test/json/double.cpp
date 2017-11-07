@@ -155,8 +155,8 @@ namespace tao
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          }
-         TEST_THROWS( custom_value( "foo" ).as< double >() );
-         TEST_THROWS( custom_value( "bar" ).as< int >() );
+         TEST_THROWS( value( "foo" ).as< double >() );
+         TEST_THROWS( value( "bar" ).as< int >() );
       }
 
    }  // namespace json

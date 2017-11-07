@@ -13,7 +13,7 @@ namespace tao
 {
    namespace json
    {
-      bool test_value( const custom_value& v, events::compare& c )
+      bool test_value( const value& v, events::compare& c )
       {
          c.reset();
          events::from_value( c, v );
@@ -29,7 +29,7 @@ namespace tao
 
       void test_null()
       {
-         custom_value v_null = null;
+         value v_null = null;
          events::compare c_null( v_null );
 
          TEST_ASSERT( test_value( null, c_null ) );
@@ -47,7 +47,7 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_null ) );
          TEST_ASSERT( !test_value( empty_array, c_null ) );
          TEST_ASSERT( !test_value( empty_object, c_null ) );
-         TEST_ASSERT( !test_value( custom_value::array( { null } ), c_null ) );
+         TEST_ASSERT( !test_value( value::array( { null } ), c_null ) );
          TEST_ASSERT( !test_value( { { "", null } }, c_null ) );
          TEST_ASSERT( test_value( nullptr, c_null ) );
 
@@ -71,7 +71,7 @@ namespace tao
 
       void test_boolean()
       {
-         events::compare c_true( custom_value( true ) );
+         events::compare c_true( value( true ) );
 
          TEST_ASSERT( !test_value( null, c_true ) );
          TEST_ASSERT( test_value( true, c_true ) );
@@ -107,7 +107,7 @@ namespace tao
 
       void test_number()
       {
-         events::compare c_0( custom_value( 0 ) );
+         events::compare c_0( value( 0 ) );
 
          TEST_ASSERT( !test_value( null, c_0 ) );
          TEST_ASSERT( !test_value( true, c_0 ) );
@@ -140,7 +140,7 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_0 ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_0 ) );
 
-         events::compare c_42( custom_value( 42 ) );
+         events::compare c_42( value( 42 ) );
 
          TEST_ASSERT( !test_value( null, c_42 ) );
          TEST_ASSERT( !test_value( true, c_42 ) );
@@ -159,7 +159,7 @@ namespace tao
 
       void test_string()
       {
-         events::compare c_hello_world( custom_value( "Hello, world!" ) );
+         events::compare c_hello_world( value( "Hello, world!" ) );
 
          TEST_ASSERT( !test_value( null, c_hello_world ) );
          TEST_ASSERT( !test_value( true, c_hello_world ) );
@@ -210,8 +210,8 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_empty_array ) );
          TEST_ASSERT( !test_value( "foo", c_empty_array ) );
          TEST_ASSERT( test_value( empty_array, c_empty_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { empty_array } ), c_empty_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, 3 } ), c_empty_array ) );
+         TEST_ASSERT( !test_value( value::array( { empty_array } ), c_empty_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, 3 } ), c_empty_array ) );
          TEST_ASSERT( !test_value( empty_object, c_empty_array ) );
          TEST_ASSERT( !test_value( nullptr, c_empty_array ) );
 
@@ -234,7 +234,7 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_empty_array ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_empty_array ) );
 
-         events::compare c_array( custom_value::array( { 1, 2, 3 } ) );
+         events::compare c_array( value::array( { 1, 2, 3 } ) );
 
          TEST_ASSERT( !test_value( null, c_array ) );
          TEST_ASSERT( !test_value( true, c_array ) );
@@ -248,15 +248,15 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_array ) );
          TEST_ASSERT( !test_value( "foo", c_array ) );
          TEST_ASSERT( !test_value( empty_array, c_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { empty_array } ), c_empty_array ) );
-         TEST_ASSERT( test_value( custom_value::array( { 1, 2, 3 } ), c_array ) );
-         TEST_ASSERT( test_value( custom_value::array( { 1, 2u, 3.0 } ), c_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2 } ), c_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, 4 } ), c_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, 4 } ), c_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 3, 2 } ), c_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, 3, 4 } ), c_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3 } ) } ), c_array ) );
+         TEST_ASSERT( !test_value( value::array( { empty_array } ), c_empty_array ) );
+         TEST_ASSERT( test_value( value::array( { 1, 2, 3 } ), c_array ) );
+         TEST_ASSERT( test_value( value::array( { 1, 2u, 3.0 } ), c_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2 } ), c_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, 4 } ), c_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, 4 } ), c_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 3, 2 } ), c_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, 3, 4 } ), c_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3 } ) } ), c_array ) );
          TEST_ASSERT( !test_value( empty_object, c_array ) );
          TEST_ASSERT( !test_value( nullptr, c_array ) );
 
@@ -287,18 +287,18 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_array ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_array ) );
 
-         events::compare c_nested_array( custom_value::array( { 1, 2, custom_value::array( { 3, 4, custom_value::array( { 5 } ) } ) } ) );
+         events::compare c_nested_array( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ) );
 
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3 } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3, 4 } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3, 4, custom_value::array( {} ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( test_value( custom_value::array( { 1, 2, custom_value::array( { 3, 4, custom_value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3, 4, custom_value::array( { 5, 6 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, custom_value::array( { 3, 4, custom_value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 2, custom_value::array( { 3, 4, custom_value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3, custom_value::array( { 5 } ) } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3, 4, custom_value::array( { 5 } ), 6 } ) } ), c_nested_array ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, custom_value::array( { 3, 4, custom_value::array( { 5 } ) } ), 6 } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3 } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, 4 } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( {} ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5, 6 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 2, value::array( { 3, 4, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, value::array( { 5 } ) } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ), 6 } ) } ), c_nested_array ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ), 6 } ), c_nested_array ) );
       }
 
       void test_object()
@@ -317,8 +317,8 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_empty_object ) );
          TEST_ASSERT( !test_value( "foo", c_empty_object ) );
          TEST_ASSERT( !test_value( empty_array, c_empty_object ) );
-         TEST_ASSERT( !test_value( custom_value::array( { empty_array } ), c_empty_object ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, 3 } ), c_empty_object ) );
+         TEST_ASSERT( !test_value( value::array( { empty_array } ), c_empty_object ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, 3 } ), c_empty_object ) );
          TEST_ASSERT( test_value( empty_object, c_empty_object ) );
          TEST_ASSERT( !test_value( nullptr, c_empty_object ) );
 
@@ -340,7 +340,7 @@ namespace tao
          TEST_ASSERT( !test_parse( "[null]", c_empty_object ) );
          TEST_ASSERT( !test_parse( "{\"\":null}", c_empty_object ) );
 
-         events::compare c_object( custom_value( { { "a", 1 }, { "b", 2 }, { "c", 3 } } ) );
+         events::compare c_object( value( { { "a", 1 }, { "b", 2 }, { "c", 3 } } ) );
 
          TEST_ASSERT( !test_value( null, c_object ) );
          TEST_ASSERT( !test_value( true, c_object ) );
@@ -354,8 +354,8 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_object ) );
          TEST_ASSERT( !test_value( "foo", c_object ) );
          TEST_ASSERT( !test_value( empty_array, c_object ) );
-         TEST_ASSERT( !test_value( custom_value::array( { empty_array } ), c_empty_object ) );
-         TEST_ASSERT( !test_value( custom_value::array( { 1, 2, 3 } ), c_object ) );
+         TEST_ASSERT( !test_value( value::array( { empty_array } ), c_empty_object ) );
+         TEST_ASSERT( !test_value( value::array( { 1, 2, 3 } ), c_object ) );
          TEST_ASSERT( !test_value( empty_object, c_object ) );
          TEST_ASSERT( !test_value( { { "a", 1 }, { "b", 2 } }, c_object ) );
          TEST_ASSERT( test_value( { { "a", 1 }, { "b", 2 }, { "c", 3 } }, c_object ) );
@@ -394,9 +394,9 @@ namespace tao
 
       void test_mixed()
       {
-         const custom_value s = "hallo";
-         const custom_value b = true;
-         custom_value v = { { "foo", 0 }, { "bar", &b }, { "baz", custom_value::array( { null, &b, false, 0, 1, &s } ) } };
+         const value s = "hallo";
+         const value b = true;
+         value v = { { "foo", 0 }, { "bar", &b }, { "baz", value::array( { null, &b, false, 0, 1, &s } ) } };
 
          events::compare c( v );
          events::from_value( c, v );
