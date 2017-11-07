@@ -22,8 +22,12 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      class basic_custom_value;
+      namespace internal
+      {
+         template< typename B, template< typename... > class Traits >
+         class proxy;
+
+      }  // namespace internal
 
       // note: traits< ... >::assign() is always called with needs_discard(v) == false
 
@@ -455,21 +459,21 @@ namespace tao
          }
       };
 
-      template< template< typename... > class Traits >
-      struct traits< const basic_custom_value< Traits >* >
+      template< typename B, template< typename... > class Traits >
+      struct traits< const internal::proxy< B, Traits >* >
       {
-         static void assign( data& v, const data* p ) noexcept
+         static void assign( data& v, const internal::proxy< B, Traits >* p ) noexcept
          {
-            v.unsafe_assign_raw_ptr( p );
+            v.unsafe_assign_raw_ptr( &static_cast< const data& >( *p ) );
          }
       };
 
-      template< template< typename... > class Traits >
-      struct traits< basic_custom_value< Traits >* >
+      template< typename B, template< typename... > class Traits >
+      struct traits< internal::proxy< B, Traits >* >
       {
-         static void assign( data& v, const data* p ) noexcept
+         static void assign( data& v, const internal::proxy< B, Traits >* p ) noexcept
          {
-            v.unsafe_assign_raw_ptr( p );
+            v.unsafe_assign_raw_ptr( &static_cast< const data& >( *p ) );
          }
       };
 
@@ -485,8 +489,8 @@ namespace tao
       template< typename T >
       struct traits< tao::optional< T > >
       {
-         template< template< typename... > class Traits >
-         static void assign( basic_custom_value< Traits >& v, const tao::optional< T >& o )
+         template< typename B, template< typename... > class Traits >
+         static void assign( internal::proxy< B, Traits >& v, const tao::optional< T >& o )
          {
             if( o ) {
                v = *o;
@@ -496,8 +500,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits >
-         static void extract( const basic_custom_value< Traits >& v, tao::optional< T >& o )
+         template< typename B, template< typename... > class Traits >
+         static void extract( const internal::proxy< B, Traits >& v, tao::optional< T >& o )
          {
             if( v.is_null() ) {
                o = nullopt;

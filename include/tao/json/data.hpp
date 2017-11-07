@@ -462,23 +462,21 @@ namespace tao
             m_type = json::type::DOUBLE;
          }
 
-         void unsafe_assign_string( const std::string& s )
-         {
-            new( &m_union.s ) std::string( s );
-            m_type = json::type::STRING;
-         }
-
-         void unsafe_assign_string( std::string&& s ) noexcept
-         {
-            new( &m_union.s ) std::string( std::move( s ) );
-            m_type = json::type::STRING;
-         }
-
          template< typename... Ts >
          void unsafe_emplace_string( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
          {
             new( &m_union.s ) std::string( std::forward< Ts >( ts )... );
             m_type = json::type::STRING;
+         }
+
+         void unsafe_assign_string( const std::string& s )
+         {
+            unsafe_emplace_string( s );
+         }
+
+         void unsafe_assign_string( std::string&& s ) noexcept
+         {
+            unsafe_emplace_string( std::move( s ) );
          }
 
          void unsafe_assign_string_view( const tao::string_view sv ) noexcept
@@ -527,15 +525,20 @@ namespace tao
             unsafe_emplace_array( std::move( a ) );
          }
 
-         void unsafe_push_back( data v )
+         void unsafe_push_back( const data& v )
+         {
+            m_union.a.push_back( v );
+         }
+
+         void unsafe_push_back( data&& v )
          {
             m_union.a.push_back( std::move( v ) );
          }
 
-         template< typename V >
-         void unsafe_emplace_back( V&& v )
+         template< typename... Args >
+         auto unsafe_emplace_back( Args&&... args ) -> decltype( std::declval< array_t >().emplace_back( std::forward< Args >( args )... ) )
          {
-            m_union.a.emplace_back( std::forward< V >( v ) );
+            return m_union.a.emplace_back( std::forward< Args >( args )... );
          }
 
          template< typename... Ts >
@@ -555,10 +558,10 @@ namespace tao
             unsafe_emplace_object( std::move( o ) );
          }
 
-         template< typename K, typename V >
-         std::pair< typename object_t::iterator, bool > unsafe_emplace( K&& k, V&& v )
+         template< typename... Args >
+         std::pair< typename object_t::iterator, bool > unsafe_emplace( Args&&... args )
          {
-            return m_union.o.emplace( std::forward< K >( k ), std::forward< V >( v ) );
+            return m_union.o.emplace( std::forward< Args >( args )... );
          }
 
          void unsafe_assign_raw_ptr( const data* p ) noexcept
@@ -597,6 +600,13 @@ namespace tao
             unsafe_assign_double( d );
          }
 
+         template< typename... Ts >
+         void emplace_string( Ts&&... ts ) noexcept( noexcept( unsafe_emplace_string( std::forward< Ts >( ts )... ) ) )
+         {
+            discard();
+            unsafe_emplace_string( std::forward< Ts >( ts )... );
+         }
+
          void assign_string( const std::string& s )
          {
             discard();
@@ -607,13 +617,6 @@ namespace tao
          {
             unsafe_discard();
             unsafe_assign_string( std::move( s ) );
-         }
-
-         template< typename... Ts >
-         void emplace_string( Ts&&... ts ) noexcept( noexcept( unsafe_emplace_string( std::forward< Ts >( ts )... ) ) )
-         {
-            discard();
-            unsafe_emplace_string( std::forward< Ts >( ts )... );
          }
 
          void assign_string_view( const tao::string_view sv ) noexcept
@@ -679,11 +682,23 @@ namespace tao
             }
          }
 
-         template< typename V >
-         void emplace_back( V&& v )
+         void push_back( const data& v )
          {
             prepare_array();
-            unsafe_emplace_back( std::forward< V >( v ) );
+            unsafe_push_back( v );
+         }
+
+         void push_back( data&& v )
+         {
+            prepare_array();
+            unsafe_push_back( std::move( v ) );
+         }
+
+         template< typename... Args >
+         void emplace_back( Args&&... args )
+         {
+            prepare_array();
+            unsafe_emplace_back( std::forward< Args... >( args )... );
          }
 
          template< typename... Ts >
@@ -718,11 +733,11 @@ namespace tao
             }
          }
 
-         template< typename K, typename V >
-         std::pair< typename object_t::iterator, bool > emplace( K&& k, V&& v )
+         template< typename... Args >
+         std::pair< typename object_t::iterator, bool > emplace( Args&&... args )
          {
             prepare_object();
-            return unsafe_emplace( std::forward< K >( k ), std::forward< V >( v ) );
+            return unsafe_emplace( std::forward< Args >( args )... );
          }
 
          void assign_raw_ptr( const data* p ) noexcept
