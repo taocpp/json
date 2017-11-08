@@ -30,7 +30,7 @@ namespace tao
          // references into JSON Reference additional members
          // (which shall be ignored as per the specification).
 
-         void resolve_references( data& r, data& v )
+         inline void resolve_references( data& r, data& v )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -107,7 +107,7 @@ namespace tao
 
       }  // namespace internal
 
-      void resolve_references( data& r )
+      inline void resolve_references( data& r )
       {
          resolve_references( r, r );
       }

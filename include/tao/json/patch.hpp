@@ -86,13 +86,13 @@ namespace tao
          }
       }
 
-      data patch( data v, const data& patch )
+      inline data patch( data v, const data& patch )
       {
          patch_inplace( v, patch );
          return v;
       }
 
-      data patch( data v, data&& patch )
+      inline data patch( data v, data&& patch )
       {
          patch_inplace( v, std::move( patch ) );
          return v;

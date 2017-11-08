@@ -1617,7 +1617,7 @@ namespace tao
             }
          }
 
-         void schema_consumer::begin_array( const std::size_t )
+         inline void schema_consumer::begin_array( const std::size_t )
          {
             if( m_match )
                validate_type( ARRAY );
@@ -1656,7 +1656,7 @@ namespace tao
             m_count.push_back( 0 );
          }
 
-         void schema_consumer::element()
+         inline void schema_consumer::element()
          {
             if( m_match )
                validate_enum( []( events_compare& c ) { c.element(); return ! c.match(); } );
@@ -1704,7 +1704,7 @@ namespace tao
             }
          }
 
-         void schema_consumer::key( const std::string& v )
+         inline void schema_consumer::key( const std::string& v )
          {
             if( m_match )
                validate_enum( [&]( events_compare& c ) { c.key( v ); return ! c.match(); } );
