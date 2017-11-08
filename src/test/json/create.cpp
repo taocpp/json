@@ -12,11 +12,6 @@ namespace tao
 {
    namespace json
    {
-      value custom_from_string( const char* v )
-      {
-         return json::from_string( v );
-      }
-
       void test_uninitialized()
       {
          const value v{};
@@ -576,8 +571,8 @@ namespace tao
          test_array_1234();
          test_object_1234();
 
-         TEST_THROWS( custom_from_string( "1" ).emplace_back( 2 ) );
-         TEST_THROWS( custom_from_string( "1" ).emplace( "foo", 3 ) );
+         TEST_THROWS( value( json::from_string( "1" ) ).emplace_back( 2 ) );
+         TEST_THROWS( value( json::from_string( "1" ) ).emplace( "foo", 3 ) );
          {
             value a;
             a.emplace_back( 4 );
