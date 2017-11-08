@@ -1004,13 +1004,13 @@ namespace tao
             }
 
             template< typename T >
-            typename std::enable_if< internal::has_as< Traits< T >, proxy >::value, T >::type as() const
+            typename std::enable_if< has_as< Traits< T >, proxy >::value, T >::type as() const
             {
                return Traits< T >::as( *this );
             }
 
             template< typename T >
-            typename std::enable_if< !internal::has_as< Traits< T >, proxy >::value, T >::type as() const
+            typename std::enable_if< !has_as< Traits< T >, proxy >::value, T >::type as() const
             {
                T nrv;
                this->extract( nrv );
