@@ -8,8 +8,6 @@
 #include <string>
 #include <utility>
 
-#include "../value.hpp"
-
 #include "../events/to_stream.hpp"
 #include "../events/transformer.hpp"
 
@@ -33,24 +31,6 @@ namespace tao
          data from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
          {
             return from_stream< Transformers... >( stream, source.c_str(), maximum_buffer_size );
-         }
-
-         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-         basic_value< Traits > basic_custom_from_stream( Ts&&... ts )
-         {
-            return from_stream< Transformers... >( std::forward< Ts >( ts )... );
-         }
-
-         template< template< typename... > class... Transformers, typename... Ts >
-         value custom_from_stream( Ts&&... ts )
-         {
-            return from_stream< Transformers... >( std::forward< Ts >( ts )... );
-         }
-
-         template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
-         void from_stream( basic_value< Traits >& output, Ts&&... ts )
-         {
-            output = from_stream< Transformers... >( std::forward< Ts >( ts )... );
          }
 
       }  // namespace jaxn

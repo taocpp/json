@@ -8,8 +8,6 @@
 #include <string>
 #include <utility>
 
-#include "../value.hpp"
-
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
 
@@ -39,24 +37,6 @@ namespace tao
          data from_string( const tao::string_view data, Ts&&... ts )
          {
             return from_string< Transformers... >( data.data(), data.size(), std::forward< Ts >( ts )... );
-         }
-
-         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-         basic_value< Traits > basic_custom_from_string( Ts&&... ts )
-         {
-            return from_string< Transformers... >( std::forward< Ts >( ts )... );
-         }
-
-         template< template< typename... > class... Transformers, typename... Ts >
-         value custom_from_string( Ts&&... ts )
-         {
-            return from_string< Transformers... >( std::forward< Ts >( ts )... );
-         }
-
-         template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
-         void from_string( basic_value< Traits >& output, Ts&&... ts )
-         {
-            output = from_string< Transformers... >( std::forward< Ts >( ts )... );
          }
 
          inline namespace literals

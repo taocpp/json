@@ -141,17 +141,20 @@ namespace tao
          TEST_THROWS( from_string( "1.0e1234567890" ) );
          TEST_THROWS( from_string( std::string( 1048577, '1' ) ) );
          {
-            const auto a = custom_from_string( "42.0" ).as< double >();
+            const value v = from_string( "42.0" );
+            const auto a = v.as< double >();
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          }
          {
-            const auto a = custom_from_string( "42.3" ).as< short >();
+            const value v = from_string( "42.3" );
+            const auto a = v.as< short >();
             TEST_ASSERT( sizeof( a ) == sizeof( short ) );
             TEST_ASSERT( a == 42 );
          }
          {
-            const auto a = custom_from_string( "42" ).as< double >();
+            const value v = from_string( "42" );
+            const auto a = v.as< double >();
             TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          }

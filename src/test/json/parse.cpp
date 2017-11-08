@@ -10,6 +10,16 @@ namespace tao
 {
    namespace json
    {
+      value custom_from_string( const char* v )
+      {
+         return json::from_string( v );
+      }
+
+      value custom_from_string( const std::string& v )
+      {
+         return json::from_string( v );
+      }
+
       void test_string()
       {
          TEST_ASSERT( custom_from_string( "\"\"" ) == value( "" ) );

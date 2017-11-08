@@ -6,8 +6,6 @@
 
 #include <string>
 
-#include "../value.hpp"
-
 #include "../events/to_value.hpp"
 
 #include "../events/ubjson/from_string.hpp"
@@ -24,24 +22,6 @@ namespace tao
             events::transformer< events::to_value, Transformers... > consumer;
             events::ubjson::from_string( consumer, std::forward< Ts >( ts )... );
             return std::move( consumer.value );
-         }
-
-         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-         basic_value< Traits > basic_custom_from_string( Ts&&... ts )
-         {
-            return from_string< Transformers... >( std::forward< Ts >( ts )... );
-         }
-
-         template< template< typename... > class... Transformers, typename... Ts >
-         value custom_from_string( Ts&&... ts )
-         {
-            return from_string< Transformers... >( std::forward< Ts >( ts )... );
-         }
-
-         template< template< typename... > class... Transformers, template< typename... > class Traits, typename... Ts >
-         void from_string( basic_value< Traits >& output, Ts&&... ts )
-         {
-            output = from_string< Transformers... >( std::forward< Ts >( ts )... );
          }
 
       }  // namespace ubjson
