@@ -105,6 +105,23 @@ namespace tao
          template< typename B, template< typename... > class Traits >
          class proxy : B
          {
+         public:
+            using reference = proxy< data_reference, Traits >;
+            using const_reference = const proxy< const_data_reference, Traits >;
+
+            using pointer = tao::optional< reference >;
+            using const_pointer = tao::optional< const_reference >;
+
+            static pointer to_pointer( data* p ) noexcept
+            {
+               return p ? pointer( *p ) : tao::nullopt;
+            }
+
+            static const_pointer to_const_pointer( const data* p ) noexcept
+            {
+               return p ? const_pointer( *p ) : tao::nullopt;
+            }
+
          private:
             using binary_t = data::binary_t;
             using array_t = data::array_t;
@@ -607,6 +624,12 @@ namespace tao
                this->v_.unsafe_assign_raw_ptr( p );
             }
 
+            template< typename B2, template< typename... > class Traits2 >
+            void unsafe_assign_raw_ptr( const proxy< B2, Traits2 >* p ) noexcept
+            {
+               this->v_.unsafe_assign_raw_ptr( p->v_ );
+            }
+
             template< typename T >
             void unsafe_assign( T&& v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< proxy& >(), std::forward< T >( v ) ) ) )
             {
@@ -833,126 +856,132 @@ namespace tao
                this->v_.assign_raw_ptr( p );
             }
 
-            const data* skip_raw_ptr() const noexcept
+            template< typename B2, template< typename... > class Traits2 >
+            void assign_raw_ptr( const proxy< B2, Traits2 >* p ) noexcept
             {
-               return this->v_.skip_raw_ptr();
+               this->v_.assign_raw_ptr( p->v_ );
             }
 
-            data* unsafe_find( const std::string& key ) noexcept
+            const_pointer skip_raw_ptr() const noexcept
             {
-               return this->v_.unsafe_find( key );
+               return to_const_pointer( this->v_.skip_raw_ptr() );
             }
 
-            template< typename T >
-            data* unsafe_find( const T& key ) noexcept
+            pointer unsafe_find( const std::string& key ) noexcept
             {
-               return this->v_.unsafe_find( key );
-            }
-
-            const data* unsafe_find( const std::string& key ) const noexcept
-            {
-               return this->v_.unsafe_find( key );
+               return to_pointer( this->v_.unsafe_find( key ) );
             }
 
             template< typename T >
-            const data* unsafe_find( const T& key ) const noexcept
+            pointer unsafe_find( const T& key ) noexcept
             {
-               return this->v_.unsafe_find( key );
+               return to_pointer( this->v_.unsafe_find( key ) );
             }
 
-            data* find( const std::string& key )
+            const_pointer unsafe_find( const std::string& key ) const noexcept
             {
-               return this->v_.find( key );
-            }
-
-            template< typename T >
-            data* find( const T& key )
-            {
-               return this->v_.find( key );
-            }
-
-            const data* find( const std::string& key ) const
-            {
-               return this->v_.find( key );
+               return to_const_pointer( this->v_.unsafe_find( key ) );
             }
 
             template< typename T >
-            const data* find( const T& key ) const
+            const_pointer unsafe_find( const T& key ) const noexcept
             {
-               return this->v_.find( key );
+               return to_const_pointer( this->v_.unsafe_find( key ) );
             }
 
-            proxy< data_reference, Traits > unsafe_at( const std::size_t index ) noexcept
+            pointer find( const std::string& key )
+            {
+               return to_pointer( this->v_.find( key ) );
+            }
+
+            template< typename T >
+            pointer find( const T& key )
+            {
+               return to_pointer( this->v_.find( key ) );
+            }
+
+            const_pointer find( const std::string& key ) const
+            {
+               return to_const_pointer( this->v_.find( key ) );
+            }
+
+            template< typename T >
+            const_pointer find( const T& key ) const
+            {
+               return to_const_pointer( this->v_.find( key ) );
+            }
+
+            reference unsafe_at( const std::size_t index ) noexcept
             {
                return this->v_.unsafe_at( index );
             }
 
-            const proxy< const_data_reference, Traits > unsafe_at( const std::size_t index ) const noexcept
+            const_reference unsafe_at( const std::size_t index ) const noexcept
             {
                return this->v_.unsafe_at( index );
             }
 
-            proxy< data_reference, Traits > unsafe_at( const std::string& key ) noexcept
+            reference unsafe_at( const std::string& key ) noexcept
             {
                return this->v_.unsafe_at( key );
             }
 
-            const proxy< const_data_reference, Traits > unsafe_at( const std::string& key ) const noexcept
+            const_reference unsafe_at( const std::string& key ) const noexcept
             {
                return this->v_.unsafe_at( key );
             }
 
-            proxy< data_reference, Traits > at( const std::size_t index )
+            reference at( const std::size_t index )
             {
                return this->v_.at( index );
             }
 
-            const proxy< const_data_reference, Traits > at( const std::size_t index ) const
+            const_reference at( const std::size_t index ) const
             {
                return this->v_.at( index );
             }
 
-            proxy< data_reference, Traits > at( const std::string& key )
+            reference at( const std::string& key )
             {
                return this->v_.at( key );
             }
 
-            const proxy< const_data_reference, Traits > at( const std::string& key ) const
+            const_reference at( const std::string& key ) const
             {
                return this->v_.at( key );
             }
 
-            proxy< data_reference, Traits > at( const pointer& k )
+            reference at( const json::pointer& k )
             {
                return this->v_.at( k );
             }
 
-            const proxy< const_data_reference, Traits > at( const pointer& k ) const
+            const_reference at( const json::pointer& k ) const
             {
                return this->v_.at( k );
             }
 
-            proxy< data_reference, Traits > operator[]( const std::size_t index ) noexcept
+            reference operator[]( const std::size_t index ) noexcept
             {
                return this->v_[ index ];
             }
 
-            const proxy< const_data_reference, Traits > operator[]( const std::size_t index ) const noexcept
+            const_reference operator[]( const std::size_t index ) const noexcept
             {
                return this->v_[ index ];
             }
 
-            proxy< data_reference, Traits > operator[]( const std::string& key )
+            reference operator[]( const std::string& key )
             {
                return this->v_[ key ];
             }
 
-            proxy< data_reference, Traits > operator[]( std::string&& key )
+            reference operator[]( std::string&& key )
             {
                return this->v_[ std::move( key ) ];
             }
 
-            proxy< data_reference, Traits > operator[]( const pointer& k )
+            reference operator[]( const json::pointer& k )
             {
                return this->v_[ k ];
             }
@@ -967,12 +996,12 @@ namespace tao
                this->v_.erase( key );
             }
 
-            void erase( const pointer& k )
+            void erase( const json::pointer& k )
             {
                this->v_.erase( k );
             }
 
-            proxy< data_reference, Traits > insert( const pointer& k, data value )
+            reference insert( const json::pointer& k, data value )
             {
                return this->v_.insert( k, std::move( value ) );
             }
@@ -1035,7 +1064,7 @@ namespace tao
                   return tao::nullopt;
                }
                else {
-                  return proxy< const_data_reference, Traits >( *p ).template as< T >();
+                  return const_reference( *p ).template as< T >();
                }
             }
 
