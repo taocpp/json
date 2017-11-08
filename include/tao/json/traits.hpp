@@ -32,13 +32,7 @@ namespace tao
       // note: traits< ... >::assign() is always called with needs_discard(v) == false
 
       template< typename T, typename = void >
-      struct traits
-      {
-         static_assert( sizeof( T ) == 0, "no traits specialization found" );
-
-         template< typename U >
-         static void assign( data&, U&& );
-      };
+      struct traits;
 
       template<>
       struct traits< null_t >
@@ -464,7 +458,22 @@ namespace tao
       {
          static void assign( data& v, const internal::proxy< B, Traits >* p ) noexcept
          {
-            v.unsafe_assign_raw_ptr( &static_cast< const data& >( *p ) );
+            v.unsafe_assign_raw_ptr( p ? &static_cast< const data& >( *p ) : nullptr );
+         }
+
+         static bool equals( const data& v, const internal::proxy< B, Traits >* p ) noexcept
+         {
+            return v == ( p ? &static_cast< const data& >( *p ) : nullptr );
+         }
+
+         static bool less_than( const data& v, const internal::proxy< B, Traits >* p ) noexcept
+         {
+            return v < ( p ? &static_cast< const data& >( *p ) : nullptr );
+         }
+
+         static bool greater_than( const data& v, const internal::proxy< B, Traits >* p ) noexcept
+         {
+            return v > ( p ? &static_cast< const data& >( *p ) : nullptr );
          }
       };
 
@@ -473,7 +482,22 @@ namespace tao
       {
          static void assign( data& v, const internal::proxy< B, Traits >* p ) noexcept
          {
-            v.unsafe_assign_raw_ptr( &static_cast< const data& >( *p ) );
+            v.unsafe_assign_raw_ptr( p ? &static_cast< const data& >( *p ) : nullptr );
+         }
+
+         static bool equals( const data& v, internal::proxy< B, Traits >* p ) noexcept
+         {
+            return v == ( p ? &static_cast< data& >( *p ) : nullptr );
+         }
+
+         static bool less_than( const data& v, internal::proxy< B, Traits >* p ) noexcept
+         {
+            return v < ( p ? &static_cast< data& >( *p ) : nullptr );
+         }
+
+         static bool greater_than( const data& v, internal::proxy< B, Traits >* p ) noexcept
+         {
+            return v > ( p ? &static_cast< data& >( *p ) : nullptr );
          }
       };
 

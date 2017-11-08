@@ -1082,80 +1082,27 @@ namespace tao
             return static_cast< const data& >( lhs ) >= static_cast< const data& >( rhs );
          }
 
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator==( const proxy< BL, TraitsL >& lhs, const proxy< BR, TraitsR >* rhs ) noexcept
+         template< typename B, template< typename... > class Traits, typename T, typename = void >
+         struct has_equals : std::false_type
          {
-            return rhs ? ( lhs == *rhs ) : ( lhs == nullptr );
-         }
+         };
 
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator!=( const proxy< BL, TraitsL >& lhs, const proxy< BR, TraitsR >* rhs ) noexcept
+         template< typename B, template< typename... > class Traits, typename T >
+         struct has_equals< B, Traits, T, decltype( Traits< typename std::decay< T >::type >::equals( std::declval< const proxy< B, Traits >& >(), std::declval< const T& >() ), void() ) > : std::true_type
          {
-            return rhs ? ( lhs != *rhs ) : ( lhs != nullptr );
-         }
+         };
 
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator<( const proxy< BL, TraitsL >& lhs, const proxy< BR, TraitsR >* rhs ) noexcept
+         template< typename B, template< typename... > class Traits, typename T >
+         typename std::enable_if< has_equals< B, Traits, T >::value, bool >::type
+         operator==( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
          {
-            return rhs ? ( lhs < *rhs ) : ( lhs < nullptr );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator>( const proxy< BL, TraitsL >& lhs, const proxy< BR, TraitsR >* rhs ) noexcept
-         {
-            return rhs ? ( lhs > *rhs ) : ( lhs > nullptr );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator<=( const proxy< BL, TraitsL >& lhs, const proxy< BR, TraitsR >* rhs ) noexcept
-         {
-            return rhs ? ( lhs <= *rhs ) : ( lhs <= nullptr );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator>=( const proxy< BL, TraitsL >& lhs, const proxy< BR, TraitsR >* rhs ) noexcept
-         {
-            return rhs ? ( lhs >= *rhs ) : ( lhs >= nullptr );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator==( const proxy< BL, TraitsL >* lhs, const proxy< BR, TraitsR >& rhs ) noexcept
-         {
-            return lhs ? ( *lhs == rhs ) : ( nullptr == rhs );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator!=( const proxy< BL, TraitsL >* lhs, const proxy< BR, TraitsR >& rhs ) noexcept
-         {
-            return lhs ? ( *lhs != rhs ) : ( nullptr != rhs );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator<( const proxy< BL, TraitsL >* lhs, const proxy< BR, TraitsR >& rhs ) noexcept
-         {
-            return lhs ? ( *lhs < rhs ) : ( nullptr < rhs );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator>( const proxy< BL, TraitsL >* lhs, const proxy< BR, TraitsR >& rhs ) noexcept
-         {
-            return lhs ? ( *lhs > rhs ) : ( nullptr > rhs );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator<=( const proxy< BL, TraitsL >* lhs, const proxy< BR, TraitsR >& rhs ) noexcept
-         {
-            return lhs ? ( *lhs <= rhs ) : ( nullptr <= rhs );
-         }
-
-         template< typename BL, template< typename... > class TraitsL, typename BR, template< typename... > class TraitsR >
-         bool operator>=( const proxy< BL, TraitsL >* lhs, const proxy< BR, TraitsR >& rhs ) noexcept
-         {
-            return lhs ? ( *lhs >= rhs ) : ( nullptr >= rhs );
+            using D = typename std::decay< T >::type;
+            return Traits< D >::equals( lhs, rhs );
          }
 
          template< typename B, template< typename... > class Traits, typename T >
-         bool operator==( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
+         typename std::enable_if< !has_equals< B, Traits, T >::value, bool >::type
+         operator==( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
          {
             return static_cast< const data& >( lhs ) == rhs;
          }
@@ -1163,17 +1110,55 @@ namespace tao
          template< typename B, template< typename... > class Traits, typename T >
          bool operator!=( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
          {
-            return static_cast< const data& >( lhs ) != rhs;
+            return !( lhs == rhs );
+         }
+
+         template< typename B, template< typename... > class Traits, typename T, typename = void >
+         struct has_less_than : std::false_type
+         {
+         };
+
+         template< typename B, template< typename... > class Traits, typename T >
+         struct has_less_than< B, Traits, T, decltype( Traits< typename std::decay< T >::type >::less_than( std::declval< const proxy< B, Traits >& >(), std::declval< const T& >() ), void() ) > : std::true_type
+         {
+         };
+
+         template< typename B, template< typename... > class Traits, typename T >
+         typename std::enable_if< has_less_than< B, Traits, T >::value, bool >::type
+         operator<( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
+         {
+            using D = typename std::decay< T >::type;
+            return Traits< D >::less_than( lhs, rhs );
          }
 
          template< typename B, template< typename... > class Traits, typename T >
-         bool operator<( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
+         typename std::enable_if< !has_less_than< B, Traits, T >::value, bool >::type
+         operator<( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
          {
             return static_cast< const data& >( lhs ) < rhs;
          }
 
+         template< typename B, template< typename... > class Traits, typename T, typename = void >
+         struct has_greater_than : std::false_type
+         {
+         };
+
          template< typename B, template< typename... > class Traits, typename T >
-         bool operator>( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
+         struct has_greater_than< B, Traits, T, decltype( Traits< typename std::decay< T >::type >::greater_than( std::declval< const proxy< B, Traits >& >(), std::declval< const T& >() ), void() ) > : std::true_type
+         {
+         };
+
+         template< typename B, template< typename... > class Traits, typename T >
+         typename std::enable_if< has_greater_than< B, Traits, T >::value, bool >::type
+         operator>( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
+         {
+            using D = typename std::decay< T >::type;
+            return Traits< D >::greater_than( lhs, rhs );
+         }
+
+         template< typename B, template< typename... > class Traits, typename T >
+         typename std::enable_if< !has_greater_than< B, Traits, T >::value, bool >::type
+         operator>( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
          {
             return static_cast< const data& >( lhs ) > rhs;
          }
@@ -1181,49 +1166,49 @@ namespace tao
          template< typename B, template< typename... > class Traits, typename T >
          bool operator<=( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
          {
-            return static_cast< const data& >( lhs ) <= rhs;
+            return !( lhs > rhs );
          }
 
          template< typename B, template< typename... > class Traits, typename T >
          bool operator>=( const proxy< B, Traits >& lhs, const T& rhs ) noexcept
          {
-            return static_cast< const data& >( lhs ) >= rhs;
+            return !( lhs < rhs );
          }
 
          template< typename T, typename B, template< typename... > class Traits >
          bool operator==( const T& lhs, const proxy< B, Traits >& rhs ) noexcept
          {
-            return lhs == static_cast< const data& >( rhs );
+            return rhs == lhs;
          }
 
          template< typename T, typename B, template< typename... > class Traits >
          bool operator!=( const T& lhs, const proxy< B, Traits >& rhs ) noexcept
          {
-            return lhs != static_cast< const data& >( rhs );
+            return rhs != lhs;
          }
 
          template< typename T, typename B, template< typename... > class Traits >
          bool operator<( const T& lhs, const proxy< B, Traits >& rhs ) noexcept
          {
-            return lhs < static_cast< const data& >( rhs );
+            return rhs > lhs;
          }
 
          template< typename T, typename B, template< typename... > class Traits >
          bool operator>( const T& lhs, const proxy< B, Traits >& rhs ) noexcept
          {
-            return lhs > static_cast< const data& >( rhs );
+            return rhs < lhs;
          }
 
          template< typename T, typename B, template< typename... > class Traits >
          bool operator<=( const T& lhs, const proxy< B, Traits >& rhs ) noexcept
          {
-            return lhs <= static_cast< const data& >( rhs );
+            return rhs >= lhs;
          }
 
          template< typename T, typename B, template< typename... > class Traits >
          bool operator>=( const T& lhs, const proxy< B, Traits >& rhs ) noexcept
          {
-            return lhs >= static_cast< const data& >( rhs );
+            return rhs <= lhs;
          }
 
          template< typename B, template< typename... > class Traits >
