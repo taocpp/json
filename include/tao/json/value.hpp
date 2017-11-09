@@ -43,6 +43,12 @@ namespace tao
          {
          };
 
+         // required work-around for GCC 6
+         inline void rethrow()
+         {
+            throw;
+         }
+
       }  // namespace internal
 
       template< template< typename... > class Traits >
@@ -86,7 +92,14 @@ namespace tao
          basic_value( const basic_value& r )
             : m_type( r.m_type )
          {
-            embed( r );
+            try {
+               embed( r );
+            }
+            catch( ... ) {
+               unsafe_discard();
+               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               throw;
+            }
          }
 
          basic_value( basic_value&& r ) noexcept
@@ -118,18 +131,39 @@ namespace tao
          template< typename T, typename = typename std::enable_if< !std::is_convertible< T&&, const basic_value& >::value >::type >
          basic_value( T&& v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          {
-            using D = typename std::decay< T >::type;
-            Traits< D >::assign( *this, std::forward< T >( v ) );
+            try {
+               using D = typename std::decay< T >::type;
+               Traits< D >::assign( *this, std::forward< T >( v ) );
+            }
+            catch( ... ) {
+               unsafe_discard();
+               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               internal::rethrow();
+            }
          }
 
          basic_value( std::initializer_list< pair< Traits > >&& l )
          {
-            unsafe_assign( std::move( l ) );
+            try {
+               unsafe_assign( std::move( l ) );
+            }
+            catch( ... ) {
+               unsafe_discard();
+               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               throw;
+            }
          }
 
          basic_value( const std::initializer_list< pair< Traits > >& l )
          {
-            unsafe_assign( l );
+            try {
+               unsafe_assign( l );
+            }
+            catch( ... ) {
+               unsafe_discard();
+               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               throw;
+            }
          }
 
          basic_value( std::initializer_list< pair< Traits > >& l )
