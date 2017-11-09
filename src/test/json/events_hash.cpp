@@ -13,7 +13,7 @@ namespace tao
 {
    namespace json
    {
-      std::string hash_value( const data& v )
+      std::string hash_value( const value& v )
       {
          events::hash h;
          events::from_value( h, v );

@@ -7,8 +7,8 @@
 #include <iomanip>
 #include <iosfwd>
 
-#include "data.hpp"
 #include "to_stream.hpp"
+#include "value.hpp"
 
 namespace tao
 {
@@ -16,7 +16,8 @@ namespace tao
    {
       // Use ostream << std::setw( n ) for pretty-printing with indent n.
 
-      inline std::ostream& operator<<( std::ostream& o, const data& v )
+      template< template< typename... > class Traits >
+      std::ostream& operator<<( std::ostream& o, const basic_value< Traits >& v )
       {
          const auto w = o.width();
 

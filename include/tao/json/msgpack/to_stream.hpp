@@ -6,7 +6,7 @@
 
 #include <ostream>
 
-#include "../data.hpp"
+#include "../value.hpp"
 
 #include "../events/from_value.hpp"
 #include "../events/transformer.hpp"
@@ -19,8 +19,8 @@ namespace tao
    {
       namespace msgpack
       {
-         template< template< typename... > class... Transformers >
-         void to_stream( std::ostream& os, const data& v )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         void to_stream( std::ostream& os, const basic_value< Traits >& v )
          {
             events::transformer< events::msgpack::to_stream, Transformers... > consumer( os );
             events::from_value( consumer, v );

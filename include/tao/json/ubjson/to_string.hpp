@@ -6,7 +6,7 @@
 
 #include <string>
 
-#include "../data.hpp"
+#include "../value.hpp"
 
 #include "../events/from_value.hpp"
 #include "../events/non_finite_to_null.hpp"
@@ -20,8 +20,8 @@ namespace tao
    {
       namespace ubjson
       {
-         template< template< typename... > class... Transformers >
-         std::string to_string( const data& v )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         std::string to_string( const basic_value< Traits >& v )
          {
             events::transformer< events::ubjson::to_string, Transformers..., events::non_finite_to_null > consumer;
             events::from_value( consumer, v );

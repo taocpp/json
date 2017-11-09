@@ -6,7 +6,7 @@
 
 #include <ostream>
 
-#include "../data.hpp"
+#include "../value.hpp"
 
 #include "../events/from_value.hpp"
 #include "../events/non_finite_to_null.hpp"
@@ -20,8 +20,8 @@ namespace tao
    {
       namespace ubjson
       {
-         template< template< typename... > class... Transformers >
-         void to_stream( std::ostream& os, const data& v )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         void to_stream( std::ostream& os, const basic_value< Traits >& v )
          {
             events::transformer< events::ubjson::to_stream, Transformers..., events::non_finite_to_null > consumer( os );
             events::from_value( consumer, v );

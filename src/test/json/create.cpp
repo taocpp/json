@@ -408,7 +408,7 @@ namespace tao
          TEST_ASSERT( !v.is_number() );
          TEST_ASSERT( v.type() == type::ARRAY );
 
-         const std::vector< data > r = { value( 1 ), value( 2 ), value( 3 ), value( 4 ) };
+         const std::vector< value > r = { value( 1 ), value( 2 ), value( 3 ), value( 4 ) };
 
          TEST_ASSERT( v == value( r ) );
          TEST_ASSERT( v.get_array() == r );
@@ -507,7 +507,7 @@ namespace tao
             TEST_ASSERT( v.type() == type::DOUBLE );
             TEST_ASSERT( v.get_double() == a );
 
-            v = std::vector< data >();
+            v = std::vector< value >();
 
             TEST_ASSERT( v.type() == type::ARRAY );
             TEST_ASSERT( v.get_array().empty() );
@@ -517,7 +517,7 @@ namespace tao
             TEST_ASSERT( v.type() == type::DOUBLE );
             TEST_ASSERT( std::isnan( v.get_double() ) );
 
-            v = std::map< std::string, data >();
+            v = std::map< std::string, value >();
 
             TEST_ASSERT( v.type() == type::OBJECT );
             TEST_ASSERT( v.get_object().empty() );
@@ -563,10 +563,10 @@ namespace tao
          TEST_ASSERT( value( "baz" ).get_string().size() == 3 );
 
          test_empty_array( value( empty_array ) );
-         test_empty_array( value( std::vector< data >() ) );
+         test_empty_array( value( std::vector< value >() ) );
 
          test_empty_object( value( empty_object ) );
-         test_empty_object( value( std::map< std::string, data >() ) );
+         test_empty_object( value( std::map< std::string, value >() ) );
 
          test_array_1234();
          test_object_1234();

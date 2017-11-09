@@ -18,24 +18,18 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class... Transformers >
-         data parse_file( const std::string& filename )
+         template< template< typename... > class Traits, template< typename... > class... Transformers >
+         basic_value< Traits > basic_parse_file( const std::string& filename )
          {
-            events::transformer< events::to_value, Transformers... > consumer;
+            events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
             events::jaxn::parse_file( consumer, filename );
             return std::move( consumer.value );
          }
 
          template< template< typename... > class... Transformers >
-         void parse_file( data& output, const std::string& filename )
+         value parse_file( const std::string& filename )
          {
-            output = parse_file< Transformers... >( filename );
-         }
-
-         template< template< typename... > class... Transformers, template< typename... > class Traits >
-         void parse_file( basic_value< Traits >& output, const std::string& filename )
-         {
-            output = parse_file< Transformers... >( filename );
+            return basic_parse_file< traits, Transformers... >( filename );
          }
 
       }  // namespace jaxn

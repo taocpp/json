@@ -14,7 +14,7 @@
 #include "../external/string_view.hpp"
 
 #include "../byte_view.hpp"
-#include "../data.hpp"
+#include "../value.hpp"
 
 namespace tao
 {
@@ -24,14 +24,15 @@ namespace tao
       {
          // Events consumer to build a JSON Value.
 
-         class to_value
+         template< template< typename... > class Traits >
+         class to_basic_value
          {
          private:
-            std::vector< data > stack_;
+            std::vector< basic_value< Traits > > stack_;
             std::vector< std::string > keys_;
 
          public:
-            data value;
+            basic_value< Traits > value;
 
             void null()
             {
@@ -139,6 +140,8 @@ namespace tao
                stack_.pop_back();
             }
          };
+
+         using to_value = to_basic_value< traits >;
 
       }  // namespace events
 

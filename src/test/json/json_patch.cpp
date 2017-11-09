@@ -10,7 +10,7 @@ namespace tao
 {
    namespace json
    {
-      data cpatch( const data& v, const data& patch )
+      value cpatch( const value& v, const value& patch )
       {
          return json::patch( v, patch );
       }

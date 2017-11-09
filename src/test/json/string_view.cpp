@@ -4,8 +4,6 @@
 #include "test.hpp"
 
 #include <tao/json/external/string_view.hpp>
-#include <tao/json/traits_always_string_view.hpp>
-#include <tao/json/traits_store_views.hpp>
 #include <tao/json/value.hpp>
 
 namespace tao
@@ -54,7 +52,7 @@ namespace tao
          TEST_ASSERT( vsv.as< std::string >() == s );
          TEST_ASSERT( vsv.as< const std::string& >() == s );
 
-         // even in default mode, storing a string_view is possible
+         // storing a string_view is possible
          value v;
          v.unsafe_assign_string_view( sv );
 
@@ -62,22 +60,6 @@ namespace tao
 
          TEST_ASSERT( v.as< tao::string_view >() == s );
          TEST_ASSERT( v.as< std::string >() == s );
-
-         // if you don't like the default, use a different trait class
-         basic_value< traits_store_views > v2 = sv;
-
-         TEST_ASSERT( v2.type() == type::STRING_VIEW );
-
-         TEST_ASSERT( v2.as< tao::string_view >() == s );
-         TEST_ASSERT( v2.as< std::string >() == s );
-
-         // there's even one for always storing a string_view
-         basic_value< traits_always_string_view > v3 = s;
-
-         TEST_ASSERT( v3.type() == type::STRING_VIEW );
-
-         TEST_ASSERT( v3.as< tao::string_view >() == s );
-         TEST_ASSERT( v3.as< std::string >() == s );
       }
 
    }  // namespace json

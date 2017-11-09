@@ -4,8 +4,6 @@
 #ifndef TAOCPP_JSON_INCLUDE_CBOR_FROM_STRING_HPP
 #define TAOCPP_JSON_INCLUDE_CBOR_FROM_STRING_HPP
 
-#include <cstddef>
-#include <string>
 #include <utility>
 
 #include "../events/to_value.hpp"
@@ -19,12 +17,18 @@ namespace tao
    {
       namespace cbor
       {
-         template< template< typename... > class... Transformers, typename... Ts >
-         data from_string( Ts&&... ts )
+         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
+         basic_value< Traits > basic_from_string( Ts&&... ts )
          {
-            events::transformer< events::to_value, Transformers... > consumer;
+            events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
             events::cbor::from_string( consumer, std::forward< Ts >( ts )... );
             return std::move( consumer.value );
+         }
+
+         template< template< typename... > class... Transformers, typename... Ts >
+         value from_string( Ts&&... ts )
+         {
+            return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
          }
 
       }  // namespace cbor

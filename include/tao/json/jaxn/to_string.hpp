@@ -6,7 +6,7 @@
 
 #include <sstream>
 
-#include "../data.hpp"
+#include "../value.hpp"
 
 #include "to_stream.hpp"
 
@@ -16,16 +16,16 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class... Transformers >
-         std::string to_string( const data& v )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         std::string to_string( const basic_value< Traits >& v )
          {
             std::ostringstream o;
             jaxn::to_stream< Transformers... >( o, v );
             return o.str();
          }
 
-         template< template< typename... > class... Transformers >
-         std::string to_string( const data& v, const unsigned indent )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         std::string to_string( const basic_value< Traits >& v, const unsigned indent )
          {
             std::ostringstream o;
             jaxn::to_stream< Transformers... >( o, v, indent );

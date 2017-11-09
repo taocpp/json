@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "../data.hpp"
+#include "../value.hpp"
 
 namespace tao
 {
@@ -18,13 +18,14 @@ namespace tao
    {
       namespace internal
       {
+         template< template< typename... > class Traits >
          class events_compare
          {
          protected:
-            std::vector< const data* > m_current;
+            std::vector< const basic_value< Traits >* > m_current;
             std::vector< std::size_t > m_array_index;
             // TODO: use std::unordered_set? or even std::vector!?
-            std::vector< std::set< const data* > > m_object_keys;
+            std::vector< std::set< const basic_value< Traits >* > > m_object_keys;
             bool m_match = true;
 
          public:
@@ -44,7 +45,7 @@ namespace tao
                m_match = true;
             }
 
-            static const data* skip_pointer( const data* p ) noexcept
+            static const basic_value< Traits >* skip_pointer( const basic_value< Traits >* p ) noexcept
             {
                while( p && p->is_raw_ptr() ) {
                   p = p->unsafe_get_raw_ptr();
@@ -52,7 +53,7 @@ namespace tao
                return p;
             }
 
-            void push( const data* p )
+            void push( const basic_value< Traits >* p )
             {
                m_current.push_back( skip_pointer( p ) );
             }
@@ -62,7 +63,7 @@ namespace tao
                return m_match;
             }
 
-            const data& current() const noexcept
+            const basic_value< Traits >& current() const noexcept
             {
                return *m_current.back();
             }
@@ -217,37 +218,37 @@ namespace tao
       {
          // Events consumer that compares against a JSON Value.
 
-         class compare
-            : public internal::events_compare
+         template< template< typename... > class Traits >
+         class basic_compare
+            : public internal::events_compare< Traits >
          {
          private:
-            const data m_value;
+            const basic_value< Traits > m_value;
 
          public:
-            explicit compare( const data& v )
+            explicit basic_compare( const basic_value< Traits >& v )
                : m_value( v )
             {
                reset();
             }
 
-            explicit compare( data&& v )
+            explicit basic_compare( basic_value< Traits >&& v )
                : m_value( std::move( v ) )
             {
                reset();
             }
 
-            compare( const compare& ) = delete;
-            compare( compare&& ) = delete;
-
-            void operator=( const compare& ) = delete;
-            void operator=( compare&& ) = delete;
+            basic_compare( const basic_compare& ) = delete;
+            void operator=( const basic_compare& ) = delete;
 
             void reset()
             {
-               internal::events_compare::reset();
-               internal::events_compare::push( &m_value );
+               internal::events_compare< Traits >::reset();
+               internal::events_compare< Traits >::push( &m_value );
             }
          };
+
+         using compare = basic_compare< traits >;
 
       }  // namespace events
 

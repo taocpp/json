@@ -21,17 +21,17 @@ namespace tao
 
       void test_throws( const value& v )
       {
-         data v2( v );
+         value v2( v );
          TEST_THROWS( resolve_references( v2 ) );
       }
 
       void unit_test()
       {
          {
-            data e;
+            value e;
             resolve_references( e );
 #ifndef NDEBUG
-            data e2 = std::move( e );
+            value e2 = std::move( e );
             TEST_THROWS( resolve_references( e ) );
 #endif
          }

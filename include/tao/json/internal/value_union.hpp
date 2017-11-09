@@ -1,8 +1,8 @@
 // Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_DATA_UNION_HPP
-#define TAOCPP_JSON_INCLUDE_INTERNAL_DATA_UNION_HPP
+#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_UNION_HPP
+#define TAOCPP_JSON_INCLUDE_INTERNAL_VALUE_UNION_HPP
 
 #include <cstdint>
 #include <map>
@@ -18,20 +18,19 @@ namespace tao
 {
    namespace json
    {
-      class data;
-
       namespace internal
       {
-         union data_union
+         template< typename T >
+         union value_union
          {
-            data_union() noexcept
+            value_union() noexcept
             {
             }
 
-            data_union( const data_union& ) = delete;
-            void operator=( const data_union& ) = delete;
+            value_union( const value_union& ) = delete;
+            void operator=( const value_union& ) = delete;
 
-            ~data_union() noexcept
+            ~value_union() noexcept
             {
             }
 
@@ -47,11 +46,11 @@ namespace tao
             std::vector< tao::byte > x;
             tao::byte_view xv;
 
-            std::vector< data > a;
+            std::vector< T > a;
 
-            std::map< std::string, data > o;
+            std::map< std::string, T > o;
 
-            const data* p;
+            const T* p;
          };
 
       }  // namespace internal

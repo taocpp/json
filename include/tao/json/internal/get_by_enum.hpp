@@ -8,9 +8,7 @@
 
 #include "../type.hpp"
 
-#include "../external/byte.hpp"
-
-#include "data_union.hpp"
+#include "value_union.hpp"
 
 namespace tao
 {
@@ -24,7 +22,8 @@ namespace tao
          template<>
          struct get_by_enum< type::NULL_ >
          {
-            static null_t get( const data_union& ) noexcept
+            template< typename T >
+            static null_t get( const value_union< T >& ) noexcept
             {
                return null;
             }
@@ -33,7 +32,8 @@ namespace tao
          template<>
          struct get_by_enum< type::BOOLEAN >
          {
-            static bool get( const data_union& u ) noexcept
+            template< typename T >
+            static bool get( const value_union< T >& u ) noexcept
             {
                return u.b;
             }
@@ -42,7 +42,8 @@ namespace tao
          template<>
          struct get_by_enum< type::SIGNED >
          {
-            static std::int64_t get( const data_union& u ) noexcept
+            template< typename T >
+            static std::int64_t get( const value_union< T >& u ) noexcept
             {
                return u.i;
             }
@@ -51,7 +52,8 @@ namespace tao
          template<>
          struct get_by_enum< type::UNSIGNED >
          {
-            static std::uint64_t get( const data_union& u ) noexcept
+            template< typename T >
+            static std::uint64_t get( const value_union< T >& u ) noexcept
             {
                return u.u;
             }
@@ -60,7 +62,8 @@ namespace tao
          template<>
          struct get_by_enum< type::DOUBLE >
          {
-            static double get( const data_union& u ) noexcept
+            template< typename T >
+            static double get( const value_union< T >& u ) noexcept
             {
                return u.d;
             }
@@ -69,12 +72,14 @@ namespace tao
          template<>
          struct get_by_enum< type::STRING >
          {
-            static std::string& get( data_union& u ) noexcept
+            template< typename T >
+            static std::string& get( value_union< T >& u ) noexcept
             {
                return u.s;
             }
 
-            static const std::string& get( const data_union& u ) noexcept
+            template< typename T >
+            static const std::string& get( const value_union< T >& u ) noexcept
             {
                return u.s;
             }
@@ -83,7 +88,8 @@ namespace tao
          template<>
          struct get_by_enum< type::STRING_VIEW >
          {
-            static tao::string_view get( const data_union& u ) noexcept
+            template< typename T >
+            static tao::string_view get( const value_union< T >& u ) noexcept
             {
                return u.sv;
             }
@@ -92,12 +98,14 @@ namespace tao
          template<>
          struct get_by_enum< type::BINARY >
          {
-            static std::vector< tao::byte >& get( data_union& u ) noexcept
+            template< typename T >
+            static std::vector< tao::byte >& get( value_union< T >& u ) noexcept
             {
                return u.x;
             }
 
-            static const std::vector< tao::byte >& get( const data_union& u ) noexcept
+            template< typename T >
+            static const std::vector< tao::byte >& get( const value_union< T >& u ) noexcept
             {
                return u.x;
             }
@@ -106,7 +114,8 @@ namespace tao
          template<>
          struct get_by_enum< type::BINARY_VIEW >
          {
-            static tao::byte_view get( const data_union& u ) noexcept
+            template< typename T >
+            static tao::byte_view get( const value_union< T >& u ) noexcept
             {
                return u.xv;
             }
@@ -115,12 +124,14 @@ namespace tao
          template<>
          struct get_by_enum< type::ARRAY >
          {
-            static std::vector< data >& get( data_union& u ) noexcept
+            template< typename T >
+            static std::vector< T >& get( value_union< T >& u ) noexcept
             {
                return u.a;
             }
 
-            static const std::vector< data >& get( const data_union& u ) noexcept
+            template< typename T >
+            static const std::vector< T >& get( const value_union< T >& u ) noexcept
             {
                return u.a;
             }
@@ -129,12 +140,14 @@ namespace tao
          template<>
          struct get_by_enum< type::OBJECT >
          {
-            static std::map< std::string, data >& get( data_union& u ) noexcept
+            template< typename T >
+            static std::map< std::string, T >& get( value_union< T >& u ) noexcept
             {
                return u.o;
             }
 
-            static const std::map< std::string, data >& get( const data_union& u ) noexcept
+            template< typename T >
+            static const std::map< std::string, T >& get( const value_union< T >& u ) noexcept
             {
                return u.o;
             }
@@ -143,7 +156,8 @@ namespace tao
          template<>
          struct get_by_enum< type::RAW_PTR >
          {
-            static const data* get( const data_union& u ) noexcept
+            template< typename T >
+            static const T* get( const value_union< T >& u ) noexcept
             {
                return u.p;
             }
