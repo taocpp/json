@@ -192,31 +192,32 @@ namespace tao
                   return true;
                }
 
+               // TODO: Check text strings and text string chunks for valid UTF-8 as per RFC 7049?
+
                template< typename Result, typename Input >
-               static Result read_string( Input& in, const major m )
+               static Result read_string_1( Input& in )
+               {
+                  using value_t = typename Result::value_type;
+                  const auto size = read_unsigned( in );
+                  if( in.size( size ) < size ) {
+                     throw json_pegtl::parse_error( "unexpected end of input", in );
+                  }
+                  const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
+                  Result result( pointer, size );
+                  in.bump_in_this_line( size );
+                  return result;
+               }
+
+               template< typename Result, typename Input >
+               static Result read_string_n( Input& in, const major m )
                {
                   using value_t = typename Result::value_type;
 
-                  // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
-
-                  // TODO: Do not copy data if there is only one chunk, support tao::string_view/byte_view.
-                  // TODO: Check text strings and text string chunks for valid UTF-8 as per RFC 7049?
-
-                  if( internal::peek_minor( in ) != minor_mask ) {
-                     const auto size = read_unsigned( in );
-                     if( in.size( size ) < size ) {
-                        throw json_pegtl::parse_error( "unexpected end of input", in );
-                     }
-                     const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
-                     Result result( pointer, pointer + size );
-                     in.bump_in_this_line( size );
-                     return result;
-                  }
                   Result result;
                   in.bump_in_this_line();
                   while( internal::peek_byte_safe( in ) != 0xff ) {
                      if( internal::peek_major( in ) != m ) {
-                        throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );  // string = text or byte string in RFC 7049 terminology
+                        throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );  // "String" is text or byte string in RFC 7049 terminology.
                      }
                      const auto size = read_unsigned( in );
                      if( in.size( size ) < size ) {
@@ -233,75 +234,123 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_string( Input& in, Consumer& consumer )
                {
-                  consumer.string( read_string< std::string >( in, major::STRING ) );
+                  // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
+
+                  if( internal::peek_minor( in ) != minor_mask ) {
+                     consumer.string( read_string_1< tao::string_view >( in ) );
+                  }
+                  else {
+                     consumer.string( read_string_n< std::string >( in, major::STRING ) );
+                  }
                   return true;
                }
 
                template< typename Input, typename Consumer >
                static bool match_binary( Input& in, Consumer& consumer )
                {
-                  consumer.binary( read_string< std::vector< tao::byte > >( in, major::BINARY ) );
+                  // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
+
+                  if ( internal::peek_minor( in ) != minor_mask ) {
+                     consumer.binary( read_string_1< tao::byte_view >( in ) );
+                  }
+                  else {
+                     consumer.binary( read_string_n< std::vector< tao::byte > >( in, major::BINARY ) );
+                  }
                   return true;
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_array_1( Input& in, Consumer& consumer )
+               {
+                  const auto size = read_unsigned( in );
+                  consumer.begin_array( size );
+                  for( std::uint64_t i = 0; i < size; ++i ) {
+                     internal::throw_on_empty( in );
+                     match_impl( in, consumer );
+                     consumer.element();
+                  }
+                  consumer.end_array( size );
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_array_n( Input& in, Consumer& consumer )
+               {
+                  in.bump_in_this_line();
+                  consumer.begin_array();
+                  while( internal::peek_byte_safe( in ) != 0xff ) {
+                     match_impl( in, consumer );
+                     consumer.element();
+                  }
+                  in.bump_in_this_line();
+                  consumer.end_array();
                }
 
                template< typename Input, typename Consumer >
                static bool match_array( Input& in, Consumer& consumer )
                {
                   if( internal::peek_minor( in ) != minor_mask ) {
-                     const auto size = read_unsigned( in );
-                     consumer.begin_array( size );
-                     for( std::uint64_t i = 0; i < size; ++i ) {
-                        internal::throw_on_empty( in );
-                        match_impl( in, consumer );
-                        consumer.element();
-                     }
-                     consumer.end_array( size );
+                     match_array_1( in, consumer );
                   }
                   else {
-                     in.bump_in_this_line();
-                     consumer.begin_array();
-                     while( internal::peek_byte_safe( in ) != 0xff ) {
-                        match_impl( in, consumer );
-                        consumer.element();
-                     }
-                     in.bump_in_this_line();
-                     consumer.end_array();
+                     match_array_n( in, consumer );
                   }
                   return true;
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_object_1( Input& in, Consumer& consumer )
+               {
+                  const auto size = read_unsigned( in );
+                  consumer.begin_object( size );
+                  for( std::uint64_t i = 0; i < size; ++i ) {
+                     if( internal::peek_major_safe( in ) != major::STRING ) {
+                        throw json_pegtl::parse_error( "non-string object key", in );
+                     }
+                     internal::throw_on_empty( in );
+                     if ( internal::peek_minor( in ) != minor_mask ) {
+                        consumer.key( read_string_1< tao::string_view >( in ) );
+                     }
+                     else {
+                        consumer.key( read_string_n< std::string >( in, major::STRING ) );
+                     }
+                     internal::throw_on_empty( in );
+                     match_impl( in, consumer );
+                     consumer.member();
+                  }
+                  consumer.end_object( size );
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_object_n( Input& in, Consumer& consumer )
+               {
+                  in.bump_in_this_line();
+                  consumer.begin_object();
+                  while( internal::peek_byte_safe( in ) != 0xff ) {
+                     if( internal::peek_major( in ) != major::STRING ) {
+                        throw json_pegtl::parse_error( "non-string object key", in );
+                     }
+                     if ( internal::peek_minor( in ) != minor_mask ) {
+                        consumer.key( read_string_1< tao::string_view >( in ) );
+                     }
+                     else {
+                        consumer.key( read_string_n< std::string >( in, major::STRING ) );
+                     }
+                     internal::throw_on_empty( in );
+                     match_impl( in, consumer );
+                     consumer.member();
+                  }
+                  in.bump_in_this_line();
+                  consumer.end_object();
                }
 
                template< typename Input, typename Consumer >
                static bool match_object( Input& in, Consumer& consumer )
                {
                   if( internal::peek_minor( in ) != minor_mask ) {
-                     const auto size = read_unsigned( in );
-                     consumer.begin_object( size );
-                     for( std::uint64_t i = 0; i < size; ++i ) {
-                        if( internal::peek_major_safe( in ) != major::STRING ) {
-                           throw json_pegtl::parse_error( "non-string object key", in );
-                        }
-                        internal::throw_on_empty( in );
-                        consumer.key( read_string< std::string >( in, major::STRING ) );
-                        internal::throw_on_empty( in );
-                        match_impl( in, consumer );
-                        consumer.member();
-                     }
-                     consumer.end_object( size );
+                     match_object_1( in, consumer );
                   }
                   else {
-                     in.bump_in_this_line();
-                     consumer.begin_object();
-                     while( internal::peek_byte_safe( in ) != 0xff ) {
-                        if( internal::peek_major( in ) != major::STRING ) {
-                           throw json_pegtl::parse_error( "non-string object key", in );
-                        }
-                        consumer.key( read_string< std::string >( in, major::STRING ) );
-                        internal::throw_on_empty( in );
-                        match_impl( in, consumer );
-                        consumer.member();
-                     }
-                     in.bump_in_this_line();
-                     consumer.end_object();
+                     match_object_n( in, consumer );
                   }
                   return true;
                }
@@ -330,7 +379,6 @@ namespace tao
                   if( in.size( 3 ) < 3 ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
-
                   const int half = ( in.peek_byte( 1 ) << 8 ) + in.peek_byte( 2 );
                   const int exp = ( half >> 10 ) & 0x1f;
                   const int mant = half & 0x3ff;
@@ -345,7 +393,6 @@ namespace tao
                   else {
                      val = ( mant == 0 ) ? INFINITY : NAN;
                   }
-
                   in.bump_in_this_line( 3 );
                   return half & 0x8000 ? -val : val;
                }
