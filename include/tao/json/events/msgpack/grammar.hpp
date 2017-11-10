@@ -198,7 +198,12 @@ namespace tao
                   if( in.empty() ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
-                  switch( in.peek_byte() ) {
+                  const auto b = in.peek_byte();
+                  if ( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
+                     in.bump_in_this_line();
+                     return read_container< tao::string_view >( in, b - 0xa0 );
+                  }
+                  switch( b ) {
                      case 0xd9:
                         return read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) );
                      case 0xda:

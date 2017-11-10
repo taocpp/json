@@ -80,6 +80,10 @@ namespace tao
          msgpack_decode( "da000139", "\"9\"" );
          msgpack_decode( "db00000000", "\"\"" );
          msgpack_decode( "db0000000138", "\"8\"" );
+
+         msgpack_decode( "90", "[]" );
+         msgpack_decode( "80", "{}" );
+         msgpack_decode( "82a161c3a162c2", "{\"a\":true,\"b\":false}" );
       }
 
    }  // namespace json
