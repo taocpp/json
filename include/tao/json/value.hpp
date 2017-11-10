@@ -12,12 +12,11 @@
 #include <vector>
 
 #include "external/byte.hpp"
-#include "external/operators.hpp"
 #include "external/string_view.hpp"
 
 #include "internal/get_by_enum.hpp"
+#include "internal/identity.hpp"
 #include "internal/throw.hpp"
-#include "internal/totally_ordered.hpp"
 #include "internal/value_union.hpp"
 
 #include "byte_view.hpp"
@@ -53,34 +52,6 @@ namespace tao
 
       template< template< typename... > class Traits >
       class basic_value
-         : operators::totally_ordered< basic_value< Traits > >,
-           internal::totally_ordered< basic_value< Traits >, null_t, type::NULL_ >,
-           internal::totally_ordered< basic_value< Traits >, bool, type::BOOLEAN >,
-           internal::totally_ordered< basic_value< Traits >, signed char, type::SIGNED >,
-           internal::totally_ordered< basic_value< Traits >, unsigned char, type::UNSIGNED >,
-           internal::totally_ordered< basic_value< Traits >, signed short, type::SIGNED >,
-           internal::totally_ordered< basic_value< Traits >, unsigned short, type::UNSIGNED >,
-           internal::totally_ordered< basic_value< Traits >, signed int, type::SIGNED >,
-           internal::totally_ordered< basic_value< Traits >, unsigned int, type::UNSIGNED >,
-           internal::totally_ordered< basic_value< Traits >, signed long, type::SIGNED >,
-           internal::totally_ordered< basic_value< Traits >, unsigned long, type::UNSIGNED >,
-           internal::totally_ordered< basic_value< Traits >, signed long long, type::SIGNED >,
-           internal::totally_ordered< basic_value< Traits >, unsigned long long, type::UNSIGNED >,
-           internal::totally_ordered< basic_value< Traits >, float, type::DOUBLE >,
-           internal::totally_ordered< basic_value< Traits >, double, type::DOUBLE >,
-           internal::totally_ordered< basic_value< Traits >, std::string, type::STRING >,
-           internal::totally_ordered< basic_value< Traits >, tao::string_view, type::STRING >,
-           internal::totally_ordered< basic_value< Traits >, const char*, type::STRING >,
-           internal::totally_ordered< basic_value< Traits >, std::vector< tao::byte >, type::BINARY >,
-           internal::totally_ordered< basic_value< Traits >, tao::byte_view, type::BINARY_VIEW >,
-           internal::totally_ordered< basic_value< Traits >, empty_binary_t, type::BINARY >,
-           internal::totally_ordered< basic_value< Traits >, std::vector< basic_value< Traits > >, type::ARRAY >,
-           internal::totally_ordered< basic_value< Traits >, empty_array_t, type::ARRAY >,
-           internal::totally_ordered< basic_value< Traits >, std::map< std::string, basic_value< Traits > >, type::OBJECT >,
-           internal::totally_ordered< basic_value< Traits >, empty_object_t, type::OBJECT >,
-           internal::totally_ordered< basic_value< Traits >, const basic_value< Traits >*, type::RAW_PTR >,
-           internal::totally_ordered< basic_value< Traits >, basic_value< Traits >*, type::RAW_PTR >,
-           internal::totally_ordered< basic_value< Traits >, std::nullptr_t, type::RAW_PTR >
       {
       public:
          using binary_t = std::vector< tao::byte >;
@@ -96,8 +67,7 @@ namespace tao
                embed( r );
             }
             catch( ... ) {
-               unsafe_discard();
-               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               this->~basic_value();
                throw;
             }
          }
@@ -136,8 +106,7 @@ namespace tao
                Traits< D >::assign( *this, std::forward< T >( v ) );
             }
             catch( ... ) {
-               unsafe_discard();
-               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               this->~basic_value();
                internal::rethrow();
             }
          }
@@ -148,8 +117,7 @@ namespace tao
                unsafe_assign( std::move( l ) );
             }
             catch( ... ) {
-               unsafe_discard();
-               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               this->~basic_value();
                throw;
             }
          }
@@ -160,8 +128,7 @@ namespace tao
                unsafe_assign( l );
             }
             catch( ... ) {
-               unsafe_discard();
-               assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+               this->~basic_value();
                throw;
             }
          }
@@ -1464,8 +1431,8 @@ namespace tao
          internal::value_union< basic_value > m_union;
       };
 
-      template< template< typename... > class Traits >
-      bool operator==( const basic_value< Traits >& lhs, const basic_value< Traits >& rhs ) noexcept
+      template< template< typename... > class TraitsL, template< typename... > class TraitsR >
+      bool operator==( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
       {
          if( lhs.type() == type::RAW_PTR ) {
             if( const auto* p = lhs.unsafe_get_raw_ptr() ) {
@@ -1593,7 +1560,53 @@ namespace tao
       }
 
       template< template< typename... > class Traits >
-      bool operator<( const basic_value< Traits >& lhs, const basic_value< Traits >& rhs ) noexcept
+      bool operator==( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
+      {
+         return lhs == rhs;
+      }
+
+      template< template< typename... > class Traits >
+      bool operator==( tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         return lhs == rhs;
+      }
+
+      template< template< typename... > class Traits, typename T, typename = decltype( Traits< typename std::decay< T >::type >::equal( std::declval< const basic_value< Traits >& >(), std::declval< const T& >() ) ) >
+      bool operator==( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      {
+         using D = typename std::decay< T >::type;
+         static_assert( noexcept( Traits< D >::equal( lhs, rhs ) ), "equal must be noexcept" );
+         return Traits< D >::equal( lhs, rhs );
+      }
+
+      template< typename T, template< typename... > class Traits, typename = decltype( Traits< typename std::decay< T >::type >::equal( std::declval< const basic_value< Traits >& >(), std::declval< const T& >() ) ) >
+      bool operator==( const T& lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         using D = typename std::decay< T >::type;
+         static_assert( noexcept( Traits< D >::equal( rhs, lhs ) ), "equal must be noexcept" );
+         return Traits< D >::equal( rhs, lhs );
+      }
+
+      template< template< typename... > class TraitsL, template< typename... > class TraitsR >
+      bool operator!=( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
+      {
+         return !( lhs == rhs );
+      }
+
+      template< template< typename... > class Traits, typename T >
+      bool operator!=( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      {
+         return !( lhs == rhs );
+      }
+
+      template< typename T, template< typename... > class Traits >
+      bool operator!=( const T& lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         return !( lhs == rhs );
+      }
+
+      template< template< typename... > class TraitsL, template< typename... > class TraitsR >
+      bool operator<( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
       {
          if( lhs.type() == type::RAW_PTR ) {
             if( const auto* p = lhs.unsafe_get_raw_ptr() ) {
@@ -1718,6 +1731,104 @@ namespace tao
          assert( false );
          return false;
          // LCOV_EXCL_STOP
+      }
+
+      template< template< typename... > class Traits >
+      bool operator<( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
+      {
+         return lhs < rhs;
+      }
+
+      template< template< typename... > class Traits >
+      bool operator<( const tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         return lhs < rhs;
+      }
+
+      template< template< typename... > class Traits, typename T, typename = decltype( Traits< typename std::decay< T >::type >::less_than( std::declval< const basic_value< Traits >& >(), std::declval< const T& >() ) ) >
+      bool operator<( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      {
+         using D = typename std::decay< T >::type;
+         static_assert( noexcept( Traits< D >::less_than( lhs, rhs ) ), "less_than must be noexcept" );
+         return Traits< D >::less_than( lhs, rhs );
+      }
+
+      template< typename T, template< typename... > class Traits, typename = decltype( Traits< typename std::decay< T >::type >::greater_than( std::declval< const basic_value< Traits >& >(), std::declval< const T& >() ) ) >
+      bool operator<( const T& lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         using D = typename std::decay< T >::type;
+         static_assert( noexcept( Traits< D >::greater_than( rhs, lhs ) ), "less_than must be noexcept" );
+         return Traits< D >::greater_than( rhs, lhs );
+      }
+
+      template< template< typename... > class TraitsL, template< typename... > class TraitsR >
+      bool operator>( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
+      {
+         return rhs < lhs;
+      }
+
+      template< template< typename... > class Traits >
+      bool operator>( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
+      {
+         return rhs < lhs;
+      }
+
+      template< template< typename... > class Traits >
+      bool operator>( tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         return rhs < lhs;
+      }
+
+      template< template< typename... > class Traits, typename T, typename = decltype( Traits< typename std::decay< T >::type >::greater_than( std::declval< const basic_value< Traits >& >(), std::declval< const T& >() ) ) >
+      bool operator>( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      {
+         using D = typename std::decay< T >::type;
+         static_assert( noexcept( Traits< D >::greater_than( lhs, rhs ) ), "less_than must be noexcept" );
+         return Traits< D >::greater_than( lhs, rhs );
+      }
+
+      template< typename T, template< typename... > class Traits, typename = decltype( Traits< typename std::decay< T >::type >::less_than( std::declval< const basic_value< Traits >& >(), std::declval< const T& >() ) ) >
+      bool operator>( const T& lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         using D = typename std::decay< T >::type;
+         static_assert( noexcept( Traits< D >::less_than( rhs, lhs ) ), "less_than must be noexcept" );
+         return Traits< D >::less_than( rhs, lhs );
+      }
+
+      template< template< typename... > class TraitsL, template< typename... > class TraitsR >
+      bool operator<=( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
+      {
+         return !( lhs > rhs );
+      }
+
+      template< template< typename... > class Traits, typename T >
+      bool operator<=( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      {
+         return !( lhs > rhs );
+      }
+
+      template< typename T, template< typename... > class Traits >
+      bool operator<=( const T& lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         return !( lhs > rhs );
+      }
+
+      template< template< typename... > class TraitsL, template< typename... > class TraitsR >
+      bool operator>=( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
+      {
+         return !( lhs < rhs );
+      }
+
+      template< template< typename... > class Traits, typename T >
+      bool operator>=( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      {
+         return !( lhs < rhs );
+      }
+
+      template< typename T, template< typename... > class Traits >
+      bool operator>=( const T& lhs, const basic_value< Traits >& rhs ) noexcept
+      {
+         return !( lhs < rhs );
       }
 
       template< template< typename... > class Traits >
