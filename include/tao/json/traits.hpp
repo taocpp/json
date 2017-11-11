@@ -516,6 +516,60 @@ namespace tao
                   TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
             }
          }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() == rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() == rhs;
+                  default:
+                     return false;
+               }
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() < rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() < rhs;
+                  default:
+                     return p->type() < type::STRING;
+               }
+            }
+            else {
+               return type::NULL_ < type::STRING;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() > rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() > rhs;
+                  default:
+                     return p->type() > type::STRING;
+               }
+            }
+            else {
+               return type::NULL_ > type::STRING;
+            }
+         }
       };
 
       template<>
@@ -539,6 +593,60 @@ namespace tao
                   TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
             }
          }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const tao::string_view rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() == rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() == rhs;
+                  default:
+                     return false;
+               }
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const tao::string_view rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() < rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() < rhs;
+                  default:
+                     return p->type() < type::STRING;
+               }
+            }
+            else {
+               return type::NULL_ < type::STRING;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const tao::string_view rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() > rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() > rhs;
+                  default:
+                     return p->type() > type::STRING;
+               }
+            }
+            else {
+               return type::NULL_ > type::STRING;
+            }
+         }
       };
 
       template<>
@@ -554,6 +662,60 @@ namespace tao
          static const char* as( const basic_value< Traits >& v )
          {
             return v.get_string().c_str();
+         }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const char* rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() == rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() == rhs;
+                  default:
+                     return false;
+               }
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() < rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() < rhs;
+                  default:
+                     return p->type() < type::STRING;
+               }
+            }
+            else {
+               return type::NULL_ < type::STRING;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::STRING:
+                     return p->unsafe_get_string() > rhs;
+                  case type::STRING_VIEW:
+                     return p->unsafe_get_string_view() > rhs;
+                  default:
+                     return p->type() > type::STRING;
+               }
+            }
+            else {
+               return type::NULL_ > type::STRING;
+            }
          }
       };
 
