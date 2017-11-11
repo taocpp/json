@@ -760,6 +760,60 @@ namespace tao
                   TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
             }
          }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const std::vector< tao::byte >& rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::BINARY:
+                     return p->unsafe_get_binary() == rhs;
+                  case type::BINARY_VIEW:
+                     return p->unsafe_get_binary_view() == rhs;
+                  default:
+                     return false;
+               }
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const std::vector< tao::byte >& rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::BINARY:
+                     return p->unsafe_get_binary() < rhs;
+                  case type::BINARY_VIEW:
+                     return p->unsafe_get_binary_view() < rhs;
+                  default:
+                     return p->type() < type::BINARY;
+               }
+            }
+            else {
+               return type::NULL_ < type::BINARY;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const std::vector< tao::byte >& rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::BINARY:
+                     return p->unsafe_get_binary() > rhs;
+                  case type::BINARY_VIEW:
+                     return p->unsafe_get_binary_view() > rhs;
+                  default:
+                     return p->type() > type::BINARY;
+               }
+            }
+            else {
+               return type::NULL_ > type::BINARY;
+            }
+         }
       };
 
       template<>
@@ -781,6 +835,60 @@ namespace tao
                   return v.unsafe_get_binary_view();
                default:
                   TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const tao::byte_view rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::BINARY:
+                     return p->unsafe_get_binary() == rhs;
+                  case type::BINARY_VIEW:
+                     return p->unsafe_get_binary_view() == rhs;
+                  default:
+                     return false;
+               }
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const tao::byte_view rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::BINARY:
+                     return p->unsafe_get_binary() < rhs;
+                  case type::BINARY_VIEW:
+                     return p->unsafe_get_binary_view() < rhs;
+                  default:
+                     return p->type() < type::BINARY;
+               }
+            }
+            else {
+               return type::NULL_ < type::BINARY;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const tao::byte_view rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               switch( p->type() ) {
+                  case type::BINARY:
+                     return p->unsafe_get_binary() > rhs;
+                  case type::BINARY_VIEW:
+                     return p->unsafe_get_binary_view() > rhs;
+                  default:
+                     return p->type() > type::BINARY;
+               }
+            }
+            else {
+               return type::NULL_ > type::BINARY;
             }
          }
       };
