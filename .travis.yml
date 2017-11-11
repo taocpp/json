@@ -193,6 +193,8 @@ matrix:
         - CXX=g++-7
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
+      script:
+        - make
 
     - compiler: clang
       addons:
