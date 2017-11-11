@@ -44,7 +44,7 @@ namespace tao
          static bool equal( const basic_value< Traits >& lhs, null_t ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
-               return p->type() == type::NULL_;
+               return p->is_null();
             }
             else {
                return true;
@@ -93,7 +93,7 @@ namespace tao
          static bool equal( const basic_value< Traits >& lhs, const bool rhs ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
-               return ( p->type() == type::BOOLEAN ) && ( p->unsafe_get_boolean() == rhs );
+               return p->is_boolean() && ( p->unsafe_get_boolean() == rhs );
             }
             else {
                return false;
@@ -104,10 +104,10 @@ namespace tao
          static bool less_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
-               return ( p->type() < type::BOOLEAN ) || ( ( p->type() == type::BOOLEAN ) && ( p->unsafe_get_boolean() < rhs ) );
+               return ( p->type() < type::BOOLEAN ) || ( p->is_boolean() && ( p->unsafe_get_boolean() < rhs ) );
             }
             else {
-               return true;
+               return type::NULL_ < type::BOOLEAN;
             }
          }
 
@@ -115,10 +115,10 @@ namespace tao
          static bool greater_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
-               return ( p->type() > type::BOOLEAN ) || ( ( p->type() == type::BOOLEAN ) && ( p->unsafe_get_boolean() > rhs ) );
+               return ( p->type() > type::BOOLEAN ) || ( p->is_boolean() && ( p->unsafe_get_boolean() > rhs ) );
             }
             else {
-               return false;
+               return type::NULL_ > type::BOOLEAN;
             }
          }
       };
@@ -348,7 +348,7 @@ namespace tao
          template< template< typename... > class Traits >
          static bool equal( const basic_value< Traits >& lhs, empty_binary_t ) noexcept
          {
-            if( const auto p = lhs.skip_raw_ptr() ) {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
                   case type::BINARY:
                      return p->unsafe_get_binary().empty();
@@ -366,10 +366,9 @@ namespace tao
          template< template< typename... > class Traits >
          static bool less_than( const basic_value< Traits >& lhs, empty_binary_t ) noexcept
          {
-            if( const auto p = lhs.skip_raw_ptr() ) {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
                   case type::BINARY:
-                     return false;
                   case type::BINARY_VIEW:
                      return false;
                   default:
@@ -377,25 +376,25 @@ namespace tao
                }
             }
             else {
-               return true;
+               return type::NULL_ < type::BINARY;
             }
          }
 
          template< template< typename... > class Traits >
          static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t ) noexcept
          {
-            if( const auto p = lhs.skip_raw_ptr() ) {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
                   case type::BINARY:
-                     return p->unsafe_get_binary().empty();
+                     return !p->unsafe_get_binary().empty();
                   case type::BINARY_VIEW:
-                     return p->unsafe_get_binary_view().empty();
+                     return !p->unsafe_get_binary_view().empty();
                   default:
-                     return p->type() < type::BINARY;
+                     return p->type() > type::BINARY;
                }
             }
             else {
-               return false;
+               return type::NULL_ > type::BINARY;
             }
          }
       };
@@ -408,6 +407,39 @@ namespace tao
          {
             v.unsafe_emplace_array();
          }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, empty_array_t ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return p->is_array() && p->unsafe_get_array().empty();
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, empty_array_t ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return p->type() < type::ARRAY;
+            }
+            else {
+               return type::NULL_ < type::ARRAY;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, empty_array_t ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return ( p->type() > type::ARRAY ) || ( p->is_array() && !p->unsafe_get_array().empty() );
+            }
+            else {
+               return type::NULL_ > type::ARRAY;
+            }
+         }
       };
 
       template<>
@@ -417,6 +449,39 @@ namespace tao
          static void assign( basic_value< Traits >& v, empty_object_t ) noexcept
          {
             v.unsafe_emplace_object();
+         }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, empty_object_t ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return p->is_object() && p->unsafe_get_object().empty();
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, empty_object_t ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return p->type() < type::OBJECT;
+            }
+            else {
+               return type::NULL_ < type::OBJECT;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, empty_object_t ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return ( p->type() > type::OBJECT ) || ( p->is_object() && !p->unsafe_get_object().empty() );
+            }
+            else {
+               return type::NULL_ > type::OBJECT;
+            }
          }
       };
 
