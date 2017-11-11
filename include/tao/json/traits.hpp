@@ -41,44 +41,10 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& v, null_t ) noexcept
-         {
-            const auto p = v.skip_raw_ptr();
-            return p ? p->is_null() : true;
-         }
-
-         template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >&, null_t ) noexcept
-         {
-            return false;
-         }
-
-         template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& v, null_t ) noexcept
-         {
-            return !equal( v, null );
-         }
-      };
-
-      template< typename T, type E >
-      struct direct_compare
-      {
-         template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, T rhs ) noexcept
+         static bool equal( const basic_value< Traits >& lhs, null_t ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
-               return ( p->type() == E ) && ( p->template get< E >() == rhs );
-            }
-            else {
-               return false;
-            }
-         }
-
-         template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, T rhs ) noexcept
-         {
-            if( const auto* p = lhs.skip_raw_ptr() ) {
-               return ( p->type() < E ) || ( ( p->type() == E ) && ( p->template get< E >() < rhs ) );
+               return p->type() == type::NULL_;
             }
             else {
                return true;
@@ -86,10 +52,21 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, T rhs ) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, null_t ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
-               return ( p->type() > E ) || ( ( p->type() == E ) && ( p->template get< E >() > rhs ) );
+               return p->type() < type::NULL_;
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, null_t ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return p->type() > type::NULL_;
             }
             else {
                return false;
@@ -98,7 +75,7 @@ namespace tao
       };
 
       template<>
-      struct traits< bool > : direct_compare< const bool, type::BOOLEAN >
+      struct traits< bool >
       {
          template< template< typename... > class Traits >
          static void assign( basic_value< Traits >& v, const bool b ) noexcept
@@ -110,6 +87,39 @@ namespace tao
          static void extract( const basic_value< Traits >& v, bool& b )
          {
             b = v.get_boolean();
+         }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const bool rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return ( p->type() == type::BOOLEAN ) && ( p->unsafe_get_boolean() == rhs );
+            }
+            else {
+               return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return ( p->type() < type::BOOLEAN ) || ( ( p->type() == type::BOOLEAN ) && ( p->unsafe_get_boolean() < rhs ) );
+            }
+            else {
+               return true;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
+         {
+            if( const auto* p = lhs.skip_raw_ptr() ) {
+               return ( p->type() > type::BOOLEAN ) || ( ( p->type() == type::BOOLEAN ) && ( p->unsafe_get_boolean() > rhs ) );
+            }
+            else {
+               return false;
+            }
          }
       };
 
