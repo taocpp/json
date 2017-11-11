@@ -125,216 +125,78 @@ namespace tao
 
       namespace internal
       {
-         template< template< typename... > class Traits, typename T >
-         void unchecked_extract_number( const basic_value< Traits >& v, T& i )
+         template< typename T >
+         struct number_trait
          {
-            switch( v.type() ) {
-               case type::SIGNED:
-                  i = v.unsafe_get_signed();
-                  break;
-               case type::UNSIGNED:
-                  i = v.unsafe_get_unsigned();
-                  break;
-               case type::DOUBLE:
-                  i = v.unsafe_get_double();
-                  break;
-               default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+            template< template< typename... > class Traits >
+            static void extract( const basic_value< Traits >& v, T& i )
+            {
+               switch( v.type() ) {
+                  case type::SIGNED:
+                     i = v.unsafe_get_signed();
+                     break;
+                  case type::UNSIGNED:
+                     i = v.unsafe_get_unsigned();
+                     break;
+                  case type::DOUBLE:
+                     i = v.unsafe_get_double();
+                     break;
+                  default:
+                     TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+               }
             }
-         }
+         };
+
+         template< typename T >
+         struct signed_trait
+            : number_trait< T >
+         {
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T i ) noexcept
+            {
+               v.unsafe_assign_signed( i );
+            }
+         };
+
+         template< typename T >
+         struct unsigned_trait
+            : number_trait< T >
+         {
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T i ) noexcept
+            {
+               v.unsafe_assign_unsigned( i );
+            }
+         };
+
+         template< typename T >
+         struct float_trait
+            : number_trait< T >
+         {
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T f ) noexcept
+            {
+               v.unsafe_assign_double( f );
+            }
+         };
       }
 
-      template<>
-      struct traits< signed char >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const signed char i ) noexcept
-         {
-            v.unsafe_assign_signed( i );
-         }
+      // clang-format off
+      template<> struct traits< signed char > : internal::signed_trait< signed char > {};
+      template<> struct traits< signed short > : internal::signed_trait< signed short > {};
+      template<> struct traits< signed int > : internal::signed_trait< signed int > {};
+      template<> struct traits< signed long > : internal::signed_trait< signed long > {};
+      template<> struct traits< signed long long > : internal::signed_trait< signed long long > {};
 
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, signed char& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
+      template<> struct traits< unsigned char > : internal::unsigned_trait< unsigned char > {};
+      template<> struct traits< unsigned short > : internal::unsigned_trait< unsigned short > {};
+      template<> struct traits< unsigned int > : internal::unsigned_trait< unsigned int > {};
+      template<> struct traits< unsigned long > : internal::unsigned_trait< unsigned long > {};
+      template<> struct traits< unsigned long long > : internal::unsigned_trait< unsigned long long > {};
 
-      template<>
-      struct traits< unsigned char >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const unsigned char i ) noexcept
-         {
-            v.unsafe_assign_unsigned( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, unsigned char& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< signed short >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const signed short i ) noexcept
-         {
-            v.unsafe_assign_signed( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, signed short& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< unsigned short >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const unsigned short i ) noexcept
-         {
-            v.unsafe_assign_unsigned( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, unsigned short& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< signed int >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const signed int i ) noexcept
-         {
-            v.unsafe_assign_signed( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, signed int& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< unsigned int >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const unsigned int i ) noexcept
-         {
-            v.unsafe_assign_unsigned( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, unsigned int& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< signed long >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const signed long i ) noexcept
-         {
-            v.unsafe_assign_signed( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, signed long& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< unsigned long >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const unsigned long i ) noexcept
-         {
-            v.unsafe_assign_unsigned( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, unsigned long& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< signed long long >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const signed long long i ) noexcept
-         {
-            v.unsafe_assign_signed( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, signed long long& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< unsigned long long >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const unsigned long long i ) noexcept
-         {
-            v.unsafe_assign_unsigned( i );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, unsigned long long& i )
-         {
-            internal::unchecked_extract_number( v, i );
-         }
-      };
-
-      template<>
-      struct traits< float >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const float f ) noexcept
-         {
-            v.unsafe_assign_double( f );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, float& f )
-         {
-            internal::unchecked_extract_number( v, f );
-         }
-      };
-
-      template<>
-      struct traits< double >
-      {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const double d ) noexcept
-         {
-            v.unsafe_assign_double( d );
-         }
-
-         template< template< typename... > class Traits >
-         static void extract( const basic_value< Traits >& v, double& f )
-         {
-            internal::unchecked_extract_number( v, f );
-         }
-      };
+      template<> struct traits< float > : internal::float_trait< float > {};
+      template<> struct traits< double > : internal::float_trait< double > {};
+      // clang-format on
 
       template<>
       struct traits< empty_binary_t >
