@@ -1447,67 +1447,80 @@ namespace tao
                }
             }
          }
-         else if( lhs.type() != rhs.type() ) {
-            if( lhs.type() == type::RAW_PTR ) {
-               if( const auto* p = lhs.skip_raw_ptr() ) {
-                  return *p == rhs;
-               }
-               else {
+
+         if( lhs.type() != rhs.type() ) {
+            switch( lhs.type() ) {
+               case type::RAW_PTR:
+                  if( const auto* p = lhs.skip_raw_ptr() ) {
+                     return *p == rhs;
+                  }
                   return rhs.is_null();
-               }
+
+               case type::SIGNED:
+                  if( rhs.type() == type::UNSIGNED ) {
+                     const auto v = lhs.unsafe_get_signed();
+                     return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs.unsafe_get_unsigned() );
+                  }
+                  if( rhs.type() == type::DOUBLE ) {
+                     return lhs.unsafe_get_signed() == rhs.unsafe_get_double();
+                  }
+                  break;
+
+               case type::UNSIGNED:
+                  if( rhs.type() == type::SIGNED ) {
+                     const auto v = rhs.unsafe_get_signed();
+                     return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< std::uint64_t >( v ) );
+                  }
+                  if( rhs.type() == type::DOUBLE ) {
+                     return lhs.unsafe_get_unsigned() == rhs.unsafe_get_double();
+                  }
+
+               case type::DOUBLE:
+                  if( rhs.type() == type::SIGNED ) {
+                     return lhs.unsafe_get_double() == rhs.unsafe_get_signed();
+                  }
+                  if( rhs.type() == type::UNSIGNED ) {
+                     return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned();
+                  }
+                  break;
+
+               case type::STRING:
+                  if( rhs.type() == type::STRING_VIEW ) {
+                     return lhs.unsafe_get_string() == rhs.unsafe_get_string_view();
+                  }
+                  break;
+
+               case type::STRING_VIEW:
+                  if( rhs.type() == type::STRING ) {
+                     return lhs.unsafe_get_string_view() == rhs.unsafe_get_string();
+                  }
+                  break;
+
+               case type::BINARY:
+                  if( rhs.type() == type::BINARY_VIEW ) {
+                     return lhs.unsafe_get_binary() == rhs.unsafe_get_binary_view();
+                  }
+                  break;
+
+               case type::BINARY_VIEW:
+                  if( rhs.type() == type::BINARY ) {
+                     return lhs.unsafe_get_binary_view() == rhs.unsafe_get_binary();
+                  }
+                  break;
+
+               case type::DISCARDED:
+               case type::DESTROYED:
+                  assert( false );
+                  break;
+
+               default:
+                  break;
             }
-            else if( lhs.type() == type::SIGNED ) {
-               if( rhs.type() == type::UNSIGNED ) {
-                  const auto v = lhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs.unsafe_get_unsigned() );
-               }
-               if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_signed() == rhs.unsafe_get_double();
-               }
-            }
-            else if( lhs.type() == type::UNSIGNED ) {
-               if( rhs.type() == type::SIGNED ) {
-                  const auto v = rhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< std::uint64_t >( v ) );
-               }
-               if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_unsigned() == rhs.unsafe_get_double();
-               }
-            }
-            else if( lhs.type() == type::DOUBLE ) {
-               if( rhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_double() == rhs.unsafe_get_signed();
-               }
-               if( rhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned();
-               }
-            }
-            else if( lhs.type() == type::STRING ) {
-               if( rhs.type() == type::STRING_VIEW ) {
-                  return lhs.unsafe_get_string() == rhs.unsafe_get_string_view();
-               }
-            }
-            else if( lhs.type() == type::STRING_VIEW ) {
-               if( rhs.type() == type::STRING ) {
-                  return lhs.unsafe_get_string_view() == rhs.unsafe_get_string();
-               }
-            }
-            else if( lhs.type() == type::BINARY ) {
-               if( rhs.type() == type::BINARY_VIEW ) {
-                  return lhs.unsafe_get_binary() == rhs.unsafe_get_binary_view();
-               }
-            }
-            else if( lhs.type() == type::BINARY_VIEW ) {
-               if( rhs.type() == type::BINARY ) {
-                  return lhs.unsafe_get_binary_view() == rhs.unsafe_get_binary();
-               }
-            }
-            assert( lhs.type() != type::DISCARDED );
-            assert( lhs.type() != type::DESTROYED );
             assert( rhs.type() != type::DISCARDED );
             assert( rhs.type() != type::DESTROYED );
             return false;
          }
+
          switch( lhs.type() ) {
             case type::UNINITIALIZED:
                return true;
@@ -1627,67 +1640,81 @@ namespace tao
                }
             }
          }
+
          if( lhs.type() != rhs.type() ) {
-            if( lhs.type() == type::RAW_PTR ) {
-               if( const auto* p = lhs.skip_raw_ptr() ) {
-                  return *p < rhs;
-               }
-               else {
+            switch( lhs.type() ) {
+               case type::RAW_PTR:
+                  if( const auto* p = lhs.skip_raw_ptr() ) {
+                     return *p < rhs;
+                  }
                   return type::NULL_ < rhs.type();
-               }
+
+               case type::SIGNED:
+                  if( rhs.type() == type::UNSIGNED ) {
+                     const auto v = lhs.unsafe_get_signed();
+                     return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs.unsafe_get_unsigned() );
+                  }
+                  if( rhs.type() == type::DOUBLE ) {
+                     return lhs.unsafe_get_signed() < rhs.unsafe_get_double();
+                  }
+                  break;
+
+               case type::UNSIGNED:
+                  if( rhs.type() == type::SIGNED ) {
+                     const auto v = rhs.unsafe_get_signed();
+                     return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< std::uint64_t >( v ) );
+                  }
+                  if( rhs.type() == type::DOUBLE ) {
+                     return lhs.unsafe_get_unsigned() < rhs.unsafe_get_double();
+                  }
+                  break;
+
+               case type::DOUBLE:
+                  if( rhs.type() == type::SIGNED ) {
+                     return lhs.unsafe_get_double() < rhs.unsafe_get_signed();
+                  }
+                  if( rhs.type() == type::UNSIGNED ) {
+                     return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned();
+                  }
+                  break;
+
+               case type::STRING:
+                  if( rhs.type() == type::STRING_VIEW ) {
+                     return lhs.unsafe_get_string() < rhs.unsafe_get_string_view();
+                  }
+                  break;
+
+               case type::STRING_VIEW:
+                  if( rhs.type() == type::STRING ) {
+                     return lhs.unsafe_get_string_view() < rhs.unsafe_get_string();
+                  }
+                  break;
+
+               case type::BINARY:
+                  if( rhs.type() == type::BINARY_VIEW ) {
+                     return lhs.unsafe_get_binary() < rhs.unsafe_get_binary_view();
+                  }
+                  break;
+
+               case type::BINARY_VIEW:
+                  if( rhs.type() == type::BINARY ) {
+                     return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary();
+                  }
+                  break;
+
+               case type::DISCARDED:
+               case type::DESTROYED:
+                  assert( false );
+                  break;
+
+               default:
+                  break;
             }
-            else if( lhs.type() == type::SIGNED ) {
-               if( rhs.type() == type::UNSIGNED ) {
-                  const auto v = lhs.unsafe_get_signed();
-                  return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs.unsafe_get_unsigned() );
-               }
-               if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_signed() < rhs.unsafe_get_double();
-               }
-            }
-            else if( lhs.type() == type::UNSIGNED ) {
-               if( rhs.type() == type::SIGNED ) {
-                  const auto v = rhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< std::uint64_t >( v ) );
-               }
-               if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_unsigned() < rhs.unsafe_get_double();
-               }
-            }
-            else if( lhs.type() == type::DOUBLE ) {
-               if( rhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_double() < rhs.unsafe_get_signed();
-               }
-               if( rhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned();
-               }
-            }
-            else if( lhs.type() == type::STRING ) {
-               if( rhs.type() == type::STRING_VIEW ) {
-                  return lhs.unsafe_get_string() < rhs.unsafe_get_string_view();
-               }
-            }
-            else if( lhs.type() == type::STRING_VIEW ) {
-               if( rhs.type() == type::STRING ) {
-                  return lhs.unsafe_get_string_view() < rhs.unsafe_get_string();
-               }
-            }
-            else if( lhs.type() == type::BINARY ) {
-               if( rhs.type() == type::BINARY_VIEW ) {
-                  return lhs.unsafe_get_binary() < rhs.unsafe_get_binary_view();
-               }
-            }
-            else if( lhs.type() == type::BINARY_VIEW ) {
-               if( rhs.type() == type::BINARY ) {
-                  return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary();
-               }
-            }
-            assert( lhs.type() != type::DISCARDED );
-            assert( lhs.type() != type::DESTROYED );
             assert( rhs.type() != type::DISCARDED );
             assert( rhs.type() != type::DESTROYED );
             return lhs.type() < rhs.type();
          }
+
          switch( lhs.type() ) {
             case type::UNINITIALIZED:
                return false;
