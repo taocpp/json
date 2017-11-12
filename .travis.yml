@@ -185,6 +185,7 @@ matrix:
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
 
     - compiler: gcc
+      sudo: required
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -193,8 +194,6 @@ matrix:
         - CXX=g++-7
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
         - CXXFLAGS="-Wall -Wextra -Wno-maybe-uninitialized -Werror -O3"
-      script:
-        - make
 
     - compiler: clang
       addons:
