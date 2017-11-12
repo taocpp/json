@@ -1434,24 +1434,29 @@ namespace tao
       template< template< typename... > class TraitsL, template< typename... > class TraitsR >
       bool operator==( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
       {
-         if( lhs.type() == type::RAW_PTR ) {
-            if( const auto* p = lhs.unsafe_get_raw_ptr() ) {
-               return *p == rhs;
+         if( rhs.is_raw_ptr() ) {
+            if( const auto* p = rhs.skip_raw_ptr() ) {
+               return lhs == *p;
             }
             else {
-               return null == rhs;
-            }
-         }
-         if( lhs.type() != rhs.type() ) {
-            if( rhs.type() == type::RAW_PTR ) {
-               if( const auto* p = rhs.unsafe_get_raw_ptr() ) {
-                  return lhs == *p;
+               if( const auto* q = lhs.skip_raw_ptr() ) {
+                  return q->is_null();
                }
                else {
-                  return lhs == null;
+                  return true;
                }
             }
-            if( lhs.type() == type::SIGNED ) {
+         }
+         else if( lhs.type() != rhs.type() ) {
+            if( lhs.type() == type::RAW_PTR ) {
+               if( const auto* p = lhs.skip_raw_ptr() ) {
+                  return *p == rhs;
+               }
+               else {
+                  return rhs.is_null();
+               }
+            }
+            else if( lhs.type() == type::SIGNED ) {
                if( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed();
                   return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs.unsafe_get_unsigned() );
@@ -1551,6 +1556,7 @@ namespace tao
                return lhs.unsafe_get_object() == rhs.unsafe_get_object();
 
             case type::RAW_PTR:
+               assert( false );
                break;  // LCOV_EXCL_LINE
          }
          // LCOV_EXCL_START
@@ -1608,24 +1614,29 @@ namespace tao
       template< template< typename... > class TraitsL, template< typename... > class TraitsR >
       bool operator<( const basic_value< TraitsL >& lhs, const basic_value< TraitsR >& rhs ) noexcept
       {
-         if( lhs.type() == type::RAW_PTR ) {
-            if( const auto* p = lhs.unsafe_get_raw_ptr() ) {
-               return *p < rhs;
+         if( rhs.is_raw_ptr() ) {
+            if( const auto* p = rhs.skip_raw_ptr() ) {
+               return lhs < *p;
             }
             else {
-               return null < rhs;
+               if( const auto* q = lhs.skip_raw_ptr() ) {
+                  return q->type() < type::NULL_;
+               }
+               else {
+                  return false;
+               }
             }
          }
          if( lhs.type() != rhs.type() ) {
-            if( rhs.type() == type::RAW_PTR ) {
-               if( const auto* p = rhs.unsafe_get_raw_ptr() ) {
-                  return lhs < *p;
+            if( lhs.type() == type::RAW_PTR ) {
+               if( const auto* p = lhs.skip_raw_ptr() ) {
+                  return *p < rhs;
                }
                else {
-                  return lhs < null;
+                  return type::NULL_ < rhs.type();
                }
             }
-            if( lhs.type() == type::SIGNED ) {
+            else if( lhs.type() == type::SIGNED ) {
                if( rhs.type() == type::UNSIGNED ) {
                   const auto v = lhs.unsafe_get_signed();
                   return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs.unsafe_get_unsigned() );
