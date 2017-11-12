@@ -1474,6 +1474,7 @@ namespace tao
                   if( rhs.type() == type::DOUBLE ) {
                      return lhs.unsafe_get_unsigned() == rhs.unsafe_get_double();
                   }
+                  break;
 
                case type::DOUBLE:
                   if( rhs.type() == type::SIGNED ) {
