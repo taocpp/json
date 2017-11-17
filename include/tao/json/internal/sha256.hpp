@@ -59,7 +59,7 @@ namespace tao
          {
          private:
             unsigned char M[ 64 ];
-            std::size_t size;
+            std::uint64_t size;
 
             std::uint32_t H[ 8 ];
 
