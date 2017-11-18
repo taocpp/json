@@ -62,9 +62,8 @@ namespace tao
                   }
                   if( const auto* ref = v.find( "$ref" ) ) {
                      ref = ref->skip_raw_ptr();
-                     // TODO: support is_string_view
-                     if( ref->is_string() ) {
-                        const std::string& s = ref->unsafe_get_string();
+                     if( ref->is_string_type() ) {
+                        const tao::string_view s = ref->unsafe_get_string_type();
                         if( !s.empty() && s[ 0 ] == '#' ) {
                            const pointer ptr = internal::uri_fragment_to_pointer( s );
                            const auto* p = &r;
@@ -76,7 +75,7 @@ namespace tao
                                     break;
                                  case type::OBJECT:
                                     if( const auto* t = p->find( "$ref" ) ) {
-                                       if( t->is_string() ) {
+                                       if( t->is_string_type() ) {
                                           throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );
                                        }
                                     }

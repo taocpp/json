@@ -332,6 +332,11 @@ namespace tao
             return m_union.sv;
          }
 
+         tao::string_view unsafe_get_string_type() const noexcept
+         {
+            return ( m_type == json::type::STRING ) ? m_union.s : m_union.sv;
+         }
+
          binary_t& unsafe_get_binary() noexcept
          {
             return m_union.x;
@@ -424,6 +429,11 @@ namespace tao
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING_VIEW );
             return unsafe_get_string_view();
+         }
+
+         tao::string_view get_string_type() const noexcept
+         {
+            return ( m_type == json::type::STRING ) ? m_union.s : unsafe_get_string_view();
          }
 
          binary_t& get_binary()
