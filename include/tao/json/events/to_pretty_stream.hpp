@@ -89,6 +89,7 @@ namespace tao
             {
                next();
                if( !std::isfinite( v ) ) {
+                  // if this throws, consider using non_finite_to_* transformers
                   throw std::runtime_error( "non-finite double value invalid for JSON string representation" );
                }
                json_double_conversion::Dtostr( os, v );
@@ -104,7 +105,7 @@ namespace tao
 
             void binary( const tao::byte_view )
             {
-               // if this throws, consider using binary_to_* wrappers
+               // if this throws, consider using binary_to_* transformers
                throw std::runtime_error( "binary data invalid for JSON string representation" );
             }
 
