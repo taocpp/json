@@ -28,33 +28,15 @@ namespace tao
          {
          }
 
-         pair( std::string&& k, basic_value< Traits >&& v )
-            : key( std::move( k ) ), value( std::move( v ) )
+         template< typename U >
+         pair( U&& k, basic_value< Traits >&& v )
+            : key( std::forward< U >( k ) ), value( std::move( v ) )
          {
          }
 
-         pair( std::string&& k, const basic_value< Traits >& v )
-            : key( std::move( k ) ), value( v )
-         {
-         }
-
-         pair( const std::string& k, basic_value< Traits >&& v )
-            : key( k ), value( std::move( v ) )
-         {
-         }
-
-         pair( const std::string& k, const basic_value< Traits >& v )
-            : key( k ), value( v )
-         {
-         }
-
-         pair( const char* k, basic_value< Traits >&& v )
-            : key( k ), value( std::move( v ) )
-         {
-         }
-
-         pair( const char* k, const basic_value< Traits >& v )
-            : key( k ), value( v )
+         template< typename U >
+         pair( U&& k, const basic_value< Traits >& v )
+            : key( std::forward< U >( k ) ), value( v )
          {
          }
       };
