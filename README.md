@@ -29,6 +29,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Numeric values are stored as `std::int64_t`, `std::uint64_t` or `double`.
   * Allows storing and handling of non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
   * Allows storing and handling of binary data.
+  * Allows storing string views and binary views to avoid copying data.
   * Does *not* support duplicate keys in JSON objects.
   * Currently only supports UTF-8 as input and output encoding.
 
