@@ -17,7 +17,7 @@ namespace tao
 {
    namespace json
    {
-      std::size_t tests = 0;
+      unsigned tests = 0;
 
       value parse_stream( const std::string& name )
       {

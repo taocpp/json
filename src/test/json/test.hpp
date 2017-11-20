@@ -15,7 +15,7 @@ namespace tao
 {
    namespace json
    {
-      std::size_t failed = 0;
+      unsigned failed = 0;
 
    }  // namespace json
 
