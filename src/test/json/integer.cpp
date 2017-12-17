@@ -18,10 +18,10 @@ namespace tao
       }
 
       template< typename T, typename U >
-      void test_integer( const U input, const T v )
+      void test_integer( const U input, const U v )
       {
          const value j = input;
-         TEST_ASSERT( j.as< T >() == v );
+         TEST_ASSERT( j.as< T >() == static_cast< T >( v ) );
       }
 
       template< typename T >
