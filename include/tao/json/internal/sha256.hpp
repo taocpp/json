@@ -178,14 +178,14 @@ namespace tao
 
                size *= 8;
 
-               M[ 63 ] = size;
-               M[ 62 ] = size >> 8;
-               M[ 61 ] = size >> 16;
-               M[ 60 ] = size >> 24;
-               M[ 59 ] = size >> 32;
-               M[ 58 ] = size >> 40;
-               M[ 57 ] = size >> 48;
-               M[ 56 ] = size >> 56;
+               M[ 63 ] = static_cast< unsigned char >( size );
+               M[ 62 ] = static_cast< unsigned char >( size >> 8 );
+               M[ 61 ] = static_cast< unsigned char >( size >> 16 );
+               M[ 60 ] = static_cast< unsigned char >( size >> 24 );
+               M[ 59 ] = static_cast< unsigned char >( size >> 32 );
+               M[ 58 ] = static_cast< unsigned char >( size >> 40 );
+               M[ 57 ] = static_cast< unsigned char >( size >> 48 );
+               M[ 56 ] = static_cast< unsigned char >( size >> 56 );
 
                process();
 
