@@ -143,19 +143,16 @@ namespace tao
          {
             const value v = from_string( "42.0" );
             const auto a = v.as< double >();
-            TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          }
          {
             const value v = from_string( "42.3" );
             const auto a = v.as< short >();
-            TEST_ASSERT( sizeof( a ) == sizeof( short ) );
             TEST_ASSERT( a == 42 );
          }
          {
             const value v = from_string( "42" );
             const auto a = v.as< double >();
-            TEST_ASSERT( sizeof( a ) == sizeof( double ) );
             TEST_ASSERT( a == 42.0 );
          }
          TEST_THROWS( value( "foo" ).as< double >() );
