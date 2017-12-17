@@ -86,16 +86,18 @@ namespace tao
             void number( const double v )
             {
                if( v >= 0 ) {
-                  const std::uint64_t u = v;
+                  const std::uint64_t u = static_cast< std::uint64_t >( v );
                   if( u == v ) {
                      number( u );
                      return;
                   }
                }
-               const std::int64_t i = v;
-               if( i == v ) {
-                  number( i );
-                  return;
+               else {
+                  const std::int64_t i = static_cast< std::int64_t >( v );
+                  if( i == v ) {
+                     number( i );
+                     return;
+                  }
                }
                m_digests.back()->feed( 'd' );
                m_digests.back()->feed( &v, sizeof( v ) );

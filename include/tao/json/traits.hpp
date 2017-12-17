@@ -129,17 +129,17 @@ namespace tao
          struct number_trait
          {
             template< template< typename... > class Traits >
-            static void extract( const basic_value< Traits >& v, T& i )
+            static void extract( const basic_value< Traits >& v, T& n )
             {
                switch( v.type() ) {
                   case type::SIGNED:
-                     i = v.unsafe_get_signed();
+                     n = static_cast< T >( v.unsafe_get_signed() );
                      break;
                   case type::UNSIGNED:
-                     i = v.unsafe_get_unsigned();
+                     n = static_cast< T >( v.unsafe_get_unsigned() );
                      break;
                   case type::DOUBLE:
-                     i = v.unsafe_get_double();
+                     n = static_cast< T >( v.unsafe_get_double() );
                      break;
                   default:
                      TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
