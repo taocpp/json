@@ -11,7 +11,13 @@ namespace tao
    namespace internal
    {
       template< typename T >
-      using identity = typename std::decay< T >::type;
+      struct identity
+      {
+         using type = T;
+      };
+
+      template< typename T >
+      using identity_t = typename identity< T >::type;
 
    }  // namespace internal
 

@@ -1590,13 +1590,13 @@ namespace tao
       }
 
       template< template< typename... > class Traits, int = 1 >  // work-around for Visual C++
-      bool operator==( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
+      bool operator==( const basic_value< Traits >& lhs, tao::internal::identity_t< basic_value< Traits > > rhs ) noexcept
       {
          return lhs == rhs;
       }
 
       template< template< typename... > class Traits, int = 2 >  // work-around for Visual C++
-      bool operator==( tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
+      bool operator==( tao::internal::identity_t< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
       {
          return lhs == rhs;
       }
@@ -1783,13 +1783,13 @@ namespace tao
       }
 
       template< template< typename... > class Traits, int = 1 >  // work-around for Visual C++
-      bool operator<( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
+      bool operator<( const basic_value< Traits >& lhs, tao::internal::identity_t< basic_value< Traits > > rhs ) noexcept
       {
          return lhs < rhs;
       }
 
       template< template< typename... > class Traits, int = 2 >  // work-around for Visual C++
-      bool operator<( const tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
+      bool operator<( const tao::internal::identity_t< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
       {
          return lhs < rhs;
       }
@@ -1817,13 +1817,13 @@ namespace tao
       }
 
       template< template< typename... > class Traits >
-      bool operator>( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
+      bool operator>( const basic_value< Traits >& lhs, tao::internal::identity_t< basic_value< Traits > > rhs ) noexcept
       {
          return rhs < lhs;
       }
 
       template< template< typename... > class Traits >
-      bool operator>( tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
+      bool operator>( tao::internal::identity_t< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
       {
          return rhs < lhs;
       }

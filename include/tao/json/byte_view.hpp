@@ -337,13 +337,13 @@ namespace tao
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator==( basic_byte_view< byteT > x, internal::identity< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator==( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
    {
       return x.compare( y ) == 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator==( internal::identity< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator==( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
    {
       return x.compare( y ) == 0;
    }
@@ -355,13 +355,13 @@ namespace tao
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator!=( basic_byte_view< byteT > x, internal::identity< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator!=( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
    {
       return x.compare( y ) != 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator!=( internal::identity< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator!=( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
    {
       return x.compare( y ) != 0;
    }
@@ -373,13 +373,13 @@ namespace tao
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator<( basic_byte_view< byteT > x, internal::identity< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator<( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
    {
       return x.compare( y ) < 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator<( internal::identity< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator<( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
    {
       return x.compare( y ) < 0;
    }
@@ -391,13 +391,13 @@ namespace tao
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator>( basic_byte_view< byteT > x, internal::identity< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator>( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
    {
       return x.compare( y ) > 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator>( internal::identity< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator>( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
    {
       return x.compare( y ) > 0;
    }
@@ -409,13 +409,13 @@ namespace tao
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator<=( basic_byte_view< byteT > x, internal::identity< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator<=( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator<=( internal::identity< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator<=( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
@@ -427,13 +427,13 @@ namespace tao
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator>=( basic_byte_view< byteT > x, internal::identity< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator>=( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
    {
       return x.compare( y ) >= 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator>=( internal::identity< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator>=( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
    {
       return x.compare( y ) >= 0;
    }
