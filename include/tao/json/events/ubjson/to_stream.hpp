@@ -44,7 +44,7 @@ namespace tao
                {
                   if( ( v >= -128 ) && ( v <= 127 ) ) {
                      os.put( 'i' );
-                     const std::int8_t x = v;
+                     const std::int8_t x = static_cast< std::int8_t >( v );
                      os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                   }
                   else if( ( v >= -32768 ) && ( v <= 32767 ) ) {
@@ -52,7 +52,7 @@ namespace tao
                      const std::uint16_t x = internal::h_to_be( std::uint16_t( v ) );
                      os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                   }
-                  else if( ( v >= -2147483648 ) && ( v <= 2147483647 ) ) {
+                  else if( ( v >= -2147483648ll ) && ( v <= 2147483647ll ) ) {
                      os.put( 'l' );
                      const std::uint32_t x = internal::h_to_be( std::uint32_t( v ) );
                      os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
@@ -68,7 +68,7 @@ namespace tao
                {
                   if( v <= 255 ) {
                      os.put( 'U' );
-                     const std::uint8_t x = v;
+                     const std::uint8_t x = static_cast< std::uint8_t >( v );
                      os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                   }
                   else if( v <= 32767 ) {
