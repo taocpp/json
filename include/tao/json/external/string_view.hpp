@@ -64,7 +64,7 @@ namespace tao
       using iterator = const_iterator;
       using const_reverse_iterator = std::reverse_iterator< const_iterator >;
       using reverse_iterator = const_reverse_iterator;
-      using size_type = size_t;
+      using size_type = std::size_t;
       using difference_type = ptrdiff_t;
 
       static constexpr size_type npos = size_type( -1 );
@@ -536,22 +536,22 @@ namespace tao
       {
          // 24.4.6, suffix for basic_string_view literals
          // NOTE: We are not the real STL, we use '_sv' instead of 'sv' as the suffix
-         constexpr string_view operator"" _sv( const char* str, size_t len ) noexcept
+         constexpr string_view operator"" _sv( const char* str, std::size_t len ) noexcept
          {
             return string_view( str, len );
          }
 
-         constexpr u16string_view operator"" _sv( const char16_t* str, size_t len ) noexcept
+         constexpr u16string_view operator"" _sv( const char16_t* str, std::size_t len ) noexcept
          {
             return u16string_view( str, len );
          }
 
-         constexpr u32string_view operator"" _sv( const char32_t* str, size_t len ) noexcept
+         constexpr u32string_view operator"" _sv( const char32_t* str, std::size_t len ) noexcept
          {
             return u32string_view( str, len );
          }
 
-         constexpr wstring_view operator"" _sv( const wchar_t* str, size_t len ) noexcept
+         constexpr wstring_view operator"" _sv( const wchar_t* str, std::size_t len ) noexcept
          {
             return wstring_view( str, len );
          }
