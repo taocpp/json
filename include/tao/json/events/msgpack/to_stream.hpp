@@ -12,6 +12,11 @@
 #include "../../external/byte.hpp"
 #include "../../internal/endian.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4310 )
+#endif
+
 namespace tao
 {
    namespace json
@@ -52,7 +57,7 @@ namespace tao
                void number( const std::int64_t v )
                {
                   if( ( v >= -32 ) && ( v <= -1 ) ) {
-                     const std::int8_t x = v;
+                     const std::int8_t x = static_cast< std::int8_t >( v );
                      os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                   }
                   else if( ( v >= -128 ) && ( v <= 127 ) ) {
@@ -61,7 +66,7 @@ namespace tao
                   else if( ( v >= -32768 ) && ( v <= 32767 ) ) {
                      number_impl< std::uint16_t >( 0xd1, v );
                   }
-                  else if( ( v >= -2147483648 ) && ( v <= 2147483647 ) ) {
+                  else if( ( v >= -2147483648ll ) && ( v <= 2147483647 ) ) {
                      number_impl< std::uint32_t >( 0xd2, v );
                   }
                   else {
@@ -72,7 +77,7 @@ namespace tao
                void number( const std::uint64_t v )
                {
                   if( v <= 127 ) {
-                     const std::uint8_t x = v;
+                     const std::uint8_t x = static_cast< std::uint8_t >( v );
                      os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
                   }
                   else if( v <= 255 ) {
@@ -214,5 +219,9 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #endif
