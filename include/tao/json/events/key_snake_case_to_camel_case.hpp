@@ -37,7 +37,7 @@ namespace tao
                         active = false;
                      }
                      else {
-                        r += std::toupper( c );
+                        r += (char)std::toupper( c );
                         active = false;
                      }
                   }

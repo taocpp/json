@@ -83,7 +83,7 @@ namespace tao
             }
             if( month == 2 ) {
                const bool is_leap_year = ( year % 4 == 0 ) && ( year % 100 != 0 || year % 400 == 0 );
-               if( day > ( is_leap_year ? 29 : 28 ) ) {
+               if( day > ( is_leap_year ? 29u : 28u ) ) {
                   return false;
                }
             }
@@ -974,7 +974,7 @@ namespace tao
                      }
                      break;
                   case HAS_MULTIPLE_OF_DOUBLE:
-                     if( !is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     if( !is_multiple_of( (double)v, m_node->m_multiple_of.d ) ) {
                         m_match = false;
                      }
                      break;
@@ -990,7 +990,7 @@ namespace tao
                      }
                      break;
                   case HAS_MULTIPLE_OF_DOUBLE:
-                     if( !is_multiple_of( v, m_node->m_multiple_of.d ) ) {
+                     if( !is_multiple_of( (double)v, m_node->m_multiple_of.d ) ) {
                         m_match = false;
                      }
                      break;
@@ -1001,7 +1001,7 @@ namespace tao
             {
                switch( m_node->m_flags & HAS_MULTIPLE_OF ) {
                   case HAS_MULTIPLE_OF_UNSIGNED:
-                     if( !is_multiple_of( v, m_node->m_multiple_of.u ) ) {
+                     if( !is_multiple_of( v, (double)m_node->m_multiple_of.u ) ) {
                         m_match = false;
                      }
                      break;

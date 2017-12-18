@@ -51,7 +51,7 @@ namespace tao
                         r += '_';
                      }
                      last_lower = false;
-                     r += std::tolower( c );
+                     r += (char)std::tolower( c );
                   }
                   else {
                      last_lower = std::islower( c );

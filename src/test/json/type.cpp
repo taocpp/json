@@ -11,7 +11,7 @@ namespace tao
    {
       void unit_test()
       {
-         TEST_ASSERT( sizeof( type ) == 1 );
+         static_assert( sizeof( type ) == 1, "oops" );
 
          TEST_ASSERT( to_string( type::UNINITIALIZED ) == std::string( "uninitialized" ) );
          TEST_ASSERT( to_string( type::DISCARDED ) == std::string( "discarded" ) );
