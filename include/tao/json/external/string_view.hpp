@@ -479,7 +479,8 @@ namespace tao
       return x.compare( y ) > 0;
    }
 
-   template< class charT, class traits constexpr bool operator<=( basic_string_view< charT, traits > x, basic_string_view< charT, traits > y ) noexcept
+   template< class charT, class traits >
+   constexpr bool operator<=( basic_string_view< charT, traits > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
