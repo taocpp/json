@@ -1589,13 +1589,13 @@ namespace tao
          // LCOV_EXCL_STOP
       }
 
-      template< template< typename... > class Traits >
+      template< template< typename... > class Traits, int = 1 >  // work-around for Visual C++
       bool operator==( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
       {
          return lhs == rhs;
       }
 
-      template< template< typename... > class Traits >
+      template< template< typename... > class Traits, int = 2 >  // work-around for Visual C++
       bool operator==( tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
       {
          return lhs == rhs;
@@ -1782,13 +1782,13 @@ namespace tao
          // LCOV_EXCL_STOP
       }
 
-      template< template< typename... > class Traits >
+      template< template< typename... > class Traits, int = 1 >  // work-around for Visual C++
       bool operator<( const basic_value< Traits >& lhs, tao::internal::identity< basic_value< Traits > > rhs ) noexcept
       {
          return lhs < rhs;
       }
 
-      template< template< typename... > class Traits >
+      template< template< typename... > class Traits, int = 2 >  // work-around for Visual C++
       bool operator<( const tao::internal::identity< basic_value< Traits > > lhs, const basic_value< Traits >& rhs ) noexcept
       {
          return lhs < rhs;
