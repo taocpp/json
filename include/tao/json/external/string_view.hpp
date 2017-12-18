@@ -5,14 +5,16 @@
 #define TAOCPP_INCLUDE_STRING_VIEW_HPP
 
 #ifndef TAOCPP_USE_STD_STRING_VIEW
-#if __cplusplus >= 201703L
+#if( __cplusplus >= 201703L )
+#define TAOCPP_USE_STD_STRING_VIEW
+#elif defined( _MSC_VER ) && ( _MSC_VER >= 1910L )
 #define TAOCPP_USE_STD_STRING_VIEW
 #endif
 #endif
 
 #ifndef TAOCPP_USE_STD_STRING_VIEW
 #ifndef TAOCPP_USE_TS_STRING_VIEW
-#if( __cplusplus >= 201402L ) && ( ( __GNUC__ > 4 ) || ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 ) )
+#if( __cplusplus >= 201402L ) && defined( __GNUC__ ) && ( ( __GNUC__ > 4 ) || ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 ) )
 #define TAOCPP_USE_TS_STRING_VIEW
 #endif
 #endif
