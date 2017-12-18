@@ -413,13 +413,13 @@ namespace tao
       return x.compare( y ) == 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 1 >  // work-around for Visual C++
    constexpr bool operator==( basic_string_view< charT, traits > x, internal::identity< basic_string_view< charT, traits > > y ) noexcept
    {
       return x.compare( y ) == 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 2 >  // work-around for Visual C++
    constexpr bool operator==( internal::identity< basic_string_view< charT, traits > > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) == 0;
@@ -431,13 +431,13 @@ namespace tao
       return x.compare( y ) != 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 1 >  // work-around for Visual C++
    constexpr bool operator!=( basic_string_view< charT, traits > x, internal::identity< basic_string_view< charT, traits > > y ) noexcept
    {
       return x.compare( y ) != 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 2 >  // work-around for Visual C++
    constexpr bool operator!=( internal::identity< basic_string_view< charT, traits > > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) != 0;
@@ -449,13 +449,13 @@ namespace tao
       return x.compare( y ) < 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 1 >  // work-around for Visual C++
    constexpr bool operator<( basic_string_view< charT, traits > x, internal::identity< basic_string_view< charT, traits > > y ) noexcept
    {
       return x.compare( y ) < 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 2 >  // work-around for Visual C++
    constexpr bool operator<( internal::identity< basic_string_view< charT, traits > > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) < 0;
@@ -467,31 +467,30 @@ namespace tao
       return x.compare( y ) > 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 1 >  // work-around for Visual C++
    constexpr bool operator>( basic_string_view< charT, traits > x, internal::identity< basic_string_view< charT, traits > > y ) noexcept
    {
       return x.compare( y ) > 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 2 >  // work-around for Visual C++
    constexpr bool operator>( internal::identity< basic_string_view< charT, traits > > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) > 0;
    }
 
-   template< class charT, class traits >
-   constexpr bool operator<=( basic_string_view< charT, traits > x, basic_string_view< charT, traits > y ) noexcept
+   template< class charT, class traits constexpr bool operator<=( basic_string_view< charT, traits > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 1 >  // work-around for Visual C++
    constexpr bool operator<=( basic_string_view< charT, traits > x, internal::identity< basic_string_view< charT, traits > > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 2 >  // work-around for Visual C++
    constexpr bool operator<=( internal::identity< basic_string_view< charT, traits > > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) <= 0;
@@ -503,13 +502,13 @@ namespace tao
       return x.compare( y ) >= 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 1 >  // work-around for Visual C++
    constexpr bool operator>=( basic_string_view< charT, traits > x, internal::identity< basic_string_view< charT, traits > > y ) noexcept
    {
       return x.compare( y ) >= 0;
    }
 
-   template< class charT, class traits >
+   template< class charT, class traits, int = 2 >  // work-around for Visual C++
    constexpr bool operator>=( internal::identity< basic_string_view< charT, traits > > x, basic_string_view< charT, traits > y ) noexcept
    {
       return x.compare( y ) >= 0;
