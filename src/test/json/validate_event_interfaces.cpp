@@ -3,6 +3,10 @@
 
 #include "test.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( disable : 4702 )
+#endif
+
 #include <tao/json/events/compare.hpp>
 #include <tao/json/events/debug.hpp>
 #include <tao/json/events/discard.hpp>

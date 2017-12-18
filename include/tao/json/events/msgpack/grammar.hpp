@@ -33,6 +33,17 @@ namespace tao
                   return ( !in.empty() ) && match_impl( in, consumer );
                }
 
+               template< typename Result, typename Number, typename Read, typename Input >
+               static Result read_number( Input& in )
+               {
+                  if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
+                     const Result result = static_cast< Result >( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
+                     in.bump_in_this_line( 1 + sizeof( Number ) );
+                     return result;
+                  }
+                  throw json_pegtl::parse_error( "unexpected end of msgpack input", in );
+               }
+
                template< typename Input, typename Consumer >
                static bool match_impl( Input& in, Consumer& consumer )
                {
@@ -73,52 +84,52 @@ namespace tao
                         in.bump_in_this_line();
                         return true;
                      case 0xc4:
-                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
+                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint8_t, std::uint8_t >( in ) ) );
                         return true;
                      case 0xc5:
-                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
+                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint16_t, std::uint16_t >( in ) ) );
                         return true;
                      case 0xc6:
-                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
+                        consumer.binary( read_container< tao::byte_view >( in, read_number< std::size_t, std::uint32_t, std::uint32_t >( in ) ) );
                         return true;
                      case 0xc7:
-                        discard( in, read_number< std::size_t, std::uint8_t >( in ) + 1 );
+                        discard( in, read_number< std::size_t, std::uint8_t, std::uint8_t >( in ) + 1 );
                         return true;
                      case 0xc8:
-                        discard( in, read_number< std::size_t, std::uint16_t >( in ) + 1 );
+                        discard( in, read_number< std::size_t, std::uint16_t, std::uint16_t >( in ) + 1 );
                         return true;
                      case 0xc9:
-                        discard( in, read_number< std::size_t, std::uint32_t >( in ) + 1 );
+                        discard( in, read_number< std::size_t, std::uint32_t, std::uint32_t >( in ) + 1 );
                         return true;
                      case 0xca:
-                        consumer.number( read_number< double, float >( in ) );
+                        consumer.number( read_number< double, float, float >( in ) );
                         return true;
                      case 0xcb:
-                        consumer.number( read_number< double, double >( in ) );
+                        consumer.number( read_number< double, double, double >( in ) );
                         return true;
                      case 0xcc:
-                        consumer.number( read_number< std::uint64_t, std::uint8_t >( in ) );
+                        consumer.number( read_number< std::uint64_t, std::uint8_t, std::uint8_t >( in ) );
                         return true;
                      case 0xcd:
-                        consumer.number( read_number< std::uint64_t, std::uint16_t >( in ) );
+                        consumer.number( read_number< std::uint64_t, std::uint16_t, std::uint16_t >( in ) );
                         return true;
                      case 0xce:
-                        consumer.number( read_number< std::uint64_t, std::uint32_t >( in ) );
+                        consumer.number( read_number< std::uint64_t, std::uint32_t, std::uint32_t >( in ) );
                         return true;
                      case 0xcf:
-                        consumer.number( read_number< std::uint64_t, std::uint64_t >( in ) );
+                        consumer.number( read_number< std::uint64_t, std::uint64_t, std::uint64_t >( in ) );
                         return true;
                      case 0xd0:
-                        consumer.number( read_number< std::int64_t, std::int8_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int8_t, std::uint8_t >( in ) );
                         return true;
                      case 0xd1:
-                        consumer.number( read_number< std::int64_t, std::int16_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int16_t, std::uint16_t >( in ) );
                         return true;
                      case 0xd2:
-                        consumer.number( read_number< std::int64_t, std::int32_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int32_t, std::uint32_t >( in ) );
                         return true;
                      case 0xd3:
-                        consumer.number( read_number< std::int64_t, std::int64_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int64_t, std::uint64_t >( in ) );
                         return true;
                      case 0xd4:
                         discard( in, 3 );
@@ -136,22 +147,22 @@ namespace tao
                         discard( in, 18 );
                         return true;
                      case 0xd9:
-                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) ) );
+                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t, std::uint8_t >( in ) ) );
                         return true;
                      case 0xda:
-                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t >( in ) ) );
+                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t, std::uint16_t >( in ) ) );
                         return true;
                      case 0xdb:
-                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t >( in ) ) );
+                        consumer.string( read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t, std::uint32_t >( in ) ) );
                         return true;
                      case 0xdc:
-                        return match_array( in, consumer, read_number< std::size_t, std::uint16_t >( in ) );
+                        return match_array( in, consumer, read_number< std::size_t, std::uint16_t, std::uint16_t >( in ) );
                      case 0xdd:
-                        return match_array( in, consumer, read_number< std::size_t, std::uint32_t >( in ) );
+                        return match_array( in, consumer, read_number< std::size_t, std::uint32_t, std::uint32_t >( in ) );
                      case 0xde:
-                        return match_object( in, consumer, read_number< std::size_t, std::uint16_t >( in ) );
+                        return match_object( in, consumer, read_number< std::size_t, std::uint16_t, std::uint16_t >( in ) );
                      case 0xdf:
-                        return match_object( in, consumer, read_number< std::size_t, std::uint32_t >( in ) );
+                        return match_object( in, consumer, read_number< std::size_t, std::uint32_t, std::uint32_t >( in ) );
                   }
                   // LCOV_EXCL_START
                   assert( false );
@@ -166,17 +177,6 @@ namespace tao
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
                   in.bump_in_this_line( count );
-               }
-
-               template< typename Result, typename Number, typename Input >
-               static Result read_number( Input& in )
-               {
-                  if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
-                     const Result result = json::internal::be_to_h< Number >( in.current() + 1 );
-                     in.bump_in_this_line( 1 + sizeof( Number ) );
-                     return result;
-                  }
-                  throw json_pegtl::parse_error( "unexpected end of msgpack input", in );
                }
 
                template< typename Result, typename Input >
@@ -199,17 +199,17 @@ namespace tao
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
                   const auto b = in.peek_byte();
-                  if ( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
+                  if( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
                      in.bump_in_this_line();
                      return read_container< tao::string_view >( in, b - 0xa0 );
                   }
                   switch( b ) {
                      case 0xd9:
-                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t, std::uint8_t >( in ) );
                      case 0xda:
-                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t, std::uint16_t >( in ) );
                      case 0xdb:
-                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t >( in ) );
+                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t, std::uint32_t >( in ) );
                   }
                   throw json_pegtl::parse_error( "unexpected key type", in );
                }
