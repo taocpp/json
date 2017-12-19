@@ -16,8 +16,8 @@ namespace tao
       {
          // Events producer from an nlohmann/json value.
 
-         template< typename Value, typename Consumer >
-         void from_value( const Value& v, Consumer& consumer )
+         template< typename Consumer, typename Value >
+         void from_value( Consumer& consumer, const Value& v )
          {
             switch( v.type() ) {
                case Value::value_t::discarded:

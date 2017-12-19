@@ -16,8 +16,8 @@ namespace tao
    {
       void unit_test()
       {
-         tao::json::nlohmann::to_value value_consumer;
-         tao::json::events::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]", value_consumer );
+         tao::json::nlohmann::to_value<::nlohmann::json > value_consumer;
+         tao::json::events::from_string( value_consumer, "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
 
          const auto& v = value_consumer.value;
 
@@ -40,7 +40,7 @@ namespace tao
          TEST_ASSERT( v[ 7 ].at( "c" ) == "d" );
 
          tao::json::events::to_string output_consumer;
-         tao::json::nlohmann::from_value( v, output_consumer );
+         tao::json::nlohmann::from_value( output_consumer, v );
 
          TEST_ASSERT( output_consumer.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
       }
