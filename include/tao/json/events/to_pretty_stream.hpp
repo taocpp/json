@@ -29,7 +29,7 @@ namespace tao
          {
          protected:
             std::ostream& os;
-            const std::streamsize indent;
+            const std::size_t indent;
 
             std::string current = "\n";
             bool first = true;
@@ -49,7 +49,7 @@ namespace tao
             }
 
          public:
-            to_pretty_stream( std::ostream& in_os, const std::streamsize in_indent )
+            to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
                : os( in_os ),
                  indent( in_indent ),
                  first( true )

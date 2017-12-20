@@ -25,7 +25,7 @@ namespace tao
       }
 
       template< template< typename... > class... Transformers, template< typename... > class Traits >
-      void to_stream( std::ostream& os, const basic_value< Traits >& v, const std::streamsize indent )
+      void to_stream( std::ostream& os, const basic_value< Traits >& v, const std::size_t indent )
       {
          events::transformer< events::to_pretty_stream, Transformers... > consumer( os, indent );
          events::from_value( consumer, v );
