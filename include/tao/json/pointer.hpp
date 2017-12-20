@@ -20,7 +20,46 @@ namespace tao
    {
       namespace internal
       {
-         std::size_t token_to_index( const std::string& key ) noexcept;
+         template< std::size_t = sizeof( std::size_t ) >
+         struct token_to_index;
+
+         template<>
+         struct token_to_index< 4 >
+         {
+            static std::size_t convert( const std::string& key ) noexcept
+            {
+               if( !key.empty() && key.size() <= 10 ) {
+                  if( key == "0" ) {
+                     return 0;
+                  }
+                  else if( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
+                     if( key.size() < 10 || key < "4294967296" ) {
+                        return static_cast< std::size_t >( std::stoul( key ) );
+                     }
+                  }
+               }
+               return std::string::npos;
+            }
+         };
+
+         template<>
+         struct token_to_index< 8 >
+         {
+            static std::size_t convert( const std::string& key ) noexcept
+            {
+               if( !key.empty() && key.size() <= 20 ) {
+                  if( key == "0" ) {
+                     return 0;
+                  }
+                  else if( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
+                     if( key.size() < 20 || key < "18446744073709551616" ) {
+                        return static_cast< std::size_t >( std::stoull( key ) );
+                     }
+                  }
+               }
+               return std::string::npos;
+            }
+         };
 
       }  // namespace internal
 
@@ -33,13 +72,13 @@ namespace tao
 
       public:
          explicit token( const std::string& in_key )
-            : m_index( internal::token_to_index( in_key ) ),
+            : m_index( internal::token_to_index<>::convert( in_key ) ),
               m_key( in_key )
          {
          }
 
          explicit token( std::string&& in_key ) noexcept
-            : m_index( internal::token_to_index( in_key ) ),
+            : m_index( internal::token_to_index<>::convert( in_key ) ),
               m_key( std::move( in_key ) )
          {
          }
@@ -222,21 +261,6 @@ namespace tao
 
       namespace internal
       {
-         inline std::size_t token_to_index( const std::string& key ) noexcept
-         {
-            if( !key.empty() && key.size() <= 20 ) {
-               if( key == "0" ) {
-                  return 0;
-               }
-               else if( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
-                  if( key.size() < 20 || key < "18446744073709551616" ) {
-                     return std::stoull( key );
-                  }
-               }
-            }
-            return std::string::npos;
-         }
-
          inline std::string tokens_to_string( std::vector< token >::const_iterator it, const std::vector< token >::const_iterator& end )
          {
             std::string result;
