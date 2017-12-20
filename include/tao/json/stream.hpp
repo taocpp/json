@@ -6,6 +6,7 @@
 
 #include <iomanip>
 #include <iosfwd>
+#include <stdexcept>
 
 #include "to_stream.hpp"
 #include "value.hpp"
@@ -19,9 +20,12 @@ namespace tao
       template< template< typename... > class Traits >
       std::ostream& operator<<( std::ostream& o, const basic_value< Traits >& v )
       {
-         const std::uint64_t w = o.width( 0 );
+         const auto w = o.width( 0 );
          if( w > 0 ) {
-            json::to_stream( o, v, w );
+            if( static_cast< std::uint64_t >( w ) > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
+               throw std::runtime_error( "indentation too large" );
+            }
+            json::to_stream( o, v, static_cast< std::size_t >( w ) );
          }
          else {
             json::to_stream( o, v );
