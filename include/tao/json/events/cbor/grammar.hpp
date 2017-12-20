@@ -199,7 +199,7 @@ namespace tao
                {
                   using value_t = typename Result::value_type;
                   const auto size = read_unsigned( in );
-                  if( in.size( size ) < size ) {
+                  if( static_cast< std::uint64_t >( in.size( size ) ) < size ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
                   const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
@@ -220,7 +220,7 @@ namespace tao
                         throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );  // "String" is text or byte string in RFC 7049 terminology.
                      }
                      const auto size = read_unsigned( in );
-                     if( in.size( size ) < size ) {
+                     if( static_cast< std::uint64_t >( in.size( size ) ) < size ) {
                         throw json_pegtl::parse_error( "unexpected end of input", in );
                      }
                      const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
@@ -250,7 +250,7 @@ namespace tao
                {
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
-                  if ( internal::peek_minor( in ) != minor_mask ) {
+                  if( internal::peek_minor( in ) != minor_mask ) {
                      consumer.binary( read_string_1< tao::byte_view >( in ) );
                   }
                   else {
@@ -307,7 +307,7 @@ namespace tao
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
                      internal::throw_on_empty( in );
-                     if ( internal::peek_minor( in ) != minor_mask ) {
+                     if( internal::peek_minor( in ) != minor_mask ) {
                         consumer.key( read_string_1< tao::string_view >( in ) );
                      }
                      else {
@@ -329,7 +329,7 @@ namespace tao
                      if( internal::peek_major( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
-                     if ( internal::peek_minor( in ) != minor_mask ) {
+                     if( internal::peek_minor( in ) != minor_mask ) {
                         consumer.key( read_string_1< tao::string_view >( in ) );
                      }
                      else {
