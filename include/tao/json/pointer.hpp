@@ -20,7 +20,7 @@ namespace tao
    {
       namespace internal
       {
-         std::size_t token_to_index( const std::string& key );
+         std::size_t token_to_index( const std::string& key ) noexcept;
 
       }  // namespace internal
 
@@ -38,7 +38,7 @@ namespace tao
          {
          }
 
-         explicit token( std::string&& in_key )
+         explicit token( std::string&& in_key ) noexcept
             : m_index( internal::token_to_index( in_key ) ),
               m_key( std::move( in_key ) )
          {
@@ -59,7 +59,7 @@ namespace tao
             return *this;
          }
 
-         const std::string& key() const
+         const std::string& key() const noexcept
          {
             return m_key;
          }
@@ -72,12 +72,12 @@ namespace tao
             return m_index;
          }
 
-         friend bool operator==( const token& lhs, const token& rhs )
+         friend bool operator==( const token& lhs, const token& rhs ) noexcept
          {
             return lhs.m_key == rhs.m_key;
          }
 
-         friend bool operator<( const token& lhs, const token& rhs )
+         friend bool operator<( const token& lhs, const token& rhs ) noexcept
          {
             return lhs.m_key < rhs.m_key;
          }
@@ -222,7 +222,7 @@ namespace tao
 
       namespace internal
       {
-         inline std::size_t token_to_index( const std::string& key )
+         inline std::size_t token_to_index( const std::string& key ) noexcept
          {
             if( !key.empty() && key.size() <= 20 ) {
                if( key == "0" ) {
