@@ -19,7 +19,7 @@ namespace tao
       template< template< typename... > class Traits >
       std::ostream& operator<<( std::ostream& o, const basic_value< Traits >& v )
       {
-         const auto w = o.width( 0 );
+         const std::uint64_t w = o.width( 0 );
          if( w > 0 ) {
             json::to_stream( o, v, w );
          }
