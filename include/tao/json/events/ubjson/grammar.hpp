@@ -162,7 +162,7 @@ namespace tao
                }
 
                template< typename Input >
-               static std::size_t read_size( Input& in )
+               static std::uint64_t read_unsigned( Input& in )
                {
                   in.bump_in_this_line();  // Skip marker byte.
                   if( !in.size( 1 ) ) {
@@ -185,6 +185,16 @@ namespace tao
                         return read_number< std::int64_t, double, double >( in );
                   }
                   throw json_pegtl::parse_error( "unexpected ubjson high precision number size marker", in );
+               }
+
+               template< typename Input >
+               static std::size_t read_size( Input& in )
+               {
+                  const auto s = read_unsigned( in );
+                  if( s > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
+                     throw json_pegtl::parse_error( "size too large for 32-bit platform", in );
+                  }
+                  return static_cast< std::size_t >( s );
                }
 
                template< typename Input, typename Consumer >
