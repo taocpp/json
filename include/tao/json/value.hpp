@@ -1199,7 +1199,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( m_type != json::type::DESTROYED );
                   return true;
-               // LCOV_EXCL_STOP
+                  // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                case json::type::BOOLEAN:
@@ -1308,7 +1308,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( r.m_type != json::type::DESTROYED );
                   return;
-               // LCOV_EXCL_STOP
+                  // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
@@ -1544,7 +1544,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-            // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
             case type::NULL_:
                return true;
@@ -1738,7 +1738,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-            // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
             case type::NULL_:
                return false;
