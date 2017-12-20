@@ -174,6 +174,16 @@ namespace tao
                   }
                }
 
+               template< typename Input >
+               static std::size_t read_size( Input& in )
+               {
+                  const auto s = read_unsigned( in );
+                  if( s > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
+                     throw json_pegtl::parse_error( "size too large for 32-bit platform", in );
+                  }
+                  return static_cast< std::size_t >( s );
+               }
+
                template< typename Input, typename Consumer >
                static bool match_unsigned( Input& in, Consumer& consumer )
                {
@@ -198,8 +208,8 @@ namespace tao
                static Result read_string_1( Input& in )
                {
                   using value_t = typename Result::value_type;
-                  const auto size = read_unsigned( in );
-                  if( static_cast< std::uint64_t >( in.size( size ) ) < size ) {
+                  const auto size = read_size( in );
+                  if( in.size( size ) < size ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
                   const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
@@ -219,8 +229,8 @@ namespace tao
                      if( internal::peek_major( in ) != m ) {
                         throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );  // "String" is text or byte string in RFC 7049 terminology.
                      }
-                     const auto size = read_unsigned( in );
-                     if( static_cast< std::uint64_t >( in.size( size ) ) < size ) {
+                     const auto size = read_size( in );
+                     if( in.size( size ) < size ) {
                         throw json_pegtl::parse_error( "unexpected end of input", in );
                      }
                      const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
@@ -262,9 +272,9 @@ namespace tao
                template< typename Input, typename Consumer >
                static void match_array_1( Input& in, Consumer& consumer )
                {
-                  const auto size = read_unsigned( in );
+                  const auto size = read_size( in );
                   consumer.begin_array( size );
-                  for( std::uint64_t i = 0; i < size; ++i ) {
+                  for( std::size_t i = 0; i < size; ++i ) {
                      internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.element();
@@ -300,9 +310,9 @@ namespace tao
                template< typename Input, typename Consumer >
                static void match_object_1( Input& in, Consumer& consumer )
                {
-                  const auto size = read_unsigned( in );
+                  const auto size = read_size( in );
                   consumer.begin_object( size );
-                  for( std::uint64_t i = 0; i < size; ++i ) {
+                  for( std::size_t i = 0; i < size; ++i ) {
                      if( internal::peek_major_safe( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
