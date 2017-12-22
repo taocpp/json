@@ -8,7 +8,9 @@
 #if( __cplusplus >= 201703L )
 #define TAOCPP_USE_STD_STRING_VIEW
 #elif defined( _MSC_VER ) && ( _MSC_VER >= 1910L )
+#if defined( _MSC_LANG ) && ( _MSC_LANG >= 201703L )
 #define TAOCPP_USE_STD_STRING_VIEW
+#endif
 #endif
 #endif
 
