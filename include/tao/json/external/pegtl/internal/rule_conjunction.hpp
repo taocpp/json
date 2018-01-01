@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_RULE_CONJUNCTION_HPP
@@ -26,7 +26,7 @@ namespace tao
                       template< typename... > class Control,
                       typename Input,
                       typename... States >
-            static bool match( Input&, States&&... )
+            static bool match( Input& /*unused*/, States&&... /*unused*/ ) noexcept
             {
                return true;
             }

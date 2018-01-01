@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_FILE_READER_HPP
@@ -24,8 +24,10 @@ namespace tao
 #if defined( _MSC_VER )
             std::FILE* file;
             if(::fopen_s( &file, filename, "rb" ) == 0 )
-#else
+#elif defined( __MINGW32__ )
             if( auto* file = std::fopen( filename, "rb" ) )
+#else
+            if( auto* file = std::fopen( filename, "rbe" ) )
 #endif
             {
                return file;
@@ -35,7 +37,7 @@ namespace tao
 
          struct file_close
          {
-            void operator()( FILE* f ) const
+            void operator()( FILE* f ) const noexcept
             {
                std::fclose( f );
             }
@@ -50,14 +52,19 @@ namespace tao
             {
             }
 
-            file_reader( FILE* file, const char* filename )
+            file_reader( FILE* file, const char* filename ) noexcept
                : m_source( filename ),
                  m_file( file )
             {
             }
 
             file_reader( const file_reader& ) = delete;
+            file_reader( file_reader&& ) = delete;
+
+            ~file_reader() = default;
+
             void operator=( const file_reader& ) = delete;
+            void operator=( file_reader&& ) = delete;
 
             std::size_t size() const
             {
@@ -82,7 +89,7 @@ namespace tao
                std::string nrv;
                nrv.resize( size() );
                errno = 0;
-               if( ( nrv.size() != 0 ) && ( std::fread( &nrv[ 0 ], nrv.size(), 1, m_file.get() ) != 1 ) ) {
+               if( !nrv.empty() && ( std::fread( &nrv[ 0 ], nrv.size(), 1, m_file.get() ) != 1 ) ) {
                   TAOCPP_JSON_PEGTL_THROW_INPUT_ERROR( "unable to fread() file " << m_source << " size " << nrv.size() );  // LCOV_EXCL_LINE
                }
                return nrv;

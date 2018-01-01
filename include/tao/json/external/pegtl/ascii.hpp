@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_ASCII_HPP
@@ -49,7 +49,7 @@ namespace tao
          struct keyword<>
          {
             template< typename Input >
-            static bool match( Input& ) noexcept
+            static bool match( Input& /*unused*/ ) noexcept
             {
                static_assert( sizeof( Input ) == 0, "empty keywords not allowed" );
                return false;

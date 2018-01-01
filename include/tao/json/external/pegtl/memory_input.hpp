@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_MEMORY_INPUT_HPP
@@ -52,14 +52,19 @@ namespace tao
             }
 
             memory_input_base( const memory_input_base& ) = delete;
+            memory_input_base( memory_input_base&& ) = delete;
+
+            ~memory_input_base() = default;
+
             memory_input_base operator=( const memory_input_base& ) = delete;
+            memory_input_base operator=( memory_input_base&& ) = delete;
 
             const char* current() const noexcept
             {
                return m_current.data;
             }
 
-            const char* end( const std::size_t = 0 ) const noexcept
+            const char* end( const std::size_t /*unused*/ = 0 ) const noexcept
             {
                return m_end;
             }
@@ -130,14 +135,19 @@ namespace tao
             }
 
             memory_input_base( const memory_input_base& ) = delete;
+            memory_input_base( memory_input_base&& ) = delete;
+
+            ~memory_input_base() = default;
+
             memory_input_base operator=( const memory_input_base& ) = delete;
+            memory_input_base operator=( memory_input_base&& ) = delete;
 
             const char* current() const noexcept
             {
                return m_current;
             }
 
-            const char* end( const std::size_t = 0 ) const noexcept
+            const char* end( const std::size_t /*unused*/ = 0 ) const noexcept
             {
                return m_end;
             }
@@ -219,7 +229,12 @@ namespace tao
          }
 
          memory_input( const memory_input& ) = delete;
+         memory_input( memory_input&& ) = delete;
+
+         ~memory_input() = default;
+
          memory_input operator=( const memory_input& ) = delete;
+         memory_input operator=( memory_input&& ) = delete;
 
          const Source& source() const noexcept
          {
@@ -231,7 +246,7 @@ namespace tao
             return this->current() == this->end();
          }
 
-         std::size_t size( const std::size_t = 0 ) const noexcept
+         std::size_t size( const std::size_t /*unused*/ = 0 ) const noexcept
          {
             return std::size_t( this->end() - this->current() );
          }
@@ -267,7 +282,7 @@ namespace tao
          {
          }
 
-         void require( const std::size_t ) const noexcept
+         void require( const std::size_t /*unused*/ ) const noexcept
          {
          }
 

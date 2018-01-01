@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_ANALYSIS_ANALYZE_CYCLES_HPP
@@ -84,7 +84,7 @@ namespace tao
                         return m_cache[ start->first ] = a;
                      }
                   }
-                  throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
+                  throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
                }
                if( !accum ) {
                   ++m_problems;

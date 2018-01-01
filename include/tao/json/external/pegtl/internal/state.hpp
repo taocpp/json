@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_STATE_HPP
@@ -61,7 +61,7 @@ namespace tao
                       typename... States >
             static bool match( Input& in, States&&... st )
             {
-               State s( const_cast< const Input& >( in ), st... );
+               State s( static_cast< const Input& >( in ), st... );
 
                if( duseltronik< seq< Rules... >, A, M, Action, Control >::match( in, s ) ) {
                   success< A, M, Action, Control >( s, in, st... );

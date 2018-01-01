@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_DISCARD_HPP
@@ -21,8 +21,9 @@ namespace tao
             using analyze_t = analysis::generic< analysis::rule_type::OPT >;
 
             template< typename Input >
-            static bool match( Input& in )
+            static bool match( Input& in ) noexcept
             {
+               static_assert( noexcept( in.discard() ), "an input's discard()-method must be noexcept" );
                in.discard();
                return true;
             }

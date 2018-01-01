@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_PEEK_UTF32_HPP
@@ -24,11 +24,11 @@ namespace tao
             static_assert( sizeof( char32_t ) == 4, "expected size 4 for 32bit value" );
 
             template< typename Input >
-            static pair_t peek( Input& in )
+            static pair_t peek( Input& in ) noexcept( noexcept( in.size( 4 ) ) )
             {
                const std::size_t s = in.size( 4 );
                if( s >= 4 ) {
-                  const char32_t t = *reinterpret_cast< const char32_t* >( in.current() );
+                  const char32_t t = *static_cast< const char32_t* >( static_cast< const void* >( in.current() ) );
                   if( ( 0 <= t ) && ( t <= 0x10ffff ) ) {
                      return { t, 4 };
                   }

@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_PARSE_TREE_HPP
@@ -12,6 +12,7 @@
 
 #include "../config.hpp"
 #include "../normal.hpp"
+#include "../parse.hpp"
 
 #include "../internal/iterator.hpp"
 
@@ -57,7 +58,7 @@ namespace tao
 
             void emplace_back()
             {
-               stack.emplace_back( std::unique_ptr< node >( new node ) );
+               stack.emplace_back( std::unique_ptr< node >( new node ) );  // NOLINT: std::make_unique requires C++14
             }
          };
 
@@ -68,7 +69,7 @@ namespace tao
          template< typename T, typename = void >
          struct transform
          {
-            static void call( std::unique_ptr< parse_tree::node >& )
+            static void call( std::unique_ptr< parse_tree::node >& /*unused*/ ) noexcept
             {
             }
          };
@@ -117,7 +118,7 @@ namespace tao
             }
 
             template< typename Input >
-            static void success( const Input&, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            static void success( const Input& /*unused*/, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
             {
                auto n = std::move( s.back() );
                n->id = &typeid( Rule );
@@ -127,7 +128,7 @@ namespace tao
             }
 
             template< typename Input >
-            static void failure( const Input&, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            static void failure( const Input& /*unused*/, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
             {
                s.pop_back();
             }
@@ -157,7 +158,7 @@ namespace tao
             }
 
             template< typename Input >
-            static void failure( const Input&, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            static void failure( const Input& /*unused*/, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
             {
                s.pop_back();
             }

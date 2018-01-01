@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_RAISE_HPP
@@ -34,7 +34,7 @@ namespace tao
                       typename... States >
             static bool match( Input& in, States&&... st )
             {
-               Control< T >::raise( const_cast< const Input& >( in ), st... );
+               Control< T >::raise( static_cast< const Input& >( in ), st... );
 #if defined( _MSC_VER )
                __assume( false );  // LCOV_EXCL_LINE
 #else

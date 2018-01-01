@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_PEEK_UTF8_HPP
@@ -20,7 +20,7 @@ namespace tao
             using pair_t = input_pair< char32_t >;
 
             template< typename Input >
-            static pair_t peek( Input& in )
+            static pair_t peek( Input& in ) noexcept( noexcept( in.size( 4 ) ) )
             {
                char32_t c0 = in.peek_byte();
 

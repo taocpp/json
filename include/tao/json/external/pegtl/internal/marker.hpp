@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_MARKER_HPP
@@ -19,16 +19,20 @@ namespace tao
          public:
             static constexpr rewind_mode next_rewind_mode = M;
 
-            explicit marker( const Iterator& ) noexcept
-            {
-            }
-
-            marker( marker&& ) noexcept
+            explicit marker( const Iterator& /*unused*/ ) noexcept
             {
             }
 
             marker( const marker& ) = delete;
+
+            marker( marker&& /*unused*/ ) noexcept
+            {
+            }
+
+            ~marker() = default;
+
             void operator=( const marker& ) = delete;
+            void operator=( marker&& ) = delete;
 
             bool operator()( const bool result ) const noexcept
             {
@@ -48,6 +52,8 @@ namespace tao
             {
             }
 
+            marker( const marker& ) = delete;
+
             marker( marker&& i ) noexcept
                : m_saved( i.m_saved ),
                  m_input( i.m_input )
@@ -62,8 +68,8 @@ namespace tao
                }
             }
 
-            marker( const marker& ) = delete;
             void operator=( const marker& ) = delete;
+            void operator=( marker&& ) = delete;
 
             bool operator()( const bool result ) noexcept
             {

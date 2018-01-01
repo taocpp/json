@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_READ_INPUT_HPP
@@ -28,6 +28,14 @@ namespace tao
                : filename( std::forward< T >( in_filename ) )
             {
             }
+
+            filename_holder( const filename_holder& ) = delete;
+            filename_holder( filename_holder&& ) = delete;
+
+            ~filename_holder() = default;
+
+            void operator=( const filename_holder& ) = delete;
+            void operator=( filename_holder&& ) = delete;
          };
 
       }  // namespace internal
@@ -50,6 +58,14 @@ namespace tao
               string_input< P, Eol, const char* >( internal::file_reader( in_file, filename.c_str() ).read(), filename.c_str() )
          {
          }
+
+         read_input( const read_input& ) = delete;
+         read_input( read_input&& ) = delete;
+
+         ~read_input() = default;
+
+         void operator=( const read_input& ) = delete;
+         void operator=( read_input&& ) = delete;
       };
 
    }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE

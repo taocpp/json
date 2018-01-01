@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_ACTION_INPUT_HPP
@@ -42,7 +42,12 @@ namespace tao
             }
 
             action_input( const action_input& ) = delete;
+            action_input( action_input&& ) = delete;
+
+            ~action_input() = default;
+
             action_input& operator=( const action_input& ) = delete;
+            action_input& operator=( action_input&& ) = delete;
 
             const iterator_t& iterator() const noexcept
             {
@@ -89,7 +94,7 @@ namespace tao
                return static_cast< unsigned char >( peek_char( offset ) );
             }
 
-            TAOCPP_JSON_PEGTL_NAMESPACE::position position() const noexcept
+            TAOCPP_JSON_PEGTL_NAMESPACE::position position() const
             {
                return input().position( iterator() );  // NOTE: Not efficient with LAZY inputs.
             }

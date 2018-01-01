@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_JSON_HPP
@@ -32,9 +32,9 @@ namespace tao
          struct name_separator : pad< one< ':' >, ws > {};
          struct value_separator : padr< one< ',' > > {};
 
-         struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
-         struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
-         struct true_ : TAOCPP_JSON_PEGTL_STRING( "true" ) {};
+         struct false_ : string< 'f', 'a', 'l', 's', 'e' > {};
+         struct null : string< 'n', 'u', 'l', 'l' > {};
+         struct true_ : string< 't', 'r', 'u', 'e' > {};
 
          struct digits : plus< abnf::DIGIT > {};
          struct exp : seq< one< 'e', 'E' >, opt< one< '-', '+'> >, must< digits > > {};

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_SOR_HPP
@@ -6,14 +6,14 @@
 
 #include "../config.hpp"
 
+#include "integer_sequence.hpp"
 #include "skip_control.hpp"
+#include "trivial.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
 
 #include "../analysis/generic.hpp"
-
-#include "integer_sequence.hpp"
 
 namespace tao
 {

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_RAW_STRING_HPP
@@ -13,6 +13,7 @@
 
 #include "../internal/bytes.hpp"
 #include "../internal/eof.hpp"
+#include "../internal/eol.hpp"
 #include "../internal/must.hpp"
 #include "../internal/not_at.hpp"
 #include "../internal/rule_conjunction.hpp"
@@ -38,7 +39,7 @@ namespace tao
                       template< typename... > class Action,
                       template< typename... > class Control,
                       typename Input >
-            static bool match( Input& in, std::size_t& marker_size )
+            static bool match( Input& in, std::size_t& marker_size ) noexcept( noexcept( in.size( 0 ) ) )
             {
                if( in.empty() || ( in.peek_char( 0 ) != Open ) ) {
                   return false;
@@ -75,7 +76,7 @@ namespace tao
                       template< typename... > class Action,
                       template< typename... > class Control,
                       typename Input >
-            static bool match( Input& in, const std::size_t& marker_size )
+            static bool match( Input& in, const std::size_t& marker_size ) noexcept( noexcept( in.size( 0 ) ) )
             {
                if( in.size( marker_size ) < marker_size ) {
                   return false;
@@ -114,7 +115,7 @@ namespace tao
                       template< typename... > class Control,
                       typename Input,
                       typename... States >
-            static bool match( Input& in, const std::size_t& marker_size, States&&... )
+            static bool match( Input& in, const std::size_t& marker_size, States&&... /*unused*/ )
             {
                auto m = in.template mark< M >();
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_CHANGES_HPP
@@ -18,7 +18,7 @@ namespace tao
          struct dummy_disabled_state
          {
             template< typename... Ts >
-            void success( Ts&&... ) const noexcept
+            void success( Ts&&... /*unused*/ ) const noexcept
             {
             }
          };

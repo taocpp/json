@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_RANGE_HPP
@@ -32,12 +32,10 @@ namespace tao
             template< typename Input >
             static bool match( Input& in )
             {
-               using eol_t = typename Input::eol_t;
-
                if( !in.empty() ) {
                   if( const auto t = Peek::peek( in ) ) {
                      if( ( ( Lo <= t.data ) && ( t.data <= Hi ) ) == bool( R ) ) {
-                        bump_impl< can_match_eol< eol_t::ch >::value >::bump( in, t.size );
+                        bump_impl< can_match_eol< Input::eol_t::ch >::value >::bump( in, t.size );
                         return true;
                      }
                   }

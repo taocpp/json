@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_UNESCAPE_HPP
@@ -85,11 +85,11 @@ namespace tao
                case 'F':
                   return I( c - 'A' + 10 );
             }
-            throw std::runtime_error( "invalid character in unhex" );  // LCOV_EXCL_LINE
+            throw std::runtime_error( "invalid character in unhex" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< typename I >
-         I unhex_string( const char* begin, const char* const end )
+         I unhex_string( const char* begin, const char* end )
          {
             I r = 0;
             while( begin != end ) {
@@ -122,7 +122,7 @@ namespace tao
             }
 
             template< char... Qs >
-            static char apply_one( const char c, const one< Qs... >* )
+            static char apply_one( const char c, const one< Qs... >* /*unused*/ )
             {
                static_assert( sizeof...( Qs ) == sizeof...( Rs ), "size mismatch between escaped characters and their mappings" );
                return apply_two( c, { Qs... }, { Rs... } );
@@ -135,7 +135,7 @@ namespace tao
                      return *( r.begin() + i );
                   }
                }
-               throw std::runtime_error( "invalid character in unescape" );  // LCOV_EXCL_LINE
+               throw std::runtime_error( "invalid character in unescape" );  // NOLINT, LCOV_EXCL_LINE
             }
          };
 

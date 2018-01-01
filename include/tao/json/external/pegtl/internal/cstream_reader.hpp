@@ -1,9 +1,10 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_CSTREAM_READER_HPP
 #define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_CSTREAM_READER_HPP
 
+#include <cassert>
 #include <cstddef>
 #include <cstdio>
 
@@ -21,6 +22,7 @@ namespace tao
             explicit cstream_reader( std::FILE* s ) noexcept
                : m_cstream( s )
             {
+               assert( m_cstream != nullptr );
             }
 
             std::size_t operator()( char* buffer, const std::size_t length )

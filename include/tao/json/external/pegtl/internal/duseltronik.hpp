@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_DUSELTRONIK_HPP
@@ -41,7 +41,7 @@ namespace tao
             // NOTE: The additional "int = 0" is a work-around for missing expression SFINAE in VS2015.
 
             template< typename Input, typename... States, int = 0 >
-            static auto match( Input& in, States&&... )
+            static auto match( Input& in, States&&... /*unused*/ )
                -> decltype( Rule::match( in ), true )
             {
                return Rule::match( in );
@@ -58,13 +58,13 @@ namespace tao
             template< typename Input, typename... States >
             static bool match( Input& in, States&&... st )
             {
-               Control< Rule >::start( const_cast< const Input& >( in ), st... );
+               Control< Rule >::start( static_cast< const Input& >( in ), st... );
 
                if( duseltronik< Rule, A, M, Action, Control, dusel_mode::NOTHING >::match( in, st... ) ) {
-                  Control< Rule >::success( const_cast< const Input& >( in ), st... );
+                  Control< Rule >::success( static_cast< const Input& >( in ), st... );
                   return true;
                }
-               Control< Rule >::failure( const_cast< const Input& >( in ), st... );
+               Control< Rule >::failure( static_cast< const Input& >( in ), st... );
                return false;
             }
          };
@@ -81,14 +81,14 @@ namespace tao
             {
                auto m = in.template mark< rewind_mode::REQUIRED >();
 
-               Control< Rule >::start( const_cast< const Input& >( in ), st... );
+               Control< Rule >::start( static_cast< const Input& >( in ), st... );
 
                if( duseltronik< Rule, A, rewind_mode::ACTIVE, Action, Control, dusel_mode::NOTHING >::match( in, st... ) ) {
-                  Control< Rule >::template apply< Action >( m.iterator(), const_cast< const Input& >( in ), st... );
-                  Control< Rule >::success( const_cast< const Input& >( in ), st... );
+                  Control< Rule >::template apply< Action >( m.iterator(), static_cast< const Input& >( in ), st... );
+                  Control< Rule >::success( static_cast< const Input& >( in ), st... );
                   return m( true );
                }
-               Control< Rule >::failure( const_cast< const Input& >( in ), st... );
+               Control< Rule >::failure( static_cast< const Input& >( in ), st... );
                return false;
             }
          };
@@ -105,15 +105,15 @@ namespace tao
             {
                auto m = in.template mark< rewind_mode::REQUIRED >();
 
-               Control< Rule >::start( const_cast< const Input& >( in ), st... );
+               Control< Rule >::start( static_cast< const Input& >( in ), st... );
 
                if( duseltronik< Rule, A, rewind_mode::ACTIVE, Action, Control, dusel_mode::NOTHING >::match( in, st... ) ) {
-                  if( Control< Rule >::template apply< Action >( m.iterator(), const_cast< const Input& >( in ), st... ) ) {
-                     Control< Rule >::success( const_cast< const Input& >( in ), st... );
+                  if( Control< Rule >::template apply< Action >( m.iterator(), static_cast< const Input& >( in ), st... ) ) {
+                     Control< Rule >::success( static_cast< const Input& >( in ), st... );
                      return m( true );
                   }
                }
-               Control< Rule >::failure( const_cast< const Input& >( in ), st... );
+               Control< Rule >::failure( static_cast< const Input& >( in ), st... );
                return false;
             }
          };
@@ -128,14 +128,14 @@ namespace tao
             template< typename Input, typename... States >
             static bool match( Input& in, States&&... st )
             {
-               Control< Rule >::start( const_cast< const Input& >( in ), st... );
+               Control< Rule >::start( static_cast< const Input& >( in ), st... );
 
                if( duseltronik< Rule, A, M, Action, Control, dusel_mode::NOTHING >::match( in, st... ) ) {
-                  Control< Rule >::template apply0< Action >( const_cast< const Input& >( in ), st... );
-                  Control< Rule >::success( const_cast< const Input& >( in ), st... );
+                  Control< Rule >::template apply0< Action >( static_cast< const Input& >( in ), st... );
+                  Control< Rule >::success( static_cast< const Input& >( in ), st... );
                   return true;
                }
-               Control< Rule >::failure( const_cast< const Input& >( in ), st... );
+               Control< Rule >::failure( static_cast< const Input& >( in ), st... );
                return false;
             }
          };
@@ -152,15 +152,15 @@ namespace tao
             {
                auto m = in.template mark< rewind_mode::REQUIRED >();
 
-               Control< Rule >::start( const_cast< const Input& >( in ), st... );
+               Control< Rule >::start( static_cast< const Input& >( in ), st... );
 
                if( duseltronik< Rule, A, rewind_mode::ACTIVE, Action, Control, dusel_mode::NOTHING >::match( in, st... ) ) {
-                  if( Control< Rule >::template apply0< Action >( const_cast< const Input& >( in ), st... ) ) {
-                     Control< Rule >::success( const_cast< const Input& >( in ), st... );
+                  if( Control< Rule >::template apply0< Action >( static_cast< const Input& >( in ), st... ) ) {
+                     Control< Rule >::success( static_cast< const Input& >( in ), st... );
                      return m( true );
                   }
                }
-               Control< Rule >::failure( const_cast< const Input& >( in ), st... );
+               Control< Rule >::failure( static_cast< const Input& >( in ), st... );
                return false;
             }
          };

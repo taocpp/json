@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_BUFFER_INPUT_HPP
@@ -50,7 +50,12 @@ namespace tao
          }
 
          buffer_input( const buffer_input& ) = delete;
+         buffer_input( buffer_input&& ) = delete;
+
+         ~buffer_input() = default;
+
          void operator=( const buffer_input& ) = delete;
+         void operator=( buffer_input&& ) = delete;
 
          bool empty()
          {
@@ -132,7 +137,7 @@ namespace tao
          {
             if( m_current.data + amount > m_end ) {
                if( m_current.data + amount <= m_buffer.get() + m_maximum ) {
-                  if( const auto r = m_reader( const_cast< char* >( m_end ), amount - std::size_t( m_end - m_current.data ) ) ) {
+                  if( const auto r = m_reader( m_end, amount - std::size_t( m_end - m_current.data ) ) ) {
                      m_end += r;
                   }
                   else {
@@ -168,7 +173,7 @@ namespace tao
          std::size_t m_maximum;
          std::unique_ptr< char[] > m_buffer;
          iterator_t m_current;
-         const char* m_end;
+         char* m_end;
          const Source m_source;
       };
 

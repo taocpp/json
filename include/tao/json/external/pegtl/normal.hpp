@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_NORMAL_HPP
@@ -27,28 +27,28 @@ namespace tao
       struct normal
       {
          template< typename Input, typename... States >
-         static void start( const Input&, States&&... ) noexcept
+         static void start( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
          {
          }
 
          template< typename Input, typename... States >
-         static void success( const Input&, States&&... ) noexcept
+         static void success( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
          {
          }
 
          template< typename Input, typename... States >
-         static void failure( const Input&, States&&... ) noexcept
+         static void failure( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
          {
          }
 
          template< typename Input, typename... States >
-         static void raise( const Input& in, States&&... )
+         static void raise( const Input& in, States&&... /*unused*/ )
          {
             throw parse_error( "parse error matching " + internal::demangle< Rule >(), in );
          }
 
          template< template< typename... > class Action, typename Input, typename... States >
-         static auto apply0( const Input&, States&&... st )
+         static auto apply0( const Input& /*unused*/, States&&... st )
             -> decltype( Action< Rule >::apply0( st... ) )
          {
             return Action< Rule >::apply0( st... );
@@ -58,8 +58,7 @@ namespace tao
          static auto apply( const Iterator& begin, const Input& in, States&&... st )
             -> decltype( Action< Rule >::apply( std::declval< typename Input::action_t >(), st... ) )
          {
-            using action_t = typename Input::action_t;
-            const action_t action_input( begin, in );
+            const typename Input::action_t action_input( begin, in );
             return Action< Rule >::apply( action_input, st... );
          }
 
@@ -79,7 +78,7 @@ namespace tao
             constexpr char use_apply0_bool = use_action && internal::has_apply0< Action< Rule >, bool, States... >::value;
             static_assert( !use_action || use_apply_bool || use_apply_void || use_apply0_bool || use_apply0_void, "actions not disabled but no apply() or apply0() found" );
             static_assert( use_apply_void + use_apply_bool + use_apply0_void + use_apply0_bool < 2, "both apply() and apply0() defined" );
-            constexpr dusel_mode mode = static_cast< dusel_mode >( use_control + use_apply_void + 2 * use_apply_bool + 3 * use_apply0_void + 4 * use_apply0_bool );
+            constexpr auto mode = static_cast< dusel_mode >( use_control + use_apply_void + 2 * use_apply_bool + 3 * use_apply0_void + 4 * use_apply0_bool );
             return internal::duseltronik< Rule, A, M, Action, Control, mode >::match( in, st... );
          }
       };

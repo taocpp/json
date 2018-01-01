@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_APPLY0_HPP
@@ -26,7 +26,7 @@ namespace tao
          struct apply0_impl< apply_mode::ACTION >
          {
             template< typename... States >
-            static bool match( States&&... )
+            static bool match( States&&... /*unused*/ ) noexcept
             {
                return true;
             }
@@ -53,7 +53,7 @@ namespace tao
          struct apply0_impl< apply_mode::NOTHING, Actions... >
          {
             template< typename... States >
-            static bool match( States&&... )
+            static bool match( States&&... /*unused*/ ) noexcept
             {
                return true;
             }
@@ -70,7 +70,7 @@ namespace tao
                       template< typename... > class Control,
                       typename Input,
                       typename... States >
-            static bool match( Input&, States&&... st )
+            static bool match( Input& /*unused*/, States&&... st )
             {
                return apply0_impl< A, Actions... >::match( st... );
             }

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_ANY_HPP
@@ -26,7 +26,7 @@ namespace tao
             using analyze_t = analysis::generic< analysis::rule_type::ANY >;
 
             template< typename Input >
-            static bool match( Input& in )
+            static bool match( Input& in ) noexcept( noexcept( in.empty() ) )
             {
                if( !in.empty() ) {
                   in.bump();
@@ -42,7 +42,7 @@ namespace tao
             using analyze_t = analysis::generic< analysis::rule_type::ANY >;
 
             template< typename Input >
-            static bool match( Input& in )
+            static bool match( Input& in ) noexcept( noexcept( in.empty() ) )
             {
                if( !in.empty() ) {
                   if( const auto t = Peek::peek( in ) ) {

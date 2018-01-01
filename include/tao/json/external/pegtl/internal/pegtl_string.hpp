@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_TAOCPP_JSON_PEGTL_STRING_HPP
@@ -59,7 +59,7 @@ namespace tao
 #define TAOCPP_JSON_PEGTL_INTERNAL_EXPAND( ... ) __VA_ARGS__
 
 #define TAOCPP_JSON_PEGTL_INTERNAL_STRING_AT( S, x, n ) \
-   tao::TAOCPP_JSON_PEGTL_NAMESPACE::internal::string_at< S, ( 0##n < sizeof( x ) ) ? x[ 0##n ] : 0, ( 0##n < sizeof( x ) - 1 ) >::type
+   tao::TAOCPP_JSON_PEGTL_NAMESPACE::internal::string_at< S, ( 0##n < sizeof( x ) ) ? ( x )[ 0##n ] : 0, ( 0##n < sizeof( x ) - 1 ) >::type
 
 #define TAOCPP_JSON_PEGTL_INTERNAL_JOIN_8( M, S, x, n )                                                     \
    tao::TAOCPP_JSON_PEGTL_NAMESPACE::internal::string_join< TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##0 ), \

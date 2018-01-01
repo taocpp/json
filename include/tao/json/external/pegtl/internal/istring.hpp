@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_ISTRING_HPP
@@ -51,7 +51,7 @@ namespace tao
          template<>
          struct istring_equal<>
          {
-            static bool match( const char* ) noexcept
+            static bool match( const char* /*unused*/ ) noexcept
             {
                return true;
             }
@@ -81,7 +81,7 @@ namespace tao
             using analyze_t = analysis::counted< analysis::rule_type::ANY, sizeof...( Cs ) >;
 
             template< typename Input >
-            static bool match( Input& in )
+            static bool match( Input& in ) noexcept( noexcept( in.size( 0 ) ) )
             {
                if( in.size( sizeof...( Cs ) ) >= sizeof...( Cs ) ) {
                   if( istring_equal< Cs... >::match( in.current() ) ) {

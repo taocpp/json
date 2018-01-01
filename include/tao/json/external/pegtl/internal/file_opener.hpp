@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_FILE_OPENER_HPP
@@ -28,17 +28,20 @@ namespace tao
             {
             }
 
+            file_opener( const file_opener& ) = delete;
+            file_opener( file_opener&& ) = delete;
+
             ~file_opener() noexcept
             {
                ::close( m_fd );
             }
 
-            file_opener( const file_opener& ) = delete;
             void operator=( const file_opener& ) = delete;
+            void operator=( file_opener&& ) = delete;
 
             std::size_t size() const
             {
-               struct stat st;
+               struct stat st;  // NOLINT
                errno = 0;
                if(::fstat( m_fd, &st ) < 0 ) {
                   TAOCPP_JSON_PEGTL_THROW_INPUT_ERROR( "unable to fstat() file " << m_source << " descriptor " << m_fd );
@@ -53,7 +56,7 @@ namespace tao
             int open() const
             {
                errno = 0;
-               const int fd = ::open( m_source, O_RDONLY );
+               const int fd = ::open( m_source, O_RDONLY | O_CLOEXEC );  // NOLINT
                if( fd >= 0 ) {
                   return fd;
                }

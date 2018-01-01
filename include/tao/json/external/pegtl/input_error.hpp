@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_INPUT_ERROR_HPP
@@ -30,12 +30,14 @@ namespace tao
 
 }  // namespace tao
 
-#define TAOCPP_JSON_PEGTL_THROW_INPUT_ERROR( MESSAGE )                           \
-   do {                                                                     \
-      const int errorno = errno;                                            \
-      std::ostringstream oss;                                               \
-      oss << "pegtl: " << MESSAGE << " errno " << errorno;                  \
-      throw tao::TAOCPP_JSON_PEGTL_NAMESPACE::input_error( oss.str(), errorno ); \
+#define TAOCPP_JSON_PEGTL_UNWRAP( ... ) __VA_ARGS__
+
+#define TAOCPP_JSON_PEGTL_THROW_INPUT_ERROR( MESSAGE )                                 \
+   do {                                                                           \
+      const int errorno = errno;                                                  \
+      std::ostringstream oss;                                                     \
+      oss << "pegtl: " << TAOCPP_JSON_PEGTL_UNWRAP( MESSAGE ) << " errno " << errorno; \
+      throw tao::TAOCPP_JSON_PEGTL_NAMESPACE::input_error( oss.str(), errorno );       \
    } while( false )
 
 #endif

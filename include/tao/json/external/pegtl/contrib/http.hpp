@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_HTTP_HPP
@@ -8,6 +8,7 @@
 #include "../config.hpp"
 #include "../rules.hpp"
 #include "../utf8.hpp"
+
 #include "abnf.hpp"
 #include "uri.hpp"
 
@@ -23,24 +24,22 @@ namespace tao
          // It should be considered experimental -- in case of any issues, in particular
          // missing rules for attached actions, please contact the developers.
 
-         using namespace abnf;
-
-         using OWS = star< WSP >;  // optional whitespace
-         using RWS = plus< WSP >;  // required whitespace
-         using BWS = OWS;          // "bad" whitespace
+         using OWS = star< abnf::WSP >;  // optional whitespace
+         using RWS = plus< abnf::WSP >;  // required whitespace
+         using BWS = OWS;                // "bad" whitespace
 
          // cppcheck-suppress constStatement
          using obs_text = not_range< 0x00, 0x7F >;
-         using obs_fold = seq< CRLF, plus< WSP > >;
+         using obs_fold = seq< abnf::CRLF, plus< abnf::WSP > >;
 
          // clang-format off
-         struct tchar : sor< ALPHA, DIGIT, one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' > > {};
+         struct tchar : sor< abnf::ALPHA, abnf::DIGIT, one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '.', '^', '_', '`', '|', '~' > > {};
          struct token : plus< tchar > {};
 
          struct field_name : token {};
 
-         struct field_vchar : sor< VCHAR, obs_text > {};
-         struct field_content : list< field_vchar, plus< WSP > > {};
+         struct field_vchar : sor< abnf::VCHAR, obs_text > {};
+         struct field_content : list< field_vchar, plus< abnf::WSP > > {};
          struct field_value : star< sor< field_content, obs_fold > > {};
 
          struct header_field : seq< field_name, one< ':' >, OWS, field_value, OWS > {};
@@ -56,19 +55,19 @@ namespace tao
 
          struct request_target : sor< origin_form, absolute_form, authority_form, asterisk_form > {};
 
-         struct status_code : rep< 3, DIGIT > {};
-         struct reason_phrase : star< sor< VCHAR, obs_text, WSP > > {};
+         struct status_code : rep< 3, abnf::DIGIT > {};
+         struct reason_phrase : star< sor< abnf::VCHAR, obs_text, abnf::WSP > > {};
 
-         struct HTTP_version : if_must< TAOCPP_JSON_PEGTL_STRING( "HTTP/" ), DIGIT, one< '.' >, DIGIT > {};
+         struct HTTP_version : if_must< string< 'H', 'T', 'T', 'P', '/' >, abnf::DIGIT, one< '.' >, abnf::DIGIT > {};
 
-         struct request_line : if_must< method, SP, request_target, SP, HTTP_version, CRLF > {};
-         struct status_line : if_must< HTTP_version, SP, status_code, SP, reason_phrase, CRLF > {};
+         struct request_line : if_must< method, abnf::SP, request_target, abnf::SP, HTTP_version, abnf::CRLF > {};
+         struct status_line : if_must< HTTP_version, abnf::SP, status_code, abnf::SP, reason_phrase, abnf::CRLF > {};
          struct start_line : sor< status_line, request_line > {};
 
-         struct message_body : star< OCTET > {};
-         struct HTTP_message : seq< start_line, star< header_field, CRLF >, CRLF, opt< message_body > > {};
+         struct message_body : star< abnf::OCTET > {};
+         struct HTTP_message : seq< start_line, star< header_field, abnf::CRLF >, abnf::CRLF, opt< message_body > > {};
 
-         struct Content_Length : plus< DIGIT > {};
+         struct Content_Length : plus< abnf::DIGIT > {};
 
          struct uri_host : uri::host {};
          struct port : uri::port {};
@@ -76,24 +75,24 @@ namespace tao
          struct Host : seq< uri_host, opt< one< ':' >, port > > {};
 
          // PEG are different from CFGs! (this replaces ctext and qdtext)
-         using text = sor< HTAB, range< 0x20, 0x7E >, obs_text >;
+         using text = sor< abnf::HTAB, range< 0x20, 0x7E >, obs_text >;
 
-         struct quoted_pair : if_must< one< '\\' >, sor< VCHAR, obs_text, WSP > > {};
-         struct quoted_string : if_must< DQUOTE, until< DQUOTE, sor< quoted_pair, text > > > {};
+         struct quoted_pair : if_must< one< '\\' >, sor< abnf::VCHAR, obs_text, abnf::WSP > > {};
+         struct quoted_string : if_must< abnf::DQUOTE, until< abnf::DQUOTE, sor< quoted_pair, text > > > {};
 
          struct transfer_parameter : seq< token, BWS, one< '=' >, BWS, sor< token, quoted_string > > {};
          struct transfer_extension : seq< token, star< OWS, one< ';' >, OWS, transfer_parameter > > {};
-         struct transfer_coding : sor< TAOCPP_JSON_PEGTL_ISTRING( "chunked" ),
-                                       TAOCPP_JSON_PEGTL_ISTRING( "compress" ),
-                                       TAOCPP_JSON_PEGTL_ISTRING( "deflate" ),
-                                       TAOCPP_JSON_PEGTL_ISTRING( "gzip" ),
+         struct transfer_coding : sor< istring< 'c', 'h', 'u', 'n', 'k', 'e', 'd' >,
+                                       istring< 'c', 'o', 'm', 'p', 'r', 'e', 's', 's' >,
+                                       istring< 'd', 'e', 'f', 'l', 'a', 't', 'e' >,
+                                       istring< 'g', 'z', 'i', 'p' >,
                                        transfer_extension > {};
 
-         struct rank : sor< seq< one< '0' >, opt< one< '.' >, rep_opt< 3, DIGIT > > >,
+         struct rank : sor< seq< one< '0' >, opt< one< '.' >, rep_opt< 3, abnf::DIGIT > > >,
                             seq< one< '1' >, opt< one< '.' >, rep_opt< 3, one< '0' > > > > > {};
 
          struct t_ranking : seq< OWS, one< ';' >, OWS, one< 'q', 'Q' >, one< '=' >, rank > {};
-         struct t_codings : sor< TAOCPP_JSON_PEGTL_ISTRING( "trailers" ), seq< transfer_coding, opt< t_ranking > > > {};
+         struct t_codings : sor< istring< 't', 'r', 'a', 'i', 'l', 'e', 'r', 's' >, seq< transfer_coding, opt< t_ranking > > > {};
 
          struct TE : opt< sor< one< ',' >, t_codings >, star< OWS, one< ',' >, opt< OWS, t_codings > > > {};
 
@@ -121,26 +120,26 @@ namespace tao
 
          struct Via : make_comma_list< seq< received_protocol, RWS, received_by, opt< RWS, comment > > > {};
 
-         struct http_URI : if_must< TAOCPP_JSON_PEGTL_ISTRING( "http://" ), uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
-         struct https_URI : if_must< TAOCPP_JSON_PEGTL_ISTRING( "https://" ), uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
+         struct http_URI : if_must< istring< 'h', 't', 't', 'p', ':', '/', '/' >, uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
+         struct https_URI : if_must< istring< 'h', 't', 't', 'p', 's', ':', '/', '/' >, uri::authority, uri::path_abempty, uri::opt_query, uri::opt_fragment > {};
 
          struct partial_URI : seq< uri::relative_part, uri::opt_query > {};
 
-         struct chunk_size : plus< HEXDIG > {};
+         struct chunk_size : plus< abnf::HEXDIG > {};
 
          struct chunk_ext_name : token {};
          struct chunk_ext_val : sor< quoted_string, token > {};
          struct chunk_ext : star< if_must< one< ';' >, chunk_ext_name, if_must< one< '=' >, chunk_ext_val > > > {};
 
-         struct chunk_data : until< at< CRLF >, OCTET > {};
+         struct chunk_data : until< at< abnf::CRLF >, abnf::OCTET > {};
 
-         struct chunk : seq< chunk_size, opt< chunk_ext >, CRLF, chunk_data, CRLF > {};
+         struct chunk : seq< chunk_size, opt< chunk_ext >, abnf::CRLF, chunk_data, abnf::CRLF > {};
 
-         struct last_chunk : seq< plus< one< '0' > >, opt< chunk_ext >, CRLF > {};
+         struct last_chunk : seq< plus< one< '0' > >, opt< chunk_ext >, abnf::CRLF > {};
 
-         struct trailer_part : star< header_field, CRLF > {};
+         struct trailer_part : star< header_field, abnf::CRLF > {};
 
-         struct chunked_body : seq< until< last_chunk, chunk >, trailer_part, CRLF > {};
+         struct chunked_body : seq< until< last_chunk, chunk >, trailer_part, abnf::CRLF > {};
          // clang-format on
 
       }  // namespace http
