@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include "test.hpp"
@@ -42,7 +42,7 @@ namespace tao
                      ++failed;
                      std::cout << "  Failed: Schema is valid, but it should not be" << std::endl;
                   }
-                  else
+                  else {
                      for( const auto& c : e.at( "tests" ).get_array() ) {
                         std::cout << "    Testcase: " << c.at( "description" ).get_string() << std::endl;
                         ++tests;
@@ -64,6 +64,7 @@ namespace tao
                            std::cout << "    Failed with exception: " << ex.what() << std::endl;
                         }
                      }
+                  }
                }
                catch( const std::exception& ex ) {
                   if( expected_schema ) {
@@ -122,7 +123,7 @@ namespace tao
          test( "tests/taocpp/dateTime.json" );
 
          // TODO: Remove this temporary work-around once all tests succeed
-         if( failed ) {
+         if( failed != 0 ) {
             std::cerr << "JSON Schema failures: " << failed << '/' << tests << std::endl;
          }
          failed = 0;

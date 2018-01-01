@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include <limits>
@@ -74,7 +74,7 @@ namespace tao
 #ifndef NDEBUG
          {
             char memory[ sizeof( value ) ];
-            value* ptr = static_cast< value* >( static_cast< void* >( memory ) );
+            auto* ptr = static_cast< value* >( static_cast< void* >( memory ) );
             new( ptr ) value( "dummy" );
             ptr->~value();
             TEST_ASSERT( ptr->type() == type::DESTROYED );
@@ -330,7 +330,7 @@ namespace tao
          TEST_THROWS( v.at( "foo" ) );
       }
 
-      void test_empty_array( const value v )
+      void test_empty_array( const value& v )
       {
          const value v2( v );
 
@@ -364,7 +364,7 @@ namespace tao
          TEST_THROWS( v.at( "foo" ) );
       }
 
-      void test_empty_object( const value v )
+      void test_empty_object( const value& v )
       {
          const value v2( v );
 
@@ -562,11 +562,11 @@ namespace tao
 
          TEST_ASSERT( value( "baz" ).get_string().size() == 3 );
 
-         test_empty_array( value( empty_array ) );
-         test_empty_array( value( std::vector< value >() ) );
+         test_empty_array( empty_array );
+         test_empty_array( std::vector< value >() );
 
-         test_empty_object( value( empty_object ) );
-         test_empty_object( value( std::map< std::string, value >() ) );
+         test_empty_object( empty_object );
+         test_empty_object( std::map< std::string, value >() );
 
          test_array_1234();
          test_object_1234();

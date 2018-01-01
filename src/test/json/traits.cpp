@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2017 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include "test.hpp"
@@ -19,7 +19,7 @@ namespace tao
       {
          static const char* default_key;
 
-         static void assign( value& v, const my_data& )
+         static void assign( value& v, const my_data& /*unused*/ )
          {
             v = {
                { "fuh", "bar" },
