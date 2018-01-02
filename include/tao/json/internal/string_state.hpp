@@ -16,8 +16,14 @@ namespace tao
          struct string_state
          {
             string_state() = default;
+
             string_state( const string_state& ) = delete;
+            string_state( string_state&& ) = delete;
+
+            ~string_state() = default;
+
             void operator=( const string_state& ) = delete;
+            void operator=( string_state&& ) = delete;
 
             template< typename Consumer >
             void success( Consumer& consumer )

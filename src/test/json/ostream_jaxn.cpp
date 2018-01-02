@@ -32,7 +32,7 @@ namespace tao
 
          TEST_THROWS( jaxn::to_string( e ) );
 #ifndef NDEBUG
-         TEST_THROWS( jaxn::to_string( d ) );
+         TEST_THROWS( jaxn::to_string( d ) );  // NOLINT
 #endif
 
          test_simple( null, "null" );

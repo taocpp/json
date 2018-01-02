@@ -35,42 +35,36 @@ namespace tao
       struct traits< null_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, null_t  /*unused*/) noexcept
+         static void assign( basic_value< Traits >& v, null_t /*unused*/ ) noexcept
          {
             v.unsafe_assign_null();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, null_t  /*unused*/) noexcept
+         static bool equal( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->is_null();
             }
-            else {
-               return true;
-            }
+            return true;
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, null_t  /*unused*/) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() < type::NULL_;
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, null_t  /*unused*/) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() > type::NULL_;
             }
-            else {
-               return false;
-            }
+            return false;
          }
       };
 
@@ -95,9 +89,7 @@ namespace tao
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->is_boolean() && ( p->unsafe_get_boolean() == rhs );
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
@@ -106,9 +98,7 @@ namespace tao
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return ( p->type() < type::BOOLEAN ) || ( p->is_boolean() && ( p->unsafe_get_boolean() < rhs ) );
             }
-            else {
-               return type::NULL_ < type::BOOLEAN;
-            }
+            return type::NULL_ < type::BOOLEAN;
          }
 
          template< template< typename... > class Traits >
@@ -117,9 +107,7 @@ namespace tao
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return ( p->type() > type::BOOLEAN ) || ( p->is_boolean() && ( p->unsafe_get_boolean() > rhs ) );
             }
-            else {
-               return type::NULL_ > type::BOOLEAN;
-            }
+            return type::NULL_ > type::BOOLEAN;
          }
       };
 
@@ -172,9 +160,7 @@ namespace tao
                         return false;
                   }
                }
-               else {
-                  return false;
-               }
+               return false;
             }
 
             template< template< typename... > class Traits >
@@ -192,9 +178,7 @@ namespace tao
                         return p->type() < type::SIGNED;
                   }
                }
-               else {
-                  return type::NULL_ < type::SIGNED;
-               }
+               return type::NULL_ < type::SIGNED;
             }
 
             template< template< typename... > class Traits >
@@ -212,9 +196,7 @@ namespace tao
                         return p->type() > type::SIGNED;
                   }
                }
-               else {
-                  return type::NULL_ > type::SIGNED;
-               }
+               return type::NULL_ > type::SIGNED;
             }
          };
 
@@ -245,9 +227,7 @@ namespace tao
                         return false;
                   }
                }
-               else {
-                  return false;
-               }
+               return false;
             }
 
             template< template< typename... > class Traits >
@@ -267,9 +247,7 @@ namespace tao
                         return p->type() < type::UNSIGNED;
                   }
                }
-               else {
-                  return type::NULL_ < type::UNSIGNED;
-               }
+               return type::NULL_ < type::UNSIGNED;
             }
 
             template< template< typename... > class Traits >
@@ -289,9 +267,7 @@ namespace tao
                         return p->type() > type::UNSIGNED;
                   }
                }
-               else {
-                  return type::NULL_ > type::UNSIGNED;
-               }
+               return type::NULL_ > type::UNSIGNED;
             }
          };
 
@@ -320,9 +296,7 @@ namespace tao
                         return false;
                   }
                }
-               else {
-                  return false;
-               }
+               return false;
             }
 
             template< template< typename... > class Traits >
@@ -340,9 +314,7 @@ namespace tao
                         return p->type() < type::DOUBLE;
                   }
                }
-               else {
-                  return type::NULL_ < type::DOUBLE;
-               }
+               return type::NULL_ < type::DOUBLE;
             }
 
             template< template< typename... > class Traits >
@@ -360,9 +332,7 @@ namespace tao
                         return p->type() > type::DOUBLE;
                   }
                }
-               else {
-                  return type::NULL_ > type::DOUBLE;
-               }
+               return type::NULL_ > type::DOUBLE;
             }
          };
       }
@@ -388,13 +358,13 @@ namespace tao
       struct traits< empty_binary_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, empty_binary_t  /*unused*/) noexcept
+         static void assign( basic_value< Traits >& v, empty_binary_t /*unused*/ ) noexcept
          {
             v.unsafe_emplace_binary();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, empty_binary_t  /*unused*/) noexcept
+         static bool equal( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
@@ -406,13 +376,11 @@ namespace tao
                      return false;
                }
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, empty_binary_t  /*unused*/) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
@@ -423,13 +391,11 @@ namespace tao
                      return p->type() < type::BINARY;
                }
             }
-            else {
-               return type::NULL_ < type::BINARY;
-            }
+            return type::NULL_ < type::BINARY;
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t  /*unused*/) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
@@ -441,9 +407,7 @@ namespace tao
                      return p->type() > type::BINARY;
                }
             }
-            else {
-               return type::NULL_ > type::BINARY;
-            }
+            return type::NULL_ > type::BINARY;
          }
       };
 
@@ -451,42 +415,36 @@ namespace tao
       struct traits< empty_array_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, empty_array_t  /*unused*/) noexcept
+         static void assign( basic_value< Traits >& v, empty_array_t /*unused*/ ) noexcept
          {
             v.unsafe_emplace_array();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, empty_array_t  /*unused*/) noexcept
+         static bool equal( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->is_array() && p->unsafe_get_array().empty();
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, empty_array_t  /*unused*/) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() < type::ARRAY;
             }
-            else {
-               return type::NULL_ < type::ARRAY;
-            }
+            return type::NULL_ < type::ARRAY;
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, empty_array_t  /*unused*/) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return ( p->type() > type::ARRAY ) || ( p->is_array() && !p->unsafe_get_array().empty() );
             }
-            else {
-               return type::NULL_ > type::ARRAY;
-            }
+            return type::NULL_ > type::ARRAY;
          }
       };
 
@@ -494,42 +452,36 @@ namespace tao
       struct traits< empty_object_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, empty_object_t  /*unused*/) noexcept
+         static void assign( basic_value< Traits >& v, empty_object_t /*unused*/ ) noexcept
          {
             v.unsafe_emplace_object();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, empty_object_t  /*unused*/) noexcept
+         static bool equal( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->is_object() && p->unsafe_get_object().empty();
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, empty_object_t  /*unused*/) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() < type::OBJECT;
             }
-            else {
-               return type::NULL_ < type::OBJECT;
-            }
+            return type::NULL_ < type::OBJECT;
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, empty_object_t  /*unused*/) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return ( p->type() > type::OBJECT ) || ( p->is_object() && !p->unsafe_get_object().empty() );
             }
-            else {
-               return type::NULL_ > type::OBJECT;
-            }
+            return type::NULL_ > type::OBJECT;
          }
       };
 
@@ -578,9 +530,7 @@ namespace tao
                      return false;
                }
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
@@ -596,9 +546,7 @@ namespace tao
                      return p->type() < type::STRING;
                }
             }
-            else {
-               return type::NULL_ < type::STRING;
-            }
+            return type::NULL_ < type::STRING;
          }
 
          template< template< typename... > class Traits >
@@ -614,9 +562,7 @@ namespace tao
                      return p->type() > type::STRING;
                }
             }
-            else {
-               return type::NULL_ > type::STRING;
-            }
+            return type::NULL_ > type::STRING;
          }
       };
 
@@ -655,9 +601,7 @@ namespace tao
                      return false;
                }
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
@@ -673,9 +617,7 @@ namespace tao
                      return p->type() < type::STRING;
                }
             }
-            else {
-               return type::NULL_ < type::STRING;
-            }
+            return type::NULL_ < type::STRING;
          }
 
          template< template< typename... > class Traits >
@@ -691,9 +633,7 @@ namespace tao
                      return p->type() > type::STRING;
                }
             }
-            else {
-               return type::NULL_ > type::STRING;
-            }
+            return type::NULL_ > type::STRING;
          }
       };
 
@@ -725,9 +665,7 @@ namespace tao
                      return false;
                }
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
@@ -743,9 +681,7 @@ namespace tao
                      return p->type() < type::STRING;
                }
             }
-            else {
-               return type::NULL_ < type::STRING;
-            }
+            return type::NULL_ < type::STRING;
          }
 
          template< template< typename... > class Traits >
@@ -761,9 +697,7 @@ namespace tao
                      return p->type() > type::STRING;
                }
             }
-            else {
-               return type::NULL_ > type::STRING;
-            }
+            return type::NULL_ > type::STRING;
          }
       };
 
@@ -822,9 +756,7 @@ namespace tao
                      return false;
                }
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
@@ -840,9 +772,7 @@ namespace tao
                      return p->type() < type::BINARY;
                }
             }
-            else {
-               return type::NULL_ < type::BINARY;
-            }
+            return type::NULL_ < type::BINARY;
          }
 
          template< template< typename... > class Traits >
@@ -858,9 +788,7 @@ namespace tao
                      return p->type() > type::BINARY;
                }
             }
-            else {
-               return type::NULL_ > type::BINARY;
-            }
+            return type::NULL_ > type::BINARY;
          }
       };
 
@@ -899,9 +827,7 @@ namespace tao
                      return false;
                }
             }
-            else {
-               return false;
-            }
+            return false;
          }
 
          template< template< typename... > class Traits >
@@ -917,9 +843,7 @@ namespace tao
                      return p->type() < type::BINARY;
                }
             }
-            else {
-               return type::NULL_ < type::BINARY;
-            }
+            return type::NULL_ < type::BINARY;
          }
 
          template< template< typename... > class Traits >
@@ -935,9 +859,7 @@ namespace tao
                      return p->type() > type::BINARY;
                }
             }
-            else {
-               return type::NULL_ > type::BINARY;
-            }
+            return type::NULL_ > type::BINARY;
          }
       };
 

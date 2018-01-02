@@ -26,10 +26,10 @@ namespace tao
             for( const auto c : v ) {
                encode <<= 8;
                encode += static_cast< unsigned char >( c );
-               s += table[ ( encode >> ( ++cycle * 2 ) ) & 0x3f ];
+               s += table[ ( encode >> ( ++cycle * 2 ) ) & 0x3f ];  // NOLINT
                if( cycle == 3 ) {
                   cycle = 0;
-                  s += table[ encode & 0x3f ];
+                  s += table[ encode & 0x3f ];  // NOLINT
                }
             }
 
@@ -38,12 +38,12 @@ namespace tao
                   break;
 
                case 1:
-                  s += table[ ( encode << 4 ) & 0x3f ];
+                  s += table[ ( encode << 4 ) & 0x3f ];  // NOLINT
                   s += "==";
                   break;
 
                case 2:
-                  s += table[ ( encode << 2 ) & 0x3f ];
+                  s += table[ ( encode << 2 ) & 0x3f ];  // NOLINT
                   s += '=';
                   break;
 

@@ -18,8 +18,8 @@ namespace tao
          std::string name;
          unsigned age;
 
-         user( const bool h, const std::string& n, const unsigned a )
-            : is_human( h ), name( n ), age( a )
+         user( const bool h, std::string n, const unsigned a )
+            : is_human( h ), name( std::move( n ) ), age( a )
          {
          }
       };

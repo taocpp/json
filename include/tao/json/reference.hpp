@@ -82,7 +82,7 @@ namespace tao
                                     p = p->at( it->key() ).skip_raw_ptr();
                                     break;
                                  default:
-                                    throw invalid_type( ptr.begin(), std::next( it ) );
+                                    throw invalid_type( ptr.begin(), std::next( it ) );  // NOLINT
                               }
                               ++it;
                            }
@@ -91,7 +91,6 @@ namespace tao
                            }
                            v.assign_raw_ptr( p );
                            resolve_references( r, v );
-                           return;
                         }
                         else {
                            // Ignore remote references for now...

@@ -82,7 +82,7 @@ namespace tao
                   }
                   // LCOV_EXCL_START
                   assert( false );
-                  return false;
+                  return 0;
                   // LCOV_EXCL_STOP
                }
 

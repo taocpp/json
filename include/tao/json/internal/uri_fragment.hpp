@@ -111,7 +111,7 @@ namespace tao
                            const char h1 = xdigit_value( *p++ );
                            if( p != e ) {
                               const char h2 = xdigit_value( *p++ );
-                              token += h1 * 16 + h2;
+                              token += static_cast< char >( h1 * 16 + h2 );
                               continue;
                            }
                         }
@@ -160,7 +160,7 @@ namespace tao
                         result += "~1";
                         break;
                      default:
-                        if( allowed_uri_fragment_characters[ c ] ) {
+                        if( allowed_uri_fragment_characters[ c ] ) {  // NOLINT
                            result += c;
                         }
                         else {

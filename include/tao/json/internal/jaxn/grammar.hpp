@@ -18,7 +18,7 @@ namespace tao
             // clang-format off
             namespace rules
             {
-               using namespace json_pegtl;
+               using namespace json_pegtl;  // NOLINT
 
                struct line_comment_char : sor< one< '\t' >, utf8::range< 0x20, 0x10FFFF > > {};
                struct line_comment : seq< one< '/' >, until< eolf, must< line_comment_char > > > {};

@@ -21,7 +21,7 @@ namespace tao
          mutable basic_value< Traits > value;
 
          template< typename U >
-         single( U&& v )
+         single( U&& v )  // NOLINT
             : value( std::forward< U >( v ) )
          {
          }

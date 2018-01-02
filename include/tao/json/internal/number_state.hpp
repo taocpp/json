@@ -7,7 +7,6 @@
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
-#include <inttypes.h>
 #include <stdexcept>
 
 #include "../external/double.hpp"
@@ -21,17 +20,20 @@ namespace tao
          static const std::size_t max_mantissa_digits = 772;
 
          template< bool NEG >
-         struct number_state
+         struct number_state  // NOLINT
          {
             using exponent10_t = int32_t;
             using msize_t = uint16_t;
 
-            number_state()
-            {
-            }
+            number_state() = default;
 
             number_state( const number_state& ) = delete;
+            number_state( number_state&& ) = delete;
+
+            ~number_state() = default;
+
             void operator=( const number_state& ) = delete;
+            void operator=( number_state&& ) = delete;
 
             exponent10_t exponent10 = 0;
             msize_t msize = 0;  // Excluding sign.
@@ -54,7 +56,7 @@ namespace tao
                            consumer.number( -static_cast< std::int64_t >( ull ) );
                            return;
                         }
-                        else if( ull == 9223372036854775808ull ) {
+                        if( ull == 9223372036854775808ull ) {
                            consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
                            return;
                         }

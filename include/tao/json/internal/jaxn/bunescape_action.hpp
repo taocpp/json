@@ -97,7 +97,7 @@ namespace tao
                template< typename Input, typename State >
                static void apply( const Input& in, State& st )
                {
-                  const auto begin = reinterpret_cast< const tao::byte* >( in.begin() );
+                  const auto begin = static_cast< const tao::byte* >( static_cast< const void* >( in.begin() ) );
                   const auto end = begin + in.size();
                   st.value.insert( st.value.end(), begin, end );
                }

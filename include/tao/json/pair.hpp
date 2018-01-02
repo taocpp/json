@@ -22,7 +22,7 @@ namespace tao
          mutable basic_value< Traits > value;
 
          template< typename U >
-         pair( U&& v )
+         pair( U&& v )  // NOLINT
             : key( Traits< typename std::decay< U >::type >::default_key ),
               value( std::forward< U >( v ) )
          {

@@ -11,21 +11,16 @@
 #include <cstring>
 #include <string>
 
-#define DBL_INT_ADD( a, b, c )  \
-   if( a > 0xffffffff - ( c ) ) \
-      ++b;                      \
-   a += c;
-
 // RFC 6234, 3.d; see also http://stackoverflow.com/a/4209604/2073257
-#define ROR( x, N ) ( ( x >> N ) | ( x << ( 32 - N ) ) )
+#define ROR( x, N ) ( ( ( x ) >> ( N ) ) | ( ( x ) << ( 32 - ( N ) ) ) )
 
 // RFC 6234, 5.1
-#define CH( x, y, z ) ( ( x & y ) ^ ( ~x & z ) )
-#define MAJ( x, y, z ) ( ( x & y ) ^ ( x & z ) ^ ( y & z ) )
+#define CH( x, y, z ) ( ( ( x ) & ( y ) ) ^ ( ~( x ) & ( z ) ) )
+#define MAJ( x, y, z ) ( ( ( x ) & ( y ) ) ^ ( ( x ) & ( z ) ) ^ ( ( y ) & ( z ) ) )
 #define BSIG0( x ) ( ROR( x, 2 ) ^ ROR( x, 13 ) ^ ROR( x, 22 ) )
 #define BSIG1( x ) ( ROR( x, 6 ) ^ ROR( x, 11 ) ^ ROR( x, 25 ) )
-#define SSIG0( x ) ( ROR( x, 7 ) ^ ROR( x, 18 ) ^ ( x >> 3 ) )
-#define SSIG1( x ) ( ROR( x, 17 ) ^ ROR( x, 19 ) ^ ( x >> 10 ) )
+#define SSIG0( x ) ( ROR( x, 7 ) ^ ROR( x, 18 ) ^ ( ( x ) >> 3 ) )
+#define SSIG1( x ) ( ROR( x, 17 ) ^ ROR( x, 19 ) ^ ( ( x ) >> 10 ) )
 
 namespace tao
 {
@@ -70,10 +65,10 @@ namespace tao
 
                // step 1
                for( std::size_t t = 0, i = 0; t != 16; ++t, i += 4 ) {
-                  W[ t ] = ( M[ i ] << 24 ) | ( M[ i + 1 ] << 16 ) | ( M[ i + 2 ] << 8 ) | ( M[ i + 3 ] );
+                  W[ t ] = ( M[ i ] << 24 ) | ( M[ i + 1 ] << 16 ) | ( M[ i + 2 ] << 8 ) | ( M[ i + 3 ] );  // NOLINT
                }
                for( std::size_t t = 16; t != 64; ++t ) {
-                  W[ t ] = SSIG1( W[ t - 2 ] ) + W[ t - 7 ] + SSIG0( W[ t - 15 ] ) + W[ t - 16 ];
+                  W[ t ] = SSIG1( W[ t - 2 ] ) + W[ t - 7 ] + SSIG0( W[ t - 15 ] ) + W[ t - 16 ];  // NOLINT
                }
 
                // step 2
@@ -89,7 +84,7 @@ namespace tao
 
                // step 3
                for( std::size_t t = 0; t != 64; ++t ) {
-                  const std::uint32_t T1 = h + BSIG1( e ) + CH( e, f, g ) + K[ t ] + W[ t ];
+                  const std::uint32_t T1 = h + BSIG1( e ) + CH( e, f, g ) + K[ t ] + W[ t ];  // NOLINT
                   const std::uint32_t T2 = BSIG0( a ) + MAJ( a, b, c );
                   h = g;
                   g = f;
@@ -113,13 +108,18 @@ namespace tao
             }
 
          public:
-            sha256() noexcept
+            sha256() noexcept  // NOLINT
             {
                reset();
             }
 
             sha256( const sha256& ) = delete;
+            sha256( sha256&& ) = delete;
+
+            ~sha256() = default;
+
             void operator=( const sha256& ) = delete;
+            void operator=( sha256&& ) = delete;
 
             void reset() noexcept
             {
@@ -138,7 +138,7 @@ namespace tao
 
             void feed( const unsigned char c ) noexcept
             {
-               M[ size++ % 64 ] = c;
+               M[ size++ % 64 ] = c;  // NOLINT
                if( ( size % 64 ) == 0 ) {
                   process();
                }
@@ -146,8 +146,8 @@ namespace tao
 
             void feed( const void* p, std::size_t s ) noexcept
             {
-               const unsigned char* q = static_cast< const unsigned char* >( p );
-               while( s-- ) {
+               auto* q = static_cast< const unsigned char* >( p );
+               while( s-- ) {  // NOLINT
                   feed( *q++ );
                }
             }
@@ -162,15 +162,15 @@ namespace tao
             {
                std::size_t i = size % 64;
                if( i < 56 ) {
-                  M[ i++ ] = 0x80;
+                  M[ i++ ] = 0x80;  // NOLINT
                   while( i < 56 ) {
-                     M[ i++ ] = 0x00;
+                     M[ i++ ] = 0x00;  // NOLINT
                   }
                }
                else {
-                  M[ i++ ] = 0x80;
+                  M[ i++ ] = 0x80;  // NOLINT
                   while( i < 64 ) {
-                     M[ i++ ] = 0x00;
+                     M[ i++ ] = 0x00;  // NOLINT
                   }
                   process();
                   std::memset( M, 0, 56 );
@@ -205,7 +205,7 @@ namespace tao
             {
                unsigned char result[ 32 ];
                store_unsafe( result );
-               return std::string( reinterpret_cast< const char* >( result ), 32 );
+               return std::string( static_cast< const char* >( static_cast< const void* >( result ) ), 32 );
             }
          };
 

@@ -16,7 +16,7 @@ namespace tao
          // clang-format off
          namespace rules
          {
-            using namespace json_pegtl;
+            using namespace json_pegtl;  // NOLINT
 
             struct ws : one< ' ', '\t', '\n', '\r' > {};
 
@@ -170,9 +170,7 @@ namespace tao
                      }
                      return true;
                   }
-                  else {
-                     return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
-                  }
+                  return Control< number< NEG > >::template match< A, M, Action, Control >( in, st... );
                }
 
                template< apply_mode A,

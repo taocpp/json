@@ -20,7 +20,7 @@ namespace tao
 {
    // modelled after C++17's basic_string_view
    template< class byteT >
-   class basic_byte_view
+   class basic_byte_view  // NOLINT
    {
    public:
       using value_type = byteT;
@@ -52,7 +52,7 @@ namespace tao
       {
       }
 
-      constexpr basic_byte_view( const std::vector< byteT >& str ) noexcept
+      constexpr basic_byte_view( const std::vector< byteT >& str ) noexcept  // NOLINT
          : data_( str.data() ), size_( str.size() )
       {
       }
@@ -327,7 +327,7 @@ namespace tao
 
    private:
       const_pointer data_;
-      size_type size_;
+      size_type size_;  // NOLINT
    };
 
    template< class byteT >

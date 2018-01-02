@@ -32,7 +32,7 @@ namespace tao
                   if( key == "0" ) {
                      return 0;
                   }
-                  else if( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
+                  if( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
                      if( key.size() < 10 || key < "4294967296" ) {
                         return static_cast< std::size_t >( std::stoul( key ) );
                      }
@@ -51,7 +51,7 @@ namespace tao
                   if( key == "0" ) {
                      return 0;
                   }
-                  else if( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
+                  if( ( key[ 0 ] != '0' ) && ( key.find_first_not_of( "0123456789" ) == std::string::npos ) ) {
                      if( key.size() < 20 || key < "18446744073709551616" ) {
                         return static_cast< std::size_t >( std::stoull( key ) );
                      }
@@ -89,6 +89,8 @@ namespace tao
               m_key( std::move( v.m_key ) )
          {
          }
+
+         ~token() = default;
 
          token& operator=( const token& ) = default;
          token& operator=( token&& v ) noexcept
@@ -182,6 +184,8 @@ namespace tao
             : m_tokens( parse( v ) )
          {
          }
+
+         ~pointer() = default;
 
          pointer& operator=( const pointer& ) = default;
 
@@ -306,7 +310,7 @@ namespace tao
                      v = &v->at( it->key() );
                      break;
                   default:
-                     throw invalid_type( begin, std::next( it ) );
+                     throw invalid_type( begin, std::next( it ) );  // NOLINT
                }
                ++it;
             }

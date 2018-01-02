@@ -34,7 +34,7 @@ namespace tao
          std::string result;
          result.reserve( data.size() / 2 );
          for( std::string::size_type i = 0; i < data.size(); i += 2 ) {
-            result += ( test_unhex( data[ i ] ) << 4 ) + test_unhex( data[ i + 1 ] );
+            result += static_cast< char >( ( test_unhex( data[ i ] ) << 4 ) + test_unhex( data[ i + 1 ] ) );
          }
          return result;
       }

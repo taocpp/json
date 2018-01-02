@@ -20,8 +20,14 @@ namespace tao
             struct binary_state
             {
                binary_state() = default;
+
                binary_state( const binary_state& ) = delete;
+               binary_state( binary_state&& ) = delete;
+
+               ~binary_state() = default;
+
                void operator=( const binary_state& ) = delete;
+               void operator=( binary_state&& ) = delete;
 
                template< typename Consumer >
                void success( Consumer& consumer )
