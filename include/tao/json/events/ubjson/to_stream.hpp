@@ -9,6 +9,8 @@
 #include <ostream>
 #include <string>
 
+#include "../../byte_view.hpp"
+#include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao
@@ -44,23 +46,23 @@ namespace tao
                {
                   if( ( v >= -128 ) && ( v <= 127 ) ) {
                      os.put( 'i' );
-                     const std::int8_t x = static_cast< std::int8_t >( v );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     const auto x = static_cast< std::int8_t >( v );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( ( v >= -32768 ) && ( v <= 32767 ) ) {
                      os.put( 'I' );
                      const std::uint16_t x = internal::h_to_be( std::uint16_t( v ) );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( ( v >= -2147483648ll ) && ( v <= 2147483647ll ) ) {
                      os.put( 'l' );
                      const std::uint32_t x = internal::h_to_be( std::uint32_t( v ) );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else {
                      os.put( 'L' );
                      const std::uint64_t x = internal::h_to_be( std::uint64_t( v ) );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                }
 
@@ -68,23 +70,23 @@ namespace tao
                {
                   if( v <= 255 ) {
                      os.put( 'U' );
-                     const std::uint8_t x = static_cast< std::uint8_t >( v );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     const auto x = static_cast< std::uint8_t >( v );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v <= 32767 ) {
                      os.put( 'I' );
                      const std::uint16_t x = internal::h_to_be( std::uint16_t( v ) );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v <= 2147483647ul ) {
                      os.put( 'l' );
                      const std::uint32_t x = internal::h_to_be( std::uint32_t( v ) );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v <= 9223372036854775807ull ) {
                      os.put( 'L' );
                      const std::uint64_t x = internal::h_to_be( v );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else {
                      os.put( 'H' );
@@ -97,8 +99,8 @@ namespace tao
                void number( const double v )
                {
                   os.put( 'D' );
-                  const auto x = internal::h_to_be( v );
-                  os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                  const double x = internal::h_to_be( v );
+                  os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 
                void string( const tao::string_view v )
@@ -119,7 +121,7 @@ namespace tao
                   // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
                   os.write( "[$U#", 4 );
                   number( std::uint64_t( v.size() ) );
-                  os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+                  os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
                }
 
                void begin_array()
@@ -142,7 +144,7 @@ namespace tao
                   os.put( ']' );
                }
 
-               void end_array( const std::size_t ) noexcept
+               void end_array( const std::size_t /*unused*/ ) noexcept
                {
                }
 
@@ -172,7 +174,7 @@ namespace tao
                   os.put( '}' );
                }
 
-               void end_object( const std::size_t ) noexcept
+               void end_object( const std::size_t /*unused*/ ) noexcept
                {
                }
             };

@@ -23,7 +23,7 @@ namespace tao
          const auto w = o.width( 0 );
          if( w > 0 ) {
             if( w >= 256 ) {
-               throw std::runtime_error( "indentation too large" );
+               throw std::runtime_error( "indentation too large" );  // NOLINT
             }
             json::to_stream( o, v, static_cast< std::size_t >( w ) );
          }

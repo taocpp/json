@@ -4,12 +4,15 @@
 #ifndef TAOCPP_JSON_INCLUDE_EVENTS_JSON_MSGPACK_TO_STREAM_HPP
 #define TAOCPP_JSON_INCLUDE_EVENTS_JSON_MSGPACK_TO_STREAM_HPP
 
+#include <cassert>
 #include <cmath>
 #include <cstdint>
 #include <ostream>
 #include <string>
 
+#include "../../byte_view.hpp"
 #include "../../external/byte.hpp"
+#include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
 
 #ifdef _MSC_VER
@@ -116,7 +119,7 @@ namespace tao
                      number_impl< std::uint32_t >( 0xdb, v.size() );
                   }
                   else {
-                     throw std::runtime_error( "string too long for msgpack" );
+                     throw std::runtime_error( "string too long for msgpack" );  // NOLINT
                   }
                   os.write( v.data(), v.size() );
                }
@@ -133,14 +136,14 @@ namespace tao
                      number_impl< std::uint32_t >( 0xc6, v.size() );
                   }
                   else {
-                     throw std::runtime_error( "binary too long for msgpack" );
+                     throw std::runtime_error( "binary too long for msgpack" );  // NOLINT
                   }
                   os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
                }
 
                void begin_array()
                {
-                  throw std::runtime_error( "msgpack requires array size" );  // TODO: Fix this by counting and buffering?
+                  throw std::runtime_error( "msgpack requires array size" );  // NOLINT, TODO: Fix this by counting and buffering?
                }
 
                void begin_array( const std::size_t size )
@@ -155,7 +158,7 @@ namespace tao
                      number_impl< std::uint32_t >( 0xdd, size );
                   }
                   else {
-                     throw std::runtime_error( "array too large for msgpack" );
+                     throw std::runtime_error( "array too large for msgpack" );  // NOLINT
                   }
                }
 
@@ -168,13 +171,13 @@ namespace tao
                   assert( false );  // LCOV_EXCL_LINE
                }
 
-               void end_array( const std::size_t ) noexcept
+               void end_array( const std::size_t  /*unused*/) noexcept
                {
                }
 
                void begin_object()
                {
-                  throw std::runtime_error( "msgpack requires object size" );  // TODO: Fix this by counting and buffering?
+                  throw std::runtime_error( "msgpack requires object size" );  // NOLINT, TODO: Fix this by counting and buffering?
                }
 
                void begin_object( const std::size_t size )
@@ -189,7 +192,7 @@ namespace tao
                      number_impl< std::uint32_t >( 0xdf, size );
                   }
                   else {
-                     throw std::runtime_error( "array too large for msgpack" );
+                     throw std::runtime_error( "array too large for msgpack" );  // NOLINT
                   }
                }
 
@@ -207,7 +210,7 @@ namespace tao
                   assert( false );  // LCOV_EXCL_LINE
                }
 
-               void end_object( const std::size_t ) noexcept
+               void end_object( const std::size_t  /*unused*/) noexcept
                {
                }
             };

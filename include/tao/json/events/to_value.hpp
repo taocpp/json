@@ -101,13 +101,13 @@ namespace tao
                value.discard();
             }
 
-            void end_array( const std::size_t = 0 )
+            void end_array( const std::size_t /*unused*/ = 0 )
             {
                value = std::move( stack_.back() );
                stack_.pop_back();
             }
 
-            void begin_object( const std::size_t = 0 )
+            void begin_object( const std::size_t /*unused*/ = 0 )
             {
                stack_.push_back( empty_object );
             }
@@ -134,7 +134,7 @@ namespace tao
                keys_.pop_back();
             }
 
-            void end_object( const std::size_t = 0 )
+            void end_object( const std::size_t /*unused*/ = 0 )
             {
                value = std::move( stack_.back() );
                stack_.pop_back();

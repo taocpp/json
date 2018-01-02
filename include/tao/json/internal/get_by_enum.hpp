@@ -23,7 +23,7 @@ namespace tao
          struct get_by_enum< type::NULL_ >
          {
             template< typename T >
-            static null_t get( const value_union< T >& ) noexcept
+            static null_t get( const value_union< T >& /*unused*/ ) noexcept
             {
                return null;
             }

@@ -74,20 +74,20 @@ namespace tao
                case 'f': case 'F': return 15;
             }
             // clang-format on
-            throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );
+            throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );  // NOLINT
          }
 
          inline pointer uri_fragment_to_pointer( const tao::string_view v )
          {
             pointer result;
             if( v.empty() || v[ 0 ] != '#' ) {
-               throw std::invalid_argument( "invalid URI Fragment value, must begin with '#'" );
+               throw std::invalid_argument( "invalid URI Fragment value, must begin with '#'" );  // NOLINT
             }
             if( v.size() > 1 ) {
                const char* p = v.data() + 1;
                const char* const e = v.data() + v.size();
                if( *p++ != '/' ) {
-                  throw std::invalid_argument( "invalid JSON Pointer value, must be empty or begin with '/'" );
+                  throw std::invalid_argument( "invalid JSON Pointer value, must be empty or begin with '/'" );  // NOLINT
                }
                std::string token;
                while( p != e ) {
@@ -115,7 +115,7 @@ namespace tao
                               continue;
                            }
                         }
-                        throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );
+                        throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );  // NOLINT
 
                      case '~':
                         if( p != e ) {
@@ -128,7 +128,7 @@ namespace tao
                                  continue;
                            }
                         }
-                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
+                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );  // NOLINT
 
                      case '/':
                         result += std::move( token );
@@ -136,7 +136,7 @@ namespace tao
                         continue;
 
                      default:
-                        throw std::invalid_argument( "invalid URI Fragment character" );
+                        throw std::invalid_argument( "invalid URI Fragment character" );  // NOLINT
                   }
                }
                result += std::move( token );

@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "../external/pegtl.hpp"
+#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -26,7 +27,7 @@ namespace tao
             {
                json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > in( v.data(), v.size(), "validate_key" );
                if( !json_pegtl::parse< Rule >( in ) ) {
-                  throw std::runtime_error( "invalid key: " + std::string( v.data(), v.size() ) );
+                  throw std::runtime_error( "invalid key: " + std::string( v.data(), v.size() ) );  // NOLINT
                }
             }
 

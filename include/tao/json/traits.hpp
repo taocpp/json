@@ -35,13 +35,13 @@ namespace tao
       struct traits< null_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, null_t ) noexcept
+         static void assign( basic_value< Traits >& v, null_t  /*unused*/) noexcept
          {
             v.unsafe_assign_null();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, null_t ) noexcept
+         static bool equal( const basic_value< Traits >& lhs, null_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->is_null();
@@ -52,7 +52,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, null_t ) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, null_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() < type::NULL_;
@@ -63,7 +63,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, null_t ) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, null_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() > type::NULL_;
@@ -388,13 +388,13 @@ namespace tao
       struct traits< empty_binary_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, empty_binary_t ) noexcept
+         static void assign( basic_value< Traits >& v, empty_binary_t  /*unused*/) noexcept
          {
             v.unsafe_emplace_binary();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, empty_binary_t ) noexcept
+         static bool equal( const basic_value< Traits >& lhs, empty_binary_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
@@ -412,7 +412,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, empty_binary_t ) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, empty_binary_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
@@ -429,7 +429,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t ) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                switch( p->type() ) {
@@ -451,13 +451,13 @@ namespace tao
       struct traits< empty_array_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, empty_array_t ) noexcept
+         static void assign( basic_value< Traits >& v, empty_array_t  /*unused*/) noexcept
          {
             v.unsafe_emplace_array();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, empty_array_t ) noexcept
+         static bool equal( const basic_value< Traits >& lhs, empty_array_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->is_array() && p->unsafe_get_array().empty();
@@ -468,7 +468,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, empty_array_t ) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, empty_array_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() < type::ARRAY;
@@ -479,7 +479,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, empty_array_t ) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, empty_array_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return ( p->type() > type::ARRAY ) || ( p->is_array() && !p->unsafe_get_array().empty() );
@@ -494,13 +494,13 @@ namespace tao
       struct traits< empty_object_t >
       {
          template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, empty_object_t ) noexcept
+         static void assign( basic_value< Traits >& v, empty_object_t  /*unused*/) noexcept
          {
             v.unsafe_emplace_object();
          }
 
          template< template< typename... > class Traits >
-         static bool equal( const basic_value< Traits >& lhs, empty_object_t ) noexcept
+         static bool equal( const basic_value< Traits >& lhs, empty_object_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->is_object() && p->unsafe_get_object().empty();
@@ -511,7 +511,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool less_than( const basic_value< Traits >& lhs, empty_object_t ) noexcept
+         static bool less_than( const basic_value< Traits >& lhs, empty_object_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return p->type() < type::OBJECT;
@@ -522,7 +522,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits >
-         static bool greater_than( const basic_value< Traits >& lhs, empty_object_t ) noexcept
+         static bool greater_than( const basic_value< Traits >& lhs, empty_object_t  /*unused*/) noexcept
          {
             if( const auto* p = lhs.skip_raw_ptr() ) {
                return ( p->type() > type::OBJECT ) || ( p->is_object() && !p->unsafe_get_object().empty() );

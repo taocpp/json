@@ -6,6 +6,7 @@
 
 #include <cstdint>
 
+#include "../../external/string_view.hpp"
 #include "../../internal/action.hpp"
 #include "../../internal/control.hpp"
 #include "../../internal/endian.hpp"

@@ -12,6 +12,8 @@
 #include <utility>
 #include <vector>
 
+#include "../byte_view.hpp"
+#include "../external/string_view.hpp"
 #include "../internal/sha256.hpp"
 
 namespace tao
@@ -119,7 +121,7 @@ namespace tao
                m_digests.back()->feed( v.data(), v.size() );
             }
 
-            void begin_array( const std::size_t = 0 )
+            void begin_array( const std::size_t  /*unused*/= 0 )
             {
                m_digests.back()->feed( '[' );
             }
@@ -128,12 +130,12 @@ namespace tao
             {
             }
 
-            void end_array( const std::size_t = 0 )
+            void end_array( const std::size_t  /*unused*/= 0 )
             {
                m_digests.back()->feed( ']' );
             }
 
-            void begin_object( const std::size_t = 0 )
+            void begin_object( const std::size_t  /*unused*/= 0 )
             {
                m_digests.back()->feed( '{' );
                m_properties.emplace_back();
@@ -145,7 +147,7 @@ namespace tao
                m_digests.back()->feed( v.data(), v.size() );
                m_keys.emplace_back( m_digests.back()->get() );
                if( m_properties.back().count( m_keys.back() ) != 0 ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + std::string( v.data(), v.size() ) );
+                  throw std::runtime_error( "duplicate JSON object key: " + std::string( v.data(), v.size() ) );  // NOLINT
                }
                m_digests.back()->reset();
             }
@@ -157,7 +159,7 @@ namespace tao
                m_digests.back()->reset();
             }
 
-            void end_object( const std::size_t = 0 )
+            void end_object( const std::size_t  /*unused*/= 0 )
             {
                m_digests.pop_back();
                for( const auto& e : m_properties.back() ) {

@@ -12,8 +12,10 @@
 #include <string>
 #include <vector>
 
+#include "../byte_view.hpp"
 #include "../external/byte.hpp"
 #include "../external/double.hpp"
+#include "../external/string_view.hpp"
 
 #include "../internal/escape.hpp"
 
@@ -90,7 +92,7 @@ namespace tao
                next();
                if( !std::isfinite( v ) ) {
                   // if this throws, consider using non_finite_to_* transformers
-                  throw std::runtime_error( "non-finite double value invalid for JSON string representation" );
+                  throw std::runtime_error( "non-finite double value invalid for JSON string representation" );  // NOLINT
                }
                json_double_conversion::Dtostr( os, v );
             }
@@ -103,13 +105,13 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const tao::byte_view )
+            void binary( const tao::byte_view  /*unused*/)
             {
                // if this throws, consider using binary_to_* transformers
-               throw std::runtime_error( "binary data invalid for JSON string representation" );
+               throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
             }
 
-            void begin_array( const std::size_t = 0 )
+            void begin_array( const std::size_t  /*unused*/= 0 )
             {
                next();
                os.put( '[' );
@@ -122,7 +124,7 @@ namespace tao
                first = false;
             }
 
-            void end_array( const std::size_t = 0 )
+            void end_array( const std::size_t  /*unused*/= 0 )
             {
                current.resize( current.size() - indent );
                if( !first ) {
@@ -131,7 +133,7 @@ namespace tao
                os.put( ']' );
             }
 
-            void begin_object( const std::size_t = 0 )
+            void begin_object( const std::size_t  /*unused*/= 0 )
             {
                next();
                os.put( '{' );
@@ -152,7 +154,7 @@ namespace tao
                first = false;
             }
 
-            void end_object( const std::size_t = 0 )
+            void end_object( const std::size_t  /*unused*/= 0 )
             {
                current.resize( current.size() - indent );
                if( !first ) {

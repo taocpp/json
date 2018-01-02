@@ -78,22 +78,22 @@ namespace tao
             seize( std::move( r ) );
          }
 
-         basic_value( null_t ) noexcept
+         basic_value( null_t  /*unused*/) noexcept
          {
             unsafe_assign_null();
          }
 
-         basic_value( empty_binary_t ) noexcept
+         basic_value( empty_binary_t  /*unused*/) noexcept
          {
             unsafe_emplace_binary();
          }
 
-         basic_value( empty_array_t ) noexcept
+         basic_value( empty_array_t  /*unused*/) noexcept
          {
             unsafe_emplace_array();
          }
 
-         basic_value( empty_object_t ) noexcept
+         basic_value( empty_object_t  /*unused*/) noexcept
          {
             unsafe_emplace_object();
          }
@@ -166,28 +166,28 @@ namespace tao
             return *this;
          }
 
-         basic_value& operator=( null_t ) noexcept
+         basic_value& operator=( null_t  /*unused*/) noexcept
          {
             unsafe_discard();
             unsafe_assign_null();
             return *this;
          }
 
-         basic_value& operator=( empty_binary_t ) noexcept
+         basic_value& operator=( empty_binary_t  /*unused*/) noexcept
          {
             unsafe_discard();
             unsafe_emplace_binary();
             return *this;
          }
 
-         basic_value& operator=( empty_array_t ) noexcept
+         basic_value& operator=( empty_array_t  /*unused*/) noexcept
          {
             unsafe_discard();
             unsafe_emplace_array();
             return *this;
          }
 
-         basic_value& operator=( empty_object_t ) noexcept
+         basic_value& operator=( empty_object_t  /*unused*/) noexcept
          {
             unsafe_discard();
             unsafe_emplace_object();
@@ -648,7 +648,7 @@ namespace tao
             for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
                }
             }
          }
@@ -659,7 +659,7 @@ namespace tao
             for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
                }
             }
          }
@@ -865,7 +865,7 @@ namespace tao
             for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
                }
             }
          }
@@ -876,7 +876,7 @@ namespace tao
             for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
                }
             }
          }
@@ -1114,7 +1114,7 @@ namespace tao
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
             auto& a = m_union.a;
             if( index >= a.size() ) {
-               throw std::out_of_range( "JSON array index out of bounds" );
+               throw std::out_of_range( "JSON array index out of bounds" );  // NOLINT
             }
             a.erase( a.begin() + index );
          }
@@ -1123,14 +1123,14 @@ namespace tao
          {
             TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
             if( m_union.o.erase( key ) == 0 ) {
-               throw std::out_of_range( "JSON object key not found: " + key );
+               throw std::out_of_range( "JSON object key not found: " + key );  // NOLINT
             }
          }
 
          void erase( const pointer& k )
          {
             if( !k ) {
-               throw std::runtime_error( "invalid root JSON Pointer for erase" );
+               throw std::runtime_error( "invalid root JSON Pointer for erase" );  // NOLINT
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
@@ -1164,7 +1164,7 @@ namespace tao
                   }
                   const auto i = e->index();
                   if( i >= v.m_union.a.size() ) {
-                     throw std::out_of_range( "invalid JSON Pointer '" + internal::tokens_to_string( b, std::next( e ) ) + "' -- array index out of bounds" );
+                     throw std::out_of_range( "invalid JSON Pointer '" + internal::tokens_to_string( b, std::next( e ) ) + "' -- array index out of bounds" );  // NOLINT
                   }
                   v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
                   return v.m_union.a.at( i );
@@ -1199,7 +1199,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( m_type != json::type::DESTROYED );
                   return true;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                case json::type::BOOLEAN:
@@ -1308,7 +1308,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( r.m_type != json::type::DESTROYED );
                   return;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
@@ -1381,10 +1381,10 @@ namespace tao
                   return;
 
                case json::type::DISCARDED:
-                  throw std::logic_error( "attempt to use a discarded value" );
+                  throw std::logic_error( "attempt to use a discarded value" );  // NOLINT
 
                case json::type::DESTROYED:
-                  throw std::logic_error( "attempt to use a destroyed value" );
+                  throw std::logic_error( "attempt to use a destroyed value" );  // NOLINT
 
                case json::type::NULL_:
                   return;
@@ -1544,7 +1544,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
                return true;
@@ -1738,7 +1738,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
                return false;
@@ -1900,7 +1900,7 @@ namespace tao
          auto& o = v.get_object();
          for( const auto& k : l ) {
             if( o.erase( k ) == 0 ) {
-               throw std::runtime_error( "JSON object key not found: " + k );
+               throw std::runtime_error( "JSON object key not found: " + k );  // NOLINT
             }
          }
          return v;

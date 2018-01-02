@@ -57,6 +57,7 @@ namespace tao
          }
 
          std::string s;
+         std::string k;
          tao::string_view sv;
          std::vector< tao::byte > x;
          tao::byte_view xv;
@@ -92,8 +93,8 @@ namespace tao
          c->begin_object( std::size_t( 0 ) );
 
          c->key( "" );
-         c->key( s );
-         c->key( std::move( s ) );
+         c->key( k );
+         c->key( std::move( k ) );
          c->key( sv );
 
          c->member();

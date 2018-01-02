@@ -92,7 +92,7 @@ namespace tao
                   std::uint64_t value = 0;
                   for( char c : in ) {
                      if( value & 0xF000000000000000 ) {
-                        throw std::runtime_error( "JAXN hexadecimal number too large" );
+                        throw std::runtime_error( "JAXN hexadecimal number too large" );  // NOLINT
                      }
                      value <<= 4;
                      value += unhex( c );
@@ -105,7 +105,7 @@ namespace tao
                         consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
                      }
                      else {
-                        throw std::runtime_error( "JAXN hexadecimal number too large to negate" );
+                        throw std::runtime_error( "JAXN hexadecimal number too large to negate" );  // NOLINT
                      }
                   }
                   else {
@@ -247,7 +247,7 @@ namespace tao
                   }
 
                   if( s > ( 1 << 20 ) ) {
-                     throw std::runtime_error( "JSON number with 1 megabyte digits" );
+                     throw std::runtime_error( "JSON number with 1 megabyte digits" );  // NOLINT
                   }
 
                   const auto c = std::min( s, max_mantissa_digits );
@@ -312,7 +312,7 @@ namespace tao
                      ++b;
                   }
                   if( ( in.end() - b ) > 9 ) {
-                     throw std::runtime_error( "JSON exponent has more than 9 significant digits" );
+                     throw std::runtime_error( "JSON exponent has more than 9 significant digits" );  // NOLINT
                   }
                   int exponent10 = 0;
 

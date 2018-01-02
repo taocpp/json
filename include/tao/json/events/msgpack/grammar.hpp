@@ -6,7 +6,10 @@
 
 #include <cstdint>
 
+#include "../../byte_view.hpp"
 #include "../../external/byte.hpp"
+#include "../../external/pegtl.hpp"
+#include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao

@@ -106,7 +106,7 @@ namespace tao
          std::size_t index() const
          {
             if( m_index == std::string::npos ) {
-               throw std::invalid_argument( "unable to resolve JSON Pointer, invalid token for array access '" + m_key + '\'' );
+               throw std::invalid_argument( "unable to resolve JSON Pointer, invalid token for array access '" + m_key + '\'' );  // NOLINT
             }
             return m_index;
          }
@@ -135,7 +135,7 @@ namespace tao
                const char* p = v.data();
                const char* const e = p + v.size();
                if( *p++ != '/' ) {
-                  throw std::invalid_argument( "invalid JSON Pointer value, must be empty or begin with '/'" );
+                  throw std::invalid_argument( "invalid JSON Pointer value, must be empty or begin with '/'" );  // NOLINT
                }
                std::string token;
                while( p != e ) {
@@ -152,7 +152,7 @@ namespace tao
                                  continue;
                            }
                         }
-                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );
+                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );  // NOLINT
 
                      case '/':
                         result.emplace_back( std::move( token ) );
@@ -214,12 +214,12 @@ namespace tao
 
          void push_back( const std::string& v )
          {
-            m_tokens.push_back( token( v ) );
+            m_tokens.emplace_back( v );
          }
 
          void push_back( std::string&& v )
          {
-            m_tokens.push_back( token( std::move( v ) ) );
+            m_tokens.emplace_back( std::move( v ) );
          }
 
          pointer& operator+=( const std::string& v )

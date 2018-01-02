@@ -4,8 +4,8 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_BASE64URL_HPP
 #define TAOCPP_JSON_INCLUDE_INTERNAL_BASE64URL_HPP
 
-#include <iomanip>
-#include <sstream>
+#include <cassert>
+#include <string>
 
 namespace tao
 {

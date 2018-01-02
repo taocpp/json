@@ -21,13 +21,13 @@ namespace tao
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
-                  throw std::logic_error( "unable to produce events from uninitialized values" );
+                  throw std::logic_error( "unable to produce events from uninitialized values" );  // NOLINT
 
                case type::DISCARDED:
-                  throw std::logic_error( "unable to produce events from discarded values" );
+                  throw std::logic_error( "unable to produce events from discarded values" );  // NOLINT
 
                case type::DESTROYED:
-                  throw std::logic_error( "unable to produce events from destroyed values" );
+                  throw std::logic_error( "unable to produce events from destroyed values" );  // NOLINT
 
                case type::NULL_:
                   consumer.null();
@@ -99,7 +99,7 @@ namespace tao
                   }
                   return;
             }
-            throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
+            throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          // Events producer to generate events from an rvalue JSON value.
@@ -110,13 +110,13 @@ namespace tao
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
-                  throw std::logic_error( "unable to produce events from uninitialized values" );
+                  throw std::logic_error( "unable to produce events from uninitialized values" );  // NOLINT
 
                case type::DISCARDED:
-                  throw std::logic_error( "unable to produce events from discarded values" );
+                  throw std::logic_error( "unable to produce events from discarded values" );  // NOLINT
 
                case type::DESTROYED:
-                  throw std::logic_error( "unable to produce events from destroyed values" );
+                  throw std::logic_error( "unable to produce events from destroyed values" );  // NOLINT
 
                case type::NULL_:
                   consumer.null();
@@ -182,7 +182,7 @@ namespace tao
                   }
                   return;
             }
-            throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
+            throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
          }
 
       }  // namespace events

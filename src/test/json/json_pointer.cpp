@@ -10,7 +10,7 @@ namespace tao
 {
    namespace json
    {
-      void unit_test()
+      void unit_test()  // NOLINT
       {
          // do not throw
          "//"_json_pointer;
@@ -134,7 +134,7 @@ namespace tao
          const auto p1 = ""_json_pointer;
          const auto p2 = "/a"_json_pointer;
          const auto p3 = "/b"_json_pointer;
-         const auto p4 = p2;
+         const auto p4 = p2;  // NOLINT
 
          TEST_ASSERT( !( p1 == p2 ) );
          TEST_ASSERT( p1 != p2 );

@@ -5,7 +5,8 @@
 #define TAOCPP_JSON_INCLUDE_JAXN_IS_IDENTIFIER_HPP
 
 #include <cctype>
-#include <string>
+
+#include "../external/string_view.hpp"
 
 namespace tao
 {

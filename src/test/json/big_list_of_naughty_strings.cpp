@@ -23,7 +23,7 @@ std::string get_file_contents( const char* filename )
       in.close();
       return contents;
    }
-   throw std::runtime_error( "unable to read input file" );
+   throw std::runtime_error( "unable to read input file" );  // NOLINT
 }
 
 namespace tao

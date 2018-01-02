@@ -26,31 +26,31 @@ namespace tao
             {
             }
 
-            void boolean( const bool ) noexcept
+            void boolean( const bool  /*unused*/) noexcept
             {
             }
 
-            void number( const std::int64_t ) noexcept
+            void number( const std::int64_t  /*unused*/) noexcept
             {
             }
 
-            void number( const std::uint64_t ) noexcept
+            void number( const std::uint64_t  /*unused*/) noexcept
             {
             }
 
-            void number( const double ) noexcept
+            void number( const double  /*unused*/) noexcept
             {
             }
 
-            void string( const tao::string_view ) noexcept
+            void string( const tao::string_view  /*unused*/) noexcept
             {
             }
 
-            void binary( const tao::byte_view ) noexcept
+            void binary( const tao::byte_view  /*unused*/) noexcept
             {
             }
 
-            void begin_array( const std::size_t = 0 ) noexcept
+            void begin_array( const std::size_t  /*unused*/= 0 ) noexcept
             {
             }
 
@@ -58,15 +58,15 @@ namespace tao
             {
             }
 
-            void end_array( const std::size_t = 0 ) noexcept
+            void end_array( const std::size_t  /*unused*/= 0 ) noexcept
             {
             }
 
-            void begin_object( const std::size_t = 0 ) noexcept
+            void begin_object( const std::size_t  /*unused*/= 0 ) noexcept
             {
             }
 
-            void key( const tao::string_view ) noexcept
+            void key( const tao::string_view  /*unused*/) noexcept
             {
             }
 
@@ -74,7 +74,7 @@ namespace tao
             {
             }
 
-            void end_object( const std::size_t = 0 ) noexcept
+            void end_object( const std::size_t  /*unused*/= 0 ) noexcept
             {
             }
          };

@@ -4,6 +4,7 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_JAXN_BUNESCAPE_ACTION_HPP
 #define TAOCPP_JSON_INCLUDE_INTERNAL_JAXN_BUNESCAPE_ACTION_HPP
 
+#include "../../external/byte.hpp"
 #include "../../external/pegtl/contrib/unescape.hpp"
 #include "../../external/pegtl/nothing.hpp"
 
@@ -74,7 +75,7 @@ namespace tao
                         break;
 
                      default:
-                        throw std::runtime_error( "invalid character in unescape" );  // LCOV_EXCL_LINE
+                        throw std::runtime_error( "invalid character in unescape" );  // NOLINT, LCOV_EXCL_LINE
                   }
                }
             };

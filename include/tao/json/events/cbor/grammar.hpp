@@ -10,8 +10,10 @@
 
 #include "major.hpp"
 
+#include "../../byte_view.hpp"
 #include "../../external/byte.hpp"
 #include "../../external/pegtl.hpp"
+#include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
 
 namespace tao
@@ -366,7 +368,7 @@ namespace tao
                }
 
                template< typename Input, typename Consumer >
-               static bool match_tag( Input& in, Consumer& )
+               static bool match_tag( Input& in, Consumer& /*unused*/ )
                {
                   skip_unsigned( in );
                   return true;

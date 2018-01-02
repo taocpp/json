@@ -8,7 +8,9 @@
 #include <string>
 #include <utility>
 
-#include "../events/to_stream.hpp"
+#include "../value.hpp"
+
+#include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
 
 #include "../events/jaxn/from_stream.hpp"

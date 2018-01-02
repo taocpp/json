@@ -10,7 +10,9 @@
 #include <string>
 #include <vector>
 
+#include "../byte_view.hpp"
 #include "../external/byte.hpp"
+#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -54,21 +56,21 @@ namespace tao
                      state = EXPECT_ARRAY_ELEMENT;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but null() was called" );
+                     throw std::logic_error( "expected element(), but null() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but null() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but null() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      state = EXPECT_OBJECT_MEMBER;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but null() was called" );
+                     throw std::logic_error( "expected member(), but null() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but null() was called" );
+                     throw std::logic_error( "expected nothing, but null() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void boolean( const bool )
+            void boolean( const bool  /*unused*/)
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -78,21 +80,21 @@ namespace tao
                      state = EXPECT_ARRAY_ELEMENT;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but boolean() was called" );
+                     throw std::logic_error( "expected element(), but boolean() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but boolean() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but boolean() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      state = EXPECT_OBJECT_MEMBER;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but boolean() was called" );
+                     throw std::logic_error( "expected member(), but boolean() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but boolean() was called" );
+                     throw std::logic_error( "expected nothing, but boolean() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void number( const std::int64_t )
+            void number( const std::int64_t  /*unused*/)
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -102,21 +104,21 @@ namespace tao
                      state = EXPECT_ARRAY_ELEMENT;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but number(std::int64_t) was called" );
+                     throw std::logic_error( "expected element(), but number(std::int64_t) was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but number(std::int64_t) was called" );
+                     throw std::logic_error( "expected key() or end_object(), but number(std::int64_t) was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      state = EXPECT_OBJECT_MEMBER;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but number(std::int64_t) was called" );
+                     throw std::logic_error( "expected member(), but number(std::int64_t) was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but number(std::int64_t) was called" );
+                     throw std::logic_error( "expected nothing, but number(std::int64_t) was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void number( const std::uint64_t )
+            void number( const std::uint64_t  /*unused*/)
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -126,21 +128,21 @@ namespace tao
                      state = EXPECT_ARRAY_ELEMENT;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but number(std::uint64_t) was called" );
+                     throw std::logic_error( "expected element(), but number(std::uint64_t) was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but number(std::uint64_t) was called" );
+                     throw std::logic_error( "expected key() or end_object(), but number(std::uint64_t) was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      state = EXPECT_OBJECT_MEMBER;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but number(std::uint64_t) was called" );
+                     throw std::logic_error( "expected member(), but number(std::uint64_t) was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but number(std::uint64_t) was called" );
+                     throw std::logic_error( "expected nothing, but number(std::uint64_t) was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void number( const double )
+            void number( const double  /*unused*/)
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -150,21 +152,21 @@ namespace tao
                      state = EXPECT_ARRAY_ELEMENT;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but number(double) was called" );
+                     throw std::logic_error( "expected element(), but number(double) was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but number(double) was called" );
+                     throw std::logic_error( "expected key() or end_object(), but number(double) was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      state = EXPECT_OBJECT_MEMBER;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but number(double) was called" );
+                     throw std::logic_error( "expected member(), but number(double) was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but number(double) was called" );
+                     throw std::logic_error( "expected nothing, but number(double) was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void string( const tao::string_view )
+            void string( const tao::string_view  /*unused*/)
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -174,21 +176,21 @@ namespace tao
                      state = EXPECT_ARRAY_ELEMENT;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but string() was called" );
+                     throw std::logic_error( "expected element(), but string() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but string() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but string() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      state = EXPECT_OBJECT_MEMBER;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but string() was called" );
+                     throw std::logic_error( "expected member(), but string() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but string() was called" );
+                     throw std::logic_error( "expected nothing, but string() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void binary( const tao::byte_view )
+            void binary( const tao::byte_view  /*unused*/)
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -198,21 +200,21 @@ namespace tao
                      state = EXPECT_ARRAY_ELEMENT;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but binary() was called" );
+                     throw std::logic_error( "expected element(), but binary() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but binary() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but binary() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      state = EXPECT_OBJECT_MEMBER;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but binary() was called" );
+                     throw std::logic_error( "expected member(), but binary() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but binary() was called" );
+                     throw std::logic_error( "expected nothing, but binary() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void begin_array( const std::size_t = 0 )
+            void begin_array( const std::size_t  /*unused*/= 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -223,67 +225,67 @@ namespace tao
                      stack.push_back( EXPECT_ARRAY_ELEMENT );
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but begin_array() was called" );
+                     throw std::logic_error( "expected element(), but begin_array() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but begin_array() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but begin_array() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      stack.push_back( EXPECT_OBJECT_MEMBER );
                      state = EXPECT_ARRAY_VALUE_OR_END;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but begin_array() was called" );
+                     throw std::logic_error( "expected member(), but begin_array() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but begin_array() was called" );
+                     throw std::logic_error( "expected nothing, but begin_array() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
             void element()
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
-                     throw std::logic_error( "expected any value, but element() was called" );
+                     throw std::logic_error( "expected any value, but element() was called" );  // NOLINT
                   case EXPECT_ARRAY_VALUE_OR_END:
-                     throw std::logic_error( "expected any value or end_array(), but element() was called" );
+                     throw std::logic_error( "expected any value or end_array(), but element() was called" );  // NOLINT
                   case EXPECT_ARRAY_ELEMENT:
                      state = EXPECT_ARRAY_VALUE_OR_END;
                      return;
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but element() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but element() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
-                     throw std::logic_error( "expected any value, but element() was called" );
+                     throw std::logic_error( "expected any value, but element() was called" );  // NOLINT
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but element() was called" );
+                     throw std::logic_error( "expected member(), but element() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but element() was called" );
+                     throw std::logic_error( "expected nothing, but element() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void end_array( const std::size_t = 0 )
+            void end_array( const std::size_t  /*unused*/= 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
-                     throw std::logic_error( "expected any value, but end_array() was called" );
+                     throw std::logic_error( "expected any value, but end_array() was called" );  // NOLINT
                   case EXPECT_ARRAY_VALUE_OR_END:
                      state = stack.back();
                      stack.pop_back();
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but end_array() was called" );
+                     throw std::logic_error( "expected element(), but end_array() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but end_array() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but end_array() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
-                     throw std::logic_error( "expected any value, but end_array() was called" );
+                     throw std::logic_error( "expected any value, but end_array() was called" );  // NOLINT
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but end_array() was called" );
+                     throw std::logic_error( "expected member(), but end_array() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but end_array() was called" );
+                     throw std::logic_error( "expected nothing, but end_array() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void begin_object( const std::size_t = 0 )
+            void begin_object( const std::size_t  /*unused*/= 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -295,86 +297,86 @@ namespace tao
                      state = EXPECT_OBJECT_KEY_OR_END;
                      return;
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but begin_object() was called" );
+                     throw std::logic_error( "expected element(), but begin_object() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but begin_object() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but begin_object() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
                      stack.push_back( EXPECT_OBJECT_MEMBER );
                      state = EXPECT_OBJECT_KEY_OR_END;
                      return;
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but begin_object() was called" );
+                     throw std::logic_error( "expected member(), but begin_object() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but begin_object() was called" );
+                     throw std::logic_error( "expected nothing, but begin_object() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void key( const tao::string_view )
+            void key( const tao::string_view  /*unused*/)
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
-                     throw std::logic_error( "expected any value, but key() was called" );
+                     throw std::logic_error( "expected any value, but key() was called" );  // NOLINT
                   case EXPECT_ARRAY_VALUE_OR_END:
-                     throw std::logic_error( "expected any value or end_array(), but key() was called" );
+                     throw std::logic_error( "expected any value or end_array(), but key() was called" );  // NOLINT
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but key() was called" );
+                     throw std::logic_error( "expected element(), but key() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
                      state = EXPECT_OBJECT_VALUE;
                      return;
                   case EXPECT_OBJECT_VALUE:
-                     throw std::logic_error( "expected any value, but key() was called" );
+                     throw std::logic_error( "expected any value, but key() was called" );  // NOLINT
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but key() was called" );
+                     throw std::logic_error( "expected member(), but key() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but key() was called" );
+                     throw std::logic_error( "expected nothing, but key() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
             void member()
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
-                     throw std::logic_error( "expected any value, but member() was called" );
+                     throw std::logic_error( "expected any value, but member() was called" );  // NOLINT
                   case EXPECT_ARRAY_VALUE_OR_END:
-                     throw std::logic_error( "expected any value or end_array(), but member() was called" );
+                     throw std::logic_error( "expected any value or end_array(), but member() was called" );  // NOLINT
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but member() was called" );
+                     throw std::logic_error( "expected element(), but member() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
-                     throw std::logic_error( "expected key() or end_object(), but member() was called" );
+                     throw std::logic_error( "expected key() or end_object(), but member() was called" );  // NOLINT
                   case EXPECT_OBJECT_VALUE:
-                     throw std::logic_error( "expected any value, but member() was called" );
+                     throw std::logic_error( "expected any value, but member() was called" );  // NOLINT
                   case EXPECT_OBJECT_MEMBER:
                      state = EXPECT_OBJECT_KEY_OR_END;
                      return;
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but member() was called" );
+                     throw std::logic_error( "expected nothing, but member() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void end_object( const std::size_t = 0 )
+            void end_object( const std::size_t  /*unused*/= 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
-                     throw std::logic_error( "expected any value, but end_object() was called" );
+                     throw std::logic_error( "expected any value, but end_object() was called" );  // NOLINT
                   case EXPECT_ARRAY_VALUE_OR_END:
-                     throw std::logic_error( "expected any value or end_array(), but end_object() was called" );
+                     throw std::logic_error( "expected any value or end_array(), but end_object() was called" );  // NOLINT
                   case EXPECT_ARRAY_ELEMENT:
-                     throw std::logic_error( "expected element(), but end_object() was called" );
+                     throw std::logic_error( "expected element(), but end_object() was called" );  // NOLINT
                   case EXPECT_OBJECT_KEY_OR_END:
                      state = stack.back();
                      stack.pop_back();
                      return;
                   case EXPECT_OBJECT_VALUE:
-                     throw std::logic_error( "expected any value, but end_object() was called" );
+                     throw std::logic_error( "expected any value, but end_object() was called" );  // NOLINT
                   case EXPECT_OBJECT_MEMBER:
-                     throw std::logic_error( "expected member(), but end_object() was called" );
+                     throw std::logic_error( "expected member(), but end_object() was called" );  // NOLINT
                   case EXPECT_NOTHING:
-                     throw std::logic_error( "expected nothing, but end_object() was called" );
+                     throw std::logic_error( "expected nothing, but end_object() was called" );  // NOLINT
                }
-               throw std::logic_error( "invalid state" );
+               throw std::logic_error( "invalid state" );  // NOLINT
             }
          };
 

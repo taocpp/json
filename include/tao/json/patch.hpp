@@ -23,7 +23,7 @@ namespace tao
             const pointer path_pointer( path );
             if( op == "test" ) {
                if( v.at( path_pointer ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path );
+                  throw std::runtime_error( "test failed for: " + path );  // NOLINT
                }
             }
             else if( op == "remove" ) {
@@ -46,7 +46,7 @@ namespace tao
                v.insert( path_pointer, v.at( from ) );
             }
             else {
-               throw std::runtime_error( "unknown patch operation: '" + op + '\'' );
+               throw std::runtime_error( "unknown patch operation: '" + op + '\'' );  // NOLINT
             }
          }
       }
@@ -60,7 +60,7 @@ namespace tao
             const pointer path_pointer( path );
             if( op == "test" ) {
                if( v.at( path_pointer ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path );
+                  throw std::runtime_error( "test failed for: " + path );  // NOLINT
                }
             }
             else if( op == "remove" ) {
@@ -83,7 +83,7 @@ namespace tao
                v.insert( path_pointer, v.at( from ) );
             }
             else {
-               throw std::runtime_error( "unknown patch operation: '" + op + '\'' );
+               throw std::runtime_error( "unknown patch operation: '" + op + '\'' );  // NOLINT
             }
          }
       }

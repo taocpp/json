@@ -156,7 +156,7 @@ namespace tao
                }
 
                if( s > ( 1 << 20 ) ) {
-                  throw std::runtime_error( "JSON number with 1 megabyte digits" );
+                  throw std::runtime_error( "JSON number with 1 megabyte digits" );  // NOLINT
                }
 
                const auto c = std::min( s, max_mantissa_digits );
@@ -221,7 +221,7 @@ namespace tao
                   ++b;
                }
                if( ( in.end() - b ) > 9 ) {
-                  throw std::runtime_error( "JSON exponent has more than 9 significant digits" );
+                  throw std::runtime_error( "JSON exponent has more than 9 significant digits" );  // NOLINT
                }
                int exponent10 = 0;
 

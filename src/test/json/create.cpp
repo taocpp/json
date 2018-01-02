@@ -63,7 +63,7 @@ namespace tao
          TEST_ASSERT( !( w > v ) );
 
 #ifndef NDEBUG
-         TEST_ASSERT( u.type() == type::DISCARDED );
+         TEST_ASSERT( u.type() == type::DISCARDED );  // NOLINT
          TEST_THROWS( u = u );
 #endif
 
@@ -85,7 +85,7 @@ namespace tao
       void test_null()
       {
          const value v = null;
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( v );
          TEST_ASSERT( !v.empty() );
@@ -124,7 +124,7 @@ namespace tao
       void test_bool( const bool b )
       {
          const value v( b );
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( !v.empty() );
 
@@ -164,7 +164,7 @@ namespace tao
       void test_signed( const T t )
       {
          const value v( t );
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( !v.empty() );
 
@@ -212,7 +212,7 @@ namespace tao
       void test_unsigned( const T t )
       {
          const value v( t );
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( !v.empty() );
 
@@ -257,7 +257,7 @@ namespace tao
       void test_double( const double d )
       {
          const value v( d );
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( !v.empty() );
 
@@ -292,7 +292,7 @@ namespace tao
       void test_string( const char ( &s )[ N ] )
       {
          const value v( s );
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( v.empty() == ( N == 1 ) );
 
@@ -332,7 +332,7 @@ namespace tao
 
       void test_empty_array( const value& v )
       {
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( v.empty() );
 
@@ -366,7 +366,7 @@ namespace tao
 
       void test_empty_object( const value& v )
       {
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( v.empty() );
 
@@ -400,7 +400,7 @@ namespace tao
       void test_array_1234()
       {
          const value v = value::array( { 1, 2, 3, 4 } );
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( !v.empty() );
 
@@ -430,7 +430,7 @@ namespace tao
       void test_object_1234()
       {
          const value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
-         const value v2( v );
+         const value v2( v );  // NOLINT
 
          TEST_ASSERT( !v.empty() );
 
@@ -536,7 +536,7 @@ namespace tao
          }
 
          {
-            value v2( v );
+            const value v2( v );  // NOLINT
             TEST_ASSERT( v2.type() == type::RAW_PTR );
             TEST_ASSERT( v2.get_raw_ptr() == nullptr );
             TEST_ASSERT( v2.empty() );
@@ -544,7 +544,7 @@ namespace tao
          }
 
          {
-            value v2( &v );
+            const value v2( &v );
             TEST_ASSERT( v2.type() == type::RAW_PTR );
             TEST_ASSERT( v2.get_raw_ptr() != nullptr );
             TEST_ASSERT( v2.get_raw_ptr()->type() == type::RAW_PTR );
@@ -592,7 +592,7 @@ namespace tao
          }
          {
             const value a( "foo" );
-            const value b( a );
+            const value b( a );  // NOLINT
             TEST_ASSERT( a.get_string() == b.get_string() );
          }
          {

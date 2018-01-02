@@ -71,7 +71,7 @@ namespace tao
                }
                const auto d = json_double_conversion::Strtod( json_double_conversion::Vector< const char >( mantissa, msize ), exponent10 );
                if( !std::isfinite( d ) ) {
-                  throw std::runtime_error( "invalid double value" );
+                  throw std::runtime_error( "invalid double value" );  // NOLINT
                }
                consumer.number( NEG ? -d : d );
             }

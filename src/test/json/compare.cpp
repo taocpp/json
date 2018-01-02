@@ -60,7 +60,7 @@ namespace tao
          TEST_ASSERT( !( b <= a ) );
       }
 
-      void test_null()
+      void test_null()  // NOLINT
       {
          const value a = null;
          const value b( null );

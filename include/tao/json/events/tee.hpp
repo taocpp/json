@@ -43,92 +43,92 @@ namespace tao
          struct events_apply< TAOCPP_JSON_PEGTL_NAMESPACE::internal::index_sequence<> >
          {
             template< typename... Ts >
-            static void null( std::tuple< Ts... >& )
+            static void null( std::tuple< Ts... >& /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void boolean( std::tuple< Ts... >&, const bool )
+            static void boolean( std::tuple< Ts... >& /*unused*/, const bool /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void number( std::tuple< Ts... >&, const std::int64_t )
+            static void number( std::tuple< Ts... >& /*unused*/, const std::int64_t /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void number( std::tuple< Ts... >&, const std::uint64_t )
+            static void number( std::tuple< Ts... >& /*unused*/, const std::uint64_t /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void number( std::tuple< Ts... >&, const double )
+            static void number( std::tuple< Ts... >& /*unused*/, const double /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void string( std::tuple< Ts... >&, const tao::string_view )
+            static void string( std::tuple< Ts... >& /*unused*/, const tao::string_view /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void binary( std::tuple< Ts... >&, const tao::byte_view )
+            static void binary( std::tuple< Ts... >& /*unused*/, const tao::byte_view /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void begin_array( std::tuple< Ts... >& )
+            static void begin_array( std::tuple< Ts... >& /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void begin_array( std::tuple< Ts... >&, const std::size_t )
+            static void begin_array( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void element( std::tuple< Ts... >& )
+            static void element( std::tuple< Ts... >& /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void end_array( std::tuple< Ts... >& )
+            static void end_array( std::tuple< Ts... >& /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void end_array( std::tuple< Ts... >&, const std::size_t )
+            static void end_array( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void begin_object( std::tuple< Ts... >& )
+            static void begin_object( std::tuple< Ts... >& /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void begin_object( std::tuple< Ts... >&, const std::size_t )
+            static void begin_object( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void key( std::tuple< Ts... >&, const tao::string_view )
+            static void key( std::tuple< Ts... >& /*unused*/, const tao::string_view /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void member( std::tuple< Ts... >& )
+            static void member( std::tuple< Ts... >& /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void end_object( std::tuple< Ts... >& )
+            static void end_object( std::tuple< Ts... >& /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void end_object( std::tuple< Ts... >&, const std::size_t )
+            static void end_object( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
             {
             }
          };
@@ -266,7 +266,7 @@ namespace tao
 
          public:
             template< typename... Us >
-            tee( Us&&... us )
+            explicit tee( Us&&... us )
                : ts( std::forward< Us >( us )... )
             {
             }

@@ -15,7 +15,7 @@ namespace tao
          return json::patch( v, patch );
       }
 
-      void unit_test()
+      void unit_test()  // NOLINT
       {
          const value n = null;
          const value one = 1u;

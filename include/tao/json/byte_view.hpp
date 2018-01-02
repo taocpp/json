@@ -127,7 +127,7 @@ namespace tao
 
       constexpr const_reference at( size_type pos ) const
       {
-         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::basic_byte_view::at" ) : data_[ pos ];
+         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::basic_byte_view::at" ) : data_[ pos ];  // NOLINT
       }
 
       constexpr const_reference front() const noexcept
@@ -165,7 +165,7 @@ namespace tao
       size_type copy( byteT* s, size_type n, size_type pos = 0 ) const
       {
          if( pos > size() ) {
-            throw std::out_of_range( "index out of range in tao::basic_byte_view::copy" );
+            throw std::out_of_range( "index out of range in tao::basic_byte_view::copy" );  // NOLINT
          }
          const size_type rlen = std::min( n, size() - pos );
          std::memcpy( s, data() + pos, rlen );
@@ -174,7 +174,7 @@ namespace tao
 
       constexpr basic_byte_view substr( size_type pos = 0, size_type n = npos ) const
       {
-         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_byte_view::substr" ) : basic_byte_view( data() + pos, std::min( n, size() - pos ) );
+         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_byte_view::substr" ) : basic_byte_view( data() + pos, std::min( n, size() - pos ) );  // NOLINT
       }
 
       /*constexpr*/ int compare( basic_byte_view s ) const noexcept

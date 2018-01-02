@@ -38,9 +38,9 @@ namespace tao
                case type::UNINITIALIZED:
                   return;
                case type::DISCARDED:
-                  throw std::logic_error( "attempt to use a discarded value" );
+                  throw std::logic_error( "attempt to use a discarded value" );  // NOLINT
                case type::DESTROYED:
-                  throw std::logic_error( "attempt to use a destroyed value" );
+                  throw std::logic_error( "attempt to use a destroyed value" );  // NOLINT
                case type::NULL_:
                case type::BOOLEAN:
                case type::SIGNED:
@@ -76,7 +76,7 @@ namespace tao
                                  case type::OBJECT:
                                     if( const auto* t = p->find( "$ref" ) ) {
                                        if( t->is_string_type() ) {
-                                          throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );
+                                          throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );  // NOLINT
                                        }
                                     }
                                     p = p->at( it->key() ).skip_raw_ptr();
@@ -87,7 +87,7 @@ namespace tao
                               ++it;
                            }
                            if( p == &v ) {
-                              throw std::runtime_error( "JSON Reference: invalid self reference" );
+                              throw std::runtime_error( "JSON Reference: invalid self reference" );  // NOLINT
                            }
                            v.assign_raw_ptr( p );
                            resolve_references( r, v );
@@ -95,7 +95,7 @@ namespace tao
                         }
                         else {
                            // Ignore remote references for now...
-                           // throw std::runtime_error( "JSON Reference: unsupported or invalid URI: " + s );
+                           // throw std::runtime_error( "JSON Reference: unsupported or invalid URI: " + s ); // NOLINT
                         }
                      }
                   }
@@ -103,7 +103,7 @@ namespace tao
                case type::RAW_PTR:
                   return;
             }
-            throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
+            throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
          }
 
       }  // namespace internal

@@ -28,7 +28,7 @@ namespace tao
             case type::DESTROYED:
                assert( v.type() != type::DESTROYED );
                return false;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
             case type::BOOLEAN:
@@ -79,10 +79,10 @@ namespace tao
                return;
 
             case type::DISCARDED:
-               throw std::logic_error( "attempt to use a discarded value" );
+               throw std::logic_error( "attempt to use a discarded value" );  // NOLINT
 
             case type::DESTROYED:
-               throw std::logic_error( "attempt to use a destroyed value" );
+               throw std::logic_error( "attempt to use a destroyed value" );  // NOLINT
 
             case type::NULL_:
             case type::BOOLEAN:
@@ -127,7 +127,7 @@ namespace tao
                }
                return;
          }
-         throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
+         throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
       }
 
    }  // namespace json

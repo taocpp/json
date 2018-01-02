@@ -10,6 +10,8 @@
 
 #include "major.hpp"
 
+#include "../../byte_view.hpp"
+#include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
 
 #ifdef _MSC_VER
@@ -58,17 +60,17 @@ namespace tao
                   else if( v < 65536 ) {
                      os.put( char( std::uint8_t( m ) + 25 ) );
                      const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v < 4294967296ull ) {
                      os.put( char( std::uint8_t( m ) + 26 ) );
                      const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else {
                      os.put( char( std::uint8_t( m ) + 27 ) );
                      const std::uint64_t x = json::internal::h_to_be( v );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                }
 
@@ -93,7 +95,7 @@ namespace tao
                   std::memcpy( &n, &v, sizeof( n ) );
                   n = json::internal::h_to_be( n );
                   os.put( char( std::uint8_t( major::OTHER ) + 27 ) );
-                  os.write( reinterpret_cast< const char* >( &n ), sizeof( n ) );
+                  os.write( static_cast< const char* >( static_cast< const void* >( &n ) ), sizeof( n ) );
                }
 
                void string( const tao::string_view v )
@@ -105,7 +107,7 @@ namespace tao
                void binary( const tao::byte_view v )
                {
                   number( major::BINARY, v.size() );
-                  os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+                  os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
                }
 
                void begin_array()
@@ -127,7 +129,7 @@ namespace tao
                   os.put( char( 0xff ) );
                }
 
-               void end_array( const std::size_t ) noexcept
+               void end_array( const std::size_t /*unused*/ ) noexcept
                {
                }
 
@@ -155,7 +157,7 @@ namespace tao
                   os.put( char( 0xff ) );
                }
 
-               void end_object( const std::size_t ) noexcept
+               void end_object( const std::size_t /*unused*/ ) noexcept
                {
                }
             };

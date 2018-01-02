@@ -4,12 +4,16 @@
 #ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ENDIAN_GCC_HPP
 #define TAOCPP_JSON_INCLUDE_INTERNAL_ENDIAN_GCC_HPP
 
+#include <cstdint>
+#include <cstring>
+
 namespace tao
 {
    namespace json
    {
       namespace internal
       {
+
 #if not defined( __BYTE_ORDER__ )
 #error TODO -- what?
 #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
@@ -193,6 +197,7 @@ namespace tao
 #else
 #error Unknown host byte order!
 #endif
+
       }  // namespace internal
 
    }  // namespace json
