@@ -105,13 +105,13 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const tao::byte_view  /*unused*/)
+            void binary( const tao::byte_view /*unused*/ )
             {
                // if this throws, consider using binary_to_* transformers
                throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
             }
 
-            void begin_array( const std::size_t  /*unused*/= 0 )
+            void begin_array( const std::size_t /*unused*/ = 0 )
             {
                next();
                os.put( '[' );
@@ -124,7 +124,7 @@ namespace tao
                first = false;
             }
 
-            void end_array( const std::size_t  /*unused*/= 0 )
+            void end_array( const std::size_t /*unused*/ = 0 )
             {
                current.resize( current.size() - indent );
                if( !first ) {
@@ -133,7 +133,7 @@ namespace tao
                os.put( ']' );
             }
 
-            void begin_object( const std::size_t  /*unused*/= 0 )
+            void begin_object( const std::size_t /*unused*/ = 0 )
             {
                next();
                os.put( '{' );
@@ -154,7 +154,7 @@ namespace tao
                first = false;
             }
 
-            void end_object( const std::size_t  /*unused*/= 0 )
+            void end_object( const std::size_t /*unused*/ = 0 )
             {
                current.resize( current.size() - indent );
                if( !first ) {

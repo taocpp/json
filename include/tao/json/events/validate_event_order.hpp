@@ -70,7 +70,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void boolean( const bool  /*unused*/)
+            void boolean( const bool /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -94,7 +94,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void number( const std::int64_t  /*unused*/)
+            void number( const std::int64_t /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -118,7 +118,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void number( const std::uint64_t  /*unused*/)
+            void number( const std::uint64_t /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -142,7 +142,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void number( const double  /*unused*/)
+            void number( const double /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -166,7 +166,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void string( const tao::string_view  /*unused*/)
+            void string( const tao::string_view /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -190,7 +190,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void binary( const tao::byte_view  /*unused*/)
+            void binary( const tao::byte_view /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -214,7 +214,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void begin_array( const std::size_t  /*unused*/= 0 )
+            void begin_array( const std::size_t /*unused*/ = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -262,7 +262,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void end_array( const std::size_t  /*unused*/= 0 )
+            void end_array( const std::size_t /*unused*/ = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -285,7 +285,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void begin_object( const std::size_t  /*unused*/= 0 )
+            void begin_object( const std::size_t /*unused*/ = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -312,7 +312,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void key( const tao::string_view  /*unused*/)
+            void key( const tao::string_view /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:
@@ -356,7 +356,7 @@ namespace tao
                throw std::logic_error( "invalid state" );  // NOLINT
             }
 
-            void end_object( const std::size_t  /*unused*/= 0 )
+            void end_object( const std::size_t /*unused*/ = 0 )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:

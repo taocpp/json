@@ -20,7 +20,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const tao::byte_view  /*unused*/)
+            void binary( const tao::byte_view /*unused*/ )
             {
                throw std::runtime_error( "invalid binary data" );  // NOLINT
             }

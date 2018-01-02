@@ -171,7 +171,7 @@ namespace tao
                   assert( false );  // LCOV_EXCL_LINE
                }
 
-               void end_array( const std::size_t  /*unused*/) noexcept
+               void end_array( const std::size_t /*unused*/ ) noexcept
                {
                }
 
@@ -210,7 +210,7 @@ namespace tao
                   assert( false );  // LCOV_EXCL_LINE
                }
 
-               void end_object( const std::size_t  /*unused*/) noexcept
+               void end_object( const std::size_t /*unused*/ ) noexcept
                {
                }
             };

@@ -78,22 +78,22 @@ namespace tao
             seize( std::move( r ) );
          }
 
-         basic_value( null_t  /*unused*/) noexcept
+         basic_value( null_t /*unused*/ ) noexcept
          {
             unsafe_assign_null();
          }
 
-         basic_value( empty_binary_t  /*unused*/) noexcept
+         basic_value( empty_binary_t /*unused*/ ) noexcept
          {
             unsafe_emplace_binary();
          }
 
-         basic_value( empty_array_t  /*unused*/) noexcept
+         basic_value( empty_array_t /*unused*/ ) noexcept
          {
             unsafe_emplace_array();
          }
 
-         basic_value( empty_object_t  /*unused*/) noexcept
+         basic_value( empty_object_t /*unused*/ ) noexcept
          {
             unsafe_emplace_object();
          }
@@ -166,28 +166,28 @@ namespace tao
             return *this;
          }
 
-         basic_value& operator=( null_t  /*unused*/) noexcept
+         basic_value& operator=( null_t /*unused*/ ) noexcept
          {
             unsafe_discard();
             unsafe_assign_null();
             return *this;
          }
 
-         basic_value& operator=( empty_binary_t  /*unused*/) noexcept
+         basic_value& operator=( empty_binary_t /*unused*/ ) noexcept
          {
             unsafe_discard();
             unsafe_emplace_binary();
             return *this;
          }
 
-         basic_value& operator=( empty_array_t  /*unused*/) noexcept
+         basic_value& operator=( empty_array_t /*unused*/ ) noexcept
          {
             unsafe_discard();
             unsafe_emplace_array();
             return *this;
          }
 
-         basic_value& operator=( empty_object_t  /*unused*/) noexcept
+         basic_value& operator=( empty_object_t /*unused*/ ) noexcept
          {
             unsafe_discard();
             unsafe_emplace_object();
@@ -1199,7 +1199,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( m_type != json::type::DESTROYED );
                   return true;
-               // LCOV_EXCL_STOP
+                  // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                case json::type::BOOLEAN:
@@ -1308,7 +1308,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( r.m_type != json::type::DESTROYED );
                   return;
-               // LCOV_EXCL_STOP
+                  // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
@@ -1544,7 +1544,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-            // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
             case type::NULL_:
                return true;
@@ -1738,7 +1738,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-            // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
             case type::NULL_:
                return false;
