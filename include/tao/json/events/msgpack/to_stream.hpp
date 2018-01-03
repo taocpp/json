@@ -60,7 +60,7 @@ namespace tao
                void number( const std::int64_t v )
                {
                   if( ( v >= -32 ) && ( v <= -1 ) ) {
-                     const std::int8_t x( v );
+                     const auto x = static_cast< std::int8_t >( v );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( ( v >= -128 ) && ( v <= 127 ) ) {
@@ -80,7 +80,7 @@ namespace tao
                void number( const std::uint64_t v )
                {
                   if( v <= 127 ) {
-                     const std::uint8_t x( v );
+                     const auto x = static_cast< std::int8_t >( v );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v <= 255 ) {

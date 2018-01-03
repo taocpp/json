@@ -90,14 +90,14 @@ namespace tao
             void number( const double v )
             {
                if( v >= 0 ) {
-                  const std::uint64_t u( v );
+                  const auto u = static_cast< std::uint64_t >( v );
                   if( u == v ) {
                      number( u );
                      return;
                   }
                }
                else {
-                  const std::int64_t i( v );
+                  const auto u = static_cast< std::int64_t >( v );
                   if( i == v ) {
                      number( i );
                      return;

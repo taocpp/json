@@ -94,7 +94,7 @@ namespace tao
                static Result read_number( Input& in )
                {
                   if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
-                     const Result result( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
+                     const auto result = static_cast< Result >( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
                      in.bump_in_this_line( 1 + sizeof( Number ) );
                      return result;
                   }
