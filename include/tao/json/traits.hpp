@@ -333,7 +333,8 @@ namespace tao
                return type::NULL_ > type::DOUBLE;
             }
          };
-      }
+
+      }  // namespace internal
 
       // clang-format off
       template<> struct traits< signed char > : internal::signed_trait< signed char > {};
