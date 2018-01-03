@@ -43,14 +43,14 @@ namespace tao
                struct element_separator : padr< one< ',' > > {};
                struct value_concat : pad< one< '+' >, ws > {};
 
-               struct false_ : TAOCPP_JSON_PEGTL_STRING( "false" ) {};
-               struct null : TAOCPP_JSON_PEGTL_STRING( "null" ) {};
-               struct true_ : TAOCPP_JSON_PEGTL_STRING( "true" ) {};
+               struct false_ : string< 'f', 'a', 'l', 's', 'e' > {};
+               struct null : string< 'n', 'u', 'l', 'l' > {};
+               struct true_ : string< 't', 'r', 'u', 'e' > {};
 
-               struct nan : TAOCPP_JSON_PEGTL_STRING( "NaN" ) {};
+               struct nan : string< 'N', 'a', 'N'> {};
 
                template< bool NEG >
-               struct infinity : TAOCPP_JSON_PEGTL_STRING( "Infinity" ) {};
+               struct infinity : string< 'I', 'n', 'f', 'i', 'n', 'i', 't', 'y' > {};
 
                template< bool NEG >
                struct hexnum : plus< abnf::HEXDIG > {};
