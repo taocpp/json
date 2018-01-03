@@ -50,7 +50,7 @@ namespace tao
       }  // namespace internal
 
       template< template< typename... > class Traits >
-      class basic_value
+      class basic_value  // NOLINT
       {
       public:
          using binary_t = std::vector< tao::byte >;
@@ -77,28 +77,29 @@ namespace tao
             seize( std::move( r ) );
          }
 
-         basic_value( null_t /*unused*/ ) noexcept
+         basic_value( null_t /*unused*/ ) noexcept  // NOLINT
          {
             unsafe_assign_null();
          }
 
-         basic_value( empty_binary_t /*unused*/ ) noexcept
+         basic_value( empty_binary_t /*unused*/ ) noexcept  // NOLINT
          {
             unsafe_emplace_binary();
          }
 
-         basic_value( empty_array_t /*unused*/ ) noexcept
+         basic_value( empty_array_t /*unused*/ ) noexcept  // NOLINT
          {
             unsafe_emplace_array();
          }
 
-         basic_value( empty_object_t /*unused*/ ) noexcept
+         basic_value( empty_object_t /*unused*/ ) noexcept  // NOLINT
          {
             unsafe_emplace_object();
          }
 
          template< typename T, typename = typename std::enable_if< !std::is_convertible< T&&, const basic_value& >::value >::type >
-         basic_value( T&& v ) noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+         basic_value( T&& v )  // NOLINT
+            noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          {
             try {
                using D = typename std::decay< T >::type;
@@ -140,7 +141,9 @@ namespace tao
          ~basic_value() noexcept
          {
             unsafe_discard();
-            assert( ( const_cast< volatile json::type& >( m_type ) = json::type::DESTROYED, true ) );
+#ifndef NDEBUG
+            static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
+#endif
          }
 
          static basic_value array( std::initializer_list< single< Traits > >&& l )
@@ -1056,7 +1059,7 @@ namespace tao
                   return it->second;
                } break;
                default:
-                  throw internal::invalid_type( b, std::next( e ) );
+                  throw internal::invalid_type( b, std::next( e ) );  // NOLINT
             }
          }
 
@@ -1086,20 +1089,16 @@ namespace tao
             if( is_null() ) {
                return tao::nullopt;
             }
-            else {
-               return as< T >();
-            }
+            return as< T >();
          }
 
          template< typename T, typename K >
          tao::optional< T > optional( const K& key ) const
          {
             if( const auto* p = find( key ) ) {
-               return tao::nullopt;
-            }
-            else {
                return p->template as< T >();
             }
+            return tao::nullopt;
          }
 
          template< typename T >
@@ -1142,7 +1141,7 @@ namespace tao
                   v.erase( e->key() );
                   break;
                default:
-                  throw internal::invalid_type( b, std::next( e ) );
+                  throw internal::invalid_type( b, std::next( e ) );  // NOLINT
             }
          }
 
@@ -1180,7 +1179,7 @@ namespace tao
                   return it->second;
                } break;
                default:
-                  throw internal::invalid_type( b, std::next( e ) );
+                  throw internal::invalid_type( b, std::next( e ) );  // NOLINT
             }
          }
 
@@ -1289,6 +1288,18 @@ namespace tao
             m_type = json::type::UNINITIALIZED;
          }
 
+         void throw_invalid_json_type() const
+         {
+            throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + '\'' );  // NOLINT
+         }
+
+         void validate_json_type( const json::type t ) const
+         {
+            if( m_type != t ) {
+               throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "', expected '" + to_string( t ) + '\'' );  // NOLINT
+            }
+         }
+
       private:
          void seize( basic_value&& r ) noexcept
          {
@@ -1296,7 +1307,9 @@ namespace tao
 
             switch( r.m_type ) {
                case json::type::UNINITIALIZED:
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                // LCOV_EXCL_START
@@ -1310,62 +1323,86 @@ namespace tao
                // LCOV_EXCL_STOP
 
                case json::type::NULL_:
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                case json::type::BOOLEAN:
                   m_union.b = r.m_union.b;
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                case json::type::SIGNED:
                   m_union.i = r.m_union.i;
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                case json::type::UNSIGNED:
                   m_union.u = r.m_union.u;
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                case json::type::DOUBLE:
                   m_union.d = r.m_union.d;
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                case json::type::STRING:
                   new( &m_union.s ) std::string( std::move( r.m_union.s ) );
-                  assert( ( r.discard(), true ) );
+#ifndef NDEBUG
+                  r.discard();
+#endif
                   return;
 
                case json::type::STRING_VIEW:
                   new( &m_union.sv ) tao::string_view( r.m_union.sv );
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                case json::type::BINARY:
                   new( &m_union.x ) binary_t( std::move( r.m_union.x ) );
-                  assert( ( r.discard(), true ) );
+#ifndef NDEBUG
+                  r.discard();
+#endif
                   return;
 
                case json::type::BINARY_VIEW:
                   new( &m_union.xv ) tao::byte_view( r.m_union.xv );
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
 
                case json::type::ARRAY:
                   new( &m_union.a ) array_t( std::move( r.m_union.a ) );
-                  assert( ( r.discard(), true ) );
+#ifndef NDEBUG
+                  r.discard();
+#endif
                   return;
 
                case json::type::OBJECT:
                   new( &m_union.o ) object_t( std::move( r.m_union.o ) );
-                  assert( ( r.discard(), true ) );
+#ifndef NDEBUG
+                  r.discard();
+#endif
                   return;
 
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
-                  assert( ( r.m_type = json::type::DISCARDED, true ) );
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
                   return;
             }
             assert( false );  // LCOV_EXCL_LINE
@@ -1435,26 +1472,8 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-         void throw_invalid_json_type() const
-         {
-            throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + '\'' );  // NOLINT
-         }
-
-         void validate_json_type( const json::type t ) const
-         {
-            if( m_type != t ) {
-               throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "', expected '" + to_string( t ) + '\'' );  // NOLINT
-            }
-         }
-
          json::type m_type = json::type::UNINITIALIZED;
          internal::value_union< basic_value > m_union;
-
-         template< typename >
-         friend class internal::number_trait;
-
-         template< typename... >
-         friend class Traits;
       };
 
       template< template< typename... > class TraitsL, template< typename... > class TraitsR >
@@ -1464,14 +1483,10 @@ namespace tao
             if( const auto* p = rhs.skip_raw_ptr() ) {
                return lhs == *p;
             }
-            else {
-               if( const auto* q = lhs.skip_raw_ptr() ) {
-                  return q->is_null();
-               }
-               else {
-                  return true;
-               }
+            if( const auto* q = lhs.skip_raw_ptr() ) {
+               return q->is_null();
             }
+            return true;
          }
 
          if( lhs.type() != rhs.type() ) {
@@ -1658,14 +1673,10 @@ namespace tao
             if( const auto* p = rhs.skip_raw_ptr() ) {
                return lhs < *p;
             }
-            else {
-               if( const auto* q = lhs.skip_raw_ptr() ) {
-                  return q->type() < type::NULL_;
-               }
-               else {
-                  return false;
-               }
+            if( const auto* q = lhs.skip_raw_ptr() ) {
+               return q->type() < type::NULL_;
             }
+            return false;
          }
 
          if( lhs.type() != rhs.type() ) {

@@ -109,10 +109,10 @@ namespace tao
          }
       };
 
-      constexpr null_t null{ 0 };
-      constexpr empty_binary_t empty_binary{ 0 };
-      constexpr empty_array_t empty_array{ 0 };
-      constexpr empty_object_t empty_object{ 0 };
+      constexpr null_t null{ 0 };                  // NOLINT
+      constexpr empty_binary_t empty_binary{ 0 };  // NOLINT
+      constexpr empty_array_t empty_array{ 0 };    // NOLINT
+      constexpr empty_object_t empty_object{ 0 };  // NOLINT
 
    }  // namespace json
 
