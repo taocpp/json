@@ -14,7 +14,7 @@
 std::string get_file_contents( const char* filename )
 {
    std::ifstream in( filename, std::ios::in | std::ios::binary );
-   if( in ) {
+   if( !in.fail() ) {
       std::string contents;
       in.seekg( 0, std::ios::end );
       contents.resize( static_cast< std::string::size_type >( in.tellg() ) );
