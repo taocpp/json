@@ -45,6 +45,8 @@ namespace tao
             hash( const hash& ) = delete;
             hash( hash&& ) = delete;
 
+            ~hash() = default;
+
             void operator=( const hash& ) = delete;
             void operator=( hash&& ) = delete;
 
@@ -88,14 +90,14 @@ namespace tao
             void number( const double v )
             {
                if( v >= 0 ) {
-                  const std::uint64_t u = static_cast< std::uint64_t >( v );
+                  const std::uint64_t u( v );
                   if( u == v ) {
                      number( u );
                      return;
                   }
                }
                else {
-                  const std::int64_t i = static_cast< std::int64_t >( v );
+                  const std::int64_t i( v );
                   if( i == v ) {
                      number( i );
                      return;

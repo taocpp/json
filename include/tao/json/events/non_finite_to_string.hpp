@@ -23,7 +23,7 @@ namespace tao
             void number( const double v )
             {
                if( !std::isfinite( v ) ) {
-                  if( std::isnan( v ) ) {  // NOLINT: should return bool, but does return int!
+                  if( std::isnan( v ) ) {  // NOLINT
                      Consumer::string( "NaN" );
                   }
                   else if( v > 0 ) {

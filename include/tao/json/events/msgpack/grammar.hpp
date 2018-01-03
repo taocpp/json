@@ -40,7 +40,7 @@ namespace tao
                static Result read_number( Input& in )
                {
                   if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
-                     const Result result = static_cast< Result >( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
+                     const Result result( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
                      in.bump_in_this_line( 1 + sizeof( Number ) );
                      return result;
                   }
@@ -56,20 +56,20 @@ namespace tao
                      in.bump_in_this_line();
                      return true;
                   }
-                  else if( b >= 0xe0 ) {
+                  if( b >= 0xe0 ) {
                      consumer.number( std::int64_t( std::int8_t( b ) ) );
                      in.bump_in_this_line();
                      return true;
                   }
-                  else if( ( 0x80 <= b ) && ( b <= 0x8f ) ) {
+                  if( ( 0x80 <= b ) && ( b <= 0x8f ) ) {
                      in.bump_in_this_line();
                      return match_object( in, consumer, b - 0x80 );
                   }
-                  else if( ( 0x90 <= b ) && ( b <= 0x9f ) ) {
+                  if( ( 0x90 <= b ) && ( b <= 0x9f ) ) {
                      in.bump_in_this_line();
                      return match_array( in, consumer, b - 0x90 );
                   }
-                  else if( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
+                  if( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
                      in.bump_in_this_line();
                      consumer.string( read_container< tao::string_view >( in, b - 0xa0 ) );
                      return true;
@@ -189,7 +189,7 @@ namespace tao
                   if( in.size( size ) < size ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
-                  const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
+                  const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
                   in.bump_in_this_line( size );
                   return result;

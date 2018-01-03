@@ -54,14 +54,14 @@ namespace tao
                {
                   os.put( char( tag ) );
                   const Integer x = internal::h_to_be( Integer( v ) );
-                  os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                  os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 
                void number( const std::int64_t v )
                {
                   if( ( v >= -32 ) && ( v <= -1 ) ) {
-                     const std::int8_t x = static_cast< std::int8_t >( v );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     const std::int8_t x( v );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( ( v >= -128 ) && ( v <= 127 ) ) {
                      number_impl< std::uint8_t >( 0xd0, v );
@@ -80,8 +80,8 @@ namespace tao
                void number( const std::uint64_t v )
                {
                   if( v <= 127 ) {
-                     const std::uint8_t x = static_cast< std::uint8_t >( v );
-                     os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                     const std::uint8_t x( v );
+                     os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v <= 255 ) {
                      number_impl< std::uint8_t >( 0xcc, v );
@@ -101,7 +101,7 @@ namespace tao
                {
                   os.put( char( 0xcb ) );
                   const auto x = internal::h_to_be( v );
-                  os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
+                  os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 
                void string( const tao::string_view v )
@@ -138,7 +138,7 @@ namespace tao
                   else {
                      throw std::runtime_error( "binary too long for msgpack" );  // NOLINT
                   }
-                  os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+                  os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
                }
 
                void begin_array()

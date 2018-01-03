@@ -16,11 +16,11 @@ namespace tao
       {
          inline bool is_identifier( const tao::string_view v ) noexcept
          {
-            if( v.empty() || std::isdigit( v[ 0 ] ) ) {  // NOLINT: std::isdigit should return bool, but does returns int
+            if( v.empty() || std::isdigit( v[ 0 ] ) ) {  // NOLINT
                return false;
             }
             for( const auto c : v ) {
-               if( !std::isalnum( c ) && c != '_' ) {  // NOLINT: std::isalnum should return bool, but does returns int
+               if( !std::isalnum( c ) && c != '_' ) {  // NOLINT
                   return false;
                }
             }

@@ -65,7 +65,7 @@ namespace tao
       namespace internal
       {
          // clang-format off
-         template<> WEAK_PREFIX const std::string errors< events::ubjson::number >::error_message WEAK_SUFFIX = "invalid ubjson high-precision number";
+         template<> WEAK_PREFIX const std::string errors< events::ubjson::number >::error_message WEAK_SUFFIX = "invalid ubjson high-precision number";  // NOLINT
          // clang-format on
 
       }  // namespace internal
@@ -94,7 +94,7 @@ namespace tao
                static Result read_number( Input& in )
                {
                   if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
-                     const Result result = static_cast< Result >( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
+                     const Result result( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
                      in.bump_in_this_line( 1 + sizeof( Number ) );
                      return result;
                   }
@@ -220,7 +220,7 @@ namespace tao
                   if( in.size( size ) < size ) {
                      throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
                   }
-                  const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
+                  const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
                   in.bump_in_this_line( size );
                   return result;

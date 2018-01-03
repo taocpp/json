@@ -58,7 +58,7 @@ namespace tao
          };
 
          template< typename Rule >
-         bool parse( const tao::string_view v )
+         bool parse( const tao::string_view v )  // NOLINT
          {
             json_pegtl::memory_input<> in( v.data(), v.size(), "" );
             return json_pegtl::parse< json_pegtl::seq< Rule, json_pegtl::eof > >( in );
@@ -285,7 +285,7 @@ namespace tao
                return p;
             }
 
-            schema_node( const schema_container< Traits >* c, const basic_value< Traits >& v )
+            schema_node( const schema_container< Traits >* c, const basic_value< Traits >& v )  // NOLINT
                : m_container( c ),
                  m_value( &v )
             {
@@ -402,7 +402,7 @@ namespace tao
                         if( i <= 0 ) {
                            throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );  // NOLINT
                         }
-                        m_multiple_of.u = i;
+                        m_multiple_of.u = i;  // NOLINT
                         m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                      } break;
                      case type::UNSIGNED: {
@@ -410,7 +410,7 @@ namespace tao
                         if( u == 0 ) {
                            throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );  // NOLINT
                         }
-                        m_multiple_of.u = u;
+                        m_multiple_of.u = u;  // NOLINT
                         m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                      } break;
                      case type::DOUBLE: {
@@ -418,7 +418,7 @@ namespace tao
                         if( d <= 0 ) {
                            throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );  // NOLINT
                         }
-                        m_multiple_of.d = d;
+                        m_multiple_of.d = d;  // NOLINT
                         m_flags = m_flags | HAS_MULTIPLE_OF_DOUBLE;
                      } break;
                      default:
@@ -430,15 +430,15 @@ namespace tao
                if( const auto* p = find( "maximum" ) ) {
                   switch( p->type() ) {
                      case type::SIGNED:
-                        m_maximum.i = p->unsafe_get_signed();
+                        m_maximum.i = p->unsafe_get_signed();  // NOLINT
                         m_flags = m_flags | HAS_MAXIMUM_SIGNED;
                         break;
                      case type::UNSIGNED:
-                        m_maximum.u = p->unsafe_get_unsigned();
+                        m_maximum.u = p->unsafe_get_unsigned();  // NOLINT
                         m_flags = m_flags | HAS_MAXIMUM_UNSIGNED;
                         break;
                      case type::DOUBLE:
-                        m_maximum.d = p->unsafe_get_double();
+                        m_maximum.d = p->unsafe_get_double();  // NOLINT
                         m_flags = m_flags | HAS_MAXIMUM_DOUBLE;
                         break;
                      default:
@@ -463,15 +463,15 @@ namespace tao
                if( const auto* p = find( "minimum" ) ) {
                   switch( p->type() ) {
                      case type::SIGNED:
-                        m_minimum.i = p->unsafe_get_signed();
+                        m_minimum.i = p->unsafe_get_signed();  // NOLINT
                         m_flags = m_flags | HAS_MINIMUM_SIGNED;
                         break;
                      case type::UNSIGNED:
-                        m_minimum.u = p->unsafe_get_unsigned();
+                        m_minimum.u = p->unsafe_get_unsigned();  // NOLINT
                         m_flags = m_flags | HAS_MINIMUM_UNSIGNED;
                         break;
                      case type::DOUBLE:
-                        m_minimum.d = p->unsafe_get_double();
+                        m_minimum.d = p->unsafe_get_double();  // NOLINT
                         m_flags = m_flags | HAS_MINIMUM_DOUBLE;
                         break;
                      default:
@@ -790,6 +790,8 @@ namespace tao
             schema_node( const schema_node& ) = delete;
             schema_node( schema_node&& ) = delete;
 
+            ~schema_node() = default;
+
             void operator=( const schema_node& ) = delete;
             void operator=( schema_node&& ) = delete;
 
@@ -930,20 +932,27 @@ namespace tao
             {
                assert( m_match );
                const auto f2 = [&]( const std::unique_ptr< schema_consumer >& p ) { return f( *p ); };
-               if( m_match )
+               if( m_match ) {
                   validate_item( f2 );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_properties( f2 );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_all_of( f2 );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_any_of( f2 );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_one_of( f2 );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_not( f2 );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_schema_dependencies( f2 );
+               }
             }
 
             static bool is_multiple_of( const double v, const double d )
@@ -974,7 +983,7 @@ namespace tao
                      }
                      break;
                   case HAS_MULTIPLE_OF_DOUBLE:
-                     if( !is_multiple_of( (double)v, m_node->m_multiple_of.d ) ) {
+                     if( !is_multiple_of( double( v ), m_node->m_multiple_of.d ) ) {
                         m_match = false;
                      }
                      break;
@@ -990,7 +999,7 @@ namespace tao
                      }
                      break;
                   case HAS_MULTIPLE_OF_DOUBLE:
-                     if( !is_multiple_of( (double)v, m_node->m_multiple_of.d ) ) {
+                     if( !is_multiple_of( double( v ), m_node->m_multiple_of.d ) ) {
                         m_match = false;
                      }
                      break;
@@ -1001,7 +1010,7 @@ namespace tao
             {
                switch( m_node->m_flags & HAS_MULTIPLE_OF ) {
                   case HAS_MULTIPLE_OF_UNSIGNED:
-                     if( !is_multiple_of( v, (double)m_node->m_multiple_of.u ) ) {
+                     if( !is_multiple_of( v, double( m_node->m_multiple_of.u ) ) ) {
                         m_match = false;
                      }
                      break;
@@ -1330,6 +1339,8 @@ namespace tao
             schema_consumer( const schema_consumer& ) = delete;
             schema_consumer( schema_consumer&& ) = delete;
 
+            ~schema_consumer() = default;
+
             void operator=( const schema_consumer& ) = delete;
             void operator=( schema_consumer&& ) = delete;
 
@@ -1383,82 +1394,110 @@ namespace tao
 
             void null()
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( NULL_ );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( []( events_compare< Traits >& c ) { c.null(); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.null(); return ! c.match(); } );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->null();
+               }
             }
 
             void boolean( const bool v )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( BOOLEAN );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( [=]( events_compare< Traits >& c ) { c.boolean( v ); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.boolean( v ); return ! c.match(); } );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->boolean( v );
+               }
             }
 
             void number( const std::int64_t v )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( INTEGER | NUMBER );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
-               if( m_match && m_count.empty() )
+               }
+               if( m_match && m_count.empty() ) {
                   validate_number( v );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->number( v );
+               }
             }
 
             void number( const std::uint64_t v )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( INTEGER | NUMBER );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
-               if( m_match && m_count.empty() )
+               }
+               if( m_match && m_count.empty() ) {
                   validate_number( v );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->number( v );
+               }
             }
 
             void number( const double v )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( NUMBER );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
-               if( m_match && m_count.empty() )
+               }
+               if( m_match && m_count.empty() ) {
                   validate_number( v );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->number( v );
+               }
             }
 
             void string( const tao::string_view v )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( STRING );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( [&]( events_compare< Traits >& c ) { c.string( v ); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( [&]( schema_consumer& c ) { c.string( v ); return ! c.match(); } );
-               if( m_match && m_count.empty() )
+               }
+               if( m_match && m_count.empty() ) {
                   validate_string( v );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->string( v );
+               }
             }
 
             void binary( const tao::byte_view /*unused*/ )
@@ -1468,12 +1507,15 @@ namespace tao
 
             void begin_array( const std::size_t /*unused*/ = 0 )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( ARRAY );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( []( events_compare< Traits >& c ) { c.begin_array(); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.begin_array(); return ! c.match(); } );
+               }
                if( m_match ) {
                   if( m_hash ) {
                      m_hash->begin_array();
@@ -1507,8 +1549,9 @@ namespace tao
 
             void element()
             {
-               if( m_match )
+               if( m_match ) {
                   validate_enum( []( events_compare< Traits >& c ) { c.element(); return ! c.match(); } );
+               }
                if( m_match && m_item ) {
                   if( m_count.size() == 1 ) {
                      if( !m_item->finalize() ) {
@@ -1517,8 +1560,9 @@ namespace tao
                      m_item.reset();
                   }
                }
-               if( m_match )
+               if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.element(); return ! c.match(); } );
+               }
                if( m_match && m_hash ) {
                   if( m_count.size() == 1 ) {
                      if( !m_unique.emplace( m_hash->value() ).second ) {
@@ -1555,8 +1599,9 @@ namespace tao
 
             void end_array( const std::size_t /*unused*/ = 0 )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_enum( []( events_compare< Traits >& c ) { c.end_array(); return ! c.match(); } );
+               }
                if( m_match && m_item && ( m_count.size() == 1 ) ) {
                   if( !m_item->finalize() ) {
                      m_match = false;
@@ -1574,36 +1619,46 @@ namespace tao
                      }
                   }
                }
-               if( m_match )
+               if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.end_array(); return ! c.match(); } );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->end_array();
-               if( m_match && ( m_count.size() == 1 ) )
+               }
+               if( m_match && ( m_count.size() == 1 ) ) {
                   validate_elements( m_count.back() );
+               }
                m_count.pop_back();
             }
 
             void begin_object( const std::size_t /*unused*/ = 0 )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_type( OBJECT );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_enum( []( events_compare< Traits >& c ) { c.begin_object(); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.begin_object(); return ! c.match(); } );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->begin_object();
+               }
                m_count.push_back( 0 );
             }
 
             void key( const std::string& v )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_enum( [&]( events_compare< Traits >& c ) { c.key( v ); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( [&]( schema_consumer& c ) { c.key( v ); return ! c.match(); } );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->key( v );
+               }
                if( m_match && ( m_count.size() == 1 ) && ( m_node->m_flags & HAS_DEPENDENCIES || !m_node->m_required.empty() ) ) {
                   if( !m_keys.insert( v ).second ) {
                      // duplicate keys immediately invalidate!
@@ -1641,8 +1696,9 @@ namespace tao
 
             void member()
             {
-               if( m_match )
+               if( m_match ) {
                   validate_enum( []( events_compare< Traits >& c ) { c.member(); return ! c.match(); } );
+               }
                if( m_match && !m_properties.empty() && ( m_count.size() == 1 ) ) {
                   for( auto& e : m_properties ) {
                      if( !e->finalize() ) {
@@ -1652,23 +1708,29 @@ namespace tao
                   }
                   m_properties.clear();
                }
-               if( m_match )
+               if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.member(); return ! c.match(); } );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->member();
+               }
                ++m_count.back();
             }
 
             void end_object( const std::size_t /*unused*/ = 0 )
             {
-               if( m_match )
+               if( m_match ) {
                   validate_enum( []( events_compare< Traits >& c ) { c.end_object(); return ! c.match(); } );
-               if( m_match )
+               }
+               if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.end_object(); return ! c.match(); } );
-               if( m_match && m_hash )
+               }
+               if( m_match && m_hash ) {
                   m_hash->end_object();
-               if( m_match && ( m_count.size() == 1 ) )
+               }
+               if( m_match && ( m_count.size() == 1 ) ) {
                   validate_members( m_count.back() );
+               }
                if( m_match && ( m_count.size() == 1 ) && !m_node->m_required.empty() ) {
                   if( !std::includes( m_keys.begin(), m_keys.end(), m_node->m_required.begin(), m_node->m_required.end() ) ) {
                      m_match = false;

@@ -28,7 +28,7 @@ namespace tao
                {
                   next();
                   if( !std::isfinite( v ) ) {
-                     if( std::isnan( v ) ) {
+                     if( std::isnan( v ) ) {  // NOLINT
                         os.write( "NaN", 3 );
                      }
                      else if( v < 0 ) {

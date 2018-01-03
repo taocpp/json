@@ -26,7 +26,7 @@ namespace tao
                std::string t;
                bool last_upper = false;
                for( const auto c : v ) {
-                  if( std::isupper( c ) ) {
+                  if( std::isupper( c ) ) {  // NOLINT
                      last_upper = true;
                      t += c;
                   }
@@ -46,15 +46,15 @@ namespace tao
                std::string r;
                bool last_lower = false;
                for( const auto c : t ) {
-                  if( std::isupper( c ) ) {
+                  if( std::isupper( c ) ) {  // NOLINT
                      if( last_lower ) {
                         r += '_';
                      }
                      last_lower = false;
-                     r += (char)std::tolower( c );
+                     r += static_cast< char >( std::tolower( c ) );
                   }
                   else {
-                     last_lower = std::islower( c );
+                     last_lower = static_cast< bool >( std::islower( c ) );
                      r += c;
                   }
                }

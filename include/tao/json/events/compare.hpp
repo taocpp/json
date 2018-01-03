@@ -34,6 +34,8 @@ namespace tao
             events_compare( const events_compare& ) = delete;
             events_compare( events_compare&& ) = delete;
 
+            ~events_compare() = default;
+
             void operator=( const events_compare& ) = delete;
             void operator=( events_compare&& ) = delete;
 
@@ -239,7 +241,12 @@ namespace tao
             }
 
             basic_compare( const basic_compare& ) = delete;
+            basic_compare( basic_compare&& ) = delete;
+
+            ~basic_compare() = default;
+
             void operator=( const basic_compare& ) = delete;
+            void operator=( basic_compare&& ) = delete;
 
             void reset()
             {

@@ -31,13 +31,13 @@ namespace tao
                      if( c == '_' ) {
                         r += c;
                      }
-                     else if( std::isupper( c ) ) {
+                     else if( std::isupper( c ) ) {  // NOLINT
                         r += '_';
                         r += c;
                         active = false;
                      }
                      else {
-                        r += (char)std::toupper( c );
+                        r += static_cast< char >( std::toupper( c ) );
                         active = false;
                      }
                   }

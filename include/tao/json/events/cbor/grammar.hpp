@@ -214,7 +214,7 @@ namespace tao
                   if( in.size( size ) < size ) {
                      throw json_pegtl::parse_error( "unexpected end of input", in );
                   }
-                  const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
+                  const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
                   in.bump_in_this_line( size );
                   return result;
@@ -235,7 +235,7 @@ namespace tao
                      if( in.size( size ) < size ) {
                         throw json_pegtl::parse_error( "unexpected end of input", in );
                      }
-                     const value_t* pointer = reinterpret_cast< const value_t* >( in.current() );
+                     const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                      result.insert( result.end(), pointer, pointer + size );
                      in.bump_in_this_line( size );
                   }
