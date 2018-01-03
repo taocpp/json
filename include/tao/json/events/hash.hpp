@@ -97,7 +97,7 @@ namespace tao
                   }
                }
                else {
-                  const auto u = static_cast< std::int64_t >( v );
+                  const auto i = static_cast< std::int64_t >( v );
                   if( i == v ) {
                      number( i );
                      return;
