@@ -31,9 +31,9 @@ namespace tao
             struct value_separator : padr< one< ',' > > {};
             struct element_separator : padr< one< ',' > > {};
 
-            struct false_ : string< 'f', 'a', 'l', 's', 'e' > {};
-            struct null : string< 'n', 'u', 'l', 'l' > {};
-            struct true_ : string< 't', 'r', 'u', 'e' > {};
+            struct false_ : json_pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
+            struct null : json_pegtl::string< 'n', 'u', 'l', 'l' > {};
+            struct true_ : json_pegtl::string< 't', 'r', 'u', 'e' > {};
 
             struct digits : plus< abnf::DIGIT > {};
 
