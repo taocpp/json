@@ -1,5 +1,5 @@
 # The Art of C++
-# Copyright (c) 2015-2017 Dr. Colin Hirsch and Daniel Frey
+# Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 # Please see LICENSE for license or visit https://github.com/taocpp/json
 
 .SUFFIXES:
@@ -32,6 +32,9 @@ endif
 CPPFLAGS ?= -pedantic
 CXXFLAGS ?= -Wall -Wextra -Wshadow -Werror -O3 $(MINGW_CXXFLAGS)
 
+CLANG_TIDY ?= clang-tidy
+
+HEADERS := $(filter-out include/tao/json/external/% include/tao/json/internal/endian_win.hpp,$(shell find include -name '*.hpp')) $(filter-out src/test/json/main.hpp,$(shell find src -name '*.hpp'))
 SOURCES := $(shell find src -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=build/%.d)
 BINARIES := $(SOURCES:%.cpp=build/%)
@@ -59,6 +62,15 @@ build/%.d: %.cpp Makefile
 
 build/%: %.cpp build/%.d
 	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+
+build/%.clang-tidy: %
+	$(CLANG_TIDY) -extra-arg "-Iinclude" -extra-arg "-std=c++11" -checks=*,-google-runtime-references,-google-runtime-int,-google-readability-todo,-llvm-header-guard,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-modernize-raw-string-literal,-misc-sizeof-expression -warnings-as-errors=* $< 2>/dev/null
+	@mkdir -p $(@D)
+	@touch $@
+
+.PHONY: clang-tidy
+clang-tidy: $(HEADERS:%=build/%.clang-tidy) $(SOURCES:%=build/%.clang-tidy)
+	@echo "All $(words $(HEADERS) $(SOURCES)) clang-tidy tests passed."
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)
 -include $(DEPENDS)
