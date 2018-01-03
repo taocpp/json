@@ -16,8 +16,14 @@ namespace tao
          struct key_state
          {
             key_state() = default;
+
             key_state( const key_state& ) = delete;
+            key_state( key_state&& ) = delete;
+
+            ~key_state() = default;
+
             void operator=( const key_state& ) = delete;
+            void operator=( key_state&& ) = delete;
 
             template< typename Consumer >
             void success( Consumer& consumer )

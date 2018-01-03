@@ -16,7 +16,6 @@
 
 #include "internal/get_by_enum.hpp"
 #include "internal/identity.hpp"
-#include "internal/throw.hpp"
 #include "internal/value_union.hpp"
 
 #include "byte_view.hpp"
@@ -391,43 +390,43 @@ namespace tao
 
          bool get_boolean() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BOOLEAN );
+            validate_json_type( json::type::BOOLEAN );
             return unsafe_get_boolean();
          }
 
          std::int64_t get_signed() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::SIGNED );
+            validate_json_type( json::type::SIGNED );
             return unsafe_get_signed();
          }
 
          std::uint64_t get_unsigned() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::UNSIGNED );
+            validate_json_type( json::type::UNSIGNED );
             return unsafe_get_unsigned();
          }
 
          double get_double() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::DOUBLE );
+            validate_json_type( json::type::DOUBLE );
             return unsafe_get_double();
          }
 
          std::string& get_string()
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING );
+            validate_json_type( json::type::STRING );
             return unsafe_get_string();
          }
 
          const std::string& get_string() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING );
+            validate_json_type( json::type::STRING );
             return unsafe_get_string();
          }
 
          tao::string_view get_string_view() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::STRING_VIEW );
+            validate_json_type( json::type::STRING_VIEW );
             return unsafe_get_string_view();
          }
 
@@ -438,63 +437,63 @@ namespace tao
 
          binary_t& get_binary()
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BINARY );
+            validate_json_type( json::type::BINARY );
             return unsafe_get_binary();
          }
 
          const binary_t& get_binary() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BINARY );
+            validate_json_type( json::type::BINARY );
             return unsafe_get_binary();
          }
 
          tao::byte_view get_binary_view() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::BINARY_VIEW );
+            validate_json_type( json::type::BINARY_VIEW );
             return unsafe_get_binary_view();
          }
 
          array_t& get_array()
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            validate_json_type( json::type::ARRAY );
             return unsafe_get_array();
          }
 
          const array_t& get_array() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            validate_json_type( json::type::ARRAY );
             return unsafe_get_array();
          }
 
          object_t& get_object()
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return unsafe_get_object();
          }
 
          const object_t& get_object() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return unsafe_get_object();
          }
 
          const basic_value* get_raw_ptr() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::RAW_PTR );
+            validate_json_type( json::type::RAW_PTR );
             return unsafe_get_raw_ptr();
          }
 
          template< json::type E >
          decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) get()
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, E );
+            validate_json_type( E );
             return internal::get_by_enum< E >::get( m_union );
          }
 
          template< json::type E >
          decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value >& >() ) ) get() const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, E );
+            validate_json_type( E );
             return internal::get_by_enum< E >::get( m_union );
          }
 
@@ -777,7 +776,7 @@ namespace tao
                case json::type::ARRAY:
                   break;
                default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( m_type );
+                  throw_invalid_json_type();
             }
          }
 
@@ -848,7 +847,7 @@ namespace tao
                case json::type::OBJECT:
                   break;
                default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( m_type );
+                  throw_invalid_json_type();
             }
          }
 
@@ -924,27 +923,27 @@ namespace tao
 
          basic_value* find( const std::string& key )
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return unsafe_find( key );
          }
 
          template< typename T >
          basic_value* find( const T& key )
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return unsafe_find( key );
          }
 
          const basic_value* find( const std::string& key ) const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return unsafe_find( key );
          }
 
          template< typename T >
          const basic_value* find( const T& key ) const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return unsafe_find( key );
          }
 
@@ -970,25 +969,25 @@ namespace tao
 
          basic_value& at( const std::size_t index )
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            validate_json_type( json::type::ARRAY );
             return m_union.a.at( index );
          }
 
          const basic_value& at( const std::size_t index ) const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            validate_json_type( json::type::ARRAY );
             return m_union.a.at( index );
          }
 
          basic_value& at( const std::string& key )
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return m_union.o.at( key );
          }
 
          const basic_value& at( const std::string& key ) const
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             return m_union.o.at( key );
          }
 
@@ -1111,7 +1110,7 @@ namespace tao
 
          void erase( const std::size_t index )
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::ARRAY );
+            validate_json_type( json::type::ARRAY );
             auto& a = m_union.a;
             if( index >= a.size() ) {
                throw std::out_of_range( "JSON array index out of bounds" );  // NOLINT
@@ -1121,7 +1120,7 @@ namespace tao
 
          void erase( const std::string& key )
          {
-            TAOCPP_JSON_CHECK_TYPE_ERROR( m_type, json::type::OBJECT );
+            validate_json_type( json::type::OBJECT );
             if( m_union.o.erase( key ) == 0 ) {
                throw std::out_of_range( "JSON object key not found: " + key );  // NOLINT
             }
@@ -1199,7 +1198,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( m_type != json::type::DESTROYED );
                   return true;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                case json::type::BOOLEAN:
@@ -1308,7 +1307,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( r.m_type != json::type::DESTROYED );
                   return;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                   assert( ( r.m_type = json::type::DISCARDED, true ) );
@@ -1436,9 +1435,26 @@ namespace tao
             assert( false );  // LCOV_EXCL_LINE
          }
 
-      protected:
+         void throw_invalid_json_type() const
+         {
+            throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + '\'' );  // NOLINT
+         }
+
+         void validate_json_type( const json::type t ) const
+         {
+            if( m_type != t ) {
+               throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "', expected '" + to_string( t ) + '\'' );  // NOLINT
+            }
+         }
+
          json::type m_type = json::type::UNINITIALIZED;
          internal::value_union< basic_value > m_union;
+
+         template< typename >
+         friend class internal::number_trait;
+
+         template< typename... >
+         friend class Traits;
       };
 
       template< template< typename... > class TraitsL, template< typename... > class TraitsR >
@@ -1544,7 +1560,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
                return true;
@@ -1738,7 +1754,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
                return false;

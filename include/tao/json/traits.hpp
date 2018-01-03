@@ -13,8 +13,6 @@
 #include "byte_view.hpp"
 #include "type.hpp"
 
-#include "internal/throw.hpp"
-
 #include "external/byte.hpp"
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
@@ -130,7 +128,7 @@ namespace tao
                      n = static_cast< T >( v.unsafe_get_double() );
                      break;
                   default:
-                     TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+                     v.throw_invalid_json_type();
                }
             }
          };
@@ -513,7 +511,7 @@ namespace tao
                   break;
                }
                default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+                  v.throw_invalid_json_type();
             }
          }
 
@@ -584,8 +582,9 @@ namespace tao
                case type::STRING_VIEW:
                   return v.unsafe_get_string_view();
                default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+                  v.throw_invalid_json_type();
             }
+            throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits >
@@ -739,7 +738,7 @@ namespace tao
                   break;
                }
                default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+                  v.throw_invalid_json_type();
             }
          }
 
@@ -810,8 +809,9 @@ namespace tao
                case type::BINARY_VIEW:
                   return v.unsafe_get_binary_view();
                default:
-                  TAOCPP_JSON_THROW_TYPE_ERROR( v.type() );
+                  v.throw_invalid_json_type();
             }
+            throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits >
