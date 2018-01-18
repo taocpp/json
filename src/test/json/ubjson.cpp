@@ -19,14 +19,33 @@ namespace tao
          TEST_ASSERT( ubjson::to_string( from_string( text ) ) == test_unhex( data ) );
       }
 
+      void ubjson_decode( const std::string& data )
+      {
+         const auto this_should_not_throw = test_unhex( data );
+         TEST_THROWS( ubjson::from_string( this_should_not_throw ) );
+      }
+
       void ubjson_decode( const std::string& data, const std::string& text )
       {
          TEST_ASSERT( to_string( ubjson::from_string( test_unhex( data ) ) ) == to_string( from_string( text ) ) );
+         TEST_ASSERT( to_string( ubjson::from_string( test_unhex( data ) + "N" ) ) == to_string( from_string( text ) ) );
+         TEST_ASSERT( to_string( ubjson::from_string( "N" + test_unhex( data ) ) ) == to_string( from_string( text ) ) );
       }
 
       void unit_test()
       {
          ubjson_decode( "5a", "null" );
+         ubjson_decode( "54", "true" );
+         ubjson_decode( "46", "false" );
+
+         ubjson_decode( "4e" );  // nop
+
+         ubjson_decode( "43" );  // char
+         ubjson_decode( "4380" );
+         ubjson_decode( "43ff" );
+         ubjson_decode( "4300", "\"\\u0000\"" );
+         ubjson_decode( "4344", "\"D\"" );
+         ubjson_decode( "437f", "\"\\u007f\"" );
 
          ubjson_encode( "null", "5a" );
          ubjson_encode( "true", "54" );

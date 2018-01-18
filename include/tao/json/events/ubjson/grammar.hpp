@@ -86,7 +86,7 @@ namespace tao
                          typename Consumer >
                static bool match( Input& in, Consumer& consumer )
                {
-                  // This rule never returns false unless the input is empty.
+                  // This rule never returns false unless the input is empty or a no-op.
                   return ( !in.empty() ) && match_impl( in, consumer );
                }
 
@@ -111,7 +111,7 @@ namespace tao
                         return true;
                      case 'N':
                         in.bump_in_this_line();
-                        return true;
+                        return false;
                      case 'T':
                         consumer.boolean( true );
                         in.bump_in_this_line();
@@ -147,6 +147,7 @@ namespace tao
                         return match_char( in, consumer );
                      case 'S':
                         consumer.string( read_container< tao::string_view >( in, read_size( in ) ) );
+                        return true;
                   }
                   throw json_pegtl::parse_error( "unknown ubjson marker", in );
                }
@@ -251,8 +252,9 @@ namespace tao
                      if( in.empty() ) {
                         throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
                      }
-                     match_impl( in, consumer );
-                     consumer.element();
+                     if( match_impl( in, consumer ) ) {
+                        consumer.element();
+                     }
                   }
                   consumer.end_array( size );
                   return true;
@@ -267,15 +269,20 @@ namespace tao
                      if( in.empty() ) {
                         throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
                      }
-                     match_impl( in, consumer );
-                     consumer.member();
+                     if( match_impl( in, consumer ) ) {
+                        consumer.member();
+                     }
                   }
                   consumer.end_object( size );
                   return true;
                }
             };
 
-            struct grammar : json_pegtl::must< data, json_pegtl::eof >
+            struct nops : json_pegtl::star< json_pegtl::one< 'N' > >
+            {
+            };
+
+            struct grammar : json_pegtl::must< nops, data, nops, json_pegtl::eof >
             {
             };
 
