@@ -201,6 +201,7 @@ matrix:
         - CPPFLAGS=-fsanitize=undefined
 
     - compiler: clang
+      sudo: required
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
