@@ -116,6 +116,8 @@ struct consumer
 
 It will not always be necessary, desirable, or even possible, to implement all of these functions.
 
-For example consider a consumer that writes some representation of to a stream.
+For example consider a consumer that writes some representation to a stream.
 Such a consumer will not benefit from implementing the functions with movable arguments since it has no place to move the arguments to.
-If the format it writes requires the encoding of objects and arrays to start with the number of array elements or object members, respectively, then the consumer might not implement the begin/end methods without size.
+If the format it writes requires the encoding of objects and arrays to start with the number of array elements or object members, respectively, then the consumer might not implement the begin/end-array/object methods without size.
+
+Similarly an Events producer will usually only either always call the begin/end-array-object functions with a size, or those without a size, depending on what is available in its input.
