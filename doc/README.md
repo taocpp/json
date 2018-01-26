@@ -121,3 +121,23 @@ Such a consumer will not benefit from implementing the functions with movable ar
 If the format it writes requires the encoding of objects and arrays to start with the number of array elements or object members, respectively, then the consumer might not implement the begin/end-array/object methods without size.
 
 Similarly an Events producer will usually only either always call the begin/end-array-object functions with a size, or those without a size, depending on what is available in its input.
+
+```c++
+struct minimal_complete_consumer
+{
+   void null();
+   void boolean( const bool );
+   void number( const double );
+   void number( const std::int64_t );
+   void number( const std::uint64_t );
+   void string( const tao::string_view & );
+   void binary( const tao::byte_view & );
+   void begin_array( const std::size_t = 0 );
+   void element();
+   void end_array( const std::size_t = 0 );
+   void begin_object( const std::size_t = 0 );
+   void key( const tao::string_view & );
+   void member();
+   void end_object( const std::size_t = 0 );
+};
+```
