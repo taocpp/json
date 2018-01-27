@@ -82,6 +82,64 @@ Objects are stored as `std::map< std::string, Value >`.
 
 ## Value Class
 
+The class `tao::json::value` implements the above data model, allowing for single Values to be stored in single C++ objects.
+
+The member function `tao::json::value::type()` can be used to determine the type of Value stored in the object.
+The return value is an enumerated value from the enum `tao::json::type`.
+
+```c++
+enum class type : std::uint8_t
+{
+   UNINITIALIZED,
+   DISCARDED,
+   DESTROYED,
+   NULL_,
+   BOOLEAN,
+   SIGNED,
+   UNSIGNED,
+   DOUBLE,
+   STRING,
+   STRING_VIEW,
+   BINARY,
+   BINARY_VIEW,
+   ARRAY,
+   OBJECT,
+   RAW_PTR
+};
+```
+
+The set of types is larger than that defined by the data model, with the additional types allowing for greater efficiency and better error detection in some cases.
+
+...
+
+The type `RAW_PTR` indicates that the stored Value is a plain-and-simple C-pointer to another `tao::json::value`.
+It is typically used when creating Arrays or Objects.
+When adding a sub-value that is already available as instance of `tao::json::value` it is cheaper to add a `RAW_PTR` to the existing instance, rather than creating a copy, provided there are no issues of life-time.
+
+```c++
+   tao::json::value a = build_complex_value();
+   tao::json::value b = {
+      { "complex_value", & a },
+      { "interesting_int", 42 }
+   };
+```
+
+Here `b` will contain a `RAW_PTR` to `a` as value for the object key `"complex_value"`, and bad things will happen if `b` is used (in the "wrong" way) after `a` goes out of scope.
+
+### Constructors
+
+### Numbers
+
+### Value Comparison
+
+### The Traits Class
+
+### Unsafe Functions
+
+Some of the member functions of class `tao::json::basic_value<>` are also available in "unsafe" versions that, in the name of efficiency, make certain assumptions, or omit/make impossible certain checks.
+
+All of the accessors like `get_boolean()` etc. have an unsafe version `unsafe_get_boolean()` that does not check whether the result of `type()` is the correct one.
+
 ## Events Interface
 
 As noted, the Events interface is an interface in the colloquial sense, a calling convention, rather than an actual interface in the object-oriented sense.
