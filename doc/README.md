@@ -76,7 +76,7 @@ Arrays are stored as `std::vector< Value >`.
 
 ### Objects
 
-Objects model ordered sequence of key-value pairs where they keys are strings.
+Objects model ordered sequence of key-value pairs where the keys are strings.
 
 Objects are stored as `std::map< std::string, Value >`.
 
@@ -114,16 +114,30 @@ struct consumer
 };
 ```
 
+### Arrays and Objects
+
+For arrays and objects there are two versions of the begin and end methods, one that receives the size of the array (what `std::vector< Value >::size()` would return), or the size of the object (what `std::map< std::string, Value >::size()` would return), respectively, and one that doesn't.
+
+An Events producer will usually only either always call the begin/end-array/object functions with a size, or those without a size, depending on whether the size is readily available to it.
+
+The data model allows for Arrays and Objects to be nested, wherefore the same holds for corresponding matching calls to an Event consumer's begin/end-array/object methods.
+
+Within an Array, i.e. after a call to `begin_array()` but before a call to the corresponding `end_array()`, the `element()` function is called after the function(s) for each array sub-value.
+
+Similarly within an Object the sequence for every object entry is `key()`, then the function(s) for the value, then `member()`.
+
+### Reducing the interface
+
 It will not always be necessary, desirable, or even possible, to implement all of these functions.
 
 For example consider a consumer that writes some representation to a stream.
 Such a consumer will not benefit from implementing the functions with movable arguments since it has no place to move the arguments to.
 If the format it writes requires the encoding of objects and arrays to start with the number of array elements or object members, respectively, then the consumer might not implement the begin/end-array/object methods without size.
 
-Similarly an Events producer will usually only either always call the begin/end-array-object functions with a size, or those without a size, depending on what is available in its input.
+A consumer that does not need the sizes of arrays and objects in the begin/end-calls, and that does not benefit from receiving movable arguments, can implement a reduced interface that - thanks to default arguments and the view-classes' implicit constructors - can still accept all function calls that the full interface can.
 
 ```c++
-struct minimal_complete_consumer
+struct reduced_consumer
 {
    void null();
    void boolean( const bool );
