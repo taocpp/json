@@ -84,8 +84,12 @@ Objects are stored as `std::map< std::string, Value >`.
 
 ## Events Interface
 
+As noted, the Events interface is an interface in the colloquial sense, a calling convention, rather than an actual interface in the object-oriented sense.
+
+*It should also be noted that nothing prevents the creation of an Events interface class in the object-oriented sense, one that has `virtual` methods corresponding to the Events functions.*
+
 ```c++
-struct consumer
+struct complete_consumer
 {
    void null();
    void boolean( const bool );
@@ -118,13 +122,21 @@ struct consumer
 
 For arrays and objects there are two versions of the begin and end methods, one that receives the size of the array (what `std::vector< Value >::size()` would return), or the size of the object (what `std::map< std::string, Value >::size()` would return), respectively, and one that doesn't.
 
-An Events producer will usually only either always call the begin/end-array/object functions with a size, or those without a size, depending on whether the size is readily available to it.
-
-The data model allows for Arrays and Objects to be nested, wherefore the same holds for corresponding matching calls to an Event consumer's begin/end-array/object methods.
+An Events producer will usually only either always call the begin/end-array/object functions with a size, or those without a size, depending on whether the size is readily available.
 
 Within an Array, i.e. after a call to `begin_array()` but before a call to the corresponding `end_array()`, the `element()` function is called after the function(s) for each array sub-value.
 
 Similarly within an Object the sequence for every object entry is `key()`, then the function(s) for the value, then `member()`.
+
+If the Value within an Array or Object is simple, like a string or number, it is defined by a single corresponding Events call.
+
+However the data model allows for Arrays and Objects to be nested, wherefore the same holds for corresponding matching calls to an Event consumer's begin/end-array/object methods.
+If a Value in an Array or Object is itself an Array or Object, then it will lead to at least the corresponding begin and end calls, with the possibility of arbitrary many sub-values, including arbitrarily nested other Arrays and Objects.
+
+Calls to `element()` or `member()` are naturally understood to belong to the inner-most Array or Object, i.e. to the last begin-method without end.
+
+An Events producer MUST NOT generate inconsistent sequences of Event calls.
+For example pairing `begin_array()` with `end_object()`, using `member()` when the inner-most container is not an Object, or similar, must all be avoided.
 
 ### Reducing the interface
 
