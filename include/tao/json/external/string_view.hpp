@@ -525,7 +525,7 @@ namespace tao
       return os << std::string( str.begin(), str.end() );
    }
 
-// TODO: 24.4.5, hash support
+      // TODO: 24.4.5, hash support
 
 #endif
 

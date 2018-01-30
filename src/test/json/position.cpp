@@ -3,9 +3,9 @@
 
 #include "test.hpp"
 
-#include <tao/json/value.hpp>
-#include <tao/json/parse_file.hpp>
 #include <tao/json/from_string.hpp>
+#include <tao/json/parse_file.hpp>
+#include <tao/json/value.hpp>
 
 namespace tao
 {
@@ -39,7 +39,7 @@ namespace tao
                }
             };
 
-         } // internal
+         }  // namespace internal
 
          value parse_file( const std::string& filename )
          {
@@ -49,7 +49,7 @@ namespace tao
             return std::move( consumer.value );
          }
 
-      } // namespace position
+      }  // namespace position
 
       void unit_test()
       {
@@ -59,8 +59,8 @@ namespace tao
          TEST_ASSERT( v[ 1 ][ "description" ].base().position->byte_in_line == 23 );
       }
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #include "main.hpp"

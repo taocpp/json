@@ -30,15 +30,15 @@ namespace tao
 {
 
 #if defined( TAOCPP_USE_STD_OPTIONAL )
-   using std::optional;
-   using std::nullopt;
    using std::in_place;
    using std::make_optional;
+   using std::nullopt;
+   using std::optional;
 #else
-   using std::experimental::optional;
-   using std::experimental::nullopt;
    using std::experimental::in_place;
    using std::experimental::make_optional;
+   using std::experimental::nullopt;
+   using std::experimental::optional;
 #endif
 
 }  // namespace tao

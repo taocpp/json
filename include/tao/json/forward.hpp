@@ -20,7 +20,7 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          struct pair;
 
-      } // namespace internal
+      }  // namespace internal
 
       template< typename T, typename = void >
       struct traits;
@@ -28,8 +28,8 @@ namespace tao
       template< template< typename... > class Traits, typename Base = internal::empty_base >
       class basic_value;
 
-   } // namespace json
+   }  // namespace json
 
-} // namespace tao
+}  // namespace tao
 
 #endif
