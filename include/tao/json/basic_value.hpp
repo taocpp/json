@@ -12,17 +12,17 @@
 #include <vector>
 
 #include "external/byte.hpp"
+#include "external/optional.hpp"
 #include "external/string_view.hpp"
 
 #include "internal/get_by_enum.hpp"
 #include "internal/identity.hpp"
+#include "internal/pair.hpp"
+#include "internal/single.hpp"
 #include "internal/value_union.hpp"
 
 #include "byte_view.hpp"
-#include "pair.hpp"
 #include "pointer.hpp"
-#include "single.hpp"
-#include "traits.hpp"
 #include "type.hpp"
 
 namespace tao
@@ -114,7 +114,7 @@ namespace tao
             }
          }
 
-         basic_value( std::initializer_list< pair< Traits, Base > >&& l )
+         basic_value( std::initializer_list< internal::pair< Traits, Base > >&& l )
          {
             try {
                unsafe_assign( std::move( l ) );
@@ -125,7 +125,7 @@ namespace tao
             }
          }
 
-         basic_value( const std::initializer_list< pair< Traits, Base > >& l )
+         basic_value( const std::initializer_list< internal::pair< Traits, Base > >& l )
          {
             try {
                unsafe_assign( l );
@@ -136,8 +136,8 @@ namespace tao
             }
          }
 
-         basic_value( std::initializer_list< pair< Traits, Base > >& l )
-            : basic_value( static_cast< const std::initializer_list< pair< Traits, Base > >& >( l ) )
+         basic_value( std::initializer_list< internal::pair< Traits, Base > >& l )
+            : basic_value( static_cast< const std::initializer_list< internal::pair< Traits, Base > >& >( l ) )
          {
          }
 
@@ -149,14 +149,14 @@ namespace tao
 #endif
          }
 
-         static basic_value array( std::initializer_list< single< Traits, Base > >&& l )
+         static basic_value array( std::initializer_list< internal::single< Traits, Base > >&& l )
          {
             basic_value v;
             v.append( std::move( l ) );
             return v;
          }
 
-         static basic_value array( const std::initializer_list< single< Traits, Base > >& l )
+         static basic_value array( const std::initializer_list< internal::single< Traits, Base > >& l )
          {
             basic_value v;
             v.append( l );
@@ -658,7 +658,7 @@ namespace tao
             Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( std::initializer_list< pair< Traits, Base > >&& l )
+         void unsafe_assign( std::initializer_list< internal::pair< Traits, Base > >&& l )
          {
             unsafe_emplace_object();
             for( auto& e : l ) {
@@ -669,7 +669,7 @@ namespace tao
             }
          }
 
-         void unsafe_assign( const std::initializer_list< pair< Traits, Base > >& l )
+         void unsafe_assign( const std::initializer_list< internal::pair< Traits, Base > >& l )
          {
             unsafe_emplace_object();
             for( const auto& e : l ) {
@@ -680,9 +680,9 @@ namespace tao
             }
          }
 
-         void unsafe_assign( std::initializer_list< pair< Traits, Base > >& l )
+         void unsafe_assign( std::initializer_list< internal::pair< Traits, Base > >& l )
          {
-            unsafe_assign( static_cast< const std::initializer_list< pair< Traits, Base > >& >( l ) );
+            unsafe_assign( static_cast< const std::initializer_list< internal::pair< Traits, Base > >& >( l ) );
          }
 
          void assign_null() noexcept
@@ -816,7 +816,7 @@ namespace tao
             unsafe_emplace_back( std::forward< Args... >( args )... );
          }
 
-         void append( std::initializer_list< single< Traits, Base > >&& l )
+         void append( std::initializer_list< internal::single< Traits, Base > >&& l )
          {
             prepare_array();
             auto& v = unsafe_get_array();
@@ -826,7 +826,7 @@ namespace tao
             }
          }
 
-         void append( const std::initializer_list< single< Traits, Base > >& l )
+         void append( const std::initializer_list< internal::single< Traits, Base > >& l )
          {
             prepare_array();
             auto& v = unsafe_get_array();
@@ -875,7 +875,7 @@ namespace tao
             return unsafe_emplace( std::forward< Args >( args )... );
          }
 
-         void insert( std::initializer_list< pair< Traits, Base > >&& l )
+         void insert( std::initializer_list< internal::pair< Traits, Base > >&& l )
          {
             prepare_object();
             for( auto& e : l ) {
@@ -886,7 +886,7 @@ namespace tao
             }
          }
 
-         void insert( const std::initializer_list< pair< Traits, Base > >& l )
+         void insert( const std::initializer_list< internal::pair< Traits, Base > >& l )
          {
             prepare_object();
             for( const auto& e : l ) {

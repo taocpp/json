@@ -12,14 +12,6 @@ namespace tao
 {
    namespace json
    {
-      namespace internal
-      {
-         struct empty_base
-         {
-         };
-
-      } // namespace internal
-
       using value = basic_value< traits, internal::empty_base >;
 
    }  // namespace json

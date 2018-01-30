@@ -442,14 +442,14 @@ namespace tao
       }
 
       template< template< typename... > class Traits, typename Base >
-      basic_value< Traits, Base >& operator+=( basic_value< Traits, Base >& v, std::initializer_list< pair< Traits, Base > >&& l )
+      basic_value< Traits, Base >& operator+=( basic_value< Traits, Base >& v, std::initializer_list< internal::pair< Traits, Base > >&& l )
       {
          v.insert( std::move( l ) );
          return v;
       }
 
       template< template< typename... > class Traits, typename Base >
-      basic_value< Traits, Base >& operator+=( basic_value< Traits, Base >& v, const std::initializer_list< pair< Traits, Base > >& l )
+      basic_value< Traits, Base >& operator+=( basic_value< Traits, Base >& v, const std::initializer_list< internal::pair< Traits, Base > >& l )
       {
          v.insert( l );
          return v;
