@@ -13,8 +13,9 @@ namespace tao
       // recursively checks for the existence if RAW_PTR nodes,
       // STRING_VIEW or BINARY_VIEW,
       // returns true is no such nodes were found.
-      template< template< typename... > class Traits >
-      bool is_self_contained( const basic_value< Traits >& v ) noexcept
+
+      template< template< typename... > class Traits, typename Base >
+      bool is_self_contained( const basic_value< Traits, Base >& v ) noexcept
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
@@ -71,8 +72,9 @@ namespace tao
       // removes all RAW_PTR nodes, recursively, by copying their pointed-to content
       // or replacing a nullptr RAW_PTR node with a null node.
       // replaces STRING_VIEW and BINARY_VIEW with copies.
-      template< template< typename... > class Traits >
-      void make_self_contained( basic_value< Traits >& v )
+
+      template< template< typename... > class Traits, typename Base >
+      void make_self_contained( basic_value< Traits, Base >& v )
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:

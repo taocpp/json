@@ -1,27 +1,27 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_UBJSON_FROM_STRING_HPP
-#define TAOCPP_JSON_INCLUDE_UBJSON_FROM_STRING_HPP
+#ifndef TAOCPP_JSON_INCLUDE_CBOR_FROM_STRING_HPP
+#define TAOCPP_JSON_INCLUDE_CBOR_FROM_STRING_HPP
 
 #include <utility>
 
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
 
-#include "../events/ubjson/from_string.hpp"
+#include "../events/cbor/from_string.hpp"
 
 namespace tao
 {
    namespace json
    {
-      namespace ubjson
+      namespace cbor
       {
          template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers, typename... Ts >
-         basic_value< Traits, Base > basic_from_string( Ts&&... ts )
+         basic_value< Traits, Baseq > basic_from_string( Ts&&... ts )
          {
             events::transformer< events::to_basic_value< Traits, Base >, Transformers... > consumer;
-            events::ubjson::from_string( consumer, std::forward< Ts >( ts )... );
+            events::cbor::from_string( consumer, std::forward< Ts >( ts )... );
             return std::move( consumer.value );
          }
 
@@ -31,7 +31,7 @@ namespace tao
             return basic_from_string< traits, internal::empty_base, Transformers... >( std::forward< Ts >( ts )... );
          }
 
-      }  // namespace ubjson
+      }  // namespace cbor
 
    }  // namespace json
 

@@ -31,8 +31,8 @@ namespace tao
          // references into JSON Reference additional members
          // (which shall be ignored as per the specification).
 
-         template< template< typename... > class Traits >
-         void resolve_references( basic_value< Traits >& r, basic_value< Traits >& v )
+         template< template< typename... > class Traits, typename Base >
+         void resolve_references( basic_value< Traits, Base >& r, basic_value< Traits, Base >& v )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -107,8 +107,8 @@ namespace tao
 
       }  // namespace internal
 
-      template< template< typename... > class Traits >
-      void resolve_references( basic_value< Traits >& r )
+      template< template< typename... > class Traits, typename Base >
+      void resolve_references( basic_value< Traits, Base >& r )
       {
          internal::resolve_references( r, r );
       }

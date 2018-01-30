@@ -14,8 +14,8 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      void patch_inplace( basic_value< Traits >& v, const basic_value< Traits >& patch )
+      template< template< typename... > class Traits, typename Base >
+      void patch_inplace( basic_value< Traits, Base >& v, const basic_value< Traits, Base >& patch )
       {
          for( const auto& entry : patch.get_array() ) {
             const auto& op = entry.at( "op" ).get_string();
@@ -51,8 +51,8 @@ namespace tao
          }
       }
 
-      template< template< typename... > class Traits >
-      void patch_inplace( basic_value< Traits >& v, basic_value< Traits >&& patch )
+      template< template< typename... > class Traits, typename Base >
+      void patch_inplace( basic_value< Traits, Base >& v, basic_value< Traits, Base >&& patch )
       {
          for( const auto& entry : patch.get_array() ) {
             const auto& op = entry.at( "op" ).get_string();
@@ -88,15 +88,15 @@ namespace tao
          }
       }
 
-      template< template< typename... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > v, const basic_value< Traits >& patch )
+      template< template< typename... > class Traits, typename Base >
+      basic_value< Traits, Base > patch( basic_value< Traits, Base > v, const basic_value< Traits, Base >& patch )
       {
          patch_inplace( v, patch );
          return v;
       }
 
-      template< template< typename... > class Traits >
-      basic_value< Traits > patch( basic_value< Traits > v, basic_value< Traits >&& patch )
+      template< template< typename... > class Traits, typename Base >
+      basic_value< Traits, Base > patch( basic_value< Traits, Base > v, basic_value< Traits, Base >&& patch )
       {
          patch_inplace( v, std::move( patch ) );
          return v;

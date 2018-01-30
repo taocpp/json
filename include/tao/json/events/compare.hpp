@@ -18,14 +18,14 @@ namespace tao
    {
       namespace internal
       {
-         template< template< typename... > class Traits >
+         template< template< typename... > class Traits, typename Base >
          class events_compare
          {
          protected:
-            std::vector< const basic_value< Traits >* > m_current;
+            std::vector< const basic_value< Traits, Base >* > m_current;
             std::vector< std::size_t > m_array_index;
             // TODO: use std::unordered_set? or even std::vector!?
-            std::vector< std::set< const basic_value< Traits >* > > m_object_keys;
+            std::vector< std::set< const basic_value< Traits, Base >* > > m_object_keys;
             bool m_match = true;
 
          public:
@@ -47,7 +47,7 @@ namespace tao
                m_match = true;
             }
 
-            static const basic_value< Traits >* skip_pointer( const basic_value< Traits >* p ) noexcept
+            static const basic_value< Traits, Base >* skip_pointer( const basic_value< Traits, Base >* p ) noexcept
             {
                while( p && p->is_raw_ptr() ) {
                   p = p->unsafe_get_raw_ptr();
@@ -55,7 +55,7 @@ namespace tao
                return p;
             }
 
-            void push( const basic_value< Traits >* p )
+            void push( const basic_value< Traits, Base >* p )
             {
                m_current.push_back( skip_pointer( p ) );
             }
@@ -65,7 +65,7 @@ namespace tao
                return m_match;
             }
 
-            const basic_value< Traits >& current() const noexcept
+            const basic_value< Traits, Base >& current() const noexcept
             {
                return *m_current.back();
             }
@@ -220,21 +220,21 @@ namespace tao
       {
          // Events consumer that compares against a JSON Value.
 
-         template< template< typename... > class Traits >
+         template< template< typename... > class Traits, typename Base >
          class basic_compare
-            : public internal::events_compare< Traits >
+            : public internal::events_compare< Traits, Base >
          {
          private:
-            const basic_value< Traits > m_value;
+            const basic_value< Traits, Base > m_value;
 
          public:
-            explicit basic_compare( const basic_value< Traits >& v )
+            explicit basic_compare( const basic_value< Traits, Base >& v )
                : m_value( v )
             {
                reset();
             }
 
-            explicit basic_compare( basic_value< Traits >&& v )
+            explicit basic_compare( basic_value< Traits, Base >&& v )
                : m_value( std::move( v ) )
             {
                reset();
@@ -250,12 +250,12 @@ namespace tao
 
             void reset()
             {
-               internal::events_compare< Traits >::reset();
-               internal::events_compare< Traits >::push( &m_value );
+               internal::events_compare< Traits, Base >::reset();
+               internal::events_compare< Traits, Base >::push( &m_value );
             }
          };
 
-         using compare = basic_compare< traits >;
+         using compare = basic_compare< traits, internal::empty_base >;
 
       }  // namespace events
 

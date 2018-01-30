@@ -8,18 +8,17 @@
 #include <type_traits>
 #include <utility>
 
+#include "forward.hpp"
+
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      class basic_value;
-
-      template< template< typename... > class Traits >
+      template< template< typename... > class Traits, typename Base >
       struct pair
       {
          mutable std::string key;
-         mutable basic_value< Traits > value;
+         mutable basic_value< Traits, Base > value;
 
          template< typename U >
          pair( U&& v )  // NOLINT
@@ -29,13 +28,13 @@ namespace tao
          }
 
          template< typename U >
-         pair( U&& k, basic_value< Traits >&& v )
+         pair( U&& k, basic_value< Traits, Base >&& v )
             : key( std::forward< U >( k ) ), value( std::move( v ) )
          {
          }
 
          template< typename U >
-         pair( U&& k, const basic_value< Traits >& v )
+         pair( U&& k, const basic_value< Traits, Base >& v )
             : key( std::forward< U >( k ) ), value( v )
          {
          }

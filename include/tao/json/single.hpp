@@ -6,19 +6,17 @@
 
 #include <utility>
 
+#include "forward.hpp"
 #include "pair.hpp"
 
 namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits >
-      class basic_value;
-
-      template< template< typename... > class Traits >
+      template< template< typename... > class Traits, typename Base >
       struct single
       {
-         mutable basic_value< Traits > value;
+         mutable basic_value< Traits, Base > value;
 
          template< typename U >
          single( U&& v )  // NOLINT
@@ -26,17 +24,17 @@ namespace tao
          {
          }
 
-         single( std::initializer_list< pair< Traits > >&& l )
+         single( std::initializer_list< pair< Traits, Base > >&& l )
             : value( std::move( l ) )
          {
          }
 
-         single( const std::initializer_list< pair< Traits > >& l )
+         single( const std::initializer_list< pair< Traits, Base > >& l )
             : value( l )
          {
          }
 
-         single( std::initializer_list< pair< Traits > >& l )
+         single( std::initializer_list< pair< Traits, Base > >& l )
             : value( l )
          {
          }
