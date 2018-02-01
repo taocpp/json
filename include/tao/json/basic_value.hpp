@@ -62,15 +62,11 @@ namespace tao
 
          basic_value( const basic_value& r )
             : Base( static_cast< const Base& >( r ) ),
-              m_type( r.m_type )
+              m_type( json::type::DESTROYED )
          {
-            try {
-               embed( r );
-            }
-            catch( ... ) {
-               this->~basic_value();
-               throw;
-            }
+            assert( r.m_type != json::type::DESTROYED );
+            embed( r );
+            m_type = r.m_type;
          }
 
          basic_value( basic_value&& r ) noexcept
@@ -109,7 +105,10 @@ namespace tao
                Traits< D >::assign( *this, std::forward< T >( v ) );
             }
             catch( ... ) {
-               this->~basic_value();
+               unsafe_discard();
+#ifndef NDEBUG
+               static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
+#endif
                internal::rethrow();
             }
          }
@@ -120,7 +119,10 @@ namespace tao
                unsafe_assign( std::move( l ) );
             }
             catch( ... ) {
-               this->~basic_value();
+               unsafe_discard();
+#ifndef NDEBUG
+               static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
+#endif
                throw;
             }
          }
@@ -131,7 +133,10 @@ namespace tao
                unsafe_assign( l );
             }
             catch( ... ) {
-               this->~basic_value();
+               unsafe_discard();
+#ifndef NDEBUG
+               static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
+#endif
                throw;
             }
          }
@@ -1424,8 +1429,6 @@ namespace tao
 
          void embed( const basic_value& r )
          {
-            assert( m_type != json::type::DESTROYED );
-
             switch( r.m_type ) {
                case json::type::UNINITIALIZED:
                   return;
