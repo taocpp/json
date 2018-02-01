@@ -18,10 +18,10 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
+         template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >
          basic_value< Traits > basic_parse_file( const std::string& filename )
          {
-            events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
+            events::transformer< events::to_basic_value< Traits, Base >, Transformers... > consumer;
             events::jaxn::parse_file( consumer, filename );
             return std::move( consumer.value );
          }
@@ -29,7 +29,7 @@ namespace tao
          template< template< typename... > class... Transformers >
          value parse_file( const std::string& filename )
          {
-            return basic_parse_file< traits, Transformers... >( filename );
+            return basic_parse_file< traits, internal::empty_base, Transformers... >( filename );
          }
 
       }  // namespace jaxn
