@@ -3,60 +3,46 @@
 
 #include "test.hpp"
 
-#include <tao/json/from_string.hpp>
-#include <tao/json/parse_file.hpp>
-#include <tao/json/value.hpp>
+#include <tao/json/contrib/position.hpp>
 
 namespace tao
 {
    namespace json
    {
-      namespace position
+      void test_json()
       {
-         struct position_base
-         {
-            tao::optional< json_pegtl::position > position;
-         };
+         const std::string f = "tests/taocpp/position.json";
 
-         // TODO: We can still template over the traits.
-         using value = basic_value< traits, position_base >;
+         auto v = parse_file_with_position( f );
 
-         namespace internal
-         {
-            template< typename Rule >
-            struct action
-               : public json::internal::action< Rule >
-            {
-            };
+         TEST_ASSERT( v.base().source == f );
+         TEST_ASSERT( v.base().line == 1 );
+         TEST_ASSERT( v.base().byte_in_line == 0 );
 
-            template<>
-            struct action< json::internal::rules::value >
-            {
-               template< typename Input, typename Consumer >
-               static void apply( const Input& in, Consumer& consumer )
-               {
-                  consumer.value.base().position = in.position();
-               }
-            };
+         TEST_ASSERT( v.at( 0 ).base().source == f );
+         TEST_ASSERT( v.at( 0 ).base().line == 2 );
+         TEST_ASSERT( v.at( 0 ).base().byte_in_line == 8 );
 
-         }  // namespace internal
+         TEST_ASSERT( v.at( 1 ).base().source == f );
+         TEST_ASSERT( v.at( 1 ).base().line == 3 );
+         TEST_ASSERT( v.at( 1 ).base().byte_in_line == 8 );
 
-         value parse_file( const std::string& filename )
-         {
-            events::to_basic_value< traits, position_base > consumer;
-            json_pegtl::file_input< json_pegtl::tracking_mode::IMMEDIATE > in( filename );
-            json_pegtl::parse< json::internal::grammar, internal::action, json::internal::control >( in, consumer );
-            return std::move( consumer.value );
-         }
+         TEST_ASSERT( v.at( 2 ).base().source == f );
+         TEST_ASSERT( v.at( 2 ).base().line == 4 );
+         TEST_ASSERT( v.at( 2 ).base().byte_in_line == 8 );
 
-      }  // namespace position
+         TEST_ASSERT( v.at( 3 ).base().source == f );
+         TEST_ASSERT( v.at( 3 ).base().line == 5 );
+         TEST_ASSERT( v.at( 3 ).base().byte_in_line == 8 );
+
+         TEST_ASSERT( v.at( 3 ).at( "hello" ).base().source == f );
+         TEST_ASSERT( v.at( 3 ).at( "hello" ).base().line == 6 );
+         TEST_ASSERT( v.at( 3 ).at( "hello" ).base().byte_in_line == 26 );
+      }
 
       void unit_test()
       {
-         auto v = position::parse_file( "tests/draft4/additionalItems.json" );
-         //         std::cerr << *v[ 1 ][ "description" ].base().position << std::endl;
-         TEST_ASSERT( v[ 1 ][ "description" ].base().position->line == 22 );
-         TEST_ASSERT( v[ 1 ][ "description" ].base().position->byte_in_line == 23 );
+         test_json();
       }
 
    }  // namespace json
