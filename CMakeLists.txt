@@ -46,6 +46,12 @@ if (TAOCPP_JSON_BUILD_TESTS)
   add_subdirectory (src/test/json)
 endif ()
 
+# examples
+option (TAOCPP_JSON_BUILD_EXAMPLES "Build example programs" ON)
+if (TAOCPP_JSON_BUILD_EXAMPLES)
+  add_subdirectory (src/example/json)
+endif ()
+
 # installation directories
 set (TAOCPP_JSON_INSTALL_INCLUDE_DIR "include" CACHE STRING "The installation include directory")
 set (TAOCPP_JSON_INSTALL_DOC_DIR "share/doc/tao/json" CACHE STRING "The installation doc directory")
