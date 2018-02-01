@@ -4,7 +4,7 @@
 #include <tao/json/external/pegtl.hpp>
 #include <tao/json/internal/jaxn/grammar.hpp>
 
-using namespace tao::json_pegtl;
+using namespace tao::json_pegtl;  // NOLINT
 
 namespace config
 {
