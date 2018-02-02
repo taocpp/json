@@ -15,8 +15,8 @@ namespace tao
    {
       struct position
       {
-         std::size_t line;
-         std::size_t byte_in_line;
+         std::size_t line = 0;
+         std::size_t byte_in_line = 0;
          std::string source;
       };
 
