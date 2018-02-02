@@ -109,16 +109,16 @@ Producers are functions that take some input from which they generate Events tha
 | `from_stream` | Reads JSON from a `std::istream`. |
 | `from_string` | Reads JSON from a `std::string`. |
 | `from_value` | Generates Events for a `basic_value<>`. |
-| `parse_file` | Reads JSON from the file provided as filename. |
+| `parse_file` | Reads JSON from the file. |
 | `jaxn::from_stream` | Reads JAXN from a `std::istream`. |
 | `jaxn::from_string` | Reads JAXN from a `std::string`. |
-| `jaxn::parse_file` | Reads JAXN from the file provided as filename. |
+| `jaxn::parse_file` | Reads JAXN from the file. |
 | `cbor::from_string` | Reads CBOR from a `std::string`. |
-| `cbor::parse_file` | Reads CBOR from the file provided as filename. |
+| `cbor::parse_file` | Reads CBOR from the file. |
 | `msgpack::from_string` | Reads MSGPACK from a `std::string`. |
-| `msgpack::parse_file` | Reads MSGPACK from the file provided as filename. |
+| `msgpack::parse_file` | Reads MSGPACK from the file. |
 | `ubjson::from_string` | Reads UBJSON from a `std::string`. |
-| `ubjson::parse_file` | Reads UBJSON from the file provided as filename. |
+| `ubjson::parse_file` | Reads UBJSON from the file. |
 
 ### Convenience Wrappers
 
@@ -128,18 +128,18 @@ Functions that combine the similarly named Events producer from above with an Ev
 
 | Function | Description |
 | -------- | ----------- |
-| `from_stream` | Reads JSON from a `std::istream`, returns Value. |
-| `from_string` | Reads JSON from a `std::string`, returns Value. |
-| `parse_file` | Reads JSON from the file provided as filename, returns Value. |
-| `jaxn::from_stream` | Reads JAXN from a `std::istream`, returns Value. |
-| `jaxn::from_string` | Reads JAXN from a `std::string`, returns Value. |
-| `jaxn::parse_file` | Reads JAXN from the file provided as filename, returns Value. |
-| `cbor::from_string` | Reads CBOR from a `std::string`, returns Value. |
-| `cbor::parse_file` | Reads CBOR from the file provided as filename, returns Value. |
-| `msgpack::from_string` | Reads MSGPACK from a `std::string`, returns Value. |
-| `msgpack::parse_file` | Reads MSGPACK from the file provided as filename, returns Value. |
-| `ubjson::from_string` | Reads UBJSON from a `std::string`, returns Value. |
-| `ubjson::parse_file` | Reads UBJSON from the file provided as filename, returns Value. |
+| `from_stream` | Reads JSON from a `std::istream`. |
+| `from_string` | Reads JSON from a `std::string`. |
+| `parse_file` | Reads JSON from the file. |
+| `jaxn::from_stream` | Reads JAXN from a `std::istream`. |
+| `jaxn::from_string` | Reads JAXN from a `std::string`. |
+| `jaxn::parse_file` | Reads JAXN from the file. |
+| `cbor::from_string` | Reads CBOR from a `std::string`. |
+| `cbor::parse_file` | Reads CBOR from the file. |
+| `msgpack::from_string` | Reads MSGPACK from a `std::string`. |
+| `msgpack::parse_file` | Reads MSGPACK from the file. |
+| `ubjson::from_string` | Reads UBJSON from a `std::string`. |
+| `ubjson::parse_file` | Reads UBJSON from the file. |
 
 ### Included Consumers
 
@@ -217,3 +217,5 @@ Filters are structs or classes that implement the Events functions as they are c
 * `events::transformer`
 * `nlohmann::from_value`
 * `nlohmann::to_value`
+
+Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

@@ -154,3 +154,5 @@ The file `tao/include/json/contrib/position.hpp` shows how to parse a JSON file 
 ## Value Traits
 
 TODO: List everything customised via traits...
+
+Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
