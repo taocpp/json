@@ -19,10 +19,11 @@ namespace config
       struct identifier : plus< ranges< 'a', 'z', 'A', 'Z', '0', '9', '-', '-', '_', '_', '$' > > {};
 
       struct rkey;
-      struct function : seq< identifier, ws, list< value, jaxn::element_separator > > {};
+      struct function_param : if_must< identifier, jaxn::name_separator, value > {};
+      struct function : seq< identifier, ws, list< function_param, jaxn::value_separator > > {};
       struct expression : if_must< string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
 
-      struct string_fragment : sor< jaxn::qstring< '"' >, jaxn::qstring< '\'' >, expression > {};
+      struct string_fragment : sor< expression, jaxn::string_fragment > {};
       struct string : list_must< string_fragment, jaxn::value_concat > {};
 
       struct binary_fragment : sor< expression, jaxn::bvalue > {};
