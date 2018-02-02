@@ -37,56 +37,56 @@ The set of types is larger than that defined by the data model, with the additio
 
 ### Uninitialized
 
-Unlike some other JSON libraries, a default-initialised Value object will be of type `UNINITIALIZED` rather than `NULL_`.
+Unlike some other JSON libraries, a default-initialised Value object will have `type::UNINITIALIZED` rather than `NULL_`.
 
-The `explicit operator bool () const noexcept` that is part of the Value class returns whether the Value contains *anything*, including a `NULL_`.
+The `explicit operator bool () const noexcept` returns whether the Value contains *anything*, including a `NULL_`.
 In other words, it only returns `false` when its `type()` returns `type::UNITIALIZED`.
 
 ### Discarded
 
-TODO
+The discarded type indicates that this value was the source of a move operation.
+According to the C++ standard performing any operation other than calling the destructor on such an object is not allowed.
+The discarded type is only used when the `NDEBUG` macro is not set.
 
 ### Destroyed
 
-TODO
+The destroyed type indicates that this value either never completed a constructor without throwing an exception, or that the destructor has already completed.
+At this point there is no actual value object, we are outside of its lifetime and just happen to be looking at memory that (nearly) contained a value in the past.
+The destroyed type is only used when the `NDEBUG` macro is not set.
 
 ### Null
 
 Null exists only on the type/meta-level; there is no C++ type corresponding to `null` values.
 
-Test for with `bool tao::json::basic_value<>::is_null() const noexcept`.
+Test for `null` values with the `is_null()` method.
 
 ### Boolean
 
 Stored as C++ `bool`.
 
-Test for with `bool tao::json::basic_value<>::is_boolean() const noexcept`.
+Test for with the `is_boolean()` method.
 
-Obtain with `bool tao::json::basic_value<>::get_boolean() const`.
+Access the contained `bool` with the `as< bool >()` method, or the low-level `get_boolean()`.
 
-### Signed
+### Number
 
-Signed integers are stored as `std::int64_t`.
+Numbers are stored either as `std::int64_t` with `type::SIGNED`, as `std::uint64_t` with `type::UNSIGNED`, or as `double` with `type::DOUBLE`.
 
-### Unsigned
+Apart from the `type()` method, and beyond the usual `is_signed()`, `is_unsigned()` and `is_double()` methods, these types can be checked for with the `is_integer()` and `is_number()` convenience methods.
 
-Unsigned integers are stored as `std::uint64_t`.
+Access via the `as<>()` method which can be used with any numeric data type.
+The default traits will convert the contained number from any of the three possible types to the desired target type just like a `static_cast<>` would.
+See the section on Value Traits below on how to customise this behaviour.
 
-### Double
+It is again possible to directly access the contained number with the `get_signed()`, `get_unsigned()` and `get_double()` methods.
 
-Floating point values are stored as `double`.
-
-### Numbers
-
-TODO: Describe `is_number()` and how to get a number as `T` independent of how it's stored.
-
-### String and String-View
+### String (and View)
 
 Strings are sequences of Unicode code points stored as UTF-8 in `std::string` and `tao::string_view` objects, the latter of which is an alias for `std::string_view` when possible.
 
 Checking for valid UTF-8, and (un)escaping according to the representation format like JSON, is performed "at the edges" by the respective parsers and encoders (although some parsers might choose to omit this check for performance reasons).
 
-### Binary and Binary-View
+### Binary (and View)
 
 Binary data is stored in `std::vector< tao::byte >` and `tao::byte_view`, where `tao::byte` is an alias for `std::byte` when possible.
 
@@ -122,11 +122,25 @@ Here `b` will contain a `RAW_PTR` to `a` as value for the object key `"complex_v
 
 ## Value Comparison
 
+The library contains the full complement of comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=` ) to compare values with other values, and to compare values with any other C++ types.
+
+Comparison of two values performs a structural recursive comparison ignoring both the traits and the base class.
+The comparison is performed at the data model level, abstracting away from implementation details and optimisations.
+
+* Numbers are compared by value, independent of which of the three possible representations they use.
+* Strings and string views are compared by comparing character sequences, independent of which representation is used.
+* Binary data and binary views are compared by comparing byte sequences, indpendent of which representation is used.
+* Raw pointers are skipped, the comparison behaves "as if" the pointee object were at the position the pointer is.
+* Values of different incompatible types will be ordered by the numeric values of their type enum.
+
+Comparison between a value and other types is conceptually performed by first creating a value object from the other type, and then performing a comparison between two values.
+See the section on Value Traits below on how the traits class is used to optimise these operations by not actually creating the value object from the other type.
+
 ## Unsafe Functions
 
 Some of the member functions of class `tao::json::basic_value<>` are also available in "unsafe" versions that, in the name of efficiency, make certain assumptions, or omit/make impossible certain checks.
 
-All of the accessors like `get_boolean()` etc. have an unsafe version `unsafe_get_boolean()` that does not check whether the result of `type()` is the correct one.
+All of the accessors like `get_boolean()` etc. have an unsafe version `unsafe_get_boolean()` that does not check the type and throw an exception on mismatch.
 
 ## Base Annotations
 

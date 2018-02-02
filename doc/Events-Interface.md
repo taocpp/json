@@ -100,115 +100,120 @@ struct reduced_consumer
 
 ### Included Producers
 
-Producers are (usually) functions that calls Event functions on a provided consumer.
+Producers are functions that take some input from which they generate Events that they call on a consumer that they are also provided with.
 
-* `tao::json::events::from_stream` reads JSON from a `std::istream` and generates corresponding Events.
-* `tao::json::events::from_string` reads JSON from a `std::string` and generates corresponding Events.
-* `tao::json::events::from_value` calls Events corresponding to a `tao::json::basic_value<>` on the provided consumer.
-* `tao::json::events::parse_file` reads JSON from the file provided as filename and generates corresponding Events.
+**These functions are in namespace `tao::json::events`.**
 
-* `tao::json::events::jaxn::from_stream` reads JAXN from a `std::istream` and generates corresponding Events.
-* `tao::json::events::jaxn::from_string` reads JAXN from a `std::string` and generates corresponding Events.
-* `tao::json::events::jaxn::parse_file` reads JAXN from the file provided as filename and generates corresponding Events.
-
-* `tao::json::events::cbor::from_string` reads CBOR from a `std::string` and generates corresponding Events.
-* `tao::json::events::cbor::parse_file` reads CBOR from the file provided as filename and generates corresponding Events.
-
-* `tao::json::events::msgpack::from_string` reads MSGPACK from a `std::string` and generates corresponding Events.
-* `tao::json::events::msgpack::parse_file` reads MSGPACK from the file provided as filename and generates corresponding Events.
-
-* `tao::json::events::ubjson::from_string` reads UBJSON from a `std::string` and generates corresponding Events.
-* `tao::json::events::ubjson::parse_file` reads UBJSON from the file provided as filename and generates corresponding Events.
+| Producer | Description |
+| -------- | ----------- |
+| `from_stream` | Reads JSON from a `std::istream`. |
+| `from_string` | Reads JSON from a `std::string`. |
+| `from_value` | Generates Events for a `basic_value<>`. |
+| `parse_file` | Reads JSON from the file provided as filename. |
+| `jaxn::from_stream` | Reads JAXN from a `std::istream`. |
+| `jaxn::from_string` | Reads JAXN from a `std::string`. |
+| `jaxn::parse_file` | Reads JAXN from the file provided as filename. |
+| `cbor::from_string` | Reads CBOR from a `std::string`. |
+| `cbor::parse_file` | Reads CBOR from the file provided as filename. |
+| `msgpack::from_string` | Reads MSGPACK from a `std::string`. |
+| `msgpack::parse_file` | Reads MSGPACK from the file provided as filename. |
+| `ubjson::from_string` | Reads UBJSON from a `std::string`. |
+| `ubjson::parse_file` | Reads UBJSON from the file provided as filename. |
 
 ### Convenience Wrappers
 
-Functions that combine the similarly named Events producer with a consumer that "writes" a Value.
+Functions that combine the similarly named Events producer from above with an Events consumer to return a corresponding Value.
 
-* `tao::json::from_stream` reads JSON from a `std::istream` and returns a Value.
-* `tao::json::from_string` reads JSON from a `std::string` and returns a Value.
-* `tao::json::parse_file` reads JSON from the file provided as filename and returns a Value.
+**These functions are in namespace `tao::json`.**
 
-* `tao::json::jaxn::from_stream` reads JAXN from a `std::istream` and returns a Value.
-* `tao::json::jaxn::from_string` reads JAXN from a `std::string` and returns a Value.
-* `tao::json::jaxn::parse_file` reads JAXN from the file provided as filename and returns a Value.
-
-* `tao::json::cbor::from_string` reads CBOR from a `std::string` and returns a Value.
-* `tao::json::cbor::parse_file` reads CBOR from the file provided as filename and returns a Value.
-
-* `tao::json::msgpack::from_string` reads MSGPACK from a `std::string` and returns a Value.
-* `tao::json::msgpack::parse_file` reads MSGPACK from the file provided as filename and returns a Value.
-
-* `tao::json::ubjson::from_string` reads UBJSON from a `std::string` and returns a Value.
-* `tao::json::ubjson::parse_file` reads UBJSON from the file provided as filename and returns a Value.
+| Function | Description |
+| -------- | ----------- |
+| `from_stream` | Reads JSON from a `std::istream`, returns Value. |
+| `from_string` | Reads JSON from a `std::string`, returns Value. |
+| `parse_file` | Reads JSON from the file provided as filename, returns Value. |
+| `jaxn::from_stream` | Reads JAXN from a `std::istream`, returns Value. |
+| `jaxn::from_string` | Reads JAXN from a `std::string`, returns Value. |
+| `jaxn::parse_file` | Reads JAXN from the file provided as filename, returns Value. |
+| `cbor::from_string` | Reads CBOR from a `std::string`, returns Value. |
+| `cbor::parse_file` | Reads CBOR from the file provided as filename, returns Value. |
+| `msgpack::from_string` | Reads MSGPACK from a `std::string`, returns Value. |
+| `msgpack::parse_file` | Reads MSGPACK from the file provided as filename, returns Value. |
+| `ubjson::from_string` | Reads UBJSON from a `std::string`, returns Value. |
+| `ubjson::parse_file` | Reads UBJSON from the file provided as filename, returns Value. |
 
 ### Included Consumers
 
-Consumers are structs or classes that implement the Events functions.
+Consumers are structs or classes that implement (a complete subset of) the Events interface functions.
+Consumers are usually instantiated and then passed to an Events producer function as argument.
 
-* `tao::json::events::debug` writes all Events to a `std::ostream` in human-readable form.
-* `tao::json::events::discard` does nothing with the Events it receives.
-* `tao::json::events::hash` calculates a SHA-256 hash for the received Events.
-* `tao::json::events::to_pretty_stream` writes nicely formatted JSON to a `std::ostream`.
-* `tao::json::events::to_stream` writes compact JSON to a `std::ostream`.
-* `tao::json::events::to_string` writes compact JSON to a `std::string`.
-* `tao::json::events::to_value` builds up a Value with the received Events.
-* `tao::json::events::validate_event_order` checks for a consistent order of received Events (e.g. no `end_array()` after `begin_object()`).
+**These classes are in namespace `tao::json::events`.**
 
-* `tao::json::events::jaxn::to_pretty_stream` writes nicely formatted JAXN to a `std::ostream`.
-* `tao::json::events::jaxn::to_stream` writes compact JAXN to a `std::ostream`.
-* `tao::json::events::jaxn::to_string` writes compact JAXN to a `std::string`.
-
-* `tao::json::events::cbor::to_stream` writes CBOR to a `std::ostream`.
-* `tao::json::events::cbor::to_string` writes CBOR to a `std::string`.
-
-* `tao::json::events::msgpack::to_stream` writes MSGPACK to a `std::ostream`.
-* `tao::json::events::msgpack::to_string` writes MSGPACK to a `std::string`.
-
-* `tao::json::events::ubjson::to_stream` writes UBJSON to a `std::ostream`.
-* `tao::json::events::ubjson::to_string` writes UBJSON to a `std::string`.
+| Consumer | Description |
+| -------- | ----------- |
+| `debug` | Writes all Events to a `std::ostream` in human-readable form. |
+| `discard` | Does nothing with the Events it receives. |
+| `hash` | Calculates a SHA-256 hash for the received Events. |
+| `to_pretty_stream` | Writes nicely formatted JSON to a `std::ostream`. |
+| `to_stream` | Writes compact JSON to a `std::ostream`. |
+| `to_string` | Writes compact JSON to a `std::string`. |
+| `to_value` | Builds a Value with the received Events. |
+| `validate_event_order` | Checks whether the order of received Events is consistent. |
+| `jaxn::to_pretty_stream` | Writes nicely formatted JAXN to a `std::ostream`. |
+| `jaxn::to_stream` | Writes compact JAXN to a `std::ostream`. |
+| `jaxn::to_string` | Writes compact JAXN to a `std::string`. |
+| `cbor::to_stream` | Writes CBOR to a `std::ostream`. |
+| `cbor::to_string` | Writes CBOR to a `std::string`. |
+| `msgpack::to_stream` | Writes MSGPACK to a `std::ostream`. |
+| `msgpack::to_string` | Writes MSGPACK to a `std::string`. |
+| `ubjson::to_stream` | Writes UBJSON to a `std::ostream`. |
+| `ubjson::to_string` | Writes UBJSON to a `std::string`. |
 
 ### Convenience Wrappers
 
-Functions that combine the similarly named Events consumers with a producer that "reads" from a Value (optionally applying an arbitrary list of Filters given as additional template parameters).
+Functions that combine the similarly named Events consumers with a producer that generates Events from a Value (optionally applying an arbitrary list of Filters given as additional template parameters).
 
-* `tao::json::to_stream` writes a Value as compact or nicely formatted JSON to a `std::ostream`.
-* `tao::json::to_string` writes a Value as compact or nicely formatted JSON to a `std::string`.
+**These functions are in namespace `tao::json`.**
 
-* `tao::json::jaxn::to_stream` writes a Value as compact or nicely formatted JAXN to a `std::ostream`.
-* `tao::json::jaxn::to_string` writes a Value as compact or nicely formatted JAXN to a `std::string`.
-
-* `tao::json::jaxn::to_stream` writes a Value as CBOR to a `std::ostream`.
-* `tao::json::jaxn::to_string` writes a Value as CBOR to a `std::string`.
-
-* `tao::json::msgpack::to_stream` writes a Value as MSGPACK to a `std::ostream`.
-* `tao::json::msgpack::to_string` writes a Value as MSGPACK to a `std::string`.
-
-* `tao::json::ubjson::to_stream` writes a Value as UBJSON to a `std::ostream`.
-* `tao::json::ubjson::to_string` writes a Value as UBJSON to a `std::string`.
+| Function | Description |
+| -------- | ----------- |
+| `to_stream` | Writes a Value as compact or nicely formatted JSON to a `std::ostream`. |
+| `to_string` | Writes a Value as compact or nicely formatted JSON to a `std::string`. |
+| `jaxn::to_stream` | Writes a Value as compact or nicely formatted JAXN to a `std::ostream`. |
+| `jaxn::to_string` | Writes a Value as compact or nicely formatted JAXN to a `std::string`. |
+| `jaxn::to_stream` | Writes a Value as CBOR to a `std::ostream`. |
+| `jaxn::to_string` | Writes a Value as CBOR to a `std::string`. |
+| `msgpack::to_stream` | Writes a Value as MSGPACK to a `std::ostream`. |
+| `msgpack::to_string` | Writes a Value as MSGPACK to a `std::string`. |
+| `ubjson::to_stream` | Writes a Value as UBJSON to a `std::ostream`. |
+| `ubjson::to_string` | Writes a Value as UBJSON to a `std::string`. |
 
 ### Included Filters
 
 Filters are structs or classes that implement the Events functions as they are consumers that then produce events for another consumer.
 
-* `tao::json::events::binary_to_base64` passes through all Events except for binary data which is converted to base64-encoded strings.
-* `tao::json::events::binary_to_base64url` passes through all Events except for binary data which is converted to URL-safe base64-encoded strings.
-* `tao::json::events::binary_to_exception` passes through all Events except for binary data which provokes an exception.
-* `tao::json::events::binary_to_hex` passes through all Events except for binary data which is is converted to hex-dumped strings.
-* `tao::json::events::key_camel_case_to_snake_case` passes through all Events except for keys in Objects which are converted from "CamelCaseStyle" to "snake_case_style".
-* `tao::json::events::key_snake_case_to_camel_case` passes through all Events except for keys in Objects which are converted from "snake_case_style" to "CamelCaseStyle".
-* `tao::json::events::non_finite_to_exception` passes through all Events except for numbers of type `double` which contain non-finite values which provoke an exception.
-* `tao::json::events::non_finite_to_null` passes through all Events except for numbers of type `double` which contain non-finite values which are passed on as `null()`.
-* `tao::json::events::non_finite_to_string` passes through all Events except for numbers of type `double` which contain non-finite values which are passed on as appropriate `string()`.
-* `tao::json::events::prefer_signed` passes through all Events except for numbers of type `std::uint64_t` which fit into a `std::int64_t` and are passed on as such.
-* `tao::json::events::prefer_unsigned` passes through all Events except for numbers of type `std::int64_t` which fit into a `std::uint64_t` and are passed on as such.
-* `tao::json::events::ref` passes all Events to another consumer or filter to which it holds a C++ reference.
-* `tao::json::events::tee` passes all Events to an arbitrary number of other consumers or filters which it holds in a `std::tuple<>`.
-* `tao::json::events::validate_keys` passes through all Events except for keys which are first validated against a provided PEGTL grammar rule.
+**These classes are in namespace `tao::json::events`.**
+
+| Filter | Description |
+| ------ | ----------- |
+| `binary_to_base64` | Passes through all Events except for binary data which is converted to base64-encoded strings. |
+| `binary_to_base64url` | Passes through all Events except for binary data which is converted to URL-safe base64-encoded strings. |
+| `binary_to_exception` | Passes through all Events except for binary data which provokes an exception. |
+| `binary_to_hex` | Passes through all Events except for binary data which is is converted to hex-dumped strings. |
+| `key_camel_case_to_snake_case` | Passes through all Events except for keys in Objects which are converted from "CamelCaseStyle" to "snake_case_style". |
+| `key_snake_case_to_camel_case` | Passes through all Events except for keys in Objects which are converted from "snake_case_style" to "CamelCaseStyle". |
+| `non_finite_to_exception` | Passes through all Events except for numbers of type `double` which contain non-finite values which provoke an exception. |
+| `non_finite_to_null` | Passes through all Events except for numbers of type `double` which contain non-finite values which are passed on as `null()`. |
+| `non_finite_to_string` | Passes through all Events except for numbers of type `double` which contain non-finite values which are passed on as appropriate `string()`. |
+| `prefer_signed` | Passes through all Events except for numbers of type `std::uint64_t` which fit into a `std::int64_t` and are passed on as such. |
+| `prefer_unsigned` | Passes through all Events except for numbers of type `std::int64_t` which fit into a `std::uint64_t` and are passed on as such. |
+| `ref` | Passes all Events to another consumer or filter to which it holds a C++ reference. |
+| `tee` | Passes all Events to an arbitrary number of other consumers or filters which it holds in a `std::tuple<>`. |
+| `validate_keys` | Passes through all Events except for keys which are first validated against a provided PEGTL grammar rule. |
 
 ### Need Description
 
-* `tao::json::events::basic_compare`
-* `tao::json::events::compare`
-* `tao::json::events::transformer`
-* `tao::json::nlohmann::from_value`
-* `tao::json::nlohmann::to_value`
+* `events::basic_compare`
+* `events::compare`
+* `events::transformer`
+* `nlohmann::from_value`
+* `nlohmann::to_value`
