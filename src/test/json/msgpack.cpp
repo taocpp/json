@@ -7,8 +7,7 @@
 #include <tao/json/from_string.hpp>
 #include <tao/json/to_string.hpp>
 
-#include <tao/json/msgpack/from_string.hpp>
-#include <tao/json/msgpack/to_string.hpp>
+#include <tao/json/msgpack.hpp>
 
 namespace tao
 {

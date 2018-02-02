@@ -7,8 +7,7 @@
 #include <tao/json/from_string.hpp>
 #include <tao/json/to_string.hpp>
 
-#include <tao/json/ubjson/from_string.hpp>
-#include <tao/json/ubjson/to_string.hpp>
+#include <tao/json/ubjson.hpp>
 
 namespace tao
 {

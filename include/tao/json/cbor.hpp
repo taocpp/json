@@ -7,6 +7,7 @@
 #include "../json.hpp"
 
 #include "cbor/from_string.hpp"
+#include "cbor/parse_file.hpp"
 #include "cbor/to_stream.hpp"
 #include "cbor/to_string.hpp"
 

@@ -7,8 +7,7 @@
 #include <tao/json/from_string.hpp>
 #include <tao/json/to_string.hpp>
 
-#include <tao/json/cbor/from_string.hpp>
-#include <tao/json/cbor/to_string.hpp>
+#include <tao/json/cbor.hpp>
 
 namespace tao
 {
