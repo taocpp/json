@@ -20,7 +20,7 @@ namespace tao
          std::string source;
       };
 
-      inline std::ostream& operator<< ( std::ostream& o, const position& p )
+      inline std::ostream& operator<<( std::ostream& o, const position& p )
       {
          o << p.source << ':' << p.line << ':' << p.byte_in_line;
          return o;

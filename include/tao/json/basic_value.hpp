@@ -58,7 +58,7 @@ namespace tao
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
 
-         basic_value() noexcept(noexcept(Base())) = default;
+         basic_value() noexcept( noexcept( Base() ) ) = default;
 
          basic_value( const basic_value& r )
             : Base( static_cast< const Base& >( r ) ),
