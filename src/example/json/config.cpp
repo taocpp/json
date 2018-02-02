@@ -22,101 +22,11 @@ namespace config
       struct function : seq< identifier, ws, list< value, jaxn::element_separator > > {};
       struct expression : if_must< string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
 
-      struct xdigit : abnf::HEXDIG {};
-      struct escaped_unicode_code_point_content : seq< one< '{' >, plus< xdigit > > {};
-      struct escaped_unicode_code_point : seq< one< 'u' >, escaped_unicode_code_point_content, one< '}' > > {};
-      struct escaped_unicode : list< seq< one< 'u' >, rep< 4, xdigit > >, one< '\\' > > {};
-
-      struct escaped_char : one< '"', '\'', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v', '0' > {};
-      struct escaped : sor< escaped_char, escaped_unicode_code_point, escaped_unicode > {};
-
-      template< char D >
-      struct unescaped
-      {
-         using analyze_t = analysis::generic< analysis::rule_type::ANY >;
-
-         template< typename Input >
-         static bool match( Input& in )
-         {
-            bool result = false;
-
-            while( !in.empty() ) {
-               if( const auto t = internal::peek_utf8::peek( in ) ) {
-                  if( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != '\\' ) && ( t.data != D ) ) {
-                     in.bump_in_this_line( t.size );
-                     result = true;
-                     continue;
-                  }
-               }
-               return result;
-            }
-            throw parse_error( "invalid character in string", in );
-         }
-      };
-
-      template< char D >
-      struct chars : if_then_else< one< '\\' >, must< escaped >, unescaped< D > > {};
-
-      template< char D >
-      struct qstring_content : until< at< one< D > >, must< chars< D > > > {};
-
-      template< char D >
-      struct qstring : seq< one< D >, must< qstring_content< D > >, any > {};
-
-      struct string_fragment : sor< qstring< '"' >, qstring< '\'' >, expression > {};
-
+      struct string_fragment : sor< jaxn::qstring< '"' >, jaxn::qstring< '\'' >, expression > {};
       struct string : list_must< string_fragment, jaxn::value_concat > {};
 
-      struct binary_prefix : one< '$' > {};
-
-      struct bescaped_hexcode : seq< one< 'x' >, rep< 2, must< xdigit > > > {};
-
-      struct bescaped_char : one< '"', '\'', '\\', '/', 'b', 'f', 'n', 'r', 't', 'v', '0' > {};
-      struct bescaped : sor< bescaped_char, bescaped_hexcode > {};
-
-      template< char D >
-      struct bunescaped
-      {
-         using analyze_t = analysis::generic< analysis::rule_type::ANY >;
-
-         template< typename Input >
-         static bool match( Input& in )
-         {
-            bool result = false;
-
-            while( !in.empty() ) {
-               const auto t = in.peek_char();
-               if( ( 0x20 <= t ) && ( t <= 0x7E ) && ( t != '\\' ) && ( t != D ) ) {
-                  in.bump_in_this_line( 1 );
-                  result = true;
-                  continue;
-               }
-               return result;
-            }
-            throw parse_error( "invalid character in binary string", in );
-         }
-      };
-
-      template< char D >
-      struct bchars : if_then_else< one< '\\' >, must< bescaped >, bunescaped< D > > {};
-
-      template< char D >
-      struct bqstring_content : until< at< one< D > >, must< bchars< D > > > {};
-
-      template< char D >
-      struct bqstring : seq< one< D >, must< bqstring_content< D > >, any > {};
-
-      struct bstring : sor< bqstring< '"' >, bqstring< '\'' > > {};
-
-      struct bbyte : rep< 2, abnf::HEXDIG > {};
-
-      struct bpart : plus< bbyte > {};
-
-      struct bdirect : list_must< bpart, one< '.' > > {};
-
-      struct bvalue : seq< binary_prefix, opt< sor< bstring, bdirect > > > {};
-
-      struct binary : list_must< sor< expression, bvalue >, jaxn::value_concat > {};
+      struct binary_fragment : sor< expression, jaxn::bvalue > {};
+      struct binary : list_must< binary_fragment, jaxn::value_concat > {};
 
       struct array_element;
       struct array_content : opt< list_tail< array_element, jaxn::element_separator > > {};
