@@ -5,7 +5,7 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON Value object, conversions from and to JSON string representation, and supports JSON Pointer and JSON Patch. It is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
+The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON Value object, conversions from and to JSON string representation, and supports JSON Pointer and JSON Patch. It is highly extensible with a traits mechanism for custom conversion from and and to (custom) C++ types, and an Events interface for (custom) conversion from and to multiple other file formats or even JSON value representations. The library is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
 
 ## Features
 
@@ -62,9 +62,10 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 ## Status
 
-While most parts have stabilized, some parts of the API are still under discussion and development and might change and/or be extended before the first release.
+The library is mostly stable as in "works correctly and does not crash" over months of multiple real-world applications.
+It is less stable in the sense that some parts of the API are still under discussion and development and might change and/or be extended before the first release.
 
-The library currently serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing JSON string representations.
+This library also serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing JSON and JAXN string representations.
 
 ## Documentation
 
