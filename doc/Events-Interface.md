@@ -170,22 +170,24 @@ Consumers are usually instantiated and then passed to an Events producer functio
 
 ### Convenience Wrappers
 
-Functions that combine the similarly named Events consumers with a producer that generates Events from a Value (optionally applying an arbitrary list of Filters given as additional template parameters).
+Functions that combine the similarly named Events consumers with a producer that generates Events from a Value.
 
 **These functions are in namespace `tao::json`.**
 
 | Function | Description |
 | -------- | ----------- |
-| `to_stream` | Writes a Value as compact or nicely formatted JSON to a `std::ostream`. |
-| `to_string` | Writes a Value as compact or nicely formatted JSON to a `std::string`. |
-| `jaxn::to_stream` | Writes a Value as compact or nicely formatted JAXN to a `std::ostream`. |
-| `jaxn::to_string` | Writes a Value as compact or nicely formatted JAXN to a `std::string`. |
-| `jaxn::to_stream` | Writes a Value as CBOR to a `std::ostream`. |
-| `jaxn::to_string` | Writes a Value as CBOR to a `std::string`. |
-| `msgpack::to_stream` | Writes a Value as MSGPACK to a `std::ostream`. |
-| `msgpack::to_string` | Writes a Value as MSGPACK to a `std::string`. |
-| `ubjson::to_stream` | Writes a Value as UBJSON to a `std::ostream`. |
-| `ubjson::to_string` | Writes a Value as UBJSON to a `std::string`. |
+| `to_stream` | Writes compact or nicely formatted JSON to a `std::ostream`. |
+| `to_string` | Writes compact or nicely formatted JSON to a `std::string`. |
+| `jaxn::to_stream` | Writes compact or nicely formatted JAXN to a `std::ostream`. |
+| `jaxn::to_string` | Writes compact or nicely formatted JAXN to a `std::string`. |
+| `jaxn::to_stream` | Writes CBOR to a `std::ostream`. |
+| `jaxn::to_string` | Writes CBOR to a `std::string`. |
+| `msgpack::to_stream` | Writes MSGPACK to a `std::ostream`. |
+| `msgpack::to_string` | Writes MSGPACK to a `std::string`. |
+| `ubjson::to_stream` | Writes UBJSON to a `std::ostream`. |
+| `ubjson::to_string` | Writes UBJSON to a `std::string`. |
+
+Optionally apply an arbitrary list of Filters given as additional template parameters.
 
 ### Included Filters
 
