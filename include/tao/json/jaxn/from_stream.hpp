@@ -29,22 +29,34 @@ namespace tao
             return std::move( consumer.value );
          }
 
+         template< template< typename... > class Traits, template< typename... > class... Transformers >
+         basic_value< Traits > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+         {
+            return basic_from_stream< Traits, internal::empty_base, Transformers... >( stream, source, maximum_buffer_size );
+         }
+
          template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >
          basic_value< Traits, Base > basic_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
          {
             return basic_from_stream< Traits, Base, Transformers... >( stream, source.c_str(), maximum_buffer_size );
          }
 
+         template< template< typename... > class Traits, template< typename... > class... Transformers >
+         basic_value< Traits > basic_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+         {
+            return basic_from_stream< Traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
+         }
+
          template< template< typename... > class... Transformers >
          value from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            return basic_from_stream< traits, internal::empty_base, Transformers... >( stream, source, maximum_buffer_size );
+            return basic_from_stream< traits, Transformers... >( stream, source, maximum_buffer_size );
          }
 
          template< template< typename... > class... Transformers >
          value from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
          {
-            return basic_from_stream< traits, internal::empty_base, Transformers... >( stream, source.c_str(), maximum_buffer_size );
+            return basic_from_stream< traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
          }
 
       }  // namespace jaxn

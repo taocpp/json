@@ -23,10 +23,16 @@ namespace tao
          return std::move( consumer.value );
       }
 
+      template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
+      basic_value< Traits > basic_from_string( Ts&&... ts )
+      {
+         return basic_from_string< Traits, internal::empty_base, Transformers... >( std::forward< Ts >( ts )... );
+      }
+
       template< template< typename... > class... Transformers, typename... Ts >
       value from_string( Ts&&... ts )
       {
-         return basic_from_string< traits, internal::empty_base, Transformers... >( std::forward< Ts >( ts )... );
+         return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
       }
 
       inline namespace literals

@@ -19,17 +19,23 @@ namespace tao
       namespace cbor
       {
          template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >
-         basic_value< Traits > basic_parse_file( const std::string& filename )
+         basic_value< Traits, Base > basic_parse_file( const std::string& filename )
          {
             events::transformer< events::to_basic_value< Traits, Base >, Transformers... > consumer;
             events::cbor::parse_file( consumer, filename );
             return std::move( consumer.value );
          }
 
+         template< template< typename... > class Traits, template< typename... > class... Transformers >
+         basic_value< Traits > basic_parse_file( const std::string& filename )
+         {
+            return basic_parse_file< Traits, internal::empty_base, Transformers... >( filename );
+         }
+
          template< template< typename... > class... Transformers >
          value parse_file( const std::string& filename )
          {
-            return basic_parse_file< traits, internal::empty_base, Transformers... >( filename );
+            return basic_parse_file< traits, Transformers... >( filename );
          }
 
       }  // namespace cbor
