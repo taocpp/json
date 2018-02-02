@@ -1,8 +1,10 @@
 # Preliminary Documentation
 
-This document gives a first introduction to design and usage of the taocpp/json library pending final changes for version 1.0.0.
+The documentation will be finished once the functionality and interfaces are finalised.
 
-The taocpp/json library is built around two main concepts, the *Value class* and the *Events interface*.
-
+* [Project](httsp://github.com/taocpp/json)
+* [Quick Start](Quick-Start.md)
 * [Value Class](Value-Class.md)
 * [Events Interface](Events-Interface.md)
+
+Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
