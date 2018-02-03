@@ -52,7 +52,7 @@ namespace tao
 
       void unit_test()
       {
-         const employee e;
+         const employee e{};
 
          value v1 = {
             { "account", 1 },
