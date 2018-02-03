@@ -11,6 +11,8 @@
 
 #include "../byte_view.hpp"
 
+#include "../external/string_view.hpp"
+
 namespace tao
 {
    namespace json
@@ -154,12 +156,15 @@ namespace tao
                v_end_object( v );
             }
 
+            virtual_base( virtual_base&& ) = delete;
+            virtual_base( const virtual_base& ) = delete;
+
+            void operator= ( virtual_base&& ) = delete;
+            void operator= ( const virtual_base& ) = delete;
+
          protected:
             virtual_base() = default;
             ~virtual_base() = default;
-
-            virtual_base( const virtual_base& ) = delete;
-            void operator= ( const virtual_base& ) = delete;
 
             virtual void v_null() = 0;
             virtual void v_boolean( const bool ) = 0;
