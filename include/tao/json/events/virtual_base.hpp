@@ -167,10 +167,10 @@ namespace tao
             ~virtual_base() = default;
 
             virtual void v_null() = 0;
-            virtual void v_boolean( const bool ) = 0;
-            virtual void v_number( const std::int64_t ) = 0;
-            virtual void v_number( const std::uint64_t ) = 0;
-            virtual void v_number( const double ) = 0;
+            virtual void v_boolean( bool ) = 0;
+            virtual void v_number( std::int64_t ) = 0;
+            virtual void v_number( std::uint64_t ) = 0;
+            virtual void v_number( double ) = 0;
             virtual void v_string( std::string&& ) = 0;
             virtual void v_string( const std::string& ) = 0;
             virtual void v_string( const tao::string_view& ) = 0;
@@ -178,18 +178,18 @@ namespace tao
             virtual void v_binary( const std::vector< byte >& ) = 0;
             virtual void v_binary( const tao::byte_view& ) = 0;
             virtual void v_begin_array() = 0;
-            virtual void v_begin_array( const std::size_t ) = 0;
+            virtual void v_begin_array( std::size_t ) = 0;
             virtual void v_element() = 0;
             virtual void v_end_array() = 0;
-            virtual void v_end_array( const std::size_t ) = 0;
+            virtual void v_end_array( std::size_t ) = 0;
             virtual void v_begin_object() = 0;
-            virtual void v_begin_object( const std::size_t ) = 0;
+            virtual void v_begin_object( std::size_t ) = 0;
             virtual void v_key( std::string&& ) = 0;
             virtual void v_key( const std::string& ) = 0;
             virtual void v_key( const tao::string_view& ) = 0;
             virtual void v_member() = 0;
             virtual void v_end_object() = 0;
-            virtual void v_end_object( const std::size_t ) = 0;
+            virtual void v_end_object( std::size_t ) = 0;
          };
 
       }  // namespace events
