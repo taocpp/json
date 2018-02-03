@@ -19,7 +19,7 @@ namespace tao
          std::size_t byte_in_line = 0;
          std::string source;
 
-         position() noexcept
+         position() noexcept  // NOLINT
          {
          }
 
