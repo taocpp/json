@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -54,11 +55,15 @@ namespace tao
          : private Base
       {
       public:
+         static_assert( std::is_nothrow_default_constructible< Base >::value, "Base must be nothrow default constructible" );
+         static_assert( std::is_nothrow_move_constructible< Base >::value, "Base must be nothrow move constructible" );
+         static_assert( std::is_nothrow_move_assignable< Base >::value, "Base must be nothrow move assignable" );
+
          using binary_t = std::vector< tao::byte >;
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
 
-         basic_value() noexcept( noexcept( Base() ) ) = default;
+         basic_value() noexcept = default;
 
          basic_value( const basic_value& r )
             : Base( static_cast< const Base& >( r ) ),

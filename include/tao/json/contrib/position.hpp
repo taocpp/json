@@ -18,6 +18,31 @@ namespace tao
          std::size_t line = 0;
          std::size_t byte_in_line = 0;
          std::string source;
+
+         position() noexcept
+         {
+         }
+
+         position( const position& ) = default;
+
+         position( position&& p ) noexcept
+            : line( p.line ),
+              byte_in_line( p.byte_in_line ),
+              source( std::move( p.source ) )
+         {
+         }
+
+         ~position() = default;
+
+         position& operator=( const position& ) = default;
+
+         position& operator=( position&& p ) noexcept
+         {
+            line = p.line;
+            byte_in_line = p.byte_in_line;
+            source = std::move( p.source );
+            return *this;
+         }
       };
 
       inline std::ostream& operator<<( std::ostream& o, const position& p )
