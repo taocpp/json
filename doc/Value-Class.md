@@ -39,14 +39,14 @@ The set of types is larger than that defined by the data model, with the additio
 
 Unlike some other JSON libraries, a default-initialised Value object will have `type::UNINITIALIZED` rather than `NULL_`.
 
-The `explicit operator bool () const noexcept` returns whether the Value contains *anything*, including a `NULL_`.
+The `explicit operator bool()` returns whether the Value contains *any* valid value, including a `NULL_`.
 In other words, it only returns `false` when its `type()` returns `type::UNITIALIZED`.
 
 ### Discarded
 
-The discarded type indicates that this value was the source of a move operation.
-According to the C++ standard performing any operation other than calling the destructor on such an object is not allowed.
-The discarded type is only used when the `NDEBUG` macro is not set.
+The discarded type indicates that this value was the source of a move operation, meaning the object is in a moved-from state.
+According to the C++ standard performing any operation other than assigning another value or calling the destructor
+on such an object is not allowed. The discarded type is only used when the `NDEBUG` macro is not set.
 
 ### Destroyed
 
@@ -56,7 +56,8 @@ The destroyed type is only used when the `NDEBUG` macro is not set.
 
 ### Null
 
-Null exists only on the type/meta-level; there is no C++ type corresponding to `null` values.
+The corresponding C++ type is `tao::json::null_t`, and `tao::json::null` is a `constexpr` instance of that type.
+You can construct from, assign, or compare a Value against `tao::json::null`.
 
 Test for `null` values with the `is_null()` method.
 
