@@ -73,7 +73,9 @@ namespace tao
          c->number( uint64_t( 0 ) );
          c->number( double( 0 ) );
 
+         const char* p = "";
          c->string( "" );
+         c->string( p );
          c->string( s );
          c->string( std::move( s ) );
          c->string( sv );
