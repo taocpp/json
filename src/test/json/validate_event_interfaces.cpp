@@ -20,6 +20,7 @@
 #include <tao/json/events/transformer.hpp>
 #include <tao/json/events/validate_event_order.hpp>
 #include <tao/json/events/validate_keys.hpp>
+#include <tao/json/events/virtual_ref.hpp>
 
 #include <tao/json/events/binary_to_base64.hpp>
 #include <tao/json/events/binary_to_base64url.hpp>
@@ -109,6 +110,7 @@ namespace tao
          check_consumer_impl< Consumer >();
 
          check_consumer_impl< events::ref< Consumer > >();
+         check_consumer_impl< events::virtual_ref< Consumer > >();
 
          check_consumer_impl< events::tee<> >();
          check_consumer_impl< events::tee< Consumer > >();
