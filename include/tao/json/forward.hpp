@@ -8,6 +8,12 @@ namespace tao
 {
    namespace json
    {
+      namespace events
+      {
+         class virtual_base;
+
+      }  // namespace events
+
       namespace internal
       {
          struct empty_base
@@ -27,6 +33,8 @@ namespace tao
 
       template< template< typename... > class Traits, typename Base = internal::empty_base >
       class basic_value;
+
+      using producer_t = void (*)( events::virtual_base&, const void* );
 
    }  // namespace json
 

@@ -6,7 +6,9 @@
 
 #include <stdexcept>
 
-#include "../value.hpp"
+#include "../basic_value.hpp"
+
+#include "virtual_ref.hpp"
 
 namespace tao
 {
@@ -98,6 +100,13 @@ namespace tao
                      consumer.null();
                   }
                   return;
+
+               case type::OPAQUE: {
+                  const auto& q = v.unsafe_get_opaque();
+                  virtual_ref< Consumer > ref( consumer );
+                  q.producer( ref, q.data );
+                  return;
+               }
             }
             throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
          }
@@ -181,6 +190,12 @@ namespace tao
                      consumer.null();
                   }
                   return;
+
+               case type::OPAQUE: {
+                  virtual_ref< Consumer > ref( consumer );
+                  v.unsafe_get_opaque().producer( ref, v.unsafe_get_opaque().data );
+                  return;
+               }
             }
             throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
          }

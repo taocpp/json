@@ -4,6 +4,9 @@
 #ifndef TAOCPP_JSON_INCLUDE_SELF_CONTAINED_HPP
 #define TAOCPP_JSON_INCLUDE_SELF_CONTAINED_HPP
 
+#include "events/to_value.hpp"
+#include "events/virtual_ref.hpp"
+
 #include "value.hpp"
 
 namespace tao
@@ -61,6 +64,9 @@ namespace tao
                return true;
 
             case type::RAW_PTR:
+               return false;
+
+            case type::OPAQUE:
                return false;
          }
          // LCOV_EXCL_START
@@ -128,6 +134,16 @@ namespace tao
                   v.unsafe_assign_null();
                }
                return;
+
+            case type::OPAQUE: {
+               const auto& q = v.unsafe_get_opaque();
+               events::to_basic_value< Traits, Base > consumer;
+               events::virtual_ref< events::to_basic_value< Traits, Base > > ref( consumer );
+               q.producer( ref, q.data );
+               consumer.value.base() = v.base();  // TODO: Enable move -- or not retain base here?
+               v = std::move( consumer.value );
+               return;
+            }
          }
          throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
       }

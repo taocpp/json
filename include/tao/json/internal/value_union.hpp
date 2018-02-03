@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "../byte_view.hpp"
+#include "../forward.hpp"
 
 #include "../external/byte.hpp"
 #include "../external/string_view.hpp"
@@ -20,6 +21,12 @@ namespace tao
    {
       namespace internal
       {
+         struct opaque_t
+         {
+            const void* data;
+            producer_t producer;
+         };
+
          template< typename T >
          union value_union
          {
@@ -54,6 +61,7 @@ namespace tao
             std::map< std::string, T > o;
 
             const T* p;
+            opaque_t q;
          };
 
       }  // namespace internal

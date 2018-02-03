@@ -22,7 +22,9 @@ namespace tao
             }
             return true;
          }
-
+         if( lhs.is_opaque() || rhs.is_opaque() ) {
+            throw std::logic_error( "json type opaque encountered in comparison" );
+         }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::RAW_PTR:
@@ -144,6 +146,7 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() == rhs.unsafe_get_object();
 
+            case type::OPAQUE:
             case type::RAW_PTR:
                assert( false );
                break;  // LCOV_EXCL_LINE
@@ -212,7 +215,9 @@ namespace tao
             }
             return false;
          }
-
+         if( lhs.is_opaque() || rhs.is_opaque() ) {
+            throw std::logic_error( "json type opaque encountered in comparison" );
+         }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::RAW_PTR:
@@ -274,6 +279,7 @@ namespace tao
                   }
                   break;
 
+               case type::OPAQUE:
                case type::DISCARDED:
                case type::DESTROYED:
                   assert( false );
@@ -334,6 +340,7 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() < rhs.unsafe_get_object();
 
+            case type::OPAQUE:
             case type::RAW_PTR:
                break;  // LCOV_EXCL_LINE
          }

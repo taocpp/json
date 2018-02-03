@@ -26,7 +26,8 @@ namespace tao
          BINARY_VIEW,
          ARRAY,
          OBJECT,
-         RAW_PTR
+         RAW_PTR,
+         OPAQUE
       };
 
       inline bool needs_discard( const type t )
@@ -77,6 +78,8 @@ namespace tao
                return "object";
             case type::RAW_PTR:
                return "raw_ptr";
+            case type::OPAQUE:
+               return "opaque";
          }
          return "unknown";
       }

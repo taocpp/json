@@ -1694,6 +1694,16 @@ namespace tao
                }
             }
 
+            void key( const tao::string_view& v )
+            {
+               key( std::string( v.data(), v.size() ) );
+            }
+
+            void key( const char* v )
+            {
+               key( std::string( v ) );
+            }
+
             void member()
             {
                if( m_match ) {

@@ -14,6 +14,8 @@
 #include "forward.hpp"
 #include "type.hpp"
 
+#include "events/from_value.hpp"
+
 #include "external/byte.hpp"
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
@@ -64,6 +66,12 @@ namespace tao
       template<>
       struct traits< bool >
       {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const bool b )
+         {
+            c.boolean( b );
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const bool b ) noexcept
          {
@@ -132,6 +140,12 @@ namespace tao
          struct signed_trait
             : number_trait< T >
          {
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& c, const T i )
+            {
+               c.number( std::int64_t( i ) );
+            }
+
             template< template< typename... > class Traits, typename Base >
             static void assign( basic_value< Traits, Base >& v, const T i ) noexcept
             {
@@ -197,6 +211,12 @@ namespace tao
          struct unsigned_trait
             : number_trait< T >
          {
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& c, const T i )
+            {
+               c.number( std::uint64_t( i ) );
+            }
+
             template< template< typename... > class Traits, typename Base >
             static void assign( basic_value< Traits, Base >& v, const T i ) noexcept
             {
@@ -268,6 +288,12 @@ namespace tao
          struct float_trait
             : number_trait< T >
          {
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& c, const T f )
+            {
+               c.number( double( f ) );
+            }
+
             template< template< typename... > class Traits, typename Base >
             static void assign( basic_value< Traits, Base >& v, const T f ) noexcept
             {
@@ -482,6 +508,12 @@ namespace tao
       template<>
       struct traits< std::string >
       {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c , const std::string& s )
+         {
+            c.string( s );
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const std::string& s )
          {
@@ -563,6 +595,12 @@ namespace tao
       template<>
       struct traits< tao::string_view >
       {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c , const tao::string_view& sv )
+         {
+            c.string( sv );
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const tao::string_view sv )
          {
@@ -709,6 +747,12 @@ namespace tao
       template<>
       struct traits< std::vector< tao::byte > >
       {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const std::vector< tao::byte >& x )
+         {
+            c.binary( x );
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const std::vector< tao::byte >& x )
          {
@@ -790,6 +834,12 @@ namespace tao
       template<>
       struct traits< tao::byte_view >
       {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const tao::byte_view xv )
+         {
+            c.binary( xv );
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const tao::byte_view xv ) noexcept
          {
@@ -872,6 +922,17 @@ namespace tao
       template< template< typename... > class Traits, typename Base >
       struct traits< std::vector< basic_value< Traits, Base > > >
       {
+         template< template< typename... > class, typename Consumer >
+         static void produce( Consumer& c, const std::vector< basic_value< Traits, Base > >& a )
+         {
+            c.begin_array( a.size() );
+            for( const auto& i : a ) {
+               events::from_value( c, i );
+               c.element();
+            }
+            c.end_array( a.size() );
+         }
+
          static void assign( basic_value< Traits, Base >& v, const std::vector< basic_value< Traits, Base > >& a )
          {
             v.unsafe_assign_array( a );
@@ -886,6 +947,18 @@ namespace tao
       template< template< typename... > class Traits, typename Base >
       struct traits< std::map< std::string, basic_value< Traits, Base > > >
       {
+         template< template< typename... > class, typename Consumer >
+         static void produce( Consumer& c, const std::map< std::string, basic_value< Traits, Base > >& o )
+         {
+            c.begin_array( o.size() );
+            for( const auto& i : o ) {
+               c.key( i.first );
+               events::from_value( c, i.second );
+               c.member();
+            }
+            c.end_array( o.size() );
+         }
+
          static void assign( basic_value< Traits, Base >& v, const std::map< std::string, basic_value< Traits, Base > >& o )
          {
             v.unsafe_assign_object( std::move( o ) );
@@ -961,6 +1034,17 @@ namespace tao
       template< typename T >
       struct traits< tao::optional< T > >
       {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const tao::optional< T >& o )
+         {
+            if( o ) {
+               Traits< T >::template produce< Traits >( c, *o );
+            }
+            else {
+               c.null();
+            }
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const tao::optional< T >& o )
          {

@@ -12,6 +12,8 @@
 #include <utility>
 #include <vector>
 
+#include "events/virtual_base.hpp"
+
 #include "external/byte.hpp"
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
@@ -319,6 +321,11 @@ namespace tao
             return m_type == json::type::RAW_PTR;
          }
 
+         bool is_opaque() const noexcept
+         {
+            return m_type == json::type::OPAQUE;
+         }
+
          // The unsafe_get_*() accessor functions MUST NOT be
          // called when the type of the value is not the one
          // corresponding to the type of the accessor!
@@ -401,6 +408,11 @@ namespace tao
          const basic_value* unsafe_get_raw_ptr() const noexcept
          {
             return m_union.p;
+         }
+
+         const internal::opaque_t unsafe_get_opaque() const noexcept
+         {
+            return m_union.q;
          }
 
          template< json::type E >
@@ -509,6 +521,8 @@ namespace tao
             validate_json_type( json::type::RAW_PTR );
             return unsafe_get_raw_ptr();
          }
+
+         // Does get_opaque() make sense?
 
          template< json::type E >
          decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) get()
@@ -659,6 +673,22 @@ namespace tao
          {
             m_union.p = p;
             m_type = json::type::RAW_PTR;
+         }
+
+         template< typename T >
+         void unsafe_assign_opaque( const T* data ) noexcept
+         {
+            unsafe_assign_opaque( data, &basic_value::producer_wrapper< T > );
+         }
+
+         template< typename T >
+         void unsafe_assign_opaque( const T* data, const producer_t producer ) noexcept
+         {
+            assert( data );
+            assert( producer );
+            m_union.q.data = data;
+            m_union.q.producer = producer;
+            m_type = json::type::OPAQUE;
          }
 
          template< typename T >
@@ -911,6 +941,19 @@ namespace tao
          {
             unsafe_discard();
             unsafe_assign_raw_ptr( p );
+         }
+
+         template< typename T >
+         void assign_opaque( const T* data ) noexcept
+         {
+            assign_opaque( data, &basic_value::producer_wrapper< T > );
+         }
+
+         template< typename T >
+         void assign_opaque( const T* data, const producer_t producer ) noexcept
+         {
+            unsafe_discard();
+            unsafe_assign_opaque( data, producer );
          }
 
          const basic_value* skip_raw_ptr() const noexcept
@@ -1250,6 +1293,9 @@ namespace tao
 
                case json::type::RAW_PTR:
                   return !m_union.p;
+
+               case json::type::OPAQUE:
+                  return !m_union.q.data;
             }
             // LCOV_EXCL_START
             assert( false );
@@ -1271,6 +1317,7 @@ namespace tao
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
                case json::type::RAW_PTR:
+               case json::type::OPAQUE:
                   return;
 
                case json::type::STRING:
@@ -1428,6 +1475,13 @@ namespace tao
                   r.m_type = json::type::DISCARDED;
 #endif
                   return;
+
+               case json::type::OPAQUE:
+                  m_union.q = r.m_union.q;
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
+                  return;
             }
             assert( false );  // LCOV_EXCL_LINE
          }
@@ -1490,8 +1544,18 @@ namespace tao
                case json::type::RAW_PTR:
                   m_union.p = r.m_union.p;
                   return;
+
+               case json::type::OPAQUE:
+                  m_union.q = r.m_union.q;
+                  return;
             }
             assert( false );  // LCOV_EXCL_LINE
+         }
+
+         template< typename T >
+         static void producer_wrapper( events::virtual_base& consumer, const void* raw )
+         {
+            Traits< T >::template produce< Traits >( consumer, *reinterpret_cast< const T* >( raw ) );
          }
 
          json::type m_type = json::type::UNINITIALIZED;
