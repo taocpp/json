@@ -53,6 +53,11 @@ namespace tao
                m_r.number( v );
             }
 
+            void v_string( const char* v ) override
+            {
+               m_r.string( v );
+            }
+
             void v_string( std::string&& v ) override
             {
                m_r.string( std::move( v ) );
@@ -116,6 +121,11 @@ namespace tao
             void v_begin_object( const std::size_t v ) override
             {
                m_r.begin_object( v );
+            }
+
+            void v_key( const char* v ) override
+            {
+               m_r.key( v );
             }
 
             void v_key( std::string&& v ) override

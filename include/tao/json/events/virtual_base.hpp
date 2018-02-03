@@ -49,10 +49,9 @@ namespace tao
                v_number( v );
             }
 
-            template< std::size_t N >
-            void string( const char( &v )[ N ] )
+            void string( const char* v )
             {
-               v_string( tao::string_view( v, N - 1 ) );
+               v_string( v );
             }
 
             void string( std::string&& v )
@@ -120,10 +119,9 @@ namespace tao
                v_begin_object( v );
             }
 
-            template< std::size_t N >
-            void key( const char( &v )[ N ] )
+            void key( const char* v )
             {
-               key( tao::string_view( v, N - 1 ) );
+               v_key( v );
             }
 
             void key( std::string&& v )
@@ -159,8 +157,8 @@ namespace tao
             virtual_base( virtual_base&& ) = delete;
             virtual_base( const virtual_base& ) = delete;
 
-            void operator= ( virtual_base&& ) = delete;
-            void operator= ( const virtual_base& ) = delete;
+            void operator=( virtual_base&& ) = delete;
+            void operator=( const virtual_base& ) = delete;
 
          protected:
             virtual_base() = default;
@@ -171,6 +169,7 @@ namespace tao
             virtual void v_number( std::int64_t ) = 0;
             virtual void v_number( std::uint64_t ) = 0;
             virtual void v_number( double ) = 0;
+            virtual void v_string( const char* ) = 0;
             virtual void v_string( std::string&& ) = 0;
             virtual void v_string( const std::string& ) = 0;
             virtual void v_string( const tao::string_view& ) = 0;
@@ -184,6 +183,7 @@ namespace tao
             virtual void v_end_array( std::size_t ) = 0;
             virtual void v_begin_object() = 0;
             virtual void v_begin_object( std::size_t ) = 0;
+            virtual void v_key( const char* ) = 0;
             virtual void v_key( std::string&& ) = 0;
             virtual void v_key( const std::string& ) = 0;
             virtual void v_key( const tao::string_view& ) = 0;
