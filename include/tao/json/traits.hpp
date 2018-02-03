@@ -509,7 +509,7 @@ namespace tao
       struct traits< std::string >
       {
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c , const std::string& s )
+         static void produce( Consumer& c, const std::string& s )
          {
             c.string( s );
          }
@@ -596,7 +596,7 @@ namespace tao
       struct traits< tao::string_view >
       {
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c , const tao::string_view& sv )
+         static void produce( Consumer& c, const tao::string_view& sv )
          {
             c.string( sv );
          }

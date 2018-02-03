@@ -22,9 +22,6 @@ namespace tao
             }
             return true;
          }
-         if( lhs.is_opaque() || rhs.is_opaque() ) {
-            throw std::logic_error( "json type opaque encountered in comparison" );
-         }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::RAW_PTR:
@@ -87,8 +84,15 @@ namespace tao
                   break;
 
                case type::DISCARDED:
+                  assert( lhs.type() != type::DISCARDED );
+                  break;
+
                case type::DESTROYED:
-                  assert( false );
+                  assert( lhs.type() != type::DESTROYED );
+                  break;
+
+               case type::OPAQUE:
+                  assert( lhs.type() != type::OPAQUE );
                   break;
 
                default:
@@ -96,6 +100,7 @@ namespace tao
             }
             assert( rhs.type() != type::DISCARDED );
             assert( rhs.type() != type::DESTROYED );
+            assert( rhs.type() != type::OPAQUE );
             return false;
          }
 
@@ -146,9 +151,12 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() == rhs.unsafe_get_object();
 
-            case type::OPAQUE:
             case type::RAW_PTR:
-               assert( false );
+               assert( lhs.type() != type::RAW_PTR );
+               break;  // LCOV_EXCL_LINE
+
+            case type::OPAQUE:
+               assert( lhs.type() != type::OPAQUE );
                break;  // LCOV_EXCL_LINE
          }
          // LCOV_EXCL_START
@@ -215,9 +223,6 @@ namespace tao
             }
             return false;
          }
-         if( lhs.is_opaque() || rhs.is_opaque() ) {
-            throw std::logic_error( "json type opaque encountered in comparison" );
-         }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::RAW_PTR:
@@ -279,10 +284,16 @@ namespace tao
                   }
                   break;
 
-               case type::OPAQUE:
                case type::DISCARDED:
+                  assert( lhs.type() != type::DISCARDED );
+                  break;
+
                case type::DESTROYED:
-                  assert( false );
+                  assert( lhs.type() != type::DESTROYED );
+                  break;
+
+               case type::OPAQUE:
+                  assert( lhs.type() != type::OPAQUE );
                   break;
 
                default:
@@ -290,6 +301,7 @@ namespace tao
             }
             assert( rhs.type() != type::DISCARDED );
             assert( rhs.type() != type::DESTROYED );
+            assert( rhs.type() != type::OPAQUE );
             return lhs.type() < rhs.type();
          }
 
@@ -340,8 +352,12 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() < rhs.unsafe_get_object();
 
-            case type::OPAQUE:
             case type::RAW_PTR:
+               assert( lhs.type() != type::RAW_PTR );
+               break;  // LCOV_EXCL_LINE
+
+            case type::OPAQUE:
+               assert( lhs.type() != type::OPAQUE );
                break;  // LCOV_EXCL_LINE
          }
          // LCOV_EXCL_START

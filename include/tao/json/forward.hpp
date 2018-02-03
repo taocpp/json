@@ -34,7 +34,7 @@ namespace tao
       template< template< typename... > class Traits, typename Base = internal::empty_base >
       class basic_value;
 
-      using producer_t = void (*)( events::virtual_base&, const void* );
+      using producer_t = void ( * )( events::virtual_base&, const void* );
 
    }  // namespace json
 
