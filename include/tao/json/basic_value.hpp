@@ -962,6 +962,7 @@ namespace tao
             const basic_value* p = this;
             while( p->is_raw_ptr() ) {
                p = p->unsafe_get_raw_ptr();
+               assert( p );
             }
             return p;
          }
@@ -1257,15 +1258,17 @@ namespace tao
                case json::type::UNINITIALIZED:
                   return true;
 
-               // LCOV_EXCL_START
-               case json::type::DISCARDED:
+               case json::type::DISCARDED: {  // LCOV_EXCL_START
                   assert( m_type != json::type::DISCARDED );
                   return true;
+                  // LCOV_EXCL_STOP
+               }
 
-               case json::type::DESTROYED:
+               case json::type::DESTROYED: {  // LCOV_EXCL_START
                   assert( m_type != json::type::DESTROYED );
                   return true;
                   // LCOV_EXCL_STOP
+               }
 
                case json::type::NULL_:
                case json::type::BOOLEAN:
@@ -1380,15 +1383,17 @@ namespace tao
 #endif
                   return;
 
-               // LCOV_EXCL_START
-               case json::type::DISCARDED:
+               case json::type::DISCARDED: {  // LCOV_EXCL_START
                   assert( r.m_type != json::type::DISCARDED );
                   return;
+                  // LCOV_EXCL_STOP
+               }
 
-               case json::type::DESTROYED:
+               case json::type::DESTROYED: {  // LCOV_EXCL_START
                   assert( r.m_type != json::type::DESTROYED );
                   return;
                   // LCOV_EXCL_STOP
+               }
 
                case json::type::NULL_:
 #ifndef NDEBUG
