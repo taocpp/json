@@ -32,7 +32,7 @@ namespace tao
             case type::DESTROYED:
                assert( v.type() != type::DESTROYED );
                return false;
-            // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
             case type::NULL_:
             case type::BOOLEAN:

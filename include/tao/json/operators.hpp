@@ -107,7 +107,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-            // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
             case type::NULL_:
                return true;
@@ -299,7 +299,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-            // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
             case type::NULL_:
                return false;
