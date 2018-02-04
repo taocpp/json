@@ -13,6 +13,28 @@ namespace tao
 {
    namespace json
    {
+      struct point
+      {
+         double x = 1.0;
+         double y = 2.0;
+      };
+
+      template<>
+      struct traits< point >
+      {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& consumer, const point& data )
+         {
+            consumer.begin_array( 2 );
+            Traits< decltype( data.x ) >::template produce< Traits >( consumer, data.x );
+            consumer.number( data.x );
+            consumer.element();
+            Traits< decltype( data.x ) >::template produce< Traits >( consumer, data.y );
+            consumer.element();
+            consumer.end_array( 2 );
+         };
+      };
+
       struct employee
       {
          std::string name = "Isidor";
@@ -54,15 +76,9 @@ namespace tao
       namespace events
       {
          template< template< typename... > class Traits = traits, typename Consumer, typename T >
-         void from_other( Consumer& c, const T& t )
-         {
-            Traits< T >::template produce< Traits >( c, t );
-         }
-
-         template< template< typename... > class Traits = traits, typename Consumer, typename T >
          void from_other( Consumer& c, T&& t )
          {
-            Traits< T >::template produce< Traits >( c, std::move( t ) );
+            Traits< typename std::decay< T >::type >::template produce< Traits >( c, std::forward< T >( t ) );
          }
 
       }  // namespace events
