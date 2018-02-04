@@ -192,8 +192,9 @@ namespace tao
                   return;
 
                case type::OPAQUE: {
+                  const auto& q = v.unsafe_get_opaque();
                   virtual_ref< Consumer > ref( consumer );
-                  v.unsafe_get_opaque().producer( ref, v.unsafe_get_opaque().data );
+                  q.producer( ref, q.data );
                   return;
                }
             }
