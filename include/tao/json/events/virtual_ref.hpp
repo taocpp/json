@@ -68,7 +68,7 @@ namespace tao
                m_r.string( v );
             }
 
-            void v_string( const tao::string_view& v ) override
+            void v_string( const tao::string_view v ) override
             {
                m_r.string( v );
             }
@@ -83,7 +83,7 @@ namespace tao
                m_r.binary( v );
             }
 
-            void v_binary( const tao::byte_view& v ) override
+            void v_binary( const tao::byte_view v ) override
             {
                m_r.binary( v );
             }
@@ -138,7 +138,7 @@ namespace tao
                m_r.key( v );
             }
 
-            void v_key( const tao::string_view& v ) override
+            void v_key( const tao::string_view v ) override
             {
                m_r.key( v );
             }

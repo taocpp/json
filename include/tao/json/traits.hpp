@@ -514,6 +514,12 @@ namespace tao
             c.string( s );
          }
 
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, std::string&& s )
+         {
+            c.string( std::move( s ) );
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const std::string& s )
          {
@@ -596,7 +602,7 @@ namespace tao
       struct traits< tao::string_view >
       {
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::string_view& sv )
+         static void produce( Consumer& c, const tao::string_view sv )
          {
             c.string( sv );
          }
@@ -751,6 +757,12 @@ namespace tao
          static void produce( Consumer& c, const std::vector< tao::byte >& x )
          {
             c.binary( x );
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, std::vector< tao::byte >&& x )
+         {
+            c.binary( std::move( x ) );
          }
 
          template< template< typename... > class Traits, typename Base >

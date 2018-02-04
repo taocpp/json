@@ -64,7 +64,7 @@ namespace tao
                v_string( v );
             }
 
-            void string( const tao::string_view& v )
+            void string( const tao::string_view v )
             {
                v_string( v );
             }
@@ -79,7 +79,7 @@ namespace tao
                v_binary( v );
             }
 
-            void binary( const tao::byte_view& v )
+            void binary( const tao::byte_view v )
             {
                v_binary( v );
             }
@@ -134,7 +134,7 @@ namespace tao
                v_key( v );
             }
 
-            void key( const tao::string_view& v )
+            void key( const tao::string_view v )
             {
                v_key( v );
             }
@@ -172,10 +172,10 @@ namespace tao
             virtual void v_string( const char* ) = 0;
             virtual void v_string( std::string&& ) = 0;
             virtual void v_string( const std::string& ) = 0;
-            virtual void v_string( const tao::string_view& ) = 0;
+            virtual void v_string( tao::string_view ) = 0;
             virtual void v_binary( std::vector< byte >&& ) = 0;
             virtual void v_binary( const std::vector< byte >& ) = 0;
-            virtual void v_binary( const tao::byte_view& ) = 0;
+            virtual void v_binary( tao::byte_view ) = 0;
             virtual void v_begin_array() = 0;
             virtual void v_begin_array( std::size_t ) = 0;
             virtual void v_element() = 0;
@@ -186,7 +186,7 @@ namespace tao
             virtual void v_key( const char* ) = 0;
             virtual void v_key( std::string&& ) = 0;
             virtual void v_key( const std::string& ) = 0;
-            virtual void v_key( const tao::string_view& ) = 0;
+            virtual void v_key( tao::string_view ) = 0;
             virtual void v_member() = 0;
             virtual void v_end_object() = 0;
             virtual void v_end_object( std::size_t ) = 0;
