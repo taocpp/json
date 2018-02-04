@@ -32,7 +32,7 @@ namespace tao
             Traits< decltype( data.x ) >::template produce< Traits >( consumer, data.y );
             consumer.element();
             consumer.end_array( 2 );
-         };
+         }
       };
 
       struct employee
