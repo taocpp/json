@@ -1555,7 +1555,7 @@ namespace tao
          template< typename T >
          static void producer_wrapper( events::virtual_base& consumer, const void* raw )
          {
-            Traits< T >::template produce< Traits >( consumer, *reinterpret_cast< const T* >( raw ) );
+            Traits< T >::template produce< Traits >( consumer, *static_cast< const T* >( raw ) );
          }
 
          json::type m_type = json::type::UNINITIALIZED;
