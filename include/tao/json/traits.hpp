@@ -904,7 +904,6 @@ namespace tao
       {
          static void assign( basic_value< Traits, Base >& v, const basic_value< Traits, Base >* p ) noexcept
          {
-            assert( p );
             v.unsafe_assign_raw_ptr( p );
          }
 
