@@ -904,25 +904,29 @@ namespace tao
       {
          static void assign( basic_value< Traits, Base >& v, const basic_value< Traits, Base >* p ) noexcept
          {
+            assert( p );
             v.unsafe_assign_raw_ptr( p );
          }
 
          template< template< typename... > class TraitsL, typename BaseL >
          static bool equal( const basic_value< TraitsL, BaseL >& lhs, const basic_value< Traits, Base >* rhs ) noexcept
          {
-            return rhs ? ( lhs == *rhs ) : ( lhs == null );
+            assert( rhs );
+            return lhs == *rhs;
          }
 
          template< template< typename... > class TraitsL, typename BaseL >
          static bool less_than( const basic_value< TraitsL, BaseL >& lhs, const basic_value< Traits, Base >* rhs ) noexcept
          {
-            return rhs ? ( lhs < *rhs ) : ( lhs < null );
+            assert( rhs );
+            return lhs < *rhs;
          }
 
          template< template< typename... > class TraitsL, typename BaseL >
          static bool greater_than( const basic_value< TraitsL, BaseL >& lhs, const basic_value< Traits, Base >* rhs ) noexcept
          {
-            return rhs ? ( lhs > *rhs ) : ( lhs > null );
+            assert( rhs );
+            return lhs > *rhs;
          }
       };
 
