@@ -526,32 +526,6 @@ namespace tao
 
             TEST_ASSERT( v.type() == type::DOUBLE );
             TEST_ASSERT( std::isnan( v.get_double() ) );
-
-            v = nullptr;
-
-            TEST_ASSERT( v.type() == type::RAW_PTR );
-            TEST_ASSERT( v.get_raw_ptr() == nullptr );
-            TEST_ASSERT( v.empty() );
-            TEST_ASSERT( v == null );
-         }
-
-         {
-            const value v2( v );  // NOLINT
-            TEST_ASSERT( v2.type() == type::RAW_PTR );
-            TEST_ASSERT( v2.get_raw_ptr() == nullptr );
-            TEST_ASSERT( v2.empty() );
-            TEST_ASSERT( v2 == null );
-         }
-
-         {
-            const value v2( &v );
-            TEST_ASSERT( v2.type() == type::RAW_PTR );
-            TEST_ASSERT( v2.get_raw_ptr() != nullptr );
-            TEST_ASSERT( v2.get_raw_ptr()->type() == type::RAW_PTR );
-            TEST_ASSERT( v2.get_raw_ptr()->get_raw_ptr() == nullptr );
-            TEST_ASSERT( !v2.empty() );
-            TEST_ASSERT( v2.get_raw_ptr()->empty() );
-            TEST_ASSERT( v2 == null );
          }
 
          test_string( "" );

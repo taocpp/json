@@ -671,6 +671,7 @@ namespace tao
 
          void unsafe_assign_raw_ptr( const basic_value* p ) noexcept
          {
+            assert( p );
             m_union.p = p;
             m_type = json::type::RAW_PTR;
          }
@@ -959,7 +960,7 @@ namespace tao
          const basic_value* skip_raw_ptr() const noexcept
          {
             const basic_value* p = this;
-            while( p && p->is_raw_ptr() ) {
+            while( p->is_raw_ptr() ) {
                p = p->unsafe_get_raw_ptr();
             }
             return p;
@@ -1264,13 +1265,15 @@ namespace tao
                case json::type::DESTROYED:
                   assert( m_type != json::type::DESTROYED );
                   return true;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
+               case json::type::RAW_PTR:
+               case json::type::OPAQUE:
                   return false;
 
                case json::type::STRING:
@@ -1290,12 +1293,6 @@ namespace tao
 
                case json::type::OBJECT:
                   return m_union.o.empty();
-
-               case json::type::RAW_PTR:
-                  return !m_union.p;
-
-               case json::type::OPAQUE:
-                  return !m_union.q.data;
             }
             // LCOV_EXCL_START
             assert( false );
@@ -1391,7 +1388,7 @@ namespace tao
                case json::type::DESTROYED:
                   assert( r.m_type != json::type::DESTROYED );
                   return;
-                  // LCOV_EXCL_STOP
+               // LCOV_EXCL_STOP
 
                case json::type::NULL_:
 #ifndef NDEBUG

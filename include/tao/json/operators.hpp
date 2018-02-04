@@ -14,21 +14,12 @@ namespace tao
       bool operator==( const basic_value< TraitsL, BaseL >& lhs, const basic_value< TraitsR, BaseR >& rhs ) noexcept
       {
          if( rhs.is_raw_ptr() ) {
-            if( const auto* p = rhs.skip_raw_ptr() ) {
-               return lhs == *p;
-            }
-            if( const auto* q = lhs.skip_raw_ptr() ) {
-               return q->is_null();
-            }
-            return true;
+            return lhs == *rhs.skip_raw_ptr();
          }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::RAW_PTR:
-                  if( const auto* p = lhs.skip_raw_ptr() ) {
-                     return *p == rhs;
-                  }
-                  return rhs.is_null();
+                  return *lhs.skip_raw_ptr() == rhs;
 
                case type::SIGNED:
                   if( rhs.type() == type::UNSIGNED ) {
@@ -116,7 +107,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
                return true;
@@ -215,21 +206,12 @@ namespace tao
       bool operator<( const basic_value< TraitsL, BaseL >& lhs, const basic_value< TraitsR, BaseR >& rhs ) noexcept
       {
          if( rhs.is_raw_ptr() ) {
-            if( const auto* p = rhs.skip_raw_ptr() ) {
-               return lhs < *p;
-            }
-            if( const auto* q = lhs.skip_raw_ptr() ) {
-               return q->type() < type::NULL_;
-            }
-            return false;
+            return lhs < *rhs.skip_raw_ptr();
          }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::RAW_PTR:
-                  if( const auto* p = lhs.skip_raw_ptr() ) {
-                     return *p < rhs;
-                  }
-                  return type::NULL_ < rhs.type();
+                  return *lhs.skip_raw_ptr() < rhs;
 
                case type::SIGNED:
                   if( rhs.type() == type::UNSIGNED ) {
@@ -317,7 +299,7 @@ namespace tao
             case type::DESTROYED:
                assert( lhs.type() != type::DESTROYED );
                break;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
                return false;

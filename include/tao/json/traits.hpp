@@ -1003,34 +1003,6 @@ namespace tao
       {
       };
 
-      template<>
-      struct traits< std::nullptr_t >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, std::nullptr_t ) noexcept
-         {
-            v.unsafe_assign_raw_ptr( nullptr );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, std::nullptr_t ) noexcept
-         {
-            return lhs == null;
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, std::nullptr_t ) noexcept
-         {
-            return lhs < null;
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, std::nullptr_t ) noexcept
-         {
-            return lhs > null;
-         }
-      };
-
       template< typename T >
       struct traits< tao::optional< T > >
       {

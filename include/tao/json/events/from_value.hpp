@@ -93,12 +93,7 @@ namespace tao
                }
 
                case type::RAW_PTR:
-                  if( const basic_value< Traits, Base >* p = v.unsafe_get_raw_ptr() ) {
-                     events::from_value( consumer, *p );
-                  }
-                  else {
-                     consumer.null();
-                  }
+                  events::from_value( consumer, *v.unsafe_get_raw_ptr() );
                   return;
 
                case type::OPAQUE: {
@@ -183,12 +178,7 @@ namespace tao
                   return;
 
                case type::RAW_PTR:
-                  if( const basic_value< Traits, Base >* p = v.unsafe_get_raw_ptr() ) {
-                     events::from_value( consumer, *p );
-                  }
-                  else {
-                     consumer.null();
-                  }
+                  events::from_value( consumer, *v.unsafe_get_raw_ptr() );
                   return;
 
                case type::OPAQUE: {

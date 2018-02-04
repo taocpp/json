@@ -49,7 +49,6 @@ namespace tao
          TEST_ASSERT( !test_value( empty_object, c_null ) );
          TEST_ASSERT( !test_value( value::array( { null } ), c_null ) );
          TEST_ASSERT( !test_value( { { "", null } }, c_null ) );
-         TEST_ASSERT( test_value( nullptr, c_null ) );
 
          TEST_ASSERT( test_parse( "null", c_null ) );
          TEST_ASSERT( !test_parse( "true", c_null ) );
@@ -85,7 +84,6 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_true ) );
          TEST_ASSERT( !test_value( empty_array, c_true ) );
          TEST_ASSERT( !test_value( empty_object, c_true ) );
-         TEST_ASSERT( !test_value( nullptr, c_true ) );
 
          TEST_ASSERT( !test_parse( "null", c_true ) );
          TEST_ASSERT( test_parse( "true", c_true ) );
@@ -121,7 +119,6 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_0 ) );
          TEST_ASSERT( !test_value( empty_array, c_0 ) );
          TEST_ASSERT( !test_value( empty_object, c_0 ) );
-         TEST_ASSERT( !test_value( nullptr, c_0 ) );
 
          TEST_ASSERT( !test_parse( "null", c_0 ) );
          TEST_ASSERT( !test_parse( "true", c_0 ) );
@@ -154,7 +151,6 @@ namespace tao
          TEST_ASSERT( !test_value( "Hello, world!", c_42 ) );
          TEST_ASSERT( !test_value( empty_array, c_42 ) );
          TEST_ASSERT( !test_value( empty_object, c_42 ) );
-         TEST_ASSERT( !test_value( nullptr, c_42 ) );
       }
 
       void test_string()
@@ -174,7 +170,6 @@ namespace tao
          TEST_ASSERT( !test_value( "foo", c_hello_world ) );
          TEST_ASSERT( !test_value( empty_array, c_hello_world ) );
          TEST_ASSERT( !test_value( empty_object, c_hello_world ) );
-         TEST_ASSERT( !test_value( nullptr, c_hello_world ) );
 
          TEST_ASSERT( !test_parse( "null", c_hello_world ) );
          TEST_ASSERT( !test_parse( "true", c_hello_world ) );
@@ -213,7 +208,6 @@ namespace tao
          TEST_ASSERT( !test_value( value::array( { empty_array } ), c_empty_array ) );
          TEST_ASSERT( !test_value( value::array( { 1, 2, 3 } ), c_empty_array ) );
          TEST_ASSERT( !test_value( empty_object, c_empty_array ) );
-         TEST_ASSERT( !test_value( nullptr, c_empty_array ) );
 
          TEST_ASSERT( !test_parse( "null", c_empty_array ) );
          TEST_ASSERT( !test_parse( "true", c_empty_array ) );
@@ -258,7 +252,6 @@ namespace tao
          TEST_ASSERT( !test_value( value::array( { 1, 2, 3, 4 } ), c_array ) );
          TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3 } ) } ), c_array ) );
          TEST_ASSERT( !test_value( empty_object, c_array ) );
-         TEST_ASSERT( !test_value( nullptr, c_array ) );
 
          TEST_ASSERT( !test_parse( "null", c_array ) );
          TEST_ASSERT( !test_parse( "true", c_array ) );
@@ -320,7 +313,6 @@ namespace tao
          TEST_ASSERT( !test_value( value::array( { empty_array } ), c_empty_object ) );
          TEST_ASSERT( !test_value( value::array( { 1, 2, 3 } ), c_empty_object ) );
          TEST_ASSERT( test_value( empty_object, c_empty_object ) );
-         TEST_ASSERT( !test_value( nullptr, c_empty_object ) );
 
          TEST_ASSERT( !test_parse( "null", c_empty_object ) );
          TEST_ASSERT( !test_parse( "true", c_empty_object ) );
@@ -365,7 +357,6 @@ namespace tao
          TEST_ASSERT( !test_value( { { "a", 1 }, { "b", 1 }, { "c", 3 } }, c_object ) );
          TEST_ASSERT( !test_value( { { "a", 1 }, { "c", 3 } }, c_object ) );
          TEST_ASSERT( !test_value( { { "b", 2 }, { "c", 3 } }, c_object ) );
-         TEST_ASSERT( !test_value( nullptr, c_object ) );
 
          TEST_ASSERT( !test_parse( "null", c_object ) );
          TEST_ASSERT( !test_parse( "true", c_object ) );

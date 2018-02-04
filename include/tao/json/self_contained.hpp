@@ -13,8 +13,8 @@ namespace tao
 {
    namespace json
    {
-      // recursively checks for the existence if RAW_PTR nodes,
-      // STRING_VIEW or BINARY_VIEW,
+      // recursively checks for the existence
+      // of RAW_PTR or OPAQUE nodes, STRING_VIEW or BINARY_VIEW,
       // returns true is no such nodes were found.
 
       template< template< typename... > class Traits, typename Base >
@@ -32,7 +32,7 @@ namespace tao
             case type::DESTROYED:
                assert( v.type() != type::DESTROYED );
                return false;
-               // LCOV_EXCL_STOP
+            // LCOV_EXCL_STOP
 
             case type::NULL_:
             case type::BOOLEAN:
@@ -75,8 +75,8 @@ namespace tao
          // LCOV_EXCL_STOP
       }
 
-      // removes all RAW_PTR nodes, recursively, by copying their pointed-to content
-      // or replacing a nullptr RAW_PTR node with a null node.
+      // removes all RAW_PTR and OPAQIE nodes, recursively,
+      // by copying/generating their content,
       // replaces STRING_VIEW and BINARY_VIEW with copies.
 
       template< template< typename... > class Traits, typename Base >
@@ -126,13 +126,8 @@ namespace tao
                return;
 
             case type::RAW_PTR:
-               if( const auto* p = v.unsafe_get_raw_ptr() ) {
-                  v = *p;
-                  make_self_contained( v );
-               }
-               else {
-                  v.unsafe_assign_null();
-               }
+               v = *v.unsafe_get_raw_ptr();
+               make_self_contained( v );
                return;
 
             case type::OPAQUE: {
