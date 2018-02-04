@@ -12,7 +12,7 @@ namespace tao
 {
    namespace json
    {
-      using value = basic_value< traits, internal::empty_base >;
+      using value = basic_value< traits >;
 
    }  // namespace json
 

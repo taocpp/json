@@ -220,7 +220,7 @@ namespace tao
       {
          // Events consumer that compares against a JSON Value.
 
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits, typename Base = internal::empty_base >
          class basic_compare
             : public internal::events_compare< Traits, Base >
          {
@@ -255,7 +255,7 @@ namespace tao
             }
          };
 
-         using compare = basic_compare< traits, internal::empty_base >;
+         using compare = basic_compare< traits >;
 
       }  // namespace events
 

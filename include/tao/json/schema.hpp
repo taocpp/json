@@ -1816,7 +1816,7 @@ namespace tao
 
       }  // namespace internal
 
-      template< template< typename... > class Traits, typename Base >
+      template< template< typename... > class Traits, typename Base = internal::empty_base >
       class basic_schema
       {
       private:
@@ -1843,7 +1843,7 @@ namespace tao
          }
       };
 
-      using schema = basic_schema< traits, internal::empty_base >;
+      using schema = basic_schema< traits >;
 
       template< template< typename... > class Traits, typename Base >
       basic_schema< Traits, Base > make_schema( const basic_value< Traits, Base >& v )

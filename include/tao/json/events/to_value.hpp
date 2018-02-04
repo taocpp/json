@@ -24,7 +24,7 @@ namespace tao
       {
          // Events consumer to build a JSON Value.
 
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits, typename Base = internal::empty_base >
          class to_basic_value
          {
          private:
@@ -141,7 +141,7 @@ namespace tao
             }
          };
 
-         using to_value = to_basic_value< traits, internal::empty_base >;
+         using to_value = to_basic_value< traits >;
 
       }  // namespace events
 
