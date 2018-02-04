@@ -5,6 +5,7 @@
 
 #include <tao/json/from_string.hpp>
 #include <tao/json/self_contained.hpp>
+#include <tao/json/to_stream.hpp>
 #include <tao/json/to_string.hpp>
 #include <tao/json/value.hpp>
 
@@ -50,6 +51,44 @@ namespace tao
          }
       };
 
+      namespace events
+      {
+         template< template< typename... > class Traits = traits, typename Consumer, typename T >
+         void from_other( Consumer& c, const T& t )
+         {
+            Traits< T >::template produce< Traits >( c, t );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer, typename T >
+         void from_other( Consumer& c, T&& t )
+         {
+            Traits< T >::template produce< Traits >( c, std::move( t ) );
+         }
+
+      }  // namespace events
+
+      template< template< typename... > class Traits = traits, typename T >
+      void other_to_stream( std::ostream& os, const T& t )
+      {
+         events::to_stream consumer( os );
+         events::from_other< Traits >( consumer, t );
+      }
+
+      template< template< typename... > class Traits = traits, typename T >
+      void other_to_stream( std::ostream& os, const T& t, const std::size_t indent )
+      {
+         events::to_pretty_stream consumer( os, indent );
+         events::from_other< Traits >( consumer, t );
+      }
+
+      template< template< typename... > class Traits = traits, typename... Ts >
+      std::string other_to_string( Ts&&... ts )
+      {
+         std::ostringstream oss;
+         other_to_stream< Traits >( oss, std::forward< Ts >( ts )... );
+         return oss.str();
+      }
+
       void unit_test()
       {
          const employee e{};
@@ -68,6 +107,14 @@ namespace tao
          const auto s2 = to_string( from_string( to_string( v2 ) ) );
 
          TEST_ASSERT( s1 == s2 );
+
+         value v3 = v2;
+
+         TEST_ASSERT( v2 == v3 );
+
+         const auto s3 = other_to_string( e );
+
+         TEST_ASSERT( s3 == "{\"name\":\"Isidor\",\"position\":\"CEO\",\"income\":42}" );
       }
 
    }  // namespace json
