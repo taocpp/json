@@ -30,25 +30,25 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Allows storing and handling of non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
   * Allows storing and handling of binary data.
   * Allows storing string views and binary views to avoid copying data.
-  * Does *not* support duplicate keys in JSON objects.
   * Currently only supports UTF-8 as input and output encoding.
 
-* Value API
+* Value Class
 
   * Construction of objects and arrays via `std::initializer_list`.
   * Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
-  * Standard STL containers:
-    * `std::string` for JSON strings
-    * `std::vector< tao::json::value >` for JSON arrays
-    * `std::map< std::string, tao::json::value >` for JSON objects
+  * Built around standard STL containers
+    * `std::string` for JSON strings,
+    * `std::vector< tao::json::value >` for JSON arrays,
+    * `std::map< std::string, tao::json::value >` for JSON objects,
     * `std::vector< tao::json::byte >` for JAXN binary data. (`tao::json::byte` is an alias for `std::byte` when available).
+  * Does *not* support storing of duplicate keys in JSON objects.
   * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
-  * Indirect JSON values via non-owning C++ raw pointers for object sharing, reference resolution, and important optimization opportunities.
+  * Indirect JSON and custom values via non-owning C++ raw pointers for object sharing, reference resolution, and important optimisation opportunities.
   * C++11 literal operator for JSON values, including binary data.
 
-* Events API
+* Events Interface
 
-  * Simple, straightforward JSON Events API.
+  * Simple, straightforward and flexible JSON Events API.
   * JSON Events-to-Value and Value-to-Events interfaces.
   * Parse JSON string representation to JSON Events.
   * Parse JAXN string representation to JSON Events.
