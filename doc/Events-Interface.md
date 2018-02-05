@@ -153,6 +153,7 @@ Consumers are usually instantiated and then passed to an Events producer functio
 | `debug` | Writes all Events to a `std::ostream` in human-readable form. |
 | `discard` | Does nothing with the Events it receives. |
 | `hash` | Calculates a SHA-256 hash for the received Events. |
+| `statistics` | Counts Events, and string and binary lengths. |
 | `to_pretty_stream` | Writes nicely formatted JSON to a `std::ostream`. |
 | `to_stream` | Writes compact JSON to a `std::ostream`. |
 | `to_string` | Writes compact JSON to a `std::string`. |

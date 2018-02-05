@@ -12,6 +12,7 @@
 #include <tao/json/events/discard.hpp>
 #include <tao/json/events/hash.hpp>
 #include <tao/json/events/ref.hpp>
+#include <tao/json/events/statistics.hpp>
 #include <tao/json/events/tee.hpp>
 #include <tao/json/events/to_pretty_stream.hpp>
 #include <tao/json/events/to_stream.hpp>
@@ -143,6 +144,7 @@ namespace tao
          check_consumer< events::debug >();
          check_consumer< events::discard >();
          check_consumer< events::hash >();
+         check_consumer< events::statistics >();
          check_consumer< events::to_pretty_stream >();
          check_consumer< events::to_stream >();
          check_consumer< events::to_string >();
