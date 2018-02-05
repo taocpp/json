@@ -19,19 +19,104 @@ namespace tao
          double y = 2.0;
       };
 
+      template< template< typename... > class Traits, typename Consumer >
+      struct array_t
+      {
+         Consumer* c_;
+
+         explicit array_t( Consumer& c ) noexcept
+            : c_( &c )
+         {
+            c_->begin_array();
+         }
+
+         array_t( const array_t& ) = delete;
+
+         array_t( array_t&& r ) noexcept
+            : c_( r.c_ )
+         {
+            r.c_ = nullptr;
+         }
+
+         ~array_t()
+         {
+            if( c_ )
+               c_->end_array();
+         }
+
+         void operator=( const array_t& ) = delete;
+         void operator=( array_t&& ) = delete;
+
+         template< typename T >
+         array_t& push_back( const T& v )
+         {
+            assert( c_ );
+            Traits< T >::template produce< Traits >( *c_, v );
+            c_->element();
+            return *this;
+         }
+      };
+
+      template< template< typename... > class Traits, typename Consumer >
+      struct object_t
+      {
+         Consumer* c_;
+
+         explicit object_t( Consumer& c ) noexcept
+            : c_( &c )
+         {
+            c_->begin_object();
+         }
+
+         object_t( const object_t& ) = delete;
+
+         object_t( object_t&& r ) noexcept
+            : c_( r.c_ )
+         {
+            r.c_ = nullptr;
+         }
+
+         ~object_t()
+         {
+            if( c_ )
+               c_->end_object();
+         }
+
+         void operator=( const object_t& ) = delete;
+         void operator=( object_t&& ) = delete;
+
+         template< typename T >
+         object_t& insert( const std::string& k, const T& v )
+         {
+            assert( c_ );
+            c_->key( k );
+            Traits< T >::template produce< Traits >( *c_, v );
+            c_->member();
+            return *this;
+         }
+      };
+
+      template< template< typename... > class Traits, typename Consumer >
+      array_t< Traits, Consumer > array( Consumer& c ) noexcept
+      {
+         return array_t< Traits, Consumer >( c );
+      }
+
+      template< template< typename... > class Traits, typename Consumer >
+      object_t< Traits, Consumer > object( Consumer& c ) noexcept
+      {
+         return object_t< Traits, Consumer >( c );
+      }
+
       template<>
       struct traits< point >
       {
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& consumer, const point& data )
          {
-            consumer.begin_array( 2 );
-            Traits< decltype( data.x ) >::template produce< Traits >( consumer, data.x );
-            consumer.number( data.x );
-            consumer.element();
-            Traits< decltype( data.y ) >::template produce< Traits >( consumer, data.y );
-            consumer.element();
-            consumer.end_array( 2 );
+            auto a = array< Traits >( consumer );
+            a.push_back( data.x );
+            a.push_back( data.y );
          }
       };
 
@@ -48,19 +133,12 @@ namespace tao
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& consumer, const employee& data )
          {
-            consumer.begin_object();  // TODO: Object guard?
-            consumer.key( "name" );
-            Traits< std::string >::template produce< Traits >( consumer, data.name );
-            consumer.member();
+            auto o = object< Traits >( consumer );
+            o.insert( "name", data.name );
             if( !data.position.empty() ) {
-               consumer.key( "position" );  // TODO: Does this need convenience for key+value+member?
-               Traits< std::string >::template produce< Traits >( consumer, data.position );
-               consumer.member();
+               o.insert( "position", data.position );
             }
-            consumer.key( "income" );
-            Traits< decltype( data.income ) >::template produce< Traits >( consumer, data.income );
-            consumer.member();
-            consumer.end_object();
+            o.insert( "income", data.income );
          }
       };
 
