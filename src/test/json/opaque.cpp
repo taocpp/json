@@ -29,7 +29,7 @@ namespace tao
             Traits< decltype( data.x ) >::template produce< Traits >( consumer, data.x );
             consumer.number( data.x );
             consumer.element();
-            Traits< decltype( data.x ) >::template produce< Traits >( consumer, data.y );
+            Traits< decltype( data.y ) >::template produce< Traits >( consumer, data.y );
             consumer.element();
             consumer.end_array( 2 );
          }
