@@ -862,6 +862,17 @@ namespace tao
             c.end_array( a.size() );
          }
 
+         template< template< typename... > class, typename Consumer >
+         static void produce( Consumer& c, std::vector< basic_value< Traits, Base > >&& a )
+         {
+            c.begin_array( a.size() );
+            for( auto&& i : a ) {
+               events::from_value( c, std::move( i ) );
+               c.element();
+            }
+            c.end_array( a.size() );
+         }
+
          static void assign( basic_value< Traits, Base >& v, const std::vector< basic_value< Traits, Base > >& a )
          {
             v.unsafe_assign_array( a );
@@ -883,6 +894,18 @@ namespace tao
             for( const auto& i : o ) {
                c.key( i.first );
                events::from_value( c, i.second );
+               c.member();
+            }
+            c.end_array( o.size() );
+         }
+
+         template< template< typename... > class, typename Consumer >
+         static void produce( Consumer& c, std::map< std::string, basic_value< Traits, Base > >&& o )
+         {
+            c.begin_array( o.size() );
+            for( auto&& i : o ) {
+               c.key( std::move( i.first ) );
+               events::from_value( c, std::move( i.second ) );
                c.member();
             }
             c.end_array( o.size() );
