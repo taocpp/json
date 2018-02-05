@@ -13,12 +13,6 @@ namespace tao
 {
    namespace json
    {
-      struct point
-      {
-         double x = 1.0;
-         double y = 2.0;
-      };
-
       template< template< typename... > class Traits, typename Consumer >
       struct array_t
       {
@@ -108,6 +102,12 @@ namespace tao
          return object_t< Traits, Consumer >( c );
       }
 
+      struct point
+      {
+         double x = 1.0;
+         double y = 2.0;
+      };
+
       template<>
       struct traits< point >
       {
@@ -125,6 +125,7 @@ namespace tao
          std::string name = "Isidor";
          std::string position = "CEO";
          std::uint64_t income = 42;
+         point coordinates;
       };
 
       template<>
@@ -139,6 +140,7 @@ namespace tao
                o.insert( "position", data.position );
             }
             o.insert( "income", data.income );
+            o.insert( "coordinates", data.coordinates );
          }
       };
 
@@ -208,7 +210,7 @@ namespace tao
 
          const auto s3 = other_to_string( e );
 
-         TEST_ASSERT( s3 == "{\"name\":\"Isidor\",\"position\":\"CEO\",\"income\":42}" );
+         TEST_ASSERT( s3 == "{\"name\":\"Isidor\",\"position\":\"CEO\",\"income\":42,\"coordinates\":[1.0,2.0]}" );
       }
 
    }  // namespace json
