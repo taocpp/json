@@ -7,6 +7,10 @@
 
 The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON Value object, conversions from and to JSON string representation, and supports JSON Pointer and JSON Patch. It is highly extensible with a traits mechanism for custom conversion from and to (custom) C++ types, and an Events interface for (custom) conversion from and to multiple other file formats or even JSON value representations. The library is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
 
+## Documentation
+
+[Preliminary Documentation](doc/README.md)
+
 ## Features
 
 * Serious standard conformance!
@@ -67,9 +71,24 @@ It is less stable in the sense that some parts of the API are still under discus
 
 This library also serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing JSON and JAXN string representations.
 
-## Documentation
+## Design
 
-[Preliminary Documentation](doc/README.md).
+JSON libraries for C++ can be classified according to their primary characteristics.
+
+1. Libraries with a value-generic in-memory representation based on standard containers that can easily read, write and modify any JSON value.
+
+The use of standard string and container classes allows for familiar APIs that give great flexibility for manipulating in-memory values.
+
+2. Libraries with a value-generic library-specific highly optimised in-memory representation that can easily read and write any JSON value.
+
+These libraries trade the ease-of-use and flexibility of the standard containers for a significant increase in read and write performance.
+
+3. Libraries that directly use normal C++ data types as value-specific targets for reading and writing specific corresponding JSON values.
+
+Here the possibility of handling arbitrary JSON values is traded for the speed and type-safety of directly working with the target data types.
+
+This library is of the first category, but also implements the "write" part of the third one, and a hybrid model where the C++ JSON value can contain pointers to arbitrary C++ data types as sub-values.
+It also places large emphasis on the Events interface that allows for a very flexible coupling of different parts of this (and even other) libraries.
 
 ## License
 

@@ -1,6 +1,6 @@
 # Preliminary Documentation
 
-The documentation will be finished once the functionality and interfaces are finalised.
+The documentation is still work-in-progress and will be completed in time for the 1.0.0 release -- after the functionality and interfaces are finalised.
 
 * [Project](httsp://github.com/taocpp/json)
 * [Quick Start](Quick-Start.md)
