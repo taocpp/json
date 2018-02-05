@@ -13,12 +13,6 @@ namespace tao
 {
    namespace json
    {
-      struct point
-      {
-         double x = 1.0;
-         double y = 2.0;
-      };
-
       template< template< typename... > class Traits, typename Consumer >
       struct array_t
       {
@@ -40,8 +34,9 @@ namespace tao
 
          ~array_t()
          {
-            if( c_ )
+            if( c_ ) {
                c_->end_array();
+            }
          }
 
          void operator=( const array_t& ) = delete;
@@ -78,8 +73,9 @@ namespace tao
 
          ~object_t()
          {
-            if( c_ )
+            if( c_ ) {
                c_->end_object();
+            }
          }
 
          void operator=( const object_t& ) = delete;
@@ -107,6 +103,12 @@ namespace tao
       {
          return object_t< Traits, Consumer >( c );
       }
+
+      struct point
+      {
+         double x = 1.0;
+         double y = 2.0;
+      };
 
       template<>
       struct traits< point >
