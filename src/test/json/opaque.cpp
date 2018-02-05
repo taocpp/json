@@ -34,8 +34,9 @@ namespace tao
 
          ~array_t()
          {
-            if( c_ )
+            if( c_ ) {
                c_->end_array();
+            }
          }
 
          void operator=( const array_t& ) = delete;
@@ -72,8 +73,9 @@ namespace tao
 
          ~object_t()
          {
-            if( c_ )
+            if( c_ ) {
                c_->end_object();
+            }
          }
 
          void operator=( const object_t& ) = delete;
