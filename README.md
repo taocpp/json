@@ -73,7 +73,7 @@ This library also serves as a fully functional real-world example for the [Parsi
 
 ## Design
 
-JSON libraries for C++ can be classified according to their primary characteristics.
+JSON libraries for C++ can be classified according to certain properties and characteristics.
 
 1. Libraries with a value-generic in-memory representation based on standard containers that can easily read, write and modify any JSON value. The use of standard string and container classes allows for familiar APIs that give access to standard algorithms and easy manipulation of in-memory values.
 2. Libraries with a value-generic library-specific highly optimised in-memory representation that can easily read and write any JSON value. These libraries trade the simplicity, flexibility and easy manipulation of the standard containers for an increase in read and write performance.
