@@ -75,20 +75,12 @@ This library also serves as a fully functional real-world example for the [Parsi
 
 JSON libraries for C++ can be classified according to their primary characteristics.
 
-1. Libraries with a value-generic in-memory representation based on standard containers that can easily read, write and modify any JSON value.
+1. Libraries with a value-generic in-memory representation based on standard containers that can easily read, write and modify any JSON value. The use of standard string and container classes allows for familiar APIs that give access to standard algorithms and easy manipulation of in-memory values.
+2. Libraries with a value-generic library-specific highly optimised in-memory representation that can easily read and write any JSON value. These libraries trade the simplicity, flexibility and easy manipulation of the standard containers for an increase in read and write performance.
+3. Libraries that directly use normal C++ data types as value-specific targets for reading and writing specific corresponding JSON values. Here the possibility of handling arbitrary JSON values is traded for the speed and type-safety of directly working with the target data types.
 
-The use of standard string and container classes allows for familiar APIs that give great flexibility for manipulating in-memory values.
-
-2. Libraries with a value-generic library-specific highly optimised in-memory representation that can easily read and write any JSON value.
-
-These libraries trade the ease-of-use and flexibility of the standard containers for a significant increase in read and write performance.
-
-3. Libraries that directly use normal C++ data types as value-specific targets for reading and writing specific corresponding JSON values.
-
-Here the possibility of handling arbitrary JSON values is traded for the speed and type-safety of directly working with the target data types.
-
-This library is of the first category, but also implements the "write" part of the third one, and a hybrid model where the C++ JSON value can contain pointers to arbitrary C++ data types as sub-values.
-It also places large emphasis on the Events interface that allows for a very flexible coupling of different parts of this (and even other) libraries.
+This library is of the first category, but also implements the "write" part of the third one, and a hybrid model where the C++ JSON value contains pointers to arbitrary C++ data types as sub-values.
+It employs the [Events interface](https://github.com/taocpp/json/blob/master/doc/Events-Interface.md) as universal adapter within the library (and as bridge to other libraries), and the traits mechanism to allow for seamless integration of, and conversion from and to, custom C++ data types.
 
 ## License
 
