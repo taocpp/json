@@ -52,17 +52,17 @@ namespace tao
                ++( v ? true_count : false_count );
             }
 
-            void number( const std::int64_t /* unused*/ )
+            void number( const std::int64_t /*unused*/ )
             {
                ++signed_count;
             }
 
-            void number( const std::uint64_t /* unused*/ )
+            void number( const std::uint64_t /*unused*/ )
             {
                ++unsigned_count;
             }
 
-            void number( const double /* unused*/ )
+            void number( const double /*unused*/ )
             {
                ++double_count;
             }
@@ -79,7 +79,7 @@ namespace tao
                binary_lengths += v.size();
             }
 
-            void begin_array( const std::size_t = 0 /* unused*/ )
+            void begin_array( const std::size_t /*unused*/ = 0 )
             {
                ++array_count;
             }
@@ -89,11 +89,11 @@ namespace tao
                ++array_elements;
             }
 
-            void end_array( const std::size_t = 0 /* unused*/ )
+            void end_array( const std::size_t /*unused*/ = 0 )
             {
             }
 
-            void begin_object( const std::size_t = 0 /* unused*/ )
+            void begin_object( const std::size_t /*unused*/ = 0 )
             {
                ++object_count;
             }
@@ -109,7 +109,7 @@ namespace tao
                ++object_members;
             }
 
-            void end_object( const std::size_t = 0 /* unused*/ )
+            void end_object( const std::size_t /*unused*/ = 0 )
             {
             }
          };
