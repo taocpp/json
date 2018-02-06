@@ -209,10 +209,7 @@ Filters are structs or classes that implement the Events functions as they are c
 | `prefer_unsigned` | Passes through all Events except for numbers of type `std::int64_t` which fit into a `std::uint64_t` and are passed on as such. |
 | `ref` | Passes all Events to another consumer or filter to which it holds a C++ reference. |
 | `tee` | Passes all Events to an arbitrary number of other consumers or filters which it holds in a `std::tuple<>`. |
-| `validate_integer_range` | Passes through all Events except for signed and unsigned numbers which are first checked against a range. |
 | `validate_keys` | Passes through all Events except for keys which are first validated against a provided PEGTL grammar rule. |
-| `validate_signed_range` | Passes through all Events except for signed numbers which are first checked against a range. |
-| `validate_unsigned_range` | Passes through all Events except for unsigned numbers which are first checked against a range. |
 | `virtual_ref` | Like `ref`, but implements the virtual Event functions from `virtual_base`. |
 
 ### Need Description
