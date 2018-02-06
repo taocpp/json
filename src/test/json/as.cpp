@@ -69,22 +69,19 @@ namespace tao
 
          TEST_ASSERT( v.as< one >().i == 1 );
          {
-            one i;
-            i.i = 0;
+            one i = { 0 };
             v.as( i );
             TEST_ASSERT( i.i == 1 );
          }
          TEST_ASSERT( v.as< two >().i == 2 );
          {
-            two i;
-            i.i = 0;
+            two i = { 0 };
             v.as( i );
             TEST_ASSERT( i.i == 2 );
          }
          TEST_ASSERT( v.as< both >().i == 3 );
          {
-            both i;
-            i.i = 0;
+            both i = { 0 };
             v.as( i );
             TEST_ASSERT( i.i == 4 );
          }
