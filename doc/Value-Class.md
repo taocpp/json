@@ -119,6 +119,10 @@ When adding a sub-value that is already available as instance of `tao::json::val
 
 Here `b` will contain a `RAW_PTR` to `a` as value for the object key `"complex_value"`, and bad things will happen if `b` is used (in the "wrong" way) after `a` goes out of scope.
 
+### Opaque Pointers
+
+See the [section on opaque pointers](Advanced-Features.md#opaque-pointers) on the [advanced features page](Advanced-Features.md).
+
 ## Constructors
 
 ## Value Comparison
@@ -154,6 +158,6 @@ The file `tao/include/json/contrib/position.hpp` shows how to parse a JSON file 
 
 ## Value Traits
 
-TODO: List everything customised via traits...
+See the [section on Value traits](Advanced-Features.md#value-traits) on the [advanced features page](Advanced-Features.md).
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

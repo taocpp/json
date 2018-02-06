@@ -47,8 +47,9 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
     * `std::vector< tao::json::byte >` for JAXN binary data. (`tao::json::byte` is an alias for `std::byte` when available).
   * Does *not* support storing of duplicate keys in JSON objects.
   * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
-  * Indirect JSON and custom values via non-owning C++ raw pointers for object sharing, reference resolution, and important optimisation opportunities.
+  * Indirect JSON values and *user-defined types* via non-owning C++ raw pointers for object sharing, reference resolution, and important optimisation opportunities.
   * C++11 literal operator for JSON values, including binary data.
+  * Optional user-defined annotations for every (sub-)value (e.g. [the filename and position the (sub-)value was parsed from](include/tao/json/contrib/position.hpp).
 
 * Events Interface
 
@@ -59,7 +60,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Stream JSON Events to (prettified) JSON string representation.
   * Stream JSON Events to (prettified) JAXN string representation.
   * Supports conversion from and to binary formats, e.g. [CBOR], [UBJSON], [MessagePack], etc.
-  * Supports conversion from and to *other* JSON value objects (check [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
+  * Supports conversion from and to *other* JSON value objects (e.g. [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
   * JSON Events comparison (against an existing JSON Value).
   * JSON Events hash algorithm (SHA-256 based).
   * JSON Events schema validator.
@@ -80,7 +81,7 @@ JSON libraries for C++ can be classified according to certain properties and cha
 3. Libraries that directly use normal C++ data types as value-specific targets for reading and writing specific corresponding JSON values. Here the possibility of handling arbitrary JSON values is traded for the speed and type-safety of directly working with the target data types.
 
 This library is of the first category, but also implements the "write" part of the third one, and a hybrid model where the C++ JSON value contains pointers to arbitrary C++ data types as sub-values.
-It employs the [Events interface](https://github.com/taocpp/json/blob/master/doc/Events-Interface.md) as universal adapter within the library (and as bridge to other libraries), and the traits mechanism to allow for seamless integration of, and conversion from and to, custom C++ data types.
+It employs the [Events interface](https://github.com/taocpp/json/blob/master/doc/Events-Interface.md) as universal adapter within the library (and as bridge to other libraries), and the traits mechanism to allow for seamless integration of, and conversion from and to, user-defined C++ data types.
 
 ## License
 
