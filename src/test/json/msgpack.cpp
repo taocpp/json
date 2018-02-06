@@ -60,6 +60,8 @@ namespace tao
          msgpack_encode( "-2147483648", "d280000000" );
          msgpack_encode( "-2147483649", "d3ffffffff7fffffff" );
          msgpack_encode( "-9223372036854775808", "d38000000000000000" );
+         msgpack_encode( "3.14159", "cb400921f9f01b866e" );
+         msgpack_encode( "-4.2777e-12", "cbbd92d043147f15ff" );
 
          msgpack_decode( "00", "0" );
          msgpack_decode( "01", "1" );
@@ -106,6 +108,12 @@ namespace tao
          msgpack_decode( "d3ffffffffffffffff", "-1" );
          msgpack_decode( "d38000000000000000", "-9223372036854775808" );
          msgpack_decode( "d37fffffffffffffff", "9223372036854775807" );
+
+         msgpack_decode( "ca402df84d", to_string( value( 2.71828f ) ) );
+         msgpack_decode( "ca9607d3a8", to_string( value( -1.0972e-25f ) ) );
+
+         msgpack_decode( "cb400921f9f01b866e", "3.14159" );
+         msgpack_decode( "cbbd92d043147f15ff", "-4.2777e-12" );
 
          msgpack_decode( "d900", "\"\"" );
          msgpack_decode( "d90130", "\"0\"" );
