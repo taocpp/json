@@ -17,7 +17,7 @@ namespace tao
       {
          // some helpers
          template< template< typename... > class Traits = traits, typename Consumer, typename T >
-         void feed( Consumer& c, T&& t )
+         void produce( Consumer& c, T&& t )
          {
             Traits< typename std::decay< T >::type >::template produce< Traits >( c, std::forward< T >( t ) );
          }
@@ -55,7 +55,7 @@ namespace tao
             array_t& push_back( T&& v )
             {
                assert( c_ );
-               feed< Traits >( *c_, std::forward< T >( v ) );
+               produce< Traits >( *c_, std::forward< T >( v ) );
                c_->element();
                return *this;
             }
@@ -95,7 +95,7 @@ namespace tao
             {
                assert( c_ );
                c_->key( k );
-               feed< Traits >( *c_, std::forward< T >( v ) );
+               produce< Traits >( *c_, std::forward< T >( v ) );
                c_->member();
                return *this;
             }
@@ -170,14 +170,14 @@ namespace tao
       void other_to_stream( std::ostream& os, const T& t )
       {
          events::to_stream consumer( os );
-         events::feed< Traits >( consumer, t );
+         events::produce< Traits >( consumer, t );
       }
 
       template< template< typename... > class Traits = traits, typename T >
       void other_to_stream( std::ostream& os, const T& t, const std::size_t indent )
       {
          events::to_pretty_stream consumer( os, indent );
-         events::feed< Traits >( consumer, t );
+         events::produce< Traits >( consumer, t );
       }
 
       template< template< typename... > class Traits = traits, typename... Ts >
