@@ -15,6 +15,7 @@
 #include "../../external/pegtl.hpp"
 #include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
+#include "../../utf8.hpp"
 
 namespace tao
 {
@@ -61,6 +62,7 @@ namespace tao
 
             }  // namespace internal
 
+            template< utf8_mode V >
             struct data
             {
                using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
@@ -144,7 +146,7 @@ namespace tao
                template< typename Unsigned, typename Input >
                static std::uint64_t read_unsigned_impl( Input& in )
                {
-                  if( in.size( sizeof( Unsigned ) ) > sizeof( Unsigned ) ) {
+                  if( 1 + in.size( sizeof( Unsigned ) ) > sizeof( Unsigned ) ) {
                      const Unsigned result = json::internal::be_to_h< Unsigned >( in.current() + 1 );
                      in.bump_in_this_line( 1 + sizeof( Unsigned ) );
                      return result;
@@ -204,9 +206,7 @@ namespace tao
                   return true;
                }
 
-               // TODO: Check text strings and text string chunks for valid UTF-8 as per RFC 7049?
-
-               template< typename Result, typename Input >
+               template< utf8_mode U, typename Result, typename Input >
                static Result read_string_1( Input& in )
                {
                   using value_t = typename Result::value_type;
@@ -216,11 +216,11 @@ namespace tao
                   }
                   const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
-                  in.bump_in_this_line( size );
+                  json::internal::consume_utf8< U >( in, size );
                   return result;
                }
 
-               template< typename Result, typename Input >
+               template< utf8_mode U, typename Result, typename Input >
                static Result read_string_n( Input& in, const major m )
                {
                   using value_t = typename Result::value_type;
@@ -237,7 +237,7 @@ namespace tao
                      }
                      const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                      result.insert( result.end(), pointer, pointer + size );
-                     in.bump_in_this_line( size );
+                     json::internal::consume_utf8< U >( in, size );
                   }
                   in.bump_in_this_line();
                   return result;
@@ -249,10 +249,10 @@ namespace tao
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
                   if( internal::peek_minor( in ) != minor_mask ) {
-                     consumer.string( read_string_1< tao::string_view >( in ) );
+                     consumer.string( read_string_1< V, tao::string_view >( in ) );
                   }
                   else {
-                     consumer.string( read_string_n< std::string >( in, major::STRING ) );
+                     consumer.string( read_string_n< V, std::string >( in, major::STRING ) );
                   }
                   return true;
                }
@@ -263,10 +263,10 @@ namespace tao
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
                   if( internal::peek_minor( in ) != minor_mask ) {
-                     consumer.binary( read_string_1< tao::byte_view >( in ) );
+                     consumer.binary( read_string_1< utf8_mode::TRUST, tao::byte_view >( in ) );
                   }
                   else {
-                     consumer.binary( read_string_n< std::vector< tao::byte > >( in, major::BINARY ) );
+                     consumer.binary( read_string_n< utf8_mode::TRUST, std::vector< tao::byte > >( in, major::BINARY ) );
                   }
                   return true;
                }
@@ -320,10 +320,10 @@ namespace tao
                      }
                      internal::throw_on_empty( in );
                      if( internal::peek_minor( in ) != minor_mask ) {
-                        consumer.key( read_string_1< tao::string_view >( in ) );
+                        consumer.key( read_string_1< V, tao::string_view >( in ) );
                      }
                      else {
-                        consumer.key( read_string_n< std::string >( in, major::STRING ) );
+                        consumer.key( read_string_n< V, std::string >( in, major::STRING ) );
                      }
                      internal::throw_on_empty( in );
                      match_impl( in, consumer );
@@ -342,10 +342,10 @@ namespace tao
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
                      if( internal::peek_minor( in ) != minor_mask ) {
-                        consumer.key( read_string_1< tao::string_view >( in ) );
+                        consumer.key( read_string_1< V, tao::string_view >( in ) );
                      }
                      else {
-                        consumer.key( read_string_n< std::string >( in, major::STRING ) );
+                        consumer.key( read_string_n< V, std::string >( in, major::STRING ) );
                      }
                      internal::throw_on_empty( in );
                      match_impl( in, consumer );
@@ -377,7 +377,7 @@ namespace tao
                template< typename Floating, typename Input >
                static double read_floating_impl( Input& in )
                {
-                  if( in.size( sizeof( Floating ) ) >= 1 + sizeof( Floating ) ) {
+                  if( in.size( 1 + sizeof( Floating ) ) > sizeof( Floating ) ) {
                      const Floating result = json::internal::be_to_h< Floating >( in.current() + 1 );
                      in.bump_in_this_line( 1 + sizeof( Floating ) );
                      return result;
@@ -441,9 +441,12 @@ namespace tao
                }
             };
 
-            struct grammar : json_pegtl::must< data, json_pegtl::eof >
+            template< utf8_mode M >
+            struct basic_grammar : json_pegtl::must< data< M >, json_pegtl::eof >
             {
             };
+
+            using grammar = basic_grammar< utf8_mode::CHECK >;
 
          }  // namespace cbor
 

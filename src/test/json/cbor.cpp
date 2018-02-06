@@ -47,6 +47,9 @@ namespace tao
          cbor_encode( "4294967296", "1b0000000100000000" );
          cbor_encode( "18446744073709551615", "1bffffffffffffffff" );
 
+         cbor_encode( "3.14159", "fb400921f9f01b866e" );
+         cbor_encode( "-4.2777e-12", "fbbd92d043147f15ff" );
+
          cbor_encode( "\"0\"", "6130" );
 
          cbor_encode( '"' + std::string( std::size_t( 23 ), 'D' ) + '"', "77" + std::string( std::size_t( 46 ), '4' ) );
@@ -55,6 +58,7 @@ namespace tao
          cbor_encode( '"' + std::string( std::size_t( 256 ), 'D' ) + '"', "790100" + std::string( std::size_t( 512 ), '4' ) );
          cbor_encode( '"' + std::string( std::size_t( 65535 ), 'D' ) + '"', "79ffff" + std::string( std::size_t( 131070 ), '4' ) );
          cbor_encode( '"' + std::string( std::size_t( 65536 ), 'D' ) + '"', "7a00010000" + std::string( std::size_t( 131072 ), '4' ) );
+
          //         cbor_encode( '"' + std::string( std::size_t( 4294967295 ), 'D' ) + '"', "7affffffff" + std::string( std::size_t( 8589934590 ), '4' ) );  // Uses 24GB of RAM.
          //         cbor_encode( '"' + std::string( std::size_t( 4294967296 ), 'D' ) + '"', "7b0000000100000000" + std::string( std::size_t( 8589934592 ), '4' ) );  // Uses 24GB of RAM.
 
@@ -65,6 +69,7 @@ namespace tao
          cbor_encode( "{\"a\":0,\"b\":1}", "a2616100616201" );
 
          cbor_encode( "[{}]", "81a0" );
+         cbor_encode( "{\"a\":[]}", "a1616180" );
 
          cbor_decode( "00", "0" );
          cbor_decode( "80", "[]" );
@@ -78,6 +83,12 @@ namespace tao
 
          cbor_decode( "f90400", "0.00006103515625" );
          cbor_decode( "f9c400", "-4.0" );
+
+         cbor_decode( "fa402df84d", to_string( value( 2.71828f ) ) );
+         cbor_decode( "fa9607d3a8", to_string( value( -1.0972e-25f ) ) );
+
+         cbor_decode( "fb400921f9f01b866e", "3.14159" );
+         cbor_decode( "fbbd92d043147f15ff", "-4.2777e-12" );
 
          cbor_decode( "8a00010203040506070809", "[0,1,2,3,4,5,6,7,8,9]" );
          cbor_decode( "9f00010203040506070809ff", "[0,1,2,3,4,5,6,7,8,9]" );
@@ -106,7 +117,7 @@ namespace tao
          cbor_roundtrip( "{}" );
          cbor_roundtrip( "[{}]" );
          cbor_roundtrip( "[1,2,3,4]" );
-         cbor_roundtrip( "{\"a\":[],\"b\":{}}" );
+         cbor_roundtrip( "{\"a\":[],\"b\":{},\"\":0}" );
          cbor_roundtrip( "1.23" );
          cbor_roundtrip( "345e-123" );
       }
