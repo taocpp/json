@@ -20,11 +20,11 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
   * [RFC7049]: Concise Binary Object Representation ([CBOR]).
-  * [JAXN], a standard for relaxed JSON.
+  * [JAXN]: a standard for relaxed JSON.
+  * [MsgPack]: MessagePack binary format (without extensions).
   * Experimental support for [JSON Reference] (local URI fragments only).
   * Experimental support for [JSON Schema] (draft v4).
   * Experimental support for [UBJSON], Universal Binary JSON.
-  * Experimental support for [MessagePack] (no extensions).
 
 * General
 
@@ -121,7 +121,7 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 [JAXN]: https://github.com/stand-art/jaxn
 [JSON Reference]: https://tools.ietf.org/html/draft-pbryan-zyp-json-ref-03
 [JSON Schema]: http://json-schema.org/documentation.html
-[MessagePack]: http://msgpack.org
+[MsgPack]: http://msgpack.org
 [MIT license]: http://www.opensource.org/licenses/mit-license.html
 [Native JSON Benchmark]: https://github.com/miloyip/nativejson-benchmark
 [Open Source]: http://www.opensource.org/docs/definition.html
