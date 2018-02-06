@@ -37,6 +37,8 @@ namespace tao
          msgpack_encode( "\"000\"", "a3303030" );
          msgpack_encode( "\"01234567890123456789\"", "b43031323334353637383930313233343536373839" );
          msgpack_encode( "\"0123456789012345678901234567890123456789\"", "d92830313233343536373839303132333435363738393031323334353637383930313233343536373839" );
+         msgpack_encode( "\"" + std::string( std::size_t( 500 ), 'f' ) + "\"", "da01f4" + std::string( std::size_t( 1000 ), '6' ) );
+         msgpack_encode( "\"" + std::string( std::size_t( 70000 ), 'f' ) + "\"", "db00011170" + std::string( std::size_t( 140000 ), '6' ) );
          msgpack_encode( "0", "00" );
          msgpack_encode( "1", "01" );
          msgpack_encode( "127", "7f" );
@@ -122,6 +124,9 @@ namespace tao
          msgpack_decode( "da000139", "\"9\"" );
          msgpack_decode( "db00000000", "\"\"" );
          msgpack_decode( "db0000000138", "\"8\"" );
+
+         msgpack_decode( "da01f4" + std::string( std::size_t( 1000 ), '6' ), "\"" + std::string( std::size_t( 500 ), 'f' ) + "\"" );
+         msgpack_decode( "db00011170" + std::string( std::size_t( 140000 ), '6' ), "\"" + std::string( std::size_t( 70000 ), 'f' ) + "\"" );
 
          msgpack_decode( "90", "[]" );
          msgpack_decode( "80", "{}" );
