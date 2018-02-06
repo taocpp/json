@@ -195,7 +195,6 @@ namespace tao
                      throw std::logic_error( "expected any value or end_array(...), but element() was called" );  // NOLINT
                   case EXPECT_ARRAY_ELEMENT:
                      state = EXPECT_ARRAY_VALUE_OR_END;
-                     ++sizes.back().counted;
                      return;
                   case EXPECT_SIZED_ARRAY_ELEMENT:
                      state = EXPECT_SIZED_ARRAY_VALUE_OR_END;
@@ -256,6 +255,7 @@ namespace tao
                   default:
                      break;
                }
+               assert( sizes.size() );
                sizes.back().check( expected );
                sizes.pop_back();
                end_array();
@@ -354,7 +354,6 @@ namespace tao
                      throw std::logic_error( "expected any value, but member() was called" );  // NOLINT
                   case EXPECT_OBJECT_MEMBER:
                      state = EXPECT_OBJECT_KEY_OR_END;
-                     ++sizes.back().counted;
                      return;
                   case EXPECT_SIZED_OBJECT_MEMBER:
                      state = EXPECT_SIZED_OBJECT_KEY_OR_END;
@@ -406,9 +405,10 @@ namespace tao
                   default:
                      break;
                }
-               end_object();
+               assert( sizes.size() );
                sizes.back().check( expected );
                sizes.pop_back();
+               end_object();
             }
          };
 
