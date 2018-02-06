@@ -63,6 +63,12 @@ namespace tao
       template<>
       struct traits< bool >
       {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, bool& b )
+         {
+            b = v.get_boolean();
+         }
+
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const bool b )
          {
@@ -73,12 +79,6 @@ namespace tao
          static void assign( basic_value< Traits, Base >& v, const bool b ) noexcept
          {
             v.unsafe_assign_bool( b );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void extract( const basic_value< Traits, Base >& v, bool& b )
-         {
-            b = v.get_boolean();
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -109,7 +109,7 @@ namespace tao
          struct number_trait
          {
             template< template< typename... > class Traits, typename Base >
-            static void extract( const basic_value< Traits, Base >& v, T& n )
+            static void as( const basic_value< Traits, Base >& v, T& n )
             {
                switch( v.type() ) {
                   case type::SIGNED:
@@ -461,6 +461,23 @@ namespace tao
       template<>
       struct traits< std::string >
       {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, std::string& s )
+         {
+            switch( v.type() ) {
+               case type::STRING:
+                  s = v.unsafe_get_string();
+                  break;
+               case type::STRING_VIEW: {
+                  const auto sv = v.unsafe_get_string_view();
+                  s.assign( sv.data(), sv.size() );
+                  break;
+               }
+               default:
+                  v.throw_invalid_json_type();
+            }
+         }
+
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const std::string& s )
          {
@@ -483,23 +500,6 @@ namespace tao
          static void assign( basic_value< Traits, Base >& v, std::string&& s ) noexcept
          {
             v.unsafe_assign_string( std::move( s ) );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void extract( const basic_value< Traits, Base >& v, std::string& s )
-         {
-            switch( v.type() ) {
-               case type::STRING:
-                  s = v.unsafe_get_string();
-                  break;
-               case type::STRING_VIEW: {
-                  const auto sv = v.unsafe_get_string_view();
-                  s.assign( sv.data(), sv.size() );
-                  break;
-               }
-               default:
-                  v.throw_invalid_json_type();
-            }
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -688,6 +688,23 @@ namespace tao
       template<>
       struct traits< std::vector< tao::byte > >
       {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, std::vector< tao::byte >& x )
+         {
+            switch( v.type() ) {
+               case type::BINARY:
+                  x = v.unsafe_get_binary();
+                  break;
+               case type::BINARY_VIEW: {
+                  const auto xv = v.unsafe_get_binary_view();
+                  x.assign( xv.begin(), xv.end() );
+                  break;
+               }
+               default:
+                  v.throw_invalid_json_type();
+            }
+         }
+
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const std::vector< tao::byte >& x )
          {
@@ -710,23 +727,6 @@ namespace tao
          static void assign( basic_value< Traits, Base >& v, std::vector< tao::byte >&& x ) noexcept
          {
             v.unsafe_assign_binary( std::move( x ) );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void extract( const basic_value< Traits, Base >& v, std::vector< tao::byte >& x )
-         {
-            switch( v.type() ) {
-               case type::BINARY:
-                  x = v.unsafe_get_binary();
-                  break;
-               case type::BINARY_VIEW: {
-                  const auto xv = v.unsafe_get_binary_view();
-                  x.assign( xv.begin(), xv.end() );
-                  break;
-               }
-               default:
-                  v.throw_invalid_json_type();
-            }
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -967,6 +967,17 @@ namespace tao
       template< typename T >
       struct traits< tao::optional< T > >
       {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, tao::optional< T >& o )
+         {
+            if( v != null ) {
+               o = v.template as< T >();
+            }
+            else {
+               o = tao::nullopt;
+            }
+         }
+
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const tao::optional< T >& o )
          {
@@ -986,17 +997,6 @@ namespace tao
             }
             else {
                v = null;
-            }
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void extract( const basic_value< Traits, Base >& v, tao::optional< T >& o )
-         {
-            if( v != null ) {
-               o = v.template as< T >();
-            }
-            else {
-               o = tao::nullopt;
             }
          }
 
