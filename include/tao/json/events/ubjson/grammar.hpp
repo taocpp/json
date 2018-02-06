@@ -11,6 +11,7 @@
 #include "../../internal/control.hpp"
 #include "../../internal/endian.hpp"
 #include "../../internal/grammar.hpp"
+#include "../../utf8.hpp"
 
 namespace tao
 {
@@ -74,6 +75,7 @@ namespace tao
       {
          namespace ubjson
          {
+            template< utf8_mode V >
             struct data
             {
                using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
@@ -86,15 +88,15 @@ namespace tao
                          typename Consumer >
                static bool match( Input& in, Consumer& consumer )
                {
-                  // This rule never returns false unless the input is empty or a no-op.
+                  // This rule never returns false unless the input is empty.
                   return ( !in.empty() ) && match_impl( in, consumer );
                }
 
-               template< typename Result, typename Number, typename Read, typename Input >
+               template< typename Result, typename Number, typename Input >
                static Result read_number( Input& in )
                {
                   if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
-                     const auto result = static_cast< Result >( static_cast< Number >( json::internal::be_to_h< Read >( in.current() + 1 ) ) );
+                     const auto result = static_cast< Result >( json::internal::be_to_h< Number >( in.current() + 1 ) );
                      in.bump_in_this_line( 1 + sizeof( Number ) );
                      return result;
                   }
@@ -109,9 +111,6 @@ namespace tao
                         consumer.null();
                         in.bump_in_this_line();
                         return true;
-                     case 'N':
-                        in.bump_in_this_line();
-                        return false;
                      case 'T':
                         consumer.boolean( true );
                         in.bump_in_this_line();
@@ -121,35 +120,35 @@ namespace tao
                         in.bump_in_this_line();
                         return true;
                      case 'i':
-                        consumer.number( read_number< std::int64_t, std::int8_t, std::uint8_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int8_t >( in ) );
                         return true;
                      case 'U':
-                        consumer.number( read_number< std::uint64_t, std::uint8_t, std::uint8_t >( in ) );
+                        consumer.number( read_number< std::uint64_t, std::uint8_t >( in ) );
                         return true;
                      case 'I':
-                        consumer.number( read_number< std::int64_t, std::int16_t, std::uint16_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int16_t >( in ) );
                         return true;
                      case 'l':
-                        consumer.number( read_number< std::int64_t, std::int32_t, std::uint32_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int32_t >( in ) );
                         return true;
                      case 'L':
-                        consumer.number( read_number< std::int64_t, std::int64_t, std::uint64_t >( in ) );
+                        consumer.number( read_number< std::int64_t, std::int64_t >( in ) );
                         return true;
                      case 'd':
-                        consumer.number( read_number< double, float, float >( in ) );
+                        consumer.number( read_number< double, float >( in ) );
                         return true;
                      case 'D':
-                        consumer.number( read_number< double, double, double >( in ) );
+                        consumer.number( read_number< double, double >( in ) );
                         return true;
                      case 'H':
                         return match_high_precision( in, consumer );
                      case 'C':
                         return match_char( in, consumer );
                      case 'S':
-                        consumer.string( read_container< tao::string_view >( in, read_size( in ) ) );
+                        consumer.string( read_container< V, tao::string_view >( in, read_size( in ) ) );
                         return true;
                   }
-                  throw json_pegtl::parse_error( "unknown ubjson marker", in );
+                  throw json_pegtl::parse_error( "unknown ubjson marker " + std::to_string( unsigned( in.peek_char() ) ), in );
                }
 
                template< typename Input, typename Consumer >
@@ -172,19 +171,19 @@ namespace tao
                   }
                   switch( in.peek_char() ) {
                      case 'i':
-                        return read_number< std::int64_t, std::int8_t, std::uint8_t >( in );
+                        return read_number< std::int64_t, std::int8_t >( in );
                      case 'U':
-                        return read_number< std::int64_t, std::uint8_t, std::uint8_t >( in );
+                        return read_number< std::int64_t, std::uint8_t >( in );
                      case 'I':
-                        return read_number< std::int64_t, std::int16_t, std::uint16_t >( in );
+                        return read_number< std::int64_t, std::int16_t >( in );
                      case 'l':
-                        return read_number< std::int64_t, std::int32_t, std::uint32_t >( in );
+                        return read_number< std::int64_t, std::int32_t >( in );
                      case 'L':
-                        return read_number< std::int64_t, std::int64_t, std::uint64_t >( in );
+                        return read_number< std::int64_t, std::int64_t >( in );
                      case 'd':
-                        return read_number< std::int64_t, float, float >( in );
+                        return read_number< std::int64_t, float >( in );
                      case 'D':
-                        return read_number< std::int64_t, double, double >( in );
+                        return read_number< std::int64_t, double >( in );
                   }
                   throw json_pegtl::parse_error( "unexpected ubjson high precision number size marker", in );
                }
@@ -214,7 +213,7 @@ namespace tao
                   return true;
                }
 
-               template< typename Result, typename Input >
+               template< utf8_mode U, typename Result, typename Input >
                static Result read_container( Input& in, const std::size_t size )
                {
                   using value_t = typename Result::value_type;
@@ -223,7 +222,7 @@ namespace tao
                   }
                   const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
-                  in.bump_in_this_line( size );
+                  internal::consume_utf8< U >( in, size );
                   return result;
                }
 
@@ -235,11 +234,11 @@ namespace tao
                   }
                   switch( in.peek_byte() ) {
                      case 0xd9:
-                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint8_t, std::uint8_t >( in ) );
+                        return read_container< V, tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) );
                      case 0xda:
-                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint16_t, std::uint16_t >( in ) );
+                        return read_container< V, tao::string_view >( in, read_number< std::size_t, std::uint16_t >( in ) );
                      case 0xdb:
-                        return read_container< tao::string_view >( in, read_number< std::size_t, std::uint32_t, std::uint32_t >( in ) );
+                        return read_container< V, tao::string_view >( in, read_number< std::size_t, std::uint32_t >( in ) );
                   }
                   throw json_pegtl::parse_error( "unexpected key type", in );
                }
@@ -282,9 +281,12 @@ namespace tao
             {
             };
 
-            struct grammar : json_pegtl::must< nops, data, nops, json_pegtl::eof >
+            template< utf8_mode V >
+            struct basic_grammar : json_pegtl::must< nops, data< V >, nops, json_pegtl::eof >
             {
             };
+
+            using grammar = basic_grammar< utf8_mode::CHECK >;
 
          }  // namespace ubjson
 
