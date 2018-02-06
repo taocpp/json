@@ -72,6 +72,41 @@ namespace tao
          msgpack_decode( "c2", "false" );
          msgpack_decode( "c3", "true" );
 
+         msgpack_decode( "cc00", "0" );
+         msgpack_decode( "ccff", "255" );
+
+         msgpack_decode( "cd0000", "0" );
+         msgpack_decode( "cd00ff", "255" );
+         msgpack_decode( "cdfffe", "65534" );
+
+         msgpack_decode( "ce00000000", "0" );
+         msgpack_decode( "ce000000ff", "255" );
+         msgpack_decode( "cefffffffe", "4294967294" );
+
+         msgpack_decode( "cf0000000000000000", "0" );
+         msgpack_decode( "cf00000000000000ff", "255" );
+         msgpack_decode( "cffffffffffffffffe", "18446744073709551614" );
+
+         msgpack_decode( "d000", "0" );
+         msgpack_decode( "d0ff", "-1" );
+         msgpack_decode( "d080", "-128" );
+         msgpack_decode( "d07f", "127" );
+
+         msgpack_decode( "d10000", "0" );
+         msgpack_decode( "d1ffff", "-1" );
+         msgpack_decode( "d18000", "-32768" );
+         msgpack_decode( "d17fff", "32767" );
+
+         msgpack_decode( "d200000000", "0" );
+         msgpack_decode( "d2ffffffff", "-1" );
+         msgpack_decode( "d280000000", "-2147483648" );
+         msgpack_decode( "d27fffffff", "2147483647" );
+
+         msgpack_decode( "d30000000000000000", "0" );
+         msgpack_decode( "d3ffffffffffffffff", "-1" );
+         msgpack_decode( "d38000000000000000", "-9223372036854775808" );
+         msgpack_decode( "d37fffffffffffffff", "9223372036854775807" );
+
          msgpack_decode( "d900", "\"\"" );
          msgpack_decode( "d90130", "\"0\"" );
          msgpack_decode( "d90430313233", "\"0123\"" );

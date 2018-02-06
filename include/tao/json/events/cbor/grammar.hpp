@@ -441,8 +441,8 @@ namespace tao
                }
             };
 
-            template< utf8_mode M >
-            struct basic_grammar : json_pegtl::must< data< M >, json_pegtl::eof >
+            template< utf8_mode V >
+            struct basic_grammar : json_pegtl::must< data< V >, json_pegtl::eof >
             {
             };
 
