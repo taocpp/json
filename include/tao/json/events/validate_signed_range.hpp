@@ -25,7 +25,7 @@ namespace tao
             void number( const std::int64_t v )
             {
                if( ( v < Min ) || ( v > Max ) ) {
-                  throw std::runtime_error( "signed range violated: " + std::to_string( v ) );
+                  throw std::runtime_error( "signed range violated: " + std::to_string( v ) );  // NOLINT
                }
                Consumer::number( v );
             }
