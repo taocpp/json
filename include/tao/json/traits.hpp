@@ -29,6 +29,12 @@ namespace tao
       template<>
       struct traits< null_t >
       {
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const null_t /*unused*/ )
+         {
+            c.null();
+         }
+
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, null_t /*unused*/ ) noexcept
          {
@@ -965,10 +971,10 @@ namespace tao
          static void produce( Consumer& c, const tao::optional< T >& o )
          {
             if( o ) {
-               Traits< T >::template produce< Traits >( c, *o );
+               Traits< typename std::decay< T >::type >::template produce< Traits >( c, *o );
             }
             else {
-               c.null();
+               Traits< null_t >::template produce< Traits >( c, null );
             }
          }
 
@@ -979,18 +985,18 @@ namespace tao
                v = *o;
             }
             else {
-               v.unsafe_assign_null();
+               v = null;
             }
          }
 
          template< template< typename... > class Traits, typename Base >
          static void extract( const basic_value< Traits, Base >& v, tao::optional< T >& o )
          {
-            if( v.is_null() ) {
-               o = tao::nullopt;
+            if( v != null ) {
+               o = v.template as< T >();
             }
             else {
-               o = v.template as< T >();
+               o = tao::nullopt;
             }
          }
 

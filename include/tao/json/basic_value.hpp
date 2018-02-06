@@ -83,26 +83,6 @@ namespace tao
             seize( std::move( r ) );
          }
 
-         basic_value( null_t /*unused*/ ) noexcept  // NOLINT
-         {
-            unsafe_assign_null();
-         }
-
-         basic_value( empty_binary_t /*unused*/ ) noexcept  // NOLINT
-         {
-            unsafe_emplace_binary();
-         }
-
-         basic_value( empty_array_t /*unused*/ ) noexcept  // NOLINT
-         {
-            unsafe_emplace_array();
-         }
-
-         basic_value( empty_object_t /*unused*/ ) noexcept  // NOLINT
-         {
-            unsafe_emplace_object();
-         }
-
          template< typename T, typename = typename std::enable_if< !std::is_convertible< T&&, const basic_value& >::value >::type >
          basic_value( T&& v )  // NOLINT
             noexcept( noexcept( Traits< typename std::decay< T >::type >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
@@ -181,34 +161,6 @@ namespace tao
             m_type = v.m_type;
             seize( std::move( v ) );
             Base::operator=( static_cast< Base&& >( v ) );
-            return *this;
-         }
-
-         basic_value& operator=( null_t /*unused*/ ) noexcept
-         {
-            unsafe_discard();
-            unsafe_assign_null();
-            return *this;
-         }
-
-         basic_value& operator=( empty_binary_t /*unused*/ ) noexcept
-         {
-            unsafe_discard();
-            unsafe_emplace_binary();
-            return *this;
-         }
-
-         basic_value& operator=( empty_array_t /*unused*/ ) noexcept
-         {
-            unsafe_discard();
-            unsafe_emplace_array();
-            return *this;
-         }
-
-         basic_value& operator=( empty_object_t /*unused*/ ) noexcept
-         {
-            unsafe_discard();
-            unsafe_emplace_object();
             return *this;
          }
 
