@@ -14,8 +14,6 @@ In order to transform binary data in the Value object into something compatible 
 Producers and consumers can be freely coupled, it is not necessary for the beginning or end of the chain to be a value object.
 For example an Events producer that parses CBOR could be used with an Events consumer that writes UBJSON in order to transform between these two formats on-the-fly.
 
-*It should also be noted that nothing prevents the creation of an Events interface class in the object-oriented sense, one that has `virtual` methods corresponding to the Events functions.*
-
 ## Consumer Interface
 
 ```c++
@@ -211,7 +209,11 @@ Filters are structs or classes that implement the Events functions as they are c
 | `prefer_unsigned` | Passes through all Events except for numbers of type `std::int64_t` which fit into a `std::uint64_t` and are passed on as such. |
 | `ref` | Passes all Events to another consumer or filter to which it holds a C++ reference. |
 | `tee` | Passes all Events to an arbitrary number of other consumers or filters which it holds in a `std::tuple<>`. |
+| `validate_integer_range` | Passes through all Events except for signed and unsigned numbers which are first checked against a range. |
 | `validate_keys` | Passes through all Events except for keys which are first validated against a provided PEGTL grammar rule. |
+| `validate_signed_range` | Passes through all Events except for signed numbers which are first checked against a range. |
+| `validate_unsigned_range` | Passes through all Events except for unsigned numbers which are first checked against a range. |
+| `virtual_ref` | Like `ref`, but implements the virtual Event functions from `virtual_base`. |
 
 ### Need Description
 

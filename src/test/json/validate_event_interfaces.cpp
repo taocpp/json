@@ -20,7 +20,10 @@
 #include <tao/json/events/to_value.hpp>
 #include <tao/json/events/transformer.hpp>
 #include <tao/json/events/validate_event_order.hpp>
+#include <tao/json/events/validate_integer_range.hpp>
 #include <tao/json/events/validate_keys.hpp>
+#include <tao/json/events/validate_signed_range.hpp>
+#include <tao/json/events/validate_unsigned_range.hpp>
 #include <tao/json/events/virtual_ref.hpp>
 
 #include <tao/json/events/binary_to_base64.hpp>
@@ -123,6 +126,9 @@ namespace tao
          check_consumer_impl< events::tee< Consumer, events::discard, Consumer > >();
 
          check_consumer_impl< events::validate_keys< Consumer, json_pegtl::success > >();
+         check_consumer_impl< events::validate_signed_range< Consumer, 0, 1 > >();
+         check_consumer_impl< events::validate_unsigned_range< Consumer, 0, 1 > >();
+         check_consumer_impl< events::validate_integer_range< Consumer, 0, 1 > >();
 
          check_consumer_impl< events::transformer< Consumer > >();
          check_consumer_impl< events::transformer< Consumer, events::binary_to_base64 > >();
