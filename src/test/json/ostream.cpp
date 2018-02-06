@@ -28,6 +28,13 @@ namespace tao
          TEST_ASSERT( oss.str() == s );
       }
 
+      void test_pretty_crlf( const value& v, const std::string& s )
+      {
+         std::ostringstream oss;
+         to_stream( oss, v, 2, "\r\n" );
+         TEST_ASSERT( oss.str() == s );
+      }
+
       void unit_test()
       {
          value e;
@@ -76,6 +83,23 @@ namespace tao
          test_pretty( { { "foo", v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", &v }, { "bar", 43u } }, "{\n  \"bar\": 43,\n  \"foo\": 42\n}" );
          test_pretty( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{\n  \"foo\": [\n    1,\n    {\n      \"bar\": 42,\n      \"baz\": [\n        {},\n        43\n      ]\n    },\n    []\n  ]\n}" );
+
+         test_pretty_crlf( null, "null" );
+         test_pretty_crlf( true, "true" );
+         test_pretty_crlf( false, "false" );
+         test_pretty_crlf( 42, "42" );
+         test_pretty_crlf( 42.1, "42.1" );
+         test_pretty_crlf( "foo", "\"foo\"" );
+         test_pretty_crlf( empty_array, "[]" );
+         test_pretty_crlf( value::array( {} ), "[]" );
+         test_pretty_crlf( value::array( { 1 } ), "[\r\n  1\r\n]" );
+         test_pretty_crlf( value::array( { 1, 2u, 3 } ), "[\r\n  1,\r\n  2,\r\n  3\r\n]" );
+         test_pretty_crlf( empty_object, "{}" );
+         test_pretty_crlf( { { "foo", 42 } }, "{\r\n  \"foo\": 42\r\n}" );
+         test_pretty_crlf( { { "foo", 42 }, { "bar", 43u } }, "{\r\n  \"bar\": 43,\r\n  \"foo\": 42\r\n}" );
+         test_pretty_crlf( { { "foo", v }, { "bar", 43u } }, "{\r\n  \"bar\": 43,\r\n  \"foo\": 42\r\n}" );
+         test_pretty_crlf( { { "foo", &v }, { "bar", 43u } }, "{\r\n  \"bar\": 43,\r\n  \"foo\": 42\r\n}" );
+         test_pretty_crlf( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{\r\n  \"foo\": [\r\n    1,\r\n    {\r\n      \"bar\": 42,\r\n      \"baz\": [\r\n        {},\r\n        43\r\n      ]\r\n    },\r\n    []\r\n  ]\r\n}" );
       }
 
    }  // namespace json

@@ -10,6 +10,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "../byte_view.hpp"
@@ -54,6 +55,14 @@ namespace tao
             to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
                : os( in_os ),
                  indent( in_indent )
+            {
+            }
+
+            template< typename S >
+            to_pretty_stream( std::ostream& in_os, const std::size_t in_indent, S&& in_eol )
+               : os( in_os ),
+                 indent( in_indent ),
+                 current( std::forward< S >( in_eol ) )
             {
             }
 
