@@ -32,13 +32,6 @@ namespace tao
          TEST_ASSERT( to_string( ubjson::from_string( "NNN" + test_unhex( data ) ) ) == to_string( from_string( text ) ) );
       }
 
-      void validate_files( const std::string& prefix )
-      {
-         const auto j = parse_file( prefix + ".compact.json" );
-         const auto u = ubjson::parse_file( prefix + ".ubj" );
-         TEST_ASSERT( j == u );
-      }
-
       void unit_test()
       {
          ubjson_decode( "5a", "null" );
