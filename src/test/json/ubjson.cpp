@@ -5,7 +5,6 @@
 #include "test_unhex.hpp"
 
 #include <tao/json/from_string.hpp>
-#include <tao/json/parse_file.hpp>
 #include <tao/json/to_string.hpp>
 
 #include <tao/json/ubjson.hpp>
