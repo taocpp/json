@@ -8,6 +8,7 @@
 #include <limits>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace tao
 {
@@ -24,7 +25,7 @@ namespace tao
 
             using Consumer::Consumer;
 
-            void number( const std::int64_t v ) noexcept( noexcept( Consumer::number( v ) ) )
+            void number( const std::int64_t v )
             {
                if( ( v < std::int64_t( Min ) ) || ( v > std::int64_t( Max ) ) ) {
                   throw std::runtime_error( "integer range violated: " + std::to_string( v ) );
@@ -32,7 +33,7 @@ namespace tao
                Consumer::number( v );
             }
 
-            void number( const std::uint64_t v ) noexcept( noexcept( Consumer::number( v ) ) )
+            void number( const std::uint64_t v )
             {
                if( ( v < Min ) || ( v > Max ) ) {
                   throw std::runtime_error( "unsigned range violated: " + std::to_string( v ) );
@@ -40,7 +41,7 @@ namespace tao
                Consumer::number( v );
             }
 
-            void number( const double v ) noexcept( noexcept( Consumer::number( v ) ) )
+            void number( const double v ) noexcept( noexcept( std::declval< Consumer >().number( v ) ) )
             {
                Consumer::number( v );
             }

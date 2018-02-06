@@ -22,7 +22,7 @@ namespace tao
 
             using Consumer::Consumer;
 
-            void number( const std::int64_t v ) noexcept( noexcept( Consumer::number( v ) ) )
+            void number( const std::int64_t v )
             {
                if( ( v < Min ) || ( v > Max ) ) {
                   throw std::runtime_error( "signed range violated: " + std::to_string( v ) );
@@ -30,12 +30,12 @@ namespace tao
                Consumer::number( v );
             }
 
-            void number( const std::uint64_t v ) noexcept( noexcept( Consumer::number( v ) ) )
+            void number( const std::uint64_t v ) noexcept( noexcept( std::declval< Consumer >().number( v ) ) )
             {
                Consumer::number( v );
             }
 
-            void number( const double v ) noexcept( noexcept( Consumer::number( v ) ) )
+            void number( const double v ) noexcept( noexcept( std::declval< Consumer >().number( v ) ) )
             {
                Consumer::number( v );
             }
