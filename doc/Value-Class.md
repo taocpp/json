@@ -29,7 +29,8 @@ enum class type : std::uint8_t
    BINARY_VIEW,
    ARRAY,
    OBJECT,
-   RAW_PTR
+   RAW_PTR,
+   OPAQUE
 };
 ```
 
