@@ -13,96 +13,107 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits, typename Consumer >
-      struct array_t
+      namespace events
       {
-         Consumer* c_;
-
-         explicit array_t( Consumer& c ) noexcept
-            : c_( &c )
+         // some helpers
+         template< template< typename... > class Traits = traits, typename Consumer, typename T >
+         void feed( Consumer& c, T&& t )
          {
-            c_->begin_array();
+            Traits< typename std::decay< T >::type >::template produce< Traits >( c, std::forward< T >( t ) );
          }
 
-         array_t( const array_t& ) = delete;
-
-         array_t( array_t&& r ) noexcept
-            : c_( r.c_ )
+         template< template< typename... > class Traits, typename Consumer >
+         struct array_t
          {
-            r.c_ = nullptr;
-         }
+            Consumer* c_;
 
-         ~array_t()
-         {
-            if( c_ ) {
-               c_->end_array();
+            explicit array_t( Consumer& c ) noexcept
+               : c_( &c )
+            {
+               c_->begin_array();
             }
-         }
 
-         void operator=( const array_t& ) = delete;
-         void operator=( array_t&& ) = delete;
+            array_t( const array_t& ) = delete;
 
-         template< typename T >
-         array_t& push_back( const T& v )
-         {
-            assert( c_ );
-            Traits< T >::template produce< Traits >( *c_, v );
-            c_->element();
-            return *this;
-         }
-      };
-
-      template< template< typename... > class Traits, typename Consumer >
-      struct object_t
-      {
-         Consumer* c_;
-
-         explicit object_t( Consumer& c ) noexcept
-            : c_( &c )
-         {
-            c_->begin_object();
-         }
-
-         object_t( const object_t& ) = delete;
-
-         object_t( object_t&& r ) noexcept
-            : c_( r.c_ )
-         {
-            r.c_ = nullptr;
-         }
-
-         ~object_t()
-         {
-            if( c_ ) {
-               c_->end_object();
+            array_t( array_t&& r ) noexcept
+               : c_( r.c_ )
+            {
+               r.c_ = nullptr;
             }
-         }
 
-         void operator=( const object_t& ) = delete;
-         void operator=( object_t&& ) = delete;
+            ~array_t()
+            {
+               if( c_ ) {
+                  c_->end_array();
+               }
+            }
 
-         template< typename T >
-         object_t& insert( const std::string& k, const T& v )
+            void operator=( const array_t& ) = delete;
+            void operator=( array_t&& ) = delete;
+
+            template< typename T >
+            array_t& push_back( T&& v )
+            {
+               assert( c_ );
+               feed< Traits >( *c_, std::forward< T >( v ) );
+               c_->element();
+               return *this;
+            }
+         };
+
+         template< template< typename... > class Traits, typename Consumer >
+         struct object_t
          {
-            assert( c_ );
-            c_->key( k );
-            Traits< T >::template produce< Traits >( *c_, v );
-            c_->member();
-            return *this;
+            Consumer* c_;
+
+            explicit object_t( Consumer& c ) noexcept
+               : c_( &c )
+            {
+               c_->begin_object();
+            }
+
+            object_t( const object_t& ) = delete;
+
+            object_t( object_t&& r ) noexcept
+               : c_( r.c_ )
+            {
+               r.c_ = nullptr;
+            }
+
+            ~object_t()
+            {
+               if( c_ ) {
+                  c_->end_object();
+               }
+            }
+
+            void operator=( const object_t& ) = delete;
+            void operator=( object_t&& ) = delete;
+
+            template< typename T >
+            object_t& insert( const std::string& k, T&& v )
+            {
+               assert( c_ );
+               c_->key( k );
+               feed< Traits >( *c_, std::forward< T >( v ) );
+               c_->member();
+               return *this;
+            }
+         };
+
+         template< template< typename... > class Traits, typename Consumer >
+         array_t< Traits, Consumer > array( Consumer& c ) noexcept
+         {
+            return array_t< Traits, Consumer >( c );
          }
-      };
 
-      template< template< typename... > class Traits, typename Consumer >
-      array_t< Traits, Consumer > array( Consumer& c ) noexcept
-      {
-         return array_t< Traits, Consumer >( c );
-      }
+         template< template< typename... > class Traits, typename Consumer >
+         object_t< Traits, Consumer > object( Consumer& c ) noexcept
+         {
+            return object_t< Traits, Consumer >( c );
+         }
 
-      template< template< typename... > class Traits, typename Consumer >
-      object_t< Traits, Consumer > object( Consumer& c ) noexcept
-      {
-         return object_t< Traits, Consumer >( c );
-      }
+      }  // namespace events
 
       struct point
       {
@@ -116,7 +127,7 @@ namespace tao
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& consumer, const point& data )
          {
-            auto a = array< Traits >( consumer );
+            auto a = events::array< Traits >( consumer );
             a.push_back( data.x );
             a.push_back( data.y );
          }
@@ -136,7 +147,7 @@ namespace tao
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& consumer, const employee& data )
          {
-            auto o = object< Traits >( consumer );
+            auto o = events::object< Traits >( consumer );
             o.insert( "name", data.name );
             if( !data.position.empty() ) {
                o.insert( "position", data.position );
@@ -155,28 +166,18 @@ namespace tao
          }
       };
 
-      namespace events
-      {
-         template< template< typename... > class Traits = traits, typename Consumer, typename T >
-         void from_other( Consumer& c, T&& t )
-         {
-            Traits< typename std::decay< T >::type >::template produce< Traits >( c, std::forward< T >( t ) );
-         }
-
-      }  // namespace events
-
       template< template< typename... > class Traits = traits, typename T >
       void other_to_stream( std::ostream& os, const T& t )
       {
          events::to_stream consumer( os );
-         events::from_other< Traits >( consumer, t );
+         events::feed< Traits >( consumer, t );
       }
 
       template< template< typename... > class Traits = traits, typename T >
       void other_to_stream( std::ostream& os, const T& t, const std::size_t indent )
       {
          events::to_pretty_stream consumer( os, indent );
-         events::from_other< Traits >( consumer, t );
+         events::feed< Traits >( consumer, t );
       }
 
       template< template< typename... > class Traits = traits, typename... Ts >
