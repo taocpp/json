@@ -31,13 +31,15 @@ namespace config
 
       struct array_element;
       struct array_content : opt< list_tail< array_element, jaxn::element_separator > > {};
-      struct array : seq< jaxn::begin_array, array_content, must< jaxn::end_array > >
+      struct array_value : seq< jaxn::begin_array, array_content, must< jaxn::end_array > >
       {
          using begin = jaxn::begin_array;
          using end = jaxn::end_array;
          using element = array_element;
          using content = array_content;
       };
+      struct array_fragment : sor< expression, array_value > {};
+      struct array : list_must< array_fragment, jaxn::value_concat > {};
 
       struct key : string {};
 
@@ -45,17 +47,21 @@ namespace config
       struct mkey : list< mkey_part, one< '.' > > {};
       struct member : if_must< mkey, jaxn::name_separator, value > {};
       struct object_content : star< member, opt< jaxn::value_separator > > {};
-      struct object : seq< jaxn::begin_object, object_content, must< jaxn::end_object > >
+      struct object_value : seq< jaxn::begin_object, object_content, must< jaxn::end_object > >
       {
          using begin = jaxn::begin_object;
          using end = jaxn::end_object;
          using element = member;
          using content = object_content;
       };
+      struct object_fragment : sor< expression, object_value > {};
+      struct object : list_must< object_fragment, jaxn::value_concat > {};
 
+      struct self : TAOCPP_JSON_PEGTL_STRING( "self:" ) {};
+      struct super : TAOCPP_JSON_PEGTL_STRING( "super:" ) {};
       struct rkey_part : sor< key, identifier, expression > {};
-      struct rkey : list< mkey_part, one< '.' > > {};
-      struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary > > > > > {};
+      struct rkey : seq< opt< sor< self, super > >, list< mkey_part, one< '.' > > > {};
+      struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary, object, array > > > > > {};
 
       struct sor_value
       {
