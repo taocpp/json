@@ -12,7 +12,15 @@ The taocpp/json library is built around two main concepts, the [*Value class*](V
 
 
 
-## How do I...
+## How To...
+
+* [...include the right header?](#include-the-right-header)
+* [...read a JSON file?](#read-a-json-file)
+* [...parse a JSON string?](#parse-a-json-string)
+* [...serialise a JSON Value to a string?](#serialise-a-json-value-to-a-string)
+* [...serialise with base64 strings for binary data?](#serialise-with-base64-strings-for-binary-data)
+* [...serialise a JSON Value to an ostream?](#serialise-a-json-value-to-an-ostream)
+* [...create a Value with a JSON object?](#create-a-value-with-a-json-object)
 
 ### ...include the right header?
 
@@ -27,6 +35,12 @@ If you need to improve compile time, you can choose to directly use only some of
 
 ```c++
 const tao::json::value v = tao::json::parse_file( "filename.json" );
+```
+
+### ...parse a JSON string?
+
+```c++
+const tao::json::value v = tao::json::from_string( "{ \"a\": 1.0, \"b\": 2.0 }" );
 ```
 
 ### ...serialise a JSON Value to a string?
@@ -49,7 +63,7 @@ const std::string l = tao::json::to_string< tao::json::events::binary_to_base64 
 
 See the [Events interface](Events-Interface.md) documentation for all available Event filters.
 
-### ...serialise a JSON Value to a `std::ostream`?
+### ...serialise a JSON Value to an ostream?
 
 ```c++
 tao::json::to_stream( std::cout, v );
@@ -65,11 +79,7 @@ to_stream< events::binary_to_base64, events::non_finite_to_null >( std::cout, v,
 
 ### ...create a Value with a JSON object?
 
-First possibility, parse a string that represents an object.
-
-```c++
-const tao::json::value v = tao::json::from_string( "{ \"a\": 1.0, \"b\": 2.0 }" );
-```
+First possibility, parse a string that represents an object, see [above](#parse-a-json-string).
 
 Second possibility, use the literal string operator to parse a literal string.
 
