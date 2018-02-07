@@ -81,7 +81,6 @@ namespace tao
             : Base( static_cast< const Base& >( r ) ),
               m_type( json::type::DESTROYED )
          {
-            assert( r.m_type != json::type::DESTROYED );
             embed( r );
             m_type = r.m_type;
          }
