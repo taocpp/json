@@ -10,55 +10,92 @@ A few short indications on how to use this library:
 
 The taocpp/json library is built around two main concepts, the [*Value class*](Value-Class.md) and the [*Events interface*](Events-Interface.md).
 
-### How do I read a JSON file?
+
+
+## How do I...
+
+### ...include the right header?
+
+The convenience include `<tao/json.hpp>` will include the whole library.
+If you need to improve compile time, you can choose to directly use only some of the individual headers that it includes.
 
 ```c++
-#include <tao/json/parse_file.hpp>
+#include <tao/json.hpp>
+```
 
+### ...read a JSON file?
+
+```c++
 const tao::json::value v = tao::json::parse_file( "filename.json" );
 ```
 
-### How do I create a value instance with a JSON object?
+### ...serialise a JSON Value to a string?
+
+We will assume that `v` is a valid JSON Value instance.
+
+```c++
+const std::string j = tao::json::to_string( v );
+```
+
+Passing a `std::size_t` as second argument enable pretty-printing mode with the given size as indent.
+
+Passing a `std::string` as third argument uses the given string as line ending instead of the `\n` default.
+
+### ...serialise with base64 strings for binary data?
+
+```c++
+const std::string l = tao::json::to_string< tao::json::events::binary_to_base64 >( v );
+```
+
+See the [Events interface](Events-Interface.md) documentation for all available Event filters.
+
+### ...serialise a JSON Value to a `std::ostream`?
+
+```c++
+tao::json::to_stream( std::cout, v );
+```
+
+The additional function and template arguments are just like for `to_string()`.
+
+```c++
+using namespace tao::json;
+
+to_stream< events::binary_to_base64, events::non_finite_to_null >( std::cout, v, 3, "\r\n" );
+```
+
+### ...create a Value with a JSON object?
 
 First possibility, parse a string that represents an object.
 
 ```c++
-#include <tao/json/from_string.hpp>
-
-const tao::json::value v = tao::json::from_string( "{ \"a\": 1, \"b\": 2 }" );
+const tao::json::value v = tao::json::from_string( "{ \"a\": 1.0, \"b\": 2.0 }" );
 ```
 
 Second possibility, use the literal string operator to parse a literal string.
 
 ```c++
-#include <tao/json/from_string.hpp>
-
 using namespace tao::json;
 
-const auto v = "{ \"a\": 1, \"b\": 2 }"_json;
+const auto v = "{ \"a\": 1.0, \"b\": 2.0 }"_json;
 ```
 
 Third possibility, use the `std::initalizer_list<>` constructor.
 
 ```c++
-#include <tao/json/value.hpp>
-
 const tao::json::value v = {
-   { "a", 1 },
-   { "b", 2 }
+   { "a", 1.0 },
+   { "b", 2.0 }
 };
 ```
 
 Fourth possibility, use the appropriate value member functions.
 
 ```c++
-#include <tao/json/value.hpp>
-
 int main()
 {
    tao::json::value v;
-   v.emplace( "a", 1 );
-   v.emplace( "b", 2 );
+   v.emplace( "a", 1.0 );
+   v.emplace( "b", 2.0 );
    return 0;
 }
 ```
@@ -66,17 +103,15 @@ int main()
 Fifth possibility, use the appropriate Event consumer.
 
 ```c++
-#include <tao/json/events/to_value.hpp>
-
 int main()
 {
    tao::json::events::to_value consumer;
    consumer.begin_object();
    consumer.key( "a" );
-   consumer.number( 1 );
+   consumer.number( 1.0 );
    consumer.member();
    consumer.key( "b" );
-   consumer.number( 2 );
+   consumer.number( 2.0 );
    consumer.member();
    consumer.end_object();
    const tao::json::value v = std::move( consumer.value );
