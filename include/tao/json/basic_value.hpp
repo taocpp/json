@@ -601,10 +601,10 @@ namespace tao
             m_union.a.push_back( std::move( v ) );
          }
 
-         template< typename... Args >
-         auto unsafe_emplace_back( Args&&... args ) -> decltype( std::declval< array_t >().emplace_back( std::forward< Args >( args )... ) )
+         template< typename... Ts >
+         auto unsafe_emplace_back( Ts&&... ts ) -> decltype( std::declval< array_t >().emplace_back( std::forward< Ts >( ts )... ) )
          {
-            return m_union.a.emplace_back( std::forward< Args >( args )... );
+            return m_union.a.emplace_back( std::forward< Ts >( ts )... );
          }
 
          template< typename... Ts >
@@ -624,10 +624,10 @@ namespace tao
             unsafe_emplace_object( std::move( o ) );
          }
 
-         template< typename... Args >
-         std::pair< typename object_t::iterator, bool > unsafe_emplace( Args&&... args )
+         template< typename... Ts >
+         std::pair< typename object_t::iterator, bool > unsafe_emplace( Ts&&... ts )
          {
-            return m_union.o.emplace( std::forward< Args >( args )... );
+            return m_union.o.emplace( std::forward< Ts >( ts )... );
          }
 
          void unsafe_assign_raw_ptr( const basic_value* p ) noexcept
@@ -811,11 +811,11 @@ namespace tao
             unsafe_push_back( std::move( v ) );
          }
 
-         template< typename... Args >
-         void emplace_back( Args&&... args )
+         template< typename... Ts >
+         void emplace_back( Ts&&... ts )
          {
             prepare_array();
-            unsafe_emplace_back( std::forward< Args >( args )... );
+            unsafe_emplace_back( std::forward< Ts >( ts )... );
          }
 
          void append( std::initializer_list< internal::single< Traits, Base > >&& l )
@@ -870,11 +870,11 @@ namespace tao
             }
          }
 
-         template< typename... Args >
-         std::pair< typename object_t::iterator, bool > emplace( Args&&... args )
+         template< typename... Ts >
+         std::pair< typename object_t::iterator, bool > emplace( Ts&&... ts )
          {
             prepare_object();
-            return unsafe_emplace( std::forward< Args >( args )... );
+            return unsafe_emplace( std::forward< Ts >( ts )... );
          }
 
          void insert( std::initializer_list< internal::pair< Traits, Base > >&& l )
