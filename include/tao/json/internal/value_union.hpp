@@ -21,7 +21,7 @@ namespace tao
    {
       namespace internal
       {
-         struct opaque_t
+         struct opaque_ptr_t
          {
             const void* data;
             producer_t producer;
@@ -61,7 +61,7 @@ namespace tao
             std::map< std::string, T > o;
 
             const T* p;
-            opaque_t q;
+            opaque_ptr_t q;
          };
 
       }  // namespace internal

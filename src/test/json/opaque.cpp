@@ -162,7 +162,7 @@ namespace tao
       {
          static void assign( value& v, const employee* e )
          {
-            v.unsafe_assign_opaque( e );
+            v.unsafe_assign_opaque_ptr( e );
          }
       };
 

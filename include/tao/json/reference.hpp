@@ -101,7 +101,7 @@ namespace tao
                   return;
                case type::RAW_PTR:
                   return;
-               case type::OPAQUE:
+               case type::OPAQUE_PTR:
                   return;
             }
             throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE

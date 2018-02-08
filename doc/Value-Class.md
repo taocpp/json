@@ -30,7 +30,7 @@ enum class type : std::uint8_t
    ARRAY,
    OBJECT,
    RAW_PTR,
-   OPAQUE
+   OPAQUE_PTR
 };
 ```
 

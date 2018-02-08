@@ -282,9 +282,9 @@ namespace tao
             return m_type == json::type::RAW_PTR;
          }
 
-         bool is_opaque() const noexcept
+         bool is_opaque_ptr() const noexcept
          {
-            return m_type == json::type::OPAQUE;
+            return m_type == json::type::OPAQUE_PTR;
          }
 
          // The unsafe_get_*() accessor functions MUST NOT be
@@ -371,7 +371,7 @@ namespace tao
             return m_union.p;
          }
 
-         const internal::opaque_t unsafe_get_opaque() const noexcept
+         const internal::opaque_ptr_t unsafe_get_opaque_ptr() const noexcept
          {
             return m_union.q;
          }
@@ -483,7 +483,7 @@ namespace tao
             return unsafe_get_raw_ptr();
          }
 
-         // Does get_opaque() make sense?
+         // Does get_opaque_ptr() make sense?
 
          template< json::type E >
          decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) get()
@@ -638,19 +638,19 @@ namespace tao
          }
 
          template< typename T >
-         void unsafe_assign_opaque( const T* data ) noexcept
+         void unsafe_assign_opaque_ptr( const T* data ) noexcept
          {
-            unsafe_assign_opaque( data, &basic_value::producer_wrapper< T > );
+            unsafe_assign_opaque_ptr( data, &basic_value::producer_wrapper< T > );
          }
 
          template< typename T >
-         void unsafe_assign_opaque( const T* data, const producer_t producer ) noexcept
+         void unsafe_assign_opaque_ptr( const T* data, const producer_t producer ) noexcept
          {
             assert( data );
             assert( producer );
             m_union.q.data = data;
             m_union.q.producer = producer;
-            m_type = json::type::OPAQUE;
+            m_type = json::type::OPAQUE_PTR;
          }
 
          template< typename T >
@@ -906,16 +906,16 @@ namespace tao
          }
 
          template< typename T >
-         void assign_opaque( const T* data ) noexcept
+         void assign_opaque_ptr( const T* data ) noexcept
          {
-            assign_opaque( data, &basic_value::producer_wrapper< T > );
+            assign_opaque_ptr( data, &basic_value::producer_wrapper< T > );
          }
 
          template< typename T >
-         void assign_opaque( const T* data, const producer_t producer ) noexcept
+         void assign_opaque_ptr( const T* data, const producer_t producer ) noexcept
          {
             unsafe_discard();
-            unsafe_assign_opaque( data, producer );
+            unsafe_assign_opaque_ptr( data, producer );
          }
 
          const basic_value* skip_raw_ptr() const noexcept
@@ -1243,7 +1243,7 @@ namespace tao
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
                case json::type::RAW_PTR:
-               case json::type::OPAQUE:
+               case json::type::OPAQUE_PTR:
                   return false;
 
                case json::type::STRING:
@@ -1284,7 +1284,7 @@ namespace tao
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
                case json::type::RAW_PTR:
-               case json::type::OPAQUE:
+               case json::type::OPAQUE_PTR:
                   return;
 
                case json::type::STRING:
@@ -1445,7 +1445,7 @@ namespace tao
 #endif
                   return;
 
-               case json::type::OPAQUE:
+               case json::type::OPAQUE_PTR:
                   m_union.q = r.m_union.q;
 #ifndef NDEBUG
                   r.m_type = json::type::DISCARDED;
@@ -1514,7 +1514,7 @@ namespace tao
                   m_union.p = r.m_union.p;
                   return;
 
-               case json::type::OPAQUE:
+               case json::type::OPAQUE_PTR:
                   m_union.q = r.m_union.q;
                   return;
             }

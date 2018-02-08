@@ -82,8 +82,8 @@ namespace tao
                   assert( lhs.type() != type::DESTROYED );
                   break;
 
-               case type::OPAQUE:
-                  assert( lhs.type() != type::OPAQUE );
+               case type::OPAQUE_PTR:
+                  assert( lhs.type() != type::OPAQUE_PTR );
                   break;
 
                default:
@@ -91,7 +91,7 @@ namespace tao
             }
             assert( rhs.type() != type::DISCARDED );
             assert( rhs.type() != type::DESTROYED );
-            assert( rhs.type() != type::OPAQUE );
+            assert( rhs.type() != type::OPAQUE_PTR );
             return false;
          }
 
@@ -146,8 +146,8 @@ namespace tao
                assert( lhs.type() != type::RAW_PTR );
                break;  // LCOV_EXCL_LINE
 
-            case type::OPAQUE:
-               assert( lhs.type() != type::OPAQUE );
+            case type::OPAQUE_PTR:
+               assert( lhs.type() != type::OPAQUE_PTR );
                break;  // LCOV_EXCL_LINE
          }
          // LCOV_EXCL_START
@@ -274,8 +274,8 @@ namespace tao
                   assert( lhs.type() != type::DESTROYED );
                   break;
 
-               case type::OPAQUE:
-                  assert( lhs.type() != type::OPAQUE );
+               case type::OPAQUE_PTR:
+                  assert( lhs.type() != type::OPAQUE_PTR );
                   break;
 
                default:
@@ -283,7 +283,7 @@ namespace tao
             }
             assert( rhs.type() != type::DISCARDED );
             assert( rhs.type() != type::DESTROYED );
-            assert( rhs.type() != type::OPAQUE );
+            assert( rhs.type() != type::OPAQUE_PTR );
             return lhs.type() < rhs.type();
          }
 
@@ -338,8 +338,8 @@ namespace tao
                assert( lhs.type() != type::RAW_PTR );
                break;  // LCOV_EXCL_LINE
 
-            case type::OPAQUE:
-               assert( lhs.type() != type::OPAQUE );
+            case type::OPAQUE_PTR:
+               assert( lhs.type() != type::OPAQUE_PTR );
                break;  // LCOV_EXCL_LINE
          }
          // LCOV_EXCL_START

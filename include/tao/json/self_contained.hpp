@@ -14,7 +14,7 @@ namespace tao
    namespace json
    {
       // recursively checks for the existence
-      // of RAW_PTR or OPAQUE nodes, STRING_VIEW or BINARY_VIEW,
+      // of RAW_PTR or OPAQUE_PTR nodes, STRING_VIEW or BINARY_VIEW,
       // returns true is no such nodes were found.
 
       template< template< typename... > class Traits, typename Base >
@@ -66,7 +66,7 @@ namespace tao
             case type::RAW_PTR:
                return false;
 
-            case type::OPAQUE:
+            case type::OPAQUE_PTR:
                return false;
          }
          // LCOV_EXCL_START
@@ -130,8 +130,8 @@ namespace tao
                make_self_contained( v );
                return;
 
-            case type::OPAQUE: {
-               const auto& q = v.unsafe_get_opaque();
+            case type::OPAQUE_PTR: {
+               const auto& q = v.unsafe_get_opaque_ptr();
                events::to_basic_value< Traits, Base > consumer;
                events::virtual_ref< events::to_basic_value< Traits, Base > > ref( consumer );
                q.producer( ref, q.data );

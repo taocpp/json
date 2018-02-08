@@ -96,8 +96,8 @@ namespace tao
                   events::from_value( consumer, *v.unsafe_get_raw_ptr() );
                   return;
 
-               case type::OPAQUE: {
-                  const auto& q = v.unsafe_get_opaque();
+               case type::OPAQUE_PTR: {
+                  const auto& q = v.unsafe_get_opaque_ptr();
                   virtual_ref< Consumer > ref( consumer );
                   q.producer( ref, q.data );
                   return;
@@ -181,8 +181,8 @@ namespace tao
                   events::from_value( consumer, *v.unsafe_get_raw_ptr() );
                   return;
 
-               case type::OPAQUE: {
-                  const auto& q = v.unsafe_get_opaque();
+               case type::OPAQUE_PTR: {
+                  const auto& q = v.unsafe_get_opaque_ptr();
                   virtual_ref< Consumer > ref( consumer );
                   q.producer( ref, q.data );
                   return;
