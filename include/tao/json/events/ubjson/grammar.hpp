@@ -35,12 +35,12 @@ namespace tao
                {
                   if( in.peek_char() == '-' ) {
                      in.bump_in_this_line();
-                     if( in.empty() || !internal::rules::sor_value::match_number< true, A, json_pegtl::rewind_mode::DONTCARE, Action, Control >( in, consumer ) ) {
+                     if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, json_pegtl::rewind_mode::DONTCARE, Action, Control >( in, consumer ) ) {
                         throw json_pegtl::parse_error( "incomplete number", in );
                      }
                      return true;
                   }
-                  return internal::rules::sor_value::match_number< false, A, M, Action, Control >( in, consumer );
+                  return json::internal::rules::sor_value::match_number< false, A, M, Action, Control >( in, consumer );
                }
 
                template< json_pegtl::apply_mode A,
