@@ -815,7 +815,7 @@ namespace tao
          void emplace_back( Args&&... args )
          {
             prepare_array();
-            unsafe_emplace_back( std::forward< Args... >( args )... );
+            unsafe_emplace_back( std::forward< Args >( args )... );
          }
 
          void append( std::initializer_list< internal::single< Traits, Base > >&& l )
