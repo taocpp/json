@@ -22,18 +22,18 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * [RFC7049]: Concise Binary Object Representation ([CBOR]).
   * [JAXN]: a standard for relaxed JSON.
   * [MsgPack]: MessagePack binary format (without extensions).
+  * [UBJSON]: Universal Binary JSON.
   * Experimental support for [JSON Reference] (local URI fragments only).
   * Experimental support for [JSON Schema] (draft v4).
-  * Experimental support for [UBJSON], Universal Binary JSON.
 
 * General
 
-  * Provides JSON Value (DOM-style).
-  * Provides JSON Events (SAX-style).
+  * Provides JSON Value Class (DOM-style).
+  * Provides JSON Events Interface (SAX-style).
   * Numeric values are stored as `std::int64_t`, `std::uint64_t` or `double`.
   * Allows storing and handling of non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
   * Allows storing and handling of binary data.
-  * Allows storing string views and binary views to avoid copying data.
+  * Supports string views and binary views to avoid copying data.
   * Currently only supports UTF-8 as input and output encoding.
 
 * Value Class
