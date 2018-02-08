@@ -75,6 +75,42 @@ namespace tao
       {
          namespace ubjson
          {
+            namespace internal
+            {
+               template< typename Input >
+               void throw_on_empty( Input& in, const std::size_t required = 1 )
+               {
+                  if( in.size( required ) < required ) {
+                     throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
+                  }
+               }
+
+               template< typename Input >
+               char read_char_unsafe( Input& in )
+               {
+                  const auto r = in.peek_char();
+                  in.bump_in_this_line( 1 );
+                  return r;
+               }
+
+               template< typename Input >
+               char peek_char_safe( Input& in )
+               {
+                  throw_on_empty( in );
+                  return in.peek_char();
+               }
+
+               template< typename Input >
+               char read_char_safe( Input& in )
+               {
+                  throw_on_empty( in );
+                  const auto r = in.peek_char();
+                  in.bump_in_this_line( 1 );
+                  return r;
+               }
+
+            }  // namespace internal
+
             template< utf8_mode V >
             struct data
             {
@@ -95,81 +131,87 @@ namespace tao
                template< typename Result, typename Number, typename Input >
                static Result read_number( Input& in )
                {
-                  if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
-                     const auto result = static_cast< Result >( json::internal::be_to_h< Number >( in.current() + 1 ) );
-                     in.bump_in_this_line( 1 + sizeof( Number ) );
-                     return result;
-                  }
-                  throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
+                  internal::throw_on_empty( in, sizeof( Number ) );
+                  const auto r = static_cast< Result >( json::internal::be_to_h< Number >( in.current() ) );
+                  in.bump_in_this_line( sizeof( Number ) );
+                  return r;
                }
 
                template< typename Input, typename Consumer >
                static bool match_impl( Input& in, Consumer& consumer )
                {
-                  switch( in.peek_char() ) {
-                     case 'Z':
-                        consumer.null();
-                        in.bump_in_this_line();
-                        return true;
-                     case 'T':
-                        consumer.boolean( true );
-                        in.bump_in_this_line();
-                        return true;
-                     case 'F':
-                        consumer.boolean( false );
-                        in.bump_in_this_line();
-                        return true;
-                     case 'i':
-                        consumer.number( read_number< std::int64_t, std::int8_t >( in ) );
-                        return true;
-                     case 'U':
-                        consumer.number( read_number< std::uint64_t, std::uint8_t >( in ) );
-                        return true;
-                     case 'I':
-                        consumer.number( read_number< std::int64_t, std::int16_t >( in ) );
-                        return true;
-                     case 'l':
-                        consumer.number( read_number< std::int64_t, std::int32_t >( in ) );
-                        return true;
-                     case 'L':
-                        consumer.number( read_number< std::int64_t, std::int64_t >( in ) );
-                        return true;
-                     case 'd':
-                        consumer.number( read_number< double, float >( in ) );
-                        return true;
-                     case 'D':
-                        consumer.number( read_number< double, double >( in ) );
-                        return true;
-                     case 'H':
-                        return match_high_precision( in, consumer );
-                     case 'C':
-                        return match_char( in, consumer );
-                     case 'S':
-                        consumer.string( read_container< V, tao::string_view >( in, read_size( in ) ) );
-                        return true;
-                  }
-                  throw json_pegtl::parse_error( "unknown ubjson marker " + std::to_string( unsigned( in.peek_char() ) ), in );
+                  return match_impl_impl( in, consumer, internal::read_char_unsafe( in ) );
                }
 
                template< typename Input, typename Consumer >
-               static bool match_char( Input& in, Consumer& consumer )
+               static bool match_impl_impl( Input& in, Consumer& consumer, const char c )
                {
-                  if( ( in.size( 2 ) < 2 ) || ( in.peek_byte( 1 ) > 127 ) ) {
-                     throw json_pegtl::parse_error( "invalid ubjson char", in );
+                  switch( c ) {
+                     case 'Z':
+                        consumer.null();
+                        break;
+                     case 'T':
+                        consumer.boolean( true );
+                        break;
+                     case 'F':
+                        consumer.boolean( false );
+                        break;
+                     case 'i':
+                        consumer.number( read_number< std::int64_t, std::int8_t >( in ) );
+                        break;
+                     case 'U':
+                        consumer.number( read_number< std::uint64_t, std::uint8_t >( in ) );
+                        break;
+                     case 'I':
+                        consumer.number( read_number< std::int64_t, std::int16_t >( in ) );
+                        break;
+                     case 'l':
+                        consumer.number( read_number< std::int64_t, std::int32_t >( in ) );
+                        break;
+                     case 'L':
+                        consumer.number( read_number< std::int64_t, std::int64_t >( in ) );
+                        break;
+                     case 'd':
+                        consumer.number( read_number< double, float >( in ) );
+                        break;
+                     case 'D':
+                        consumer.number( read_number< double, double >( in ) );
+                        break;
+                     case 'H':
+                        match_high_precision( in, consumer );
+                        break;
+                     case 'C':
+                        match_char( in, consumer );
+                        break;
+                     case 'S':
+                        consumer.string( read_container< V, tao::string_view >( in, read_size( in ) ) );
+                        break;
+                     case '[':
+                        match_array( in, consumer );
+                        break;
+                     case '{':
+                        match_object( in, consumer );
+                        break;
+                     default:
+                        throw json_pegtl::parse_error( "unknown ubjson type " + std::to_string( unsigned( c ) ), in );
                   }
-                  consumer.string( std::string( 1, in.peek_char( 1 ) ) );
-                  in.bump_in_this_line( 2 );
                   return true;
                }
 
-               template< typename Input >
-               static std::uint64_t read_unsigned( Input& in )
+               template< typename Input, typename Consumer >
+               static void match_char( Input& in, Consumer& consumer )
                {
-                  in.bump_in_this_line();  // Skip marker byte.
-                  if( !in.size( 1 ) ) {
-                     throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
+                  if( in.empty() || ( in.peek_byte( 0 ) > 127 ) ) {
+                     throw json_pegtl::parse_error( "missing or invalid ubjson char", in );
                   }
-                  switch( in.peek_char() ) {
+                  consumer.string( std::string( 1, in.peek_char( 0 ) ) );
+                  in.bump_in_this_line( 1 );
+               }
+
+               template< typename Input >
+               static std::int64_t read_size_impl( Input& in )
+               {
+                  switch( const auto c = internal::read_char_safe( in ) ) {
                      case 'i':
                         return read_number< std::int64_t, std::int8_t >( in );
                      case 'U':
@@ -180,100 +222,254 @@ namespace tao
                         return read_number< std::int64_t, std::int32_t >( in );
                      case 'L':
                         return read_number< std::int64_t, std::int64_t >( in );
-                     case 'd':
-                        return read_number< std::int64_t, float >( in );
-                     case 'D':
-                        return read_number< std::int64_t, double >( in );
+                     default:
+                        throw json_pegtl::parse_error( "unknown ubjson size type " + std::to_string( unsigned( c ) ), in );
                   }
-                  throw json_pegtl::parse_error( "unexpected ubjson high precision number size marker", in );
                }
 
                template< typename Input >
                static std::size_t read_size( Input& in )
                {
-                  const auto s = read_unsigned( in );
-                  if( s > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
-                     throw json_pegtl::parse_error( "size too large for 32-bit platform", in );
+                  const auto s = read_size_impl( in );
+                  if( s < 0 ) {
+                     throw json_pegtl::parse_error( "negative ubjson size " + std::to_string( s ), in );
                   }
-                  return static_cast< std::size_t >( s );
+                  const auto t = static_cast< std::uint64_t >( s );
+                  if( t > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
+                     throw json_pegtl::parse_error( "ubjson size exceeds size_t " + std::to_string( t ), in );
+                  }
+                  return static_cast< std::size_t >( t );
                }
 
                template< typename Input, typename Consumer >
-               static bool match_high_precision( Input& in, Consumer& consumer )
+               static void match_high_precision( Input& in, Consumer& consumer )
                {
                   const auto size = read_size( in );
-                  if( size < 0 ) {
-                     throw json_pegtl::parse_error( "negative ubjson high precision number size", in );
-                  }
-                  if( in.size( size ) < size ) {
-                     throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
-                  }
+                  internal::throw_on_empty( in, size );
                   json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, const char* > i2( in.current(), in.current() + size, "UBJSON" );
-                  json_pegtl::parse_nested< json_pegtl::must< number, json_pegtl::eof >, internal::action, internal::control >( in, i2, consumer );
-                  return true;
+                  json_pegtl::parse_nested< json_pegtl::must< number, json_pegtl::eof >, json::internal::action, json::internal::control >( in, i2, consumer );
+                  in.bump_in_this_line( size );
                }
 
                template< utf8_mode U, typename Result, typename Input >
                static Result read_container( Input& in, const std::size_t size )
                {
                   using value_t = typename Result::value_type;
-                  if( in.size( size ) < size ) {
-                     throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
-                  }
+                  internal::throw_on_empty( in, size );
                   const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
-                  internal::consume_utf8< U >( in, size );
+                  json::internal::consume_utf8< U >( in, size );
                   return result;
                }
 
-               template< typename Input >
-               static tao::string_view read_key( Input& in )
+               template< typename Input, typename Consumer >
+               static void match_array( Input& in, Consumer& consumer )
                {
-                  if( in.empty() ) {
-                     throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
+                  switch( internal::peek_char_safe( in ) ) {
+                     case '#':
+                        in.bump_in_this_line( 1 );
+                        match_sized_array( in, consumer );
+                        break;
+                     case '$':
+                        in.bump_in_this_line( 1 );
+                        match_typed_array( in, consumer );
+                        break;
+                     default:
+                        match_basic_array( in, consumer );
+                        break;
                   }
-                  switch( in.peek_byte() ) {
-                     case 0xd9:
-                        return read_container< V, tao::string_view >( in, read_number< std::size_t, std::uint8_t >( in ) );
-                     case 0xda:
-                        return read_container< V, tao::string_view >( in, read_number< std::size_t, std::uint16_t >( in ) );
-                     case 0xdb:
-                        return read_container< V, tao::string_view >( in, read_number< std::size_t, std::uint32_t >( in ) );
-                  }
-                  throw json_pegtl::parse_error( "unexpected key type", in );
                }
 
                template< typename Input, typename Consumer >
-               static bool match_array( Input& in, Consumer& consumer, const std::size_t size )
+               static void match_sized_array( Input& in, Consumer& consumer )
                {
+                  const auto size = read_size( in );
                   consumer.begin_array( size );
                   for( std::size_t i = 0; i < size; ++i ) {
-                     if( in.empty() ) {
-                        throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
-                     }
-                     if( match_impl( in, consumer ) ) {
-                        consumer.element();
-                     }
+                     internal::throw_on_empty( in );
+                     match_impl( in, consumer );
+                     consumer.element();
                   }
                   consumer.end_array( size );
-                  return true;
                }
 
                template< typename Input, typename Consumer >
-               static bool match_object( Input& in, Consumer& consumer, const std::size_t size )
+               static void match_typed_array( Input& in, Consumer& consumer )
                {
+                  const auto c = internal::read_char_safe( in );
+                  if( internal::read_char_safe( in ) != '#' ) {
+                     throw json_pegtl::parse_error( "ubjson array type not followed by size", in );
+                  }
+                  const auto size = read_size( in );
+                  switch( c ) {
+                     case 'Z':
+                        consumer.begin_array( size );
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           consumer.null();
+                           consumer.element();
+                        }
+                        consumer.end_array( size );
+                        break;
+                     case 'T':
+                        consumer.begin_array( size );
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           consumer.boolean( true );
+                           consumer.element();
+                        }
+                        consumer.end_array( size );
+                        break;
+                     case 'F':
+                        consumer.begin_array( size );
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           consumer.boolean( false );
+                           consumer.element();
+                        }
+                        consumer.end_array( size );
+                        break;
+                     case 'U':
+                        // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
+                        consumer.binary( read_container< utf8_mode::TRUST, tao::byte_view >( in, size ) );
+                        break;
+                     case 'i':
+                     case 'I':
+                     case 'l':
+                     case 'L':
+                     case 'd':
+                     case 'D':
+                     case 'H':
+                     case 'C':
+                     case 'S':
+                     case '[':
+                     case '{':
+                        consumer.begin_array( size );
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           internal::throw_on_empty( in );
+                           match_impl_impl( in, consumer, c );
+                           consumer.element();
+                        }
+                        consumer.end_array( size );
+                        break;
+                     default:
+                        throw json_pegtl::parse_error( "unknown ubjson array type " + std::to_string( unsigned( c ) ), in );
+                  }
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_basic_array( Input& in, Consumer& consumer )
+               {
+                  consumer.begin_array();
+                  while( internal::peek_char_safe( in ) != ']' ) {
+                     match_impl( in, consumer );
+                     consumer.element();
+                  }
+                  in.bump_in_this_line( 1 );
+                  consumer.end_array();
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_key( Input& in, Consumer& consumer )
+               {
+                  consumer.key( read_container< V, tao::string_view >( in, read_size( in ) ) );
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_object( Input& in, Consumer& consumer )
+               {
+                  switch( internal::peek_char_safe( in ) ) {
+                     case '#':
+                        in.bump_in_this_line( 1 );
+                        match_sized_array( in, consumer );
+                        break;
+                     case '$':
+                        in.bump_in_this_line( 1 );
+                        match_typed_array( in, consumer );
+                        break;
+                     default:
+                        match_basic_array( in, consumer );
+                        break;
+                  }
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_sized_object( Input& in, Consumer& consumer )
+               {
+                  const auto size = read_size( in );
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
-                     consumer.key( read_key( in ) );
-                     if( in.empty() ) {
-                        throw json_pegtl::parse_error( "unexpected end of ubjson input", in );
-                     }
-                     if( match_impl( in, consumer ) ) {
-                        consumer.member();
-                     }
+                     match_key( in, consumer );
+                     internal::throw_on_empty( in );
+                     match_impl( in, consumer );
+                     consumer.member();
                   }
                   consumer.end_object( size );
-                  return true;
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_typed_object( Input& in, Consumer& consumer )
+               {
+                  const auto c = internal::read_char_safe( in );
+                  if( internal::read_char_safe( in ) != '#' ) {
+                     throw json_pegtl::parse_error( "ubjson object type not followed by size", in );
+                  }
+                  const auto size = read_size( in );
+                  consumer.begin_object( size );
+                  switch( c ) {
+                     case 'Z':
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           match_key( in, consumer );
+                           consumer.null();
+                           consumer.member();
+                        }
+                        break;
+                     case 'T':
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           match_key( in, consumer );
+                           consumer.boolean( true );
+                           consumer.member();
+                        }
+                        break;
+                     case 'F':
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           match_key( in, consumer );
+                           consumer.boolean( false );
+                           consumer.member();
+                        }
+                        break;
+                     case 'i':
+                     case 'U':
+                     case 'I':
+                     case 'l':
+                     case 'L':
+                     case 'd':
+                     case 'D':
+                     case 'H':
+                     case 'C':
+                     case 'S':
+                     case '[':
+                     case '{':
+                        for( std::size_t i = 0; i < size; ++i ) {
+                           match_key( in, consumer );
+                           match_impl_impl( in, consumer, c );
+                           consumer.member();
+                        }
+                        break;
+                     default:
+                        throw json_pegtl::parse_error( "unknown ubjson object type " + std::to_string( unsigned( c ) ), in );
+                  }
+                  consumer.end_object( size );
+               }
+
+               template< typename Input, typename Consumer >
+               static void match_basic_object( Input& in, Consumer& consumer )
+               {
+                  consumer.begin_object();
+                  while( internal::peek_char_safe( in ) != '}' ) {
+                     match_key( in, consumer );
+                     internal::throw_on_empty( in );
+                     match_impl( in, consumer );
+                     consumer.member();
+                  }
+                  consumer.end_object();
                }
             };
 
@@ -285,6 +481,8 @@ namespace tao
             struct basic_grammar : json_pegtl::must< nops, data< V >, nops, json_pegtl::eof >
             {
             };
+
+            // UBJSON no-ops are 'N' currently only supported as top-level padding around an actual value.
 
             using grammar = basic_grammar< utf8_mode::CHECK >;
 

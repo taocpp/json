@@ -46,6 +46,14 @@ namespace tao
          ubjson_decode( "4344", "\"D\"" );
          ubjson_decode( "437f", "\"\\u007f\"" );
 
+         ubjson_decode( "5b5d", "[]" );
+         ubjson_decode( "5b235500", "[]" );
+         ubjson_decode( "5b236900", "[]" );
+         ubjson_decode( "5b5a5d", "[null]" );
+         ubjson_decode( "5b2355015a", "[null]" );
+         ubjson_decode( "5b2369015a", "[null]" );
+         ubjson_decode( "5b245a235502", "[null,null]" );
+
          ubjson_encode( "null", "5a" );
          ubjson_encode( "true", "54" );
          ubjson_encode( "false", "46" );

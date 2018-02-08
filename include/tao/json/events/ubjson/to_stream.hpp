@@ -51,17 +51,17 @@ namespace tao
                   }
                   else if( ( v >= -32768 ) && ( v <= 32767 ) ) {
                      os.put( 'I' );
-                     const std::uint16_t x = internal::h_to_be( std::uint16_t( v ) );
+                     const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( ( v >= -2147483648ll ) && ( v <= 2147483647ll ) ) {
                      os.put( 'l' );
-                     const std::uint32_t x = internal::h_to_be( std::uint32_t( v ) );
+                     const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else {
                      os.put( 'L' );
-                     const std::uint64_t x = internal::h_to_be( std::uint64_t( v ) );
+                     const std::uint64_t x = json::internal::h_to_be( std::uint64_t( v ) );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                }
@@ -75,17 +75,17 @@ namespace tao
                   }
                   else if( v <= 32767 ) {
                      os.put( 'I' );
-                     const std::uint16_t x = internal::h_to_be( std::uint16_t( v ) );
+                     const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v <= 2147483647ul ) {
                      os.put( 'l' );
-                     const std::uint32_t x = internal::h_to_be( std::uint32_t( v ) );
+                     const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else if( v <= 9223372036854775807ull ) {
                      os.put( 'L' );
-                     const std::uint64_t x = internal::h_to_be( v );
+                     const std::uint64_t x = json::internal::h_to_be( v );
                      os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                   }
                   else {
@@ -99,7 +99,7 @@ namespace tao
                void number( const double v )
                {
                   os.put( 'D' );
-                  const double x = internal::h_to_be( v );
+                  const double x = json::internal::h_to_be( v );
                   os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 

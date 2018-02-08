@@ -28,10 +28,10 @@ namespace tao
             namespace internal
             {
                template< typename Input >
-               void throw_on_empty( Input& in )
+               void throw_on_empty( Input& in, const std::size_t size = 1 )
                {
-                  if( in.empty() ) {
-                     throw json_pegtl::parse_error( "unexpected end of input", in );
+                  if( in.size( size ) < size ) {
+                     throw json_pegtl::parse_error( "unexpected end of cbor input", in );
                   }
                }
 
@@ -183,7 +183,7 @@ namespace tao
                {
                   const auto s = read_unsigned( in );
                   if( s > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
-                     throw json_pegtl::parse_error( "size too large for 32-bit platform", in );
+                     throw json_pegtl::parse_error( "cbor size exceeds size_t " + std::to_string( s ), in );
                   }
                   return static_cast< std::size_t >( s );
                }
@@ -211,9 +211,7 @@ namespace tao
                {
                   using value_t = typename Result::value_type;
                   const auto size = read_size( in );
-                  if( in.size( size ) < size ) {
-                     throw json_pegtl::parse_error( "unexpected end of input", in );
-                  }
+                  internal::throw_on_empty( in, size );
                   const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
                   json::internal::consume_utf8< U >( in, size );
@@ -232,9 +230,7 @@ namespace tao
                         throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );  // "String" is text or byte string in RFC 7049 terminology.
                      }
                      const auto size = read_size( in );
-                     if( in.size( size ) < size ) {
-                        throw json_pegtl::parse_error( "unexpected end of input", in );
-                     }
+                     internal::throw_on_empty( in, size );
                      const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                      result.insert( result.end(), pointer, pointer + size );
                      json::internal::consume_utf8< U >( in, size );
@@ -377,20 +373,17 @@ namespace tao
                template< typename Floating, typename Input >
                static double read_floating_impl( Input& in )
                {
-                  if( in.size( 1 + sizeof( Floating ) ) > sizeof( Floating ) ) {
-                     const Floating result = json::internal::be_to_h< Floating >( in.current() + 1 );
-                     in.bump_in_this_line( 1 + sizeof( Floating ) );
-                     return result;
-                  }
-                  throw json_pegtl::parse_error( "unexpected end of input", in );
+                  internal::throw_on_empty( in, 1 + sizeof( Floating ) );
+                  const Floating result = json::internal::be_to_h< Floating >( in.current() + 1 );
+                  in.bump_in_this_line( 1 + sizeof( Floating ) );
+                  return result;
                }
 
                template< typename Input >
                static double read_floating_half_impl( Input& in )
                {
-                  if( in.size( 3 ) < 3 ) {
-                     throw json_pegtl::parse_error( "unexpected end of input", in );
-                  }
+                  internal::throw_on_empty( in, 3 );
+
                   const int half = ( in.peek_byte( 1 ) << 8 ) + in.peek_byte( 2 );
                   const int exp = ( half >> 10 ) & 0x1f;
                   const int mant = half & 0x3ff;
