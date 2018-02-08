@@ -46,6 +46,9 @@ namespace tao
          ubjson_decode( "4344", "\"D\"" );
          ubjson_decode( "437f", "\"\\u007f\"" );
 
+         ubjson_decode( "5355023d3d", "\"==\"" );
+         ubjson_decode( "5369023d3d", "\"==\"" );
+
          ubjson_decode( "5b5d", "[]" );
          ubjson_decode( "5b235500", "[]" );
          ubjson_decode( "5b236900", "[]" );
@@ -53,6 +56,27 @@ namespace tao
          ubjson_decode( "5b2355015a", "[null]" );
          ubjson_decode( "5b2369015a", "[null]" );
          ubjson_decode( "5b245a235502", "[null,null]" );
+         ubjson_decode( "5b2454236902", "[true,true]" );
+         ubjson_decode( "5b244623490002", "[false,false]" );
+         ubjson_decode( "5b245a236c00000002", "[null,null]" );
+         ubjson_decode( "5b245a234c0000000000000002", "[null,null]" );
+         ubjson_decode( "5b2469234c00000000000000020102", "[1,2]" );
+         ubjson_decode( "5b245b2355025d5d", "[[],[]]" );
+         ubjson_decode( "5b245b2355025d235500", "[[],[]]" );
+         ubjson_decode( "5b245b2355025d2355015b5d", "[[],[[]]]" );
+         ubjson_decode( "5b247b2355017d", "[{}]" );
+         ubjson_decode( "5b247b235501235500", "[{}]" );
+         ubjson_decode( "5b247b23550123550169013d46", "[{\"=\":false}]" );
+
+         ubjson_decode( "7b7d", "{}" );
+         ubjson_decode( "7b235500", "{}" );
+         ubjson_decode( "7b236900", "{}" );
+         ubjson_decode( "7b69013d55037d", "{\"=\":3}" );
+         ubjson_decode( "7b23550169013d5503", "{\"=\":3}" );
+         ubjson_decode( "7b245423550269013d69017b", "{\"{\":true,\"=\":true}" );
+         ubjson_decode( "7b245b23550269013d5d69017b5d", "{\"{\":[],\"=\":[]}" );
+         ubjson_decode( "7b245b23550269013d5d69017b235500", "{\"{\":[],\"=\":[]}" );
+         ubjson_decode( "7b247b23550169013d7d", "{\"=\":{}}" );
 
          ubjson_encode( "null", "5a" );
          ubjson_encode( "true", "54" );

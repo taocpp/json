@@ -378,14 +378,14 @@ namespace tao
                   switch( internal::peek_char_safe( in ) ) {
                      case '#':
                         in.bump_in_this_line( 1 );
-                        match_sized_array( in, consumer );
+                        match_sized_object( in, consumer );
                         break;
                      case '$':
                         in.bump_in_this_line( 1 );
-                        match_typed_array( in, consumer );
+                        match_typed_object( in, consumer );
                         break;
                      default:
-                        match_basic_array( in, consumer );
+                        match_basic_object( in, consumer );
                         break;
                   }
                }
@@ -469,6 +469,7 @@ namespace tao
                      match_impl( in, consumer );
                      consumer.member();
                   }
+                  in.bump_in_this_line( 1 );
                   consumer.end_object();
                }
             };
@@ -482,7 +483,7 @@ namespace tao
             {
             };
 
-            // UBJSON no-ops are 'N' currently only supported as top-level padding around an actual value.
+            // UBJSON no-ops 'N' are currently only supported as top-level padding around an actual value.
 
             using grammar = basic_grammar< utf8_mode::CHECK >;
 
