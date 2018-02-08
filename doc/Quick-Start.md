@@ -77,6 +77,13 @@ using namespace tao::json;
 to_stream< events::binary_to_base64, events::non_finite_to_null >( std::cout, v, 3, "\r\n" );
 ```
 
+The usual `operator<<` overloads can be used, too.
+
+```c++
+std::cout << v << std::endl;  // Compact.
+std::cout << std::setw( 2 ) << v << std::endl;  // Pretty-printed with indent 2.
+```
+
 ### ...create a Value with a JSON object?
 
 First possibility, parse a string that represents an object, see [above](#parse-a-json-string).
