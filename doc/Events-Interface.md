@@ -202,6 +202,8 @@ Filters are structs or classes that implement the Events functions as they are c
 | `binary_to_hex` | Passes through all Events except for binary data which is is converted to hex-dumped strings. |
 | `key_camel_case_to_snake_case` | Passes through all Events except for keys in Objects which are converted from "CamelCaseStyle" to "snake_case_style". |
 | `key_snake_case_to_camel_case` | Passes through all Events except for keys in Objects which are converted from "snake_case_style" to "CamelCaseStyle". |
+| `limit_nesting_depth` | Passes through all Events but throws an exception when the nesting of Arrays and Objects exceeds a limit. |
+| `limit_value_count` | Passes through all Events but throws an exception when the total number of (sub)-value exceeds a limit. |
 | `non_finite_to_exception` | Passes through all Events except for numbers of type `double` which contain non-finite values which provoke an exception. |
 | `non_finite_to_null` | Passes through all Events except for numbers of type `double` which contain non-finite values which are passed on as `null()`. |
 | `non_finite_to_string` | Passes through all Events except for numbers of type `double` which contain non-finite values which are passed on as appropriate `string()`. |
@@ -219,5 +221,6 @@ Filters are structs or classes that implement the Events functions as they are c
 * `events::transformer`
 * `nlohmann::from_value`
 * `nlohmann::to_value`
+* TODO: Anything missing?
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
