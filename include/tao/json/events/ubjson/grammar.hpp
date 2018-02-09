@@ -192,6 +192,9 @@ namespace tao
                      case '{':
                         match_object( in, consumer );
                         break;
+                     case 'N':
+                        throw json_pegtl::parse_error( "unsupported ubjson no-op", in );
+                        break;
                      default:
                         throw json_pegtl::parse_error( "unknown ubjson type " + std::to_string( unsigned( c ) ), in );
                   }
@@ -301,57 +304,17 @@ namespace tao
                      throw json_pegtl::parse_error( "ubjson array type not followed by size", in );
                   }
                   const auto size = read_size( in );
-                  switch( c ) {
-                     case 'Z':
-                        consumer.begin_array( size );
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           consumer.null();
-                           consumer.element();
-                        }
-                        consumer.end_array( size );
-                        break;
-                     case 'T':
-                        consumer.begin_array( size );
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           consumer.boolean( true );
-                           consumer.element();
-                        }
-                        consumer.end_array( size );
-                        break;
-                     case 'F':
-                        consumer.begin_array( size );
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           consumer.boolean( false );
-                           consumer.element();
-                        }
-                        consumer.end_array( size );
-                        break;
-                     case 'U':
-                        // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
-                        consumer.binary( read_container< utf8_mode::TRUST, tao::byte_view >( in, size ) );
-                        break;
-                     case 'i':
-                     case 'I':
-                     case 'l':
-                     case 'L':
-                     case 'd':
-                     case 'D':
-                     case 'H':
-                     case 'C':
-                     case 'S':
-                     case '[':
-                     case '{':
-                        consumer.begin_array( size );
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           internal::throw_on_empty( in );
-                           match_impl_impl( in, consumer, c );
-                           consumer.element();
-                        }
-                        consumer.end_array( size );
-                        break;
-                     default:
-                        throw json_pegtl::parse_error( "unknown ubjson array type " + std::to_string( unsigned( c ) ), in );
+                  if( c == 'U' ) {
+                     // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
+                     consumer.binary( read_container< utf8_mode::TRUST, tao::byte_view >( in, size ) );
+                     return;
                   }
+                  consumer.begin_array( size );
+                  for( std::size_t i = 0; i < size; ++i ) {
+                     match_impl_impl( in, consumer, c );
+                     consumer.element();
+                  }
+                  consumer.end_array( size );
                }
 
                template< typename Input, typename Consumer >
@@ -413,48 +376,10 @@ namespace tao
                   }
                   const auto size = read_size( in );
                   consumer.begin_object( size );
-                  switch( c ) {
-                     case 'Z':
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           match_key( in, consumer );
-                           consumer.null();
-                           consumer.member();
-                        }
-                        break;
-                     case 'T':
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           match_key( in, consumer );
-                           consumer.boolean( true );
-                           consumer.member();
-                        }
-                        break;
-                     case 'F':
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           match_key( in, consumer );
-                           consumer.boolean( false );
-                           consumer.member();
-                        }
-                        break;
-                     case 'i':
-                     case 'U':
-                     case 'I':
-                     case 'l':
-                     case 'L':
-                     case 'd':
-                     case 'D':
-                     case 'H':
-                     case 'C':
-                     case 'S':
-                     case '[':
-                     case '{':
-                        for( std::size_t i = 0; i < size; ++i ) {
-                           match_key( in, consumer );
-                           match_impl_impl( in, consumer, c );
-                           consumer.member();
-                        }
-                        break;
-                     default:
-                        throw json_pegtl::parse_error( "unknown ubjson object type " + std::to_string( unsigned( c ) ), in );
+                  for( std::size_t i = 0; i < size; ++i ) {
+                     match_key( in, consumer );
+                     match_impl_impl( in, consumer, c );
+                     consumer.member();
                   }
                   consumer.end_object( size );
                }
