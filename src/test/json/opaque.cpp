@@ -5,6 +5,7 @@
 
 #include <tao/json/events/produce.hpp>
 #include <tao/json/from_string.hpp>
+#include <tao/json/other_to.hpp>
 #include <tao/json/self_contained.hpp>
 #include <tao/json/to_stream.hpp>
 #include <tao/json/to_string.hpp>
@@ -159,44 +160,6 @@ namespace tao
             v.unsafe_assign_opaque_ptr( e );
          }
       };
-
-      template< template< typename... > class Traits = traits, typename Base = internal::empty_base, typename T >
-      basic_value< Traits, Base > other_to_value( const T& t )
-      {
-         events::to_basic_value< Traits, Base > consumer;
-         events::produce< Traits >( consumer, t );
-         return std::move( consumer.value );
-      }
-
-      template< template< typename... > class Traits = traits, typename Base = internal::empty_base, typename T >
-      basic_value< Traits, Base > other_to_value( T&& t )
-      {
-         events::to_basic_value< Traits, Base > consumer;
-         events::produce< Traits >( consumer, std::move( t ) );
-         return std::move( consumer.value );
-      }
-
-      template< template< typename... > class Traits = traits, typename T >
-      void other_to_stream( std::ostream& os, const T& t )
-      {
-         events::to_stream consumer( os );
-         events::produce< Traits >( consumer, t );
-      }
-
-      template< template< typename... > class Traits = traits, typename T >
-      void other_to_stream( std::ostream& os, const T& t, const std::size_t indent )
-      {
-         events::to_pretty_stream consumer( os, indent );
-         events::produce< Traits >( consumer, t );
-      }
-
-      template< template< typename... > class Traits = traits, typename... Ts >
-      std::string other_to_string( Ts&&... ts )
-      {
-         std::ostringstream oss;
-         other_to_stream< Traits >( oss, std::forward< Ts >( ts )... );
-         return oss.str();
-      }
 
       void unit_test()
       {
