@@ -114,7 +114,7 @@ namespace tao
          {
             consumer.begin_array( sizeof...( As ) );
             using swallow = bool[];
-            (void)swallow{ ( ( As::template produce< Traits >( consumer, x ), true ) && ( consumer.element(), true ) )... };
+            (void)swallow{ ( As::template produce< Traits >( consumer, x ), consumer.element(), true )... };
             consumer.end_array( sizeof...( As ) );
          }
       };
@@ -135,7 +135,7 @@ namespace tao
          {
             consumer.begin_object( sizeof...( As ) );
             using swallow = bool[];
-            (void)swallow{ ( ( As::template produce< Traits >( consumer ), true ) && ( As::template produce< Traits >( consumer, x ), true ) && ( consumer.member(), true ) )... };
+            (void)swallow{ ( As::template produce< Traits >( consumer ), As::template produce< Traits >( consumer, x ), consumer.member(), true )... };
             consumer.end_object( sizeof...( As ) );
          }
       };
