@@ -26,6 +26,7 @@
 #include "json/events/binary_to_hex.hpp"
 #include "json/events/key_camel_case_to_snake_case.hpp"
 #include "json/events/key_snake_case_to_camel_case.hpp"
+#include "json/events/limit_value_count.hpp"
 #include "json/events/non_finite_to_exception.hpp"
 #include "json/events/non_finite_to_null.hpp"
 #include "json/events/non_finite_to_string.hpp"

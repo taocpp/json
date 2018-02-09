@@ -29,6 +29,7 @@
 #include <tao/json/events/binary_to_hex.hpp>
 #include <tao/json/events/key_camel_case_to_snake_case.hpp>
 #include <tao/json/events/key_snake_case_to_camel_case.hpp>
+#include <tao/json/events/limit_value_count.hpp>
 #include <tao/json/events/non_finite_to_exception.hpp>
 #include <tao/json/events/non_finite_to_null.hpp>
 #include <tao/json/events/non_finite_to_string.hpp>
@@ -123,6 +124,7 @@ namespace tao
          check_consumer_impl< events::tee< Consumer, events::discard, Consumer > >();
 
          check_consumer_impl< events::validate_keys< Consumer, json_pegtl::success > >();
+         check_consumer_impl< events::limit_value_count< Consumer, 2 > >();
 
          check_consumer_impl< events::transformer< Consumer > >();
          check_consumer_impl< events::transformer< Consumer, events::binary_to_base64 > >();

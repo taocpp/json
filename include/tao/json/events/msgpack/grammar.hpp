@@ -21,6 +21,18 @@ namespace tao
       {
          namespace msgpack
          {
+            namespace internal
+            {
+               template< typename Input >
+               void throw_on_empty( Input& in, const std::size_t required = 1 )
+               {
+                  if( in.size( required ) < required ) {
+                     throw json_pegtl::parse_error( "unexpected end of msgpack input", in );
+                  }
+               }
+
+            }  // namespace internal
+
             template< utf8_mode V >
             struct data
             {
@@ -41,12 +53,10 @@ namespace tao
                template< typename Result, typename Number, typename Input >
                static Result read_number( Input& in )
                {
-                  if( in.size( sizeof( Number ) ) > sizeof( Number ) ) {
-                     const Result result( json::internal::be_to_h< Number >( in.current() + 1 ) );
-                     in.bump_in_this_line( 1 + sizeof( Number ) );
-                     return result;
-                  }
-                  throw json_pegtl::parse_error( "unexpected end of msgpack input", in );
+                  internal::throw_on_empty( in, 1 + sizeof( Number ) );
+                  const Result result( json::internal::be_to_h< Number >( in.current() + 1 ) );
+                  in.bump_in_this_line( 1 + sizeof( Number ) );
+                  return result;
                }
 
                template< typename Input, typename Consumer >
@@ -178,9 +188,7 @@ namespace tao
                template< typename Input >
                static void discard( Input& in, const std::size_t count )
                {
-                  if( in.size( count ) < count ) {
-                     throw json_pegtl::parse_error( "unexpected end of input", in );
-                  }
+                  internal::throw_on_empty( in, count );
                   in.bump_in_this_line( count );
                }
 
@@ -188,21 +196,17 @@ namespace tao
                static Result read_container( Input& in, const std::size_t size )
                {
                   using value_t = typename Result::value_type;
-                  if( in.size( size ) < size ) {
-                     throw json_pegtl::parse_error( "unexpected end of input", in );
-                  }
+                  internal::throw_on_empty( in, size );
                   const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   Result result( pointer, size );
-                  internal::consume_utf8< U >( in, size );
+                  json::internal::consume_utf8< U >( in, size );
                   return result;
                }
 
                template< typename Input >
                static tao::string_view read_key( Input& in )
                {
-                  if( in.empty() ) {
-                     throw json_pegtl::parse_error( "unexpected end of input", in );
-                  }
+                  internal::throw_on_empty( in, 1 );
                   const auto b = in.peek_byte();
                   if( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
                      in.bump_in_this_line();
@@ -224,9 +228,7 @@ namespace tao
                {
                   consumer.begin_array( size );
                   for( std::size_t i = 0; i < size; ++i ) {
-                     if( in.empty() ) {
-                        throw json_pegtl::parse_error( "unexpected end of input", in );
-                     }
+                     internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.element();
                   }
@@ -240,9 +242,7 @@ namespace tao
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
                      consumer.key( read_key( in ) );
-                     if( in.empty() ) {
-                        throw json_pegtl::parse_error( "unexpected end of input", in );
-                     }
+                     internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.member();
                   }

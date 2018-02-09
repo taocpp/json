@@ -53,7 +53,7 @@ namespace tao
                void number_impl( const unsigned char tag, const std::uint64_t v )
                {
                   os.put( char( tag ) );
-                  const Integer x = internal::h_to_be( Integer( v ) );
+                  const Integer x = json::internal::h_to_be( Integer( v ) );
                   os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 
@@ -100,7 +100,7 @@ namespace tao
                void number( const double v )
                {
                   os.put( char( 0xcb ) );
-                  const auto x = internal::h_to_be( v );
+                  const auto x = json::internal::h_to_be( v );
                   os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 
