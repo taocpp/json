@@ -18,10 +18,15 @@ namespace tao
          using class_type = X;
          using value_type = T;
 
+         static const T& read( const X& x )
+         {
+            return x.*P;
+         }
+
          template< template< typename... > class Traits = traits, typename Consumer >
          static void produce( Consumer& consumer, const X& x )
          {
-            events::produce< Traits >( consumer, x.*P );
+            events::produce< Traits >( consumer, read( x ) );
          }
       };
 
@@ -35,6 +40,16 @@ namespace tao
          using class_type = X;
          using value_type = T;
 
+         static const T& read( const X& x )
+         {
+            return x.*P;
+         }
+
+         static std::string key( const std::initializer_list< char >& k = { Cs... } )
+         {
+            return std::string( k.begin(), k.size() );
+         }
+
          template< template< typename... > class Traits = traits, typename Consumer >
          static void produce( Consumer& consumer, const std::initializer_list< char >& k = { Cs... } )
          {
@@ -44,7 +59,7 @@ namespace tao
          template< template< typename... > class Traits = traits, typename Consumer >
          static void produce( Consumer& consumer, const X& x )
          {
-            events::produce< Traits >( consumer, x.*P );
+            events::produce< Traits >( consumer, read( x ) );
          }
       };
 
@@ -60,8 +75,14 @@ namespace tao
       }
 
       template< typename... As >
-      struct array_binding
+      struct array_binding_traits
       {
+         template< template< typename... > class Traits, typename Base, typename X >
+         static void assign( basic_value< Traits, Base >& v, const X& x )
+         {
+            v.append( { As::read( x )... } );
+         }
+
          template< template< typename... > class Traits = traits, typename Consumer, typename X >
          static void produce( Consumer& consumer, const X& x )
          {
@@ -72,8 +93,16 @@ namespace tao
       };
 
       template< typename... As >
-      struct object_binding
+      struct object_binding_traits
       {
+         template< template< typename... > class Traits, typename Base, typename X >
+         static void assign( basic_value< Traits, Base >& v, const X& x )
+         {
+            v = {
+               { As::key(), As::read( x ) }...
+            };
+         }
+
          template< template< typename... > class Traits = traits, typename Consumer, typename X >
          static void produce( Consumer& consumer, const X& x )
          {
@@ -91,8 +120,8 @@ namespace tao
 
       template<>
       struct traits< point >
-         : array_binding< element_binding< point, double, &point::x >,
-                          element_binding< point, double, &point::y > >
+         : array_binding_traits< element_binding< point, double, &point::x >,
+                                 element_binding< point, double, &point::y > >
       {
       };
 
@@ -105,9 +134,9 @@ namespace tao
 
       template<>
       struct traits< employee >
-         : object_binding< member_binding< employee, point, &employee::where, key< 'w', 'h','e', 'r', 'e' > >,
-                           member_binding< employee, std::string, &employee::name, key< 'n', 'a', 'm', 'e' > >,
-                           member_binding< employee, tao::optional< std::string >, &employee::job, key< 'j', 'o', 'b' > > >
+         : object_binding_traits< member_binding< employee, point, &employee::where, key< 'w', 'h','e', 'r', 'e' > >,
+                                  member_binding< employee, std::string, &employee::name, key< 'n', 'a', 'm', 'e' > >,
+                                  member_binding< employee, tao::optional< std::string >, &employee::job, key< 'j', 'o', 'b' > > >
       {
       };
 
@@ -133,8 +162,6 @@ namespace tao
 
          const auto s1 = to_string( from_string( to_string( v1 ) ) );
 
-         std::cerr << s1 << std::endl;
-
          value v2 = v1;
 
          make_self_contained( v2 );
@@ -146,7 +173,16 @@ namespace tao
          value v3 = v2;
 
          TEST_ASSERT( v2 == v3 );
-         TEST_ASSERT( s2 == "{\"account\":1,\"employee\":{\"name\":\"Isidor\",\"job\":\"CEO\",\"where\":[1.0,2.0]}}" );
+         TEST_ASSERT( s2 == to_string( from_string( "{\"account\":1,\"employee\":{\"name\":\"Isidor\",\"job\":\"CEO\",\"where\":[1.0,2.0]}}" ) ) );
+
+         value v4 = point();
+
+         TEST_ASSERT( v4.type() == type::ARRAY );
+         TEST_ASSERT( to_string( v4 ) == "[1.0,2.0]" );
+
+         value v5 = employee();
+
+         TEST_ASSERT( v5.type() == type::OBJECT );
       }
 
    }  // namespace json
