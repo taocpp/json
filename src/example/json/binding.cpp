@@ -67,7 +67,8 @@ namespace tao
       template< typename X, typename T, T X::*P, typename K >
       struct member_binding;
 
-      template< char... Cs > using key = json_pegtl::string< Cs... >;
+      template< char... Cs >
+      using key = json_pegtl::string< Cs... >;
 
       template< typename X, typename T, T X::*P, char... Cs >
       struct member_binding< X, T, P, key< Cs... > >
@@ -99,17 +100,6 @@ namespace tao
          }
       };
 
-      struct expander
-      {
-         expander( const std::initializer_list< int >& /*unused*/ )
-         {
-         }
-      };
-
-      void expand( const std::initializer_list< expander >& /*unused*/ )
-      {
-      }
-
       template< typename... As >
       struct array_binding_traits
       {
@@ -123,7 +113,8 @@ namespace tao
          static void produce( Consumer& consumer, const X& x )
          {
             consumer.begin_array( sizeof...( As ) );
-            expand( { { ( As::template produce< Traits >( consumer, x ), 0 ), ( consumer.element(), 0 ) }... } );
+            using swallow = bool[];
+            (void)swallow{ ( ( As::template produce< Traits >( consumer, x ), true ) && ( consumer.element(), true ) )... };
             consumer.end_array( sizeof...( As ) );
          }
       };
@@ -143,7 +134,8 @@ namespace tao
          static void produce( Consumer& consumer, const X& x )
          {
             consumer.begin_object( sizeof...( As ) );
-            expand( { { ( As::template produce< Traits >( consumer ), 0 ), ( As::template produce< Traits >( consumer, x ), 0 ), ( consumer.member(), 0 ) }... } );
+            using swallow = bool[];
+            (void)swallow{ ( ( As::template produce< Traits >( consumer ), true ) && ( As::template produce< Traits >( consumer, x ), true ) && ( consumer.member(), true ) )... };
             consumer.end_object( sizeof...( As ) );
          }
       };
@@ -170,7 +162,7 @@ namespace tao
 
       template<>
       struct traits< employee >
-         : object_binding_traits< member_binding< employee, point, &employee::where, key< 'w', 'h','e', 'r', 'e' > >,
+         : object_binding_traits< member_binding< employee, point, &employee::where, key< 'w', 'h', 'e', 'r', 'e' > >,
                                   member_binding< employee, std::string, &employee::name, key< 'n', 'a', 'm', 'e' > >,
                                   member_binding< employee, tao::optional< std::string >, &employee::job, key< 'j', 'o', 'b' > > >
       {
