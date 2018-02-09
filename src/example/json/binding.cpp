@@ -10,8 +10,6 @@ namespace tao
 {
    namespace json
    {
-      template< char... Cs > using key = json_pegtl::string< Cs... >;
-
       template< typename X, typename T, T X::*P >
       struct element_binding
       {
@@ -30,8 +28,46 @@ namespace tao
          }
       };
 
+      template< typename X, typename T, const T& ( X::*P )() const noexcept >
+      struct element_mem_fun_ref
+      {
+         using class_type = X;
+         using value_type = T;
+
+         static const T& read( const X& x ) noexcept
+         {
+            return ( x.*P )();
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const X& x )
+         {
+            events::produce< Traits >( consumer, read( x ) );
+         }
+      };
+
+      template< typename X, typename T, T ( X::*P )() const >
+      struct element_mem_fun_val
+      {
+         using class_type = X;
+         using value_type = T;
+
+         static T read( const X& x )
+         {
+            return ( x.*P )();
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const X& x )
+         {
+            events::produce< Traits >( consumer, read( x ) );
+         }
+      };
+
       template< typename X, typename T, T X::*P, typename K >
       struct member_binding;
+
+      template< char... Cs > using key = json_pegtl::string< Cs... >;
 
       template< typename X, typename T, T X::*P, char... Cs >
       struct member_binding< X, T, P, key< Cs... > >
@@ -149,6 +185,37 @@ namespace tao
          }
       };
 
+      template< typename V, typename W >
+      struct traits< std::pair< V, W > >
+         : array_binding_traits< element_binding< std::pair< V, W >, V, &std::pair< V, W >::first >,
+                                 element_binding< std::pair< V, W >, W, &std::pair< V, W >::second > >
+      {
+      };
+
+      class secret
+      {
+      public:
+         int get_int() const
+         {
+            return 7;
+         }
+
+         const std::string& get_string() const noexcept
+         {
+            return m_string;
+         }
+
+      private:
+         std::string m_string = "dangerous";
+      };
+
+      template<>
+      struct traits< secret >
+         : array_binding_traits< element_mem_fun_val< secret, int, &secret::get_int >,
+                                 element_mem_fun_ref< secret, std::string, &secret::get_string > >
+      {
+      };
+
       void unit_test()
       {
          value vv = { { "foo", empty_object } };
@@ -183,6 +250,16 @@ namespace tao
          value v5 = employee();
 
          TEST_ASSERT( v5.type() == type::OBJECT );
+
+         value v6 = std::pair< int, std::string >( 42, "galaxy" );
+
+         TEST_ASSERT( v6.type() == type::ARRAY );
+         TEST_ASSERT( to_string( v6 ) == "[42,\"galaxy\"]" );
+
+         value v7 = secret();
+
+         TEST_ASSERT( v7.type() == type::ARRAY );
+         TEST_ASSERT( to_string( v7 ) == "[7,\"dangerous\"]" );
       }
 
    }  // namespace json
