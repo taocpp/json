@@ -59,7 +59,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * Parse JAXN string representation to JSON Events.
   * Stream JSON Events to (prettified) JSON string representation.
   * Stream JSON Events to (prettified) JAXN string representation.
-  * Supports conversion from and to binary formats, e.g. [CBOR], [UBJSON], [MessagePack], etc.
+  * Supports conversion from and to binary formats, e.g. [CBOR], [UBJSON], [MsgPack].
   * Supports conversion from and to *other* JSON value objects (e.g. [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
   * JSON Events comparison (against an existing JSON Value).
   * JSON Events hash algorithm (SHA-256 based).
