@@ -12,6 +12,7 @@
 #include "json/events/from_string.hpp"
 #include "json/events/from_value.hpp"
 #include "json/events/parse_file.hpp"
+#include "json/events/produce.hpp"
 
 // Events consumers
 #include "json/events/to_pretty_stream.hpp"

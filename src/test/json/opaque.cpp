@@ -3,6 +3,7 @@
 
 #include "test.hpp"
 
+#include <tao/json/events/produce.hpp>
 #include <tao/json/from_string.hpp>
 #include <tao/json/self_contained.hpp>
 #include <tao/json/to_stream.hpp>
@@ -15,13 +16,6 @@ namespace tao
    {
       namespace events
       {
-         // some helpers
-         template< template< typename... > class Traits = traits, typename Consumer, typename T >
-         void produce( Consumer& c, T&& t )
-         {
-            Traits< typename std::decay< T >::type >::template produce< Traits >( c, std::forward< T >( t ) );
-         }
-
          template< template< typename... > class Traits, typename Consumer >
          struct array_t
          {
@@ -165,6 +159,22 @@ namespace tao
             v.unsafe_assign_opaque_ptr( e );
          }
       };
+
+      template< template< typename... > class Traits = traits, typename Base = internal::empty_base, typename T >
+      basic_value< Traits, Base > other_to_value( const T& t )
+      {
+         events::to_basic_value< Traits, Base > consumer;
+         events::produce< Traits >( consumer, t );
+         return std::move( consumer.value );
+      }
+
+      template< template< typename... > class Traits = traits, typename Base = internal::empty_base, typename T >
+      basic_value< Traits, Base > other_to_value( T&& t )
+      {
+         events::to_basic_value< Traits, Base > consumer;
+         events::produce< Traits >( consumer, std::move( t ) );
+         return std::move( consumer.value );
+      }
 
       template< template< typename... > class Traits = traits, typename T >
       void other_to_stream( std::ostream& os, const T& t )
