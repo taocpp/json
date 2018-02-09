@@ -33,7 +33,7 @@ namespace tao
       basic_value< Traits, Base > other_to_value( T&& t )
       {
          events::to_basic_value< Traits, Base > consumer;
-         events::produce< Traits >( consumer, std::forward( t ) );
+         events::produce< Traits >( consumer, std::forward< T >( t ) );
          return std::move( consumer.value );
       }
 
