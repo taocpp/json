@@ -6,6 +6,7 @@
 
 #include <ostream>
 #include <sstream>
+#include <string>
 #include <utility>
 
 #include "forward.hpp"
@@ -32,7 +33,7 @@ namespace tao
       basic_value< Traits, Base > other_to_value( T&& t )
       {
          events::to_basic_value< Traits, Base > consumer;
-         events::produce< Traits >( consumer, std::move( t ) );
+         events::produce< Traits >( consumer, std::forward( t ) );
          return std::move( consumer.value );
       }
 
