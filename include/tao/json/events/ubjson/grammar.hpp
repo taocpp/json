@@ -111,7 +111,7 @@ namespace tao
 
             }  // namespace internal
 
-            template< utf8_mode V >
+            template< std::size_t L, utf8_mode V >
             struct data
             {
                using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
@@ -238,8 +238,8 @@ namespace tao
                      throw json_pegtl::parse_error( "negative ubjson size " + std::to_string( s ), in );
                   }
                   const auto t = static_cast< std::uint64_t >( s );
-                  if( t > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
-                     throw json_pegtl::parse_error( "ubjson size exceeds size_t " + std::to_string( t ), in );
+                  if( t > static_cast< std::uint64_t >( L ) ) {
+                     throw json_pegtl::parse_error( "ubjson size exceeds limit " + std::to_string( t ), in );
                   }
                   return static_cast< std::size_t >( t );
                }
@@ -403,14 +403,14 @@ namespace tao
             {
             };
 
-            template< utf8_mode V >
-            struct basic_grammar : json_pegtl::must< nops, data< V >, nops, json_pegtl::eof >
+            template< std::size_t L, utf8_mode V >
+            struct basic_grammar : json_pegtl::must< nops, data< L, V >, nops, json_pegtl::eof >
             {
             };
 
             // UBJSON no-ops 'N' are currently only supported as top-level padding around an actual value.
 
-            using grammar = basic_grammar< utf8_mode::CHECK >;
+            using grammar = basic_grammar< 1 << 24, utf8_mode::CHECK >;
 
          }  // namespace ubjson
 
