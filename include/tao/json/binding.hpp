@@ -36,7 +36,7 @@ namespace tao
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce( Consumer& consumer, const C& v )
             {
-               events::produce< Traits >( consumer, read( v ) );
+               events::produce< Traits >( consumer, v.*P );
             }
          };
 
@@ -51,7 +51,7 @@ namespace tao
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce( Consumer& consumer, const C& v )
             {
-               events::produce< Traits >( consumer, read( v ) );
+               events::produce< Traits >( consumer, ( v.*P )() );
             }
          };
 
