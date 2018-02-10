@@ -10,6 +10,11 @@
 #include "external/pegtl/internal/pegtl_string.hpp"
 #include "value.hpp"
 
+#if defined( __GNUC__ ) && ( __cplusplus < 201703L )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
 namespace tao
 {
    namespace json
@@ -147,6 +152,10 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
+
+#if defined( __GNUC__ ) && ( __cplusplus < 201703L )
+#pragma GCC diagnostic pop
+#endif
 
 #define TAOCPP_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< decltype( __VA_ARGS__ ), __VA_ARGS__ >
 #define TAOCPP_JSON_BIND_ELEMENT_FUNCTION( ... ) tao::json::binding::element_function< decltype( __VA_ARGS__ ), __VA_ARGS__ >
