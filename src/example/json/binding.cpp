@@ -91,7 +91,7 @@ namespace tao
          template< template< typename... > class Traits = traits, typename Consumer >
          static void produce_key( Consumer& consumer )
          {
-            const char s[] = { Cs..., 0 };
+            static const char s[] = { Cs..., 0 };
             consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
          }
 
@@ -127,9 +127,9 @@ namespace tao
          template< template< typename... > class Traits, typename Base, typename X >
          static void assign( basic_value< Traits, Base >& v, const X& x )
          {
-            v = {
-               { As::key(), As::read( x ) }...
-            };
+            v.unsafe_emplace_object();
+            using swallow = bool[];
+            (void)swallow{ ( v.unsafe_emplace( As::key(), As::read( x ) ), true )... };
          }
 
          template< template< typename... > class Traits = traits, typename Consumer, typename X >

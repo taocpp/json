@@ -57,10 +57,8 @@ namespace config
       struct object_fragment : sor< expression, object_value > {};
       struct object : list_must< object_fragment, jaxn::value_concat > {};
 
-      struct self : TAOCPP_JSON_PEGTL_STRING( "self:" ) {};
-      struct super : TAOCPP_JSON_PEGTL_STRING( "super:" ) {};
       struct rkey_part : sor< key, identifier, expression > {};
-      struct rkey : seq< opt< sor< self, super > >, list< mkey_part, one< '.' > > > {};
+      struct rkey : seq< star< one< '.' > >, list< mkey_part, one< '.' > > > {};
       struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary, object, array > > > > > {};
 
       struct sor_value
