@@ -5,6 +5,7 @@
 #define TAOCPP_JSON_INCLUDE_BINDING_HPP
 
 #include <string>
+#include <type_traits>
 
 #include "events/produce.hpp"
 #include "external/pegtl/internal/pegtl_string.hpp"
@@ -21,11 +22,11 @@ namespace tao
    {
       namespace binding
       {
-         template< typename T, T >
+         template< typename T, T, typename = void >
          struct element;
 
          template< typename C, typename T, T C::*P >
-         struct element< T C::*, P >
+         struct element< T C::*, P, typename std::enable_if< std::is_member_object_pointer< T C::* >::value >::type >
          {
             static auto read( const C& v ) -> decltype( v.*P )
             {
@@ -39,11 +40,8 @@ namespace tao
             }
          };
 
-         template< typename T, T >
-         struct element_function;
-
-         template< typename C, typename F, F C::*P >
-         struct element_function< F C::*, P >
+         template< typename C, typename T, T C::*P >
+         struct element< T C::*, P, typename std::enable_if< std::is_member_function_pointer< T C::* >::value >::type >
          {
             static auto read( const C& v ) -> decltype( ( v.*P )() )
             {
@@ -65,12 +63,8 @@ namespace tao
 
          template< char... Cs, typename C, typename T, T C::*P >
          struct member< key< Cs... >, T C::*, P >
+            : element< T C::*, P >
          {
-            static auto read( const C& v ) -> decltype( v.*P )
-            {
-               return v.*P;
-            }
-
             static std::string key()
             {
                const char s[] = { Cs..., 0 };
@@ -82,12 +76,6 @@ namespace tao
             {
                static const char s[] = { Cs..., 0 };
                consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
-            }
-
-            template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce( Consumer& consumer, const C& v )
-            {
-               events::produce< Traits >( consumer, read( v ) );
             }
          };
 
@@ -158,7 +146,6 @@ namespace tao
 #endif
 
 #define TAOCPP_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< decltype( __VA_ARGS__ ), __VA_ARGS__ >
-#define TAOCPP_JSON_BIND_ELEMENT_FUNCTION( ... ) tao::json::binding::element_function< decltype( __VA_ARGS__ ), __VA_ARGS__ >
 #define TAOCPP_JSON_BIND_MEMBER( KeY, ... ) tao::json::binding::member< TAOCPP_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
 
 #endif

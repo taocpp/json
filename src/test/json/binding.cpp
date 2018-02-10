@@ -74,8 +74,8 @@ namespace tao
 
       template<>
       struct traits< secret >
-         : binding::array< TAOCPP_JSON_BIND_ELEMENT_FUNCTION( &secret::get_int ),
-                           TAOCPP_JSON_BIND_ELEMENT_FUNCTION( &secret::get_string ) >
+         : binding::array< TAOCPP_JSON_BIND_ELEMENT( &secret::get_int ),
+                           TAOCPP_JSON_BIND_ELEMENT( &secret::get_string ) >
       {
       };
 
