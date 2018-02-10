@@ -91,7 +91,8 @@ namespace tao
          template< template< typename... > class Traits = traits, typename Consumer >
          static void produce_key( Consumer& consumer )
          {
-            consumer.key( key() );
+            static const char s[] = { Cs..., 0 };
+            consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
          }
 
          template< template< typename... > class Traits = traits, typename Consumer >
