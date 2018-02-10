@@ -73,7 +73,7 @@ namespace tao
       template< typename X, typename T, T X::*P, char... Cs >
       struct member_binding< X, T, P, key< Cs... > >
       {
-         using key_type = key< Cs... >;
+         using key_type = json::key< Cs... >;
          using class_type = X;
          using value_type = T;
 
