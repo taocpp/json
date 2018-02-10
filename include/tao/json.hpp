@@ -7,6 +7,11 @@
 // JSON Value
 #include "json/value.hpp"
 
+// Custom Types
+#include "json/binding.hpp"
+#include "json/consume.hpp"
+#include "json/produce.hpp"
+
 // Events producers
 #include "json/events/from_stream.hpp"
 #include "json/events/from_string.hpp"
@@ -54,7 +59,6 @@
 #include "json/to_string.hpp"
 
 // Value support
-#include "json/binding.hpp"
 #include "json/patch.hpp"
 #include "json/schema.hpp"
 #include "json/self_contained.hpp"

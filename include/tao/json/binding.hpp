@@ -7,8 +7,10 @@
 #include <string>
 #include <type_traits>
 
-#include "events/produce.hpp"
 #include "external/pegtl/internal/pegtl_string.hpp"
+
+#include "consume.hpp"
+#include "events/produce.hpp"
 #include "value.hpp"
 
 #if defined( __GNUC__ ) && ( __GNUC__ >= 7 ) && ( __cplusplus < 201703L )
@@ -33,10 +35,21 @@ namespace tao
                return v.*P;
             }
 
+            static auto write( C& v ) -> decltype( v.*P )&
+            {
+               return v.*P;
+            }
+
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce( Consumer& consumer, const C& v )
             {
                events::produce< Traits >( consumer, v.*P );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& producer, C& v )
+            {
+               json::consume< Traits >( producer, write( v ) );
             }
          };
 

@@ -5,7 +5,7 @@
 
 #include <tao/json/events/produce.hpp>
 #include <tao/json/from_string.hpp>
-#include <tao/json/other_to.hpp>
+#include <tao/json/produce.hpp>
 #include <tao/json/self_contained.hpp>
 #include <tao/json/to_stream.hpp>
 #include <tao/json/to_string.hpp>
@@ -184,7 +184,7 @@ namespace tao
 
          TEST_ASSERT( v2 == v3 );
 
-         const auto s3 = other_to_string( e );
+         const auto s3 = produce::to_string( e );
 
          TEST_ASSERT( s3 == "{\"name\":\"Isidor\",\"position\":\"CEO\",\"income\":42,\"coordinates\":[1.0,2.0]}" );
       }
