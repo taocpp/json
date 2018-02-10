@@ -61,9 +61,9 @@ namespace tao
          template< typename K, typename T, T >
          struct member;
 
-         template< char... Cs, typename C, typename T, T C::*P >
-         struct member< key< Cs... >, T C::*, P >
-            : element< T C::*, P >
+         template< char... Cs, typename T, T P >
+         struct member< key< Cs... >, T, P >
+            : element< T, P >
          {
             static std::string key()
             {
