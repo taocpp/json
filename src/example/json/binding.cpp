@@ -82,15 +82,17 @@ namespace tao
             return x.*P;
          }
 
-         static std::string key( const std::initializer_list< char >& k = { Cs... } )
+         static std::string key()
          {
-            return std::string( k.begin(), k.size() );
+            const char s[] = { Cs..., 0 };
+            return std::string( s, sizeof...( Cs ) );
          }
 
          template< template< typename... > class Traits = traits, typename Consumer >
-         static void produce( Consumer& consumer, const std::initializer_list< char >& k = { Cs... } )
+         static void produce_key( Consumer& consumer )
          {
-            consumer.key( tao::string_view( k.begin(), k.size() ) );
+            const char s[] = { Cs..., 0 };
+            consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
          }
 
          template< template< typename... > class Traits = traits, typename Consumer >
@@ -135,7 +137,7 @@ namespace tao
          {
             consumer.begin_object( sizeof...( As ) );
             using swallow = bool[];
-            (void)swallow{ ( As::template produce< Traits >( consumer ), As::template produce< Traits >( consumer, x ), consumer.member(), true )... };
+            (void)swallow{ ( As::template produce_key< Traits >( consumer ), As::template produce< Traits >( consumer, x ), consumer.member(), true )... };
             consumer.end_object( sizeof...( As ) );
          }
       };
