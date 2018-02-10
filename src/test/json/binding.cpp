@@ -6,6 +6,8 @@
 #include <tao/json.hpp>
 #include <tao/json/other_to.hpp>
 
+#include <type_traits>
+
 namespace tao
 {
    namespace json
@@ -31,39 +33,42 @@ namespace tao
          }
       };
 
-      template< typename X, typename T, const T& ( X::*P )() const noexcept >
-      struct element_mem_fun_ref
-      {
-         using class_type = X;
-         using value_type = T;
+      template< typename T, T >
+      struct element_function_binding;
 
-         static const T& read( const X& x ) noexcept
+      template< typename C, typename R, R ( C::*P )() >
+      struct element_function_binding< R ( C::* )(), P >
+      {
+         using class_type = C;
+         using value_type = R;
+
+         static R read( const C& v ) noexcept
          {
-            return ( x.*P )();
+            return ( v.*P )();
          }
 
          template< template< typename... > class Traits = traits, typename Consumer >
-         static void produce( Consumer& consumer, const X& x )
+         static void produce( Consumer& consumer, const C& v )
          {
-            events::produce< Traits >( consumer, read( x ) );
+            events::produce< Traits >( consumer, read( v ) );
          }
       };
 
-      template< typename X, typename T, T ( X::*P )() const >
-      struct element_mem_fun_val
+      template< typename C, typename R, R ( C::*P )() const >
+      struct element_function_binding< R ( C::* )() const, P >
       {
-         using class_type = X;
-         using value_type = T;
+         using class_type = C;
+         using value_type = R;
 
-         static T read( const X& x )
+         static R read( const C& v ) noexcept
          {
-            return ( x.*P )();
+            return ( v.*P )();
          }
 
          template< template< typename... > class Traits = traits, typename Consumer >
-         static void produce( Consumer& consumer, const X& x )
+         static void produce( Consumer& consumer, const C& v )
          {
-            events::produce< Traits >( consumer, read( x ) );
+            events::produce< Traits >( consumer, read( v ) );
          }
       };
 
@@ -153,6 +158,7 @@ namespace tao
       };
 
 #define BIND_ELEMENT( ... ) element_binding< decltype( __VA_ARGS__ ), __VA_ARGS__ >
+#define BIND_ELEMENT_FUNCTION( ... ) element_function_binding< decltype( __VA_ARGS__ ), __VA_ARGS__ >
 #define BIND_MEMBER( KeY, ... ) member_binding< decltype( __VA_ARGS__ ), __VA_ARGS__, TAOCPP_JSON_PEGTL_INTERNAL_STRING( key, KeY ) >
 
       struct point
@@ -218,8 +224,8 @@ namespace tao
 
       template<>
       struct traits< secret >
-         : array_binding_traits< element_mem_fun_val< secret, int, &secret::get_int >,
-                                 element_mem_fun_ref< secret, std::string, &secret::get_string > >
+         : array_binding_traits< BIND_ELEMENT_FUNCTION( &secret::get_int ),
+                                 BIND_ELEMENT_FUNCTION( &secret::get_string ) >
       {
       };
 
