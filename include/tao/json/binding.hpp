@@ -10,7 +10,7 @@
 #include "external/pegtl/internal/pegtl_string.hpp"
 #include "value.hpp"
 
-#if defined( __GNUC__ ) && ( __cplusplus < 201703L )
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 ) && ( __cplusplus < 201703L )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnoexcept-type"
 #endif
