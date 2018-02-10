@@ -22,7 +22,7 @@ namespace tao
          template< typename C, typename T, T C::*P >
          struct element< T C::*, P >
          {
-            static const T& read( const C& v )
+            static auto read( const C& v ) -> decltype( v.*P )
             {
                return v.*P;
             }
@@ -37,25 +37,10 @@ namespace tao
          template< typename T, T >
          struct element_function;
 
-         template< typename C, typename R, R ( C::*P )() >
-         struct element_function< R ( C::* )(), P >
+         template< typename C, typename F, F C::*P >
+         struct element_function< F C::*, P >
          {
-            static R read( const C& v ) noexcept
-            {
-               return ( v.*P )();
-            }
-
-            template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce( Consumer& consumer, const C& v )
-            {
-               events::produce< Traits >( consumer, read( v ) );
-            }
-         };
-
-         template< typename C, typename R, R ( C::*P )() const >
-         struct element_function< R ( C::* )() const, P >
-         {
-            static R read( const C& v ) noexcept
+            static auto read( const C& v ) -> decltype( ( v.*P )() )
             {
                return ( v.*P )();
             }
@@ -104,10 +89,19 @@ namespace tao
          template< typename... As >
          struct array
          {
+            template< typename A, template< typename... > class Traits, typename Base, typename C >
+            static bool unsafe_emplace_back( basic_value< Traits, Base >& v, const C& x )
+            {
+               v.unsafe_emplace_back( A::read( x ) );
+               return true;
+            }
+
             template< template< typename... > class Traits, typename Base, typename C >
             static void assign( basic_value< Traits, Base >& v, const C& x )
             {
-               v.append( { As::read( x )... } );
+               v.unsafe_emplace_array();
+               using swallow = bool[];
+               (void)swallow{ unsafe_emplace_back< As >( v, x )... };
             }
 
             template< template< typename... > class Traits = traits, typename Consumer, typename C >
