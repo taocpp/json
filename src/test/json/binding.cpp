@@ -10,21 +10,24 @@ namespace tao
 {
    namespace json
    {
-      template< typename X, typename T, T X::*P >
-      struct element_binding
+      template< typename T, T >
+      struct element_binding;
+
+      template< typename C, typename T, T C::*P >
+      struct element_binding< T C::*, P >
       {
-         using class_type = X;
+         using class_type = C;
          using value_type = T;
 
-         static const T& read( const X& x )
+         static const T& read( const C& v )
          {
-            return x.*P;
+            return v.*P;
          }
 
          template< template< typename... > class Traits = traits, typename Consumer >
-         static void produce( Consumer& consumer, const X& x )
+         static void produce( Consumer& consumer, const C& v )
          {
-            events::produce< Traits >( consumer, read( x ) );
+            events::produce< Traits >( consumer, read( v ) );
          }
       };
 
@@ -64,22 +67,22 @@ namespace tao
          }
       };
 
-      template< typename X, typename T, T X::*P, typename K >
-      struct member_binding;
-
       template< char... Cs >
       using key = json_pegtl::string< Cs... >;
 
-      template< typename X, typename T, T X::*P, char... Cs >
-      struct member_binding< X, T, P, key< Cs... > >
+      template< typename T, T, typename K >
+      struct member_binding;
+
+      template< typename C, typename T, T C::*P, char... Cs >
+      struct member_binding< T C::*, P, key< Cs... > >
       {
          using key_type = json::key< Cs... >;
-         using class_type = X;
+         using class_type = C;
          using value_type = T;
 
-         static const T& read( const X& x )
+         static const T& read( const C& v )
          {
-            return x.*P;
+            return v.*P;
          }
 
          static std::string key()
@@ -96,9 +99,9 @@ namespace tao
          }
 
          template< template< typename... > class Traits = traits, typename Consumer >
-         static void produce( Consumer& consumer, const X& x )
+         static void produce( Consumer& consumer, const C& v )
          {
-            events::produce< Traits >( consumer, read( x ) );
+            events::produce< Traits >( consumer, read( v ) );
          }
       };
 
@@ -149,6 +152,9 @@ namespace tao
          }
       };
 
+#define BIND_ELEMENT( ... ) element_binding< decltype( __VA_ARGS__ ), __VA_ARGS__ >
+#define BIND_MEMBER( KeY, ... ) member_binding< decltype( __VA_ARGS__ ), __VA_ARGS__, TAOCPP_JSON_PEGTL_INTERNAL_STRING( key, KeY ) >
+
       struct point
       {
          double x = 1.0;
@@ -157,8 +163,8 @@ namespace tao
 
       template<>
       struct traits< point >
-         : array_binding_traits< element_binding< point, double, &point::x >,
-                                 element_binding< point, double, &point::y > >
+         : array_binding_traits< BIND_ELEMENT( &point::x ),
+                                 BIND_ELEMENT( &point::y ) >
       {
       };
 
@@ -171,9 +177,9 @@ namespace tao
 
       template<>
       struct traits< employee >
-         : object_binding_traits< member_binding< employee, point, &employee::where, key< 'w', 'h', 'e', 'r', 'e' > >,
-                                  member_binding< employee, std::string, &employee::name, key< 'n', 'a', 'm', 'e' > >,
-                                  member_binding< employee, tao::optional< std::string >, &employee::job, key< 'j', 'o', 'b' > > >
+         : object_binding_traits< BIND_MEMBER( "where", &employee::where ),
+                                  BIND_MEMBER( "name", &employee::name ),
+                                  BIND_MEMBER( "job", &employee::job ) >
       {
       };
 
@@ -188,8 +194,8 @@ namespace tao
 
       template< typename V, typename W >
       struct traits< std::pair< V, W > >
-         : array_binding_traits< element_binding< std::pair< V, W >, V, &std::pair< V, W >::first >,
-                                 element_binding< std::pair< V, W >, W, &std::pair< V, W >::second > >
+         : array_binding_traits< BIND_ELEMENT( &std::pair< V, W >::first ),
+                                 BIND_ELEMENT( &std::pair< V, W >::second ) >
       {
       };
 
