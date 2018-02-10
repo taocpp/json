@@ -127,9 +127,9 @@ namespace tao
          template< template< typename... > class Traits, typename Base, typename X >
          static void assign( basic_value< Traits, Base >& v, const X& x )
          {
-            v.unsafe_emplace_object();
-            using swallow = bool[];
-            (void)swallow{ ( v.unsafe_emplace( As::key(), As::read( x ) ), true )... };
+            v = {
+               { As::key(), As::read( x ) }...
+            };
          }
 
          template< template< typename... > class Traits = traits, typename Consumer, typename X >
