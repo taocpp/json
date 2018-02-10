@@ -54,10 +54,10 @@
 #include "json/to_string.hpp"
 
 // Value support
+#include "json/binding.hpp"
 #include "json/patch.hpp"
-#include "json/self_contained.hpp"
-//#include "json/diff.hpp"
 #include "json/schema.hpp"
+#include "json/self_contained.hpp"
 
 // Relaxed JSON
 #include "json/jaxn.hpp"
