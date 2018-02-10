@@ -153,7 +153,7 @@ namespace tao
 
 }  // namespace tao
 
-#if defined( __GNUC__ ) && ( __cplusplus < 201703L )
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 ) && ( __cplusplus < 201703L )
 #pragma GCC diagnostic pop
 #endif
 
