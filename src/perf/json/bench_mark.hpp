@@ -6,9 +6,9 @@
 
 #include <chrono>
 #include <cstddef>
+#include <functional>
 #include <iomanip>
 #include <iostream>
-#include <functional>
 
 namespace bench
 {
@@ -30,7 +30,7 @@ namespace bench
 
          if ( e > 1000000000 ) {
             const auto q = e/c;
-            std::cout << "bench '" << std::setw( 10 ) << name << "' with '" << type << "':  iterations " << std::setw( 10 ) << c << "   elapsed " << std::setw( 10 ) << e << "   result " << std::setw( 10 ) << q << " nanos per iteration (" << ( ( 100*q ) / (ref?ref:q) ) << "%)" << std::endl;
+            std::cout << "bench '" << std::setw( 10 ) << name << "' with '" << type << "':  iterations " << std::setw( 10 ) << c << "   elapsed " << std::setw( 10 ) << e << "   result " << std::setw( 10 ) << q << " nanos per iteration (" << ( ( 100*q ) / (bool(ref)?ref:q) ) << "%)" << std::endl;
             return q;
          }
       }
@@ -38,6 +38,6 @@ namespace bench
       return 0;
    }
 
-} // bench
+}  // namespace bench
 
 #endif

@@ -446,9 +446,8 @@ namespace tao
       {
       };
 
-      std::size_t size_helper( const bool b )
+      std::size_t size_helper( const bool /*unused*/ )
       {
-         assert( !b );
          assert( !"something went wrong" );
          return 0;
       }
