@@ -37,17 +37,17 @@
 #include <tao/json/events/prefer_signed.hpp>
 #include <tao/json/events/prefer_unsigned.hpp>
 
-#include <tao/json/events/cbor/to_stream.hpp>
-#include <tao/json/events/cbor/to_string.hpp>
+#include <tao/json/cbor/events/to_stream.hpp>
+#include <tao/json/cbor/events/to_string.hpp>
 
-#include <tao/json/events/jaxn/to_pretty_stream.hpp>
-#include <tao/json/events/jaxn/to_stream.hpp>
+#include <tao/json/jaxn/events/to_pretty_stream.hpp>
+#include <tao/json/jaxn/events/to_stream.hpp>
 
-#include <tao/json/events/msgpack/to_stream.hpp>
-#include <tao/json/events/msgpack/to_string.hpp>
+#include <tao/json/msgpack/events/to_stream.hpp>
+#include <tao/json/msgpack/events/to_string.hpp>
 
-#include <tao/json/events/ubjson/to_stream.hpp>
-#include <tao/json/events/ubjson/to_string.hpp>
+#include <tao/json/ubjson/events/to_stream.hpp>
+#include <tao/json/ubjson/events/to_string.hpp>
 
 namespace tao
 {
@@ -156,17 +156,17 @@ namespace tao
          check_consumer< events::to_value >();
          check_consumer< events::validate_event_order >();
 
-         check_consumer< events::cbor::to_stream >();
-         check_consumer< events::cbor::to_string >();
+         check_consumer< cbor::events::to_stream >();
+         check_consumer< cbor::events::to_string >();
 
-         check_consumer< events::jaxn::to_pretty_stream >();
-         check_consumer< events::jaxn::to_stream >();
+         check_consumer< jaxn::events::to_pretty_stream >();
+         check_consumer< jaxn::events::to_stream >();
 
-         check_consumer< events::msgpack::to_stream >();
-         check_consumer< events::msgpack::to_string >();
+         check_consumer< msgpack::events::to_stream >();
+         check_consumer< msgpack::events::to_string >();
 
-         check_consumer< events::ubjson::to_stream >();
-         check_consumer< events::ubjson::to_string >();
+         check_consumer< ubjson::events::to_stream >();
+         check_consumer< ubjson::events::to_string >();
       }
 
    }  // namespace json

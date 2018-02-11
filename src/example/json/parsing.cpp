@@ -36,7 +36,7 @@ namespace tao
 
             bool null()
             {
-               if( events::cbor::internal::peek_byte_safe( m_input ) == std::uint8_t( events::cbor::major::OTHER ) + 22 ) {
+               if( internal::peek_byte_safe( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {
                   m_input.bump_in_this_line( 1 );
                   return true;
                }
@@ -45,12 +45,12 @@ namespace tao
 
             bool boolean()
             {
-               const auto b = events::cbor::internal::peek_byte_safe( m_input );
+               const auto b = internal::peek_byte_safe( m_input );
                switch( b ) {
-                  case std::uint8_t( events::cbor::major::OTHER ) + 20:
-                  case std::uint8_t( events::cbor::major::OTHER ) + 21:
+                  case std::uint8_t( internal::major::OTHER ) + 20:
+                  case std::uint8_t( internal::major::OTHER ) + 21:
                      m_input.bump_in_this_line( 1 );
-                     return bool( b - std::uint8_t( events::cbor::major::OTHER ) - 20 );
+                     return bool( b - std::uint8_t( internal::major::OTHER ) - 20 );
                   default:
                      throw json_pegtl::parse_error( "expected cbor boolean", m_input );  // NOLINT
                }
@@ -58,41 +58,41 @@ namespace tao
 
             std::string string()
             {
-               const auto b = events::cbor::internal::peek_major_safe( m_input );
-               if( b != events::cbor::major::STRING ) {
+               const auto b = internal::peek_major_safe( m_input );
+               if( b != internal::major::STRING ) {
                   throw json_pegtl::parse_error( "expected cbor string", m_input );  // NOLINT
                }
-               if( events::cbor::internal::peek_minor( m_input ) != events::cbor::minor_mask ) {
-                  return events::cbor::data< V >::template read_string_1< V, std::string >( m_input );
+               if( internal::peek_minor( m_input ) != internal::minor_mask ) {
+                  return internal::data< V >::template read_string_1< V, std::string >( m_input );
                }
-               return events::cbor::data< V >::template read_string_n< V, std::string >( m_input, events::cbor::major::STRING );
+               return internal::data< V >::template read_string_n< V, std::string >( m_input, internal::major::STRING );
             }
 
             std::uint64_t number_uint64()
             {
-               const auto b = events::cbor::internal::peek_major_safe( m_input );
-               if( b != events::cbor::major::UNSIGNED ) {
+               const auto b = internal::peek_major_safe( m_input );
+               if( b != internal::major::UNSIGNED ) {
                   throw json_pegtl::parse_error( "expected cbor unsigned", m_input );  // NOLINT
                }
-               return events::cbor::data< V >::read_unsigned( m_input );
+               return internal::data< V >::read_unsigned( m_input );
             }
 
             // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway?
             tao::string_view string_view()
             {
-               const auto b = events::cbor::internal::peek_byte_safe( m_input );
-               if( b != std::uint8_t( events::cbor::major::STRING ) + events::cbor::minor_mask ) {
+               const auto b = internal::peek_byte_safe( m_input );
+               if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected cbor definite string", m_input );  // NOLINT
                }
-               return events::cbor::data< V >::template read_string_1< V, tao::string_view >( m_input );
+               return internal::data< V >::template read_string_1< V, tao::string_view >( m_input );
             }
 
-            struct array_state
+            struct state_t
             {
-               array_state() = default;
+               state_t() = default;
 
                explicit
-               array_state( const std::size_t in_size )
+               state_t( const std::size_t in_size )
                   : size( in_size )
                {
                }
@@ -101,35 +101,40 @@ namespace tao
                tao::optional< std::size_t > size;
             };
 
-            array_state begin_array()
+            state_t begin_container( const internal::major m, const char* e )
             {
-               const auto b = events::cbor::internal::peek_major_safe( m_input );
-               if( b != events::cbor::major::ARRAY ) {
-                  throw json_pegtl::parse_error( "expected cbor array", m_input );  // NOLINT
+               const auto b = internal::peek_major_safe( m_input );
+               if( b != m ) {
+                  throw json_pegtl::parse_error( e, m_input );  // NOLINT
                }
-               if( events::cbor::internal::peek_minor( m_input ) == 31 ) {
+               if( internal::peek_minor( m_input ) == 31 ) {
                   m_input.bump_in_this_line( 1 );
-                  return array_state();
+                  return state_t();
                }
-               return array_state( events::cbor::data< V >::read_size( m_input ) );
+               return state_t( internal::data< V >::read_size( m_input ) );
             }
 
-            void end_array_sized( array_state& p )
+            state_t begin_array()
+            {
+               return begin_container( internal::major::ARRAY, "expected cbor array" );
+            }
+
+            void end_array_sized( state_t& p )
             {
                if( *p.size != p.i ) {
                   throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
                }
             }
 
-            void end_array_indefinitive( array_state& /*unused*/ )
+            void end_array_indefinitive( state_t& /*unused*/ )
             {
-               if( events::cbor::internal::peek_byte_safe( m_input ) != 0xff ) {
+               if( internal::peek_byte_safe( m_input ) != 0xff ) {
                   throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
             }
 
-            void end_array( array_state& p )
+            void end_array( state_t& p )
             {
                if( p.size ) {
                   end_array_sized( p );
@@ -139,21 +144,21 @@ namespace tao
                }
             }
 
-            void element_sized( array_state& p )
+            void element_sized( state_t& p )
             {
                if( p.i++ >= *p.size ) {
                   throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
                }
             }
 
-            void element_indefinitive( array_state& /*unused*/ )
+            void element_indefinitive( state_t& /*unused*/ )
             {
-               if( events::cbor::internal::peek_byte_safe( m_input ) == 0xff ) {
+               if( internal::peek_byte_safe( m_input ) == 0xff ) {
                   throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
                }
             }
 
-            void element( array_state& p )
+            void element( state_t& p )
             {
                if( p.size ) {
                   element_sized( p );
@@ -163,21 +168,21 @@ namespace tao
                }
             }
 
-            bool element_or_end_array_sized( array_state& p )
+            bool element_or_end_array_sized( state_t& p )
             {
                return p.i++ < *p.size;
             }
 
-            bool element_or_end_array_indefinitive( array_state& /*unused*/ )
+            bool element_or_end_array_indefinitive( state_t& /*unused*/ )
             {
-               if( events::cbor::internal::peek_byte_safe( m_input ) == 0xff ) {
+               if( internal::peek_byte_safe( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
                   return false;
                }
                return true;
             }
 
-            bool element_or_end_array( array_state& p )
+            bool element_or_end_array( state_t& p )
             {
                if( p.size ) {
                   return element_or_end_array_sized( p );
@@ -336,31 +341,31 @@ namespace tao
             return json_pegtl::parse< json_pegtl::seq< json_pegtl::one< C >, Paddington > >( m_input );
          }
 
-         struct array_state
+         struct state_t
          {
             std::size_t i = 0;
             static constexpr bool size = false;
          };
 
-         array_state begin_array()
+         state_t begin_array()
          {
             parse_single_must< '[' >();
-            return array_state();
+            return state_t();
          }
 
-         void end_array( array_state& /*unused*/ )
+         void end_array( state_t& /*unused*/ )
          {
             parse_single_must< ']' >();
          }
 
-         void element( array_state& p )
+         void element( state_t& p )
          {
             if( p.i++ ) {
                parse_single_must< ',' >();
             }
          }
 
-         bool element_or_end_array( array_state& p )
+         bool element_or_end_array( state_t& p )
          {
             if( parse_single_test< ']' >() ) {
                return false;
@@ -369,16 +374,10 @@ namespace tao
             return true;
          }
 
-         struct object_state
-         {
-            std::size_t i = 0;
-            static constexpr bool size = false;
-         };
-
-         object_state begin_object()
+         state_t begin_object()
          {
             parse_single_must< '{' >();
-            return object_state();
+            return state_t();
          }
 
          void end_object()
@@ -386,14 +385,14 @@ namespace tao
             parse_single_must< '}' >();
          }
 
-         void member( object_state& p )
+         void member( state_t& p )
          {
             if( p.i++ ) {
                parse_single_must< ',' >();
             }
          }
 
-         bool member_or_end_object( object_state& p )
+         bool member_or_end_object( state_t& p )
          {
             if( parse_single_test< '}' >() ) {
                return false;

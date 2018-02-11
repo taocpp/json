@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_INTERNAL_ENDIAN_GCC_HPP
-#define TAOCPP_JSON_INCLUDE_INTERNAL_ENDIAN_GCC_HPP
+#ifndef TAOCPP_INCLUDE_JSON_INTERNAL_ENDIAN_GCC_HPP
+#define TAOCPP_INCLUDE_JSON_INTERNAL_ENDIAN_GCC_HPP
 
 #include <cstdint>
 #include <cstring>

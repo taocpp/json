@@ -2,7 +2,7 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include <tao/json/external/pegtl.hpp>
-#include <tao/json/internal/jaxn/grammar.hpp>
+#include <tao/json/jaxn/internal/grammar.hpp>
 
 using namespace tao::json_pegtl;  // NOLINT
 
@@ -11,7 +11,7 @@ namespace config
    // clang-format off
    namespace rules
    {
-      namespace jaxn = tao::json::internal::jaxn::rules;
+      namespace jaxn = tao::json::jaxn::internal::rules;
 
       using ws = plus< jaxn::ws >;
 

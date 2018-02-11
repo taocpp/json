@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_EVENTS_DISCARD_HPP
-#define TAOCPP_JSON_INCLUDE_EVENTS_DISCARD_HPP
+#ifndef TAOCPP_INCLUDE_JSON_EVENTS_DISCARD_HPP
+#define TAOCPP_INCLUDE_JSON_EVENTS_DISCARD_HPP
 
 #include <cstddef>
 #include <cstdint>

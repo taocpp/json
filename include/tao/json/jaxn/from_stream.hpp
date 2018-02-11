@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_JSON_INCLUDE_JAXN_FROM_STREAM_HPP
-#define TAOCPP_JSON_INCLUDE_JAXN_FROM_STREAM_HPP
+#ifndef TAOCPP_INCLUDE_JSON_JAXN_FROM_STREAM_HPP
+#define TAOCPP_INCLUDE_JSON_JAXN_FROM_STREAM_HPP
 
 #include <cstddef>
 #include <string>
@@ -13,7 +13,7 @@
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
 
-#include "../events/jaxn/from_stream.hpp"
+#include "events/from_stream.hpp"
 
 namespace tao
 {
@@ -24,15 +24,15 @@ namespace tao
          template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >
          basic_value< Traits, Base > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            events::transformer< events::to_basic_value< Traits, Base >, Transformers... > consumer;
-            events::jaxn::from_stream( consumer, stream, source, maximum_buffer_size );
+            json::events::transformer< json::events::to_basic_value< Traits, Base >, Transformers... > consumer;
+            events::from_stream( consumer, stream, source, maximum_buffer_size );
             return std::move( consumer.value );
          }
 
          template< template< typename... > class Traits, template< typename... > class... Transformers >
          basic_value< Traits > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
-            return basic_from_stream< Traits, internal::empty_base, Transformers... >( stream, source, maximum_buffer_size );
+            return basic_from_stream< Traits, json::internal::empty_base, Transformers... >( stream, source, maximum_buffer_size );
          }
 
          template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >

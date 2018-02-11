@@ -1,0 +1,40 @@
+// Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
+// Please see LICENSE for license or visit https://github.com/taocpp/json/
+
+#ifndef TAOCPP_INCLUDE_JSON_CBOR_INTERNAL_MAJOR_HPP
+#define TAOCPP_INCLUDE_JSON_CBOR_INTERNAL_MAJOR_HPP
+
+#include <cstdint>
+
+namespace tao
+{
+   namespace json
+   {
+      namespace cbor
+      {
+         namespace internal
+         {
+            enum class major : std::uint8_t
+            {
+               UNSIGNED = 0,
+               NEGATIVE = 0x20,
+               BINARY = 0x40,
+               STRING = 0x60,
+               ARRAY = 0x80,
+               OBJECT = 0xa0,
+               TAG = 0xc0,
+               OTHER = 0xe0
+            };
+
+            static constexpr std::uint8_t major_mask = 0xe0;
+            static constexpr std::uint8_t minor_mask = 0x1f;
+
+         }  // namespace internal
+
+      }  // namespace cbor
+
+   }  // namespace json
+
+}  // namespace tao
+
+#endif
