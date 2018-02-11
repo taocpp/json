@@ -14,7 +14,7 @@
 
 
 
-// EVERYTHING IN THIS FILE IS STILL HIGHTLY EXPERIMENTAL!!!
+// EVERYTHING IN THIS FILE IS STILL HIGHLY EXPERIMENTAL!!!
 
 
 
@@ -68,13 +68,9 @@ namespace tao
                return internal::data< V >::template read_string_n< V, std::string >( m_input, internal::major::STRING );
             }
 
-            std::uint64_t number_uint64()
+            std::string key()
             {
-               const auto b = internal::peek_major_safe( m_input );
-               if( b != internal::major::UNSIGNED ) {
-                  throw json_pegtl::parse_error( "expected cbor unsigned", m_input );  // NOLINT
-               }
-               return internal::data< V >::read_unsigned( m_input );
+               return string();
             }
 
             // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway?
@@ -85,6 +81,46 @@ namespace tao
                   throw json_pegtl::parse_error( "expected cbor definite string", m_input );  // NOLINT
                }
                return internal::data< V >::template read_string_1< V, tao::string_view >( m_input );
+            }
+
+            std::int64_t number_int64_unsigned()
+            {
+               const auto u = internal::data< V >::read_unsigned( m_input );
+               if( u > 9223372036854775807ull ) {
+                  throw json_pegtl::parse_error( "negative integer overflow", m_input );
+               }
+               return std::int64_t( u );
+            }
+
+            std::int64_t number_int64_negative()
+            {
+               const auto u = internal::data< V >::read_unsigned( m_input );
+               if( u > 9223372036854775808ull ) {
+                  throw json_pegtl::parse_error( "negative integer overflow", m_input );
+               }
+               return std::int64_t( ~u );
+            }
+
+            std::int64_t number_int64()
+            {
+               const auto b = internal::peek_major_safe( m_input );
+               switch( b ) {
+                  case internal::major::UNSIGNED:
+                     return number_int64_unsigned();
+                  case internal::major::NEGATIVE:
+                     return number_int64_negative();
+                  default:
+                     throw json_pegtl::parse_error( "expected cbor integer", m_input );  // NOLINT
+               }
+            }
+
+            std::uint64_t number_uint64()
+            {
+               const auto b = internal::peek_major_safe( m_input );
+               if( b != internal::major::UNSIGNED ) {
+                  throw json_pegtl::parse_error( "expected cbor unsigned", m_input );  // NOLINT
+               }
+               return internal::data< V >::read_unsigned( m_input );
             }
 
             struct state_t
@@ -119,6 +155,11 @@ namespace tao
                return begin_container( internal::major::ARRAY, "expected cbor array" );
             }
 
+            state_t begin_object()
+            {
+               return begin_container( internal::major::OBJECT, "expected cbor object" );
+            }
+
             void end_array_sized( state_t& p )
             {
                if( *p.size != p.i ) {
@@ -126,10 +167,25 @@ namespace tao
                }
             }
 
+            void end_object_sized( state_t& p )
+            {
+               if( *p.size != p.i ) {
+                  throw std::runtime_error( "cbor object size mismatch" );  // NOLINT
+               }
+            }
+
             void end_array_indefinitive( state_t& /*unused*/ )
             {
                if( internal::peek_byte_safe( m_input ) != 0xff ) {
-                  throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
+                  throw std::runtime_error( "cbor array not at end" );  // NOLINT
+               }
+               m_input.bump_in_this_line( 1 );
+            }
+
+            void end_object_indefinitive( state_t& /*unused*/ )
+            {
+               if( internal::peek_byte_safe( m_input ) != 0xff ) {
+                  throw std::runtime_error( "cbor object not at end" );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
             }
@@ -144,17 +200,41 @@ namespace tao
                }
             }
 
+            void end_object( state_t& p )
+            {
+               if( p.size ) {
+                  end_object_sized( p );
+               }
+               else {
+                  end_object_indefinitive( p );
+               }
+            }
+
             void element_sized( state_t& p )
             {
                if( p.i++ >= *p.size ) {
-                  throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
+                  throw std::runtime_error( "cbor array at end" );  // NOLINT
+               }
+            }
+
+            void member_sized( state_t& p )
+            {
+               if( p.i++ >= *p.size ) {
+                  throw std::runtime_error( "cbor object at end" );  // NOLINT
                }
             }
 
             void element_indefinitive( state_t& /*unused*/ )
             {
                if( internal::peek_byte_safe( m_input ) == 0xff ) {
-                  throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
+                  throw std::runtime_error( "cbor array at end" );  // NOLINT
+               }
+            }
+
+            void member_indefinitive( state_t& /*unused*/ )
+            {
+               if( internal::peek_byte_safe( m_input ) == 0xff ) {
+                  throw std::runtime_error( "cbor object at end" );  // NOLINT
                }
             }
 
@@ -168,12 +248,36 @@ namespace tao
                }
             }
 
+            void member( state_t& p )
+            {
+               if( p.size ) {
+                  member_sized( p );
+               }
+               else{
+                  member_indefinitive( p );
+               }
+            }
+
             bool element_or_end_array_sized( state_t& p )
             {
                return p.i++ < *p.size;
             }
 
+            bool member_or_end_object_sized( state_t& p )
+            {
+               return p.i++ < *p.size;
+            }
+
             bool element_or_end_array_indefinitive( state_t& /*unused*/ )
+            {
+               if( internal::peek_byte_safe( m_input ) == 0xff ) {
+                  m_input.bump_in_this_line( 1 );
+                  return false;
+               }
+               return true;
+            }
+
+            bool member_or_end_object_indefinitive( state_t& /*unused*/ )
             {
                if( internal::peek_byte_safe( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
@@ -188,6 +292,14 @@ namespace tao
                   return element_or_end_array_sized( p );
                }
                return element_or_end_array_indefinitive( p );
+            }
+
+            bool member_or_end_object( state_t& p )
+            {
+               if( p.size ) {
+                  return member_or_end_object_sized( p );
+               }
+               return member_or_end_object_indefinitive( p );
             }
 
          private:
@@ -637,6 +749,12 @@ namespace tao
          }
          {
             parse_producer<> pp( " { \"c\" : \"yeah\" , \"i\" : 42 } " );
+            const auto v = consume< bar, my_traits >( pp );
+            TEST_ASSERT( v.c == "yeah" );
+            TEST_ASSERT( v.i == 42 );
+         }
+         {
+            cbor::parser<> pp( "bf616364796561686169182aff" );
             const auto v = consume< bar, my_traits >( pp );
             TEST_ASSERT( v.c == "yeah" );
             TEST_ASSERT( v.i == 42 );
