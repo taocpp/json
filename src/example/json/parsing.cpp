@@ -65,9 +65,7 @@ namespace tao
                if( events::cbor::internal::peek_minor( m_input ) != events::cbor::minor_mask ) {
                   return events::cbor::data< V >::template read_string_1< V, std::string >( m_input );
                }
-               else {
-                  return events::cbor::data< V >::template read_string_n< V, std::string >( m_input, events::cbor::major::STRING );
-               }
+               return events::cbor::data< V >::template read_string_n< V, std::string >( m_input, events::cbor::major::STRING );
             }
 
             std::uint64_t number_uint64()
@@ -184,9 +182,7 @@ namespace tao
                if( p.size ) {
                   return element_or_end_array_sized( p );
                }
-               else {
-                  return element_or_end_array_indefinitive( p );
-               }
+               return element_or_end_array_indefinitive( p );
             }
 
          private:
@@ -352,7 +348,7 @@ namespace tao
             return array_state();
          }
 
-         void end_array( array_state& )
+         void end_array( array_state& /*unused*/ )
          {
             parse_single_must< ']' >();
          }
@@ -573,7 +569,7 @@ namespace tao
 
       struct bar
       {
-         int i;
+         int i = -1;
          std::string c;
       };
 
@@ -610,7 +606,7 @@ namespace tao
          {
             cbor::parser<> pp( "80" );
             const auto v = consume< std::vector< unsigned >, my_traits >( pp );
-            TEST_ASSERT( v.size() == 0 );
+            TEST_ASSERT( v.empty() );
          }
          {
             cbor::parser<> pp( "8a00010203040506070809" );
@@ -627,6 +623,12 @@ namespace tao
             for( std::size_t i = 0; i < 10; ++i ) {
                TEST_ASSERT( v[ i ] == i );
             }
+         }
+         {
+            cbor::parser<> pp( "8261616162" );
+            const auto v = consume< foo, my_traits >( pp );
+            TEST_ASSERT( v.a == "a" );
+            TEST_ASSERT( v.b == "b" );
          }
          {
             parse_producer<> pp( " { \"a\" : 4, \"b\" : 5 } " );
