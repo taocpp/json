@@ -72,13 +72,15 @@ namespace tao
          template< char... Cs >
          using key = json_pegtl::string< Cs... >;
 
-         template< typename K, typename T, T >
+         template< bool R, typename K, typename T, T >
          struct member;
 
-         template< char... Cs, typename T, T P >
-         struct member< key< Cs... >, T, P >
+         template< bool R, char... Cs, typename T, T P >
+         struct member< R, key< Cs... >, T, P >
             : element< T, P >
          {
+            static constexpr bool is_required = R;
+
             static std::string key()
             {
                const char s[] = { Cs..., 0 };
@@ -173,6 +175,8 @@ namespace tao
 #endif
 
 #define TAO_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< decltype( __VA_ARGS__ ), __VA_ARGS__ >
-#define TAO_JSON_BIND_MEMBER( KeY, ... ) tao::json::binding::member< TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
+
+#define TAO_JSON_BIND_REQUIRED( KeY, ... ) tao::json::binding::member< true, TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
+#define TAO_JSON_BIND_OPTIONAL( KeY, ... ) tao::json::binding::member< false, TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
 
 #endif

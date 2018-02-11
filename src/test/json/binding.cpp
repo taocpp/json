@@ -32,9 +32,9 @@ namespace tao
 
       template<>
       struct traits< employee >
-         : binding::object< TAO_JSON_BIND_MEMBER( "where", &employee::where ),
-                            TAO_JSON_BIND_MEMBER( "name", &employee::name ),
-                            TAO_JSON_BIND_MEMBER( "job", &employee::job ) >
+         : binding::object< TAO_JSON_BIND_REQUIRED( "where", &employee::where ),
+                            TAO_JSON_BIND_REQUIRED( "name", &employee::name ),
+                            TAO_JSON_BIND_REQUIRED( "job", &employee::job ) >
       {
       };
 

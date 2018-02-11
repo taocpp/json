@@ -652,15 +652,11 @@ namespace tao
             return true;
          }
 
-         template< template< typename... > class Traits, typename Producer, typename F >
-         static const std::map< std::string, entry< F > >& get_map()
+         template< typename A >
+         static bool set_optional( std::bitset< sizeof...( As ) >& t, std::size_t& i )
          {
-            static const std::map< std::string, entry< F > > m = []( std::size_t i = 0 ){
-               std::map< std::string, entry< F > > t;
-               (void)internal::swallow{ emplace< As, Traits, Producer >( t, i )... };
-               return t;
-            }();
-            return m;
+            t.set( i++, !A::is_required );
+            return true;
          }
 
          template< template< typename... > class Traits = traits, typename Producer, typename C >
@@ -668,7 +664,17 @@ namespace tao
          {
             auto p = producer.begin_object();
             using F = void( * )( Producer&, C& );
-            const auto& m = get_map< Traits, Producer, F >();
+            static const std::map< std::string, entry< F > > m = []( std::size_t i = 0 ){
+               std::map< std::string, entry< F > > t;
+               (void)internal::swallow{ emplace< As, Traits, Producer >( t, i )... };
+               assert( t.size() == sizeof...( As ) );
+               return t;
+            }();
+            static const std::bitset< sizeof...( As ) > o = []( std::size_t i = 0 ){
+               std::bitset< sizeof...( As ) > t;
+               (void)internal::swallow{ set_optional< As >( t, i )... };
+               return t;
+            }();
             std::bitset< sizeof...( As ) > b;
             while( producer.member_or_end_object( p ) ) {
                const auto k = producer.key();
@@ -682,6 +688,7 @@ namespace tao
                i->second.consume( producer, x );
                b.set( i->second.index );
             }
+            b |= o;
             if( !b.all() ) {
                // TODO: List the missing key(s) in the exception?
                throw std::runtime_error( "missing required key(s)" );  // NOLINT
@@ -705,13 +712,13 @@ namespace tao
       struct bar
       {
          int i = -1;
-         std::string c;
+         std::string c = "c";
       };
 
       template<>
       struct my_traits< bar >
-         : my_object< TAO_JSON_BIND_MEMBER( "i", &bar::i ),
-                      TAO_JSON_BIND_MEMBER( "c", &bar::c ) >
+         : my_object< TAO_JSON_BIND_REQUIRED( "i", &bar::i ),
+                      TAO_JSON_BIND_OPTIONAL( "c", &bar::c ) >
       {
       };
 
@@ -776,6 +783,12 @@ namespace tao
             parse_producer<> pp( " { \"c\" : \"yeah\" , \"i\" : 42 } " );
             const auto v = consume< bar, my_traits >( pp );
             TEST_ASSERT( v.c == "yeah" );
+            TEST_ASSERT( v.i == 42 );
+         }
+         {
+            parse_producer<> pp( " { \"i\" : 42 } " );
+            const auto v = consume< bar, my_traits >( pp );
+            TEST_ASSERT( v.c == "c" );
             TEST_ASSERT( v.i == 42 );
          }
          {
