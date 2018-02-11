@@ -623,8 +623,7 @@ namespace tao
          static void consume( Producer& producer, C& x )
          {
             auto p = producer.begin_array();
-            using swallow = bool[];
-            (void)swallow{ ( producer.element( p ), As::template consume< Traits >( producer, x ), true )... };
+            (void)internal::swallow{ ( producer.element( p ), As::template consume< Traits >( producer, x ), true )... };
             producer.end_array( p );
          }
       };
@@ -633,15 +632,21 @@ namespace tao
       struct my_object
          : public binding::object< As... >
       {
+         template< typename A, template< typename... > class Traits, typename Producer, typename F >
+         static bool emplace( std::map< std::string, F >& m )
+         {
+            m.emplace( A::key(), &A::template consume< Traits, Producer > );
+            return true;
+         }
+
          template< template< typename... > class Traits = traits, typename Producer, typename C >
          static void consume( Producer& producer, C& x )
          {
             auto p = producer.begin_object();
-            using f = void ( * )( Producer&, C& );
+            using F = void ( * )( Producer&, C& );
             // TODO: Or make the map static and check for missing members otherwise?
-            std::map< std::string, f > m = {
-               { As::key(), &As::template consume< Traits, Producer > }...
-            };
+            std::map< std::string, F > m;
+            (void)internal::swallow{ emplace< As, Traits, Producer >( m )... };
             while( producer.member_or_end_object( p ) ) {
                const auto k = producer.key();
                const auto i = m.find( k );
