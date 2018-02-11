@@ -1,8 +1,8 @@
 // Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_FILE_INPUT_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_FILE_INPUT_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_FILE_INPUT_HPP
+#define TAO_JSON_PEGTL_INCLUDE_FILE_INPUT_HPP
 
 #include "config.hpp"
 #include "eol.hpp"
@@ -20,7 +20,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
 #if defined( _POSIX_MAPPED_FILES )
       template< tracking_mode P = tracking_mode::IMMEDIATE, typename Eol = eol::lf_crlf >
@@ -30,7 +30,7 @@ namespace tao
       using file_input = read_input< P, Eol >;
 #endif
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

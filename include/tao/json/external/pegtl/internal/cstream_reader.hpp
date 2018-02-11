@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_CSTREAM_READER_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_CSTREAM_READER_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_INTERNAL_CSTREAM_READER_HPP
+#define TAO_JSON_PEGTL_INCLUDE_INTERNAL_CSTREAM_READER_HPP
 
 #include <cassert>
 #include <cstddef>
@@ -13,7 +13,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       namespace internal
       {
@@ -35,7 +35,7 @@ namespace tao
                }
                // Please contact us if you know how to provoke the following exception.
                // The example on cppreference.com doesn't work, at least not on macOS.
-               TAOCPP_JSON_PEGTL_THROW_INPUT_ERROR( "error in fread() from cstream" );  // LCOV_EXCL_LINE
+               TAO_JSON_PEGTL_THROW_INPUT_ERROR( "error in fread() from cstream" );  // LCOV_EXCL_LINE
             }
 
             std::FILE* m_cstream;
@@ -43,7 +43,7 @@ namespace tao
 
       }  // namespace internal
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

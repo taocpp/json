@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_EVENTS_NON_FINITE_TO_EXCEPTION_HPP
-#define TAOCPP_INCLUDE_JSON_EVENTS_NON_FINITE_TO_EXCEPTION_HPP
+#ifndef TAO_JSON_EVENTS_NON_FINITE_TO_EXCEPTION_HPP
+#define TAO_JSON_EVENTS_NON_FINITE_TO_EXCEPTION_HPP
 
 #include <cmath>
 #include <stdexcept>

@@ -207,8 +207,8 @@ namespace config
       struct value : jaxn::padr< sor_value > {};
       struct array_element : value {};
 
-      struct kw_include : TAOCPP_JSON_PEGTL_STRING( "include" ) {};
-      struct kw_delete : TAOCPP_JSON_PEGTL_STRING( "delete" ) {};
+      struct kw_include : TAO_JSON_PEGTL_STRING( "include" ) {};
+      struct kw_delete : TAO_JSON_PEGTL_STRING( "delete" ) {};
 
       struct include_file : seq< kw_include, ws, string > {};
       struct delete_keys : seq< kw_delete, ws, mkey > {};

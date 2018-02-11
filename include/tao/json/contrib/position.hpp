@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_CONTRIB_POSITION_HPP
-#define TAOCPP_INCLUDE_JSON_CONTRIB_POSITION_HPP
+#ifndef TAO_JSON_CONTRIB_POSITION_HPP
+#define TAO_JSON_CONTRIB_POSITION_HPP
 
 #include <tao/json/events/to_value.hpp>
 #include <tao/json/events/transformer.hpp>

@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_FILE_OPENER_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_FILE_OPENER_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_INTERNAL_FILE_OPENER_HPP
+#define TAO_JSON_PEGTL_INCLUDE_INTERNAL_FILE_OPENER_HPP
 
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -16,7 +16,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       namespace internal
       {
@@ -44,7 +44,7 @@ namespace tao
                struct stat st;  // NOLINT
                errno = 0;
                if(::fstat( m_fd, &st ) < 0 ) {
-                  TAOCPP_JSON_PEGTL_THROW_INPUT_ERROR( "unable to fstat() file " << m_source << " descriptor " << m_fd );
+                  TAO_JSON_PEGTL_THROW_INPUT_ERROR( "unable to fstat() file " << m_source << " descriptor " << m_fd );
                }
                return std::size_t( st.st_size );
             }
@@ -65,13 +65,13 @@ namespace tao
                if( fd >= 0 ) {
                   return fd;
                }
-               TAOCPP_JSON_PEGTL_THROW_INPUT_ERROR( "unable to open() file " << m_source << " for reading" );
+               TAO_JSON_PEGTL_THROW_INPUT_ERROR( "unable to open() file " << m_source << " for reading" );
             }
          };
 
       }  // namespace internal
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

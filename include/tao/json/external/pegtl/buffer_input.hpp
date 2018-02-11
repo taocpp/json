@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_BUFFER_INPUT_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_BUFFER_INPUT_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_BUFFER_INPUT_HPP
+#define TAO_JSON_PEGTL_INCLUDE_BUFFER_INPUT_HPP
 
 #include <cstddef>
 #include <cstring>
@@ -22,7 +22,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       template< typename Reader, typename Eol = eol::lf_crlf, typename Source = std::string >
       class buffer_input
@@ -153,12 +153,12 @@ namespace tao
             return internal::marker< iterator_t, M >( m_current );
          }
 
-         TAOCPP_JSON_PEGTL_NAMESPACE::position position( const iterator_t& it ) const
+         TAO_JSON_PEGTL_NAMESPACE::position position( const iterator_t& it ) const
          {
-            return TAOCPP_JSON_PEGTL_NAMESPACE::position( it, m_source );
+            return TAO_JSON_PEGTL_NAMESPACE::position( it, m_source );
          }
 
-         TAOCPP_JSON_PEGTL_NAMESPACE::position position() const
+         TAO_JSON_PEGTL_NAMESPACE::position position() const
          {
             return position( m_current );
          }
@@ -177,7 +177,7 @@ namespace tao
          const Source m_source;
       };
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

@@ -1,8 +1,8 @@
 // Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_TAOCPP_JSON_PEGTL_STRING_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_TAOCPP_JSON_PEGTL_STRING_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_INTERNAL_TAO_JSON_PEGTL_STRING_HPP
+#define TAO_JSON_PEGTL_INCLUDE_INTERNAL_TAO_JSON_PEGTL_STRING_HPP
 
 #include <cstddef>
 #include <type_traits>
@@ -12,7 +12,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       // Inspired by https://github.com/irrequietus/typestring
       // Rewritten and reduced to what is needed for the PEGTL
@@ -50,49 +50,49 @@ namespace tao
 
       }  // namespace internal
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 
-#define TAOCPP_JSON_PEGTL_INTERNAL_EMPTY()
-#define TAOCPP_JSON_PEGTL_INTERNAL_DEFER( X ) X TAOCPP_JSON_PEGTL_INTERNAL_EMPTY()
-#define TAOCPP_JSON_PEGTL_INTERNAL_EXPAND( ... ) __VA_ARGS__
+#define TAO_JSON_PEGTL_INTERNAL_EMPTY()
+#define TAO_JSON_PEGTL_INTERNAL_DEFER( X ) X TAO_JSON_PEGTL_INTERNAL_EMPTY()
+#define TAO_JSON_PEGTL_INTERNAL_EXPAND( ... ) __VA_ARGS__
 
-#define TAOCPP_JSON_PEGTL_INTERNAL_STRING_AT( S, x, n ) \
-   tao::TAOCPP_JSON_PEGTL_NAMESPACE::internal::string_at< S, ( 0##n < sizeof( x ) ) ? ( x )[ 0##n ] : 0, ( 0##n < sizeof( x ) - 1 ) >::type
+#define TAO_JSON_PEGTL_INTERNAL_STRING_AT( S, x, n ) \
+   tao::TAO_JSON_PEGTL_NAMESPACE::internal::string_at< S, ( 0##n < sizeof( x ) ) ? ( x )[ 0##n ] : 0, ( 0##n < sizeof( x ) - 1 ) >::type
 
-#define TAOCPP_JSON_PEGTL_INTERNAL_JOIN_8( M, S, x, n )                                                     \
-   tao::TAOCPP_JSON_PEGTL_NAMESPACE::internal::string_join< TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##0 ), \
-                                                       TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##1 ), \
-                                                       TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##2 ), \
-                                                       TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##3 ), \
-                                                       TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##4 ), \
-                                                       TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##5 ), \
-                                                       TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##6 ), \
-                                                       TAOCPP_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##7 ) >::type
+#define TAO_JSON_PEGTL_INTERNAL_JOIN_8( M, S, x, n )                                                     \
+   tao::TAO_JSON_PEGTL_NAMESPACE::internal::string_join< TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##0 ), \
+                                                       TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##1 ), \
+                                                       TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##2 ), \
+                                                       TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##3 ), \
+                                                       TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##4 ), \
+                                                       TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##5 ), \
+                                                       TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##6 ), \
+                                                       TAO_JSON_PEGTL_INTERNAL_DEFER( M )( S, x, n##7 ) >::type
 
-#define TAOCPP_JSON_PEGTL_INTERNAL_STRING_8( S, x, n ) \
-   TAOCPP_JSON_PEGTL_INTERNAL_JOIN_8( TAOCPP_JSON_PEGTL_INTERNAL_STRING_AT, S, x, n )
+#define TAO_JSON_PEGTL_INTERNAL_STRING_8( S, x, n ) \
+   TAO_JSON_PEGTL_INTERNAL_JOIN_8( TAO_JSON_PEGTL_INTERNAL_STRING_AT, S, x, n )
 
-#define TAOCPP_JSON_PEGTL_INTERNAL_STRING_64( S, x, n ) \
-   TAOCPP_JSON_PEGTL_INTERNAL_JOIN_8( TAOCPP_JSON_PEGTL_INTERNAL_STRING_8, S, x, n )
+#define TAO_JSON_PEGTL_INTERNAL_STRING_64( S, x, n ) \
+   TAO_JSON_PEGTL_INTERNAL_JOIN_8( TAO_JSON_PEGTL_INTERNAL_STRING_8, S, x, n )
 
-#define TAOCPP_JSON_PEGTL_INTERNAL_STRING_512( S, x, n ) \
-   TAOCPP_JSON_PEGTL_INTERNAL_JOIN_8( TAOCPP_JSON_PEGTL_INTERNAL_STRING_64, S, x, n )
+#define TAO_JSON_PEGTL_INTERNAL_STRING_512( S, x, n ) \
+   TAO_JSON_PEGTL_INTERNAL_JOIN_8( TAO_JSON_PEGTL_INTERNAL_STRING_64, S, x, n )
 
-#define TAOCPP_JSON_PEGTL_INTERNAL_STRING( S, x ) \
-   TAOCPP_JSON_PEGTL_INTERNAL_EXPAND(             \
-      TAOCPP_JSON_PEGTL_INTERNAL_EXPAND(          \
-         TAOCPP_JSON_PEGTL_INTERNAL_EXPAND(       \
-            tao::TAOCPP_JSON_PEGTL_NAMESPACE::internal::string_max_length< TAOCPP_JSON_PEGTL_INTERNAL_STRING_512( S, x, ), sizeof( x ) - 1 >::type ) ) )
+#define TAO_JSON_PEGTL_INTERNAL_STRING( S, x ) \
+   TAO_JSON_PEGTL_INTERNAL_EXPAND(             \
+      TAO_JSON_PEGTL_INTERNAL_EXPAND(          \
+         TAO_JSON_PEGTL_INTERNAL_EXPAND(       \
+            tao::TAO_JSON_PEGTL_NAMESPACE::internal::string_max_length< TAO_JSON_PEGTL_INTERNAL_STRING_512( S, x, ), sizeof( x ) - 1 >::type ) ) )
 
-#define TAOCPP_JSON_PEGTL_STRING( x ) \
-   TAOCPP_JSON_PEGTL_INTERNAL_STRING( tao::TAOCPP_JSON_PEGTL_NAMESPACE::ascii::string, x )
+#define TAO_JSON_PEGTL_STRING( x ) \
+   TAO_JSON_PEGTL_INTERNAL_STRING( tao::TAO_JSON_PEGTL_NAMESPACE::ascii::string, x )
 
-#define TAOCPP_JSON_PEGTL_ISTRING( x ) \
-   TAOCPP_JSON_PEGTL_INTERNAL_STRING( tao::TAOCPP_JSON_PEGTL_NAMESPACE::ascii::istring, x )
+#define TAO_JSON_PEGTL_ISTRING( x ) \
+   TAO_JSON_PEGTL_INTERNAL_STRING( tao::TAO_JSON_PEGTL_NAMESPACE::ascii::istring, x )
 
-#define TAOCPP_JSON_PEGTL_KEYWORD( x ) \
-   TAOCPP_JSON_PEGTL_INTERNAL_STRING( tao::TAOCPP_JSON_PEGTL_NAMESPACE::ascii::keyword, x )
+#define TAO_JSON_PEGTL_KEYWORD( x ) \
+   TAO_JSON_PEGTL_INTERNAL_STRING( tao::TAO_JSON_PEGTL_NAMESPACE::ascii::keyword, x )
 
 #endif

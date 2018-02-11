@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_INTERNAL_PAIR_HPP
-#define TAOCPP_INCLUDE_JSON_INTERNAL_PAIR_HPP
+#ifndef TAO_JSON_INTERNAL_PAIR_HPP
+#define TAO_JSON_INTERNAL_PAIR_HPP
 
 #include <string>
 #include <type_traits>

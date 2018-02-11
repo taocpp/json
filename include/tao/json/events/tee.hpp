@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_EVENTS_TEE_HPP
-#define TAOCPP_INCLUDE_JSON_EVENTS_TEE_HPP
+#ifndef TAO_JSON_EVENTS_TEE_HPP
+#define TAO_JSON_EVENTS_TEE_HPP
 
 #include <cstdint>
 #include <string>
@@ -40,7 +40,7 @@ namespace tao
          struct events_apply;
 
          template<>
-         struct events_apply< TAOCPP_JSON_PEGTL_NAMESPACE::internal::index_sequence<> >
+         struct events_apply< TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence<> >
          {
             template< typename... Ts >
             static void null( std::tuple< Ts... >& /*unused*/ )
@@ -134,7 +134,7 @@ namespace tao
          };
 
          template< std::size_t... Is >
-         struct events_apply< TAOCPP_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+         struct events_apply< TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
          {
             using sink = bool[];
 
@@ -259,8 +259,8 @@ namespace tao
          private:
             static constexpr std::size_t S = sizeof...( Ts );
 
-            using I = TAOCPP_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S >;
-            using H = TAOCPP_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S - 1 >;
+            using I = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S >;
+            using H = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S - 1 >;
 
             std::tuple< Ts... > ts;
 

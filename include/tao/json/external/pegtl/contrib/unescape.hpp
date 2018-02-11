@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_UNESCAPE_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_UNESCAPE_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_CONTRIB_UNESCAPE_HPP
+#define TAO_JSON_PEGTL_INCLUDE_CONTRIB_UNESCAPE_HPP
 
 #include <cassert>
 #include <string>
@@ -13,7 +13,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       namespace unescape
       {
@@ -54,7 +54,7 @@ namespace tao
             return false;
          }
 
-         // This function MUST only be called for characters matching tao::TAOCPP_JSON_PEGTL_NAMESPACE::ascii::xdigit!
+         // This function MUST only be called for characters matching tao::TAO_JSON_PEGTL_NAMESPACE::ascii::xdigit!
          template< typename I >
          I unhex_char( const char c )
          {
@@ -110,7 +110,7 @@ namespace tao
             }
          };
 
-         // This action MUST be called for a character matching T which MUST be tao::TAOCPP_JSON_PEGTL_NAMESPACE::one< ... >.
+         // This action MUST be called for a character matching T which MUST be tao::TAO_JSON_PEGTL_NAMESPACE::one< ... >.
          template< typename T, char... Rs >
          struct unescape_c
          {
@@ -196,7 +196,7 @@ namespace tao
 
       }  // namespace unescape
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

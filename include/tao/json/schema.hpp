@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_SCHEMA_HPP
-#define TAOCPP_INCLUDE_JSON_SCHEMA_HPP
+#ifndef TAO_JSON_SCHEMA_HPP
+#define TAO_JSON_SCHEMA_HPP
 
 #include "events/compare.hpp"
 #include "events/from_value.hpp"

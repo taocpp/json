@@ -1,14 +1,14 @@
 // Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_ALPHABET_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_ALPHABET_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_CONTRIB_ALPHABET_HPP
+#define TAO_JSON_PEGTL_INCLUDE_CONTRIB_ALPHABET_HPP
 
 #include "../config.hpp"
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       inline namespace alphabet
       {
@@ -68,7 +68,7 @@ namespace tao
 
       }  // namespace alphabet
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

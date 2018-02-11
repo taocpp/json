@@ -1,8 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_EVENTS_TO_STREAM_HPP
-#define TAOCPP_INCLUDE_JSON_EVENTS_TO_STREAM_HPP
+#ifndef TAO_JSON_EVENTS_TO_STREAM_HPP
+#define TAO_JSON_EVENTS_TO_STREAM_HPP
 
 #include <cmath>
 #include <cstddef>

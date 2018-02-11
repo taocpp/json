@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_MSGPACK_EVENTS_FROM_STRING_HPP
-#define TAOCPP_INCLUDE_JSON_MSGPACK_EVENTS_FROM_STRING_HPP
+#ifndef TAO_JSON_MSGPACK_EVENTS_FROM_STRING_HPP
+#define TAO_JSON_MSGPACK_EVENTS_FROM_STRING_HPP
 
 #include "../../external/pegtl/memory_input.hpp"
 #include "../../external/pegtl/parse.hpp"

@@ -560,8 +560,8 @@ namespace tao
 
       template<>
       struct my_traits< foo >
-         : my_array< TAOCPP_JSON_BIND_ELEMENT( &foo::a ),
-                     TAOCPP_JSON_BIND_ELEMENT( &foo::b ) >
+         : my_array< TAO_JSON_BIND_ELEMENT( &foo::a ),
+                     TAO_JSON_BIND_ELEMENT( &foo::b ) >
       {
       };
 
@@ -573,8 +573,8 @@ namespace tao
 
       template<>
       struct my_traits< bar >
-         : my_object< TAOCPP_JSON_BIND_MEMBER( "i", &bar::i ),
-                      TAOCPP_JSON_BIND_MEMBER( "c", &bar::c ) >
+         : my_object< TAO_JSON_BIND_MEMBER( "i", &bar::i ),
+                      TAO_JSON_BIND_MEMBER( "c", &bar::c ) >
       {
       };
 

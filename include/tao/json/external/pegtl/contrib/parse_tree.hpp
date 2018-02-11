@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_PARSE_TREE_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_PARSE_TREE_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_CONTRIB_PARSE_TREE_HPP
+#define TAO_JSON_PEGTL_INCLUDE_CONTRIB_PARSE_TREE_HPP
 
 #include <memory>
 #include <type_traits>
@@ -18,7 +18,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       namespace parse_tree
       {
@@ -111,14 +111,14 @@ namespace tao
             : normal< Rule >
          {
             template< typename Input >
-            static void start( const Input& in, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            static void start( const Input& in, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
             {
                s.emplace_back();
                s.back()->begin = in.iterator();
             }
 
             template< typename Input >
-            static void success( const Input& /*unused*/, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            static void success( const Input& /*unused*/, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
             {
                auto n = std::move( s.back() );
                n->id = &typeid( Rule );
@@ -128,7 +128,7 @@ namespace tao
             }
 
             template< typename Input >
-            static void failure( const Input& /*unused*/, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
+            static void failure( const Input& /*unused*/, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
             {
                s.pop_back();
             }
@@ -140,14 +140,14 @@ namespace tao
             : normal< Rule >
          {
             template< typename Input >
-            static void start( const Input& in, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            static void start( const Input& in, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
             {
                s.emplace_back();
                s.back()->begin = in.iterator();
             }
 
             template< typename Input >
-            static void success( const Input& in, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            static void success( const Input& in, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
             {
                auto n = std::move( s.back() );
                n->id = &typeid( Rule );
@@ -158,7 +158,7 @@ namespace tao
             }
 
             template< typename Input >
-            static void failure( const Input& /*unused*/, TAOCPP_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
+            static void failure( const Input& /*unused*/, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
             {
                s.pop_back();
             }
@@ -192,13 +192,13 @@ namespace tao
          state parse( Input& in )
          {
             state s;
-            TAOCPP_JSON_PEGTL_NAMESPACE::parse< Grammar, nothing, make_builder< S, C >::template type >( in, s );
+            TAO_JSON_PEGTL_NAMESPACE::parse< Grammar, nothing, make_builder< S, C >::template type >( in, s );
             return s;
          }
 
       }  // namespace parse_tree
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

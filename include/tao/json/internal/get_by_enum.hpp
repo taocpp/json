@@ -1,8 +1,8 @@
 // Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_INTERNAL_GET_BY_ENUM_HPP
-#define TAOCPP_INCLUDE_JSON_INTERNAL_GET_BY_ENUM_HPP
+#ifndef TAO_JSON_INTERNAL_GET_BY_ENUM_HPP
+#define TAO_JSON_INTERNAL_GET_BY_ENUM_HPP
 
 #include <cstdint>
 

@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_HTTP_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_CONTRIB_HTTP_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_CONTRIB_HTTP_HPP
+#define TAO_JSON_PEGTL_INCLUDE_CONTRIB_HTTP_HPP
 
 #include "../ascii.hpp"
 #include "../config.hpp"
@@ -14,7 +14,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       namespace http
       {
@@ -144,7 +144,7 @@ namespace tao
 
       }  // namespace http
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

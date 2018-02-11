@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_BINDING_HPP
-#define TAOCPP_INCLUDE_JSON_BINDING_HPP
+#ifndef TAO_JSON_BINDING_HPP
+#define TAO_JSON_BINDING_HPP
 
 #include <string>
 #include <type_traits>
@@ -172,7 +172,7 @@ namespace tao
 #pragma GCC diagnostic pop
 #endif
 
-#define TAOCPP_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< decltype( __VA_ARGS__ ), __VA_ARGS__ >
-#define TAOCPP_JSON_BIND_MEMBER( KeY, ... ) tao::json::binding::member< TAOCPP_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
+#define TAO_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< decltype( __VA_ARGS__ ), __VA_ARGS__ >
+#define TAO_JSON_BIND_MEMBER( KeY, ... ) tao::json::binding::member< TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
 
 #endif

@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_DEMANGLE_CXXABI_HPP
-#define TAOCPP_JSON_PEGTL_INCLUDE_INTERNAL_DEMANGLE_CXXABI_HPP
+#ifndef TAO_JSON_PEGTL_INCLUDE_INTERNAL_DEMANGLE_CXXABI_HPP
+#define TAO_JSON_PEGTL_INCLUDE_INTERNAL_DEMANGLE_CXXABI_HPP
 
 #include <cstdlib>
 #include <cxxabi.h>
@@ -15,7 +15,7 @@
 
 namespace tao
 {
-   namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   namespace TAO_JSON_PEGTL_NAMESPACE
    {
       namespace internal
       {
@@ -26,7 +26,7 @@ namespace tao
                return symbol;
             }
             std::string result( demangled.get() );
-#ifdef TAOCPP_JSON_PEGTL_PRETTY_DEMANGLE
+#ifdef TAO_JSON_PEGTL_PRETTY_DEMANGLE
             demangle_sanitise_chars( result );  // LCOV_EXCL_LINE
 #endif
             return result;
@@ -34,7 +34,7 @@ namespace tao
 
       }  // namespace internal
 
-   }  // namespace TAOCPP_JSON_PEGTL_NAMESPACE
+   }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 }  // namespace tao
 

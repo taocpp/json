@@ -18,8 +18,8 @@ namespace tao
 
       template<>
       struct traits< point >
-         : binding::array< TAOCPP_JSON_BIND_ELEMENT( &point::x ),
-                           TAOCPP_JSON_BIND_ELEMENT( &point::y ) >
+         : binding::array< TAO_JSON_BIND_ELEMENT( &point::x ),
+                           TAO_JSON_BIND_ELEMENT( &point::y ) >
       {
       };
 
@@ -32,9 +32,9 @@ namespace tao
 
       template<>
       struct traits< employee >
-         : binding::object< TAOCPP_JSON_BIND_MEMBER( "where", &employee::where ),
-                            TAOCPP_JSON_BIND_MEMBER( "name", &employee::name ),
-                            TAOCPP_JSON_BIND_MEMBER( "job", &employee::job ) >
+         : binding::object< TAO_JSON_BIND_MEMBER( "where", &employee::where ),
+                            TAO_JSON_BIND_MEMBER( "name", &employee::name ),
+                            TAO_JSON_BIND_MEMBER( "job", &employee::job ) >
       {
       };
 
@@ -49,8 +49,8 @@ namespace tao
 
       template< typename V, typename W >
       struct traits< std::pair< V, W > >
-         : binding::array< TAOCPP_JSON_BIND_ELEMENT( &std::pair< V, W >::first ),
-                           TAOCPP_JSON_BIND_ELEMENT( &std::pair< V, W >::second ) >
+         : binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< V, W >::first ),
+                           TAO_JSON_BIND_ELEMENT( &std::pair< V, W >::second ) >
       {
       };
 
@@ -73,8 +73,8 @@ namespace tao
 
       template<>
       struct traits< secret >
-         : binding::array< TAOCPP_JSON_BIND_ELEMENT( &secret::get_int ),
-                           TAOCPP_JSON_BIND_ELEMENT( &secret::get_string ) >
+         : binding::array< TAO_JSON_BIND_ELEMENT( &secret::get_int ),
+                           TAO_JSON_BIND_ELEMENT( &secret::get_string ) >
       {
       };
 

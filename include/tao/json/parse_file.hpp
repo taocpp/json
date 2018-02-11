@@ -1,8 +1,8 @@
 // Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAOCPP_INCLUDE_JSON_PARSE_FILE_HPP
-#define TAOCPP_INCLUDE_JSON_PARSE_FILE_HPP
+#ifndef TAO_JSON_PARSE_FILE_HPP
+#define TAO_JSON_PARSE_FILE_HPP
 
 #include <string>
 #include <utility>
