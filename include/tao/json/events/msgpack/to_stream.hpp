@@ -143,7 +143,7 @@ namespace tao
 
                void begin_array()
                {
-                  throw std::runtime_error( "msgpack requires array size" );  // NOLINT, TODO: Fix this by counting and buffering?
+                  throw std::runtime_error( "msgpack requires array size" );  // NOLINT
                }
 
                void begin_array( const std::size_t size )
@@ -177,7 +177,7 @@ namespace tao
 
                void begin_object()
                {
-                  throw std::runtime_error( "msgpack requires object size" );  // NOLINT, TODO: Fix this by counting and buffering?
+                  throw std::runtime_error( "msgpack requires object size" );  // NOLINT
                }
 
                void begin_object( const std::size_t size )
