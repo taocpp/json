@@ -107,16 +107,22 @@ namespace tao
             static void assign( basic_value< Traits, Base >& v, const C& x )
             {
                v.unsafe_emplace_array();
-               using swallow = bool[];
-               (void)swallow{ unsafe_emplace_back< As >( v, x )... };
+               (void)internal::swallow{ unsafe_emplace_back< As >( v, x )... };
+            }
+
+            template< typename A, template< typename... > class Traits, typename Consumer, typename C >
+            static bool produce_element( Consumer& consumer, const C& x )
+            {
+               A::template produce< Traits >( consumer, x );
+               consumer.element();
+               return true;
             }
 
             template< template< typename... > class Traits = traits, typename Consumer, typename C >
             static void produce( Consumer& consumer, const C& x )
             {
                consumer.begin_array( sizeof...( As ) );
-               using swallow = bool[];
-               (void)swallow{ ( As::template produce< Traits >( consumer, x ), consumer.element(), true )... };
+               (void)internal::swallow{ produce_element< As, Traits >( consumer, x )... };
                consumer.end_array( sizeof...( As ) );
             }
          };
@@ -135,16 +141,23 @@ namespace tao
             static void assign( basic_value< Traits, Base >& v, const C& x )
             {
                v.unsafe_emplace_object();
-               using swallow = bool[];
-               (void)swallow{ unsafe_emplace< As >( v, x )... };
+               (void)internal::swallow{ unsafe_emplace< As >( v, x )... };
+            }
+
+            template< typename A, template< typename... > class Traits, typename Consumer, typename C >
+            static bool produce_member( Consumer& consumer, const C& x )
+            {
+               A::template produce_key< Traits >( consumer );
+               A::template produce< Traits >( consumer, x );
+               consumer.member();
+               return true;
             }
 
             template< template< typename... > class Traits = traits, typename Consumer, typename C >
             static void produce( Consumer& consumer, const C& x )
             {
                consumer.begin_object( sizeof...( As ) );
-               using swallow = bool[];
-               (void)swallow{ ( As::template produce_key< Traits >( consumer ), As::template produce< Traits >( consumer, x ), consumer.member(), true )... };
+               (void)internal::swallow{ produce_member< As, Traits >( consumer, x )... };
                consumer.end_object( sizeof...( As ) );
             }
          };
