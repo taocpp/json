@@ -35,9 +35,10 @@ namespace tao
                return v.*P;
             }
 
-            static auto write( C& v ) -> decltype( v.*P )&
+            template< typename U >
+            static void write( C& v, U&& u )
             {
-               return v.*P;
+               v.*P = std::forward< U >( u );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
@@ -49,7 +50,7 @@ namespace tao
             template< template< typename... > class Traits = traits, typename Producer >
             static void consume( Producer& producer, C& v )
             {
-               json::consume< Traits >( producer, write( v ) );
+               json::consume< Traits >( producer, v.*P );
             }
          };
 
