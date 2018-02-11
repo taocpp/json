@@ -5,6 +5,7 @@
 #include <type_traits>
 
 #include "../../test/json/test.hpp"
+#include "../../test/json/test_unhex.hpp"
 
 #include <tao/json.hpp>
 #include <tao/json/binding.hpp>
@@ -21,6 +22,179 @@ namespace tao
 {
    namespace json
    {
+      namespace cbor
+      {
+         template< utf8_mode V = utf8_mode::CHECK >
+         class parser
+         {
+         public:
+            explicit
+            parser( const std::string& data )
+               : m_input( test_unhex( data ), __FUNCTION__ )
+            {
+            }
+
+            bool null()
+            {
+               if( events::cbor::internal::peek_byte_safe( m_input ) == std::uint8_t( events::cbor::major::OTHER ) + 22 ) {
+                  m_input.bump_in_this_line( 1 );
+                  return true;
+               }
+               return false;
+            }
+
+            bool boolean()
+            {
+               const auto b = events::cbor::internal::peek_byte_safe( m_input );
+               switch( b ) {
+                  case std::uint8_t( events::cbor::major::OTHER ) + 20:
+                  case std::uint8_t( events::cbor::major::OTHER ) + 21:
+                     m_input.bump_in_this_line( 1 );
+                     return bool( b - std::uint8_t( events::cbor::major::OTHER ) - 20 );
+                  default:
+                     throw json_pegtl::parse_error( "expected cbor boolean", m_input );  // NOLINT
+               }
+            }
+
+            std::string string()
+            {
+               const auto b = events::cbor::internal::peek_major_safe( m_input );
+               if( b != events::cbor::major::STRING ) {
+                  throw json_pegtl::parse_error( "expected cbor string", m_input );  // NOLINT
+               }
+               if( events::cbor::internal::peek_minor( m_input ) != events::cbor::minor_mask ) {
+                  return events::cbor::data< V >::template read_string_1< V, std::string >( m_input );
+               }
+               else {
+                  return events::cbor::data< V >::template read_string_n< V, std::string >( m_input, events::cbor::major::STRING );
+               }
+            }
+
+            std::uint64_t number_uint64()
+            {
+               const auto b = events::cbor::internal::peek_major_safe( m_input );
+               if( b != events::cbor::major::UNSIGNED ) {
+                  throw json_pegtl::parse_error( "expected cbor unsigned", m_input );  // NOLINT
+               }
+               return events::cbor::data< V >::read_unsigned( m_input );
+            }
+
+            // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway?
+            tao::string_view string_view()
+            {
+               const auto b = events::cbor::internal::peek_byte_safe( m_input );
+               if( b != std::uint8_t( events::cbor::major::STRING ) + events::cbor::minor_mask ) {
+                  throw json_pegtl::parse_error( "expected cbor definite string", m_input );  // NOLINT
+               }
+               return events::cbor::data< V >::template read_string_1< V, tao::string_view >( m_input );
+            }
+
+            struct array_state
+            {
+               array_state() = default;
+
+               explicit
+               array_state( const std::size_t in_size )
+                  : size( in_size )
+               {
+               }
+
+               std::size_t i = 0;
+               tao::optional< std::size_t > size;
+            };
+
+            array_state begin_array()
+            {
+               const auto b = events::cbor::internal::peek_major_safe( m_input );
+               if( b != events::cbor::major::ARRAY ) {
+                  throw json_pegtl::parse_error( "expected cbor array", m_input );  // NOLINT
+               }
+               if( events::cbor::internal::peek_minor( m_input ) == 31 ) {
+                  m_input.bump_in_this_line( 1 );
+                  return array_state();
+               }
+               return array_state( events::cbor::data< V >::read_size( m_input ) );
+            }
+
+            void end_array_sized( array_state& p )
+            {
+               if( *p.size != p.i ) {
+                  throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
+               }
+            }
+
+            void end_array_indefinitive( array_state& /*unused*/ )
+            {
+               if( events::cbor::internal::peek_byte_safe( m_input ) != 0xff ) {
+                  throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
+               }
+               m_input.bump_in_this_line( 1 );
+            }
+
+            void end_array( array_state& p )
+            {
+               if( p.size ) {
+                  end_array_sized( p );
+               }
+               else {
+                  end_array_indefinitive( p );
+               }
+            }
+
+            void element_sized( array_state& p )
+            {
+               if( p.i++ >= *p.size ) {
+                  throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
+               }
+            }
+
+            void element_indefinitive( array_state& /*unused*/ )
+            {
+               if( events::cbor::internal::peek_byte_safe( m_input ) == 0xff ) {
+                  throw std::runtime_error( "cbor array size mismatch" );  // NOLINT
+               }
+            }
+
+            void element( array_state& p )
+            {
+               if( p.size ) {
+                  element_sized( p );
+               }
+               else{
+                  element_indefinitive( p );
+               }
+            }
+
+            bool element_or_end_array_sized( array_state& p )
+            {
+               return p.i++ < *p.size;
+            }
+
+            bool element_or_end_array_indefinitive( array_state& /*unused*/ )
+            {
+               if( events::cbor::internal::peek_byte_safe( m_input ) == 0xff ) {
+                  m_input.bump_in_this_line( 1 );
+                  return false;
+               }
+               return true;
+            }
+
+            bool element_or_end_array( array_state& p )
+            {
+               if( p.size ) {
+                  return element_or_end_array_sized( p );
+               }
+               else {
+                  return element_or_end_array_indefinitive( p );
+               }
+            }
+
+         private:
+            json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > m_input;
+         };
+
+      }  // namespace cbor
+
       namespace internal
       {
          namespace rules
@@ -104,7 +278,6 @@ namespace tao
 
          bool null()
          {
-            // Use return value to check for optional values, or something else?
             return json_pegtl::parse< json_pegtl::seq< internal::rules::null, Paddington > >( m_input );
          }
 
@@ -117,6 +290,7 @@ namespace tao
 
          double number_double()
          {
+            // TODO
             assert( false );
             return 42.0;
          }
@@ -142,6 +316,11 @@ namespace tao
             return std::move( s.unescaped );
          }
 
+         std::vector< tao::byte > binary()
+         {
+            throw std::runtime_error( "binary not supported" );  // NOLINT
+         }
+
          std::string key()
          {
             internal::string_state s;
@@ -164,6 +343,7 @@ namespace tao
          struct array_state
          {
             std::size_t i = 0;
+            static constexpr bool size = false;
          };
 
          array_state begin_array()
@@ -196,6 +376,7 @@ namespace tao
          struct object_state
          {
             std::size_t i = 0;
+            static constexpr bool size = false;
          };
 
          object_state begin_object()
@@ -246,6 +427,17 @@ namespace tao
          }
       };
 
+      template<>
+      struct my_traits< unsigned >
+         : traits< unsigned >
+      {
+         template< template< typename... > class Traits, typename Producer >
+         static unsigned consume( Producer& producer )
+         {
+            return producer.number_uint64();
+         }
+      };
+
       template< typename T >
       struct is_basic_value
          : public std::false_type
@@ -258,6 +450,18 @@ namespace tao
       {
       };
 
+      std::size_t size_helper( const bool b )
+      {
+         assert( !b );
+         assert( !"something went wrong" );
+         return 0;
+      }
+
+      std::size_t size_helper( const tao::optional< std::size_t >& size )
+      {
+         return *size;
+      }
+
       template< typename T >
       struct my_traits< std::vector< T > >
       {
@@ -265,6 +469,9 @@ namespace tao
          static void consume( Producer& producer, std::vector< T >& v )
          {
             auto p = producer.begin_array();
+            if( p.size ) {
+               v.reserve( size_helper( p.size ) );
+            }
             while( producer.element_or_end_array( p ) ) {
                v.emplace_back( json::consume< T, Traits >( producer ) );
             }
@@ -399,6 +606,27 @@ namespace tao
             TEST_ASSERT( v[ 0 ] == 1 );
             TEST_ASSERT( v[ 1 ] == 2 );
             TEST_ASSERT( v[ 2 ] == 3 );
+         }
+         {
+            cbor::parser<> pp( "80" );
+            const auto v = consume< std::vector< unsigned >, my_traits >( pp );
+            TEST_ASSERT( v.size() == 0 );
+         }
+         {
+            cbor::parser<> pp( "8a00010203040506070809" );
+            const auto v = consume< std::vector< unsigned >, my_traits >( pp );
+            TEST_ASSERT( v.size() == 10 );
+            for( std::size_t i = 0; i < 10; ++i ) {
+               TEST_ASSERT( v[ i ] == i );
+            }
+         }
+         {
+            cbor::parser<> pp( "9f00010203040506070809ff" );
+            const auto v = consume< std::vector< unsigned >, my_traits >( pp );
+            TEST_ASSERT( v.size() == 10 );
+            for( std::size_t i = 0; i < 10; ++i ) {
+               TEST_ASSERT( v[ i ] == i );
+            }
          }
          {
             parse_producer<> pp( " { \"a\" : 4, \"b\" : 5 } " );

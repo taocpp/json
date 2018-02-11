@@ -206,6 +206,8 @@ namespace tao
                   return true;
                }
 
+               // "String" is text string or byte string in RFC 7049 terminology.
+
                template< utf8_mode U, typename Result, typename Input >
                static Result read_string_1( Input& in )
                {
@@ -227,7 +229,7 @@ namespace tao
                   in.bump_in_this_line();
                   while( internal::peek_byte_safe( in ) != 0xff ) {
                      if( internal::peek_major( in ) != m ) {
-                        throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );  // "String" is text or byte string in RFC 7049 terminology.
+                        throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
                      }
                      const auto size = read_size( in );
                      internal::throw_on_empty( in, size );
