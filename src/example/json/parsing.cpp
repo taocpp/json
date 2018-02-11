@@ -632,31 +632,58 @@ namespace tao
       struct my_object
          : public binding::object< As... >
       {
-         template< typename A, template< typename... > class Traits, typename Producer, typename F >
-         static bool emplace( std::map< std::string, F >& m )
+         template< typename F >
+         struct entry
          {
-            m.emplace( A::key(), &A::template consume< Traits, Producer > );
+            entry( F c, std::size_t i )
+               : consume( c ),
+                 index( i )
+            {
+            }
+
+            F consume;
+            std::size_t index;
+         };
+
+         template< typename A, template< typename... > class Traits, typename Producer, typename F >
+         static bool emplace( std::map< std::string, entry< F > >& m, std::size_t& i )
+         {
+            m.emplace( A::key(), entry< F >( &A::template consume< Traits, Producer >, i++ ) );
             return true;
+         }
+
+         template< template< typename... > class Traits, typename Producer, typename F >
+         static const std::map< std::string, entry< F > >& get_map()
+         {
+            static const std::map< std::string, entry< F > > m = []( std::size_t i = 0 ){
+               std::map< std::string, entry< F > > t;
+               (void)internal::swallow{ emplace< As, Traits, Producer >( t, i )... };
+               return t;
+            }();
+            return m;
          }
 
          template< template< typename... > class Traits = traits, typename Producer, typename C >
          static void consume( Producer& producer, C& x )
          {
             auto p = producer.begin_object();
-            using F = void ( * )( Producer&, C& );
-            // TODO: Or make the map static and check for missing members otherwise?
-            std::map< std::string, F > m;
-            (void)internal::swallow{ emplace< As, Traits, Producer >( m )... };
+            using F = void( * )( Producer&, C& );
+            const auto& m = get_map< Traits, Producer, F >();
+            std::bitset< sizeof...( As ) > b;
             while( producer.member_or_end_object( p ) ) {
                const auto k = producer.key();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown or duplicate object key " + k );  // NOLINT
+                  throw std::runtime_error( "unknown object key " + k );  // NOLINT
                }
-               i->second( producer, x );
-               m.erase( i );
+               if( b.test( i->second.index ) ) {
+                  throw std::runtime_error( "duplicate object key " + k );  // NOLINT
+               }
+               i->second.consume( producer, x );
+               b.set( i->second.index );
             }
-            if( !m.empty() ) {
+            if( !b.all() ) {
+               // TODO: List the missing key(s) in the exception?
                throw std::runtime_error( "missing required key(s)" );  // NOLINT
             }
          }
