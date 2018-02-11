@@ -37,9 +37,9 @@ namespace tao
                cbor::events::from_string( consumer, data.data(), data.size(), std::forward< Ts >( ts )... );
             }
 
-         }  // namespace cbor
+         }  // namespace events
 
-      }  // namespace events
+      }  // namespace cbor
 
    }  // namespace json
 

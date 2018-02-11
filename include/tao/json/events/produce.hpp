@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_INCLUDE_EVENTS_PRODUCE_HPP
-#define TAO_JSON_INCLUDE_EVENTS_PRODUCE_HPP
+#ifndef TAO_JSON_EVENTS_PRODUCE_HPP
+#define TAO_JSON_EVENTS_PRODUCE_HPP
 
 #include <type_traits>
 #include <utility>

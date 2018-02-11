@@ -28,9 +28,9 @@ namespace tao
                json_pegtl::parse< ubjson::internal::grammar >( in, consumer );
             }
 
-         }  // namespace ubjson
+         }  // namespace events
 
-      }  // namespace events
+      }  // namespace ubjson
 
    }  // namespace json
 

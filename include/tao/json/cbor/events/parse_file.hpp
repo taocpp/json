@@ -28,9 +28,9 @@ namespace tao
                json_pegtl::parse< cbor::internal::grammar >( in, consumer );
             }
 
-         }  // namespace cbor
+         }  // namespace events
 
-      }  // namespace events
+      }  // namespace cbor
 
    }  // namespace json
 
