@@ -523,7 +523,7 @@ namespace tao
          template< template< typename... > class Traits, typename Producer >
          static int consume( Producer& producer )
          {
-            return producer.number_int64();
+            return static_cast< int >( producer.number_int64() );
          }
       };
 
@@ -534,7 +534,7 @@ namespace tao
          template< template< typename... > class Traits, typename Producer >
          static unsigned consume( Producer& producer )
          {
-            return producer.number_uint64();
+            return static_cast< unsigned >( producer.number_uint64() );
          }
       };
 
