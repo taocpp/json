@@ -23,8 +23,8 @@ namespace tao
             struct to_pretty_stream
                : public json::events::to_pretty_stream
             {
-               using json::events::to_pretty_stream::to_pretty_stream;
                using json::events::to_pretty_stream::number;
+               using json::events::to_pretty_stream::to_pretty_stream;
 
                void number( const double v )
                {

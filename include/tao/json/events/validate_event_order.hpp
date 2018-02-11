@@ -44,8 +44,7 @@ namespace tao
 
             struct sizes_t
             {
-               explicit
-               sizes_t( const std::size_t in_expected )
+               explicit sizes_t( const std::size_t in_expected )
                   : expected( in_expected )
                {
                }

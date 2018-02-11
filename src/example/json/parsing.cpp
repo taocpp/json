@@ -12,11 +12,7 @@
 #include <tao/json/consume.hpp>
 #include <tao/json/external/pegtl/contrib/integer.hpp>
 
-
-
 // EVERYTHING IN THIS FILE IS STILL HIGHLY EXPERIMENTAL!!!
-
-
 
 namespace tao
 {
@@ -28,8 +24,7 @@ namespace tao
          class parser
          {
          public:
-            explicit
-            parser( const std::string& data )
+            explicit parser( const std::string& data )
                : m_input( test_unhex( data ), __FUNCTION__ )
             {
             }
@@ -127,8 +122,7 @@ namespace tao
             {
                state_t() = default;
 
-               explicit
-               state_t( const std::size_t in_size )
+               explicit state_t( const std::size_t in_size )
                   : size( in_size )
                {
                }
@@ -243,7 +237,7 @@ namespace tao
                if( p.size ) {
                   element_sized( p );
                }
-               else{
+               else {
                   element_indefinitive( p );
                }
             }
@@ -253,7 +247,7 @@ namespace tao
                if( p.size ) {
                   member_sized( p );
                }
-               else{
+               else {
                   member_indefinitive( p );
                }
             }
@@ -382,8 +376,7 @@ namespace tao
       class parse_producer
       {
       public:
-         explicit
-         parse_producer( const std::string& data )
+         explicit parse_producer( const std::string& data )
             : m_input( data, __FUNCTION__ )
          {
             json_pegtl::parse< json_pegtl::star< internal::rules::ws > >( m_input );
@@ -644,7 +637,7 @@ namespace tao
          static void consume( Producer& producer, C& x )
          {
             auto p = producer.begin_object();
-            using f = void(*)( Producer&, C& );
+            using f = void ( * )( Producer&, C& );
             // TODO: Or make the map static and check for missing members otherwise?
             std::map< std::string, f > m = {
                { As::key(), &As::template consume< Traits, Producer > }...
