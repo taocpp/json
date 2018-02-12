@@ -106,7 +106,7 @@ namespace tao
             {
                const auto u = internal::parse_unsigned( m_input );
                if( u > 9223372036854775807ull ) {
-                  throw json_pegtl::parse_error( "negative integer overflow", m_input );
+                  throw json_pegtl::parse_error( "negative integer overflow", m_input );  // NOLINT
                }
                return std::int64_t( u );
             }
@@ -115,7 +115,7 @@ namespace tao
             {
                const auto u = internal::parse_unsigned( m_input );
                if( u > 9223372036854775808ull ) {
-                  throw json_pegtl::parse_error( "negative integer overflow", m_input );
+                  throw json_pegtl::parse_error( "negative integer overflow", m_input );  // NOLINT
                }
                return std::int64_t( ~u );
             }
@@ -793,21 +793,21 @@ namespace tao
          static void as( const basic_value< Traits, Base >& v, C& x )
          {
             const auto& a = v.get_object();
-            using F = void( * )( const basic_value< Traits, Base >&, C& );
-            static const std::map< std::string, entry< F > > m = []( std::size_t i ){
+            using F = void ( * )( const basic_value< Traits, Base >&, C& );
+            static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
                std::map< std::string, entry< F > > t;
                (void)internal::swallow{ emplace_as< As, Traits, Base >( t, i )... };
                assert( t.size() == sizeof...( As ) );
                return t;
             }( 0 );
-            static const std::bitset< sizeof...( As ) > o = []( std::size_t i ){
+            static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
                std::bitset< sizeof...( As ) > t;
                (void)internal::swallow{ set_optional< As >( t, i )... };
                return t;
             }( 0 );
             std::bitset< sizeof...( As ) > b;
             for( const auto& p : a ) {
-               const auto & k = p.first;
+               const auto& k = p.first;
                const auto i = m.find( k );
                if( i == m.end() ) {
                   throw_or_continue< E >::x( k );
@@ -827,14 +827,14 @@ namespace tao
          static void consume( Producer& producer, C& x )
          {
             auto p = producer.begin_object();
-            using F = void( * )( Producer&, C& );
-            static const std::map< std::string, entry< F > > m = []( std::size_t i ){
+            using F = void ( * )( Producer&, C& );
+            static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
                std::map< std::string, entry< F > > t;
                (void)internal::swallow{ emplace_consume< As, Traits, Producer >( t, i )... };
                assert( t.size() == sizeof...( As ) );
                return t;
             }( 0 );
-            static const std::bitset< sizeof...( As ) > o = []( std::size_t i ){
+            static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
                std::bitset< sizeof...( As ) > t;
                (void)internal::swallow{ set_optional< As >( t, i )... };
                return t;
@@ -897,7 +897,7 @@ namespace tao
             template< typename F >
             struct entry
             {
-               entry( F c )
+               explicit entry( F c )
                   : function( c )
                {
                }
@@ -923,8 +923,8 @@ namespace tao
             static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
             {
                const auto& a = v.get_object();
-               using F = std::shared_ptr< U >( * )( const basic_value< Traits, Base >& );
-               static const std::map< std::string, entry< F > > m = [](){
+               using F = std::shared_ptr< U > ( * )( const basic_value< Traits, Base >& );
+               static const std::map< std::string, entry< F > > m = []() {
                   std::map< std::string, entry< F > > t;
                   (void)internal::swallow{ emplace_as< Ts, Traits, Base >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
@@ -933,7 +933,7 @@ namespace tao
                const auto k = a.at( "type" ).get_string();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );
+                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );  // NOLINT
                }
                return i->second.function( v );
             }
@@ -948,22 +948,22 @@ namespace tao
                      return producer.string();
                   }
                }
-               throw std::runtime_error( "no factory type found" );
+               throw std::runtime_error( "no factory type found" );  // NOLINT
             }
 
             template< template< typename... > class Traits, typename Producer >
             static std::shared_ptr< U > consume( Producer& producer )
             {
                const auto k = consume_type( producer );
-               using F = std::shared_ptr< U >( * )( Producer& producer );
-               static const std::map< std::string, entry< F > > m = [](){
+               using F = std::shared_ptr< U > ( * )( Producer & producer );
+               static const std::map< std::string, entry< F > > m = []() {
                   std::map< std::string, entry< F > > t;
                   (void)internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };
                   return t;
                }();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );
+                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );  // NOLINT
                }
                return i->second.function( producer );
             }
@@ -976,11 +976,11 @@ namespace tao
       public:
          virtual ~base_class() = default;
 
-      protected:
-         base_class() = default;
-
          base_class( const base_class& ) = delete;
          void operator=( const base_class& ) = delete;
+
+      protected:
+         base_class() = default;
       };
 
       class derived_one
@@ -994,7 +994,7 @@ namespace tao
          : public base_class
       {
       public:
-         int i;
+         int i = 0;
       };
 
       template<>
@@ -1124,14 +1124,14 @@ namespace tao
 
          template< bool R, typename K, typename T, std::int64_t V >
          struct member_i
-            : public element_b< T, V >,
+            : public element_i< T, V >,
               public member_key< R, K >
          {
          };
 
          template< bool R, typename K, typename T, std::uint64_t V >
          struct member_u
-            : public element_b< T, V >,
+            : public element_u< T, V >,
               public member_key< R, K >
          {
          };
@@ -1266,7 +1266,7 @@ namespace tao
          }
          {
             parse_producer<> pp( "{ \"type\" : \"two\", \"i\" : 17 }" );
-            const auto v = consume< std::shared_ptr< base_class>, my_traits >( pp );
+            const auto v = consume< std::shared_ptr< base_class >, my_traits >( pp );
             const auto c = std::dynamic_pointer_cast< derived_two >( v );
             TEST_ASSERT( c );
             TEST_ASSERT( c->i == 17 );

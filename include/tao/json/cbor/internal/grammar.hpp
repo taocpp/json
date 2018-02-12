@@ -123,8 +123,8 @@ namespace tao
                      return parse_unsigned_impl< std::uint16_t >( in );
                   case 26:
                      return parse_unsigned_impl< std::uint32_t >( in );
-                     case 27:
-                        return parse_unsigned_impl< std::uint64_t >( in );
+                  case 27:
+                     return parse_unsigned_impl< std::uint64_t >( in );
                   case 28:
                   case 29:
                   case 30:
