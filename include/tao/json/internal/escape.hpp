@@ -5,6 +5,7 @@
 #define TAO_JSON_INTERNAL_ESCAPE_HPP
 
 #include <ostream>
+#include <sstream>
 
 #include "../external/string_view.hpp"
 
@@ -66,6 +67,13 @@ namespace tao
                }
             }
             os.write( l, p - l );
+         }
+
+         inline std::string escape( const tao::string_view s )
+         {
+            std::ostringstream o;
+            escape( o, s );
+            return o.str();
          }
 
       }  // namespace internal

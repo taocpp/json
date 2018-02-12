@@ -1,8 +1,12 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
+#include <bitset>
 #include <limits>
+#include <list>
+#include <map>
 #include <type_traits>
+#include <vector>
 
 #include "../../test/json/test.hpp"
 #include "../../test/json/test_unhex.hpp"
@@ -10,7 +14,9 @@
 #include <tao/json.hpp>
 #include <tao/json/binding.hpp>
 #include <tao/json/consume.hpp>
+
 #include <tao/json/external/pegtl/contrib/integer.hpp>
+#include <tao/json/external/pegtl/contrib/json.hpp>
 
 // EVERYTHING IN THIS FILE IS STILL HIGHLY EXPERIMENTAL!!!
 
@@ -51,16 +57,32 @@ namespace tao
                }
             }
 
-            std::string string()
+            void check_major( const internal::major m, const char* e )
             {
                const auto b = internal::peek_major_safe( m_input );
-               if( b != internal::major::STRING ) {
-                  throw json_pegtl::parse_error( "expected cbor string", m_input );  // NOLINT
+               if( b != m ) {
+                  throw json_pegtl::parse_error( e, m_input );  // NOLINT
                }
+            }
+
+            template< typename T, utf8_mode U >
+            T cbor_string( const internal::major m, const char* e )
+            {
+               check_major( m, e );
                if( internal::peek_minor( m_input ) != internal::minor_mask ) {
-                  return internal::data< V >::template read_string_1< V, std::string >( m_input );
+                  return internal::data< U >::template read_string_1< V, T >( m_input );
                }
-               return internal::data< V >::template read_string_n< V, std::string >( m_input, internal::major::STRING );
+               return internal::data< U >::template read_string_n< V, T >( m_input, m );
+            }
+
+            std::string string()
+            {
+               return cbor_string< std::string, V >( internal::major::STRING, "expected cbor string" );
+            }
+
+            std::string binary()
+            {
+               return cbor_string< std::vector< tao::byte >, utf8_mode::TRUST >( internal::major::BINARY, "expected cbor binary" );
             }
 
             std::string key()
@@ -73,7 +95,7 @@ namespace tao
             {
                const auto b = internal::peek_byte_safe( m_input );
                if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
-                  throw json_pegtl::parse_error( "expected cbor definite string", m_input );  // NOLINT
+                  throw json_pegtl::parse_error( "expected cbor definitive string", m_input );  // NOLINT
                }
                return internal::data< V >::template read_string_1< V, tao::string_view >( m_input );
             }
@@ -111,10 +133,7 @@ namespace tao
 
             std::uint64_t number_uint64()
             {
-               const auto b = internal::peek_major_safe( m_input );
-               if( b != internal::major::UNSIGNED ) {
-                  throw json_pegtl::parse_error( "expected cbor unsigned", m_input );  // NOLINT
-               }
+               check_major( internal::major::UNSIGNED, "expected cbor unsigned" );
                return internal::data< V >::read_unsigned( m_input );
             }
 
@@ -133,10 +152,7 @@ namespace tao
 
             state_t begin_container( const internal::major m, const char* e )
             {
-               const auto b = internal::peek_major_safe( m_input );
-               if( b != m ) {
-                  throw json_pegtl::parse_error( e, m_input );  // NOLINT
-               }
+               check_major( m, e );
                if( internal::peek_minor( m_input ) == 31 ) {
                   m_input.bump_in_this_line( 1 );
                   return state_t();
@@ -296,6 +312,13 @@ namespace tao
                return member_or_end_object_indefinitive( p );
             }
 
+            void ignore_value()
+            {
+               // TODO: Optimise?
+               json::events::discard consumer;
+               json_pegtl::parse< json_pegtl::must< internal::data< V > > >( m_input, consumer );
+            }
+
          private:
             json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > m_input;
          };
@@ -370,7 +393,6 @@ namespace tao
       }  // namespace internal
 
       // TODO: Optimise some of the simpler cases?
-      // TODO: Support all integer types int8, uint8, ... , uint64?
 
       template< typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, std::string >, typename Paddington = internal::rules::wss >
       class parse_producer
@@ -506,6 +528,11 @@ namespace tao
             return true;
          }
 
+         void ignore_value()
+         {
+            json_pegtl::parse< json_pegtl::must< json_pegtl::json::value > >( m_input );  // Includes standard JSON right-padding.
+         }
+
       private:
          Input m_input;
       };
@@ -562,7 +589,26 @@ namespace tao
       }
 
       template< typename T >
-      struct my_traits< std::vector< T > >
+      struct list_traits
+      {
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& producer, std::list< T >& v )
+         {
+            auto p = producer.begin_array();
+            while( producer.element_or_end_array( p ) ) {
+               v.emplace_back( json::consume< T, Traits >( producer ) );
+            }
+         }
+      };
+
+      template< typename T >
+      struct my_traits< std::list< T > >
+         : public list_traits< T >
+      {
+      };
+
+      template< typename T >
+      struct vector_traits
       {
          template< template< typename... > class Traits, typename Producer >
          static void consume( Producer& producer, std::vector< T >& v )
@@ -575,6 +621,12 @@ namespace tao
                v.emplace_back( json::consume< T, Traits >( producer ) );
             }
          }
+      };
+
+      template< typename T >
+      struct my_traits< std::vector< T > >
+         : public vector_traits< T >
+      {
       };
 
       template< typename T >
@@ -591,22 +643,28 @@ namespace tao
          }
       };
 
-      template< typename T >
-      struct my_traits< std::shared_ptr< T > >
+      template< typename T, typename U = T >
+      struct shared_traits
       {
          template< template< typename... > class Traits, typename Producer >
-         static std::shared_ptr< T > consume( Producer& producer )
+         static std::shared_ptr< U > consume( Producer& producer )
          {
             if( producer.null() ) {
-               return std::shared_ptr< T >();
+               return std::shared_ptr< U >();
             }
             return std::make_shared< T >( json::consume< T, Traits >( producer ) );
          }
       };
 
+      template< typename T >
+      struct my_traits< std::shared_ptr< T > >
+         : public shared_traits< T >
+      {
+      };
+
       template<>
       struct my_traits< std::string >
-         : traits< std::string >
+         : public traits< std::string >
       {
          template< template< typename... > class Traits, typename Producer >
          static std::string consume( Producer& producer )
@@ -619,6 +677,14 @@ namespace tao
       struct my_array
          : public binding::array< As... >
       {
+         template< template< typename... > class Traits, typename Base, typename C >
+         static void as( const basic_value< Traits, Base >& v, C& x )
+         {
+            std::size_t i = 0;
+            const auto& a = v.get_array();
+            (void)internal::swallow{ ( As::as( a[ i++ ], x ), true )... };
+         }
+
          template< template< typename... > class Traits = traits, typename Producer, typename C >
          static void consume( Producer& producer, C& x )
          {
@@ -628,7 +694,35 @@ namespace tao
          }
       };
 
-      template< typename... As >
+      namespace binding
+      {
+         template< typename C, std::uint64_t V >
+         struct element< std::uint64_t, V, C >
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& /*unused*/ )
+            {
+               consumer.number( V );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& producer, C& /*unused*/ )
+            {
+               if( producer.number_uint64() != V ) {
+                  throw std::runtime_error( "value mismatch" );  // NOLINT
+               }
+            }
+         };
+
+      }  // namespace binding
+
+      enum class for_unknown_key : bool
+      {
+         THROW,
+         CONTINUE
+      };
+
+      template< for_unknown_key E, typename... As >
       struct my_object
          : public binding::object< As... >
       {
@@ -680,20 +774,31 @@ namespace tao
                const auto k = producer.key();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown object key " + k );  // NOLINT
+                  if( E == for_unknown_key::THROW ) {
+                     throw std::runtime_error( "unknown object key " + internal::escape( k ) );  // NOLINT
+                  }
+                  producer.ignore_value();
+                  continue;
                }
                if( b.test( i->second.index ) ) {
-                  throw std::runtime_error( "duplicate object key " + k );  // NOLINT
+                  throw std::runtime_error( "duplicate object key " + internal::escape( k ) );  // NOLINT
                }
                i->second.consume( producer, x );
                b.set( i->second.index );
             }
             b |= o;
             if( !b.all() ) {
-               // TODO: List the missing key(s) in the exception?
+               // TODO: List the missing required key(s) in the exception?
                throw std::runtime_error( "missing required key(s)" );  // NOLINT
             }
          }
+      };
+
+      template< typename U, typename V >
+      struct my_traits< std::pair< U, V > >
+         : my_array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
+                     TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
+      {
       };
 
       struct foo
@@ -717,7 +822,8 @@ namespace tao
 
       template<>
       struct my_traits< bar >
-         : my_object< TAO_JSON_BIND_REQUIRED( "i", &bar::i ),
+         : my_object< for_unknown_key::THROW,
+                      TAO_JSON_BIND_REQUIRED( "i", &bar::i ),
                       TAO_JSON_BIND_OPTIONAL( "c", &bar::c ) >
       {
       };

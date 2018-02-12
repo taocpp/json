@@ -41,6 +41,12 @@ namespace tao
                v.*P = std::forward< U >( u );
             }
 
+            template< template< typename... > class Traits, typename Base >
+            static void as( const basic_value< Traits, Base >& v, C& x )
+            {
+               v.as( x.*P );
+            }
+
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce( Consumer& consumer, const C& v )
             {
