@@ -682,7 +682,7 @@ namespace tao
          {
             std::size_t i = 0;
             const auto& a = v.get_array();
-            (void)internal::swallow{ ( As::as( a[ i++ ], x ), true )... };
+            (void)internal::swallow{ ( As::as( a.at( i++ ), x ), true )... };
          }
 
          template< template< typename... > class Traits = traits, typename Producer, typename C >
@@ -758,17 +758,17 @@ namespace tao
          {
             auto p = producer.begin_object();
             using F = void( * )( Producer&, C& );
-            static const std::map< std::string, entry< F > > m = []( std::size_t i = 0 ){
+            static const std::map< std::string, entry< F > > m = []( std::size_t i ){
                std::map< std::string, entry< F > > t;
                (void)internal::swallow{ emplace< As, Traits, Producer >( t, i )... };
                assert( t.size() == sizeof...( As ) );
                return t;
-            }();
-            static const std::bitset< sizeof...( As ) > o = []( std::size_t i = 0 ){
+            }( 0 );
+            static const std::bitset< sizeof...( As ) > o = []( std::size_t i ){
                std::bitset< sizeof...( As ) > t;
                (void)internal::swallow{ set_optional< As >( t, i )... };
                return t;
-            }();
+            }( 0 );
             std::bitset< sizeof...( As ) > b;
             while( producer.member_or_end_object( p ) ) {
                const auto k = producer.key();
