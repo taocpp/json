@@ -78,27 +78,33 @@ namespace tao
          template< char... Cs >
          using key = json_pegtl::string< Cs... >;
 
-         template< bool R, typename K, typename T, T >
-         struct member;
+         template< bool R, typename K >
+         struct member_key;
 
-         template< bool R, char... Cs, typename T, T P >
-         struct member< R, key< Cs... >, T, P >
-            : element< T, P >
+         template< bool R, char... Cs >
+         struct member_key< R, key< Cs... > >
          {
             static constexpr bool is_required = R;
 
             static std::string key()
             {
-               const char s[] = { Cs..., 0 };
+               static const char s[] = { Cs... };
                return std::string( s, sizeof...( Cs ) );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce_key( Consumer& consumer )
             {
-               static const char s[] = { Cs..., 0 };
+               static const char s[] = { Cs... };
                consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
             }
+         };
+
+         template< bool R, typename K, typename T, T P >
+         struct member
+            : public element< T, P >,
+              public member_key< R, K >
+         {
          };
 
          template< typename... As >

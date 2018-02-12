@@ -30,6 +30,8 @@ namespace tao
          class parser
          {
          public:
+            using Input = json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY >;
+
             explicit parser( const std::string& data )
                : m_input( test_unhex( data ), __FUNCTION__ )
             {
@@ -70,9 +72,9 @@ namespace tao
             {
                check_major( m, e );
                if( internal::peek_minor( m_input ) != internal::minor_mask ) {
-                  return internal::data< U >::template read_string_1< V, T >( m_input );
+                  return internal::data< V >::template read_string_1< U, T >( m_input );
                }
-               return internal::data< U >::template read_string_n< V, T >( m_input, m );
+               return internal::data< V >::template read_string_n< U, T >( m_input, m );
             }
 
             std::string string()
@@ -90,7 +92,7 @@ namespace tao
                return string();
             }
 
-            // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway?
+            // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway and to binary_view, too??
             tao::string_view string_view()
             {
                const auto b = internal::peek_byte_safe( m_input );
@@ -135,6 +137,21 @@ namespace tao
             {
                check_major( internal::major::UNSIGNED, "expected cbor unsigned" );
                return internal::data< V >::read_unsigned( m_input );
+            }
+
+            double number_double()
+            {
+               const auto b = internal::peek_byte_safe( m_input );
+               switch( b ) {
+                  case std::uint8_t( internal::major::OTHER ) + 25:
+                     return internal::data< V >::read_floating_half_impl( m_input );
+                  case std::uint8_t( internal::major::OTHER ) + 26:
+                     return internal::data< V >::template read_floating_impl< float >( m_input );
+                  case std::uint8_t( internal::major::OTHER ) + 27:
+                     return internal::data< V >::template read_floating_impl< double >( m_input );
+                  default:
+                     throw json_pegtl::parse_error( "expected cbor floating point", m_input );  // NOLINT
+               }
             }
 
             struct state_t
@@ -319,8 +336,13 @@ namespace tao
                json_pegtl::parse< json_pegtl::must< internal::data< V > > >( m_input, consumer );
             }
 
+            auto mark() -> decltype( std::declval< Input >().template mark< json_pegtl::rewind_mode::REQUIRED >() )
+            {
+               return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
+            }
+
          private:
-            json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > m_input;
+            Input m_input;
          };
 
       }  // namespace cbor
@@ -471,7 +493,7 @@ namespace tao
          struct state_t
          {
             std::size_t i = 0;
-            static constexpr bool size = false;
+            static constexpr std::size_t* size = nullptr;
          };
 
          state_t begin_array()
@@ -533,6 +555,11 @@ namespace tao
             json_pegtl::parse< json_pegtl::must< json_pegtl::json::value > >( m_input );  // Includes standard JSON right-padding.
          }
 
+         auto mark() -> decltype( std::declval< Input >().template mark< json_pegtl::rewind_mode::REQUIRED >() )
+         {
+            return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
+         }
+
       private:
          Input m_input;
       };
@@ -577,17 +604,6 @@ namespace tao
       {
       };
 
-      std::size_t size_helper( const bool /*unused*/ )
-      {
-         assert( !"something went wrong" );
-         return 0;
-      }
-
-      std::size_t size_helper( const tao::optional< std::size_t >& size )
-      {
-         return *size;
-      }
-
       template< typename T >
       struct list_traits
       {
@@ -615,7 +631,7 @@ namespace tao
          {
             auto p = producer.begin_array();
             if( p.size ) {
-               v.reserve( size_helper( p.size ) );
+               v.reserve( *p.size );
             }
             while( producer.element_or_end_array( p ) ) {
                v.emplace_back( json::consume< T, Traits >( producer ) );
@@ -652,7 +668,9 @@ namespace tao
             if( producer.null() ) {
                return std::shared_ptr< U >();
             }
-            return std::make_shared< T >( json::consume< T, Traits >( producer ) );
+            auto t = std::make_shared< T >();  // TODO: More control?
+            json::consume< Traits >( producer, *t );
+            return t;
          }
       };
 
@@ -660,17 +678,6 @@ namespace tao
       struct my_traits< std::shared_ptr< T > >
          : public shared_traits< T >
       {
-      };
-
-      template<>
-      struct my_traits< std::string >
-         : public traits< std::string >
-      {
-         template< template< typename... > class Traits, typename Producer >
-         static std::string consume( Producer& producer )
-         {
-            return producer.string();
-         }
       };
 
       template< typename... As >
@@ -708,28 +715,6 @@ namespace tao
             producer.end_array( p );
          }
       };
-
-      namespace binding
-      {
-         template< typename C, std::uint64_t V >
-         struct element< std::uint64_t, V, C >
-         {
-            template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce( Consumer& consumer, const C& /*unused*/ )
-            {
-               consumer.number( V );
-            }
-
-            template< template< typename... > class Traits = traits, typename Producer >
-            static void consume( Producer& producer, C& /*unused*/ )
-            {
-               if( producer.number_uint64() != V ) {
-                  throw std::runtime_error( "value mismatch" );  // NOLINT
-               }
-            }
-         };
-
-      }  // namespace binding
 
       enum class for_unknown_key : bool
       {
@@ -784,13 +769,6 @@ namespace tao
          static bool set_optional( std::bitset< sizeof...( As ) >& t, std::size_t& i )
          {
             t.set( i++, !A::is_required );
-            return true;
-         }
-
-         template< typename A, template< typename... > class Traits, typename Base, typename C >
-         static bool as_member( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
-         {
-            A::as( a.at( i++ ), x );
             return true;
          }
 
@@ -871,6 +849,288 @@ namespace tao
          }
       };
 
+      namespace binding
+      {
+         template< typename K >
+         struct factory_key;
+
+         template< char... Cs >
+         struct factory_key< key< Cs... > >
+         {
+            static std::string key()
+            {
+               static const char s[] = { Cs... };
+               return std::string( s, sizeof...( Cs ) );
+            }
+
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce_key( Consumer& consumer )
+            {
+               static const char s[] = { Cs... };
+               consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
+            }
+         };
+
+         template< typename K, typename U, typename T >
+         struct factory_type
+            : public factory_key< K >,
+              public shared_traits< T, U >
+         {
+         };
+
+         template< typename U, typename... Ts >
+         struct factory
+         {
+            template< typename F >
+            struct entry
+            {
+               entry( F c )
+                  : function( c )
+               {
+               }
+
+               F function;
+            };
+
+            template< typename T, template< typename... > class Traits, typename Base, typename F >
+            static bool emplace_as( std::map< std::string, entry< F > >& m )
+            {
+               m.emplace( T::key(), entry< F >( &T::template as< Traits, Base > ) );
+               return true;
+            }
+
+            template< typename T, template< typename... > class Traits, typename Producer, typename F >
+            static bool emplace_consume( std::map< std::string, entry< F > >& m )
+            {
+               m.emplace( T::key(), entry< F >( &T::template consume< Traits, Producer > ) );
+               return true;
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
+            {
+               const auto& a = v.get_object();
+               using F = std::shared_ptr< U >( * )( const basic_value< Traits, Base >& );
+               static const std::map< std::string, entry< F > > m = [](){
+                  std::map< std::string, entry< F > > t;
+                  (void)internal::swallow{ emplace_as< Ts, Traits, Base >( t )... };
+                  return t;
+               }();
+               const auto k = a.at( "type" ).get_string();
+               const auto i = m.find( k );
+               if( i == m.end() ) {
+                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );
+               }
+               return i->second.function( v );
+            }
+
+            template< typename Producer >
+            static std::string consume_type( Producer& producer )
+            {
+               const auto m = producer.mark();
+               auto p = producer.begin_object();
+               while( producer.member_or_end_object( p ) ) {
+                  if( producer.key() == "type" ) {
+                     return producer.string();
+                  }
+               }
+               throw std::runtime_error( "no factory type found" );
+            }
+
+            template< template< typename... > class Traits, typename Producer >
+            static std::shared_ptr< U > consume( Producer& producer )
+            {
+               const auto k = consume_type( producer );
+               using F = std::shared_ptr< U >( * )( Producer& producer );
+               static const std::map< std::string, entry< F > > m = [](){
+                  std::map< std::string, entry< F > > t;
+                  (void)internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };
+                  return t;
+               }();
+               const auto i = m.find( k );
+               if( i == m.end() ) {
+                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );
+               }
+               return i->second.function( producer );
+            }
+         };
+
+      }  // namespace binding
+
+      class base_class
+      {
+      public:
+         virtual ~base_class() = default;
+
+      protected:
+         base_class() = default;
+
+         base_class( const base_class& ) = delete;
+         void operator=( const base_class& ) = delete;
+      };
+
+      class derived_one
+         : public base_class
+      {
+      public:
+         std::string s;
+      };
+
+      class derived_two
+         : public base_class
+      {
+      public:
+         int i;
+      };
+
+      template<>
+      struct my_traits< derived_one >
+         : my_object< for_unknown_key::CONTINUE,
+                      TAO_JSON_BIND_REQUIRED( "s", &derived_one::s ) >
+      {
+      };
+
+      // TODO: Find better way to skip "type".
+      // TODO: Find way to handle inheritance?
+
+      template<>
+      struct my_traits< derived_two >
+         : my_object< for_unknown_key::CONTINUE,
+                      TAO_JSON_BIND_REQUIRED( "i", &derived_two::i ) >
+      {
+      };
+
+      template<>
+      struct my_traits< std::shared_ptr< base_class > >
+         : binding::factory< base_class,
+                             binding::factory_type< binding::key< 'o', 'n', 'e' >, base_class, derived_one >,
+                             binding::factory_type< binding::key< 't', 'w', 'o' >, base_class, derived_two > >
+      {
+      };
+
+      template<>
+      struct my_traits< std::string >
+         : public traits< std::string >
+      {
+         template< template< typename... > class Traits, typename Producer >
+         static std::string consume( Producer& producer )
+         {
+            return producer.string();
+         }
+      };
+
+      namespace binding
+      {
+         template< typename C, bool V >
+         struct element_b
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& /*unused*/ )
+            {
+               consumer.boolean( V );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& producer, C& /*unused*/ )
+            {
+               if( producer.boolean() != V ) {
+                  throw std::runtime_error( "value mismatch" );  // NOLINT
+               }
+            }
+         };
+
+         template< typename C, std::int64_t V >
+         struct element_i
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& /*unused*/ )
+            {
+               consumer.number( V );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& producer, C& /*unused*/ )
+            {
+               if( producer.number_int64() != V ) {
+                  throw std::runtime_error( "value mismatch" );  // NOLINT
+               }
+            }
+         };
+
+         template< typename C, std::uint64_t V >
+         struct element_u
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& /*unused*/ )
+            {
+               consumer.number( V );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& producer, C& /*unused*/ )
+            {
+               if( producer.number_uint64() != V ) {
+                  throw std::runtime_error( "value mismatch" );  // NOLINT
+               }
+            }
+         };
+
+         template< char... Cs >
+         using string = json_pegtl::string< Cs... >;
+
+         template< typename T, typename S >
+         struct element_s;
+
+         template< typename T, char... Cs >
+         struct element_s< T, json_pegtl::string< Cs... > >
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const T& /*unused*/ )
+            {
+               static const char s[] = { Cs... };
+               consumer.string( tao::string_view( s, sizeof...( Cs ) ) );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& producer, T& /*unused*/ )
+            {
+               static const char s[] = { Cs... };
+               if( producer.string() != s ) {
+                  throw std::runtime_error( "value mismatch" );  // NOLINT
+               }
+            }
+         };
+
+         template< bool R, typename K, typename T, bool B >
+         struct member_b
+            : public element_b< T, B >,
+              public member_key< R, K >
+         {
+         };
+
+         template< bool R, typename K, typename T, std::int64_t V >
+         struct member_i
+            : public element_b< T, V >,
+              public member_key< R, K >
+         {
+         };
+
+         template< bool R, typename K, typename T, std::uint64_t V >
+         struct member_u
+            : public element_b< T, V >,
+              public member_key< R, K >
+         {
+         };
+
+         template< bool R, typename K, typename T, typename S >
+         struct member_s
+            : public element_s< T, S >,
+              public member_key< R, K >
+         {
+         };
+
+      }  // namespace binding
+
       template< typename U, typename V >
       struct my_traits< std::pair< U, V > >
          : my_array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
@@ -887,7 +1147,8 @@ namespace tao
       template<>
       struct my_traits< foo >
          : my_array< TAO_JSON_BIND_ELEMENT( &foo::a ),
-                     TAO_JSON_BIND_ELEMENT( &foo::b ) >
+                     TAO_JSON_BIND_ELEMENT( &foo::b ),
+                     binding::element_u< foo, 42 > >
       {
       };
 
@@ -910,7 +1171,7 @@ namespace tao
       void unit_test()
       {
          {
-            parse_producer<> pp( "  [  \"kasimir\"  ,  \"fridolin\"  ]  " );
+            parse_producer<> pp( "  [  \"kasimir\"  ,  \"fridolin\", 42  ]  " );
             const auto f = consume< foo, my_traits >( pp );
             TEST_ASSERT( f.a == "kasimir" );
             TEST_ASSERT( f.b == "fridolin" );
@@ -950,7 +1211,7 @@ namespace tao
             }
          }
          {
-            cbor::parser<> pp( "8261616162" );
+            cbor::parser<> pp( "8361616162182a" );
             const auto v = consume< foo, my_traits >( pp );
             TEST_ASSERT( v.a == "a" );
             TEST_ASSERT( v.b == "b" );
@@ -988,6 +1249,13 @@ namespace tao
             const auto x = v.as< bar >();
             TEST_ASSERT( x.c == "x" );
             TEST_ASSERT( x.i == 2 );
+         }
+         {
+            parse_producer<> pp( "{ \"type\" : \"two\", \"i\" : 17 }" );
+            const auto v = consume< std::shared_ptr< base_class>, my_traits >( pp );
+            const auto c = std::dynamic_pointer_cast< derived_two >( v );
+            TEST_ASSERT( c );
+            TEST_ASSERT( c->i == 17 );
          }
       }
 
