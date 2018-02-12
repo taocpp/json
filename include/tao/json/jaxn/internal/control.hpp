@@ -31,19 +31,19 @@ namespace tao
 
             template< bool NEG >
             struct control< rules::number< NEG > >
-               : json_pegtl::change_state< rules::number< NEG >, json::internal::number_state< NEG >, errors >
+               : json_pegtl::change_state< rules::number< NEG >, tao::json::internal::number_state< NEG >, errors >
             {
             };
 
             template<>
             struct control< rules::string >
-               : json_pegtl::change_state_and_action< rules::string, json::internal::string_state, unescape_action, errors >
+               : json_pegtl::change_state_and_action< rules::string, tao::json::internal::string_state, unescape_action, errors >
             {
             };
 
             template<>
             struct control< rules::key >
-               : json_pegtl::change_state_and_action< rules::key, json::internal::key_state, unescape_action, errors >
+               : json_pegtl::change_state_and_action< rules::key, tao::json::internal::key_state, unescape_action, errors >
             {
             };
 

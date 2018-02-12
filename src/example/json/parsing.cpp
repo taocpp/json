@@ -67,24 +67,24 @@ namespace tao
                }
             }
 
-            template< typename T, utf8_mode U >
+            template< utf8_mode U, typename T >
             T cbor_string( const internal::major m, const char* e )
             {
                check_major( m, e );
                if( internal::peek_minor( m_input ) != internal::minor_mask ) {
-                  return internal::data< V >::template read_string_1< U, T >( m_input );
+                  return internal::parse_string_1< U, T >( m_input );
                }
-               return internal::data< V >::template read_string_n< U, T >( m_input, m );
+               return internal::parse_string_n< U, T >( m_input, m );
             }
 
             std::string string()
             {
-               return cbor_string< std::string, V >( internal::major::STRING, "expected cbor string" );
+               return cbor_string< V, std::string >( internal::major::STRING, "expected cbor string" );
             }
 
             std::string binary()
             {
-               return cbor_string< std::vector< tao::byte >, utf8_mode::TRUST >( internal::major::BINARY, "expected cbor binary" );
+               return cbor_string< utf8_mode::TRUST, std::vector< tao::byte > >( internal::major::BINARY, "expected cbor binary" );
             }
 
             std::string key()
@@ -99,12 +99,12 @@ namespace tao
                if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected cbor definitive string", m_input );  // NOLINT
                }
-               return internal::data< V >::template read_string_1< V, tao::string_view >( m_input );
+               return internal::parse_string_1< V, tao::string_view >( m_input );
             }
 
             std::int64_t number_int64_unsigned()
             {
-               const auto u = internal::data< V >::read_unsigned( m_input );
+               const auto u = internal::parse_unsigned( m_input );
                if( u > 9223372036854775807ull ) {
                   throw json_pegtl::parse_error( "negative integer overflow", m_input );
                }
@@ -113,7 +113,7 @@ namespace tao
 
             std::int64_t number_int64_negative()
             {
-               const auto u = internal::data< V >::read_unsigned( m_input );
+               const auto u = internal::parse_unsigned( m_input );
                if( u > 9223372036854775808ull ) {
                   throw json_pegtl::parse_error( "negative integer overflow", m_input );
                }
@@ -136,7 +136,7 @@ namespace tao
             std::uint64_t number_uint64()
             {
                check_major( internal::major::UNSIGNED, "expected cbor unsigned" );
-               return internal::data< V >::read_unsigned( m_input );
+               return internal::parse_unsigned( m_input );
             }
 
             double number_double()
@@ -144,11 +144,11 @@ namespace tao
                const auto b = internal::peek_byte_safe( m_input );
                switch( b ) {
                   case std::uint8_t( internal::major::OTHER ) + 25:
-                     return internal::data< V >::read_floating_half_impl( m_input );
+                     return internal::parse_floating_half_impl( m_input );
                   case std::uint8_t( internal::major::OTHER ) + 26:
-                     return internal::data< V >::template read_floating_impl< float >( m_input );
+                     return internal::parse_floating_impl< float >( m_input );
                   case std::uint8_t( internal::major::OTHER ) + 27:
-                     return internal::data< V >::template read_floating_impl< double >( m_input );
+                     return internal::parse_floating_impl< double >( m_input );
                   default:
                      throw json_pegtl::parse_error( "expected cbor floating point", m_input );  // NOLINT
                }
@@ -174,7 +174,7 @@ namespace tao
                   m_input.bump_in_this_line( 1 );
                   return state_t();
                }
-               return state_t( internal::data< V >::read_size( m_input ) );
+               return state_t( internal::parse_size( m_input ) );
             }
 
             state_t begin_array()
