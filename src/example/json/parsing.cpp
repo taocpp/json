@@ -677,19 +677,34 @@ namespace tao
       struct my_array
          : public binding::array< As... >
       {
+         template< typename A, template< typename... > class Traits, typename Base, typename C >
+         static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
+         {
+            A::as( a.at( i++ ), x );
+            return true;
+         }
+
          template< template< typename... > class Traits, typename Base, typename C >
          static void as( const basic_value< Traits, Base >& v, C& x )
          {
             std::size_t i = 0;
             const auto& a = v.get_array();
-            (void)internal::swallow{ ( As::as( a.at( i++ ), x ), true )... };
+            (void)internal::swallow{ as_element< As >( a, x, i )... };
+         }
+
+         template< typename A, template< typename... > class Traits = traits, typename Producer, typename C, typename P >
+         static bool consume_element( Producer& producer, C& x, P& p )
+         {
+            producer.element( p );
+            A::template consume< Traits >( producer, x );
+            return true;
          }
 
          template< template< typename... > class Traits = traits, typename Producer, typename C >
          static void consume( Producer& producer, C& x )
          {
             auto p = producer.begin_array();
-            (void)internal::swallow{ ( producer.element( p ), As::template consume< Traits >( producer, x ), true )... };
+            (void)internal::swallow{ consume_element< As, Traits >( producer, x, p )... };
             producer.end_array( p );
          }
       };
@@ -722,6 +737,18 @@ namespace tao
          CONTINUE
       };
 
+      template< typename T, template< typename... > class Traits, typename Base >
+      inline void as( const basic_value< Traits, Base >& v, T& t )
+      {
+         v.as( t );
+      }
+
+      template< typename T, template< typename... > class Traits, typename Base >
+      inline T as( const basic_value< Traits, Base >& v )
+      {
+         return v.template as< T >();
+      }
+
       template< for_unknown_key E, typename... As >
       struct my_object
          : public binding::object< As... >
@@ -730,17 +757,24 @@ namespace tao
          struct entry
          {
             entry( F c, std::size_t i )
-               : consume( c ),
+               : function( c ),
                  index( i )
             {
             }
 
-            F consume;
+            F function;
             std::size_t index;
          };
 
+         template< typename A, template< typename... > class Traits, typename Base, typename F >
+         static bool emplace_as( std::map< std::string, entry< F > >& m, std::size_t& i )
+         {
+            m.emplace( A::key(), entry< F >( &A::template as< Traits, Base >, i++ ) );
+            return true;
+         }
+
          template< typename A, template< typename... > class Traits, typename Producer, typename F >
-         static bool emplace( std::map< std::string, entry< F > >& m, std::size_t& i )
+         static bool emplace_consume( std::map< std::string, entry< F > >& m, std::size_t& i )
          {
             m.emplace( A::key(), entry< F >( &A::template consume< Traits, Producer >, i++ ) );
             return true;
@@ -753,6 +787,49 @@ namespace tao
             return true;
          }
 
+         template< typename A, template< typename... > class Traits, typename Base, typename C >
+         static bool as_member( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
+         {
+            A::as( a.at( i++ ), x );
+            return true;
+         }
+
+         template< template< typename... > class Traits, typename Base, typename C >
+         static void as( const basic_value< Traits, Base >& v, C& x )
+         {
+            const auto& a = v.get_object();
+            using F = void( * )( const basic_value< Traits, Base >&, C& );
+            static const std::map< std::string, entry< F > > m = []( std::size_t i ){
+               std::map< std::string, entry< F > > t;
+               (void)internal::swallow{ emplace_as< As, Traits, Base >( t, i )... };
+               assert( t.size() == sizeof...( As ) );
+               return t;
+            }( 0 );
+            static const std::bitset< sizeof...( As ) > o = []( std::size_t i ){
+               std::bitset< sizeof...( As ) > t;
+               (void)internal::swallow{ set_optional< As >( t, i )... };
+               return t;
+            }( 0 );
+            std::bitset< sizeof...( As ) > b;
+            for( const auto& p : a ) {
+               const auto & k = p.first;
+               const auto i = m.find( k );
+               if( i == m.end() ) {
+                  if( E == for_unknown_key::THROW ) {
+                     throw std::runtime_error( "unknown object key " + internal::escape( k ) );  // NOLINT
+                  }
+                  continue;
+               }
+               i->second.function( p.second, x );
+               b.set( i->second.index );
+            }
+            b |= o;
+            if( !b.all() ) {
+               // TODO: List the missing required key(s) in the exception?
+               throw std::runtime_error( "missing required key(s)" );  // NOLINT
+            }
+         }
+
          template< template< typename... > class Traits = traits, typename Producer, typename C >
          static void consume( Producer& producer, C& x )
          {
@@ -760,7 +837,7 @@ namespace tao
             using F = void( * )( Producer&, C& );
             static const std::map< std::string, entry< F > > m = []( std::size_t i ){
                std::map< std::string, entry< F > > t;
-               (void)internal::swallow{ emplace< As, Traits, Producer >( t, i )... };
+               (void)internal::swallow{ emplace_consume< As, Traits, Producer >( t, i )... };
                assert( t.size() == sizeof...( As ) );
                return t;
             }( 0 );
@@ -783,7 +860,7 @@ namespace tao
                if( b.test( i->second.index ) ) {
                   throw std::runtime_error( "duplicate object key " + internal::escape( k ) );  // NOLINT
                }
-               i->second.consume( producer, x );
+               i->second.function( producer, x );
                b.set( i->second.index );
             }
             b |= o;
@@ -902,6 +979,15 @@ namespace tao
             const auto v = consume< bar, my_traits >( pp );
             TEST_ASSERT( v.c == "yeah" );
             TEST_ASSERT( v.i == 42 );
+         }
+         {
+            const basic_value< my_traits > v = {
+               { "c", "x" },
+               { "i", 2 }
+            };
+            const auto x = v.as< bar >();
+            TEST_ASSERT( x.c == "x" );
+            TEST_ASSERT( x.i == 2 );
          }
       }
 
