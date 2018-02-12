@@ -734,6 +734,23 @@ namespace tao
          return v.template as< T >();
       }
 
+      template< for_unknown_key >
+      struct throw_or_continue
+      {
+         static void x( const std::string& k )
+         {
+            throw std::runtime_error( "unknown object key " + internal::escape( k ) );  // NOLINT
+         }
+      };
+
+      template<>
+      struct throw_or_continue< for_unknown_key::CONTINUE >
+      {
+         static void x( const std::string& /*unused*/ )
+         {
+         }
+      };
+
       template< for_unknown_key E, typename... As >
       struct my_object
          : public binding::object< As... >
@@ -793,9 +810,7 @@ namespace tao
                const auto & k = p.first;
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  if( E == for_unknown_key::THROW ) {
-                     throw std::runtime_error( "unknown object key " + internal::escape( k ) );  // NOLINT
-                  }
+                  throw_or_continue< E >::x( k );
                   continue;
                }
                i->second.function( p.second, x );
@@ -829,9 +844,7 @@ namespace tao
                const auto k = producer.key();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  if( E == for_unknown_key::THROW ) {
-                     throw std::runtime_error( "unknown object key " + internal::escape( k ) );  // NOLINT
-                  }
+                  throw_or_continue< E >::x( k );
                   producer.ignore_value();
                   continue;
                }
@@ -914,6 +927,7 @@ namespace tao
                static const std::map< std::string, entry< F > > m = [](){
                   std::map< std::string, entry< F > > t;
                   (void)internal::swallow{ emplace_as< Ts, Traits, Base >( t )... };
+                  assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
                const auto k = a.at( "type" ).get_string();
