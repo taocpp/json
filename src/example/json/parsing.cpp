@@ -755,6 +755,8 @@ namespace tao
          }
       };
 
+      // TODO: Control how to create the instances?
+
       template< for_unknown_key E, typename... As >
       struct my_object
          : public binding::object< As... >
@@ -876,14 +878,14 @@ namespace tao
          {
             static std::string key()
             {
-               static const char s[] = { Cs... };
+               static const char s[] = { Cs..., 0 };
                return std::string( s, sizeof...( Cs ) );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce_key( Consumer& consumer )
             {
-               static const char s[] = { Cs... };
+               static const char s[] = { Cs..., 0 };
                consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
             }
          };
@@ -973,6 +975,68 @@ namespace tao
             }
          };
 
+         template< typename... Vs >
+         struct versions;
+
+         template< typename V >
+         struct versions< V >
+            : public V
+         {
+         };
+
+         template< typename V, typename... Vs >
+         struct versions< V, Vs... >
+            : public V
+         {
+            // NOTE: This is a bit like sor<>.
+            // TODO: Clear x between attempts?
+
+            template< typename A, template< typename... > class Traits, typename Base, typename C >
+            static bool as_attempt( const basic_value< Traits, Base >& v, C& x )
+            {
+               try {
+                  A::as( v, x );
+                  return true;
+               }
+               catch( ... ) {
+                  return false;
+               }
+            }
+
+            template< template< typename... > class Traits, typename Base, typename C >
+            static void as( const basic_value< Traits, Base >& v, C& x )
+            {
+               bool ok = false;
+               (void)internal::swallow{ ok = as_attempt< V >( v, x ), ( ok = ok || as_attempt< Vs >( v, x ) )... };
+               if( ! ok ) {
+                  throw std::runtime_error( "all versions failed" );  // NOLINT
+               }
+            }
+
+            template< typename A, template< typename... > class Traits, typename Producer, typename C >
+            static bool consume_attempt( Producer& producer, C& x )
+            {
+               try {
+                  auto m = producer.mark();
+                  A::template consume< Traits >( producer, x );
+                  return m( true );
+               }
+               catch( ... ) {
+                  return false;
+               }
+            }
+
+            template< template< typename... > class Traits, typename Producer, typename C >
+            static void consume( Producer& producer, C& x )
+            {
+               bool ok = false;
+               (void)internal::swallow{ ok = consume_attempt< V, Traits >( producer, x ), ( ok = ok || consume_attempt< Vs, Traits >( producer, x ) )... };
+               if( ! ok ) {
+                  throw std::runtime_error( "all versions failed" );  // NOLINT
+               }
+            }
+         };
+
       }  // namespace binding
 
       class base_class
@@ -1011,7 +1075,7 @@ namespace tao
       };
 
       // TODO: Find better way to skip "type".
-      // TODO: Find way to handle inheritance?
+      // TODO: Find way to handle inheritance.
 
       template<>
       struct my_traits< derived_two >
@@ -1107,14 +1171,14 @@ namespace tao
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce( Consumer& consumer, const T& /*unused*/ )
             {
-               static const char s[] = { Cs... };
+               static const char s[] = { Cs..., 0 };
                consumer.string( tao::string_view( s, sizeof...( Cs ) ) );
             }
 
             template< template< typename... > class Traits = traits, typename Producer >
             static void consume( Producer& producer, T& /*unused*/ )
             {
-               static const char s[] = { Cs... };
+               static const char s[] = { Cs..., 0 };
                if( producer.string() != s ) {
                   throw std::runtime_error( "value mismatch" );  // NOLINT
                }
@@ -1164,11 +1228,23 @@ namespace tao
          std::string b = "world";
       };
 
-      template<>
-      struct my_traits< foo >
+      struct foo_version_two
          : my_array< TAO_JSON_BIND_ELEMENT( &foo::a ),
                      TAO_JSON_BIND_ELEMENT( &foo::b ),
-                     binding::element_u< foo, 42 > >
+                     binding::element_u< foo, 2 > >
+      {
+      };
+
+      struct foo_version_one
+         : my_array< TAO_JSON_BIND_ELEMENT( &foo::a ),
+                     TAO_JSON_BIND_ELEMENT( &foo::b ) >
+      {
+      };
+
+      template<>
+      struct my_traits< foo >
+         : binding::versions< foo_version_two,
+                              foo_version_one >
       {
       };
 
@@ -1191,7 +1267,7 @@ namespace tao
       void unit_test()
       {
          {
-            parse_producer<> pp( "  [  \"kasimir\"  ,  \"fridolin\", 42  ]  " );
+            parse_producer<> pp( "  [  \"kasimir\"  ,  \"fridolin\", 2  ]  " );
             const auto f = consume< foo, my_traits >( pp );
             TEST_ASSERT( f.a == "kasimir" );
             TEST_ASSERT( f.b == "fridolin" );
@@ -1231,7 +1307,7 @@ namespace tao
             }
          }
          {
-            cbor::parser<> pp( "8361616162182a" );
+            cbor::parser<> pp( "8261616162" );
             const auto v = consume< foo, my_traits >( pp );
             TEST_ASSERT( v.a == "a" );
             TEST_ASSERT( v.b == "b" );

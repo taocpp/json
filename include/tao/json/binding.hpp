@@ -88,14 +88,14 @@ namespace tao
 
             static std::string key()
             {
-               static const char s[] = { Cs... };
+               static const char s[] = { Cs..., 0 };
                return std::string( s, sizeof...( Cs ) );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce_key( Consumer& consumer )
             {
-               static const char s[] = { Cs... };
+               static const char s[] = { Cs..., 0 };
                consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
             }
          };
