@@ -20,6 +20,10 @@
 
 // EVERYTHING IN THIS FILE IS STILL HIGHLY EXPERIMENTAL!!!
 
+#ifdef _MSC_VER
+#pragma warning( disable : 4127 )
+#endif
+
 namespace tao
 {
    namespace json
@@ -977,7 +981,9 @@ namespace tao
          virtual ~base_class() = default;
 
          base_class( const base_class& ) = delete;
+         base_class( base_class&& ) = delete;
          void operator=( const base_class& ) = delete;
+         void operator=( base_class&& ) = delete;
 
       protected:
          base_class() = default;
