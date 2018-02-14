@@ -12,7 +12,7 @@
 
 #include "type.hpp"
 
-#include "external/operators.hpp"
+#include "internal/operators.hpp"
 
 namespace tao
 {
@@ -125,7 +125,7 @@ namespace tao
       };
 
       class pointer
-         : operators::totally_ordered< pointer >
+         : internal::operators::totally_ordered< pointer >
       {
       private:
          std::vector< token > m_tokens;
