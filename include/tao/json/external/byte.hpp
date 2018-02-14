@@ -4,13 +4,13 @@
 #ifndef TAO_JSON_EXTERNAL_BYTE_HPP
 #define TAO_JSON_EXTERNAL_BYTE_HPP
 
-#ifndef TAOCPP_USE_STD_BYTE
+#ifndef TAO_JSON_USE_STD_BYTE
 #if __cplusplus >= 201703L
-#define TAOCPP_USE_STD_BYTE
+#define TAO_JSON_USE_STD_BYTE
 #endif
 #endif
 
-#if defined( TAOCPP_USE_STD_BYTE )
+#if defined( TAO_JSON_USE_STD_BYTE )
 #include <cstddef>
 #else
 #include <type_traits>
@@ -19,7 +19,7 @@
 namespace tao
 {
 
-#if defined( TAOCPP_USE_STD_BYTE )
+#if defined( TAO_JSON_USE_STD_BYTE )
    using std::byte;
    using std::to_integer;
 #else

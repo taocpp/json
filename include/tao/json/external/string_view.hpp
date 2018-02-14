@@ -4,27 +4,27 @@
 #ifndef TAO_JSON_EXTERNAL_STRING_VIEW_HPP
 #define TAO_JSON_EXTERNAL_STRING_VIEW_HPP
 
-#ifndef TAOCPP_USE_STD_STRING_VIEW
+#ifndef TAO_JSON_USE_STD_STRING_VIEW
 #if( __cplusplus >= 201703L )
-#define TAOCPP_USE_STD_STRING_VIEW
+#define TAO_JSON_USE_STD_STRING_VIEW
 #elif defined( _MSC_VER ) && ( _MSC_VER >= 1910L )
 #if defined( _MSC_LANG ) && ( _MSC_LANG >= 201703L )
-#define TAOCPP_USE_STD_STRING_VIEW
+#define TAO_JSON_USE_STD_STRING_VIEW
 #endif
 #endif
 #endif
 
-#ifndef TAOCPP_USE_STD_STRING_VIEW
-#ifndef TAOCPP_USE_TS_STRING_VIEW
+#ifndef TAO_JSON_USE_STD_STRING_VIEW
+#ifndef TAO_JSON_USE_TS_STRING_VIEW
 #if( __cplusplus >= 201402L ) && defined( __GNUC__ ) && ( ( __GNUC__ > 4 ) || ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 ) )
-#define TAOCPP_USE_TS_STRING_VIEW
+#define TAO_JSON_USE_TS_STRING_VIEW
 #endif
 #endif
 #endif
 
-#if defined( TAOCPP_USE_STD_STRING_VIEW )
+#if defined( TAO_JSON_USE_STD_STRING_VIEW )
 #include <string_view>
-#elif defined( TAOCPP_USE_TS_STRING_VIEW )
+#elif defined( TAO_JSON_USE_TS_STRING_VIEW )
 #include <experimental/string_view>
 #else
 #include "../internal/identity.hpp"
@@ -38,9 +38,9 @@
 namespace tao
 {
 
-#if defined( TAOCPP_USE_STD_STRING_VIEW )
+#if defined( TAO_JSON_USE_STD_STRING_VIEW )
    using std::basic_string_view;
-#elif defined( TAOCPP_USE_TS_STRING_VIEW )
+#elif defined( TAO_JSON_USE_TS_STRING_VIEW )
    using std::experimental::basic_string_view;
 #else
 
