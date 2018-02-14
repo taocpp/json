@@ -7,6 +7,8 @@
 #pragma warning( disable : 4702 )
 #endif
 
+#include <tao/json/schema.hpp>
+
 #include <tao/json/events/compare.hpp>
 #include <tao/json/events/debug.hpp>
 #include <tao/json/events/discard.hpp>
@@ -117,7 +119,6 @@ namespace tao
          check_consumer_impl< events::ref< Consumer > >();
          check_consumer_impl< events::virtual_ref< Consumer > >();
 
-         check_consumer_impl< events::tee<> >();
          check_consumer_impl< events::tee< Consumer > >();
          check_consumer_impl< events::tee< events::discard, Consumer > >();
          check_consumer_impl< events::tee< Consumer, events::discard > >();
@@ -156,6 +157,8 @@ namespace tao
          check_consumer< events::to_value >();
          check_consumer< events::validate_event_order >();
 
+         check_consumer< events::tee<> >();
+
          check_consumer< cbor::events::to_stream >();
          check_consumer< cbor::events::to_string >();
 
@@ -167,6 +170,8 @@ namespace tao
 
          check_consumer< ubjson::events::to_stream >();
          check_consumer< ubjson::events::to_string >();
+
+         check_consumer< internal::schema_consumer< traits, internal::empty_base > >();
       }
 
    }  // namespace json
