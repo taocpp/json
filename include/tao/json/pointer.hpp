@@ -12,8 +12,6 @@
 
 #include "type.hpp"
 
-#include "internal/operators.hpp"
-
 namespace tao
 {
    namespace json
@@ -125,7 +123,6 @@ namespace tao
       };
 
       class pointer
-         : internal::operators::totally_ordered< pointer >
       {
       private:
          std::vector< token > m_tokens;
@@ -226,18 +223,6 @@ namespace tao
             m_tokens.emplace_back( std::move( v ) );
          }
 
-         pointer& operator+=( const std::string& v )
-         {
-            push_back( v );
-            return *this;
-         }
-
-         pointer& operator+=( std::string&& v )
-         {
-            push_back( std::move( v ) );
-            return *this;
-         }
-
          friend bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
          {
             return lhs.m_tokens == rhs.m_tokens;
@@ -248,6 +233,38 @@ namespace tao
             return lhs.m_tokens < rhs.m_tokens;
          }
       };
+
+      inline bool operator!=( const pointer& lhs, const pointer& rhs ) noexcept
+      {
+         return !( lhs == rhs );
+      }
+
+      inline bool operator>( const pointer& lhs, const pointer& rhs ) noexcept
+      {
+         return rhs < lhs;
+      }
+
+      inline bool operator<=( const pointer& lhs, const pointer& rhs ) noexcept
+      {
+         return !( rhs < lhs );
+      }
+
+      inline bool operator>=( const pointer& lhs, const pointer& rhs ) noexcept
+      {
+         return !( lhs < rhs );
+      }
+
+      inline pointer& operator+=( pointer& lhs, const std::string& rhs )
+      {
+         lhs.push_back( rhs );
+         return lhs;
+      }
+
+      inline pointer& operator+=( pointer& lhs, std::string&& rhs )
+      {
+         lhs.push_back( std::move( rhs ) );
+         return lhs;
+      }
 
       inline pointer operator+( const pointer& p, const std::string& v )
       {
