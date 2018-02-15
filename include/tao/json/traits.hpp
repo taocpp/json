@@ -20,6 +20,11 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4715 )
+#endif
+
 namespace tao
 {
    namespace json
@@ -125,7 +130,6 @@ namespace tao
                      v.throw_invalid_json_type();
                }
                assert( false );  // LCOV_EXCL_LINE
-               return T();
             }
          };
 
@@ -477,7 +481,6 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             assert( false );  // LCOV_EXCL_LINE
-            return std::string();
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -705,7 +708,6 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             assert( false );  // LCOV_EXCL_LINE
-            return std::vector< tao::byte >();
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -1023,5 +1025,9 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #endif
