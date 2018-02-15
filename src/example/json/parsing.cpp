@@ -709,21 +709,6 @@ namespace tao
       struct my_array
          : public binding::array< As... >
       {
-         template< typename A, template< typename... > class Traits, typename Base, typename C >
-         static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
-         {
-            A::as( a.at( i++ ), x );
-            return true;
-         }
-
-         template< template< typename... > class Traits, typename Base, typename C >
-         static void as( const basic_value< Traits, Base >& v, C& x )
-         {
-            std::size_t i = 0;
-            const auto& a = v.get_array();
-            (void)internal::swallow{ as_element< As >( a, x, i )... };
-         }
-
          template< typename A, template< typename... > class Traits = traits, typename Producer, typename C, typename P >
          static bool consume_element( Producer& producer, C& x, P& p )
          {
@@ -741,34 +726,11 @@ namespace tao
          }
       };
 
-      enum class for_unknown_key : bool
-      {
-         THROW,
-         CONTINUE
-      };
-
-      template< for_unknown_key >
-      struct throw_or_continue
-      {
-         static void x( const std::string& k )
-         {
-            throw std::runtime_error( "unknown object key " + internal::escape( k ) );  // NOLINT
-         }
-      };
-
-      template<>
-      struct throw_or_continue< for_unknown_key::CONTINUE >
-      {
-         static void x( const std::string& /*unused*/ )
-         {
-         }
-      };
-
       // TODO: Control how to create the instances?
 
-      template< for_unknown_key E, typename... As >
+      template< binding::for_unknown_key E, typename... As >
       struct my_object
-         : public binding::object< As... >
+         : public binding::basic_object< E, As... >
       {
          template< typename F >
          struct entry
@@ -783,59 +745,11 @@ namespace tao
             std::size_t index;
          };
 
-         template< typename A, template< typename... > class Traits, typename Base, typename F >
-         static bool emplace_as( std::map< std::string, entry< F > >& m, std::size_t& i )
-         {
-            m.emplace( A::key(), entry< F >( &A::template as< Traits, Base >, i++ ) );
-            return true;
-         }
-
          template< typename A, template< typename... > class Traits, typename Producer, typename F >
          static bool emplace_consume( std::map< std::string, entry< F > >& m, std::size_t& i )
          {
             m.emplace( A::key(), entry< F >( &A::template consume< Traits, Producer >, i++ ) );
             return true;
-         }
-
-         template< typename A >
-         static bool set_optional( std::bitset< sizeof...( As ) >& t, std::size_t& i )
-         {
-            t.set( i++, !A::is_required );
-            return true;
-         }
-
-         template< template< typename... > class Traits, typename Base, typename C >
-         static void as( const basic_value< Traits, Base >& v, C& x )
-         {
-            const auto& a = v.get_object();
-            using F = void ( * )( const basic_value< Traits, Base >&, C& );
-            static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
-               std::map< std::string, entry< F > > t;
-               (void)internal::swallow{ emplace_as< As, Traits, Base >( t, i )... };
-               assert( t.size() == sizeof...( As ) );
-               return t;
-            }( 0 );
-            static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
-               std::bitset< sizeof...( As ) > t;
-               (void)internal::swallow{ set_optional< As >( t, i )... };
-               return t;
-            }( 0 );
-            std::bitset< sizeof...( As ) > b;
-            for( const auto& p : a ) {
-               const auto& k = p.first;
-               const auto i = m.find( k );
-               if( i == m.end() ) {
-                  throw_or_continue< E >::x( k );
-                  continue;
-               }
-               i->second.function( p.second, x );
-               b.set( i->second.index );
-            }
-            b |= o;
-            if( !b.all() ) {
-               // TODO: List the missing required key(s) in the exception?
-               throw std::runtime_error( "missing required key(s)" );  // NOLINT
-            }
          }
 
          template< template< typename... > class Traits = traits, typename Producer, typename C >
@@ -845,13 +759,13 @@ namespace tao
             using F = void ( * )( Producer&, C& );
             static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
                std::map< std::string, entry< F > > t;
-               (void)internal::swallow{ emplace_consume< As, Traits, Producer >( t, i )... };
+               (void)json::internal::swallow{ emplace_consume< As, Traits, Producer >( t, i )... };
                assert( t.size() == sizeof...( As ) );
                return t;
             }( 0 );
             static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
                std::bitset< sizeof...( As ) > t;
-               (void)internal::swallow{ set_optional< As >( t, i )... };
+               (void)internal::swallow{ binding::basic_object< E, As... >::template set_optional_bit< As >( t, i )... };
                return t;
             }( 0 );
             std::bitset< sizeof...( As ) > b;
@@ -859,7 +773,7 @@ namespace tao
                const auto k = producer.key();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw_or_continue< E >::x( k );
+                  binding::internal::throw_o< E >::r_continue( k );
                   producer.skip_value();
                   continue;
                }
@@ -941,14 +855,14 @@ namespace tao
                using F = std::shared_ptr< U > ( * )( const basic_value< Traits, Base >& );
                static const std::map< std::string, entry< F > > m = []() {
                   std::map< std::string, entry< F > > t;
-                  (void)internal::swallow{ emplace_as< Ts, Traits, Base >( t )... };
+                  (void)json::internal::swallow{ emplace_as< Ts, Traits, Base >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
                const auto k = a.at( "type" ).get_string();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );  // NOLINT
+                  throw std::runtime_error( "unknown factory type " + json::internal::escape( k ) );  // NOLINT
                }
                return i->second.function( v );
             }
@@ -973,12 +887,12 @@ namespace tao
                using F = std::shared_ptr< U > ( * )( Producer & producer );
                static const std::map< std::string, entry< F > > m = []() {
                   std::map< std::string, entry< F > > t;
-                  (void)internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };
+                  (void)json::internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };
                   return t;
                }();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + internal::escape( k ) );  // NOLINT
+                  throw std::runtime_error( "unknown factory type " + json::internal::escape( k ) );  // NOLINT
                }
                return i->second.function( producer );
             }
@@ -1016,7 +930,7 @@ namespace tao
             static void as( const basic_value< Traits, Base >& v, C& x )
             {
                bool ok = false;
-               (void)internal::swallow{ ok = as_attempt< V >( v, x ), ( ok = ok || as_attempt< Vs >( v, x ) )... };
+               (void)json::internal::swallow{ ok = as_attempt< V >( v, x ), ( ok = ok || as_attempt< Vs >( v, x ) )... };
                if( ! ok ) {
                   throw std::runtime_error( "all versions failed" );  // NOLINT
                }
@@ -1039,7 +953,7 @@ namespace tao
             static void consume( Producer& producer, C& x )
             {
                bool ok = false;
-               (void)internal::swallow{ ok = consume_attempt< V, Traits >( producer, x ), ( ok = ok || consume_attempt< Vs, Traits >( producer, x ) )... };
+               (void)json::internal::swallow{ ok = consume_attempt< V, Traits >( producer, x ), ( ok = ok || consume_attempt< Vs, Traits >( producer, x ) )... };
                if( ! ok ) {
                   throw std::runtime_error( "all versions failed" );  // NOLINT
                }
@@ -1078,7 +992,7 @@ namespace tao
 
       template<>
       struct my_traits< derived_one >
-         : my_object< for_unknown_key::CONTINUE,
+         : my_object< binding::for_unknown_key::CONTINUE,
                       TAO_JSON_BIND_REQUIRED( "s", &derived_one::s ) >
       {
       };
@@ -1088,7 +1002,7 @@ namespace tao
 
       template<>
       struct my_traits< derived_two >
-         : my_object< for_unknown_key::CONTINUE,
+         : my_object< binding::for_unknown_key::CONTINUE,
                       TAO_JSON_BIND_REQUIRED( "i", &derived_two::i ) >
       {
       };
@@ -1194,28 +1108,28 @@ namespace tao
             }
          };
 
-         template< bool R, typename K, typename T, bool B >
+         template< member_kind R, typename K, typename T, bool B >
          struct member_b
             : public element_b< T, B >,
               public member_key< R, K >
          {
          };
 
-         template< bool R, typename K, typename T, std::int64_t V >
+         template< member_kind R, typename K, typename T, std::int64_t V >
          struct member_i
             : public element_i< T, V >,
               public member_key< R, K >
          {
          };
 
-         template< bool R, typename K, typename T, std::uint64_t V >
+         template< member_kind R, typename K, typename T, std::uint64_t V >
          struct member_u
             : public element_u< T, V >,
               public member_key< R, K >
          {
          };
 
-         template< bool R, typename K, typename T, typename S >
+         template< member_kind R, typename K, typename T, typename S >
          struct member_s
             : public element_s< T, S >,
               public member_key< R, K >
@@ -1265,7 +1179,7 @@ namespace tao
 
       template<>
       struct my_traits< bar >
-         : my_object< for_unknown_key::THROW,
+         : my_object< binding::for_unknown_key::THROW,
                       TAO_JSON_BIND_REQUIRED( "i", &bar::i ),
                       TAO_JSON_BIND_OPTIONAL( "c", &bar::c ) >
       {
