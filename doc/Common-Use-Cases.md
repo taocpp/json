@@ -1,4 +1,4 @@
-# Frequent Use Cases
+# Common Use Cases
 
 * [Include the right header](#include-the-right-header)
 * [Read any JSON file](#read-any-json-file)
