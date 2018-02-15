@@ -17,12 +17,13 @@
 #include "json/to_stream.hpp"
 #include "json/to_string.hpp"
 
-// Value support
+// Value Support
 #include "json/patch.hpp"
 #include "json/schema.hpp"
 #include "json/self_contained.hpp"
 
 // Custom Types
+#include "json/as.hpp"
 #include "json/binding.hpp"
 #include "json/consume.hpp"
 #include "json/produce.hpp"
@@ -30,7 +31,7 @@
 // JAXN Format
 #include "json/jaxn.hpp"
 
-// Binary literals
+// Binary Literals
 #include "json/binary.hpp"
 
 // Binary Formats

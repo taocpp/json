@@ -22,6 +22,7 @@
 #include "internal/identity.hpp"
 #include "internal/pair.hpp"
 #include "internal/single.hpp"
+#include "internal/type_traits.hpp"
 #include "internal/value_union.hpp"
 
 #include "byte_view.hpp"
@@ -34,26 +35,6 @@ namespace tao
    {
       namespace internal
       {
-         template< typename, typename, typename = void >
-         struct has_as_one : std::false_type
-         {
-         };
-
-         template< typename T, typename V >
-         struct has_as_one< T, V, decltype( T::as( std::declval< const V& >() ), void() ) > : std::true_type
-         {
-         };
-
-         template< typename, typename, typename, typename = void >
-         struct has_as_two : std::false_type
-         {
-         };
-
-         template< typename T, typename V, typename U >
-         struct has_as_two< T, V, U, decltype( T::as( std::declval< const V& >(), std::declval< U& >() ), void() ) > : std::true_type
-         {
-         };
-
          // required work-around for GCC 6
          inline void rethrow()
          {

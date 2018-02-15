@@ -28,6 +28,27 @@ namespace tao
 {
    namespace json
    {
+      // struct producer_t
+      // {
+      //    constexpr explicit producer_t( int /*unused*/ )
+      //    {
+      //    }
+      // };
+
+      // constexpr producer_t producer{ 0 };  // NOLINT
+
+      namespace internal
+      {
+         template< typename Input, typename... Ts >
+         void throw_parse_error( Input& in, const Ts&... ts )
+         {
+            std::ostringstream oss;
+            (void)json::internal::swallow{ ( operator<<( oss, ts ), true )... };
+            throw json_pegtl::parse_error( oss.str(), in );  // NOLINT
+         }
+
+      }  // namespace internal
+
       namespace cbor
       {
          template< utf8_mode V = utf8_mode::CHECK >
@@ -96,7 +117,7 @@ namespace tao
                return string();
             }
 
-            // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway and to binary_view, too??
+            // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway, and to binary_view, too??
             tao::string_view string_view()
             {
                const auto b = internal::peek_byte_safe( m_input );
@@ -333,7 +354,7 @@ namespace tao
                return member_or_end_object_indefinitive( p );
             }
 
-            void ignore_value()
+            void skip_value()
             {
                // TODO: Optimise?
                json::events::discard consumer;
@@ -343,6 +364,12 @@ namespace tao
             auto mark() -> decltype( std::declval< Input >().template mark< json_pegtl::rewind_mode::REQUIRED >() )
             {
                return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
+            }
+
+            template< typename... Ts >
+            void throw_parse_error( const Ts&... ts )
+            {
+               json::internal::throw_parse_error( m_input, ts... );
             }
 
          private:
@@ -554,7 +581,7 @@ namespace tao
             return true;
          }
 
-         void ignore_value()
+         void skip_value()
          {
             json_pegtl::parse< json_pegtl::must< json_pegtl::json::value > >( m_input );  // Includes standard JSON right-padding.
          }
@@ -564,11 +591,17 @@ namespace tao
             return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
          }
 
+         template< typename... Ts >
+         void throw_parse_error( const Ts&... ts )
+         {
+            internal::throw_parse_error( m_input, ts... );
+         }
+
       private:
          Input m_input;
       };
 
-      template< typename T >
+      template< typename T, typename = void >
       struct my_traits
          : public traits< T >
       {
@@ -594,18 +627,6 @@ namespace tao
          {
             return static_cast< unsigned >( producer.number_uint64() );
          }
-      };
-
-      template< typename T >
-      struct is_basic_value
-         : public std::false_type
-      {
-      };
-
-      template< template< typename... > class Traits, typename Base >
-      struct is_basic_value< basic_value< Traits, Base > >
-         : public std::true_type
-      {
       };
 
       template< typename T >
@@ -644,7 +665,7 @@ namespace tao
       };
 
       template< typename T >
-      struct my_traits< std::vector< T > >
+      struct my_traits< std::vector< T >, typename std::enable_if< !internal::is_basic_value< T >::value >::type >
          : public vector_traits< T >
       {
       };
@@ -725,18 +746,6 @@ namespace tao
          THROW,
          CONTINUE
       };
-
-      template< typename T, template< typename... > class Traits, typename Base >
-      inline void as( const basic_value< Traits, Base >& v, T& t )
-      {
-         v.as( t );
-      }
-
-      template< typename T, template< typename... > class Traits, typename Base >
-      inline T as( const basic_value< Traits, Base >& v )
-      {
-         return v.template as< T >();
-      }
 
       template< for_unknown_key >
       struct throw_or_continue
@@ -851,11 +860,11 @@ namespace tao
                const auto i = m.find( k );
                if( i == m.end() ) {
                   throw_or_continue< E >::x( k );
-                  producer.ignore_value();
+                  producer.skip_value();
                   continue;
                }
                if( b.test( i->second.index ) ) {
-                  throw std::runtime_error( "duplicate object key " + internal::escape( k ) );  // NOLINT
+                  producer.throw_parse_error( "duplicate object key ", internal::escape( k ) );
                }
                i->second.function( producer, x );
                b.set( i->second.index );

@@ -8,34 +8,12 @@
 
 #include "traits.hpp"
 
+#include "internal/type_traits.hpp"
+
 namespace tao
 {
    namespace json
    {
-      namespace internal
-      {
-         template< template< typename... > class, typename, typename, typename = void >
-         struct has_consume_one : std::false_type
-         {
-         };
-
-         template< template< typename... > class Traits, typename P, typename U >
-         struct has_consume_one< Traits, P, U, decltype( Traits< U >::template consume< Traits >( std::declval< P& >() ), void() ) > : std::true_type
-         {
-         };
-
-         template< template< typename... > class, typename, typename, typename = void >
-         struct has_consume_two : std::false_type
-         {
-         };
-
-         template< template< typename... > class Traits, typename P, typename U >
-         struct has_consume_two< Traits, P, U, decltype( Traits< U >::template consume< Traits >( std::declval< P& >(), std::declval< U& >() ), void() ) > : std::true_type
-         {
-         };
-
-      }  // namespace internal
-
       template< typename T, template< typename... > class Traits = traits, typename Producer >
       typename std::enable_if< internal::has_consume_one< Traits, Producer, T >::value, T >::type consume( Producer& producer )
       {
