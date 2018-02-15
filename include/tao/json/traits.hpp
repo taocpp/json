@@ -64,9 +64,9 @@ namespace tao
       struct traits< bool >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, bool& b )
+         static bool as( const basic_value< Traits, Base >& v )
          {
-            b = v.get_boolean();
+            return v.get_boolean();
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -109,21 +109,22 @@ namespace tao
          struct number_trait
          {
             template< template< typename... > class Traits, typename Base >
-            static void as( const basic_value< Traits, Base >& v, T& n )
+            static T as( const basic_value< Traits, Base >& v )
             {
                switch( v.type() ) {
                   case type::SIGNED:
-                     n = static_cast< T >( v.unsafe_get_signed() );
+                     return static_cast< T >( v.unsafe_get_signed() );
                      break;
                   case type::UNSIGNED:
-                     n = static_cast< T >( v.unsafe_get_unsigned() );
+                     return static_cast< T >( v.unsafe_get_unsigned() );
                      break;
                   case type::DOUBLE:
-                     n = static_cast< T >( v.unsafe_get_double() );
+                     return static_cast< T >( v.unsafe_get_double() );
                      break;
                   default:
                      v.throw_invalid_json_type();
                }
+               assert( false );  // LCOV_EXCL_LINE
             }
          };
 
@@ -462,20 +463,19 @@ namespace tao
       struct traits< std::string >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::string& s )
+         static std::string as( const basic_value< Traits, Base >& v )
          {
             switch( v.type() ) {
                case type::STRING:
-                  s = v.unsafe_get_string();
-                  break;
+                  return v.unsafe_get_string();
                case type::STRING_VIEW: {
                   const auto sv = v.unsafe_get_string_view();
-                  s.assign( sv.data(), sv.size() );
-                  break;
+                  return std::string( sv.data(), sv.size() );
                }
                default:
                   v.throw_invalid_json_type();
             }
+            assert( false );  // LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -548,18 +548,6 @@ namespace tao
       template<>
       struct traits< tao::string_view >
       {
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::string_view sv )
-         {
-            c.string( sv );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const tao::string_view sv )
-         {
-            v.unsafe_emplace_string( sv.data(), sv.size() );
-         }
-
          template< template< typename... > class Traits, typename Base >
          static tao::string_view as( const basic_value< Traits, Base >& v )
          {
@@ -572,6 +560,18 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const tao::string_view sv )
+         {
+            c.string( sv );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const tao::string_view sv )
+         {
+            v.unsafe_emplace_string( sv.data(), sv.size() );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -621,15 +621,16 @@ namespace tao
       struct traits< const char* >
       {
          template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const char* s )
+         static const char* as( const basic_value< Traits, Base >& v )
          {
-            v.unsafe_emplace_string( s );
+            // NOTE: String views might not be '\0'-terminated.
+            return v.get_string().c_str();
          }
 
          template< template< typename... > class Traits, typename Base >
-         static const char* as( const basic_value< Traits, Base >& v )
+         static void assign( basic_value< Traits, Base >& v, const char* s )
          {
-            return v.get_string().c_str();
+            v.unsafe_emplace_string( s );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -689,20 +690,19 @@ namespace tao
       struct traits< std::vector< tao::byte > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::vector< tao::byte >& x )
+         static std::vector< tao::byte > as( const basic_value< Traits, Base >& v )
          {
             switch( v.type() ) {
                case type::BINARY:
-                  x = v.unsafe_get_binary();
-                  break;
+                  return v.unsafe_get_binary();
                case type::BINARY_VIEW: {
                   const auto xv = v.unsafe_get_binary_view();
-                  x.assign( xv.begin(), xv.end() );
-                  break;
+                  return std::vector< tao::byte >( xv.begin(), xv.end() );
                }
                default:
                   v.throw_invalid_json_type();
             }
+            assert( false );  // LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -775,18 +775,6 @@ namespace tao
       template<>
       struct traits< tao::byte_view >
       {
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::byte_view xv )
-         {
-            c.binary( xv );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const tao::byte_view xv ) noexcept
-         {
-            v.unsafe_emplace_binary( xv.begin(), xv.end() );
-         }
-
          template< template< typename... > class Traits, typename Base >
          static tao::byte_view as( const basic_value< Traits, Base >& v )
          {
@@ -799,6 +787,18 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const tao::byte_view xv )
+         {
+            c.binary( xv );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const tao::byte_view xv ) noexcept
+         {
+            v.unsafe_emplace_binary( xv.begin(), xv.end() );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -968,14 +968,12 @@ namespace tao
       struct traits< tao::optional< T > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, tao::optional< T >& o )
+         static tao::optional< T > as( const basic_value< Traits, Base >& v )
          {
             if( v != null ) {
-               o = v.template as< T >();
+               return v.template as< T >();
             }
-            else {
-               o = tao::nullopt;
-            }
+            return tao::nullopt;
          }
 
          template< template< typename... > class Traits, typename Consumer >
