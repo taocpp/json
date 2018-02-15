@@ -11,7 +11,7 @@
 
 #include "consume.hpp"
 #include "events/produce.hpp"
-#include "value.hpp"
+#include "forward.hpp"
 
 #if defined( __GNUC__ ) && ( __GNUC__ >= 7 ) && ( __cplusplus < 201703L )
 #pragma GCC diagnostic push

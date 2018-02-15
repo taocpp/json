@@ -6,7 +6,7 @@
 
 #include <type_traits>
 
-#include "traits.hpp"
+#include "forward.hpp"
 
 #include "internal/type_traits.hpp"
 
