@@ -52,6 +52,4 @@ TOOD: Give short example.
 
 TODO: Explain base-class mechanism and its behaviour.
 
-TODO: Show how `include/tao/contrib/position.hpp` adds the filename and position they were parsed from to every (sub-)value.
-
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

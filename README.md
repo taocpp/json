@@ -9,7 +9,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 ## Documentation
 
-[Preliminary Documentation](doc/README.md)
+* [Work-in-progress Documentation](doc/README.md)
 
 ## Features
 
@@ -47,7 +47,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
     * `std::vector< tao::json::byte >` for JAXN binary data. (`tao::json::byte` is an alias for `std::byte` when available).
   * Does *not* support storing of duplicate keys in JSON objects.
   * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
-  * Indirect JSON values and *user-defined types* via non-owning C++ raw pointers for object sharing, reference resolution, and important optimisation opportunities.
+  * Indirect JSON values and *user-defined types* via non-owning C++ raw pointers for efficient object sharing and other optimisations.
   * C++11 literal operator for JSON values, including binary data.
   * Optional user-defined annotations for every (sub-)value (e.g. [the filename and position the (sub-)value was parsed from](include/tao/json/contrib/position.hpp).
 
@@ -76,11 +76,12 @@ This library also serves as a fully functional real-world example for the [Parsi
 
 JSON libraries for C++ can be classified according to certain properties and characteristics.
 
-1. Libraries with a value-generic in-memory representation based on standard containers that can easily read, write and modify any JSON value. The use of standard string and container classes allows for familiar APIs that give access to standard algorithms and easy manipulation of in-memory values.
-2. Libraries with a value-generic library-specific highly optimised in-memory representation that can easily read and write any JSON value. These libraries trade the simplicity, flexibility and easy manipulation of the standard containers for an increase in read and write performance.
-3. Libraries that directly use normal C++ data types as value-specific targets for reading and writing specific corresponding JSON values. Here the possibility of handling arbitrary JSON values is traded for the speed and type-safety of directly working with the target data types.
+1. Libraries with a value-generic in-memory representation based on standard containers that can easily read, write and modify any JSON value.
+2. Libraries with a value-generic library-specific optimised in-memory representation that can easily and very quickly read and write any JSON value, but compromise on easy manipulation of in-memory values.
+3. Libraries that directly use normal C++ data types as value-specific targets to very quickly read and write corresponding JSON values in a type-safe manner.
 
-This library is of both the first *and* third kind, and supports a hybrid model where the C++ JSON value contains pointers to arbitrary C++ data types as sub-values.
+This library is of both the first *and* the third kind, and supports a hybrid model where the C++ JSON value contains pointers to arbitrary C++ data types as sub-values.
+
 It employs the [Events interface](https://github.com/taocpp/json/blob/master/doc/Events-Interface.md) as universal adapter within the library (and as bridge to other libraries), and the traits mechanism to allow for seamless integration of, and conversion from and to, user-defined C++ data types.
 
 ## License
