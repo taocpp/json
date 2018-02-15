@@ -687,6 +687,28 @@ namespace tao
       template< typename T, typename U = T >
       struct shared_traits
       {
+         template< template< typename... > class Traits, typename Base >
+         static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
+         {
+            if( v.is_null() ) {
+               return std::shared_ptr< U >();
+            }
+            auto t = std::make_shared< T >();  // TODO: More control?
+            v.as( *t );
+            return t;
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< T >& x )
+         {
+            if( x ) {
+               v = *x;
+            }
+            else {
+               v = null;
+            }
+         }
+
          template< template< typename... > class Traits, typename Producer >
          static std::shared_ptr< U > consume( Producer& producer )
          {
@@ -696,6 +718,17 @@ namespace tao
             auto t = std::make_shared< T >();  // TODO: More control?
             json::consume< Traits >( producer, *t );
             return t;
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer, typename C >
+         static void produce( Consumer& consumer, const std::shared_ptr< T >& x )
+         {
+            if( x ) {
+               events::produce< Traits >( consumer, *x );
+            }
+            else {
+               consumer.null();
+            }
          }
       };
 
