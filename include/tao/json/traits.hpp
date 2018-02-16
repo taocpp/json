@@ -23,11 +23,6 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4715 )
-#endif
-
 namespace tao
 {
    namespace json
@@ -132,7 +127,6 @@ namespace tao
                   default:
                      v.throw_invalid_json_type();
                }
-               assert( false );  // LCOV_EXCL_LINE
                std::abort();  // LCOV_EXCL_LINE
             }
          };
@@ -484,7 +478,6 @@ namespace tao
                default:
                   v.throw_invalid_json_type();
             }
-            assert( false );  // LCOV_EXCL_LINE
             std::abort();  // LCOV_EXCL_LINE
          }
 
@@ -712,7 +705,6 @@ namespace tao
                default:
                   v.throw_invalid_json_type();
             }
-            assert( false );  // LCOV_EXCL_LINE
             std::abort();  // LCOV_EXCL_LINE
          }
 
@@ -1041,6 +1033,9 @@ namespace tao
       struct shared_traits
          : public internal::indirect_traits< std::shared_ptr< T > >
       {
+         template< typename V >
+         using with_base = shared_traits< T, V >;
+
          template< template< typename... > class Traits, typename Base >
          static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
          {
@@ -1063,6 +1058,9 @@ namespace tao
       struct unique_traits
          : public internal::indirect_traits< std::unique_ptr< T > >
       {
+         template< typename V >
+         using with_base = unique_traits< T, V >;
+
          template< template< typename... > class Traits, typename Base >
          static std::unique_ptr< U > as( const basic_value< Traits, Base >& v )
          {
@@ -1084,9 +1082,5 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
-
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
 
 #endif

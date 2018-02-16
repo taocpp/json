@@ -293,6 +293,86 @@ namespace tao
          template< typename... As >
          using object = basic_object< for_unknown_key::THROW, As... >;
 
+         template< typename K >
+         struct factory_name;
+
+         template< char... Cs >
+         struct factory_name< key< Cs... > >
+         {
+            static std::string name()
+            {
+               static const char s[] = { Cs..., 0 };
+               return std::string( s, sizeof...( Cs ) );
+            }
+
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce_name( Consumer& consumer )
+            {
+               static const char s[] = { Cs..., 0 };
+               consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
+            }
+         };
+
+         template< typename K, typename B >
+         struct factory_type
+            : public factory_name< K >,
+              public B
+         {
+         };
+
+         template< typename K, typename T >
+         struct factory_temp
+         {
+            template< typename U, template< typename... > class Traits >
+            using type = factory_type< K, typename Traits< std::shared_ptr< T > >::template with_base< U > >;
+         };
+
+         template< typename U, typename... Ts >
+         struct factory
+         {
+            template< typename F >
+            struct entry
+            {
+               explicit entry( F c )
+                  : function( c )
+               {
+               }
+
+               F function;
+            };
+
+            template< typename V, template< typename... > class Traits, typename Base, typename F >
+            static bool emplace_as( std::map< std::string, entry< F > >& m )
+            {
+               using T = typename V::template type< U, Traits >;
+               m.emplace( T::name(), entry< F >( &T::template as< Traits, Base > ) );
+               return true;
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
+            {
+               using F = std::shared_ptr< U > ( * )( const basic_value< Traits, Base >& );
+               static const std::map< std::string, entry< F > > m = []() {
+                  std::map< std::string, entry< F > > t;
+                  (void)json::internal::swallow{ emplace_as< Ts, Traits, Base >( t )... };
+                  assert( t.size() == sizeof...( Ts ) );
+                  return t;
+               }();
+
+               const auto& a = v.get_object();
+               if( a.size() != 1 ) {
+                  throw std::runtime_error( "unexpected JSON object size for polymorphic object factory" );  // NOLINT
+               }
+               const auto b = a.begin();
+               const auto i = m.find( b->first );
+               if( i == m.end() ) {
+                  throw std::runtime_error( "unknown factory type " + json::internal::escape( b->first ) );  // NOLINT
+               }
+               return i->second.function( b->second );
+            }
+         };
+
       }  // namespace binding
 
    }  // namespace json
@@ -307,5 +387,7 @@ namespace tao
 
 #define TAO_JSON_BIND_REQUIRED( KeY, ... ) tao::json::binding::member< tao::json::binding::member_kind::REQUIRED, TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
 #define TAO_JSON_BIND_OPTIONAL( KeY, ... ) tao::json::binding::member< tao::json::binding::member_kind::OPTIONAL, TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
+
+#define TAO_JSON_BIND_FACTORY( KeY, ... ) tao::json::binding::factory_temp< TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), __VA_ARGS__ >
 
 #endif
