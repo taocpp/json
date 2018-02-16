@@ -5,6 +5,7 @@
 #define TAO_JSON_TRAITS_HPP
 
 #include <cstdint>
+#include <cstdlib>
 
 #include <map>
 #include <memory>
@@ -132,6 +133,7 @@ namespace tao
                      v.throw_invalid_json_type();
                }
                assert( false );  // LCOV_EXCL_LINE
+               std::abort();  // LCOV_EXCL_LINE
             }
          };
 
@@ -483,6 +485,7 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             assert( false );  // LCOV_EXCL_LINE
+            std::abort();  // LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -710,6 +713,7 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             assert( false );  // LCOV_EXCL_LINE
+            std::abort();  // LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
