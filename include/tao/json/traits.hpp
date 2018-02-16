@@ -27,6 +27,11 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4702 )
+#endif
+
 namespace tao
 {
    namespace json
@@ -1117,13 +1122,13 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_array() ? std::lexicographical_compare( lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end, rhs.begin(), rhs.end() ) : ( lhs.type() < type::ARRAY );
+               return lhs.is_array() ? std::lexicographical_compare( lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end(), rhs.begin(), rhs.end() ) : ( lhs.type() < type::ARRAY );
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end ) : ( lhs.type() > type::ARRAY );
+               return lhs.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end() ) : ( lhs.type() > type::ARRAY );
             }
          };
 
@@ -1154,19 +1159,31 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_object() && ( lhs.unsafe_get_object().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin() );
+               static const auto eq = []( const typename T::value_type& r, const std::pair< const std::string, basic_value< Traits, Base > >& l ) {
+                  return ( l.first == r.first ) && ( l.second == r.second );
+               };
+               return lhs.is_object() && ( lhs.unsafe_get_object().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), eq );
             }
+
+            struct pair_less
+            {
+               template< typename L, typename R >
+               bool operator()( const L& l, const R& r ) const
+               {
+                  return ( l.first < r.first ) || ( ( l.first == r.first ) && ( l.second < r.second ) );
+               }
+            };
 
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_object() ? std::lexicographical_compare( lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end, rhs.begin(), rhs.end() ) : ( lhs.type() < type::OBJECT );
+               return lhs.is_object() ? std::lexicographical_compare( lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end(), rhs.begin(), rhs.end(), pair_less() ) : ( lhs.type() < type::OBJECT );
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end ) : ( lhs.type() > type::OBJECT );
+               return lhs.is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end(), pair_less() ) : ( lhs.type() > type::OBJECT );
             }
          };
 
@@ -1231,5 +1248,9 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #endif

@@ -79,6 +79,21 @@ namespace tao
             }
          };
 
+         template< typename C, typename T, T( *P )( const C& ) >
+         struct element< T( * )( const C& ), P >
+         {
+            static auto read( const C& v ) -> decltype( P( v ) )
+            {
+               return P( v );
+            }
+
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& v )
+            {
+               events::produce< Traits >( consumer, P( v ) );
+            }
+         };
+
          template< char... Cs >
          using key = json_pegtl::string< Cs... >;
 
@@ -191,6 +206,24 @@ namespace tao
                (void)json::internal::swallow{ produce_element< As, Traits >( consumer, x )... };
                consumer.end_array( sizeof...( As ) );
             }
+
+            template< typename A, template< typename... > class Traits, typename Base, typename C >
+            static bool equal_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
+            {
+               return a[ i++ ] == A::read( x );
+            }
+
+            template< template< typename... > class Traits, typename Base, typename C >
+            static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
+            {
+               if( bool result = lhs.is_array() && ( lhs.unsafe_get_array().size() == sizeof...( As ) ) ) {
+                  std::size_t i = 0;
+                  const auto& a = lhs.get_array();
+                  (void)json::internal::swallow{ result = result && equal_element< As >( a, rhs, i )... };
+                  return result;
+               }
+               return false;
+            }
          };
 
          template< for_unknown_key E, typename... As >
@@ -287,6 +320,24 @@ namespace tao
                consumer.begin_object( sizeof...( As ) );
                (void)json::internal::swallow{ produce_member< As, Traits >( consumer, x )... };
                consumer.end_object( sizeof...( As ) );
+            }
+
+            template< typename A, template< typename... > class Traits, typename Base, typename C >
+            static bool equal_member( const std::map< std::string, basic_value< Traits, Base > >& a, C& x )
+            {
+               // TODO: If we could assume the As... to be sorted by their keys we could easily optimise this, otherwise it's slightly more involved...
+               return a[ A::key() ] == A::read( x );
+            }
+
+            template< template< typename... > class Traits, typename Base, typename C >
+            static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
+            {
+               if( bool result = lhs.is_object() && ( lhs.unsafe_get_object().size() == sizeof...( As ) ) ) {
+                  const auto& a = lhs.get_object();
+                  (void)json::internal::swallow{ result = result && equal_member< As >( a, rhs )... };
+                  return result;
+               }
+               return false;
             }
          };
 

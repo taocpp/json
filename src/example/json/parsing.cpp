@@ -1120,10 +1120,41 @@ namespace tao
       {
       };
 
+      struct baz
+      {
+         int get_i() const
+         {
+            return i;
+         }
+
+         int i = -1;
+         int j = -2;
+      };
+
+      int get_j( const baz& b )
+      {
+         return b.j;
+      }
+
+      template<>
+      struct my_traits< baz >
+         : my_array< TAO_JSON_BIND_ELEMENT( &baz::get_i ),
+                     TAO_JSON_BIND_ELEMENT( &get_j ) >
+      {
+      };
+
       using my_value = basic_value< my_traits >;
 
       void unit_test()
       {
+         {
+            baz b;
+            basic_value< my_traits > v = b;
+            TEST_ASSERT( v.is_array() );
+            TEST_ASSERT( v.unsafe_get_array().size() == 2 );
+            TEST_ASSERT( v[ 0 ] == -1 );
+            TEST_ASSERT( v[ 1 ] == -2 );
+         }
          {
             parse_producer<> pp( "  [  \"kasimir\"  ,  \"fridolin\", 2  ]  " );
             const auto f = consume< foo, my_traits >( pp );
