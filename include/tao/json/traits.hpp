@@ -7,6 +7,7 @@
 #include <cstdint>
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -15,6 +16,7 @@
 #include "type.hpp"
 
 #include "events/from_value.hpp"
+#include "events/produce.hpp"
 
 #include "external/byte.hpp"
 #include "external/optional.hpp"
@@ -969,8 +971,57 @@ namespace tao
       {
       };
 
+      namespace internal
+      {
+         template< typename T >
+         struct indirect_traits
+         {
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& c, const T& o )
+            {
+               if( o ) {
+                  json::events::produce< Traits >( c, *o );
+               }
+               else {
+                  json::events::produce< Traits >( c, null );
+               }
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const T& o )
+            {
+               if( o ) {
+                  v = *o;
+               }
+               else {
+                  v = null;
+               }
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return rhs ? ( lhs == *rhs ) : ( lhs == null );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return rhs ? ( lhs < *rhs ) : ( lhs < null );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return rhs ? ( lhs > *rhs ) : ( lhs > null );
+            }
+         };
+
+      }  // namespace internal
+
       template< typename T >
       struct traits< tao::optional< T > >
+         : public internal::indirect_traits< tao::optional< T > >
       {
          template< template< typename... > class Traits, typename Base >
          static tao::optional< T > as( const basic_value< Traits, Base >& v )
@@ -980,46 +1031,50 @@ namespace tao
             }
             return tao::nullopt;
          }
+      };
 
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::optional< T >& o )
-         {
-            if( o ) {
-               Traits< typename std::decay< T >::type >::template produce< Traits >( c, *o );
-            }
-            else {
-               Traits< null_t >::template produce< Traits >( c, null );
-            }
-         }
-
+      template< typename T, typename U = T >
+      struct shared_traits
+         : public internal::indirect_traits< std::shared_ptr< T > >
+      {
          template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const tao::optional< T >& o )
+         static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
          {
-            if( o ) {
-               v = *o;
+            if( v.is_null() ) {
+               return std::shared_ptr< U >();
             }
-            else {
-               v = null;
+            auto t = std::make_shared< T >();  // TODO: More control?
+            v.as( *t );
+            return t;
+         }
+      };
+
+      template< typename T >
+      struct traits< std::shared_ptr< T > >
+         : public shared_traits< T >
+      {
+      };
+
+      template< typename T, typename U = T >
+      struct unique_traits
+         : public internal::indirect_traits< std::unique_ptr< T > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static std::unique_ptr< U > as( const basic_value< Traits, Base >& v )
+         {
+            if( v.is_null() ) {
+               return std::unique_ptr< U >();
             }
+            std::unique_ptr< U > t( new T() );  // TODO: More control?
+            v.as( *static_cast< T* >( t.get() ) );
+            return t;
          }
+      };
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
-         {
-            return rhs ? ( lhs == *rhs ) : ( lhs == null );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
-         {
-            return rhs ? ( lhs < *rhs ) : ( lhs < null );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
-         {
-            return rhs ? ( lhs > *rhs ) : ( lhs > null );
-         }
+      template< typename T >
+      struct traits< std::unique_ptr< T > >
+         : public unique_traits< T >
+      {
       };
 
    }  // namespace json

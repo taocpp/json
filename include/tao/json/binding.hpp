@@ -226,7 +226,6 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename C >
             static void as( const basic_value< Traits, Base >& v, C& x )
             {
-               const auto& a = v.get_object();
                using F = void ( * )( const basic_value< Traits, Base >&, C& );
                static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
                   std::map< std::string, entry< F > > t;
@@ -239,6 +238,8 @@ namespace tao
                   (void)json::internal::swallow{ set_optional_bit< As >( t, i )... };
                   return t;
                }( 0 );
+
+               const auto& a = v.get_object();
                std::bitset< sizeof...( As ) > b;
                for( const auto& p : a ) {
                   const auto& k = p.first;

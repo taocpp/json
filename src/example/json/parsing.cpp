@@ -560,7 +560,7 @@ namespace tao
             return state_t();
          }
 
-         void end_object()
+         void end_object( state_t& /*unused*/ )
          {
             parse_single_must< '}' >();
          }
@@ -685,30 +685,9 @@ namespace tao
       };
 
       template< typename T, typename U = T >
-      struct shared_traits
+      struct my_shared_traits
+         : public shared_traits< T, U >
       {
-         template< template< typename... > class Traits, typename Base >
-         static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
-         {
-            if( v.is_null() ) {
-               return std::shared_ptr< U >();
-            }
-            auto t = std::make_shared< T >();  // TODO: More control?
-            v.as( *t );
-            return t;
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< T >& x )
-         {
-            if( x ) {
-               v = *x;
-            }
-            else {
-               v = null;
-            }
-         }
-
          template< template< typename... > class Traits, typename Producer >
          static std::shared_ptr< U > consume( Producer& producer )
          {
@@ -719,22 +698,11 @@ namespace tao
             json::consume< Traits >( producer, *t );
             return t;
          }
-
-         template< template< typename... > class Traits = traits, typename Consumer, typename C >
-         static void produce( Consumer& consumer, const std::shared_ptr< T >& x )
-         {
-            if( x ) {
-               events::produce< Traits >( consumer, *x );
-            }
-            else {
-               consumer.null();
-            }
-         }
       };
 
       template< typename T >
       struct my_traits< std::shared_ptr< T > >
-         : public shared_traits< T >
+         : public my_shared_traits< T >
       {
       };
 
@@ -788,7 +756,6 @@ namespace tao
          template< template< typename... > class Traits = traits, typename Producer, typename C >
          static void consume( Producer& producer, C& x )
          {
-            auto p = producer.begin_object();
             using F = void ( * )( Producer&, C& );
             static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
                std::map< std::string, entry< F > > t;
@@ -801,6 +768,8 @@ namespace tao
                (void)internal::swallow{ binding::basic_object< E, As... >::template set_optional_bit< As >( t, i )... };
                return t;
             }( 0 );
+
+            auto p = producer.begin_object();
             std::bitset< sizeof...( As ) > b;
             while( producer.member_or_end_object( p ) ) {
                const auto k = producer.key();
@@ -827,19 +796,19 @@ namespace tao
       namespace binding
       {
          template< typename K >
-         struct factory_key;
+         struct factory_name;
 
          template< char... Cs >
-         struct factory_key< key< Cs... > >
+         struct factory_name< key< Cs... > >
          {
-            static std::string key()
+            static std::string name()
             {
                static const char s[] = { Cs..., 0 };
                return std::string( s, sizeof...( Cs ) );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce_key( Consumer& consumer )
+            static void produce_name( Consumer& consumer )
             {
                static const char s[] = { Cs..., 0 };
                consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
@@ -848,8 +817,8 @@ namespace tao
 
          template< typename K, typename U, typename T >
          struct factory_type
-            : public factory_key< K >,
-              public shared_traits< T, U >
+            : public factory_name< K >,
+              public my_shared_traits< T, U >
          {
          };
 
@@ -870,21 +839,20 @@ namespace tao
             template< typename T, template< typename... > class Traits, typename Base, typename F >
             static bool emplace_as( std::map< std::string, entry< F > >& m )
             {
-               m.emplace( T::key(), entry< F >( &T::template as< Traits, Base > ) );
+               m.emplace( T::name(), entry< F >( &T::template as< Traits, Base > ) );
                return true;
             }
 
             template< typename T, template< typename... > class Traits, typename Producer, typename F >
             static bool emplace_consume( std::map< std::string, entry< F > >& m )
             {
-               m.emplace( T::key(), entry< F >( &T::template consume< Traits, Producer > ) );
+               m.emplace( T::name(), entry< F >( &T::template consume< Traits, Producer > ) );
                return true;
             }
 
             template< template< typename... > class Traits, typename Base >
             static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
             {
-               const auto& a = v.get_object();
                using F = std::shared_ptr< U > ( * )( const basic_value< Traits, Base >& );
                static const std::map< std::string, entry< F > > m = []() {
                   std::map< std::string, entry< F > > t;
@@ -892,42 +860,38 @@ namespace tao
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
-               const auto k = a.at( "type" ).get_string();
-               const auto i = m.find( k );
-               if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + json::internal::escape( k ) );  // NOLINT
-               }
-               return i->second.function( v );
-            }
 
-            template< typename Producer >
-            static std::string consume_type( Producer& producer )
-            {
-               const auto m = producer.mark();
-               auto p = producer.begin_object();
-               while( producer.member_or_end_object( p ) ) {
-                  if( producer.key() == "type" ) {
-                     return producer.string();
-                  }
+               const auto& a = v.get_object();
+               if( a.size() != 1 ) {
+                  throw std::runtime_error( "unexpected JSON object size for polymorphic object factory" );  // NOLINT
                }
-               throw std::runtime_error( "no factory type found" );  // NOLINT
+               const auto b = a.begin();
+               const auto i = m.find( b.first );
+               if( i == m.end() ) {
+                  throw std::runtime_error( "unknown factory type " + json::internal::escape( b.first ) );  // NOLINT
+               }
+               return i->second.function( b.second.get_object() );
             }
 
             template< template< typename... > class Traits, typename Producer >
             static std::shared_ptr< U > consume( Producer& producer )
             {
-               const auto k = consume_type( producer );
                using F = std::shared_ptr< U > ( * )( Producer & producer );
                static const std::map< std::string, entry< F > > m = []() {
                   std::map< std::string, entry< F > > t;
                   (void)json::internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };
                   return t;
                }();
+
+               auto p = producer.begin_object();
+               const auto k = producer.key();
                const auto i = m.find( k );
                if( i == m.end() ) {
                   throw std::runtime_error( "unknown factory type " + json::internal::escape( k ) );  // NOLINT
                }
-               return i->second.function( producer );
+               auto r = i->second.function( producer );
+               producer.end_object( p );
+               return r;
             }
          };
 
@@ -1025,17 +989,16 @@ namespace tao
 
       template<>
       struct my_traits< derived_one >
-         : my_object< binding::for_unknown_key::CONTINUE,
+         : my_object< binding::for_unknown_key::THROW,
                       TAO_JSON_BIND_REQUIRED( "s", &derived_one::s ) >
       {
       };
 
-      // TODO: Find better way to skip "type".
       // TODO: Find way to handle inheritance.
 
       template<>
       struct my_traits< derived_two >
-         : my_object< binding::for_unknown_key::CONTINUE,
+         : my_object< binding::for_unknown_key::THROW,
                       TAO_JSON_BIND_REQUIRED( "i", &derived_two::i ) >
       {
       };
@@ -1303,7 +1266,7 @@ namespace tao
             TEST_ASSERT( x.i == 2 );
          }
          {
-            parse_producer<> pp( "{ \"type\" : \"two\", \"i\" : 17 }" );
+            parse_producer<> pp( "{ \"two\":{ \"i\" : 17 }}" );
             const auto v = consume< std::shared_ptr< base_class >, my_traits >( pp );
             const auto c = std::dynamic_pointer_cast< derived_two >( v );
             TEST_ASSERT( c );
