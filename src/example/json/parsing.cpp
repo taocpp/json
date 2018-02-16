@@ -630,7 +630,8 @@ namespace tao
       };
 
       template< typename T >
-      struct list_traits
+      struct my_traits< std::list< T > >
+         : public traits< std::list< T > >
       {
          template< template< typename... > class Traits, typename Producer >
          static void consume( Producer& producer, std::list< T >& v )
@@ -643,13 +644,8 @@ namespace tao
       };
 
       template< typename T >
-      struct my_traits< std::list< T > >
-         : public list_traits< T >
-      {
-      };
-
-      template< typename T >
-      struct vector_traits
+      struct my_traits< std::vector< T > >
+         : public traits< std::vector< T > >
       {
          template< template< typename... > class Traits, typename Producer >
          static void consume( Producer& producer, std::vector< T >& v )
@@ -665,13 +661,8 @@ namespace tao
       };
 
       template< typename T >
-      struct my_traits< std::vector< T >, typename std::enable_if< !internal::is_basic_value< T >::value >::type >
-         : public vector_traits< T >
-      {
-      };
-
-      template< typename T >
       struct my_traits< std::map< std::string, T > >
+         : public traits< std::map< std::string, T > >
       {
          template< template< typename... > class Traits, typename Producer >
          static void consume( Producer& producer, std::map< std::string, T >& v )
@@ -804,13 +795,14 @@ namespace tao
          struct versions< V >
             : public V
          {
+            // TODO: Or static_assert more than one version?
          };
 
          template< typename V, typename... Vs >
          struct versions< V, Vs... >
             : public V
          {
-            // NOTE: This is a bit like sor<>.
+            // NOTE: This is a bit like a high-level pegtl::sor<>.
             // TODO: Clear x between attempts?
 
             template< typename A, template< typename... > class Traits, typename Base, typename C >
@@ -953,8 +945,8 @@ namespace tao
       template<>
       struct my_traits< std::shared_ptr< base_class > >
          : my_factory< base_class,
-                       TAO_JSON_BIND_FACTORY( "one", derived_one ),
-                       TAO_JSON_BIND_FACTORY( "two", derived_two ) >
+                       TAO_JSON_FACTORY_BIND( "one", derived_one ),
+                       TAO_JSON_FACTORY_BIND( "two", derived_two ) >
       {
       };
 

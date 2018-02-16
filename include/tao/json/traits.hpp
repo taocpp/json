@@ -7,9 +7,13 @@
 #include <cstdint>
 #include <cstdlib>
 
+#include <algorithm>
+#include <list>
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "byte_view.hpp"
@@ -970,7 +974,7 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         struct indirect_traits
+         struct indirect_traits_base
          {
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
@@ -1017,7 +1021,7 @@ namespace tao
 
       template< typename T >
       struct traits< tao::optional< T > >
-         : public internal::indirect_traits< tao::optional< T > >
+         : public internal::indirect_traits_base< tao::optional< T > >
       {
          template< template< typename... > class Traits, typename Base >
          static tao::optional< T > as( const basic_value< Traits, Base >& v )
@@ -1031,7 +1035,7 @@ namespace tao
 
       template< typename T, typename U = T >
       struct shared_traits
-         : public internal::indirect_traits< std::shared_ptr< T > >
+         : public internal::indirect_traits_base< std::shared_ptr< T > >
       {
          template< typename V >
          using with_base = shared_traits< T, V >;
@@ -1056,7 +1060,7 @@ namespace tao
 
       template< typename T, typename U = T >
       struct unique_traits
-         : public internal::indirect_traits< std::unique_ptr< T > >
+         : public internal::indirect_traits_base< std::unique_ptr< T > >
       {
          template< typename V >
          using with_base = unique_traits< T, V >;
@@ -1077,6 +1081,151 @@ namespace tao
       struct traits< std::unique_ptr< T > >
          : public unique_traits< T >
       {
+      };
+
+      namespace internal
+      {
+         template< typename T >
+         struct array_traits_base
+         {
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& c, const T& o )
+            {
+               c.begin_array( o.size() );
+               for( const auto& i : o ) {
+                  json::events::produce< Traits >( c, i );
+                  c.element();
+               }
+               c.end_array( o.size() );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const T& o )
+            {
+               v.prepare_array();
+               for( const auto& i : o ) {
+                  v.unsafe_emplace_back( i );
+               }
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return lhs.is_array() && ( lhs.unsafe_get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin() );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return lhs.is_array() ? std::lexicographical_compare( lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end, rhs.begin(), rhs.end() ) : ( lhs.type() < type::ARRAY );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return lhs.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end ) : ( lhs.type() > type::ARRAY );
+            }
+         };
+
+         template< typename T >
+         struct object_traits_base
+         {
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& c, const T& o )
+            {
+               c.begin_object( o.size() );
+               for( const auto& i : o ) {
+                  c.key( i.first );
+                  json::events::produce< Traits >( c, i.second );
+                  c.member();
+               }
+               c.end_object( o.size() );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const T& o )
+            {
+               v.prepare_object();
+               for( const auto& i : o ) {
+                  v.unsafe_emplace( i.first, i.second );
+               }
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return lhs.is_object() && ( lhs.unsafe_get_object().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin() );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return lhs.is_object() ? std::lexicographical_compare( lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end, rhs.begin(), rhs.end() ) : ( lhs.type() < type::OBJECT );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            {
+               return lhs.is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end ) : ( lhs.type() > type::OBJECT );
+            }
+         };
+
+      }  // namespace internal
+
+      template< typename T >
+      struct traits< std::list< T > >
+         : public internal::array_traits_base< std::list< T > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, std::list< T >& r )
+         {
+            const auto& a = v.get_array();
+            for( const auto& i : a ) {
+               r.emplace_back( i.template as< T >() );
+            }
+         }
+      };
+
+      template< typename T >
+      struct traits< std::set< T > >
+         : public internal::array_traits_base< std::set< T > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, std::set< T >& r )
+         {
+            const auto& a = v.get_array();
+            for( const auto& i : a ) {
+               r.emplace( i.template as< T >() );  // TODO: By default throw on duplicate?
+            }
+         }
+      };
+
+      template< typename T >
+      struct traits< std::vector< T > >
+         : public internal::array_traits_base< std::vector< T > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, std::vector< T >& r )
+         {
+            const auto& a = v.get_array();
+            for( const auto& i : a ) {
+               r.emplace_back( i.template as< T >() );
+            }
+         }
+      };
+
+      template< typename T >
+      struct traits< std::map< std::string, T > >
+         : public internal::object_traits_base< std::map< std::string, T > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void as( const basic_value< Traits, Base >& v, std::map< std::string, T >& r )
+         {
+            const auto& o = v.get_object();
+            for( const auto& i : o ) {
+               r.emplace( i.first, i.second.template as< T >() );  // TODO: By default throw on duplicate?
+            }
+         }
       };
 
    }  // namespace json
