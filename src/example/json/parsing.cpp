@@ -871,8 +871,8 @@ namespace tao
          template< typename V, template< typename... > class Traits, typename Producer, typename F >
          static bool emplace_consume( std::map< std::string, entry< F > >& m )
          {
-            using T = typename V::template type< U, Traits >;
-            m.emplace( T::name(), entry< F >( &T::template consume< Traits, Producer > ) );
+            using W = typename V::template bind< U >;
+            m.emplace( W::name(), entry< F >( &W::template consume< Traits, Producer > ) );
             return true;
          }
 

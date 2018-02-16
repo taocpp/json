@@ -364,18 +364,49 @@ namespace tao
             }
          };
 
-         template< typename K, typename B >
+         template< typename K, typename T, typename U >
          struct factory_type
-            : public factory_name< K >,
-              public B
+            : public factory_name< K >
          {
+            static const std::type_info* type()
+            {
+               return &typeid( T );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
+            {
+               using R = typename Traits< std::shared_ptr< T > >::template with_base< U >;
+               return R::as( v );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< U >& p )
+            {
+               using R = typename Traits< std::shared_ptr< T > >::template with_base< U >;
+               R::assign( v, p );
+            }
+
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& consumer, const std::shared_ptr< U >& p )
+            {
+               using R = typename Traits< std::shared_ptr< T > >::template with_base< U >;
+               R::template produce< Traits >( consumer, p );
+            }
+
+            template< template< typename... > class Traits, typename Producer >
+            static std::shared_ptr< U > consume( Producer& producer )
+            {
+               using R = typename Traits< std::shared_ptr< T > >::template with_base< U >;
+               return R::template consume< Traits >( producer );
+            }
          };
 
          template< typename K, typename T >
          struct factory_temp
          {
-            template< typename U, template< typename... > class Traits >
-            using type = factory_type< K, typename Traits< std::shared_ptr< T > >::template with_base< U > >;
+            template< typename U >
+            using bind = factory_type< K, T, U >;
          };
 
          template< typename U, typename... Ts >
@@ -392,11 +423,24 @@ namespace tao
                F function;
             };
 
+            template< typename F >
+            struct entry2
+            {
+               entry2( F c, const std::string& n )
+                  : function( c ),
+                    name( n )
+               {
+               }
+
+               F function;
+               std::string name;
+            };
+
             template< typename V, template< typename... > class Traits, typename Base, typename F >
             static bool emplace_as( std::map< std::string, entry< F > >& m )
             {
-               using T = typename V::template type< U, Traits >;
-               m.emplace( T::name(), entry< F >( &T::template as< Traits, Base > ) );
+               using W = typename V::template bind< U >;
+               m.emplace( W::name(), entry< F >( &W::template as< Traits, Base > ) );
                return true;
             }
 
@@ -421,6 +465,65 @@ namespace tao
                   throw std::runtime_error( "unknown factory type " + json::internal::escape( b->first ) );  // NOLINT
                }
                return i->second.function( b->second );
+            }
+
+            template< typename V, template< typename... > class Traits, typename Base, typename F >
+            static bool emplace_assign( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
+            {
+               using W = typename V::template bind< U >;
+               m.emplace( W::type(), entry2< F >( &W::template assign< Traits, Base >, W::name() ) );
+               return true;
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< U >& p )
+            {
+               using F = void ( * )( basic_value< Traits, Base >&, const std::shared_ptr< U >& );
+               static const std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > m = []() {
+                  std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > t;
+                  (void)json::internal::swallow{ emplace_assign< Ts, Traits, Base >( t )... };
+                  assert( t.size() == sizeof...( Ts ) );
+                  return t;
+               }();
+
+               const auto i = m.find( &typeid( *p ) );
+               if( i == m.end() ) {
+                  throw std::runtime_error( "unknown factory type " + TAO_JSON_PEGTL_NAMESPACE::internal::demangle( typeid( *p ).name() ) );  // NOLINT
+               }
+               i->second.function( v, p );
+               v = {
+                  { i->second.name, std::move( v ) }
+               };
+            }
+
+            template< typename V, template< typename... > class Traits, typename Consumer, typename F >
+            static bool emplace_produce( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
+            {
+               using W = typename V::template bind< U >;
+               m.emplace( W::type(), entry2< F >( &W::template produce< Traits, Consumer >, W::name() ) );
+               return true;
+            }
+
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& consumer, const std::shared_ptr< U >& p )
+            {
+               using F = void ( * )( Consumer&, const std::shared_ptr< U >& );
+               static const std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > m = []() {
+                  std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > t;
+                  (void)json::internal::swallow{ emplace_produce< Ts, Traits, Consumer >( t )... };
+                  assert( t.size() == sizeof...( Ts ) );
+                  return t;
+               }();
+
+               const auto i = m.find( &typeid( *p ) );
+               if( i == m.end() ) {
+                  throw std::runtime_error( "unknown factory type " + TAO_JSON_PEGTL_NAMESPACE::internal::demangle( typeid( *p ).name() ) );  // NOLINT
+               }
+               consumer.begin_object( 1 );
+               consumer.key( i->second.name );
+               i->second.function( consumer, p );
+               consumer.member();
+               consumer.end_object( 1 );
             }
          };
 

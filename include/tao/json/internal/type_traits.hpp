@@ -14,6 +14,14 @@ namespace tao
    {
       namespace internal
       {
+         struct type_info_less
+         {
+            bool operator()( const std::type_info* l, const std::type_info* r ) const
+            {
+               return l->before( *r );
+            }
+         };
+
          template< typename T >
          struct is_basic_value
             : public std::false_type

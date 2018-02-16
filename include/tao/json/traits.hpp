@@ -1038,18 +1038,55 @@ namespace tao
          }
       };
 
-      template< typename T, typename U = T >
+      template< typename T, typename U = void >
       struct shared_traits
+      {
+         template< template< typename... > class Traits, typename Base >
+         static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
+         {
+            if( v.is_null() ) {
+               return std::shared_ptr< U >();
+            }
+            auto t = std::make_shared< T >();  // TODO: More control?
+            v.as( *t );
+            return t;
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< U >& p )
+         {
+            if( p ) {
+               v = static_cast< const T& >( *p );
+            }
+            else {
+               v = null;
+            }
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const T& p )
+         {
+            if( p ) {
+               json::events::produce< Traits >( c, static_cast< const T& >( *p ) );
+            }
+            else {
+               json::events::produce< Traits >( c, null );
+            }
+         }
+      };
+
+      template< typename T >
+      struct shared_traits< T, void >
          : public internal::indirect_traits_base< std::shared_ptr< T > >
       {
          template< typename V >
          using with_base = shared_traits< T, V >;
 
          template< template< typename... > class Traits, typename Base >
-         static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
+         static std::shared_ptr< T > as( const basic_value< Traits, Base >& v )
          {
             if( v.is_null() ) {
-               return std::shared_ptr< U >();
+               return std::shared_ptr< T >();
             }
             auto t = std::make_shared< T >();  // TODO: More control?
             v.as( *t );
