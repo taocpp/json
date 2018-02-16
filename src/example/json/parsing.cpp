@@ -1168,7 +1168,7 @@ namespace tao
       void unit_test()
       {
          {
-            const std::tuple< int, std::string, double > b = { 42, "hallo", 3.0 };
+            const std::tuple< int, std::string, double > b{ 42, "hallo", 3.0 };
             basic_value< my_traits > v = b;
             TEST_ASSERT( v.is_array() );
             TEST_ASSERT( v.unsafe_get_array().size() == 3 );
