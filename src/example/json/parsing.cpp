@@ -1080,6 +1080,26 @@ namespace tao
       {
       };
 
+      namespace internal
+      {
+         template< typename Tuple, typename Indices >
+         struct tuple_array_binding;
+
+         template< typename... Ts, std::size_t... Is >
+         struct tuple_array_binding< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+         {
+            using tuple_t = std::tuple< Ts... >;
+            using type = my_array< binding::element< const typename std::tuple_element< Is, tuple_t >::type& ( * )( const tuple_t& ), &std::get< Is, Ts... > >... >;
+         };
+
+      }  // namespace internal
+
+      template< typename... Ts >
+      struct my_traits< std::tuple< Ts... > >
+         : public internal::tuple_array_binding< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< sizeof...( Ts ) > >::type
+      {
+      };
+
       struct foo
       {
          std::string a = "hello";
@@ -1147,6 +1167,15 @@ namespace tao
 
       void unit_test()
       {
+         {
+            const std::tuple< int, std::string, double > b = { 42, "hallo", 3.0 };
+            basic_value< my_traits > v = b;
+            TEST_ASSERT( v.is_array() );
+            TEST_ASSERT( v.unsafe_get_array().size() == 3 );
+            TEST_ASSERT( v[ 0 ] == 42 );
+            TEST_ASSERT( v[ 1 ] == std::string( "hallo" ) );
+            TEST_ASSERT( v[ 2 ] == 3.0 );
+         }
          {
             baz b;
             basic_value< my_traits > v = b;
