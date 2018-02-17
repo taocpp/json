@@ -24,8 +24,6 @@
 
 // Custom Types
 #include "json/as.hpp"
-#include "json/binding.hpp"
-#include "json/consume.hpp"
 #include "json/produce.hpp"
 
 // JAXN Format
