@@ -1,9 +1,10 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_INCLUDE_CONTRIB_PARSE_TREE_HPP
-#define TAO_JSON_PEGTL_INCLUDE_CONTRIB_PARSE_TREE_HPP
+#ifndef TAO_JSON_PEGTL_CONTRIB_PARSE_TREE_HPP
+#define TAO_JSON_PEGTL_CONTRIB_PARSE_TREE_HPP
 
+#include <cassert>
 #include <memory>
 #include <type_traits>
 #include <typeinfo>
@@ -12,8 +13,10 @@
 
 #include "../config.hpp"
 #include "../normal.hpp"
+#include "../nothing.hpp"
 #include "../parse.hpp"
 
+#include "../internal/demangle.hpp"
 #include "../internal/iterator.hpp"
 
 namespace tao
@@ -25,175 +28,222 @@ namespace tao
          struct node
          {
             std::vector< std::unique_ptr< node > > children;
-            const std::type_info* id = nullptr;
-            internal::iterator begin;
-            internal::iterator end;
-         };
 
-         class state
-         {
-         private:
-            std::vector< std::unique_ptr< node > > stack;
+            const std::type_info* id_ = nullptr;
+            internal::iterator begin_;
+            internal::iterator end_;
+            std::string source_;
 
-         public:
-            state()
+            // each node will be default constructed
+            node() = default;
+
+            // no copy/move is necessary
+            // (nodes are always owned/handled by a std::unique_ptr)
+            node( const node& ) = delete;
+            node( node&& ) = delete;
+
+            ~node() = default;
+
+            // no assignment either
+            node& operator=( const node& ) = delete;
+            node& operator=( node&& ) = delete;
+
+            bool is_root() const noexcept
             {
-               emplace_back();
+               return id_ == nullptr;
             }
 
-            const node& root() const noexcept
+            std::string name() const
             {
-               return *stack.front();
+               assert( !is_root() );
+               return TAO_JSON_PEGTL_NAMESPACE::internal::demangle( id_->name() );
             }
 
-            std::unique_ptr< node >& back() noexcept
+            position begin() const
             {
-               return stack.back();
+               return position( begin_, source_ );
             }
 
-            void pop_back() noexcept
+            position end() const
             {
-               return stack.pop_back();
+               return position( end_, source_ );
             }
 
-            void emplace_back()
+            const std::string& source() const noexcept
             {
-               stack.emplace_back( std::unique_ptr< node >( new node ) );  // NOLINT: std::make_unique requires C++14
-            }
-         };
-
-      }  // namespace parse_tree
-
-      namespace internal
-      {
-         template< typename T, typename = void >
-         struct transform
-         {
-            static void call( std::unique_ptr< parse_tree::node >& /*unused*/ ) noexcept
-            {
-            }
-         };
-
-         template< typename T >
-         struct transform< T, decltype( T::transform( std::declval< std::unique_ptr< parse_tree::node >& >() ), void() ) >
-         {
-            static void call( std::unique_ptr< parse_tree::node >& n )
-            {
-               T::transform( n );
-            }
-         };
-
-         template< template< typename > class S, template< typename > class C >
-         struct parse_tree
-         {
-            template< typename Rule, bool = S< Rule >::value, bool = C< Rule >::value >
-            struct builder;
-         };
-
-         template< template< typename > class S, template< typename > class C >
-         template< typename Rule >
-         struct parse_tree< S, C >::builder< Rule, false, false >
-            : normal< Rule >
-         {
-         };
-
-         template< template< typename > class S, template< typename > class C >
-         template< typename Rule >
-         struct parse_tree< S, C >::builder< Rule, true, true >
-            : normal< Rule >
-         {
-            static_assert( sizeof( Rule ) == 0, "error: both S<Rule>::value and C<Rule>::value are true" );
-         };
-
-         template< template< typename > class S, template< typename > class C >
-         template< typename Rule >
-         struct parse_tree< S, C >::builder< Rule, true, false >
-            : normal< Rule >
-         {
-            template< typename Input >
-            static void start( const Input& in, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
-            {
-               s.emplace_back();
-               s.back()->begin = in.iterator();
+               return source_;
             }
 
-            template< typename Input >
-            static void success( const Input& /*unused*/, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            void remove_content() noexcept
             {
-               auto n = std::move( s.back() );
-               n->id = &typeid( Rule );
-               s.pop_back();
-               s.back()->children.emplace_back( std::move( n ) );
-               transform< S< Rule > >::call( s.back()->children.back() );
+               end_.reset();
             }
 
-            template< typename Input >
-            static void failure( const Input& /*unused*/, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
+            bool has_content() const noexcept
             {
-               s.pop_back();
+               return end_.data != nullptr;
+            }
+
+            std::string content() const
+            {
+               assert( has_content() );
+               return std::string( begin_.data, end_.data );
+            }
+
+            // all non-root nodes are initialized by calling this method
+            template< typename Rule, typename Input >
+            void start( const Input& in )
+            {
+               begin_ = in.iterator();
+               source_ = in.source();
+            }
+
+            // if parsing of the rule succeeded, this method is called
+            template< typename Rule, typename Input >
+            void success( const Input& in )
+            {
+               id_ = &typeid( Rule );
+               end_ = in.iterator();
+               // idea: check for source == in.source()?
+            }
+
+            // if parsing succeeded and the (optional) transform call
+            // did not discard the node, it is appended to its parent.
+            // note that "child" is the node whose Rule just succeeded
+            // and *this is the parent where the node should be appended.
+            void append( std::unique_ptr< node > child )
+            {
+               assert( child );
+               children.emplace_back( std::move( child ) );
             }
          };
 
-         template< template< typename > class S, template< typename > class C >
-         template< typename Rule >
-         struct parse_tree< S, C >::builder< Rule, false, true >
-            : normal< Rule >
+         namespace internal
          {
-            template< typename Input >
-            static void start( const Input& in, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+            template< typename Node >
+            struct state
             {
-               s.emplace_back();
-               s.back()->begin = in.iterator();
-            }
+               std::vector< std::unique_ptr< Node > > stack;
 
-            template< typename Input >
-            static void success( const Input& in, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s )
+               state()
+               {
+                  emplace_back();
+               }
+
+               void emplace_back()
+               {
+                  stack.emplace_back( std::unique_ptr< Node >( new Node ) );  // NOLINT: std::make_unique requires C++14
+               }
+
+               std::unique_ptr< Node >& back() noexcept
+               {
+                  return stack.back();
+               }
+
+               void pop_back() noexcept
+               {
+                  return stack.pop_back();
+               }
+            };
+
+            template< typename Node, typename S, typename = void >
+            struct transform
             {
-               auto n = std::move( s.back() );
-               n->id = &typeid( Rule );
-               n->end = in.iterator();
-               s.pop_back();
-               s.back()->children.emplace_back( std::move( n ) );
-               transform< C< Rule > >::call( s.back()->children.back() );
-            }
+               static void call( std::unique_ptr< Node >& /*unused*/ ) noexcept
+               {
+               }
+            };
 
-            template< typename Input >
-            static void failure( const Input& /*unused*/, TAO_JSON_PEGTL_NAMESPACE::parse_tree::state& s ) noexcept
+            template< typename Node, typename S >
+            struct transform< Node, S, decltype( S::transform( std::declval< std::unique_ptr< Node >& >() ), void() ) >
             {
-               s.pop_back();
-            }
-         };
+               static void call( std::unique_ptr< Node >& n ) noexcept( noexcept( S::transform( n ) ) )
+               {
+                  S::transform( n );
+               }
+            };
 
-         template< typename >
-         struct default_store_simple : std::false_type
-         {
-         };
+            template< template< typename > class S >
+            struct make_control
+            {
+               template< typename Rule, bool = S< Rule >::value >
+               struct control;
 
-         template< typename >
-         struct default_store_content : std::true_type
-         {
-         };
+               template< typename Rule >
+               using type = control< Rule >;
+            };
 
-      }  // namespace internal
-
-      namespace parse_tree
-      {
-         template< template< typename > class S, template< typename > class C >
-         struct make_builder
-         {
+            template< template< typename > class S >
             template< typename Rule >
-            struct type
-               : internal::parse_tree< S, C >::template builder< Rule >
+            struct make_control< S >::control< Rule, false >
+               : normal< Rule >
             {
             };
+
+            template< template< typename > class S >
+            template< typename Rule >
+            struct make_control< S >::control< Rule, true >
+               : normal< Rule >
+            {
+               template< typename Input, typename Node >
+               static void start( const Input& in, state< Node >& st )
+               {
+                  st.emplace_back();
+                  st.back()->template start< Rule >( in );
+               }
+
+               template< typename Input, typename Node >
+               static void success( const Input& in, state< Node >& st )
+               {
+                  auto n = std::move( st.back() );
+                  st.pop_back();
+                  n->template success< Rule >( in );
+                  transform< Node, S< Rule > >::call( n );
+                  if( n ) {
+                     st.back()->append( std::move( n ) );
+                  }
+               }
+
+               template< typename Input, typename Node >
+               static void failure( const Input& /*unused*/, state< Node >& st ) noexcept
+               {
+                  st.pop_back();
+               }
+            };
+
+            template< typename >
+            struct store_all : std::true_type
+            {
+            };
+
+         }  // namespace internal
+
+         // some nodes don't need to store their content,
+         // use this helper as a base class to derive your specialization from.
+         struct remove_content : std::true_type
+         {
+            template< typename Node >
+            static void transform( std::unique_ptr< Node >& n ) noexcept( noexcept( n->remove_content() ) )
+            {
+               n->remove_content();
+            }
          };
 
-         template< typename Grammar, template< typename > class S, template< typename > class C, typename Input >
-         state parse( Input& in )
+         template< typename Rule, typename Node, template< typename > class S = internal::store_all, typename Input >
+         std::unique_ptr< Node > parse( Input& in )
          {
-            state s;
-            TAO_JSON_PEGTL_NAMESPACE::parse< Grammar, nothing, make_builder< S, C >::template type >( in, s );
-            return s;
+            internal::state< Node > st;
+            if( !TAO_JSON_PEGTL_NAMESPACE::parse< Rule, nothing, internal::make_control< S >::template type >( in, st ) ) {
+               return nullptr;
+            }
+            assert( st.stack.size() == 1 );
+            return std::move( st.back() );
+         }
+
+         template< typename Rule, template< typename > class S = internal::store_all, typename Input >
+         std::unique_ptr< node > parse( Input& in )
+         {
+            return parse< Rule, node, S >( in );
          }
 
       }  // namespace parse_tree

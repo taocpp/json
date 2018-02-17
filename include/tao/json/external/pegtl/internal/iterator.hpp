@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_INCLUDE_INTERNAL_ITERATOR_HPP
-#define TAO_JSON_PEGTL_INCLUDE_INTERNAL_ITERATOR_HPP
+#ifndef TAO_JSON_PEGTL_INTERNAL_ITERATOR_HPP
+#define TAO_JSON_PEGTL_INTERNAL_ITERATOR_HPP
 
 #include <cstdlib>
 
@@ -38,6 +38,11 @@ namespace tao
 
             iterator& operator=( const iterator& ) = default;
             iterator& operator=( iterator&& ) = default;
+
+            void reset() noexcept
+            {
+               *this = iterator();
+            }
 
             const char* data = nullptr;
 

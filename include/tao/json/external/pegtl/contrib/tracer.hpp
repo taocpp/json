@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_INCLUDE_CONTRIB_TRACER_HPP
-#define TAO_JSON_PEGTL_INCLUDE_CONTRIB_TRACER_HPP
+#ifndef TAO_JSON_PEGTL_CONTRIB_TRACER_HPP
+#define TAO_JSON_PEGTL_CONTRIB_TRACER_HPP
 
 #include <cassert>
 #include <iomanip>

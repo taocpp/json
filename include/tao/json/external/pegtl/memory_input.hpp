@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_INCLUDE_MEMORY_INPUT_HPP
-#define TAO_JSON_PEGTL_INCLUDE_MEMORY_INPUT_HPP
+#ifndef TAO_JSON_PEGTL_MEMORY_INPUT_HPP
+#define TAO_JSON_PEGTL_MEMORY_INPUT_HPP
 
 #include <cstddef>
 #include <cstring>
@@ -215,6 +215,9 @@ namespace tao
             : memory_input( in_string.data(), in_string.size(), std::forward< T >( in_source ) )
          {
          }
+
+         template< typename T >
+         memory_input( std::string&&, T&& ) = delete;
 
          template< typename T >
          memory_input( const char* in_begin, T&& in_source ) noexcept( std::is_nothrow_constructible< Source, T&& >::value )

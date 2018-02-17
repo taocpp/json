@@ -55,7 +55,7 @@ namespace tao
          class parser
          {
          public:
-            using Input = json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY >;
+            using Input = json_pegtl::string_input< json_pegtl::tracking_mode::LAZY >;
 
             explicit parser( const std::string& data )
                : m_input( test_unhex( data ), __FUNCTION__ )
@@ -822,7 +822,7 @@ namespace tao
             {
                bool ok = false;
                (void)json::internal::swallow{ ok = as_attempt< V >( v, x ), ( ok = ok || as_attempt< Vs >( v, x ) )... };
-               if( ! ok ) {
+               if( !ok ) {
                   throw std::runtime_error( "all versions failed" );  // NOLINT
                }
             }
@@ -845,7 +845,7 @@ namespace tao
             {
                bool ok = false;
                (void)json::internal::swallow{ ok = consume_attempt< V, Traits >( producer, x ), ( ok = ok || consume_attempt< Vs, Traits >( producer, x ) )... };
-               if( ! ok ) {
+               if( !ok ) {
                   throw std::runtime_error( "all versions failed" );  // NOLINT
                }
             }
@@ -1089,7 +1089,7 @@ namespace tao
          struct tuple_array_binding< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
          {
             using tuple_t = std::tuple< Ts... >;
-            using type = my_array< binding::element< const typename std::tuple_element< Is, tuple_t >::type& ( * )( const tuple_t& ), &std::get< Is, Ts... > >... >;
+            using type = my_array< binding::element< const typename std::tuple_element< Is, tuple_t >::type& (*)(const tuple_t&), &std::get< Is, Ts... > >... >;
          };
 
       }  // namespace internal
