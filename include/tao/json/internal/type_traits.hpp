@@ -5,6 +5,7 @@
 #define TAO_JSON_INTERNAL_TYPE_TRAITS_HPP
 
 #include <type_traits>
+#include <typeinfo>
 
 #include "../forward.hpp"
 
