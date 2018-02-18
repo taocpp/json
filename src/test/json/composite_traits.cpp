@@ -128,15 +128,15 @@ namespace tao
          TEST_ASSERT( h != v );
          TEST_ASSERT( h > v );
          TEST_ASSERT( h >= v );
-         TEST_ASSERT( ! ( h < v ) );
-         TEST_ASSERT( ! ( h <= v ) );
-         TEST_ASSERT( ! ( h == v ) );
+         TEST_ASSERT( !( h < v ) );
+         TEST_ASSERT( !( h <= v ) );
+         TEST_ASSERT( !( h == v ) );
          TEST_ASSERT( v != h );
          TEST_ASSERT( v < h );
          TEST_ASSERT( v <= h );
-         TEST_ASSERT( ! ( v > h ) );
-         TEST_ASSERT( ! ( v >= h ) );
-         TEST_ASSERT( ! ( v == h ) );
+         TEST_ASSERT( !( v > h ) );
+         TEST_ASSERT( !( v >= h ) );
+         TEST_ASSERT( !( v == h ) );
       }
 
       void test_map()
@@ -156,29 +156,29 @@ namespace tao
          TEST_ASSERT( h != v );
          TEST_ASSERT( h > v );
          TEST_ASSERT( h >= v );
-         TEST_ASSERT( ! ( h < v ) );
-         TEST_ASSERT( ! ( h <= v ) );
-         TEST_ASSERT( ! ( h == v ) );
+         TEST_ASSERT( !( h < v ) );
+         TEST_ASSERT( !( h <= v ) );
+         TEST_ASSERT( !( h == v ) );
          TEST_ASSERT( v != h );
          TEST_ASSERT( v < h );
          TEST_ASSERT( v <= h );
-         TEST_ASSERT( ! ( v > h ) );
-         TEST_ASSERT( ! ( v >= h ) );
-         TEST_ASSERT( ! ( v == h ) );
+         TEST_ASSERT( !( v > h ) );
+         TEST_ASSERT( !( v >= h ) );
+         TEST_ASSERT( !( v == h ) );
 
-         const std::map< std::string, std::uint64_t > i = { { "a", 1, }, { "c", 2 }, { "d", 0 } };
+         const std::map< std::string, std::uint64_t > i = { { "a", 1 }, { "c", 2 }, { "d", 0 } };
          TEST_ASSERT( i != v );
          TEST_ASSERT( i > v );
          TEST_ASSERT( i >= v );
-         TEST_ASSERT( ! ( i < v ) );
-         TEST_ASSERT( ! ( i <= v ) );
-         TEST_ASSERT( ! ( i == v ) );
+         TEST_ASSERT( !( i < v ) );
+         TEST_ASSERT( !( i <= v ) );
+         TEST_ASSERT( !( i == v ) );
          TEST_ASSERT( v != i );
          TEST_ASSERT( v < i );
          TEST_ASSERT( v <= i );
-         TEST_ASSERT( ! ( v > i ) );
-         TEST_ASSERT( ! ( v >= i ) );
-         TEST_ASSERT( ! ( v == i ) );
+         TEST_ASSERT( !( v > i ) );
+         TEST_ASSERT( !( v >= i ) );
+         TEST_ASSERT( !( v == i ) );
       }
 
       void unit_test()
