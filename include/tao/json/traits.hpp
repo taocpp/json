@@ -1249,7 +1249,7 @@ namespace tao
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
-               r.emplace( i.template as< T >() );  // TODO: By default throw on duplicate?
+               r.emplace( i.template as< T >() );
             }
          }
       };
@@ -1277,7 +1277,7 @@ namespace tao
          {
             const auto& o = v.get_object();
             for( const auto& i : o ) {
-               r.emplace( i.first, i.second.template as< T >() );  // TODO: By default throw on duplicate?
+               r.emplace( i.first, i.second.template as< T >() );
             }
          }
       };
