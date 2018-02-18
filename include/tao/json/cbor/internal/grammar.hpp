@@ -6,6 +6,8 @@
 
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
+#include <sstream>
 #include <utility>
 
 #include "major.hpp"
@@ -14,7 +16,9 @@
 #include "../../external/byte.hpp"
 #include "../../external/pegtl.hpp"
 #include "../../external/string_view.hpp"
+#include "../../forward.hpp"
 #include "../../internal/endian.hpp"
+#include "../../internal/throw_parse_error.hpp"
 #include "../../utf8.hpp"
 
 namespace tao
@@ -25,11 +29,20 @@ namespace tao
       {
          namespace internal
          {
+            template< typename Input, typename... Ts >
+            void throw_parse_error( Input& in, const Ts&... ts ) __attribute__ ((noreturn));
+
+            template< typename Input, typename... Ts >
+            void throw_parse_error( Input& in, const Ts&... ts )
+            {
+               json::internal::throw_parse_error( in, "cbor parse error: ", ts... );
+            }
+
             template< typename Input >
             void throw_on_empty( Input& in, const std::size_t size = 1 )
             {
                if( in.size( size ) < size ) {
-                  throw json_pegtl::parse_error( "unexpected end of cbor input", in );
+                  throw_parse_error( in, "unexpected end of input" );
                }
             }
 
@@ -108,13 +121,13 @@ namespace tao
                   in.bump_in_this_line( 1 + sizeof( Unsigned ) );
                   return result;
                }
-               throw json_pegtl::parse_error( "unexpected end of input", in );
+               throw_parse_error( in, "unexpected end of input" );
             }
 
             template< typename Input >
             std::uint64_t parse_unsigned( Input& in )
             {
-               switch( peek_minor( in ) ) {
+               switch( const auto m = peek_minor( in ) ) {
                   default:
                      return parse_embedded_impl( in );
                   case 24:
@@ -129,7 +142,7 @@ namespace tao
                   case 29:
                   case 30:
                   case 31:
-                     throw json_pegtl::parse_error( "unexpected minor for number or length", in );
+                     throw_parse_error( in, "unexpected minor ", m, " for number or length" );
                }
             }
 
@@ -138,7 +151,7 @@ namespace tao
             {
                const auto s = parse_unsigned( in );
                if( s > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
-                  throw json_pegtl::parse_error( "cbor size exceeds size_t " + std::to_string( s ), in );
+                  throw_parse_error( in, "size ", s, " exceeds size_t" );
                }
                return static_cast< std::size_t >( s );
             }
@@ -164,7 +177,7 @@ namespace tao
                in.bump_in_this_line();
                while( peek_byte_safe( in ) != 0xff ) {
                   if( peek_major( in ) != m ) {
-                     throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
+                     throw_parse_error( in, "non-matching fragment in indefinite length string" );
                   }
                   const auto size = parse_size( in );
                   throw_on_empty( in, size );
@@ -226,7 +239,7 @@ namespace tao
                {
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
-                  switch( peek_minor( in ) ) {
+                  switch( const auto m = peek_minor( in ) ) {
                      default:
                         in.bump_in_this_line();
                         return;
@@ -246,7 +259,7 @@ namespace tao
                      case 29:
                      case 30:
                      case 31:
-                        throw json_pegtl::parse_error( "unexpected minor for number or length", in );
+                        throw_parse_error( in, "unexpected minor ", m, " for number or length" );
                   }
                }
 
@@ -262,7 +275,7 @@ namespace tao
                {
                   const auto u = parse_unsigned( in );
                   if( u > 9223372036854775808ull ) {
-                     throw json_pegtl::parse_error( "negative integer overflow", in );
+                     throw_parse_error( in, "negative integer overflow" );
                   }
                   consumer.number( std::int64_t( ~u ) );
                   return true;
@@ -341,7 +354,7 @@ namespace tao
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
                      if( peek_major_safe( in ) != major::STRING ) {
-                        throw json_pegtl::parse_error( "non-string object key", in );
+                        throw_parse_error( in, "non-string object key" );
                      }
                      throw_on_empty( in );
                      if( peek_minor( in ) != minor_mask ) {
@@ -364,7 +377,7 @@ namespace tao
                   consumer.begin_object();
                   while( peek_byte_safe( in ) != 0xff ) {
                      if( peek_major( in ) != major::STRING ) {
-                        throw json_pegtl::parse_error( "non-string object key", in );
+                        throw_parse_error( in, "non-string object key" );
                      }
                      if( peek_minor( in ) != minor_mask ) {
                         consumer.key( parse_string_1< V, tao::string_view >( in ) );
@@ -402,7 +415,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_other( Input& in, Consumer& consumer )
                {
-                  switch( peek_minor( in ) ) {
+                  switch( const auto m = peek_minor( in ) ) {
                      case 20:
                         consumer.boolean( false );
                         in.bump_in_this_line();
@@ -426,7 +439,7 @@ namespace tao
                         return true;
                      case 24:
                      default:
-                        throw json_pegtl::parse_error( "unsupported minor for major 7", in );
+                        throw_parse_error( in, "unsupported minor ", m, " for major 7" );
                   }
                }
             };

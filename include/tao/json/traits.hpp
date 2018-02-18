@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "byte_view.hpp"
+#include "consume.hpp"
 #include "forward.hpp"
 #include "type.hpp"
 
@@ -79,6 +80,12 @@ namespace tao
          static bool as( const basic_value< Traits, Base >& v )
          {
             return v.get_boolean();
+         }
+
+         template< template< typename... > class, typename Parts >
+         static bool consume( Parts& parser )
+         {
+            return parser.boolean();
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -144,6 +151,12 @@ namespace tao
          struct signed_trait
             : number_trait< T >
          {
+            template< template< typename... > class, typename Parts >
+            static T consume( Parts& parser )
+            {
+               return static_cast< T >( parser.number_signed() );
+            }
+
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T i )
             {
@@ -209,6 +222,12 @@ namespace tao
          struct unsigned_trait
             : number_trait< T >
          {
+            template< template< typename... > class, typename Parts >
+            static T consume( Parts& parser )
+            {
+               return static_cast< T >( parser.number_unsigned() );
+            }
+
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T i )
             {
@@ -280,6 +299,12 @@ namespace tao
          struct float_trait
             : number_trait< T >
          {
+            template< template< typename... > class, typename Parts >
+            static T consume( Parts& parser )
+            {
+               return static_cast< T >( parser.number_double() );
+            }
+
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T f )
             {
@@ -488,6 +513,12 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             std::abort();  // LCOV_EXCL_LINE
+         }
+
+         template< template< typename... > class, typename Parts >
+         static std::string consume( Parts& parser )
+         {
+            return parser.string();
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -715,6 +746,12 @@ namespace tao
                   v.throw_invalid_json_type();
             }
             std::abort();  // LCOV_EXCL_LINE
+         }
+
+         template< template< typename... > class, typename Parts >
+         static std::vector< tao::byte > consume( Parts& parser )
+         {
+            return parser.binary();
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -1031,10 +1068,19 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static tao::optional< T > as( const basic_value< Traits, Base >& v )
          {
-            if( v != null ) {
-               return v.template as< T >();
+            if( v == null ) {
+               return tao::nullopt;
             }
-            return tao::nullopt;
+            return v.template as< T >();
+         }
+
+         template< template< typename... > class Traits, typename Parts >
+         static tao::optional< T > consume( Parts& parser )
+         {
+            if( parser.null() ) {
+               return tao::nullopt;
+            }
+            return json::consume< T, Traits >( parser );
          }
       };
 
@@ -1049,6 +1095,17 @@ namespace tao
             }
             auto t = std::make_shared< T >();  // TODO: More control?
             v.as( *t );
+            return t;
+         }
+
+         template< template< typename... > class Traits, typename Parts >
+         static std::shared_ptr< U > consume( Parts& parser )
+         {
+            if( parser.null() ) {
+               return std::shared_ptr< U >();
+            }
+            auto t = std::make_shared< T >();  // TODO: More control?
+            json::consume< Traits >( parser, *t );
             return t;
          }
 
@@ -1092,6 +1149,17 @@ namespace tao
             v.as( *t );
             return t;
          }
+
+         template< template< typename... > class Traits, typename Parts >
+         static std::shared_ptr< T > consume( Parts& parser )
+         {
+            if( parser.null() ) {
+               return std::shared_ptr< T >();
+            }
+            auto t = std::make_shared< T >();  // TODO: More control?
+            json::consume< Traits >( parser, *t );
+            return t;
+         }
       };
 
       template< typename T >
@@ -1115,6 +1183,17 @@ namespace tao
             }
             std::unique_ptr< U > t( new T() );  // TODO: More control?
             v.as( *static_cast< T* >( t.get() ) );
+            return t;
+         }
+
+         template< template< typename... > class Traits, typename Parts >
+         static std::unique_ptr< U > consume( Parts& parser )
+         {
+            if( parser.null() ) {
+               return std::unique_ptr< U >();
+            }
+            std::unique_ptr< U > t( new T() );  // TODO: More control?
+            json::consume< Traits >( parser, *static_cast< T* >( t.get() ) );
             return t;
          }
       };
@@ -1238,6 +1317,15 @@ namespace tao
                r.emplace_back( i.template as< T >() );
             }
          }
+
+         template< template< typename... > class Traits, typename Parts >
+         static void consume( Parts& parser, std::list< T >& r )
+         {
+            auto s = parser.begin_array();
+            while( parser.element_or_end_array( s ) ) {
+               r.emplace_back( json::consume< T, Traits >( parser ) );
+            }
+         }
       };
 
       template< typename T >
@@ -1250,6 +1338,15 @@ namespace tao
             const auto& a = v.get_array();
             for( const auto& i : a ) {
                r.emplace( i.template as< T >() );  // TODO: By default throw on duplicate?
+            }
+         }
+
+         template< template< typename... > class Traits, typename Parts >
+         static void consume( Parts& parser, std::set< T >& r )
+         {
+            auto s = parser.begin_array();
+            while( parser.element_or_end_array( s ) ) {
+               r.emplace( json::consume< T, Traits >( parser ) );
             }
          }
       };
@@ -1266,6 +1363,18 @@ namespace tao
                r.emplace_back( i.template as< T >() );
             }
          }
+
+         template< template< typename... > class Traits, typename Parts >
+         static void consume( Parts& parser, std::vector< T >& v )
+         {
+            auto s = parser.begin_array();
+            if( s.size ) {
+               v.reserve( *s.size );
+            }
+            while( parser.element_or_end_array( s ) ) {
+               v.emplace_back( json::consume< T, Traits >( parser ) );
+            }
+         }
       };
 
       template< typename T >
@@ -1278,6 +1387,16 @@ namespace tao
             const auto& o = v.get_object();
             for( const auto& i : o ) {
                r.emplace( i.first, i.second.template as< T >() );  // TODO: By default throw on duplicate?
+            }
+         }
+
+         template< template< typename... > class Traits, typename Parts >
+         static void consume( Parts& parser, std::map< std::string, T >& v )
+         {
+            auto s = parser.begin_object();
+            while( parser.member_or_end_object( s ) ) {
+               auto k = parser.key();
+               v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
             }
          }
       };

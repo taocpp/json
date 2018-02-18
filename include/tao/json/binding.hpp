@@ -57,10 +57,10 @@ namespace tao
                events::produce< Traits >( consumer, v.*P );
             }
 
-            template< template< typename... > class Traits = traits, typename Producer >
-            static void consume( Producer& producer, C& v )
+            template< template< typename... > class Traits = traits, typename Parts >
+            static void consume( Parts& parser, C& v )
             {
-               json::consume< Traits >( producer, v.*P );
+               json::consume< Traits >( parser, v.*P );
             }
          };
 
@@ -177,6 +177,22 @@ namespace tao
                (void)json::internal::swallow{ as_element< As >( a, x, i )... };
             }
 
+            template< typename A, template< typename... > class Traits = traits, typename Parts, typename C, typename State >
+            static bool consume_element( Parts& parser, C& x, State& s )
+            {
+               parser.element( s );
+               A::template consume< Traits >( parser, x );
+               return true;
+            }
+
+            template< template< typename... > class Traits = traits, typename Parts, typename C >
+            static void consume( Parts& parser, C& x )
+            {
+               auto s = parser.begin_array();
+               (void)json::internal::swallow{ consume_element< As, Traits >( parser, x, s )... };
+               parser.end_array( s );
+            }
+
             template< typename A, template< typename... > class Traits, typename Base, typename C >
             static bool assign_element( basic_value< Traits, Base >& v, const C& x )
             {
@@ -225,6 +241,8 @@ namespace tao
                return false;
             }
          };
+
+         // TODO: Control how to create the instances?
 
          template< for_unknown_key E, typename... As >
          struct basic_object
@@ -282,6 +300,52 @@ namespace tao
                      continue;
                   }
                   i->second.function( p.second, x );
+                  b.set( i->second.index );
+               }
+               b |= o;
+               if( !b.all() ) {
+                  // TODO: List the missing required key(s) in the exception?
+                  throw std::runtime_error( "missing required key(s)" );  // NOLINT
+               }
+            }
+
+            template< typename A, template< typename... > class Traits, typename Parts, typename F >
+            static bool emplace_consume( std::map< std::string, entry< F > >& m, std::size_t& i )
+            {
+               m.emplace( A::key(), entry< F >( &A::template consume< Traits, Parts >, i++ ) );
+               return true;
+            }
+
+            template< template< typename... > class Traits = traits, typename Parts, typename C >
+            static void consume( Parts& parser, C& x )
+            {
+               using F = void ( * )( Parts&, C& );
+               static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
+                  std::map< std::string, entry< F > > t;
+                  (void)json::internal::swallow{ emplace_consume< As, Traits, Parts >( t, i )... };
+                  assert( t.size() == sizeof...( As ) );
+                  return t;
+               }( 0 );
+               static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
+                  std::bitset< sizeof...( As ) > t;
+                  (void)json::internal::swallow{ binding::basic_object< E, As... >::template set_optional_bit< As >( t, i )... };
+                  return t;
+               }( 0 );
+
+               auto s = parser.begin_object();
+               std::bitset< sizeof...( As ) > b;
+               while( parser.member_or_end_object( s ) ) {
+                  const auto k = parser.key();
+                  const auto i = m.find( k );
+                  if( i == m.end() ) {
+                     binding::internal::throw_o< E >::r_continue( k );
+                     parser.skip_value();
+                     continue;
+                  }
+                  if( b.test( i->second.index ) ) {
+                     parser.throw_parse_error( "duplicate object key ", json::internal::escape( k ) );
+                  }
+                  i->second.function( parser, x );
                   b.set( i->second.index );
                }
                b |= o;
@@ -388,17 +452,17 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& consumer, const std::shared_ptr< U >& p )
+            static void produce( Consumer& c, const std::shared_ptr< U >& p )
             {
                using R = typename Traits< std::shared_ptr< T > >::template with_base< U >;
-               R::template produce< Traits >( consumer, p );
+               R::template produce< Traits >( c, p );
             }
 
-            template< template< typename... > class Traits, typename Producer >
-            static std::shared_ptr< U > consume( Producer& producer )
+            template< template< typename... > class Traits, typename Parts >
+            static std::shared_ptr< U > consume( Parts& parser )
             {
                using R = typename Traits< std::shared_ptr< T > >::template with_base< U >;
-               return R::template consume< Traits >( producer );
+               return R::template consume< Traits >( parser );
             }
          };
 
@@ -467,6 +531,35 @@ namespace tao
                return i->second.function( b->second );
             }
 
+            template< typename V, template< typename... > class Traits, typename Parts, typename F >
+            static bool emplace_consume( std::map< std::string, entry< F > >& m )
+            {
+               using W = typename V::template bind< U >;
+               m.emplace( W::name(), entry< F >( &W::template consume< Traits, Parts > ) );
+               return true;
+            }
+
+            template< template< typename... > class Traits, typename Parts >
+            static std::shared_ptr< U > consume( Parts& parser )
+            {
+               using F = std::shared_ptr< U > ( * )( Parts & );
+               static const std::map< std::string, entry< F > > m = []() {
+                  std::map< std::string, entry< F > > t;
+                  (void)json::internal::swallow{ emplace_consume< Ts, Traits, Parts >( t )... };
+                  return t;
+               }();
+
+               auto s = parser.begin_object();
+               const auto k = parser.key();
+               const auto i = m.find( k );
+               if( i == m.end() ) {
+                  throw std::runtime_error( "unknown factory type " + json::internal::escape( k ) );  // NOLINT
+               }
+               auto r = i->second.function( parser );
+               parser.end_object( s );
+               return r;
+            }
+
             template< typename V, template< typename... > class Traits, typename Base, typename F >
             static bool emplace_assign( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
             {
@@ -524,6 +617,69 @@ namespace tao
                i->second.function( consumer, p );
                consumer.member();
                consumer.end_object( 1 );
+            }
+         };
+
+         template< typename... Vs >
+         struct versions;
+
+         template< typename V >
+         struct versions< V >
+            : public V
+         {
+            // TODO: Or static_assert more than one version?
+         };
+
+         template< typename V, typename... Vs >
+         struct versions< V, Vs... >
+            : public V
+         {
+            // NOTE: This is a bit like a high-level pegtl::sor<>.
+            // TODO: Clear x between attempts?
+
+            template< typename A, template< typename... > class Traits, typename Base, typename C >
+            static bool as_attempt( const basic_value< Traits, Base >& v, C& x )
+            {
+               try {
+                  A::as( v, x );
+                  return true;
+               }
+               catch( ... ) {
+                  return false;
+               }
+            }
+
+            template< template< typename... > class Traits, typename Base, typename C >
+            static void as( const basic_value< Traits, Base >& v, C& x )
+            {
+               bool ok = false;
+               (void)json::internal::swallow{ ok = as_attempt< V >( v, x ), ( ok = ok || as_attempt< Vs >( v, x ) )... };
+               if( ! ok ) {
+                  throw std::runtime_error( "all versions failed" );  // NOLINT
+               }
+            }
+
+            template< typename A, template< typename... > class Traits, typename Parts, typename C >
+            static bool consume_attempt( Parts& parser, C& x )
+            {
+               try {
+                  auto m = parser.mark();
+                  A::template consume< Traits >( parser, x );
+                  return m( true );
+               }
+               catch( ... ) {
+                  return false;
+               }
+            }
+
+            template< template< typename... > class Traits, typename Parts, typename C >
+            static void consume( Parts& parser, C& x )
+            {
+               bool ok = false;
+               (void)json::internal::swallow{ ok = consume_attempt< V, Traits >( parser, x ), ( ok = ok || consume_attempt< Vs, Traits >( parser, x ) )... };
+               if( ! ok ) {
+                  throw std::runtime_error( "all versions failed" );  // NOLINT
+               }
             }
          };
 

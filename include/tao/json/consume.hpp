@@ -14,30 +14,30 @@ namespace tao
 {
    namespace json
    {
-      template< typename T, template< typename... > class Traits = traits, typename Producer >
-      typename std::enable_if< internal::has_consume_one< Traits, Producer, T >::value, T >::type consume( Producer& producer )
+      template< typename T, template< typename... > class Traits = traits, typename Parts >
+      typename std::enable_if< internal::has_consume_one< Traits, Parts, T >::value, T >::type consume( Parts& parser )
       {
-         return Traits< T >::template consume< Traits >( producer );
+         return Traits< T >::template consume< Traits >( parser );
       }
 
-      template< typename T, template< typename... > class Traits = traits, typename Producer >
-      typename std::enable_if< !internal::has_consume_one< Traits, Producer, T >::value, T >::type consume( Producer& producer )
+      template< typename T, template< typename... > class Traits = traits, typename Parts >
+      typename std::enable_if< !internal::has_consume_one< Traits, Parts, T >::value, T >::type consume( Parts& parser )
       {
          T t;
-         Traits< T >::template consume< Traits >( producer, t );
+         Traits< T >::template consume< Traits >( parser, t );
          return t;
       }
 
-      template< template< typename... > class Traits = traits, typename Producer, typename T >
-      typename std::enable_if< internal::has_consume_two< Traits, Producer, T >::value, void >::type consume( Producer& producer, T& t )
+      template< template< typename... > class Traits = traits, typename Parts, typename T >
+      typename std::enable_if< internal::has_consume_two< Traits, Parts, T >::value, void >::type consume( Parts& parser, T& t )
       {
-         Traits< T >::template consume< Traits >( producer, t );
+         Traits< T >::template consume< Traits >( parser, t );
       }
 
-      template< template< typename... > class Traits = traits, typename Producer, typename T >
-      typename std::enable_if< !internal::has_consume_two< Traits, Producer, T >::value, void >::type consume( Producer& producer, T& t )
+      template< template< typename... > class Traits = traits, typename Parts, typename T >
+      typename std::enable_if< !internal::has_consume_two< Traits, Parts, T >::value, void >::type consume( Parts& parser, T& t )
       {
-         t = Traits< T >::template consume< Traits >( producer );
+         t = Traits< T >::template consume< Traits >( parser );
       }
 
    }  // namespace json
