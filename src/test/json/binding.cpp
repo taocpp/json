@@ -47,13 +47,6 @@ namespace tao
          }
       };
 
-      template< typename V, typename W >
-      struct traits< std::pair< V, W > >
-         : binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< V, W >::first ),
-                           TAO_JSON_BIND_ELEMENT( &std::pair< V, W >::second ) >
-      {
-      };
-
       class secret
       {
       public:

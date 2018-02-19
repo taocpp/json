@@ -16,6 +16,7 @@
 #include "events/produce.hpp"
 #include "forward.hpp"
 #include "internal/escape.hpp"
+#include "internal/type_traits.hpp"
 
 #if defined( __GNUC__ ) && ( __GNUC__ >= 7 ) && ( __cplusplus < 201703L )
 #pragma GCC diagnostic push
@@ -132,6 +133,9 @@ namespace tao
          {
          };
 
+         template< typename T >
+         struct inherit;
+
          enum class for_unknown_key : bool
          {
             THROW,
@@ -157,253 +161,299 @@ namespace tao
                }
             };
 
+            template< typename T >
+            struct array;
+
+            template< typename... As >
+            struct array< json::internal::type_list< As... > >
+            {
+               using elements = json::internal::type_list< As... >;
+
+               template< typename A, template< typename... > class Traits, typename Base, typename C >
+               static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
+               {
+                  A::as( a.at( i++ ), x );
+                  return true;
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static void as( const basic_value< Traits, Base >& v, C& x )
+               {
+                  std::size_t i = 0;
+                  const auto& a = v.get_array();
+                  (void)json::internal::swallow{ as_element< As >( a, x, i )... };
+               }
+
+               template< typename A, template< typename... > class Traits = traits, typename Parts, typename C, typename State >
+               static bool consume_element( Parts& parser, C& x, State& s )
+               {
+                  parser.element( s );
+                  A::template consume< Traits >( parser, x );
+                  return true;
+               }
+
+               template< template< typename... > class Traits = traits, typename Parts, typename C >
+               static void consume( Parts& parser, C& x )
+               {
+                  auto s = parser.begin_array();
+                  (void)json::internal::swallow{ consume_element< As, Traits >( parser, x, s )... };
+                  parser.end_array( s );
+               }
+
+               template< typename A, template< typename... > class Traits, typename Base, typename C >
+               static bool assign_element( basic_value< Traits, Base >& v, const C& x )
+               {
+                  v.unsafe_emplace_back( A::read( x ) );
+                  return true;
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static void assign( basic_value< Traits, Base >& v, const C& x )
+               {
+                  v.unsafe_emplace_array();
+                  (void)json::internal::swallow{ assign_element< As >( v, x )... };
+               }
+
+               template< typename A, template< typename... > class Traits, typename Consumer, typename C >
+               static bool produce_element( Consumer& consumer, const C& x )
+               {
+                  A::template produce< Traits >( consumer, x );
+                  consumer.element();
+                  return true;
+               }
+
+               template< template< typename... > class Traits = traits, typename Consumer, typename C >
+               static void produce( Consumer& consumer, const C& x )
+               {
+                  consumer.begin_array( sizeof...( As ) );
+                  (void)json::internal::swallow{ produce_element< As, Traits >( consumer, x )... };
+                  consumer.end_array( sizeof...( As ) );
+               }
+
+               template< typename A, template< typename... > class Traits, typename Base, typename C >
+               static bool equal_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
+               {
+                  return a[ i++ ] == A::read( x );
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
+               {
+                  if( bool result = lhs.is_array() && ( lhs.unsafe_get_array().size() == sizeof...( As ) ) ) {
+                     std::size_t i = 0;
+                     const auto& a = lhs.get_array();
+                     (void)json::internal::swallow{ result = result && equal_element< As >( a, rhs, i )... };
+                     return result;
+                  }
+                  return false;
+               }
+            };
+
+            // TODO: Control how to create the instances?
+
+            template< for_unknown_key E, typename T >
+            struct basic_object;
+
+            template< for_unknown_key E, typename... As >
+            struct basic_object< E, json::internal::type_list< As... > >
+            {
+               using members = json::internal::type_list< As... >;
+
+               template< typename F >
+               struct entry
+               {
+                  entry( F c, std::size_t i )
+                     : function( c ),
+                       index( i )
+                  {
+                  }
+
+                  F function;
+                  std::size_t index;
+               };
+
+               template< typename A >
+               static bool set_optional_bit( std::bitset< sizeof...( As ) >& t, std::size_t& i )
+               {
+                  t.set( i++, A::kind == member_kind::OPTIONAL );
+                  return true;
+               }
+
+               template< typename A, template< typename... > class Traits, typename Base, typename F >
+               static bool emplace_as( std::map< std::string, entry< F > >& m, std::size_t& i )
+               {
+                  m.emplace( A::key(), entry< F >( &A::template as< Traits, Base >, i++ ) );
+                  return true;
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static void as( const basic_value< Traits, Base >& v, C& x )
+               {
+                  using F = void ( * )( const basic_value< Traits, Base >&, C& );
+                  static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
+                     std::map< std::string, entry< F > > t;
+                     (void)json::internal::swallow{ emplace_as< As, Traits, Base >( t, i )... };
+                     assert( t.size() == sizeof...( As ) );
+                     return t;
+                  }( 0 );
+                  static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
+                     std::bitset< sizeof...( As ) > t;
+                     (void)json::internal::swallow{ set_optional_bit< As >( t, i )... };
+                     return t;
+                  }( 0 );
+
+                  const auto& a = v.get_object();
+                  std::bitset< sizeof...( As ) > b;
+                  for( const auto& p : a ) {
+                     const auto& k = p.first;
+                     const auto i = m.find( k );
+                     if( i == m.end() ) {
+                        internal::throw_o< E >::r_continue( k );
+                        continue;
+                     }
+                     i->second.function( p.second, x );
+                     b.set( i->second.index );
+                  }
+                  b |= o;
+                  if( !b.all() ) {
+                     // TODO: List the missing required key(s) in the exception?
+                     throw std::runtime_error( "missing required key(s)" );  // NOLINT
+                  }
+               }
+
+               template< typename A, template< typename... > class Traits, typename Parts, typename F >
+               static bool emplace_consume( std::map< std::string, entry< F > >& m, std::size_t& i )
+               {
+                  m.emplace( A::key(), entry< F >( &A::template consume< Traits, Parts >, i++ ) );
+                  return true;
+               }
+
+               template< template< typename... > class Traits = traits, typename Parts, typename C >
+               static void consume( Parts& parser, C& x )
+               {
+                  using F = void ( * )( Parts&, C& );
+                  static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
+                     std::map< std::string, entry< F > > t;
+                     (void)json::internal::swallow{ emplace_consume< As, Traits, Parts >( t, i )... };
+                     assert( t.size() == sizeof...( As ) );
+                     return t;
+                  }( 0 );
+                  static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
+                     std::bitset< sizeof...( As ) > t;
+                     (void)json::internal::swallow{ set_optional_bit< As >( t, i )... };
+                     return t;
+                  }( 0 );
+
+                  auto s = parser.begin_object();
+                  std::bitset< sizeof...( As ) > b;
+                  while( parser.member_or_end_object( s ) ) {
+                     const auto k = parser.key();
+                     const auto i = m.find( k );
+                     if( i == m.end() ) {
+                        binding::internal::throw_o< E >::r_continue( k );
+                        parser.skip_value();
+                        continue;
+                     }
+                     if( b.test( i->second.index ) ) {
+                        parser.throw_parse_error( "duplicate object key ", json::internal::escape( k ) );
+                     }
+                     i->second.function( parser, x );
+                     b.set( i->second.index );
+                  }
+                  b |= o;
+                  if( !b.all() ) {
+                     // TODO: List the missing required key(s) in the exception?
+                     throw std::runtime_error( "missing required key(s)" );  // NOLINT
+                  }
+               }
+
+               template< typename A, template< typename... > class Traits, typename Base, typename C >
+               static bool assign_member( basic_value< Traits, Base >& v, const C& x )
+               {
+                  v.unsafe_emplace( A::key(), A::read( x ) );
+                  return true;
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static void assign( basic_value< Traits, Base >& v, const C& x )
+               {
+                  v.unsafe_emplace_object();
+                  (void)json::internal::swallow{ assign_member< As >( v, x )... };
+               }
+
+               template< typename A, template< typename... > class Traits, typename Consumer, typename C >
+               static bool produce_member( Consumer& consumer, const C& x )
+               {
+                  A::template produce_key< Traits >( consumer );
+                  A::template produce< Traits >( consumer, x );
+                  consumer.member();
+                  return true;
+               }
+
+               template< template< typename... > class Traits = traits, typename Consumer, typename C >
+               static void produce( Consumer& consumer, const C& x )
+               {
+                  consumer.begin_object( sizeof...( As ) );
+                  (void)json::internal::swallow{ produce_member< As, Traits >( consumer, x )... };
+                  consumer.end_object( sizeof...( As ) );
+               }
+
+               template< typename A, template< typename... > class Traits, typename Base, typename C >
+               static bool equal_member( const std::map< std::string, basic_value< Traits, Base > >& a, C& x )
+               {
+                  // TODO: If we could assume the As... to be sorted by their keys we could easily optimise this, otherwise it's slightly more involved...
+                  return a[ A::key() ] == A::read( x );
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
+               {
+                  if( bool result = lhs.is_object() && ( lhs.unsafe_get_object().size() == sizeof...( As ) ) ) {
+                     const auto& a = lhs.get_object();
+                     (void)json::internal::swallow{ result = result && equal_member< As >( a, rhs )... };
+                     return result;
+                  }
+                  return false;
+               }
+            };
+
+            template< typename T >
+            struct inherit_elements_t
+            {
+               using list = json::internal::type_list< T >;
+            };
+
+            template< typename T >
+            struct inherit_elements_t< inherit< T > >
+            {
+               using list = typename T::elements;
+            };
+
+            template< typename T >
+            using inherit_elements = typename inherit_elements_t< T >::list;
+
+            template< typename T >
+            struct inherit_members_t
+            {
+               using list = json::internal::type_list< T >;
+            };
+
+            template< typename T >
+            struct inherit_members_t< inherit< T > >
+            {
+               using list = typename T::members;
+            };
+
+            template< typename T >
+            using inherit_members = typename inherit_members_t< T >::list;
+
          }  // namespace internal
 
          template< typename... As >
-         struct array
-         {
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
-            {
-               A::as( a.at( i++ ), x );
-               return true;
-            }
+         using array = internal::array< json::internal::merge_type_lists< internal::inherit_elements< As >... > >;
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void as( const basic_value< Traits, Base >& v, C& x )
-            {
-               std::size_t i = 0;
-               const auto& a = v.get_array();
-               (void)json::internal::swallow{ as_element< As >( a, x, i )... };
-            }
-
-            template< typename A, template< typename... > class Traits = traits, typename Parts, typename C, typename State >
-            static bool consume_element( Parts& parser, C& x, State& s )
-            {
-               parser.element( s );
-               A::template consume< Traits >( parser, x );
-               return true;
-            }
-
-            template< template< typename... > class Traits = traits, typename Parts, typename C >
-            static void consume( Parts& parser, C& x )
-            {
-               auto s = parser.begin_array();
-               (void)json::internal::swallow{ consume_element< As, Traits >( parser, x, s )... };
-               parser.end_array( s );
-            }
-
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool assign_element( basic_value< Traits, Base >& v, const C& x )
-            {
-               v.unsafe_emplace_back( A::read( x ) );
-               return true;
-            }
-
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void assign( basic_value< Traits, Base >& v, const C& x )
-            {
-               v.unsafe_emplace_array();
-               (void)json::internal::swallow{ assign_element< As >( v, x )... };
-            }
-
-            template< typename A, template< typename... > class Traits, typename Consumer, typename C >
-            static bool produce_element( Consumer& consumer, const C& x )
-            {
-               A::template produce< Traits >( consumer, x );
-               consumer.element();
-               return true;
-            }
-
-            template< template< typename... > class Traits = traits, typename Consumer, typename C >
-            static void produce( Consumer& consumer, const C& x )
-            {
-               consumer.begin_array( sizeof...( As ) );
-               (void)json::internal::swallow{ produce_element< As, Traits >( consumer, x )... };
-               consumer.end_array( sizeof...( As ) );
-            }
-
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool equal_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
-            {
-               return a[ i++ ] == A::read( x );
-            }
-
-            template< template< typename... > class Traits, typename Base, typename C >
-            static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
-            {
-               if( bool result = lhs.is_array() && ( lhs.unsafe_get_array().size() == sizeof...( As ) ) ) {
-                  std::size_t i = 0;
-                  const auto& a = lhs.get_array();
-                  (void)json::internal::swallow{ result = result && equal_element< As >( a, rhs, i )... };
-                  return result;
-               }
-               return false;
-            }
-         };
-
-         // TODO: Control how to create the instances?
-
-         template< for_unknown_key E, typename... As >
-         struct basic_object
-         {
-            template< typename F >
-            struct entry
-            {
-               entry( F c, std::size_t i )
-                  : function( c ),
-                    index( i )
-               {
-               }
-
-               F function;
-               std::size_t index;
-            };
-
-            template< typename A >
-            static bool set_optional_bit( std::bitset< sizeof...( As ) >& t, std::size_t& i )
-            {
-               t.set( i++, A::kind == member_kind::OPTIONAL );
-               return true;
-            }
-
-            template< typename A, template< typename... > class Traits, typename Base, typename F >
-            static bool emplace_as( std::map< std::string, entry< F > >& m, std::size_t& i )
-            {
-               m.emplace( A::key(), entry< F >( &A::template as< Traits, Base >, i++ ) );
-               return true;
-            }
-
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void as( const basic_value< Traits, Base >& v, C& x )
-            {
-               using F = void ( * )( const basic_value< Traits, Base >&, C& );
-               static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
-                  std::map< std::string, entry< F > > t;
-                  (void)json::internal::swallow{ emplace_as< As, Traits, Base >( t, i )... };
-                  assert( t.size() == sizeof...( As ) );
-                  return t;
-               }( 0 );
-               static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
-                  std::bitset< sizeof...( As ) > t;
-                  (void)json::internal::swallow{ set_optional_bit< As >( t, i )... };
-                  return t;
-               }( 0 );
-
-               const auto& a = v.get_object();
-               std::bitset< sizeof...( As ) > b;
-               for( const auto& p : a ) {
-                  const auto& k = p.first;
-                  const auto i = m.find( k );
-                  if( i == m.end() ) {
-                     internal::throw_o< E >::r_continue( k );
-                     continue;
-                  }
-                  i->second.function( p.second, x );
-                  b.set( i->second.index );
-               }
-               b |= o;
-               if( !b.all() ) {
-                  // TODO: List the missing required key(s) in the exception?
-                  throw std::runtime_error( "missing required key(s)" );  // NOLINT
-               }
-            }
-
-            template< typename A, template< typename... > class Traits, typename Parts, typename F >
-            static bool emplace_consume( std::map< std::string, entry< F > >& m, std::size_t& i )
-            {
-               m.emplace( A::key(), entry< F >( &A::template consume< Traits, Parts >, i++ ) );
-               return true;
-            }
-
-            template< template< typename... > class Traits = traits, typename Parts, typename C >
-            static void consume( Parts& parser, C& x )
-            {
-               using F = void ( * )( Parts&, C& );
-               static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
-                  std::map< std::string, entry< F > > t;
-                  (void)json::internal::swallow{ emplace_consume< As, Traits, Parts >( t, i )... };
-                  assert( t.size() == sizeof...( As ) );
-                  return t;
-               }( 0 );
-               static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
-                  std::bitset< sizeof...( As ) > t;
-                  (void)json::internal::swallow{ binding::basic_object< E, As... >::template set_optional_bit< As >( t, i )... };
-                  return t;
-               }( 0 );
-
-               auto s = parser.begin_object();
-               std::bitset< sizeof...( As ) > b;
-               while( parser.member_or_end_object( s ) ) {
-                  const auto k = parser.key();
-                  const auto i = m.find( k );
-                  if( i == m.end() ) {
-                     binding::internal::throw_o< E >::r_continue( k );
-                     parser.skip_value();
-                     continue;
-                  }
-                  if( b.test( i->second.index ) ) {
-                     parser.throw_parse_error( "duplicate object key ", json::internal::escape( k ) );
-                  }
-                  i->second.function( parser, x );
-                  b.set( i->second.index );
-               }
-               b |= o;
-               if( !b.all() ) {
-                  // TODO: List the missing required key(s) in the exception?
-                  throw std::runtime_error( "missing required key(s)" );  // NOLINT
-               }
-            }
-
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool assign_member( basic_value< Traits, Base >& v, const C& x )
-            {
-               v.unsafe_emplace( A::key(), A::read( x ) );
-               return true;
-            }
-
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void assign( basic_value< Traits, Base >& v, const C& x )
-            {
-               v.unsafe_emplace_object();
-               (void)json::internal::swallow{ assign_member< As >( v, x )... };
-            }
-
-            template< typename A, template< typename... > class Traits, typename Consumer, typename C >
-            static bool produce_member( Consumer& consumer, const C& x )
-            {
-               A::template produce_key< Traits >( consumer );
-               A::template produce< Traits >( consumer, x );
-               consumer.member();
-               return true;
-            }
-
-            template< template< typename... > class Traits = traits, typename Consumer, typename C >
-            static void produce( Consumer& consumer, const C& x )
-            {
-               consumer.begin_object( sizeof...( As ) );
-               (void)json::internal::swallow{ produce_member< As, Traits >( consumer, x )... };
-               consumer.end_object( sizeof...( As ) );
-            }
-
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool equal_member( const std::map< std::string, basic_value< Traits, Base > >& a, C& x )
-            {
-               // TODO: If we could assume the As... to be sorted by their keys we could easily optimise this, otherwise it's slightly more involved...
-               return a[ A::key() ] == A::read( x );
-            }
-
-            template< template< typename... > class Traits, typename Base, typename C >
-            static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
-            {
-               if( bool result = lhs.is_object() && ( lhs.unsafe_get_object().size() == sizeof...( As ) ) ) {
-                  const auto& a = lhs.get_object();
-                  (void)json::internal::swallow{ result = result && equal_member< As >( a, rhs )... };
-                  return result;
-               }
-               return false;
-            }
-         };
+         template< for_unknown_key W, typename... As >
+         using basic_object = internal::basic_object< W, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
 
          template< typename... As >
          using object = basic_object< for_unknown_key::THROW, As... >;

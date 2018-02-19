@@ -16,6 +16,7 @@
 #include <tuple>
 #include <vector>
 
+#include "binding.hpp"
 #include "byte_view.hpp"
 #include "consume.hpp"
 #include "forward.hpp"
@@ -1399,6 +1400,33 @@ namespace tao
                v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
             }
          }
+      };
+
+      template< typename U, typename V >
+      struct traits< std::pair< U, V > >
+         : public binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
+                           TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
+      {
+      };
+
+      namespace internal
+      {
+         template< typename Tuple, typename Indices >
+         struct tuple_array;
+
+         template< typename... Ts, std::size_t... Is >
+         struct tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+         {
+            using tuple_t = std::tuple< Ts... >;
+            using type = binding::array< binding::element< const typename std::tuple_element< Is, tuple_t >::type& ( * )( const tuple_t& ), &std::get< Is, Ts... > >... >;
+         };
+
+      }  // namespace internal
+
+      template< typename... Ts >
+      struct traits< std::tuple< Ts... > >
+         : public internal::tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< sizeof...( Ts ) > >::type
+      {
       };
 
    }  // namespace json

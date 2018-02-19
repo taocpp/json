@@ -15,6 +15,29 @@ namespace tao
    {
       namespace internal
       {
+         template< typename... >
+         struct type_list
+         {
+         };
+
+         template< typename... >
+         struct merge_type_lists_t;
+
+         template< typename... Ts >
+         struct merge_type_lists_t< type_list< Ts... > >
+         {
+            using list = type_list< Ts... >;
+         };
+
+         template< typename... Vs, typename... Ws, typename... Rs >
+         struct merge_type_lists_t< type_list< Vs... >, type_list< Ws... >, Rs... >
+            : public merge_type_lists_t< type_list< Vs..., Ws... >, Rs... >
+         {
+         };
+
+         template< typename... Ts >
+         using merge_type_lists = typename merge_type_lists_t< Ts... >::list;
+
          struct type_info_less
          {
             bool operator()( const std::type_info* l, const std::type_info* r ) const

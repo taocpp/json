@@ -8,8 +8,8 @@
 #include <type_traits>
 #include <vector>
 
-#include "../../test/json/test.hpp"
-#include "../../test/json/test_unhex.hpp"
+#include "test.hpp"
+#include "test_unhex.hpp"
 
 #include <tao/json.hpp>
 #include <tao/json/binding.hpp>
@@ -190,33 +190,6 @@ namespace tao
 
       }  // namespace binding
 
-      template< typename U, typename V >
-      struct my_traits< std::pair< U, V > >
-         : binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
-                           TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
-      {
-      };
-
-      namespace internal
-      {
-         template< typename Tuple, typename Indices >
-         struct tuple_array_binding;
-
-         template< typename... Ts, std::size_t... Is >
-         struct tuple_array_binding< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
-         {
-            using tuple_t = std::tuple< Ts... >;
-            using type = binding::array< binding::element< const typename std::tuple_element< Is, tuple_t >::type& ( * )( const tuple_t& ), &std::get< Is, Ts... > >... >;
-         };
-
-      }  // namespace internal
-
-      template< typename... Ts >
-      struct my_traits< std::tuple< Ts... > >
-         : public internal::tuple_array_binding< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< sizeof...( Ts ) > >::type
-      {
-      };
-
       struct foo
       {
          std::string a = "hello";
@@ -224,15 +197,15 @@ namespace tao
       };
 
       struct foo_version_two
-         : binding::array< TAO_JSON_BIND_ELEMENT( &foo::a ),
-                           TAO_JSON_BIND_ELEMENT( &foo::b ),
-                           binding::element_u< foo, 2 > >
+         : public binding::array< TAO_JSON_BIND_ELEMENT( &foo::a ),
+                                  TAO_JSON_BIND_ELEMENT( &foo::b ),
+                                  binding::element_u< foo, 2 > >
       {
       };
 
       struct foo_version_one
-         : binding::array< TAO_JSON_BIND_ELEMENT( &foo::a ),
-                           TAO_JSON_BIND_ELEMENT( &foo::b ) >
+         : public binding::array< TAO_JSON_BIND_ELEMENT( &foo::a ),
+                                  TAO_JSON_BIND_ELEMENT( &foo::b ) >
       {
       };
 
@@ -240,6 +213,19 @@ namespace tao
       struct my_traits< foo >
          : binding::versions< foo_version_two,
                               foo_version_one >
+      {
+      };
+
+      struct foo2
+         : public foo
+      {
+         int plus = 0;
+      };
+
+      template<>
+      struct my_traits< foo2 >
+         : binding::array< binding::inherit< foo_version_one >,
+                           TAO_JSON_BIND_ELEMENT( &foo2::plus ) >
       {
       };
 
@@ -283,6 +269,13 @@ namespace tao
 
       void unit_test()
       {
+         {
+            const basic_value< my_traits > v = basic_value< my_traits >::array( { "a", "b", 3 } );
+            const auto f = as< foo2 >( v );
+            TEST_ASSERT( f.a == "a" );
+            TEST_ASSERT( f.b == "b" );
+            TEST_ASSERT( f.plus == 3 );
+         }
          {
             const std::tuple< int, std::string, double > b{ 42, "hallo", 3.0 };
             basic_value< my_traits > v = b;
@@ -401,4 +394,4 @@ namespace tao
 
 }  // namespace tao
 
-#include "../../test/json/main.hpp"
+#include "main.hpp"
