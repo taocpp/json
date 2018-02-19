@@ -5,6 +5,7 @@
 #define TAO_JSON_BINDING_HPP
 
 #include <bitset>
+#include <exception>
 #include <map>
 #include <string>
 #include <type_traits>
@@ -695,8 +696,32 @@ namespace tao
             // NOTE: This is a bit like a high-level pegtl::sor<>.
             // TODO: Clear x between attempts? How?
 
+            static void throw_on_error( const bool ok, const std::exception_ptr& e )
+            {
+               if( !ok ) {
+                  try {
+                     std::rethrow_exception( e );
+                  }
+                  catch( ... ) {
+                     std::throw_with_nested( std::runtime_error( "all variants failed -- see nested for first error" ) );
+                  }
+               }
+            }
+
+            template< template< typename... > class Traits, typename Base, typename C >
+            static std::exception_ptr first_as( const basic_value< Traits, Base >& v, C& x )
+            {
+               try {
+                  V::as( v, x );
+                  return std::exception_ptr();
+               }
+               catch( ... ) {
+                  return std::current_exception();
+               }
+            }
+
             template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool as_attempt( const basic_value< Traits, Base >& v, C& x )
+            static bool attempt_as( const basic_value< Traits, Base >& v, C& x )
             {
                try {
                   A::as( v, x );
@@ -710,15 +735,28 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename C >
             static void as( const basic_value< Traits, Base >& v, C& x )
             {
-               bool ok = false;
-               (void)json::internal::swallow{ ok = as_attempt< V >( v, x ), ( ok = ok || as_attempt< Vs >( v, x ) )... };
-               if( ! ok ) {
-                  throw std::runtime_error( "all versions failed" );  // NOLINT
+               std::exception_ptr e = first_as( v, x );
+               bool ok = ( e == std::exception_ptr() );
+               (void)json::internal::swallow{ ( ok = ok || attempt_as< Vs >( v, x ) )... };
+               throw_on_error( ok, e );
+            }
+
+            template< template< typename... > class Traits, typename Parts, typename C >
+            static std::exception_ptr first_consume( Parts& parser, C& x )
+            {
+               try {
+                  auto m = parser.mark();
+                  V::template consume< Traits >( parser, x );
+                  m( true );
+                  return std::exception_ptr();
+               }
+               catch( ... ) {
+                  return std::current_exception();
                }
             }
 
             template< typename A, template< typename... > class Traits, typename Parts, typename C >
-            static bool consume_attempt( Parts& parser, C& x )
+            static bool attempt_consume( Parts& parser, C& x )
             {
                try {
                   auto m = parser.mark();
@@ -733,11 +771,10 @@ namespace tao
             template< template< typename... > class Traits, typename Parts, typename C >
             static void consume( Parts& parser, C& x )
             {
-               bool ok = false;
-               (void)json::internal::swallow{ ok = consume_attempt< V, Traits >( parser, x ), ( ok = ok || consume_attempt< Vs, Traits >( parser, x ) )... };
-               if( ! ok ) {
-                  throw std::runtime_error( "all versions failed" );  // NOLINT
-               }
+               std::exception_ptr e = first_consume< Traits >( parser, x );
+               bool ok = ( e == std::exception_ptr() );
+               (void)json::internal::swallow{ ( ok = ok || attempt_consume< Vs, Traits >( parser, x ) )... };
+               throw_on_error( ok, e );
             }
          };
 

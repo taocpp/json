@@ -40,11 +40,13 @@ namespace tao
 {
    namespace json
    {
-      // note: traits< ... >::assign() is always called with needs_discard(v) == false
+      // NOTE: traits< ... >::assign() is always called with needs_discard(v) == false
 
       template<>
       struct traits< null_t >
       {
+         // TODO: Implement as/consume/is_nothing?
+
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const null_t /*unused*/ )
          {

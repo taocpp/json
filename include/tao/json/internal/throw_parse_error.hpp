@@ -31,10 +31,7 @@ namespace tao
          }
 
          template< typename Input, typename... Ts >
-         void throw_parse_error( Input& in, const Ts&... ts ) __attribute__ ((noreturn));
-
-         template< typename Input, typename... Ts >
-         void throw_parse_error( Input& in, const Ts&... ts )
+         [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
          {
             std::ostringstream oss;
             oss << "(cbor) ";
