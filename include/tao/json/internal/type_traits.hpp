@@ -98,6 +98,28 @@ namespace tao
          {
          };
 
+         template< template< typename... > class Traits, typename T, typename = void >
+         struct has_is_nothing : std::false_type
+         {
+         };
+
+         template< template< typename... > class Traits, typename T >
+         struct has_is_nothing< Traits, T, decltype( Traits< T >::template is_nothing< Traits >( std::declval< const T& >() ), void() ) > : std::true_type
+         {
+         };
+
+         template< template< typename... > class Traits, typename T >
+         auto is_nothing( const T& t ) -> typename std::enable_if< has_is_nothing< Traits, T >::value, bool >::type
+         {
+            return Traits< T >::template is_nothing< Traits >( t );
+         }
+
+         template< template< typename... > class Traits, typename T >
+         auto is_nothing( const T& /*unused*/ ) -> typename std::enable_if< !has_is_nothing< Traits, T >::value, bool >::type
+         {
+            return false;
+         }
+
       }  // namespace internal
 
    }  // namespace json

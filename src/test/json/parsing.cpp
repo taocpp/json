@@ -62,8 +62,6 @@ namespace tao
       {
       };
 
-      // TODO: Find way to handle inheritance.
-
       template<>
       struct my_traits< derived_two >
          : binding::object< TAO_JSON_BIND_REQUIRED( "i", &derived_two::i ) >
@@ -265,10 +263,34 @@ namespace tao
       {
       };
 
+      struct test_empty
+      {
+         std::list< int > list;
+      };
+
+      template<>
+      struct my_traits< test_empty >
+         : binding::object< TAO_JSON_BIND_OPTIONAL( "list", &test_empty::list ) >
+      {
+      };
+
       using my_value = basic_value< my_traits >;
 
       void unit_test()
       {
+         {
+            test_empty w;
+            basic_value< my_traits > v = w;
+            TEST_ASSERT( v.is_object() );
+            TEST_ASSERT( v.unsafe_get_object().empty() );
+            w.list.push_back( 3 );
+            basic_value< my_traits > x = w;
+            TEST_ASSERT( x.is_object() );
+            TEST_ASSERT( x.unsafe_get_object().size() == 1 );
+            TEST_ASSERT( x.unsafe_get_object().at( "list" ).is_array() );
+            TEST_ASSERT( x.unsafe_get_object().at( "list" ).unsafe_get_array().size() == 1 );
+            TEST_ASSERT( x.unsafe_get_object().at( "list" ).unsafe_get_array()[ 0 ] == 3 );
+         }
          {
             const basic_value< my_traits > v = basic_value< my_traits >::array( { "a", "b", 3 } );
             const auto f = as< foo2 >( v );

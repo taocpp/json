@@ -29,6 +29,8 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
+#include "internal/type_traits.hpp"
+
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4702 )
@@ -1019,6 +1021,12 @@ namespace tao
          template< typename T >
          struct indirect_traits_base
          {
+            template< template< typename... > class Traits >
+            static bool is_nothing( const T& o )
+            {
+               return ( !bool( o ) ) || internal::is_nothing< Traits >( *o );
+            }
+
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
             {
@@ -1210,6 +1218,12 @@ namespace tao
          template< typename T >
          struct array_traits_base
          {
+            template< template< typename... > class Traits >
+            static bool is_nothing( const T& o )
+            {
+               return o.empty();
+            }
+
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
             {
@@ -1252,6 +1266,12 @@ namespace tao
          template< typename T >
          struct object_traits_base
          {
+            template< template< typename... > class Traits >
+            static bool is_nothing( const T& o )
+            {
+               return o.empty();
+            }
+
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
             {

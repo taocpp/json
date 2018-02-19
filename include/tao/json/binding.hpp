@@ -131,6 +131,11 @@ namespace tao
             : public element< T, P >,
               public member_key< R, K >
          {
+            template< template< typename... > class Traits, typename C >
+            static bool is_nothing( const C& x )
+            {
+               return json::internal::is_nothing< Traits >( element< T, P >::read( x ) );
+            }
          };
 
          template< typename T >
@@ -370,7 +375,9 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Base, typename C >
                static bool assign_member( basic_value< Traits, Base >& v, const C& x )
                {
-                  v.unsafe_emplace( A::key(), A::read( x ) );
+                  if( !A::template is_nothing< Traits >( x ) ) {
+                     v.unsafe_emplace( A::key(), A::read( x ) );
+                  }
                   return true;
                }
 
@@ -384,9 +391,11 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
                static bool produce_member( Consumer& consumer, const C& x )
                {
-                  A::template produce_key< Traits >( consumer );
-                  A::template produce< Traits >( consumer, x );
-                  consumer.member();
+                  if( !A::template is_nothing< Traits >( x ) ) {
+                     A::template produce_key< Traits >( consumer );
+                     A::template produce< Traits >( consumer, x );
+                     consumer.member();
+                  }
                   return true;
                }
 
@@ -677,7 +686,6 @@ namespace tao
          struct versions< V >
             : public V
          {
-            // TODO: Or static_assert more than one version?
          };
 
          template< typename V, typename... Vs >
@@ -685,7 +693,7 @@ namespace tao
             : public V
          {
             // NOTE: This is a bit like a high-level pegtl::sor<>.
-            // TODO: Clear x between attempts?
+            // TODO: Clear x between attempts? How?
 
             template< typename A, template< typename... > class Traits, typename Base, typename C >
             static bool as_attempt( const basic_value< Traits, Base >& v, C& x )
