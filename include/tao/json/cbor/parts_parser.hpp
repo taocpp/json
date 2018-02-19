@@ -67,12 +67,12 @@ namespace tao
 
             std::string string()
             {
-               return cbor_string< V, std::string >( internal::major::STRING, "expected cbor string" );
+               return cbor_string< V, std::string >( internal::major::STRING, "expected string" );
             }
 
             std::string binary()
             {
-               return cbor_string< utf8_mode::TRUST, std::vector< tao::byte > >( internal::major::BINARY, "expected cbor binary" );
+               return cbor_string< utf8_mode::TRUST, std::vector< tao::byte > >( internal::major::BINARY, "expected binary" );
             }
 
             std::string key()
@@ -80,7 +80,6 @@ namespace tao
                return string();
             }
 
-            // This would not work with fragmented CBOR strings (no contiguous block) and regular JSON (escaping); keep anyway, and to binary_view, too??
             tao::string_view string_view()
             {
                const auto b = internal::peek_byte_safe( m_input );
@@ -88,6 +87,15 @@ namespace tao
                   internal::throw_parse_error( m_input, "expected definitive string" );
                }
                return internal::parse_string_1< V, tao::string_view >( m_input );
+            }
+
+            tao::byte_view binary_view()
+            {
+               const auto b = internal::peek_byte_safe( m_input );
+               if( b!= std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
+                  internal::throw_parse_error( m_input, "expected definitive binary" );
+               }
+               return internal::parse_string_1< utf8_mode::TRUST, tao::byte_view >( m_input );
             }
 
             std::int64_t number_signed_unsigned()
@@ -168,12 +176,12 @@ namespace tao
 
             state_t begin_array()
             {
-               return begin_container( internal::major::ARRAY, "expected cbor array" );
+               return begin_container( internal::major::ARRAY, "expected array" );
             }
 
             state_t begin_object()
             {
-               return begin_container( internal::major::OBJECT, "expected cbor object" );
+               return begin_container( internal::major::OBJECT, "expected object" );
             }
 
             void end_array_sized( state_t& p )

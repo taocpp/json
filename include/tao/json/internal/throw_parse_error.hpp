@@ -6,9 +6,12 @@
 
 #include <cstdint>
 #include <ostream>
+#include <typeinfo>
 
-#include "../external/pegtl/parse_error.hpp"
 #include "../forward.hpp"
+
+#include "../external/pegtl/internal/demangle.hpp"
+#include "../external/pegtl/parse_error.hpp"
 
 namespace tao
 {
@@ -16,16 +19,23 @@ namespace tao
    {
       namespace internal
       {
+         bool to_stream( std::ostream& o, const std::type_info& t )
+         {
+            o << ' ' << json_pegtl::internal::demangle( t.name() );
+            return true;
+         }
+
          template< typename T >
          bool to_stream( std::ostream& o, const T& t )
          {
-            o << t;
+            o << ' ' << t;
             return true;
          }
 
          template< std::size_t N >
          bool to_stream( std::ostream& o, const char( &t )[ N ] )
          {
+            o << ' ';
             o.write( t, N - 1 );
             return false;
          }
@@ -34,7 +44,7 @@ namespace tao
          [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
          {
             std::ostringstream oss;
-            oss << "(cbor) ";
+            oss << "json:";
             (void)swallow{ to_stream( oss, ts )... };
             throw json_pegtl::parse_error( oss.str(), in );  // NOLINT
          }

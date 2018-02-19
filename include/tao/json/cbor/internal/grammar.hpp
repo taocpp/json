@@ -32,7 +32,7 @@ namespace tao
             template< typename Input, typename... Ts >
             [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
             {
-               json::internal::throw_parse_error( in, "cbor parse error: ", ts... );
+               json::internal::throw_parse_error( in, "cbor:", ts... );
             }
 
             template< typename Input >
@@ -139,7 +139,7 @@ namespace tao
                   case 29:
                   case 30:
                   case 31:
-                     throw_parse_error( in, "unexpected minor ", m, " for number or length" );
+                     throw_parse_error( in, "unexpected minor", m, "for number or length" );
                }
             }
 
@@ -148,7 +148,7 @@ namespace tao
             {
                const auto s = parse_unsigned( in );
                if( s > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
-                  throw_parse_error( in, "size ", s, " exceeds size_t" );
+                  throw_parse_error( in, "size", s, "exceeds size_t" );
                }
                return static_cast< std::size_t >( s );
             }
@@ -256,7 +256,7 @@ namespace tao
                      case 29:
                      case 30:
                      case 31:
-                        throw_parse_error( in, "unexpected minor ", m, " for number or length" );
+                        throw_parse_error( in, "unexpected minor", m, "for number or length" );
                   }
                }
 
@@ -436,7 +436,7 @@ namespace tao
                         return true;
                      case 24:
                      default:
-                        throw_parse_error( in, "unsupported minor ", m, " for major 7" );
+                        throw_parse_error( in, "unsupported minor", m, "for major 7" );
                   }
                }
             };

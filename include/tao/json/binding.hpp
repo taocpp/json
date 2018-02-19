@@ -148,6 +148,12 @@ namespace tao
             CONTINUE
          };
 
+         enum class for_nothing_value : bool
+         {
+            ENCODE,
+            SUPPRESS
+         };
+
          namespace internal
          {
             template< for_unknown_key >
@@ -257,11 +263,11 @@ namespace tao
 
             // TODO: Control how to create the instances?
 
-            template< for_unknown_key E, typename T >
+            template< for_unknown_key E, for_nothing_value N, typename T >
             struct basic_object;
 
-            template< for_unknown_key E, typename... As >
-            struct basic_object< E, json::internal::type_list< As... > >
+            template< for_unknown_key E, for_nothing_value N, typename... As >
+            struct basic_object< E, N, json::internal::type_list< As... > >
             {
                using members = json::internal::type_list< As... >;
 
@@ -361,7 +367,7 @@ namespace tao
                         continue;
                      }
                      if( b.test( i->second.index ) ) {
-                        parser.throw_parse_error( "duplicate object key ", json::internal::escape( k ) );
+                        parser.throw_parse_error( "duplicate object key", json::internal::escape( k ), "for type", typeid( C ) );
                      }
                      i->second.function( parser, x );
                      b.set( i->second.index );
@@ -376,7 +382,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Base, typename C >
                static bool assign_member( basic_value< Traits, Base >& v, const C& x )
                {
-                  if( !A::template is_nothing< Traits >( x ) ) {
+                  if( ( N == for_nothing_value::ENCODE ) && ( !A::template is_nothing< Traits >( x ) ) ) {
                      v.unsafe_emplace( A::key(), A::read( x ) );
                   }
                   return true;
@@ -392,7 +398,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
                static bool produce_member( Consumer& consumer, const C& x )
                {
-                  if( !A::template is_nothing< Traits >( x ) ) {
+                  if( ( N == for_nothing_value::ENCODE ) && ( !A::template is_nothing< Traits >( x ) ) ) {
                      A::template produce_key< Traits >( consumer );
                      A::template produce< Traits >( consumer, x );
                      consumer.member();
@@ -462,18 +468,23 @@ namespace tao
          template< typename... As >
          using array = internal::array< json::internal::merge_type_lists< internal::inherit_elements< As >... > >;
 
-         template< for_unknown_key W, typename... As >
-         using basic_object = internal::basic_object< W, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
+         template< for_unknown_key E, for_nothing_value N, typename... As >
+         using basic_object = internal::basic_object< E, N, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
 
          template< typename... As >
-         using object = basic_object< for_unknown_key::THROW, As... >;
+         using object = basic_object< for_unknown_key::THROW, for_nothing_value::ENCODE, As... >;
 
-         template< typename K >
-         struct factory_name;
+         template< typename K, typename T, typename U >
+         struct factory_type;
 
-         template< char... Cs >
-         struct factory_name< key< Cs... > >
+         template< char... Cs, typename T, typename U >
+         struct factory_type< key< Cs... >, T, U >
          {
+            static const std::type_info* type()
+            {
+               return &typeid( T );
+            }
+
             static std::string name()
             {
                static const char s[] = { Cs..., 0 };
@@ -485,16 +496,6 @@ namespace tao
             {
                static const char s[] = { Cs..., 0 };
                consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
-            }
-         };
-
-         template< typename K, typename T, typename U >
-         struct factory_type
-            : public factory_name< K >
-         {
-            static const std::type_info* type()
-            {
-               return &typeid( T );
             }
 
             template< template< typename... > class Traits, typename Base >
@@ -581,7 +582,7 @@ namespace tao
 
                const auto& a = v.get_object();
                if( a.size() != 1 ) {
-                  throw std::runtime_error( "unexpected JSON object size for polymorphic object factory" );  // NOLINT
+                  throw std::runtime_error( "unexpected json object size for polymorphic object factory" );  // NOLINT
                }
                const auto b = a.begin();
                const auto i = m.find( b->first );
@@ -700,7 +701,7 @@ namespace tao
             {
                if( !ok ) {
                   try {
-                     std::rethrow_exception( e );
+                     std::rethrow_exception( e );  // TODO: Did I miss a way to avoid the throw?
                   }
                   catch( ... ) {
                      std::throw_with_nested( std::runtime_error( "all variants failed -- see nested for first error" ) );
@@ -735,7 +736,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename C >
             static void as( const basic_value< Traits, Base >& v, C& x )
             {
-               std::exception_ptr e = first_as( v, x );
+               const std::exception_ptr e = first_as( v, x );
                bool ok = ( e == std::exception_ptr() );
                (void)json::internal::swallow{ ( ok = ok || attempt_as< Vs >( v, x ) )... };
                throw_on_error( ok, e );
@@ -771,11 +772,123 @@ namespace tao
             template< template< typename... > class Traits, typename Parts, typename C >
             static void consume( Parts& parser, C& x )
             {
-               std::exception_ptr e = first_consume< Traits >( parser, x );
+               const std::exception_ptr e = first_consume< Traits >( parser, x );
                bool ok = ( e == std::exception_ptr() );
                (void)json::internal::swallow{ ( ok = ok || attempt_consume< Vs, Traits >( parser, x ) )... };
                throw_on_error( ok, e );
             }
+         };
+
+         template< typename C, bool V >
+         struct element_b
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& /*unused*/ )
+            {
+               consumer.boolean( V );
+            }
+
+            template< template< typename... > class Traits = traits, typename Parts >
+            static void consume( Parts& parser, C& /*unused*/ )
+            {
+               const auto t = parser.boolean();
+               if( t != V ) {
+                  parser.throw_parse_error( "boolean mismatch -- expected", V, "parsed", t );
+               }
+            }
+         };
+
+         template< typename C, std::int64_t V >
+         struct element_i
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& /*unused*/ )
+            {
+               consumer.number( V );
+            }
+
+            template< template< typename... > class Traits = traits, typename Parts >
+            static void consume( Parts& parser, C& /*unused*/ )
+            {
+               const auto t = parser.number_signed();
+               if( t != V ) {
+                  parser.throw_parse_error( "signed mismatch -- expected", V, "parsed", t );
+               }
+            }
+         };
+
+         template< typename C, std::uint64_t V >
+         struct element_u
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& /*unused*/ )
+            {
+               consumer.number( V );
+            }
+
+            template< template< typename... > class Traits = traits, typename Parts >
+            static void consume( Parts& parser, C& /*unused*/ )
+            {
+               const auto t = parser.number_unsigned();
+               if( t != V ) {
+                  parser.throw_parse_error( "unsigned mismatch -- expected", V, "parsed", t );
+               }
+            }
+         };
+
+         template< char... Cs >
+         using string = json_pegtl::string< Cs... >;
+
+         template< typename T, typename S >
+         struct element_s;
+
+         template< typename T, char... Cs >
+         struct element_s< T, json_pegtl::string< Cs... > >
+         {
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const T& /*unused*/ )
+            {
+               static const char s[] = { Cs..., 0 };
+               consumer.string( tao::string_view( s, sizeof...( Cs ) ) );
+            }
+
+            template< template< typename... > class Traits = traits, typename Parts >
+            static void consume( Parts& parser, T& /*unused*/ )
+            {
+               static const char s[] = { Cs..., 0 };
+               const auto t = parser.string();
+               if( t != s ) {
+                  parser.throw_parse_error( "string mismatch -- expected", s, "parsed", t );
+               }
+            }
+         };
+
+         template< member_kind R, typename K, typename T, bool B >
+         struct member_b
+            : public element_b< T, B >,
+              public member_key< R, K >
+         {
+         };
+
+         template< member_kind R, typename K, typename T, std::int64_t V >
+         struct member_i
+            : public element_i< T, V >,
+              public member_key< R, K >
+         {
+         };
+
+         template< member_kind R, typename K, typename T, std::uint64_t V >
+         struct member_u
+            : public element_u< T, V >,
+              public member_key< R, K >
+         {
+         };
+
+         template< member_kind R, typename K, typename T, typename S >
+         struct member_s
+            : public element_s< T, S >,
+              public member_key< R, K >
+         {
          };
 
       }  // namespace binding
