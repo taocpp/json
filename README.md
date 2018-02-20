@@ -5,7 +5,7 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON Value object, conversions from and to JSON string representation, and supports JSON Pointer and JSON Patch. It is highly extensible with a traits mechanism for custom conversion from and to (custom) C++ types, and an Events interface for (custom) conversion from and to multiple other file formats or even JSON value representations. The library is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
+The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON Value object, conversions from and to JSON text and binary formats, and supports JSON Pointer and Patch. It is highly extensible with a traits mechanism for integration of (custom) C++ types, and an Events interface for (custom) conversion, filtering and bridging to other JSON libraries. This library is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
 
 ## Documentation
 
@@ -13,14 +13,14 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 ## Features
 
-* Serious standard conformance!
+* Standards
 
   * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
   * Achieves a **100% score** in the [Native JSON Benchmark] conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
   * [RFC7049]: Concise Binary Object Representation ([CBOR]).
-  * [JAXN]: a standard for relaxed JSON.
+  * [JAXN]: Relaxed JSON with binary data and non-finite numbers.
   * [MsgPack]: MessagePack binary format (without extensions).
   * [UBJSON]: Universal Binary JSON.
   * Experimental support for [JSON Reference] (local URI fragments only).
@@ -28,8 +28,8 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
 * General
 
-  * Provides JSON Value Class (DOM-style).
-  * Provides JSON Events Interface (SAX-style).
+  * Provides JSON Value class (DOM-style).
+  * Provides JSON Events interface (SAX-style).
   * Numeric values are stored as `std::int64_t`, `std::uint64_t` or `double`.
   * Allows storing and handling of non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
   * Allows storing and handling of binary data.
@@ -39,7 +39,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * Value Class
 
   * Construction of objects and arrays via `std::initializer_list`.
-  * Allows construction of JSON value objects from arbitrary *user-defined types* with specialised traits class template.
+  * Allows construction of JSON value objects from arbitrary *custom types* with specialised traits class template.
   * Built around standard STL containers
     * `std::string` for JSON strings,
     * `std::vector< tao::json::value >` for JSON arrays,
@@ -47,9 +47,9 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
     * `std::vector< tao::json::byte >` for JAXN binary data. (`tao::json::byte` is an alias for `std::byte` when available).
   * Does *not* support storing of duplicate keys in JSON objects.
   * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
-  * Indirect JSON values and *user-defined types* via non-owning C++ raw pointers for efficient object sharing and other optimisations.
+  * Indirect JSON values and *custom types* via non-owning C++ raw pointers for efficient object sharing and other optimisations.
   * C++11 literal operator for JSON values, including binary data.
-  * Optional user-defined annotations for every (sub-)value (e.g. [the filename and position the (sub-)value was parsed from](include/tao/json/contrib/position.hpp).
+  * Optional custom annotations for every (sub-)value (e.g. [the filename and position the (sub-)value was parsed from](include/tao/json/contrib/position.hpp).
 
 * Events Interface
 
@@ -82,7 +82,7 @@ JSON libraries for C++ can be classified according to certain properties and cha
 
 This library is of both the first *and* the third kind, and supports a hybrid model where the C++ JSON value contains pointers to arbitrary C++ data types as sub-values.
 
-It employs the [Events interface](https://github.com/taocpp/json/blob/master/doc/Events-Interface.md) as universal adapter within the library (and as bridge to other libraries), and the traits mechanism to allow for seamless integration of, and conversion from and to, user-defined C++ data types.
+It employs the [Events interface](https://github.com/taocpp/json/blob/master/doc/Events-Interface.md) as universal adapter within the library (and as bridge to other libraries), and the traits mechanism to allow for seamless integration of, and conversion from and to, custom C++ data types.
 
 ## License
 

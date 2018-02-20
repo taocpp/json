@@ -17,6 +17,9 @@
 * [Events Interface](Events-Interface.md)
 * [Advanced Use Cases](Advanced-Use-Cases.md)
   * [Add filename and line to parsed Values](Advanced-Use-Cases.md#add-filename-and-line-to-parsed-values)
+* [Advanced Features](Advanced-Features.md)
+  * [Custom Types and Traits](Advanced-Features.md#custom-types-and-traits)
+  * [Raw and Opaque Pointers](Advanced-Features.md#raw-and-opaque-pointers)
 * [Changelog](Changelog.md)
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
