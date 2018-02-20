@@ -5,7 +5,7 @@
 
 ## Custom Types and Traits
 
-**Please note that while everything documented here will continue to work in version 1.0, we are currently developing additional, simplified ways to write traits for custom types.**
+*Please note that while everything documented here will continue to work in version 1.0, we are currently developing additional, simplified ways to write traits for custom types.*
 
 The `Traits` template parameter used most prominently with `tao::json::basic_value<>` is used to control many aspects of the interaction between the JSON library and other C++ types.
 
@@ -180,7 +180,7 @@ struct my_traits< my_type >
 For the first use case, it is now trivial to directly and efficiently generate the JSON representation of a `my_type` instance without creating any JSON Value instance along the way.
 
 ```c++
-const my_data d;
+const my_data d;  // ...assumed to contain important data...
 const std::string json = tao::json::produce::to_string< my_traits >( d );
 ```
 
@@ -188,11 +188,88 @@ As with the `assign()` functions, it might be beneficial to provide a moving-ver
 
 ## Raw and Opaque Pointers
 
-TODO: Explain lifetime issues.
+When creating a JSON Value instance with other JSON Values or other (custom) types as sub-values, the other JSON Values are "deep copied" into the target value, and the other types generate their corresponding JSON Value structure as per the type's traits' `assign()` method.
 
-TODO: Explain traits requirements.
+As a performance optimisation it is sometimes possible to replace these deep copied and generated structures of sub-values with pointers, and have the outside value behave "as if" it contained the deep copied or generated object hierarchy.
 
-TOOD: Give short example.
+Both raw and opaque pointers use non-owning plain pointers for efficient object sharing.
+It is up to the user to track object lifetimes and make sure that the objects pointed to be JSON Values with raw and opaque pointer sub-values are valid as long as they might be needed!
+
+Both raw and opaque pointers MUST NOT be `nullptr`.
+
+The difference between raw and opaque pointers is that raw pointers are used with other JSON Value instances (with the same traits and base class) while opaque pointers can be used with any data type for which the values's traits contain a `produce()` method.
+
+Raw pointers are automatically dereferenced for comparison operations, however comparison operators MUST NOT be used with JSON Value instances that contain opaque pointers.
+
+The main use case of opaque pointers is when creating a JSON Value structure in preparation of serialising to one of the supported representation formats.
+Creating a value with a sub-value with a raw or opaque pointer, and then using one of the `to_string()` etc. functions, will yield the same result as creating a value with the full object hierarchy and serialising that, with the optmisation of not actually creating the full object hierarchy.
+
+The function `tao::json::is_self_contained()` can be used to check whether a JSON Value is fully self contained, i.e. does not rely on any outside storage.
+It recursively check the entire JSON Value and returns `false` if it finds any sub-value of type `STRING_VIEW`, `BINARY_VIEW`, `RAW_PTR` or `OPAQUE_PTR`.
+
+The function `tao::json::make_self_contained()` can be used to make a JSON Value fully self contained.
+Sub-values of type `STRING_VIEW` and `BINARY_VIEW` are transformed into `STRING` and `BINARY`, respectively.
+Occurrences of `RAW_PTR` are replaced with a deep copy of the pointee.
+
+Occurrences of `OPAQUE_PTR` are replaced with a JSON Value created by hooking up the `produce()` method of the pointee type's traits with an Events consumer that builds a Value from the Events.
+
+We continue the `my_data` example from above, assuming that we are generating JSON text for a toy version of a JSON-formatted log file.
+
+```c++
+const my_data d;  // ...assumed to contain important data...
+my_value v = {
+   { "app_id", "my_app" },
+   { "log_id", 103152 },
+   { "message", "successfully processed" },
+   { "data", d }
+};
+const auto json = tao::json::to_string( v );
+```
+
+The suggested way of creating JSON Values of type `OPAQUE_PTR` is to specialise the traits class for pointers.
+
+```c++
+template<>
+struct my_traits< const my_data* >
+{
+   template< template< typename... > class Traits, typename Base >
+   static void assign( basic_value< Traits, Base >& v, const my_data* const d )
+   {
+      v.unsafe_assign_opaque_ptr( d );
+   }
+};
+```
+
+Remember that the `unsafe` in `unsafe_assign_opaque_ptr()` refers to it blindly assuming that `v` is not currently owning any memory, a safe assumption because traits' `assign()` functions are always called with default-initialised value instances as first argument.
+
+Given this traits specialisation for the pointer to `my_data`, and the `produce()` function in the traits for `my_data` itself, we can replace the code from above with a more efficient version.
+
+```c++
+const my_data d;  // ...assumed to contain important data...
+my_value v = {
+   { "app_id", "my_app" },
+   { "log_id", 103152 },
+   { "message", "successfully processed" },
+   { "data", &d }
+};
+const auto json = tao::json::to_string( v );
+```
+
+Note that only one detail has changed, we are passing `&d` instead of `d`, and that the resulting JSON text will be the same as before.
+
+We do NOT recommend the following traits specialisation as it removes the `&` from all places that an opaque pointer is created, thereby removing the visual reminder that object lifetimes need to be tracked manually.
+
+```c++
+template<>
+struct my_traits< my_data >
+{
+   template< template< typename... > class Traits, typename Base >
+   static void assign( basic_value< Traits, Base >& v, my_data& d )
+   {
+      v.unsafe_assign_opaque_ptr( &d );  // NOT recommended!
+   }
+};
+```
 
 ## Custom Annotations
 
