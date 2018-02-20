@@ -186,6 +186,17 @@ const std::string json = tao::json::produce::to_string< my_traits >( d );
 
 As with the `assign()` functions, it might be beneficial to provide a moving-version for strings and binary data (although only few Events consumers will be able to optimise for the move case).
 
+### Positive Side Effects
+
+Remember that the defaults traits implementation knows how to handle the most common smart pointers and containers.
+
+As a consequence, given the traits specialisation for `my_data`, the following will automagically work, too, (as long as the default case of `my_traits< T >` derives from `tao::json::traits< T >`).
+
+```c++
+my_value v;  // ...assumed to contain the right data...
+const auto p = v.as< std::unique_ptr< std::list< std::shared_ptr< my_data > > > >();
+```
+
 ## Raw and Opaque Pointers
 
 When creating a JSON Value instance with other JSON Values or other (custom) types as sub-values, the other JSON Values are "deep copied" into the target value, and the other types generate their corresponding JSON Value structure as per the type's traits' `assign()` method.

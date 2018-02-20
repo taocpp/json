@@ -106,23 +106,11 @@ Objects are stored as `std::map< std::string, basic_value >`.
 
 ### Raw Pointers
 
-The type `RAW_PTR` indicates that the stored Value is a plain-and-simple C-pointer to another `tao::json::value`.
-It is typically used when creating Arrays or Objects.
-When adding a sub-value that is already available as instance of `tao::json::value` it is cheaper to add a `RAW_PTR` to the existing instance, rather than creating a copy, provided there are no issues of life-time.
-
-```c++
-   tao::json::value a = build_complex_value();
-   tao::json::value b = {
-      { "complex_value", & a },
-      { "interesting_int", 42 }
-   };
-```
-
-Here `b` will contain a `RAW_PTR` to `a` as value for the object key `"complex_value"`, and bad things will happen if `b` is used (in the "wrong" way) after `a` goes out of scope.
+See the [section on raw and opaque pointers](Advanced-Features.md#raw-and-opaque-pointers) on the [advanced features page](Advanced-Features.md).
 
 ### Opaque Pointers
 
-See the [section on opaque pointers](Advanced-Features.md#opaque-pointers) on the [advanced features page](Advanced-Features.md).
+See the [section on raw and opaque pointers](Advanced-Features.md#raw-and-opaque-pointers) on the [advanced features page](Advanced-Features.md).
 
 ## Constructors
 
@@ -159,6 +147,38 @@ The file `tao/include/json/contrib/position.hpp` shows how to parse a JSON file 
 
 ## Value Traits
 
-See the [section on Value traits](Advanced-Features.md#value-traits) on the [advanced features page](Advanced-Features.md).
+The library includes a traits class template that supports all types listed in the table below.
+The included traits are used as default traits throughout the library.
+
+| Specialised for | Remarks |
+| -------------- | -------- |
+| `null_t` | |
+| `bool` | |
+| *signed integers* | |
+| *unsigned integers* | |
+| `double`, `float` | |
+| `empty_binary_t` | |
+| `empty_array_t` | |
+| `empty_object_t` | |
+| `std::string` | |
+| `tao::string_view` | |
+| `const char*` | |
+| `const std::string&` | |
+| `std::vector< tao::byte >` | |
+| `tao::byte_view` | |
+| `const std::vector< tao::byte >&` | |
+| `std::vector< basic_value< T, B > >` | Partial specialisation. |
+| `basic_value< T, B >*` | Partial specialisation. |
+| `const basic_value< T, B >*` | Partial specialisation. |
+| `std::map< std::string, basic_value< T, B > > | Partial specialisation. |
+| `tao::optional< T >` | Partial specialisation. |
+| `std::shared_ptr< T >` | Partial specialisation. |
+| `std::unique_ptr< T >` | Partial specialisation. |
+| `std::list< T >` | Partial specialisation. |
+| `std::set< T >` | Partial specialisation. |
+| `std::vector< T >` | Partial specialisation. |
+| `std::map< std::string, T >` | Partial specialisation. |
+
+See the [section on custom types and traits](Advanced-Features.md#custom-types-and-traits) on the [advanced features page](Advanced-Features.md) on how to change and extend the default traits.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
