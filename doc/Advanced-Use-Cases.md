@@ -3,7 +3,7 @@
 * [Custom Value Annotations](#custom-value-annotations)
 * [Annotate with filename and line number](#annotate-with-filename-and-line-number)
 * [Instance sharing with Raw Pointers](#instance-sharing-with-raw-pointers)
-* [Instance sharing with Ppaque Pointers](#instance-sharing-with-opaque-pointers)
+* [Instance sharing with Opaque Pointers](#instance-sharing-with-opaque-pointers)
 * [Making Values Self Contained](#making-values-self-contained)
 
 ## Custom Value Annotations
