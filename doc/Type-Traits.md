@@ -133,7 +133,7 @@ In the following we will assume the implementation from above.
 
 ## Convert Value into Type
 
-The traits` `as()` functions are used to convert Values into any type `T`.
+The traits' `as()` functions are used to convert Values into any type `T`.
 
 There are two possible signatures for the `as()` function of which *only one needs to be implemented*.
 If not particularly awkward or slow it is recommended to implement the version that returns the `T`.
