@@ -90,7 +90,7 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const bool b ) noexcept
          {
-            v.unsafe_assign_bool( b );
+            v.unsafe_assign_boolean( b );
          }
 
          template< template< typename... > class Traits, typename Base >

@@ -41,7 +41,7 @@ namespace tao
 
             void boolean( const bool v )
             {
-               value.unsafe_assign_bool( v );
+               value.unsafe_assign_boolean( v );
             }
 
             void number( const std::int64_t v )

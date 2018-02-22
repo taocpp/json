@@ -485,7 +485,7 @@ namespace tao
             m_type = json::type::NULL_;
          }
 
-         void unsafe_assign_bool( const bool b ) noexcept
+         void unsafe_assign_boolean( const bool b ) noexcept
          {
             m_union.b = b;
             m_type = json::type::BOOLEAN;
@@ -674,10 +674,10 @@ namespace tao
             unsafe_assign_null();
          }
 
-         void assign_bool( const bool b ) noexcept
+         void assign_boolean( const bool b ) noexcept
          {
             unsafe_discard();
-            unsafe_assign_bool( b );
+            unsafe_assign_boolean( b );
          }
 
          void assign_signed( const std::int64_t i ) noexcept
