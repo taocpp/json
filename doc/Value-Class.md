@@ -5,7 +5,7 @@
 * [Creating Values](#creating-values)
 * [Accessing Values](#accessing-values)
 * [Manipulating Values](#manipulating-values)
-* [Comparison Operators](#comparison-operators)
+* [Comparing Values](#comparing-values)
 * [Unsafe Functions](#unsafe-functions)
 
 ## Overview
@@ -194,7 +194,7 @@ const tao::json::value array = tao::json::value::array( {
 ```
 
 To simplify creating Values that represent a JSON Null, an empty array, an empty object, or empty binary data, there are types `tao::json::null_t`, `tao::json::empty_array_t`, `tao::json::empty_object_t`, and `tao::json::empty_binary_t` with global `constexpr` instances `tao::json::null`, `tao::json::empty_array`, `tao::json::empty_object`, and `tao::json::empty_binary`.
-They can construct Values, and be assigned to Values.
+They can construct Values, and, like everything else that a Value can be constructed from, can be assigned to Values.
 
 ```c++
 tao::json::value v = tao::json::null;
@@ -207,9 +207,13 @@ v = {
 
 ## Accessing Values
 
+TODO
+
 ## Manipulating Values
 
-## Comparison Operators
+TODO
+
+## Comparing Values
 
 The library contains the full complement of comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=` ) to compare Values with other Values, and to compare Values with any other C++ type.
 

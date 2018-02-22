@@ -1,16 +1,16 @@
 # Type Traits
 
-* [Traits Class Template](#traits-class-template)
+* [Overview](#overview)
 * [Create JSON Value from (custom) type](#create-value-from-type)
 * [Convert JSON Value into (custom) type](#convert-value-into-type)
 * [Compare JSON Value to (custom) type](#compare-value-with-type)
-* [Produce](#produce-events-from-type) [JSON Events](Events-Interface.md) [from (custom) type.](#produce-events-from-type)
+* [Produce JSON Events from (custom) type](#produce-events-from-type)
 * [Default Traits Specialisations](#default-traits-specialisations)
 * [Default Key for Objects](#default-key-for-objects)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
 
-## Traits Class Template
+## Overview
 
 The class template passed as `Traits` template parameter, most prominently to `tao::json::basic_value<>`, controls the interaction between the JSON library and other C++ types.
 
@@ -182,11 +182,15 @@ The comparison operators `==`, `!=`, `<`, `<=`, `>` and `>=` in namespace `tao::
 That's "ideally" because as long as the traits for the type in question contain an `assign()` method the comparison operators will create a temporary JSON Value and then compare the two Values.
 In other words, adding `equal()`, `greater_than()` and `less_than()` functions to traits is "only" a performance optimisation.
 
-TODO: Give details.
+TODO: Details for `equal()`
+
+TODO: Details for `less_than()`
+
+TODO: Details for `greater_than()`
 
 ## Produce Events from Type
 
-Producing JSON Events from a type is performed by the type's traits' `produce()` function.
+Producing [JSON Events](Events-Interface.md) from a type is performed by the type's traits' `produce()` function.
 
 Implementing the `produce()` function is only required for some optimisation techniques, namely:
 
@@ -264,6 +268,6 @@ The type traits correctly work with nested types, for example given that strings
 
 ## Default Key for Objects
 
-TODO
+TODO: Details
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

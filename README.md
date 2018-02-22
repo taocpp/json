@@ -16,7 +16,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * Standards
 
   * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
-  * Achieves a **100% score** in the [Native JSON Benchmark] conformance tests.
+  * Achieves **100%** in the [Native JSON Benchmark] conformance tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
   * [RFC7049]: Concise Binary Object Representation ([CBOR]).
@@ -30,47 +30,32 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 
   * Provides JSON Value class (DOM-style).
   * Provides JSON Events interface (SAX-style).
-  * Numeric values are stored as `std::int64_t`, `std::uint64_t` or `double`.
-  * Allows storing and handling of non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
-  * Allows storing and handling of binary data.
+  * Numeric values can be `std::int64_t`, `std::uint64_t` or `double`.
+  * Supports storing and handling of non-finite floating point values `NaN`, `Infinity` and `-Infinity`.
+  * Supports storing and handling of binary data.
   * Supports string views and binary views to avoid copying data.
   * Currently only supports UTF-8 as input and output encoding.
 
-* Value Class
+* [Value Class](doc/Value-Class.md)
 
   * Construction of objects and arrays via `std::initializer_list`.
-  * Allows construction of JSON value objects from arbitrary *custom types* with specialised traits class template.
-  * Built around standard STL containers
-    * `std::string` for JSON strings,
-    * `std::vector< tao::json::value >` for JSON arrays,
-    * `std::map< std::string, tao::json::value >` for JSON objects,
-    * `std::vector< tao::json::byte >` for JAXN binary data. (`tao::json::byte` is an alias for `std::byte` when available).
-  * Does *not* support storing of duplicate keys in JSON objects.
-  * No memory allocations by the JSON value class itself (the wrapped standard containers perform their memory allocations normally).
-  * Indirect JSON values and *custom types* via non-owning C++ raw pointers for efficient object sharing and other optimisations.
+  * Conversion from and to arbitrary *custom types* via [traits class template](doc/Type-Traits.md.
+  * Built around STL containers `std::string`, `std::map` and `std::vector`.
+  * No memory allocations by the JSON value class itself (the wrapped containers allocate normally).
+  * Instance sharing of JSON values and *custom types* via non-owning C++ raw pointers.
   * C++11 literal operator for JSON values, including binary data.
-  * Optional custom annotations for every (sub-)value (e.g. [the filename and position the (sub-)value was parsed from](include/tao/json/contrib/position.hpp).
+  * Optional custom annotations for all values (e.g. [filename and line (sub-)values were parsed from](doc/Advanced-Use-Cases.md#annotate-with-filename-and-line-number).
 
-* Events Interface
+* [Events Interface](doc/Events-Interface.md)
 
   * Simple, straightforward and flexible JSON Events API.
   * JSON Events-to-Value and Value-to-Events interfaces.
-  * Parse JSON string representation to JSON Events.
-  * Parse JAXN string representation to JSON Events.
-  * Stream JSON Events to (prettified) JSON string representation.
-  * Stream JSON Events to (prettified) JAXN string representation.
-  * Supports conversion from and to binary formats, e.g. [CBOR], [UBJSON], [MsgPack].
-  * Supports conversion from and to *other* JSON value objects (e.g. [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
-  * JSON Events comparison (against an existing JSON Value).
-  * JSON Events hash algorithm (SHA-256 based).
-  * JSON Events schema validator.
-
-## Status
-
-The library is mostly stable as in "works correctly and does not crash" over months of multiple real-world applications.
-It is less stable in the sense that some parts of the API are still under discussion and development and might change and/or be extended before the first release.
-
-This library also serves as a fully functional real-world example for the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing JSON and JAXN string representations.
+  * Parse JSON & JAXN string representation to JSON Events.
+  * Stream JSON Events to (prettified) JSON & JAXN string representation.
+  * Conversion from and to binary formats, currently [CBOR], [UBJSON], [MsgPack].
+  * Conversion from and to *other* JSON libraries (e.g. [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
+  * JSON Events comparison, hashing, counting, and schema validation.
+  * JSON Events filters to manipulate Events in various ways.
 
 ## Design
 
@@ -83,6 +68,14 @@ JSON libraries for C++ can be classified according to certain properties and cha
 This library is of both the first *and* the third kind, and supports a hybrid model where the C++ JSON value contains pointers to arbitrary C++ data types as sub-values.
 
 It employs the [Events interface](https://github.com/taocpp/json/blob/master/doc/Events-Interface.md) as universal adapter within the library (and as bridge to other libraries), and the traits mechanism to allow for seamless integration of, and conversion from and to, custom C++ data types.
+
+## Status
+
+The library is stable as in "works correctly" over months of multiple real-world applications.
+
+The library is not stable as in "under construction"; some parts of the API are under discussion and development and might change and/or be extended before version 1.0.
+
+This library also serves as a real-world example application of the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing the JSON and JAXN representation formats.
 
 ## License
 
