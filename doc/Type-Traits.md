@@ -6,6 +6,7 @@
 * [Compare JSON Value to (custom) type](#compare-value-with-type)
 * [Produce](#produce-events-from-type) [JSON Events](Events-Interface.md) [from (custom) type.](#produce-events-from-type)
 * [Default Traits Specialisations](#default-traits-specialisations)
+* [Default Key for Objects](#default-key-for-objects)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
 
@@ -245,10 +246,10 @@ The defaults traits support the following types.
 | `std::vector< tao::byte >` | |
 | `tao::byte_view` | |
 | `const std::vector< tao::byte >&` | |
-| `std::vector< basic_value< T, B > >` | Partial specialisation. |
-| `basic_value< T, B >*` | Partial specialisation. |
-| `const basic_value< T, B >*` | Partial specialisation. |
-| `std::map< std::string, basic_value< T, B > > | Partial specialisation. |
+| `std::vector< basic_value< Traits, Base > >` | Partial specialisation. |
+| `basic_value< Traits, Base >*` | Partial specialisation. |
+| `const basic_value< Traits, Base >*` | Partial specialisation. |
+| `std::map< std::string, basic_value< Traits, Base > > | Partial specialisation. |
 | `tao::optional< T >` | Partial specialisation. |
 | `std::shared_ptr< T >` | Partial specialisation. |
 | `std::unique_ptr< T >` | Partial specialisation. |
@@ -258,5 +259,11 @@ The defaults traits support the following types.
 | `std::map< std::string, T >` | Partial specialisation. |
 
 *`std::pair` and `std::tuple` coming soon.*
+
+The type traits correctly work with nested types, for example given that strings, doubles, vectors, shared pointers and maps are supported, so us the type `std::shared_ptr< std::map< std::string, std::shared_ptr< std::vector< double > > > >`.
+
+## Default Key for Objects
+
+TODO
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
