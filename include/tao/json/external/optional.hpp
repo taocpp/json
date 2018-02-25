@@ -11,7 +11,6 @@
 #define TAO_JSON_USE_STD_OPTIONAL
 #endif
 #endif
-#endif
 
 #ifndef TAO_JSON_USE_STD_OPTIONAL
 #ifndef TAO_JSON_USE_TS_OPTIONAL
