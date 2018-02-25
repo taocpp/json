@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_INTERNAL_BASE64URL_HPP
 #define TAO_JSON_INTERNAL_BASE64URL_HPP
 
-#include <cassert>
+#include <stdexcept>
 #include <string>
 
 namespace tao
@@ -14,7 +14,7 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         inline std::string base64url( const T& v )
+         std::string base64url( const T& v )
          {
             static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
@@ -46,7 +46,7 @@ namespace tao
                   break;
 
                default:
-                  assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
+                  throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
             }
 
             return s;

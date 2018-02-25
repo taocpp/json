@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_INTERNAL_BASE64_HPP
 #define TAO_JSON_INTERNAL_BASE64_HPP
 
-#include <cassert>
+#include <stdexcept>
 #include <string>
 
 namespace tao
@@ -48,7 +48,7 @@ namespace tao
                   break;
 
                default:
-                  assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
+                  throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
             }
 
             return s;

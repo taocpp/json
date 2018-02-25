@@ -487,7 +487,7 @@ namespace tao
                default:
                   v.throw_invalid_json_type();
             }
-            std::abort();  // LCOV_EXCL_LINE
+            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -571,7 +571,7 @@ namespace tao
                default:
                   v.throw_invalid_json_type();
             }
-            throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -714,7 +714,7 @@ namespace tao
                default:
                   v.throw_invalid_json_type();
             }
-            std::abort();  // LCOV_EXCL_LINE
+            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -798,7 +798,7 @@ namespace tao
                default:
                   v.throw_invalid_json_type();
             }
-            throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Consumer >
