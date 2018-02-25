@@ -7,6 +7,8 @@
 #ifndef TAO_JSON_USE_STD_BYTE
 #if __cplusplus >= 201703L
 #define TAO_JSON_USE_STD_BYTE
+#elif defined( _MSC_VER ) && ( _MSC_VER >= 1911L ) && defined( _MSC_LANG ) && ( _MSC_LANG >= 201703L ) && ( !defined( _HAS_STD_BYTE ) || ( _HAS_STD_BYTE != 0 ) )
+#define TAO_JSON_USE_STD_BYTE
 #endif
 #endif
 

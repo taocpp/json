@@ -7,6 +7,9 @@
 #ifndef TAO_JSON_USE_STD_OPTIONAL
 #if __cplusplus >= 201703L
 #define TAO_JSON_USE_STD_OPTIONAL
+#elif defined( _MSC_VER ) && ( _MSC_VER >= 1910L ) && defined( _MSC_LANG ) && ( _MSC_LANG >= 201703L )
+#define TAO_JSON_USE_STD_OPTIONAL
+#endif
 #endif
 #endif
 
