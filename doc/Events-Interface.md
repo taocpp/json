@@ -66,7 +66,7 @@ struct complete_consumer
    void string( const tao::string_view & );
    void binary( std::vector< tao::byte > && );
    void binary( const std::vector< tao::byte > & );
-   void binary( const tao::byte_view & );
+   void binary( const tao::binary_view & );
    void begin_array();
    void begin_array( const std::size_t );
    void element();
@@ -122,7 +122,7 @@ struct reduced_consumer
    void number( const std::int64_t );
    void number( const std::uint64_t );
    void string( const tao::string_view & );
-   void binary( const tao::byte_view & );
+   void binary( const tao::binary_view & );
    void begin_array( const std::size_t = 0 );
    void element();
    void end_array( const std::size_t = 0 );

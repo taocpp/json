@@ -13,7 +13,7 @@
 #include <utility>
 #include <vector>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../external/byte.hpp"
 #include "../external/double.hpp"
 #include "../external/string_view.hpp"
@@ -113,7 +113,7 @@ namespace tao
                os.put( '"' );
             }
 
-            void binary( const tao::byte_view /*unused*/ )
+            void binary( const tao::binary_view /*unused*/ )
             {
                // if this throws, consider using binary_to_* transformers
                throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT

@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../forward.hpp"
 
 #include "../external/byte.hpp"
@@ -54,7 +54,7 @@ namespace tao
             tao::string_view sv;
 
             std::vector< tao::byte > x;
-            tao::byte_view xv;
+            tao::binary_view xv;
 
             std::vector< T > a;
 

@@ -1500,7 +1500,7 @@ namespace tao
                }
             }
 
-            void binary( const tao::byte_view /*unused*/ )
+            void binary( const tao::binary_view /*unused*/ )
             {
                // TODO: What?
             }

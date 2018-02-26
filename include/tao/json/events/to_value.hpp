@@ -13,7 +13,7 @@
 #include "../external/byte.hpp"
 #include "../external/string_view.hpp"
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../value.hpp"
 
 namespace tao
@@ -74,7 +74,7 @@ namespace tao
                value.unsafe_assign_string( std::move( v ) );
             }
 
-            void binary( const tao::byte_view v )
+            void binary( const tao::binary_view v )
             {
                value.unsafe_emplace_binary( v.begin(), v.end() );
             }

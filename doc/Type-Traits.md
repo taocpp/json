@@ -248,7 +248,7 @@ The defaults traits support the following types.
 | `const char*` | |
 | `const std::string&` | |
 | `std::vector< tao::byte >` | |
-| `tao::byte_view` | |
+| `tao::binary_view` | |
 | `const std::vector< tao::byte >&` | |
 | `std::vector< basic_value< Traits, Base > >` | Partial specialisation. |
 | `basic_value< Traits, Base >*` | Partial specialisation. |

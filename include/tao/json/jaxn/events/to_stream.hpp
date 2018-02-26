@@ -58,7 +58,7 @@ namespace tao
                   first = true;
                }
 
-               void binary( const tao::byte_view v )
+               void binary( const tao::binary_view v )
                {
                   next();
                   os.put( '$' );

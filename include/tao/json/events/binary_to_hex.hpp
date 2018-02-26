@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_EVENTS_BINARY_TO_HEX_HPP
 #define TAO_JSON_EVENTS_BINARY_TO_HEX_HPP
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../internal/hexdump.hpp"
 
 namespace tao
@@ -19,7 +19,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const tao::byte_view v )
+            void binary( const tao::binary_view v )
             {
                Consumer::string( internal::hexdump( v ) );
             }

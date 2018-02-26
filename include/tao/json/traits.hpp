@@ -16,7 +16,7 @@
 #include <tuple>
 #include <vector>
 
-#include "byte_view.hpp"
+#include "binary_view.hpp"
 #include "forward.hpp"
 #include "type.hpp"
 
@@ -785,10 +785,10 @@ namespace tao
       };
 
       template<>
-      struct traits< tao::byte_view >
+      struct traits< tao::binary_view >
       {
          template< template< typename... > class Traits, typename Base >
-         static tao::byte_view as( const basic_value< Traits, Base >& v )
+         static tao::binary_view as( const basic_value< Traits, Base >& v )
          {
             switch( v.type() ) {
                case type::BINARY:
@@ -802,19 +802,19 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::byte_view xv )
+         static void produce( Consumer& c, const tao::binary_view xv )
          {
             c.binary( xv );
          }
 
          template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const tao::byte_view xv ) noexcept
+         static void assign( basic_value< Traits, Base >& v, const tao::binary_view xv ) noexcept
          {
             v.unsafe_emplace_binary( xv.begin(), xv.end() );
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const tao::byte_view rhs ) noexcept
+         static bool equal( const basic_value< Traits, Base >& lhs, const tao::binary_view rhs ) noexcept
          {
             const auto* p = lhs.skip_raw_ptr();
             switch( p->type() ) {
@@ -828,7 +828,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const tao::byte_view rhs ) noexcept
+         static bool less_than( const basic_value< Traits, Base >& lhs, const tao::binary_view rhs ) noexcept
          {
             const auto* p = lhs.skip_raw_ptr();
             switch( p->type() ) {
@@ -842,7 +842,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const tao::byte_view rhs ) noexcept
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const tao::binary_view rhs ) noexcept
          {
             const auto* p = lhs.skip_raw_ptr();
             switch( p->type() ) {

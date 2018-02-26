@@ -6,7 +6,7 @@
 
 #include <vector>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../internal/base64url.hpp"
 
 namespace tao
@@ -21,7 +21,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const tao::byte_view v )
+            void binary( const tao::binary_view v )
             {
                Consumer::string( internal::base64url( v ) );
             }

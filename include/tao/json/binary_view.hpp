@@ -1,8 +1,8 @@
 // Copyright (c) 2017-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_BYTE_VIEW_HPP
-#define TAO_JSON_BYTE_VIEW_HPP
+#ifndef TAO_JSON_BINARY_VIEW_HPP
+#define TAO_JSON_BINARY_VIEW_HPP
 
 #include <algorithm>
 #include <cstddef>
@@ -20,7 +20,7 @@ namespace tao
 {
    // modelled after C++17's basic_string_view
    template< class byteT >
-   class basic_byte_view  // NOLINT
+   class basic_binary_view  // NOLINT
    {
    public:
       using value_type = byteT;
@@ -37,28 +37,28 @@ namespace tao
 
       static constexpr size_type npos = size_type( -1 );
 
-      constexpr basic_byte_view() noexcept
+      constexpr basic_binary_view() noexcept
          : data_( nullptr ), size_( 0 )
       {
       }
 
-      constexpr basic_byte_view( const byteT* str, size_type len ) noexcept
+      constexpr basic_binary_view( const byteT* str, size_type len ) noexcept
          : data_( str ), size_( len )
       {
       }
 
-      constexpr basic_byte_view( const byteT* b, const byteT* e ) noexcept
+      constexpr basic_binary_view( const byteT* b, const byteT* e ) noexcept
          : data_( b ), size_( e - b )
       {
       }
 
-      constexpr basic_byte_view( const std::vector< byteT >& str ) noexcept  // NOLINT
+      constexpr basic_binary_view( const std::vector< byteT >& str ) noexcept  // NOLINT
          : data_( str.data() ), size_( str.size() )
       {
       }
 
-      constexpr basic_byte_view( const basic_byte_view& ) noexcept = default;
-      /*constexpr*/ basic_byte_view& operator=( const basic_byte_view& ) noexcept = default;
+      constexpr basic_binary_view( const basic_binary_view& ) noexcept = default;
+      /*constexpr*/ basic_binary_view& operator=( const basic_binary_view& ) noexcept = default;
 
       constexpr const_iterator begin() const noexcept
       {
@@ -127,7 +127,7 @@ namespace tao
 
       constexpr const_reference at( size_type pos ) const
       {
-         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::basic_byte_view::at" ) : data_[ pos ];  // NOLINT
+         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::at" ) : data_[ pos ];  // NOLINT
       }
 
       constexpr const_reference front() const noexcept
@@ -156,7 +156,7 @@ namespace tao
          size_ -= n;
       }
 
-      /*constexpr*/ void swap( basic_byte_view& s ) noexcept
+      /*constexpr*/ void swap( basic_binary_view& s ) noexcept
       {
          std::swap( data_, s.data_ );
          std::swap( size_, s.size_ );
@@ -165,19 +165,19 @@ namespace tao
       size_type copy( byteT* s, size_type n, size_type pos = 0 ) const
       {
          if( pos > size() ) {
-            throw std::out_of_range( "index out of range in tao::basic_byte_view::copy" );  // NOLINT
+            throw std::out_of_range( "index out of range in tao::basic_binary_view::copy" );  // NOLINT
          }
          const size_type rlen = std::min( n, size() - pos );
          std::memcpy( s, data() + pos, rlen );
          return rlen;
       }
 
-      constexpr basic_byte_view substr( size_type pos = 0, size_type n = npos ) const
+      constexpr basic_binary_view substr( size_type pos = 0, size_type n = npos ) const
       {
-         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_byte_view::substr" ) : basic_byte_view( data() + pos, std::min( n, size() - pos ) );  // NOLINT
+         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::substr" ) : basic_binary_view( data() + pos, std::min( n, size() - pos ) );  // NOLINT
       }
 
-      /*constexpr*/ int compare( basic_byte_view s ) const noexcept
+      /*constexpr*/ int compare( basic_binary_view s ) const noexcept
       {
          const size_type rlen = std::min( size(), s.size() );
          const int result = std::memcmp( data(), s.data(), rlen );
@@ -187,27 +187,27 @@ namespace tao
          return result;
       }
 
-      constexpr int compare( size_type pos1, size_type n1, basic_byte_view s ) const
+      constexpr int compare( size_type pos1, size_type n1, basic_binary_view s ) const
       {
          return substr( pos1, n1 ).compare( s );
       }
 
-      constexpr int compare( size_type pos1, size_type n1, basic_byte_view s, size_type pos2, size_type n2 ) const
+      constexpr int compare( size_type pos1, size_type n1, basic_binary_view s, size_type pos2, size_type n2 ) const
       {
          return substr( pos1, n1 ).compare( s.substr( pos2, n2 ) );
       }
 
       constexpr int compare( const byteT* s ) const
       {
-         return compare( basic_byte_view( s ) );
+         return compare( basic_binary_view( s ) );
       }
 
       constexpr int compare( size_type pos1, size_type n1, const byteT* s, size_type n2 ) const
       {
-         return substr( pos1, n1 ).compare( basic_byte_view( s, n2 ) );
+         return substr( pos1, n1 ).compare( basic_binary_view( s, n2 ) );
       }
 
-      /*constexpr*/ size_type find( basic_byte_view s, size_type pos = 0 ) const noexcept
+      /*constexpr*/ size_type find( basic_binary_view s, size_type pos = 0 ) const noexcept
       {
          if( pos > size() - s.size() ) {
             return npos;
@@ -218,15 +218,15 @@ namespace tao
 
       constexpr size_type find( byteT c, size_type pos = 0 ) const noexcept
       {
-         return find( basic_byte_view( &c, 1 ), pos );
+         return find( basic_binary_view( &c, 1 ), pos );
       }
 
       constexpr size_type find( const byteT* s, size_type pos, size_type n ) const noexcept
       {
-         return find( basic_byte_view( s, n ), pos );
+         return find( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type rfind( basic_byte_view s, size_type pos = npos ) const noexcept
+      /*constexpr*/ size_type rfind( basic_binary_view s, size_type pos = npos ) const noexcept
       {
          if( pos > size() - s.size() ) {
             return npos;
@@ -237,15 +237,15 @@ namespace tao
 
       constexpr size_type rfind( byteT c, size_type pos = npos ) const noexcept
       {
-         return rfind( basic_byte_view( &c, 1 ), pos );
+         return rfind( basic_binary_view( &c, 1 ), pos );
       }
 
       constexpr size_type rfind( const byteT* s, size_type pos, size_type n ) const noexcept
       {
-         return rfind( basic_byte_view( s, n ), pos );
+         return rfind( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_first_of( basic_byte_view s, size_type pos = 0 ) const noexcept
+      /*constexpr*/ size_type find_first_of( basic_binary_view s, size_type pos = 0 ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
@@ -256,15 +256,15 @@ namespace tao
 
       constexpr size_type find_first_of( byteT c, size_type pos = 0 ) const noexcept
       {
-         return find_first_of( basic_byte_view( &c, 1 ), pos );
+         return find_first_of( basic_binary_view( &c, 1 ), pos );
       }
 
       constexpr size_type find_first_of( const byteT* s, size_type pos, size_type n ) const noexcept
       {
-         return find_first_of( basic_byte_view( s, n ), pos );
+         return find_first_of( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_last_of( basic_byte_view s, size_type pos = npos ) const noexcept
+      /*constexpr*/ size_type find_last_of( basic_binary_view s, size_type pos = npos ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
@@ -275,15 +275,15 @@ namespace tao
 
       constexpr size_type find_last_of( byteT c, size_type pos = npos ) const noexcept
       {
-         return find_last_of( basic_byte_view( &c, 1 ), pos );
+         return find_last_of( basic_binary_view( &c, 1 ), pos );
       }
 
       constexpr size_type find_last_of( const byteT* s, size_type pos, size_type n ) const noexcept
       {
-         return find_last_of( basic_byte_view( s, n ), pos );
+         return find_last_of( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_first_not_of( basic_byte_view s, size_type pos = 0 ) const noexcept
+      /*constexpr*/ size_type find_first_not_of( basic_binary_view s, size_type pos = 0 ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
@@ -296,15 +296,15 @@ namespace tao
 
       constexpr size_type find_first_not_of( byteT c, size_type pos = 0 ) const noexcept
       {
-         return find_first_not_of( basic_byte_view( &c, 1 ), pos );
+         return find_first_not_of( basic_binary_view( &c, 1 ), pos );
       }
 
       constexpr size_type find_first_not_of( const byteT* s, size_type pos, size_type n ) const noexcept
       {
-         return find_first_not_of( basic_byte_view( s, n ), pos );
+         return find_first_not_of( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_last_not_of( basic_byte_view s, size_type pos = npos ) const noexcept
+      /*constexpr*/ size_type find_last_not_of( basic_binary_view s, size_type pos = npos ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
@@ -317,12 +317,12 @@ namespace tao
 
       constexpr size_type find_last_not_of( byteT c, size_type pos = npos ) const noexcept
       {
-         return find_last_not_of( basic_byte_view( &c, 1 ), pos );
+         return find_last_not_of( basic_binary_view( &c, 1 ), pos );
       }
 
       constexpr size_type find_last_not_of( const byteT* s, size_type pos, size_type n ) const noexcept
       {
-         return find_first_not_of( basic_byte_view( s, n ), pos );
+         return find_first_not_of( basic_binary_view( s, n ), pos );
       }
 
    private:
@@ -331,114 +331,114 @@ namespace tao
    };
 
    template< class byteT >
-   constexpr bool operator==( basic_byte_view< byteT > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator==( basic_binary_view< byteT > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) == 0;
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator==( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator==( basic_binary_view< byteT > x, internal::identity_t< basic_binary_view< byteT > > y ) noexcept
    {
       return x.compare( y ) == 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator==( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator==( internal::identity_t< basic_binary_view< byteT > > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) == 0;
    }
 
    template< class byteT >
-   constexpr bool operator!=( basic_byte_view< byteT > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator!=( basic_binary_view< byteT > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) != 0;
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator!=( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator!=( basic_binary_view< byteT > x, internal::identity_t< basic_binary_view< byteT > > y ) noexcept
    {
       return x.compare( y ) != 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator!=( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator!=( internal::identity_t< basic_binary_view< byteT > > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) != 0;
    }
 
    template< class byteT >
-   constexpr bool operator<( basic_byte_view< byteT > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator<( basic_binary_view< byteT > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) < 0;
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator<( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator<( basic_binary_view< byteT > x, internal::identity_t< basic_binary_view< byteT > > y ) noexcept
    {
       return x.compare( y ) < 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator<( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator<( internal::identity_t< basic_binary_view< byteT > > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) < 0;
    }
 
    template< class byteT >
-   constexpr bool operator>( basic_byte_view< byteT > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator>( basic_binary_view< byteT > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) > 0;
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator>( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator>( basic_binary_view< byteT > x, internal::identity_t< basic_binary_view< byteT > > y ) noexcept
    {
       return x.compare( y ) > 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator>( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator>( internal::identity_t< basic_binary_view< byteT > > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) > 0;
    }
 
    template< class byteT >
-   constexpr bool operator<=( basic_byte_view< byteT > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator<=( basic_binary_view< byteT > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator<=( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator<=( basic_binary_view< byteT > x, internal::identity_t< basic_binary_view< byteT > > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator<=( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator<=( internal::identity_t< basic_binary_view< byteT > > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) <= 0;
    }
 
    template< class byteT >
-   constexpr bool operator>=( basic_byte_view< byteT > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator>=( basic_binary_view< byteT > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) >= 0;
    }
 
    template< class byteT, int = 1 >  // work-around for Visual C++
-   constexpr bool operator>=( basic_byte_view< byteT > x, internal::identity_t< basic_byte_view< byteT > > y ) noexcept
+   constexpr bool operator>=( basic_binary_view< byteT > x, internal::identity_t< basic_binary_view< byteT > > y ) noexcept
    {
       return x.compare( y ) >= 0;
    }
 
    template< class byteT, int = 2 >  // work-around for Visual C++
-   constexpr bool operator>=( internal::identity_t< basic_byte_view< byteT > > x, basic_byte_view< byteT > y ) noexcept
+   constexpr bool operator>=( internal::identity_t< basic_binary_view< byteT > > x, basic_binary_view< byteT > y ) noexcept
    {
       return x.compare( y ) >= 0;
    }
 
-   using byte_view = basic_byte_view< tao::byte >;
+   using binary_view = basic_binary_view< tao::byte >;
 
 }  // namespace tao
 

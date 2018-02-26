@@ -10,7 +10,7 @@
 #include <ostream>
 #include <string>
 
-#include "../../byte_view.hpp"
+#include "../../binary_view.hpp"
 #include "../../external/byte.hpp"
 #include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
@@ -124,7 +124,7 @@ namespace tao
                   os.write( v.data(), v.size() );
                }
 
-               void binary( const tao::byte_view v )
+               void binary( const tao::binary_view v )
                {
                   if( v.size() <= 255 ) {
                      number_impl< std::uint8_t >( 0xc4, v.size() );

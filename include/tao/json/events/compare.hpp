@@ -100,7 +100,7 @@ namespace tao
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
-            void binary( const tao::byte_view v ) noexcept
+            void binary( const tao::binary_view v ) noexcept
             {
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }

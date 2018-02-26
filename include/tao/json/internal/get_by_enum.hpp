@@ -115,7 +115,7 @@ namespace tao
          struct get_by_enum< type::BINARY_VIEW >
          {
             template< typename T >
-            static tao::byte_view get( const value_union< T >& u ) noexcept
+            static tao::binary_view get( const value_union< T >& u ) noexcept
             {
                return u.xv;
             }

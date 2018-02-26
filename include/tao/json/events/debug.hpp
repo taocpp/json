@@ -10,7 +10,7 @@
 #include <ostream>
 #include <string>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../external/double.hpp"
 
 #include "../internal/escape.hpp"
@@ -79,7 +79,7 @@ namespace tao
                os << "\"\n";
             }
 
-            void binary( const tao::byte_view v )
+            void binary( const tao::binary_view v )
             {
                os << "binary: ";
                internal::hexdump( os, v );

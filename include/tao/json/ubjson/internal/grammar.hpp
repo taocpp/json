@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-#include "../../byte_view.hpp"
+#include "../../binary_view.hpp"
 #include "../../external/string_view.hpp"
 #include "../../internal/action.hpp"
 #include "../../internal/control.hpp"
@@ -303,7 +303,7 @@ namespace tao
                   }
                   if( c == 'U' ) {
                      // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
-                     consumer.binary( parse_container< L, utf8_mode::TRUST, tao::byte_view >( in ) );
+                     consumer.binary( parse_container< L, utf8_mode::TRUST, tao::binary_view >( in ) );
                      return;
                   }
                   const auto size = parse_size< L >( in );

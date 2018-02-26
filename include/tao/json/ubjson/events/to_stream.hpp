@@ -9,7 +9,7 @@
 #include <ostream>
 #include <string>
 
-#include "../../byte_view.hpp"
+#include "../../binary_view.hpp"
 #include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
 
@@ -116,7 +116,7 @@ namespace tao
                   }
                }
 
-               void binary( const tao::byte_view v )
+               void binary( const tao::binary_view v )
                {
                   // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
                   os.write( "[$U#", 4 );

@@ -4,8 +4,14 @@
 #ifndef TAO_JSON_FORWARD_HPP
 #define TAO_JSON_FORWARD_HPP
 
+#include <vector>
+
+#include "external/byte.hpp"
+
 namespace tao
 {
+   using binary = std::vector< tao::byte >;
+
    namespace json
    {
       namespace events

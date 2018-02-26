@@ -83,7 +83,7 @@ namespace tao
                m_r.binary( v );
             }
 
-            void v_binary( const tao::byte_view v ) override
+            void v_binary( const tao::binary_view v ) override
             {
                m_r.binary( v );
             }

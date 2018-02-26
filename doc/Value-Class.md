@@ -107,7 +107,7 @@ Can be tested for with `...is_string_type()`, which will return `true` for both 
 
 ### Binary Data
 
-Binary data is stored as `std::vector< tao::byte >` with `type::BINARY`, or as `tao::byte_view` with `type::BINARY_VIEW`; here `tao::byte` is an alias for `std::byte` when available.
+Binary data is stored as `std::vector< tao::byte >` with `type::BINARY`, or as `tao::binary_view` with `type::BINARY_VIEW`; here `tao::byte` is an alias for `std::byte` when available.
 
 Can be tested for with `...is_binary_type()`, which will return `true` for both types, or with the more specific `...is_binary()` and `...is_binary_view()`.
 

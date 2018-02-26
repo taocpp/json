@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -79,7 +79,7 @@ namespace tao
                v_binary( v );
             }
 
-            void binary( const tao::byte_view v )
+            void binary( const tao::binary_view v )
             {
                v_binary( v );
             }
@@ -175,7 +175,7 @@ namespace tao
             virtual void v_string( tao::string_view ) = 0;
             virtual void v_binary( std::vector< byte >&& ) = 0;
             virtual void v_binary( const std::vector< byte >& ) = 0;
-            virtual void v_binary( tao::byte_view ) = 0;
+            virtual void v_binary( tao::binary_view ) = 0;
             virtual void v_begin_array() = 0;
             virtual void v_begin_array( std::size_t ) = 0;
             virtual void v_element() = 0;

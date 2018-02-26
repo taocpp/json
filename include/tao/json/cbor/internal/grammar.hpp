@@ -10,7 +10,7 @@
 
 #include "major.hpp"
 
-#include "../../byte_view.hpp"
+#include "../../binary_view.hpp"
 #include "../../external/byte.hpp"
 #include "../../external/pegtl.hpp"
 #include "../../external/string_view.hpp"
@@ -288,7 +288,7 @@ namespace tao
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
                   if( peek_minor( in ) != minor_mask ) {
-                     consumer.binary( parse_string_1< utf8_mode::TRUST, tao::byte_view >( in ) );
+                     consumer.binary( parse_string_1< utf8_mode::TRUST, tao::binary_view >( in ) );
                   }
                   else {
                      consumer.binary( parse_string_n< utf8_mode::TRUST, std::vector< tao::byte > >( in, major::BINARY ) );

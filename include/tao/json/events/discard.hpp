@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <string>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -46,7 +46,7 @@ namespace tao
             {
             }
 
-            void binary( const tao::byte_view /*unused*/ ) noexcept
+            void binary( const tao::binary_view /*unused*/ ) noexcept
             {
             }
 

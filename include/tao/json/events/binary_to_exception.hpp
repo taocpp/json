@@ -6,7 +6,7 @@
 
 #include <stdexcept>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 
 namespace tao
 {
@@ -20,7 +20,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void binary( const tao::byte_view /*unused*/ )
+            void binary( const tao::binary_view /*unused*/ )
             {
                throw std::runtime_error( "invalid binary data" );  // NOLINT
             }

@@ -12,7 +12,7 @@
 #include <utility>
 #include <vector>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../external/string_view.hpp"
 #include "../internal/sha256.hpp"
 
@@ -115,7 +115,7 @@ namespace tao
                m_digests.back()->feed( v.data(), v.size() );
             }
 
-            void binary( const tao::byte_view v )
+            void binary( const tao::binary_view v )
             {
                m_digests.back()->feed( 'x' );
                const auto s = v.size();

@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -73,7 +73,7 @@ namespace tao
                string_lengths += v.size();
             }
 
-            void binary( const tao::byte_view v )
+            void binary( const tao::binary_view v )
             {
                ++binary_count;
                binary_lengths += v.size();

@@ -25,7 +25,7 @@
 #include "internal/type_traits.hpp"
 #include "internal/value_union.hpp"
 
-#include "byte_view.hpp"
+#include "binary_view.hpp"
 #include "pointer.hpp"
 #include "type.hpp"
 
@@ -52,7 +52,6 @@ namespace tao
          static_assert( std::is_nothrow_move_constructible< Base >::value, "Base must be nothrow move constructible" );
          static_assert( std::is_nothrow_move_assignable< Base >::value, "Base must be nothrow move assignable" );
 
-         using binary_t = std::vector< tao::byte >;
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
 
@@ -312,17 +311,17 @@ namespace tao
             return ( m_type == json::type::STRING ) ? m_union.s : m_union.sv;
          }
 
-         binary_t& unsafe_get_binary() noexcept
+         binary& unsafe_get_binary() noexcept
          {
             return m_union.x;
          }
 
-         const binary_t& unsafe_get_binary() const noexcept
+         const binary& unsafe_get_binary() const noexcept
          {
             return m_union.x;
          }
 
-         tao::byte_view unsafe_get_binary_view() const noexcept
+         tao::binary_view unsafe_get_binary_view() const noexcept
          {
             return m_union.xv;
          }
@@ -416,19 +415,19 @@ namespace tao
             return ( m_type == json::type::STRING ) ? m_union.s : unsafe_get_string_view();
          }
 
-         binary_t& get_binary()
+         binary& get_binary()
          {
             validate_json_type( json::type::BINARY );
             return unsafe_get_binary();
          }
 
-         const binary_t& get_binary() const
+         const binary& get_binary() const
          {
             validate_json_type( json::type::BINARY );
             return unsafe_get_binary();
          }
 
-         tao::byte_view get_binary_view() const
+         tao::binary_view get_binary_view() const
          {
             validate_json_type( json::type::BINARY_VIEW );
             return unsafe_get_binary_view();
@@ -533,23 +532,23 @@ namespace tao
          }
 
          template< typename... Ts >
-         void unsafe_emplace_binary( Ts&&... ts ) noexcept( noexcept( binary_t( std::forward< Ts >( ts )... ) ) )
+         void unsafe_emplace_binary( Ts&&... ts ) noexcept( noexcept( binary( std::forward< Ts >( ts )... ) ) )
          {
-            new( &m_union.x ) binary_t( std::forward< Ts >( ts )... );
+            new( &m_union.x ) binary( std::forward< Ts >( ts )... );
             m_type = json::type::BINARY;
          }
 
-         void unsafe_assign_binary( const binary_t& x )
+         void unsafe_assign_binary( const binary& x )
          {
             unsafe_emplace_binary( x );
          }
 
-         void unsafe_assign_binary( binary_t&& x ) noexcept
+         void unsafe_assign_binary( binary&& x ) noexcept
          {
             unsafe_emplace_binary( std::move( x ) );
          }
 
-         void unsafe_assign_binary_view( const tao::byte_view xv ) noexcept
+         void unsafe_assign_binary_view( const tao::binary_view xv ) noexcept
          {
             m_union.xv = xv;
             m_type = json::type::BINARY_VIEW;
@@ -730,19 +729,19 @@ namespace tao
             unsafe_emplace_binary( std::forward< Ts >( ts )... );
          }
 
-         void assign_binary( const binary_t& v )
+         void assign_binary( const binary& v )
          {
             discard();
             unsafe_assign_binary( v );
          }
 
-         void assign_binary( binary_t&& v ) noexcept
+         void assign_binary( binary&& v ) noexcept
          {
             unsafe_discard();
             unsafe_assign_binary( std::move( v ) );
          }
 
-         void assign_binary_view( const tao::byte_view xv ) noexcept
+         void assign_binary_view( const tao::binary_view xv ) noexcept
          {
             unsafe_discard();
             unsafe_assign_binary_view( xv );
@@ -1281,7 +1280,7 @@ namespace tao
                   return;
 
                case json::type::BINARY_VIEW:
-                  m_union.xv.~byte_view();
+                  m_union.xv.~binary_view();
                   return;
 
                case json::type::ARRAY:
@@ -1392,14 +1391,14 @@ namespace tao
                   return;
 
                case json::type::BINARY:
-                  new( &m_union.x ) binary_t( std::move( r.m_union.x ) );
+                  new( &m_union.x ) binary( std::move( r.m_union.x ) );
 #ifndef NDEBUG
                   r.discard();
 #endif
                   return;
 
                case json::type::BINARY_VIEW:
-                  new( &m_union.xv ) tao::byte_view( r.m_union.xv );
+                  new( &m_union.xv ) tao::binary_view( r.m_union.xv );
 #ifndef NDEBUG
                   r.m_type = json::type::DISCARDED;
 #endif
@@ -1476,11 +1475,11 @@ namespace tao
                   return;
 
                case json::type::BINARY:
-                  new( &m_union.x ) binary_t( r.m_union.x );
+                  new( &m_union.x ) binary( r.m_union.x );
                   return;
 
                case json::type::BINARY_VIEW:
-                  new( &m_union.xv ) tao::byte_view( r.m_union.xv );
+                  new( &m_union.xv ) tao::binary_view( r.m_union.xv );
                   return;
 
                case json::type::ARRAY:

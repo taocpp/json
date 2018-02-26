@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include "../byte_view.hpp"
+#include "../binary_view.hpp"
 #include "../external/byte.hpp"
 #include "../external/optional.hpp"
 #include "../external/string_view.hpp"
@@ -136,7 +136,7 @@ namespace tao
                atom( "string(...)" );
             }
 
-            void binary( const tao::byte_view /*unused*/ )
+            void binary( const tao::binary_view /*unused*/ )
             {
                atom( "binary(...)" );
             }
