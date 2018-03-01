@@ -77,7 +77,7 @@ template<>
 struct my_traits< my_type >
 {
    template< template< typename... > class Traits, typename Base >
-   static void assign( basic_value< Traits, Base >& v, const my_type& t ) noexcept
+   static void assign( tao::json::basic_value< Traits, Base >& v, const my_type& t ) noexcept
    {
       v = {
          { "title", t.title },
@@ -119,7 +119,7 @@ template<>
 struct my_traits< my_type >
 {
    template< template< typename... > class Traits, typename Base >
-   static void assign( basic_value< Traits, Base >& v, my_type&& t ) noexcept
+   static void assign( tao::json::basic_value< Traits, Base >& v, my_type&& t ) noexcept
    {
       v = {
          { "title", std::move( t.title ) },
@@ -150,20 +150,20 @@ template<>
 struct my_traits< my_type >
 {
    template< template< typename... > class Traits, typename Base >
-   static void as( const basic_value< Traits, Base >& v, my_type& d )
+   static void as( const tao::json::basic_value< Traits, Base >& v, my_type& d )
    {
       const auto& object = v.get_object();
-      d.title = v.at( "title" ).as< std::string >();
-      d.values = v.at( "values" ).as< std::vector< int > >();
+      d.title = v.at( "title" ).template as< std::string >();
+      d.values = v.at( "values" ).template as< std::vector< int > >();
    }
 
    template< template< typename... > class Traits, typename Base >
-   static my_type as( const basic_value< Traits, Base >& v )
+   static my_type as( const tao::json::basic_value< Traits, Base >& v )
    {
       my_type result;
       const auto& object = v.get_object();
-      result.title = v.at( "title" ).as< std::string >();
-      result.values = v.at( "values" ).as< std::vector< int > >();
+      result.title = v.at( "title" ).template as< std::string >();
+      result.values = v.at( "values" ).template as< std::vector< int > >();
       return result;
    }
 };
@@ -179,14 +179,62 @@ In this example no error is thrown when the top-level JSON Object contains addit
 
 The comparison operators `==`, `!=`, `<`, `<=`, `>` and `>=` in namespace `tao::json` that compare instances of `basic_value<>` with other types *ideally* use the traits' `equal()`, `greater_than()` and `less_than()` functions.
 
-That's "ideally" because as long as the traits for the type in question contain an `assign()` method the comparison operators will create a temporary JSON Value and then compare the two Values.
-In other words, adding `equal()`, `greater_than()` and `less_than()` functions to traits is "only" a performance optimisation.
+That is "ideally", because as long as the traits for the type in question have an `assign()` function, the comparison operators will still work -- by creating a temporary JSON Value and then compare the two Values.
+In other words, adding `equal()`, `greater_than()` and `less_than()` functions to traits is "only" a performance optimisation, it prevents the creation of the temporary JSON Value from the non-Value argument.
 
-TODO: Details for `equal()`
+The `equal()` function has to check whether an instance `d` of the type for which the traits are specialised is equal to a Value.
+This check should be consistent with the other traits functions, i.e. the check should return `true` if and only if comparing the Value to a Value created with the traits' `assign()` function (or the traits' `produce()` function together with `tao::json::events::to_value`) would also return `true`.
 
-TODO: Details for `less_than()`
+```c++
+template<>
+struct my_traits< my_type >
+{
+   template< template< typename... > class Traits, typename Base >
+   static bool equal( const tao::json::basic_value< Traits, Base >& v, const my_type& d ) noexcept
+   {
+      if( !v.is_object() ) {
+         return false;
+      }
+      const auto& o = v.unsafe_get_object();
+      const auto i = o.find( "title" );
+      const auto j = o.find( "values" );
+      return ( o.size() == 2 )
+          && ( i != o.end() )
+          && ( i->second == d.title )
+          && ( j != o.end() )
+          && ( j->second == d.values );
+   }
+};
+```
 
-TODO: Details for `greater_than()`
+The other two functions, `less_than()` and `greater_than()`, have the same signature, and need to return whether the first argument is less than, or greater than the second, respectively.
+The same consistency conditions as for `equal()` should be applied.
+When all traits functions are consistent which each other then the following assertions will never fail, regardless of the values of `m` and `d`.
+
+```c++
+const my_value m = some_value();
+
+const my_type d = make_my_type();
+const my_value v = d;
+
+assert( ( d == m ) == ( v == m ) );
+assert( ( d != m ) == ( v != m ) );
+assert( ( d < m ) == ( v < m ) );
+assert( ( d <= m ) == ( v <= m ) );
+assert( ( d > m ) == ( v > m ) );
+assert( ( d >= m ) == ( v >= m ) );
+
+// When the traits have a produce() function:
+
+const auto e = tao::json::produce::to_value< my_traits >( d );
+
+assert( ( d == m ) == ( e == m ) );
+assert( ( d != m ) == ( e != m ) );
+assert( ( d < m ) == ( e < m ) );
+assert( ( d <= m ) == ( e <= m ) );
+assert( ( d > m ) == ( e > m ) );
+assert( ( d >= m ) == ( e >= m ) );
+```
 
 ## Produce Events from Type
 
@@ -206,7 +254,7 @@ template<>
 struct my_traits< my_type >
 {
    template< template< typename... > class Traits, typename Consumer >
-   static void produce( Consumer& c, const my_data& d )
+   static void produce( Consumer& c, const my_type& d )
    {
       c.begin_object( 2 );
       c.key( "title" );
@@ -268,6 +316,24 @@ The type traits correctly work with nested types, for example given that strings
 
 ## Default Key for Objects
 
-TODO: Details
+The use of default keys is [shown in the section on creating Values](Value-Class.md#creating-values).
+
+The default key for a type is a C-string that needs to be declared in the traits specialisation.
+
+```c++
+template<>
+struct my_traits< my_type >
+{
+   static const char* default_key;
+};
+```
+
+And this is the corresponding definition that needs to be placed in an implementation (`.cpp`) file.
+
+```c++
+const char* my_traits< my_type >::default_key = "fraggle";
+```
+
+The default traits supplied with the library do not define default keys for any type.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
