@@ -35,7 +35,9 @@ namespace tao
       }  // namespace internal
 
       template< typename T, typename = void >
-      struct traits;
+      struct traits
+      {
+      };
 
       template< template< typename... > class Traits, typename Base = internal::empty_base >
       class basic_value;

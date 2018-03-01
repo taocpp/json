@@ -181,16 +181,16 @@ namespace tao
          return rhs == lhs;
       }
 
-      template< template< typename... > class Traits, typename Base, typename T, typename = decltype( Traits< typename std::decay< T >::type >::equal( std::declval< const basic_value< Traits, Base >& >(), std::declval< const T& >() ) ) >
-      bool operator==( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+      template< template< typename... > class Traits, typename Base, typename T >
+      auto operator==( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept -> decltype( Traits< typename std::decay< T >::type >::equal( lhs, rhs ) )
       {
          using D = typename std::decay< T >::type;
          static_assert( noexcept( Traits< D >::equal( lhs, rhs ) ), "equal must be noexcept" );
          return Traits< D >::equal( lhs, rhs );
       }
 
-      template< typename T, template< typename... > class Traits, typename Base, typename = decltype( Traits< typename std::decay< T >::type >::equal( std::declval< const basic_value< Traits, Base >& >(), std::declval< const T& >() ) ) >
-      bool operator==( const T& lhs, const basic_value< Traits, Base >& rhs ) noexcept
+      template< typename T, template< typename... > class Traits, typename Base >
+      auto operator==( const T& lhs, const basic_value< Traits, Base >& rhs ) noexcept -> decltype( Traits< typename std::decay< T >::type >::equal( rhs, lhs ) )
       {
          return rhs == lhs;
       }
@@ -397,16 +397,16 @@ namespace tao
          return Traits< tao::optional< T > >::greater_than( rhs, lhs );
       }
 
-      template< template< typename... > class Traits, typename Base, typename T, typename = decltype( Traits< typename std::decay< T >::type >::less_than( std::declval< const basic_value< Traits, Base >& >(), std::declval< const T& >() ) ) >
-      bool operator<( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+      template< template< typename... > class Traits, typename Base, typename T >
+      auto operator<( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept -> decltype( Traits< typename std::decay< T >::type >::less_than( lhs, rhs ) )
       {
          using D = typename std::decay< T >::type;
          static_assert( noexcept( Traits< D >::less_than( lhs, rhs ) ), "less_than must be noexcept" );
          return Traits< D >::less_than( lhs, rhs );
       }
 
-      template< typename T, template< typename... > class Traits, typename Base, typename = decltype( Traits< typename std::decay< T >::type >::greater_than( std::declval< const basic_value< Traits, Base >& >(), std::declval< const T& >() ) ) >
-      bool operator<( const T& lhs, const basic_value< Traits, Base >& rhs ) noexcept
+      template< typename T, template< typename... > class Traits, typename Base >
+      auto operator<( const T& lhs, const basic_value< Traits, Base >& rhs ) noexcept -> decltype( Traits< typename std::decay< T >::type >::greater_than( rhs, lhs ) )
       {
          using D = typename std::decay< T >::type;
          static_assert( noexcept( Traits< D >::greater_than( rhs, lhs ) ), "greater_than must be noexcept" );
@@ -445,16 +445,16 @@ namespace tao
          return Traits< tao::optional< T > >::less_than( rhs, lhs );
       }
 
-      template< template< typename... > class Traits, typename Base, typename T, typename = decltype( Traits< typename std::decay< T >::type >::greater_than( std::declval< const basic_value< Traits, Base >& >(), std::declval< const T& >() ) ) >
-      bool operator>( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+      template< template< typename... > class Traits, typename Base, typename T >
+      auto operator>( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept -> decltype( Traits< typename std::decay< T >::type >::greater_than( lhs, rhs ) )
       {
          using D = typename std::decay< T >::type;
          static_assert( noexcept( Traits< D >::greater_than( lhs, rhs ) ), "greater_than must be noexcept" );
          return Traits< D >::greater_than( lhs, rhs );
       }
 
-      template< typename T, template< typename... > class Traits, typename Base, typename = decltype( Traits< typename std::decay< T >::type >::less_than( std::declval< const basic_value< Traits, Base >& >(), std::declval< const T& >() ) ) >
-      bool operator>( const T& lhs, const basic_value< Traits, Base >& rhs ) noexcept
+      template< typename T, template< typename... > class Traits, typename Base >
+      auto operator>( const T& lhs, const basic_value< Traits, Base >& rhs ) noexcept -> decltype( Traits< typename std::decay< T >::type >::less_than( rhs, lhs ) )
       {
          using D = typename std::decay< T >::type;
          static_assert( noexcept( Traits< D >::less_than( rhs, lhs ) ), "less_than must be noexcept" );
