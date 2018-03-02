@@ -211,7 +211,26 @@ TODO
 
 ## Manipulating Values
 
-TODO
+Regarding manipulations of an existing value instance there are three general cases.
+
+1. Values of type `tao::json::NULL`, `tao::json::type::BOOLEAN`, `tao::json::type::SIGNED`, `tao::json::type::UNSIGNED`, `tao::json::type::DOUBLE`, `tao::json::type::STRING_VIEW`, `tao::json::type::BINARY_VIEW`, `tao::json::type::RAW_PTR`, `tao::json::type::OPAQUE_PTR`, `tao::json::type::UNINITIALIZED` or `tao::json::type::DISCARDED` which can not be manipulated beyond assigning a completely new value.
+2. Values of type `tao::json::STRING`, `tao::json::BINARY`, `tao::json::ARRAY` or `tao::json::OBJECT` can be manipulated by obtaining a (non-const) reference to the underlying `std::string`, `std::vector< tao::byte >`, `std::vector< tao::json::value >` or `std::map< std::string, tao::json::value >` by using one of the `tao::json::value::get_string()`, `tao::json::value::get_binary()`, `tao::json::value::get_array()` or `tao::json::value::get_object()` functions, respectively.
+3. Values of type `tao::json::DESTROYED` which should never be encountered in code that doesn't invoke undefined or unspecified behaviour.
+
+A `std::string`, `std::vector` or `std::map` returned by `tao::json::value::get_string()`, `tao::json::value::get_binary()`, `tao::json::value::get_array()` or `tao::json::value::get_object()` can be manipulated and used with standard algorithms just like any other instance of these standard containers.
+
+Of course `tao::json::value::get_array()` and `tao::json::value::get_object()` are actually `tao::json::basic_value< Traits, Base >::get_array()` and `tao::json::basic_value< Traits, Base >::get_object()`, and the sub-values of the returned containers have the same `Traits` and `Base` class as the Value on which the method was invoked.
+
+```c++
+tao::json::value x = tao::json::empty_array;
+std::vector< tao::json::value >& a = x.get_array();
+
+tao::json::basic_value< my_traits > y = tao::json::empty_array;
+std::vector< tao::json::basic_value< my_traits > >& b = y.get_array();
+
+tao::json::basic_value< my_traits, my_base > z = tao::json::empty_array;
+std::vector< tao::json::basic_value< my_traits, my_base > >& c = z.get_array();
+```
 
 ## Comparing Values
 

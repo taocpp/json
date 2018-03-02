@@ -39,7 +39,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
 * [Value Class](doc/Value-Class.md)
 
   * Construction of objects and arrays via `std::initializer_list`.
-  * Conversion from and to arbitrary *custom types* via [traits class template](doc/Type-Traits.md.
+  * Conversion from and to arbitrary *custom types* via [traits class template](doc/Type-Traits.md).
   * Built around STL containers `std::string`, `std::map` and `std::vector`.
   * No memory allocations by the JSON value class itself (the wrapped containers allocate normally).
   * Instance sharing of JSON values and *custom types* via non-owning C++ raw pointers.
