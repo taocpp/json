@@ -298,17 +298,17 @@ The defaults traits support the following types.
 | `std::vector< tao::byte >` | |
 | `tao::binary_view` | |
 | `const std::vector< tao::byte >&` | |
-| `std::vector< basic_value< Traits, Base > >` | Partial specialisation. |
-| `basic_value< Traits, Base >*` | Partial specialisation. |
-| `const basic_value< Traits, Base >*` | Partial specialisation. |
-| `std::map< std::string, basic_value< Traits, Base > > | Partial specialisation. |
-| `tao::optional< T >` | Partial specialisation. |
-| `std::shared_ptr< T >` | Partial specialisation. |
-| `std::unique_ptr< T >` | Partial specialisation. |
-| `std::list< T >` | Partial specialisation. |
-| `std::set< T >` | Partial specialisation. |
-| `std::vector< T >` | Partial specialisation. |
-| `std::map< std::string, T >` | Partial specialisation. |
+| `std::vector< basic_value< Traits, Base > >` | Corresponds to JSON Array. |
+| `basic_value< Traits, Base >*` | Creates Raw pointer; must not be `nullptr`. |
+| `const basic_value< Traits, Base >*` | Creates Raw pointer; must not be `nullptr`. |
+| `std::map< std::string, basic_value< Traits, Base > >` | Corresponds to JSON Object. |
+| `tao::optional< T >` | Empty optional corresponds to JSON Null. |
+| `std::shared_ptr< T >` | Null pointer corresponds to JSON Null. |
+| `std::unique_ptr< T >` | Null pointer corresponds to JSON Null. |
+| `std::list< T >` | Corresponds to JSON Array. |
+| `std::set< T >` | Corresponds to JSON Array. |
+| `std::vector< T >` | Corresponds to JSON Array. |
+| `std::map< std::string, T >` | Corresponds to JSON Object. |
 
 *`std::pair` and `std::tuple` coming soon.*
 
