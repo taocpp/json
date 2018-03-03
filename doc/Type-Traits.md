@@ -316,7 +316,7 @@ The type traits correctly work with nested types.
 Given that `std::string`, `double`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported, so is for example the following type:
 
 ```c++
-`std::shared_ptr< std::map< std::string, std::shared_ptr< std::vector< double > > > >`
+std::shared_ptr< std::map< std::string, std::shared_ptr< std::vector< double > > > >
 ```
 
 ## Default Key for Objects
