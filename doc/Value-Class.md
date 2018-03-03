@@ -95,7 +95,7 @@ JSON Numbers are stored as either `std::int64_t` with `type::SIGNED`, as `std::u
 Can be tested for with `...is_number()`, which will return `true` for all three types, or with the more specific `...is_integer()`, `...is_signed()`, `...is_unsigned()` and `...is_double()`.
 
 Unlike JSON, non-finite and `NaN` values are allowed for floating point values.
-When serialising to a format that does not support these values, an [Event filter](Events-Interface.md#included-filters) can be used to transform them on-the-fly.
+When serialising to a format that does not support these values, an [Event filter](Events-Interface.md#included-filters) can be used to [transform these values to something else on-the-fly](Common-Use-Cases.md#serialise-with-base64-strings-for-binary-data).
 
 ### Strings
 
@@ -111,7 +111,7 @@ Binary data is stored as `std::vector< tao::byte >` with `type::BINARY`, or as `
 
 Can be tested for with `...is_binary_type()`, which will return `true` for both types, or with the more specific `...is_binary()` and `...is_binary_view()`.
 
-When serialising to a format that does not support binary data, an [Event filter](Events-Interface.md#included-filters) can be used to transform it on-the-fly.
+When serialising to a format that does not support binary data, an [Event filter](Events-Interface.md#included-filters) can be used to [transform binary data to something else on-the-fly](Common-Use-Cases.md#serialise-with-base64-strings-for-binary-data).
 
 ### Arrays
 
@@ -205,15 +205,24 @@ v = {
 };
 ```
 
+TODO: swap?
+
 ## Accessing Values
 
-TODO
+TODO: as, get, other?
+
+For particular templated code, the `get<>()` accessor function that is templated over the `tao::json::type`-enumeration can be used.
+
+```c++
+tao::json::value v = "hallo";
+const std::string s = v.get< tao::json::type::STRING >();
+```
 
 ## Manipulating Values
 
 Regarding manipulations of an existing value instance there are three general cases.
 
-1. Values of type `tao::json::NULL`, `tao::json::type::BOOLEAN`, `tao::json::type::SIGNED`, `tao::json::type::UNSIGNED`, `tao::json::type::DOUBLE`, `tao::json::type::STRING_VIEW`, `tao::json::type::BINARY_VIEW`, `tao::json::type::RAW_PTR`, `tao::json::type::OPAQUE_PTR`, `tao::json::type::UNINITIALIZED` or `tao::json::type::DISCARDED` which can not be manipulated beyond assigning a completely new value.
+1. Values of type `tao::json::NULL`, `tao::json::type::BOOLEAN`, `tao::json::type::SIGNED`, `tao::json::type::UNSIGNED`, `tao::json::type::DOUBLE`, `tao::json::type::STRING_VIEW`, `tao::json::type::BINARY_VIEW`, `tao::json::type::RAW_PTR`, `tao::json::type::OPAQUE_PTR`, `tao::json::type::UNINITIALIZED` or `tao::json::type::DISCARDED` which can not be manipulated beyond assigning a completely new value, or swapping with another Value.
 2. Values of type `tao::json::STRING`, `tao::json::BINARY`, `tao::json::ARRAY` or `tao::json::OBJECT` can be manipulated by obtaining a (non-const) reference to the underlying `std::string`, `std::vector< tao::byte >`, `std::vector< tao::json::value >` or `std::map< std::string, tao::json::value >` by using one of the `tao::json::value::get_string()`, `tao::json::value::get_binary()`, `tao::json::value::get_array()` or `tao::json::value::get_object()` functions, respectively.
 3. Values of type `tao::json::DESTROYED` which should never be encountered in code that doesn't invoke undefined or unspecified behaviour.
 
@@ -231,6 +240,8 @@ std::vector< tao::json::basic_value< my_traits > >& b = y.get_array();
 tao::json::basic_value< my_traits, my_base > z = tao::json::empty_array;
 std::vector< tao::json::basic_value< my_traits, my_base > >& c = z.get_array();
 ```
+
+TODO: emplace/emplace_foo
 
 ## Comparing Values
 

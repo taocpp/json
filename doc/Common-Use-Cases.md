@@ -43,11 +43,17 @@ Passing a `std::string` as third argument uses the given string as line ending i
 
 ## Serialise with base64 strings for binary data
 
+The JSON format does not allow for binary data.
+Binary data in Values needs to be converted into something else when serialising to JSON.
+This can be done on-the-fly with an [Events filter](Events-Interface.md#overview) like `tao::json::events::binary_to_base64`.
+
 ```c++
 const std::string l = tao::json::to_string< tao::json::events::binary_to_base64 >( v );
 ```
 
-See the [Events interface](Events-Interface.md) documentation for all available Event filters.
+Another similar common use case is to use a filter like `tao::json::events::non_finite_to_null` to convert non-finite floating-point values (not-a-number, infinity) to something that fits in the JSON data model.
+
+See the [Events interface](Events-Interface.md) documentation for [all available Event filters](Events-Interface.md#included-filters).
 
 ## Serialise a JSON Value to an ostream
 
