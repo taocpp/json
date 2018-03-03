@@ -312,7 +312,12 @@ The defaults traits support the following types.
 
 *`std::pair` and `std::tuple` coming soon.*
 
-The type traits correctly work with nested types, for example given that strings, doubles, vectors, shared pointers and maps are supported, so us the type `std::shared_ptr< std::map< std::string, std::shared_ptr< std::vector< double > > > >`.
+The type traits correctly work with nested types.
+Given that `std::string`, `double`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported, so is for example the following type:
+
+```c++
+`std::shared_ptr< std::map< std::string, std::shared_ptr< std::vector< double > > > >`
+```
 
 ## Default Key for Objects
 
