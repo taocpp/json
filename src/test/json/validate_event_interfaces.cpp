@@ -7,7 +7,7 @@
 #pragma warning( disable : 4702 )
 #endif
 
-#include <tao/json/schema.hpp>
+#include <tao/json/contrib/schema.hpp>
 
 #include <tao/json/events/compare.hpp>
 #include <tao/json/events/debug.hpp>

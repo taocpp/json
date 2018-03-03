@@ -1,18 +1,8 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_SCHEMA_HPP
-#define TAO_JSON_SCHEMA_HPP
-
-#include "events/compare.hpp"
-#include "events/from_value.hpp"
-#include "events/hash.hpp"
-#include "pointer.hpp"
-#include "reference.hpp"
-#include "value.hpp"
-
-#include "external/pegtl/contrib/uri.hpp"
-#include "external/pegtl/parse.hpp"
+#ifndef TAO_JSON_CONTRIB_SCHEMA_HPP
+#define TAO_JSON_CONTRIB_SCHEMA_HPP
 
 #include <algorithm>
 #include <cmath>
@@ -24,6 +14,16 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits>
+
+#include <tao/json/contrib/reference.hpp>
+#include <tao/json/events/compare.hpp>
+#include <tao/json/events/from_value.hpp>
+#include <tao/json/events/hash.hpp>
+#include <tao/json/pointer.hpp>
+#include <tao/json/value.hpp>
+
+#include <tao/json/external/pegtl/contrib/uri.hpp>
+#include <tao/json/external/pegtl/parse.hpp>
 
 namespace tao
 {

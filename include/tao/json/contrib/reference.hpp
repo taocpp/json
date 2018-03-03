@@ -1,13 +1,12 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_REFERENCE_HPP
-#define TAO_JSON_REFERENCE_HPP
+#ifndef TAO_JSON_CONTRIB_REFERENCE_HPP
+#define TAO_JSON_CONTRIB_REFERENCE_HPP
 
-#include "internal/uri_fragment.hpp"
-
-#include "pointer.hpp"
-#include "value.hpp"
+#include <tao/json/internal/uri_fragment.hpp>
+#include <tao/json/pointer.hpp>
+#include <tao/json/value.hpp>
 
 namespace tao
 {

@@ -41,8 +41,6 @@
 * [Extended Use Cases](Extended-Use-Cases.md)
   * [JSON Pointer](Extended-Use-Cases.md#json-pointer)
   * [JSON Patch](Extended-Use-Cases.md#json-patch)
-  * [JSON Reference](Extended-Use-Cases.md#json-reference)
-  * [JSON Schema](Extended-Use-Cases.md#json-schema)
 * [Advanced Use Cases](Advanced-Use-Cases.md)
   * [Custom Value Annotations](Advanced-Use-Cases.md#custom-value-annotations)
   * [Annotate with filename and line number](Advanced-Use-Cases.md#annotate-with-filename-and-line-number)

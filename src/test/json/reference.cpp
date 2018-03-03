@@ -3,8 +3,8 @@
 
 #include "test.hpp"
 
+#include <tao/json/contrib/reference.hpp>
 #include <tao/json/from_string.hpp>
-#include <tao/json/reference.hpp>
 #include <tao/json/value.hpp>
 
 namespace tao

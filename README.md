@@ -23,8 +23,6 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only library that provid
   * [JAXN]: Relaxed JSON with binary data and non-finite numbers.
   * [MsgPack]: MessagePack binary format (without extensions).
   * [UBJSON]: Universal Binary JSON.
-  * Experimental support for [JSON Reference] (local URI fragments only).
-  * Experimental support for [JSON Schema] (draft v4).
 
 * General
 

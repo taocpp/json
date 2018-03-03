@@ -19,7 +19,6 @@
 
 // Value Support
 #include "json/patch.hpp"
-#include "json/schema.hpp"
 #include "json/self_contained.hpp"
 
 // Custom Types
