@@ -18,8 +18,8 @@
   * [Creating Values](Value-Class.md#creating-values)
   * [Accessing Values](Value-Class.md#accessing-values)
   * [Manipulating Values](Value-Class.md#manipulating-values)
+  * [Container Functions](Value-Class.md#container-functions)
   * [Comparing Values](Value-Class.md#comparing-values)
-  * [Unsafe Functions](Value-Class.md#unsafe-functions)
 * [Type Traits](Type-Traits.md)
   * [Overview](Type-Traits.md#overview)
   * [Create JSON Value from (custom) type](Type-Traits.md#create-value-from-type)
@@ -47,6 +47,7 @@
   * [Instance sharing with Raw Pointers](Advanced-Use-Cases.md#instance-sharing-with-raw-pointers)
   * [Instance sharing with Opaque Pointers](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers)
   * [Making Values Self Contained](Advanced-Use-Cases.md#making-values-self-contained)
+  * [Unsafe Value Class Functions](Advanced-Use-Cases.md#unsafe-value-class-functions)
 * [Changelog](Changelog.md)
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

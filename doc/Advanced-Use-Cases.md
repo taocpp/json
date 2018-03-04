@@ -5,6 +5,7 @@
 * [Instance sharing with Raw Pointers](#instance-sharing-with-raw-pointers)
 * [Instance sharing with Opaque Pointers](#instance-sharing-with-opaque-pointers)
 * [Making Values Self Contained](#making-values-self-contained)
+* [Unsafe Value Class Functions](#unsafe-value-class-functions)
 
 ## Custom Value Annotations
 
@@ -203,6 +204,17 @@ Sub-values of type `STRING_VIEW` and `BINARY_VIEW` are transformed into `STRING`
 Occurrences of `RAW_PTR` are replaced with a deep copy of the pointee.
 
 Occurrences of `OPAQUE_PTR` are replaced with a JSON Value created by using the `produce()` function from the traits as Events producer (or the function supplied as second argument to `basic_value::unsafe_assign_opaque_ptr()`) together with `tao::json::events::to_basic_value` as Events consumer.
+
+## Unsafe Value Class Functions
+
+Some of the member functions of class `tao::json::value` are also available in an "unsafe" version that, in the name of efficiency, makes certain assumptions or omits certain checks.
+
+The accessors like `tao::json::value::get_boolean()` have an unsafe version `tao::json::value::unsafe_get_boolean()` that does **not** check the type.
+Instead of throwing an exception on type mismatch it will return bogus data, crash the application or do some other *undefined* behaviour.
+
+The assign methods like `tao::json::value::assign_boolean()` have an unsafe version `tao::json::value::unsafe_assign_boolean()` that does not check whether the previous value has a non-trivial destructor that needs to be called before being overwritten.
+
+TODO: List all other unsafe functions.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 

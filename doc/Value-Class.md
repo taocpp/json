@@ -5,8 +5,8 @@
 * [Creating Values](#creating-values)
 * [Accessing Values](#accessing-values)
 * [Manipulating Values](#manipulating-values)
+* [Container Functions](#container-functions)
 * [Comparing Values](#comparing-values)
-* [Unsafe Functions](#unsafe-functions)
 
 ## Overview
 
@@ -62,6 +62,8 @@ A default initialised Value object will enter an explicit uninitialized state an
 
 The `explicit operator bool()` returns whether the Value contains *any* valid value, including a `NULL_`.
 In other words, it only returns `false` when its `type()` returns `type::UNITIALIZED` (it MUST NOT be called for `type::DISCARDED` or `type::DESTROYED`).
+
+The function `tao::json::value::reset()` returns a Value to this state from any other type or state (unless `tao::json::type::DESTROYED`).
 
 ### Discarded
 
@@ -205,13 +207,21 @@ v = {
 };
 ```
 
-TODO: swap?
-
 ## Accessing Values
 
-TODO: as, get, other?
+TODO: as
 
-For particular templated code, the `get<>()` accessor function that is templated over the `tao::json::type`-enumeration can be used.
+The function `tao::json::value::optional< T >()` behaves similarly to `tao::json::value::as< T >()` but returns a `tao::optional< T >`.
+The return value is an empty optional when the Value on which the method calles is Null.
+Else it will be initalised with the result of a call to `tao::json::value::as< T >()`.
+
+TODO: get_*
+
+The functions `tao::json::value::empty()` and `tao::json::value::size()` use the corresponding functions of the underlying `std::string`, `tao::string_view`, `tao::binary`, `tao::binary_view`, `std::vector` or `std::map` depending on the type of the Value.
+And uninitialised value behaves as if it were empty, as do discarded and destroyed values when compiling with `NDEBUG`.
+All other values behave as if they had size 1.
+
+For particular templated code the `get<>()` accessor function that is templated over the `tao::json::type`-enumeration can be used.
 
 ```c++
 tao::json::value v = "hallo";
@@ -220,15 +230,19 @@ const std::string s = v.get< tao::json::type::STRING >();
 
 ## Manipulating Values
 
-Regarding manipulations of an existing value instance there are three general cases.
+Values can always (unless of type `tao::json::DESTROYED`, which should never be encountered in code that doesn't invoke unspecified or undefined behaviour) be assigned a new value using copy-assignment or move-assignment, and the contents of two Values can be swapped with the `swap()` member function.
 
-1. Values of type `tao::json::NULL`, `tao::json::type::BOOLEAN`, `tao::json::type::SIGNED`, `tao::json::type::UNSIGNED`, `tao::json::type::DOUBLE`, `tao::json::type::STRING_VIEW`, `tao::json::type::BINARY_VIEW`, `tao::json::type::RAW_PTR`, `tao::json::type::OPAQUE_PTR`, `tao::json::type::UNINITIALIZED` or `tao::json::type::DISCARDED` which can not be manipulated beyond assigning a completely new value, or swapping with another Value.
-2. Values of type `tao::json::STRING`, `tao::json::BINARY`, `tao::json::ARRAY` or `tao::json::OBJECT` can be manipulated by obtaining a (non-const) reference to the underlying `std::string`, `std::vector< tao::byte >`, `std::vector< tao::json::value >` or `std::map< std::string, tao::json::value >` by using one of the `tao::json::value::get_string()`, `tao::json::value::get_binary()`, `tao::json::value::get_array()` or `tao::json::value::get_object()` functions, respectively.
-3. Values of type `tao::json::DESTROYED` which should never be encountered in code that doesn't invoke undefined or unspecified behaviour.
+Beyond the assignment operator, the functions `tao::json::value::assign_null()`, `tao::json::value::assign_boolean()`, `tao::json::value::assign_signed()`, `tao::json::value::assign_unsigned()`, `tao::json::value::assign_double()`, `tao::json::value::assign_string()`, `tao::json::value::assign_string_view()`, `tao::json::value::assign_binary()`, `tao::json::value::assign_binary_view()`, `tao::json::value::assign_array()` and `tao::json::value::assign_object()` can be used to directly assign the underlying type while bypassing the [type traits](Type-Traits.md).
+
+For the types stored in standard containers there are also emplace-variants of the assign functions, namely `tao::json::value::emplace_string()`, `tao::json::value::emplace_binary()`, `tao::json::value::emplace_array()` and `tao::json::value::emplace_object()`.
+
+Values of type `tao::json::NULL`, `tao::json::type::BOOLEAN`, `tao::json::type::SIGNED`, `tao::json::type::UNSIGNED`, `tao::json::type::DOUBLE`, `tao::json::type::STRING_VIEW`, `tao::json::type::BINARY_VIEW`, `tao::json::type::RAW_PTR`, `tao::json::type::OPAQUE_PTR`, `tao::json::type::UNINITIALIZED` or `tao::json::type::DISCARDED` can not be manipulated beyond using one of the above functions.
+
+Values of type `tao::json::STRING`, `tao::json::BINARY`, `tao::json::ARRAY` or `tao::json::OBJECT` can be directly manipulated by obtaining a (non-const) reference to the underlying `std::string`, `std::vector< tao::byte >`, `std::vector< tao::json::value >` or `std::map< std::string, tao::json::value >` by using one of the `tao::json::value::get_string()`, `tao::json::value::get_binary()`, `tao::json::value::get_array()` or `tao::json::value::get_object()` functions, respectively.
 
 A `std::string`, `std::vector` or `std::map` returned by `tao::json::value::get_string()`, `tao::json::value::get_binary()`, `tao::json::value::get_array()` or `tao::json::value::get_object()` can be manipulated and used with standard algorithms just like any other instance of these standard containers.
 
-Of course `tao::json::value::get_array()` and `tao::json::value::get_object()` are actually `tao::json::basic_value< Traits, Base >::get_array()` and `tao::json::basic_value< Traits, Base >::get_object()`, and the sub-values of the returned containers have the same `Traits` and `Base` class as the Value on which the method was invoked.
+Remember that the functions `tao::json::value::get_array()` and `tao::json::value::get_object()` are actually `tao::json::basic_value< Traits, Base >::get_array()` and `tao::json::basic_value< Traits, Base >::get_object()`, and that the sub-values of the returned containers have the same `Traits` and `Base` class as the Value on which the method was invoked, as shown below.
 
 ```c++
 tao::json::value x = tao::json::empty_array;
@@ -241,7 +255,39 @@ tao::json::basic_value< my_traits, my_base > z = tao::json::empty_array;
 std::vector< tao::json::basic_value< my_traits, my_base > >& c = z.get_array();
 ```
 
-TODO: emplace/emplace_foo
+Similarly, when assigning to a Value, or adding further sub-values to a Value representing an Array or Object, "compatible" Values with the same Traits and Base need to be used.
+
+## Container Functions
+
+There are several convenience functions that simplify access and manipulation of Values representing Arrays and Objects.
+
+The following functions have several overloads and can be called with a `std::size_t` on Values representing an  Array, a `std::string` for Values representing an Object, or with a [JSON Pointer](Extended-Use-Cases#json-pointer).
+
+When called with a [JSON Pointer](Extended-Use-Cases#json-pointer), the type of index, integer or string, must correspond to the type of container, Array or Object, on all steps along the path.
+
+The `tao::json::value::at()` function indexes Arrays and Objects via `std::vector::at()` and `std::map::at()`, respectively.
+When called with a [JSON Pointer](Extended-Use-Cases#json-pointer), the contents of the pointer must be consistent with the type of Value.
+
+Similarly `tao::json::value::operator[]` indexes Arrays and Objects via `std::vector::operator[]` and `std::map::operator[]`, respectively.
+For Objects, it keeps the semantics of the underlying `std::map` and inserts a default-constructed Value when the key string is not found.
+
+The `tao::json::value::erase()` function erases a sub-value of an Array or Object via `std::vector::erase()` and `std::map::erase(), respectively.
+
+The `tao::json::value::find()` function can only be called with a `std::size_t` or a `std::string` for Arrays and Objects, respectively.
+It returns a plain pointer to the sub-value, or `nullptr` when no matching entry was found.
+As usual there are both a const overload that returns a `const value*`, and a non-const overload that returns a `value*`.
+
+The `tao::json::value::optional< T >()` function exists in two versions, one without arguments [explained above](#accessing-values), and one that can take any argument that `tao::json::value::find()` can.
+The latter returns an empty optional when no entry is found; it does *not* return an empty optional when a JSON Null entry is found but throws an exception when the found entry can not be converted to `T` via `tao::json::value::as< T >()`.
+
+The following functions include calls to `tao::json::value::prepare_array()` and `tao::json::value::prepare_object()` which are used on empty (`tao::json::type::UNITIALIZED` or `tao::json::type::DISCARDED`) Values to initialise to an empty array, or empty object, respectively.
+
+The `tao::json::value::push_back()` and `tao::json::value::emplace_back()` functions for Arrays, and the `tao::json::value::emplace()` function for Objects, again forward to the corresponding functions of the underlying standard container.
+
+A more general version of `tao::json:value::insert()` inserts the JSON Value from the second argument in the position indicated by the JSON Pointer in its first argument.
+
+To add multiple entries to an Array or Object with a single function call use `tao::json::value::append()` with Arrays, and `tao::json::value::insert()` with Objects.
+Both take an initialiser-list, `tao::json::value::append()` one with only values like `static tao::json::value::array()`, and `tao::json::value::insert()` one with keys and values like the constructor that creates an Object from an initialiser-list does.
 
 ## Comparing Values
 
@@ -262,13 +308,5 @@ Comparison between a JSON Value and another type is performed by either
 2. using the [traits](Type-Traits.md) to directly perform the comparison without creating a temporary Value.
 
 See the [documentation on type traits](Type-Traits.md#compare-value-with-type) for details.
-
-## Unsafe Functions
-
-Some of the member functions of class `tao::json::value` are also available in "unsafe" versions that, in the name of efficiency, make certain assumptions, or omit/make impossible certain checks.
-
-All of the accessors like `get_boolean()` have an unsafe version `unsafe_get_boolean()` that does not check the type and throw an exception on mismatch.
-
-All of the assign methods like `assign_boolean()` have an unsafe version `unsafe_assign_boolean()` that does not check whether the previous value has a non-trivial destructor that needs to be called before being overwritten.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
