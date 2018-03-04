@@ -1250,6 +1250,57 @@ namespace tao
             // LCOV_EXCL_STOP
          }
 
+         std::size_t size() const noexcept
+         {
+            switch( m_type ) {
+               case json::type::UNINITIALIZED:
+                  return 0;
+
+               case json::type::DISCARDED: {  // LCOV_EXCL_START
+                  assert( m_type != json::type::DISCARDED );
+                  return 0;
+                  // LCOV_EXCL_STOP
+               }
+
+               case json::type::DESTROYED: {  // LCOV_EXCL_START
+                  assert( m_type != json::type::DESTROYED );
+                  return 0;
+                  // LCOV_EXCL_STOP
+               }
+
+               case json::type::NULL_:
+               case json::type::BOOLEAN:
+               case json::type::SIGNED:
+               case json::type::UNSIGNED:
+               case json::type::DOUBLE:
+               case json::type::RAW_PTR:
+               case json::type::OPAQUE_PTR:
+                  return 1;
+
+               case json::type::STRING:
+                  return m_union.s.size();
+
+               case json::type::STRING_VIEW:
+                  return m_union.sv.size();
+
+               case json::type::BINARY:
+                  return m_union.x.size();
+
+               case json::type::BINARY_VIEW:
+                  return m_union.xv.size();
+
+               case json::type::ARRAY:
+                  return m_union.a.size();
+
+               case json::type::OBJECT:
+                  return m_union.o.size();
+            }
+            // LCOV_EXCL_START
+            assert( false );
+            return false;
+            // LCOV_EXCL_STOP
+         }
+
          void unsafe_discard() noexcept
          {
             assert( m_type != json::type::DESTROYED );
