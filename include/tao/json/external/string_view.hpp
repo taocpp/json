@@ -210,19 +210,19 @@ namespace tao
          if( pos > size() ) {
             throw std::out_of_range( "index out of range in tao::basic_string_view::copy" );
          }
-         const size_type rlen = std::min( n, size() - pos );
+         const size_type rlen = ( std::min )( n, size() - pos );
          traits::copy( s, data() + pos, rlen );
          return rlen;
       }
 
       constexpr basic_string_view substr( size_type pos = 0, size_type n = npos ) const
       {
-         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_string_view::substr" ) : basic_string_view( data() + pos, std::min( n, size() - pos ) );
+         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_string_view::substr" ) : basic_string_view( data() + pos, ( std::min )( n, size() - pos ) );
       }
 
       /*constexpr*/ int compare( basic_string_view s ) const noexcept
       {
-         const size_type rlen = std::min( size(), s.size() );
+         const size_type rlen = ( std::min )( size(), s.size() );
          const int result = traits::compare( data(), s.data(), rlen );
          if( result == 0 && size() != s.size() ) {
             return ( size() < s.size() ) ? -1 : 1;

@@ -136,7 +136,7 @@ namespace tao
          test_double( "30e001", 300.0 );
 
          // TODO: Disabled, triggers infinity
-         // test_double( std::string( 2000, '1' ), std::numeric_limits< double >::max() );
+         // test_double( std::string( 2000, '1' ), (std::numeric_limits< double >::max)() );
 
          TEST_THROWS( from_string( "1.0e1234567890" ) );
          TEST_THROWS( from_string( std::string( 1048577, '1' ) ) );

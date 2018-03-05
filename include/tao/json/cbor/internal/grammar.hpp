@@ -137,7 +137,7 @@ namespace tao
             std::size_t parse_size( Input& in )
             {
                const auto s = parse_unsigned( in );
-               if( s > static_cast< std::uint64_t >( std::numeric_limits< std::size_t >::max() ) ) {
+               if( s > static_cast< std::uint64_t >( ( std::numeric_limits< std::size_t >::max )() ) ) {
                   throw json_pegtl::parse_error( "cbor size exceeds size_t " + std::to_string( s ), in );
                }
                return static_cast< std::size_t >( s );

@@ -198,8 +198,8 @@ namespace tao
          test_signed< T >( -1 );
          test_signed< T >( 42 );
          test_signed< T >( -42 );
-         test_signed< T >( std::numeric_limits< T >::min() );
-         test_signed< T >( std::numeric_limits< T >::max() );
+         test_signed< T >( ( std::numeric_limits< T >::min )() );
+         test_signed< T >( ( std::numeric_limits< T >::max )() );
       }
 
       template< typename T >
@@ -242,8 +242,8 @@ namespace tao
          test_unsigned< T >( 0 );
          test_unsigned< T >( 1 );
          test_unsigned< T >( 42 );
-         test_unsigned< T >( std::numeric_limits< T >::min() );
-         test_unsigned< T >( std::numeric_limits< T >::max() );
+         test_unsigned< T >( ( std::numeric_limits< T >::min )() );
+         test_unsigned< T >( ( std::numeric_limits< T >::max )() );
       }
 
       void test_double( const double d )

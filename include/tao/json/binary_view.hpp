@@ -167,19 +167,19 @@ namespace tao
          if( pos > size() ) {
             throw std::out_of_range( "index out of range in tao::basic_binary_view::copy" );  // NOLINT
          }
-         const size_type rlen = std::min( n, size() - pos );
+         const size_type rlen = ( std::min )( n, size() - pos );
          std::memcpy( s, data() + pos, rlen );
          return rlen;
       }
 
       constexpr basic_binary_view substr( size_type pos = 0, size_type n = npos ) const
       {
-         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::substr" ) : basic_binary_view( data() + pos, std::min( n, size() - pos ) );  // NOLINT
+         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::substr" ) : basic_binary_view( data() + pos, ( std::min )( n, size() - pos ) );  // NOLINT
       }
 
       /*constexpr*/ int compare( basic_binary_view s ) const noexcept
       {
-         const size_type rlen = std::min( size(), s.size() );
+         const size_type rlen = ( std::min )( size(), s.size() );
          const int result = std::memcmp( data(), s.data(), rlen );
          if( result == 0 && size() != s.size() ) {
             return ( size() < s.size() ) ? -1 : 1;

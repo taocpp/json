@@ -250,7 +250,7 @@ namespace tao
                      throw std::runtime_error( "JSON number with 1 megabyte digits" );  // NOLINT
                   }
 
-                  const auto c = std::min( s, json::internal::max_mantissa_digits );
+                  const auto c = ( std::min )( s, json::internal::max_mantissa_digits );
                   std::memcpy( result.mantissa, in.begin(), c );
                   result.exponent10 += static_cast< typename json::internal::number_state< NEG >::exponent10_t >( s - c );
                   result.msize = static_cast< typename json::internal::number_state< NEG >::msize_t >( c );
@@ -284,7 +284,7 @@ namespace tao
                         --result.exponent10;
                      }
                   }
-                  const auto c = std::min( std::size_t( e - b ), json::internal::max_mantissa_digits - result.msize );
+                  const auto c = ( std::min )( std::size_t( e - b ), json::internal::max_mantissa_digits - result.msize );
                   std::memcpy( result.mantissa + result.msize, b, c );
                   result.exponent10 -= static_cast< typename json::internal::number_state< NEG >::exponent10_t >( c );
                   result.msize += static_cast< typename json::internal::number_state< NEG >::msize_t >( c );
