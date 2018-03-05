@@ -218,7 +218,7 @@ Else it will be initalised with the result of a call to `tao::json::value::as< T
 TODO: get_*
 
 The functions `tao::json::value::empty()` and `tao::json::value::size()` use the corresponding functions of the underlying `std::string`, `tao::string_view`, `tao::binary`, `tao::binary_view`, `std::vector` or `std::map` depending on the type of the Value.
-And uninitialised value behaves as if it were empty, as do discarded and destroyed values when compiling with `NDEBUG`.
+An uninitialised value behaves as if it were empty, as do discarded and destroyed values when compiling with `NDEBUG`.
 All other values behave as if they had size 1.
 
 For particular templated code the `get<>()` accessor function that is templated over the `tao::json::type`-enumeration can be used.
