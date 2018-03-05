@@ -341,7 +341,7 @@ namespace tao
                   if( !p->is_array() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"allOf\" must be of type 'array'" );  // NOLINT
                   }
-                  if( p->empty() ) {
+                  if( p->unsafe_get_array().empty() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"allOf\" must have at least one element" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_array() ) {
@@ -355,7 +355,7 @@ namespace tao
                   if( !p->is_array() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"anyOf\" must be of type 'array'" );  // NOLINT
                   }
-                  if( p->empty() ) {
+                  if( p->unsafe_get_array().empty() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"anyOf\" must have at least one element" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_array() ) {
@@ -369,7 +369,7 @@ namespace tao
                   if( !p->is_array() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"oneOf\" must be of type 'array'" );  // NOLINT
                   }
-                  if( p->empty() ) {
+                  if( p->unsafe_get_array().empty() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"oneOf\" must have at least one element" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_array() ) {
@@ -697,7 +697,7 @@ namespace tao
                   if( !p->is_array() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"required\" must be of type 'array'" );  // NOLINT
                   }
-                  if( p->empty() ) {
+                  if( p->unsafe_get_array().empty() ) {
                      throw std::runtime_error( "invalid JSON Schema: \"required\" must have at least one element" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_array() ) {
@@ -758,7 +758,7 @@ namespace tao
                         m_referenced_pointers.insert( p2 );
                      }
                      else if( p2->is_array() ) {
-                        if( p2->empty() ) {
+                        if( p2->unsafe_get_array().empty() ) {
                            throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must have at least one element" );  // NOLINT
                         }
                         std::set< std::string > s;
@@ -776,7 +776,7 @@ namespace tao
                         throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" must be of type 'object' or 'array'" );  // NOLINT
                      }
                   }
-                  if( !p->empty() ) {
+                  if( !p->unsafe_get_object().empty() ) {
                      m_flags = m_flags | HAS_DEPENDENCIES;
                   }
                }

@@ -17,7 +17,6 @@ namespace tao
          const value v{};
 
          TEST_ASSERT( !v );
-         TEST_ASSERT( v.empty() );
 
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
@@ -88,7 +87,6 @@ namespace tao
          const value v2( v );  // NOLINT
 
          TEST_ASSERT( v );
-         TEST_ASSERT( !v.empty() );
 
          TEST_ASSERT( v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
@@ -125,8 +123,6 @@ namespace tao
       {
          const value v( b );
          const value v2( v );  // NOLINT
-
-         TEST_ASSERT( !v.empty() );
 
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( v.is_boolean() );
@@ -165,8 +161,6 @@ namespace tao
       {
          const value v( t );
          const value v2( v );  // NOLINT
-
-         TEST_ASSERT( !v.empty() );
 
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
@@ -214,8 +208,6 @@ namespace tao
          const value v( t );
          const value v2( v );  // NOLINT
 
-         TEST_ASSERT( !v.empty() );
-
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
          TEST_ASSERT( !v.is_signed() );
@@ -259,8 +251,6 @@ namespace tao
          const value v( d );
          const value v2( v );  // NOLINT
 
-         TEST_ASSERT( !v.empty() );
-
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
          TEST_ASSERT( !v.is_signed() );
@@ -293,8 +283,6 @@ namespace tao
       {
          const value v( s );
          const value v2( v );  // NOLINT
-
-         TEST_ASSERT( v.empty() == ( N == 1 ) );
 
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
@@ -334,8 +322,6 @@ namespace tao
       {
          const value v2( v );  // NOLINT
 
-         TEST_ASSERT( v.empty() );
-
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
          TEST_ASSERT( !v.is_signed() );
@@ -367,8 +353,6 @@ namespace tao
       void test_empty_object( const value& v )
       {
          const value v2( v );  // NOLINT
-
-         TEST_ASSERT( v.empty() );
 
          TEST_ASSERT( !v.is_null() );
          TEST_ASSERT( !v.is_boolean() );
@@ -402,8 +386,6 @@ namespace tao
          const value v = value::array( { 1, 2, 3, 4 } );
          const value v2( v );  // NOLINT
 
-         TEST_ASSERT( !v.empty() );
-
          TEST_ASSERT( v.is_array() );
          TEST_ASSERT( !v.is_number() );
          TEST_ASSERT( v.type() == type::ARRAY );
@@ -431,8 +413,6 @@ namespace tao
       {
          const value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
          const value v2( v );  // NOLINT
-
-         TEST_ASSERT( !v.empty() );
 
          TEST_ASSERT( v.is_object() );
          TEST_ASSERT( !v.is_number() );
