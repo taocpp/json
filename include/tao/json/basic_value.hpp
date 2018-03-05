@@ -610,6 +610,16 @@ namespace tao
             return m_union.o.emplace( std::forward< Ts >( ts )... );
          }
 
+         std::pair< typename object_t::iterator, bool > unsafe_insert( typename object_t::value_type&& t )
+         {
+            return m_union.o.emplace( std::move( t ) );
+         }
+
+         std::pair< typename object_t::iterator, bool > unsafe_insert( const typename object_t::value_type& t )
+         {
+            return m_union.o.emplace( t );
+         }
+
          void unsafe_assign_raw_ptr( const basic_value* p ) noexcept
          {
             assert( p );
@@ -855,6 +865,18 @@ namespace tao
          {
             prepare_object();
             return unsafe_emplace( std::forward< Ts >( ts )... );
+         }
+
+         std::pair< typename object_t::iterator, bool > insert( typename object_t::value_type&& t )
+         {
+            prepare_object();
+            return unsafe_insert( std::move( t ) );
+         }
+
+         std::pair< typename object_t::iterator, bool > insert( const typename object_t::value_type& t )
+         {
+            prepare_object();
+            return unsafe_insert( t );
          }
 
          void insert( std::initializer_list< internal::pair< Traits, Base > >&& l )
