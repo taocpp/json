@@ -352,6 +352,9 @@ namespace tao
                return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary_view();
 
             case type::ARRAY:
+               if( lhs.unsafe_get_array().size() != rhs.unsafe_get_array().size() ) {
+                  return lhs.unsafe_get_array().size() < rhs.unsafe_get_array().size();
+               }
                return lhs.unsafe_get_array() < rhs.unsafe_get_array();
 
             case type::OBJECT:

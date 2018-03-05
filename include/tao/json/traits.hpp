@@ -931,7 +931,7 @@ namespace tao
 
          static void assign( basic_value< Traits, Base >& v, const std::map< std::string, basic_value< Traits, Base > >& o )
          {
-            v.unsafe_assign_object( std::move( o ) );
+            v.unsafe_assign_object( o );
          }
 
          static void assign( basic_value< Traits, Base >& v, std::map< std::string, basic_value< Traits, Base > >&& o ) noexcept
