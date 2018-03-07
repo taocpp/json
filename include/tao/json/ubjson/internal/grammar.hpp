@@ -14,6 +14,16 @@
 #include "../../internal/grammar.hpp"
 #include "../../utf8.hpp"
 
+#if defined( _MSC_VER )
+#define TAO_JSON_WEAK_PREFIX __declspec( selectany )
+#define TAO_JSON_WEAK_SUFFIX
+#else
+#define TAO_JSON_WEAK_PREFIX
+// clang-format off
+#define TAO_JSON_WEAK_SUFFIX __attribute__(( weak ))
+// clang-format on
+#endif
+
 namespace tao
 {
    namespace json
@@ -67,7 +77,7 @@ namespace tao
       namespace internal
       {
          // clang-format off
-         template<> WEAK_PREFIX const std::string errors< ubjson::internal::number >::error_message WEAK_SUFFIX = "invalid ubjson high-precision number";  // NOLINT
+         template<> TAO_JSON_WEAK_PREFIX const std::string errors< ubjson::internal::number >::error_message TAO_JSON_WEAK_SUFFIX = "invalid ubjson high-precision number";  // NOLINT
          // clang-format on
 
       }  // namespace internal
@@ -417,5 +427,8 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
+
+#undef TAO_JSON_WEAK_PREFIX
+#undef TAO_JSON_WEAK_SUFFIX
 
 #endif
