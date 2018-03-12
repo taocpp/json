@@ -1,4 +1,4 @@
-# Value Class
+indpe# Value Class
 
 * [Overview](#overview)
 * [Value and Data Types](#value-and-data-types)
@@ -209,19 +209,37 @@ v = {
 
 ## Accessing Values
 
-TODO: as
+The function `tao::json::value::type()` and the functions like `tao::json::value::is_boolean()` mentioned above can be used to determine the type of a Value.
 
-The function `tao::json::value::optional< T >()` behaves similarly to `tao::json::value::as< T >()` but returns a `tao::optional< T >`.
-The return value is an empty optional when the Value on which the method calles is Null.
-Else it will be initalised with the result of a call to `tao::json::value::as< T >()`.
+The data held by a Value can be extracted and converted with the `tao::json::value::as< T >()` functions, of which there are two.
 
-TODO: get_*
+1. The first overload takes no argument and returns the value of type `T`.
+2. The second overload takes a non-const reference to an instance of type `T`.
 
-The functions `tao::json::value::empty()` and `tao::json::value::size()` use the corresponding functions of the underlying `std::string`, `tao::string_view`, `tao::binary`, `tao::binary_view`, `std::vector` or `std::map` depending on the type of the Value.
-An uninitialised value behaves as if it were empty, as do discarded and destroyed values when compiling with `NDEBUG`.
-All other values behave as if they had size 1.
+```c++
+const tao::json::value v = 3;
+int i = v.as< int >();  // Sets i to 3.
+v.as( i );  // Also sets i to 3.
+```
+
+Note that the [default traits](Type-Traits.md) do **not** perform range checking when converting between different arithmetic types!
+
+As usual, the conversion works with any types and nested types that are supported by the traits, including shared pointers and vectors.
+
+```c++
+const tao::json::value v = tao::json::value::array( { 1, 2, tao::json::null, 4 } );
+const auto w = v.as< std::vector< std::shared_ptr< int > > >();
+```
+
+When the traits are correctly specialised for a custom type then [a JSON Value can be directly converted into the custom type](Type-Traits.md#convert-value-into-type) with `tao::json::value::as()`.
+
+The function `tao::json::value::optional< T >()` is similar to `tao::json::value::as< T >()` without argument, but it returns a `tao::optional< T >`.
+The return value is an empty optional when the Value on which the method was called is Null, else an optional initalised with the result of a call to `tao::json::value::as< T >()` is returned.
+
+The functions `tao::json::value::get_boolean()`, `tao::json::value::get_signed()`, `tao::json::value::get_unsigned()`, `tao::json::value::get_double()`, `tao::json::value::get_string()`, `tao::json::value::get_string_view()`, `tao::json::value::get_binary()`, `tao::json::value::get_binary_view()`, `tao::json::value::get_array()`, `tao::json::value::get_object()` and `tao::json::value::get_raw_ptr()` provide access to the stored data without using the traits.
 
 For particular templated code the `get<>()` accessor function that is templated over the `tao::json::type`-enumeration can be used.
+It behaves just like the correspondingly named get function, i.e. `get< tao::json::type::STRING >` is the same as `get_string()`.
 
 ```c++
 tao::json::value v = "hallo";
@@ -282,7 +300,7 @@ The latter returns an empty optional when no entry is found; it does *not* retur
 
 The following functions include calls to `tao::json::value::prepare_array()` and `tao::json::value::prepare_object()` which are used on empty (`tao::json::type::UNITIALIZED` or `tao::json::type::DISCARDED`) Values to initialise to an empty array, or empty object, respectively.
 
-The `tao::json::value::push_back()` and `tao::json::value::emplace_back()` functions for Arrays, and the `tao::json::value::emplace()` function for Objects, again forward to the corresponding functions of the underlying standard container.
+The `tao::json::value::push_back()` and `tao::json::value::emplace_back()` functions for Arrays, and `tao::json::value::insert()` and `tao::json::value::emplace()` for Objects, again forward to the corresponding functions of the underlying standard container.
 
 A more general version of `tao::json:value::insert()` inserts the JSON Value from the second argument in the position indicated by the JSON Pointer in its first argument.
 
@@ -298,7 +316,7 @@ The comparison is performed at the data model level, abstracting away from imple
 
 * Numbers are compared by value, independent of which of the three possible representations they use.
 * Strings and string views are compared by comparing character sequences, independent of which representation is used.
-* Binary data and binary views are compared by comparing byte sequences, indpendent of which representation is used.
+* Binary data and binary views are compared by comparing byte sequences, independent of which representation is used.
 * Raw pointers are skipped, the comparison behaves "as if" the pointee Value were copied to the Value with the pointer.
 * Values of different incompatible types will be ordered by the numeric Values of their type enum.
 

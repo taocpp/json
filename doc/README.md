@@ -48,6 +48,7 @@
   * [Instance sharing with Opaque Pointers](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers)
   * [Making Values Self Contained](Advanced-Use-Cases.md#making-values-self-contained)
   * [Unsafe Value Class Functions](Advanced-Use-Cases.md#unsafe-value-class-functions)
+* [Design Decisions](Design-Decisions.md)
 * [Changelog](Changelog.md)
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
