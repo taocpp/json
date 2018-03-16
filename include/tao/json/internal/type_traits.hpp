@@ -15,9 +15,10 @@ namespace tao
    {
       namespace internal
       {
-         template< typename... >
+         template< typename... Ts >
          struct type_list
          {
+            static constexpr std::size_t size = sizeof...( Ts );
          };
 
          template< typename... >

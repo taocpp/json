@@ -173,27 +173,26 @@ namespace tao
                }
             };
 
-            template< typename T >
+            template< typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
             struct array;
 
-            template< typename... As >
-            struct array< json::internal::type_list< As... > >
+            template< typename... As, std::size_t... Is >
+            struct array< json::internal::type_list< As... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
             {
                using elements = json::internal::type_list< As... >;
 
-               template< typename A, template< typename... > class Traits, typename Base, typename C >
-               static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
+               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename C >
+               static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
                {
-                  A::as( a.at( i++ ), x );
+                  A::as( a.at( I ), x );
                   return true;
                }
 
                template< template< typename... > class Traits, typename Base, typename C >
                static void as( const basic_value< Traits, Base >& v, C& x )
                {
-                  std::size_t i = 0;
                   const auto& a = v.get_array();
-                  (void)json::internal::swallow{ as_element< As >( a, x, i )... };
+                  (void)json::internal::swallow{ as_element< As, Is >( a, x )... };
                }
 
                template< typename A, template< typename... > class Traits = traits, typename Parts, typename C, typename State >
@@ -242,19 +241,18 @@ namespace tao
                   consumer.end_array( sizeof...( As ) );
                }
 
-               template< typename A, template< typename... > class Traits, typename Base, typename C >
-               static bool equal_element( const std::vector< basic_value< Traits, Base > >& a, C& x, std::size_t& i )
+               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename C >
+               static bool equal_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
                {
-                  return a[ i++ ] == A::read( x );
+                  return a[ I ] == A::read( x );
                }
 
                template< template< typename... > class Traits, typename Base, typename C >
                static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
                {
                   if( bool result = lhs.is_array() && ( lhs.unsafe_get_array().size() == sizeof...( As ) ) ) {
-                     std::size_t i = 0;
                      const auto& a = lhs.get_array();
-                     (void)json::internal::swallow{ result = result && equal_element< As >( a, rhs, i )... };
+                     (void)json::internal::swallow{ result = result && equal_element< As, Is >( a, rhs )... };
                      return result;
                   }
                   return false;
@@ -263,11 +261,11 @@ namespace tao
 
             // TODO: Control how to create the instances?
 
-            template< for_unknown_key E, for_nothing_value N, typename T >
+            template< for_unknown_key E, for_nothing_value N, typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
             struct basic_object;
 
-            template< for_unknown_key E, for_nothing_value N, typename... As >
-            struct basic_object< E, N, json::internal::type_list< As... > >
+            template< for_unknown_key E, for_nothing_value N, typename... As, std::size_t... Is >
+            struct basic_object< E, N, json::internal::type_list< As... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
             {
                using members = json::internal::type_list< As... >;
 
@@ -284,17 +282,17 @@ namespace tao
                   std::size_t index;
                };
 
-               template< typename A >
-               static bool set_optional_bit( std::bitset< sizeof...( As ) >& t, std::size_t& i )
+               template< typename A, std::size_t I >
+               static bool set_optional_bit( std::bitset< sizeof...( As ) >& t )
                {
-                  t.set( i++, A::kind == member_kind::OPTIONAL );
+                  t.set( I, A::kind == member_kind::OPTIONAL );
                   return true;
                }
 
-               template< typename A, template< typename... > class Traits, typename Base, typename F >
-               static bool emplace_as( std::map< std::string, entry< F > >& m, std::size_t& i )
+               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename F >
+               static bool emplace_as( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::key(), entry< F >( &A::template as< Traits, Base >, i++ ) );
+                  m.emplace( A::key(), entry< F >( &A::template as< Traits, Base >, I ) );
                   return true;
                }
 
@@ -302,17 +300,17 @@ namespace tao
                static void as( const basic_value< Traits, Base >& v, C& x )
                {
                   using F = void ( * )( const basic_value< Traits, Base >&, C& );
-                  static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
+                  static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     (void)json::internal::swallow{ emplace_as< As, Traits, Base >( t, i )... };
+                     (void)json::internal::swallow{ emplace_as< As, Is, Traits, Base >( t )... };
                      assert( t.size() == sizeof...( As ) );
                      return t;
-                  }( 0 );
-                  static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
+                  }();
+                  static const std::bitset< sizeof...( As ) > o = []() {
                      std::bitset< sizeof...( As ) > t;
-                     (void)json::internal::swallow{ set_optional_bit< As >( t, i )... };
+                     (void)json::internal::swallow{ set_optional_bit< As, Is >( t )... };
                      return t;
-                  }( 0 );
+                  }();
 
                   const auto& a = v.get_object();
                   std::bitset< sizeof...( As ) > b;
@@ -333,10 +331,10 @@ namespace tao
                   }
                }
 
-               template< typename A, template< typename... > class Traits, typename Parts, typename F >
-               static bool emplace_consume( std::map< std::string, entry< F > >& m, std::size_t& i )
+               template< typename A, std::size_t I, template< typename... > class Traits, typename Parts, typename F >
+               static bool emplace_consume( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::key(), entry< F >( &A::template consume< Traits, Parts >, i++ ) );
+                  m.emplace( A::key(), entry< F >( &A::template consume< Traits, Parts >, I ) );
                   return true;
                }
 
@@ -344,17 +342,17 @@ namespace tao
                static void consume( Parts& parser, C& x )
                {
                   using F = void ( * )( Parts&, C& );
-                  static const std::map< std::string, entry< F > > m = []( std::size_t i ) {
+                  static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     (void)json::internal::swallow{ emplace_consume< As, Traits, Parts >( t, i )... };
+                     (void)json::internal::swallow{ emplace_consume< As, Is, Traits, Parts >( t )... };
                      assert( t.size() == sizeof...( As ) );
                      return t;
-                  }( 0 );
-                  static const std::bitset< sizeof...( As ) > o = []( std::size_t i ) {
+                  }();
+                  static const std::bitset< sizeof...( As ) > o = []() {
                      std::bitset< sizeof...( As ) > t;
-                     (void)json::internal::swallow{ set_optional_bit< As >( t, i )... };
+                     (void)json::internal::swallow{ set_optional_bit< As, Is >( t )... };
                      return t;
-                  }( 0 );
+                  }();
 
                   auto s = parser.begin_object();
                   std::bitset< sizeof...( As ) > b;
