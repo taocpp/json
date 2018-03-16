@@ -6,6 +6,9 @@
 
 #include <stdexcept>
 
+#include "../external/pegtl/internal/pegtl_string.hpp"
+#include "../internal/escape.hpp"
+
 namespace tao
 {
    namespace json

@@ -4,6 +4,13 @@
 #ifndef TAO_JSON_BINDING_INTERNAL_ARRAY_HPP
 #define TAO_JSON_BINDING_INTERNAL_ARRAY_HPP
 
+#include <vector>
+
+#include "../../forward.hpp"
+
+#include "../../external/pegtl/internal/integer_sequence.hpp"
+#include "../../internal/type_traits.hpp"
+
 namespace tao
 {
    namespace json

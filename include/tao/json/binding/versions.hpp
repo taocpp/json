@@ -4,7 +4,10 @@
 #ifndef TAO_JSON_BINDING_VERSIONS_HPP
 #define TAO_JSON_BINDING_VERSIONS_HPP
 
+#include <exception>
 #include <stdexcept>
+
+#include "../forward.hpp"
 
 namespace tao
 {

@@ -4,6 +4,17 @@
 #ifndef TAO_JSON_BINDING_INTERNAL_OBJECT_HPP
 #define TAO_JSON_BINDING_INTERNAL_OBJECT_HPP
 
+#include <bitset>
+#include <map>
+#include <stdexcept>
+#include <string>
+
+#include "../../forward.hpp"
+
+#include "../../external/pegtl/internal/integer_sequence.hpp"
+#include "../../internal/escape.hpp"
+#include "../../internal/type_traits.hpp"
+
 namespace tao
 {
    namespace json

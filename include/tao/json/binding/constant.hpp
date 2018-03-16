@@ -1,10 +1,16 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_BINDING_CONSTANTS_HPP
-#define TAO_JSON_BINDING_CONSTANTS_HPP
+#ifndef TAO_JSON_BINDING_CONSTANT_HPP
+#define TAO_JSON_BINDING_CONSTANT_HPP
 
 #include <cstdint>
+#include <string>
+
+#include "../external/pegtl/internal/pegtl_string.hpp"
+
+#include "element.hpp"
+#include "member.hpp"
 
 namespace tao
 {
