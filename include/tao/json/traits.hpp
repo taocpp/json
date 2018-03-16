@@ -1427,7 +1427,7 @@ namespace tao
       template< typename U, typename V >
       struct traits< std::pair< U, V > >
          : public binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
-                           TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
+                                  TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
       {
       };
 
