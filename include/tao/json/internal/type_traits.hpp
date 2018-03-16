@@ -15,6 +15,30 @@ namespace tao
    {
       namespace internal
       {
+         template< typename... Ts >
+         struct type_list
+         {
+            static constexpr std::size_t size = sizeof...( Ts );
+         };
+
+         template< typename... >
+         struct merge_type_lists_t;
+
+         template< typename... Ts >
+         struct merge_type_lists_t< type_list< Ts... > >
+         {
+            using list = type_list< Ts... >;
+         };
+
+         template< typename... Vs, typename... Ws, typename... Rs >
+         struct merge_type_lists_t< type_list< Vs... >, type_list< Ws... >, Rs... >
+            : public merge_type_lists_t< type_list< Vs..., Ws... >, Rs... >
+         {
+         };
+
+         template< typename... Ts >
+         using merge_type_lists = typename merge_type_lists_t< Ts... >::list;
+
          struct type_info_less
          {
             bool operator()( const std::type_info* l, const std::type_info* r ) const
@@ -74,6 +98,28 @@ namespace tao
          struct has_consume_two< Traits, P, U, decltype( Traits< U >::template consume< Traits >( std::declval< P& >(), std::declval< U& >() ), void() ) > : std::true_type
          {
          };
+
+         template< template< typename... > class Traits, typename T, typename = void >
+         struct has_is_nothing : std::false_type
+         {
+         };
+
+         template< template< typename... > class Traits, typename T >
+         struct has_is_nothing< Traits, T, decltype( Traits< T >::template is_nothing< Traits >( std::declval< const T& >() ), void() ) > : std::true_type
+         {
+         };
+
+         template< template< typename... > class Traits, typename T >
+         auto is_nothing( const T& t ) -> typename std::enable_if< has_is_nothing< Traits, T >::value, bool >::type
+         {
+            return Traits< T >::template is_nothing< Traits >( t );
+         }
+
+         template< template< typename... > class Traits, typename T >
+         auto is_nothing( const T& /*unused*/ ) -> typename std::enable_if< !has_is_nothing< Traits, T >::value, bool >::type
+         {
+            return false;
+         }
 
       }  // namespace internal
 
