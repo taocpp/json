@@ -1,14 +1,18 @@
 # Type Traits
 
 * [Overview](#overview)
+* [The Synthesised Binding Mechanism](#the-binding-mechanism)
 * [Create JSON Value from (custom) type](#create-value-from-type)
 * [Convert JSON Value into (custom) type](#convert-value-into-type)
 * [Compare JSON Value to (custom) type](#compare-value-with-type)
 * [Produce JSON Events from (custom) type](#produce-events-from-type)
+* [Consume a (custom) type from a parser](#consume-type-from-parser)
 * [Default Traits Specialisations](#default-traits-specialisations)
 * [Default Key for Objects](#default-key-for-objects)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
+
+TODO: Explain BINDING
 
 ## Overview
 
@@ -64,6 +68,10 @@ using my_value = tao::json::basic_value< my_traits >;
 ```
 
 Note that all traits functions are `static` member functions, and that not a traits specialisation need not implement all traits functions.
+
+## The Binding Mechanism
+
+TODO
 
 ## Create Value from Type
 
@@ -276,6 +284,10 @@ const std::string json = tao::json::produce::to_string< my_traits >( d );
 ```
 
 As with the `assign()` functions, and depending on which Events consumers are used, it might be beneficial to provide a moving-version of `produce()` that moves strings and binary data.
+
+## Consume Type from Parser
+
+TODO: Explain `traits::consume()`
 
 ## Default Traits Specialisations
 
