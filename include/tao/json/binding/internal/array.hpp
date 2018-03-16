@@ -1,0 +1,109 @@
+// Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
+// Please see LICENSE for license or visit https://github.com/taocpp/json/
+
+#ifndef TAO_JSON_BINDING_INTERNAL_ARRAY_HPP
+#define TAO_JSON_BINDING_INTERNAL_ARRAY_HPP
+
+namespace tao
+{
+   namespace json
+   {
+      namespace binding
+      {
+         namespace internal
+         {
+            template< typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
+            struct array;
+
+            template< typename... As, std::size_t... Is >
+            struct array< json::internal::type_list< As... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+            {
+               using elements = json::internal::type_list< As... >;
+
+               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename C >
+               static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
+               {
+                  A::as( a.at( I ), x );
+                  return true;
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static void as( const basic_value< Traits, Base >& v, C& x )
+               {
+                  const auto& a = v.get_array();
+                  (void)json::internal::swallow{ as_element< As, Is >( a, x )... };
+               }
+
+               template< typename A, template< typename... > class Traits, typename Base, typename C >
+               static bool assign_element( basic_value< Traits, Base >& v, const C& x )
+               {
+                  v.unsafe_emplace_back( A::read( x ) );
+                  return true;
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static void assign( basic_value< Traits, Base >& v, const C& x )
+               {
+                  v.unsafe_emplace_array();
+                  (void)json::internal::swallow{ assign_element< As >( v, x )... };
+               }
+
+               template< typename A, template< typename... > class Traits = traits, typename Producer, typename C, typename State >
+               static bool consume_element( Producer& parser, C& x, State& s )
+               {
+                  parser.element( s );
+                  A::template consume< Traits >( parser, x );
+                  return true;
+               }
+
+               template< template< typename... > class Traits = traits, typename Producer, typename C >
+               static void consume( Producer& parser, C& x )
+               {
+                  auto s = parser.begin_array();
+                  (void)json::internal::swallow{ consume_element< As, Traits >( parser, x, s )... };
+                  parser.end_array( s );
+               }
+
+               template< typename A, template< typename... > class Traits, typename Consumer, typename C >
+               static bool produce_element( Consumer& consumer, const C& x )
+               {
+                  A::template produce< Traits >( consumer, x );
+                  consumer.element();
+                  return true;
+               }
+
+               template< template< typename... > class Traits = traits, typename Consumer, typename C >
+               static void produce( Consumer& consumer, const C& x )
+               {
+                  consumer.begin_array( sizeof...( As ) );
+                  (void)json::internal::swallow{ produce_element< As, Traits >( consumer, x )... };
+                  consumer.end_array( sizeof...( As ) );
+               }
+
+               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename C >
+               static bool equal_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
+               {
+                  return a[ I ] == A::read( x );
+               }
+
+               template< template< typename... > class Traits, typename Base, typename C >
+               static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
+               {
+                  if( bool result = lhs.is_array() && ( lhs.unsafe_get_array().size() == sizeof...( As ) ) ) {
+                     const auto& a = lhs.get_array();
+                     (void)json::internal::swallow{ result = result && equal_element< As, Is >( a, rhs )... };
+                     return result;
+                  }
+                  return false;
+               }
+            };
+
+         }  // namespace internal
+
+      }  // namespace binding
+
+   }  // namespace json
+
+}  // namespace tao
+
+#endif
