@@ -84,7 +84,7 @@ namespace tao
 
       // TODO: Optimise some of the simpler cases?
 
-      template< typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, std::string >, typename Paddington = internal::rules::wss >
+      template< typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, std::string > >
       class basic_parts_parser
       {
       public:
@@ -97,13 +97,13 @@ namespace tao
 
          bool null()
          {
-            return json_pegtl::parse< json_pegtl::seq< internal::rules::null, Paddington > >( m_input );
+            return json_pegtl::parse< json_pegtl::seq< internal::rules::null, internal::rules::wss > >( m_input );
          }
 
          bool boolean()
          {
             bool r;
-            json_pegtl::parse< json_pegtl::must< internal::rules::boolean, Paddington > >( m_input, r );
+            json_pegtl::parse< json_pegtl::must< internal::rules::boolean, internal::rules::wss > >( m_input, r );
             return r;
          }
 
@@ -117,21 +117,21 @@ namespace tao
          std::int64_t number_signed()
          {
             internal::rules::integer_state< std::int64_t > st;
-            json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::signed_rule >, Paddington >, internal::rules::integer_action >( m_input, st );
+            json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }
 
          std::uint64_t number_unsigned()
          {
             internal::rules::integer_state< std::uint64_t > st;
-            json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::unsigned_rule >, Paddington >, internal::rules::integer_action >( m_input, st );
+            json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }
 
          std::string string()
          {
             internal::string_state s;
-            json_pegtl::parse< json_pegtl::must< internal::rules::string, Paddington >, internal::unescape_action >( m_input, s );
+            json_pegtl::parse< json_pegtl::must< internal::rules::string, internal::rules::wss >, internal::unescape_action >( m_input, s );
             return std::move( s.unescaped );
          }
 
@@ -143,20 +143,20 @@ namespace tao
          std::string key()
          {
             internal::string_state s;
-            json_pegtl::parse< json_pegtl::must< internal::rules::string, Paddington, json_pegtl::one< ':' >, Paddington >, internal::unescape_action >( m_input, s );
+            json_pegtl::parse< json_pegtl::must< internal::rules::string, internal::rules::wss, json_pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, s );
             return std::move( s.unescaped );
          }
 
          template< char C >
          void parse_single_must()
          {
-            json_pegtl::parse< json_pegtl::must< json_pegtl::one< C >, Paddington > >( m_input );
+            json_pegtl::parse< json_pegtl::must< json_pegtl::one< C >, internal::rules::wss > >( m_input );
          }
 
          template< char C >
          bool parse_single_test()
          {
-            return json_pegtl::parse< json_pegtl::seq< json_pegtl::one< C >, Paddington > >( m_input );
+            return json_pegtl::parse< json_pegtl::seq< json_pegtl::one< C >, internal::rules::wss > >( m_input );
          }
 
          struct state_t
