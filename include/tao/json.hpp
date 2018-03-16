@@ -41,4 +41,7 @@
 // Events Implementations
 #include "json/events.hpp"
 
+// Member Binding etc.
+#include "json/binding.hpp"
+
 #endif
