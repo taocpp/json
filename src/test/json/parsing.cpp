@@ -204,18 +204,18 @@ namespace tao
             TEST_ASSERT( v[ 1 ] == -2 );
          }
          {
-            parts_parser pp( "  [  \"kasimir\"  ,  \"fridolin\", 2  ]  " );
+            parts_parser pp( "  [  \"kasimir\"  ,  \"fridolin\", 2  ]  ", __FUNCTION__ );
             const auto f = consume< foo, my_traits >( pp );
             TEST_ASSERT( f.a == "kasimir" );
             TEST_ASSERT( f.b == "fridolin" );
          }
          {
-            parts_parser pp( "  [  ]  " );
+            parts_parser pp( "  [  ]  ", __FUNCTION__ );
             const auto v = consume< std::shared_ptr< std::vector< int > >, my_traits >( pp );
             TEST_ASSERT( v->empty() );
          }
          {
-            parts_parser pp( "  [  1  , 2, 3  ]  " );
+            parts_parser pp( "  [  1  , 2, 3  ]  ", __FUNCTION__ );
             const auto v = consume< std::vector< int >, my_traits >( pp );
             TEST_ASSERT( v.size() == 3 );
             TEST_ASSERT( v[ 0 ] == 1 );
@@ -223,12 +223,12 @@ namespace tao
             TEST_ASSERT( v[ 2 ] == 3 );
          }
          {
-            cbor::parts_parser pp( "80" );
+            cbor::parts_parser pp( test_unhex( "80" ), __FUNCTION__ );
             const auto v = consume< std::vector< unsigned >, my_traits >( pp );
             TEST_ASSERT( v.empty() );
          }
          {
-            cbor::parts_parser pp( "8a00010203040506070809" );
+            cbor::parts_parser pp( test_unhex( "8a00010203040506070809" ), __FUNCTION__ );
             const auto v = consume< std::vector< unsigned >, my_traits >( pp );
             TEST_ASSERT( v.size() == 10 );
             for( std::size_t i = 0; i < 10; ++i ) {
@@ -236,7 +236,7 @@ namespace tao
             }
          }
          {
-            cbor::parts_parser pp( "9f00010203040506070809ff" );
+            cbor::parts_parser pp( test_unhex( "9f00010203040506070809ff" ), __FUNCTION__ );
             const auto v = consume< std::vector< unsigned >, my_traits >( pp );
             TEST_ASSERT( v.size() == 10 );
             for( std::size_t i = 0; i < 10; ++i ) {
@@ -244,32 +244,32 @@ namespace tao
             }
          }
          {
-            cbor::parts_parser pp( "8261616162" );
+            cbor::parts_parser pp( test_unhex( "8261616162" ), __FUNCTION__ );
             const auto v = consume< foo, my_traits >( pp );
             TEST_ASSERT( v.a == "a" );
             TEST_ASSERT( v.b == "b" );
          }
          {
-            parts_parser pp( " { \"a\" : 4, \"b\" : 5 } " );
+            parts_parser pp( " { \"a\" : 4, \"b\" : 5 } ", __FUNCTION__ );
             const auto v = consume< std::map< std::string, int >, my_traits >( pp );
             TEST_ASSERT( v.size() == 2 );
             TEST_ASSERT( v.at( "a" ) == 4 );
             TEST_ASSERT( v.at( "b" ) == 5 );
          }
          {
-            parts_parser pp( " { \"c\" : \"yeah\" , \"i\" : 42 } " );
+            parts_parser pp( " { \"c\" : \"yeah\" , \"i\" : 42 } ", __FUNCTION__ );
             const auto v = consume< bar, my_traits >( pp );
             TEST_ASSERT( v.c == "yeah" );
             TEST_ASSERT( v.i == 42 );
          }
          {
-            parts_parser pp( " { \"i\" : 42 } " );
+            parts_parser pp( " { \"i\" : 42 } ", __FUNCTION__ );
             const auto v = consume< bar, my_traits >( pp );
             TEST_ASSERT( v.c == "c" );
             TEST_ASSERT( v.i == 42 );
          }
          {
-            cbor::parts_parser pp( "bf616364796561686169182aff" );
+            cbor::parts_parser pp( test_unhex( "bf616364796561686169182aff" ), __FUNCTION__ );
             const auto v = consume< bar, my_traits >( pp );
             TEST_ASSERT( v.c == "yeah" );
             TEST_ASSERT( v.i == 42 );
@@ -284,7 +284,7 @@ namespace tao
             TEST_ASSERT( x.i == 2 );
          }
          {
-            parts_parser pp( "{ \"two\":{ \"i\" : 17 }}" );
+            parts_parser pp( "{ \"two\":{ \"i\" : 17 }}", __FUNCTION__ );
             const auto v = consume< std::shared_ptr< base_class >, my_traits >( pp );
             const auto c = std::dynamic_pointer_cast< derived_two >( v );
             TEST_ASSERT( c );

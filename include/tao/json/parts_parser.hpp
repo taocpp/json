@@ -88,10 +88,11 @@ namespace tao
       class basic_parts_parser
       {
       public:
-         explicit basic_parts_parser( const std::string& data )
-            : m_input( data, __FUNCTION__ )
+         template< typename... Ts >
+         explicit basic_parts_parser( Ts&&... ts )
+            : m_input( std::forward< Ts >( ts )... )
          {
-            json_pegtl::parse< json_pegtl::star< internal::rules::ws > >( m_input );
+            json_pegtl::parse< internal::rules::wss >( m_input );
          }
 
          bool null()

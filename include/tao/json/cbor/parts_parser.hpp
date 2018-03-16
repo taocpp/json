@@ -19,8 +19,9 @@ namespace tao
          class basic_parts_parser
          {
          public:
-            explicit basic_parts_parser( const std::string& data )
-               : m_input( test_unhex( data ), __FUNCTION__ )
+            template< typename... Ts >
+            explicit basic_parts_parser( Ts&&... ts )
+               : m_input( std::forward< Ts >( ts )... )
             {
             }
 
