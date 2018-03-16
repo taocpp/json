@@ -85,7 +85,7 @@ namespace tao
       struct foo_version_two
          : public binding::array< TAO_JSON_BIND_ELEMENT( &foo::a ),
                                   TAO_JSON_BIND_ELEMENT( &foo::b ),
-                                  binding::element_u< foo, 2 > >
+                                  binding::element_u< 2 > >
       {
       };
 

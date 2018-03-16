@@ -29,6 +29,10 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
+#include "internal/array_traits.hpp"
+#include "internal/indirect_traits.hpp"
+#include "internal/number_traits.hpp"
+#include "internal/object_traits.hpp"
 #include "internal/type_traits.hpp"
 
 #ifdef _MSC_VER
@@ -45,18 +49,16 @@ namespace tao
       template<>
       struct traits< null_t >
       {
-         // TODO: Implement as/consume/is_nothing?
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, null_t /*unused*/ ) noexcept
+         {
+            v.unsafe_assign_null();
+         }
 
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const null_t /*unused*/ )
          {
             c.null();
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, null_t /*unused*/ ) noexcept
-         {
-            v.unsafe_assign_null();
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -87,6 +89,12 @@ namespace tao
             return v.get_boolean();
          }
 
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const bool b ) noexcept
+         {
+            v.unsafe_assign_bool( b );
+         }
+
          template< template< typename... > class, typename Parts >
          static bool consume( Parts& parser )
          {
@@ -97,12 +105,6 @@ namespace tao
          static void produce( Consumer& c, const bool b )
          {
             c.boolean( b );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const bool b ) noexcept
-         {
-            v.unsafe_assign_bool( b );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -126,252 +128,6 @@ namespace tao
             return ( p->type() > type::BOOLEAN ) || ( p->is_boolean() && ( p->unsafe_get_boolean() > rhs ) );
          }
       };
-
-      namespace internal
-      {
-         template< typename T >
-         struct number_trait
-         {
-            template< template< typename... > class Traits, typename Base >
-            static T as( const basic_value< Traits, Base >& v )
-            {
-               switch( v.type() ) {
-                  case type::SIGNED:
-                     return static_cast< T >( v.unsafe_get_signed() );
-                     break;
-                  case type::UNSIGNED:
-                     return static_cast< T >( v.unsafe_get_unsigned() );
-                     break;
-                  case type::DOUBLE:
-                     return static_cast< T >( v.unsafe_get_double() );
-                     break;
-                  default:
-                     v.throw_invalid_json_type();
-               }
-               std::abort();  // LCOV_EXCL_LINE
-            }
-         };
-
-         template< typename T >
-         struct signed_trait
-            : number_trait< T >
-         {
-            template< template< typename... > class, typename Parts >
-            static T consume( Parts& parser )
-            {
-               return static_cast< T >( parser.number_signed() );
-            }
-
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const T i )
-            {
-               c.number( std::int64_t( i ) );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T i ) noexcept
-            {
-               v.unsafe_assign_signed( i );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED:
-                     return p->unsafe_get_signed() == rhs;
-                  case type::UNSIGNED:
-                     return ( rhs >= 0 ) && ( p->unsafe_get_unsigned() == static_cast< std::uint64_t >( rhs ) );
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() == rhs;
-                  default:
-                     return false;
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED:
-                     return p->unsafe_get_signed() < rhs;
-                  case type::UNSIGNED:
-                     return ( rhs >= 0 ) && ( p->unsafe_get_unsigned() < static_cast< std::uint64_t >( rhs ) );
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() < rhs;
-                  default:
-                     return p->type() < type::SIGNED;
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED:
-                     return p->unsafe_get_signed() > rhs;
-                  case type::UNSIGNED:
-                     return ( rhs < 0 ) || ( p->unsafe_get_unsigned() > static_cast< std::uint64_t >( rhs ) );
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() > rhs;
-                  default:
-                     return p->type() > type::SIGNED;
-               }
-            }
-         };
-
-         template< typename T >
-         struct unsigned_trait
-            : number_trait< T >
-         {
-            template< template< typename... > class, typename Parts >
-            static T consume( Parts& parser )
-            {
-               return static_cast< T >( parser.number_unsigned() );
-            }
-
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const T i )
-            {
-               c.number( std::uint64_t( i ) );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T i ) noexcept
-            {
-               v.unsafe_assign_unsigned( i );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED: {
-                     const auto v = p->unsafe_get_signed();
-                     return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs );
-                  }
-                  case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() == rhs;
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() == rhs;
-                  default:
-                     return false;
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED: {
-                     const auto v = p->unsafe_get_signed();
-                     return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs );
-                  }
-                  case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() < rhs;
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() < rhs;
-                  default:
-                     return p->type() < type::UNSIGNED;
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED: {
-                     const auto v = p->unsafe_get_signed();
-                     return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) > rhs );
-                  }
-                  case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() > rhs;
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() > rhs;
-                  default:
-                     return p->type() > type::UNSIGNED;
-               }
-            }
-         };
-
-         template< typename T >
-         struct float_trait
-            : number_trait< T >
-         {
-            template< template< typename... > class, typename Parts >
-            static T consume( Parts& parser )
-            {
-               return static_cast< T >( parser.number_double() );
-            }
-
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const T f )
-            {
-               c.number( double( f ) );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T f ) noexcept
-            {
-               v.unsafe_assign_double( f );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED:
-                     return p->unsafe_get_signed() == rhs;
-                  case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() == rhs;
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() == rhs;
-                  default:
-                     return false;
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED:
-                     return p->unsafe_get_signed() < rhs;
-                  case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() < rhs;
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() < rhs;
-                  default:
-                     return p->type() < type::DOUBLE;
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
-            {
-               const auto* p = lhs.skip_raw_ptr();
-               switch( p->type() ) {
-                  case type::SIGNED:
-                     return p->unsafe_get_signed() > rhs;
-                  case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() > rhs;
-                  case type::DOUBLE:
-                     return p->unsafe_get_double() > rhs;
-                  default:
-                     return p->type() > type::DOUBLE;
-               }
-            }
-         };
-
-      }  // namespace internal
 
       // clang-format off
       template<> struct traits< signed char > : internal::signed_trait< signed char > {};
@@ -520,6 +276,18 @@ namespace tao
             std::abort();  // LCOV_EXCL_LINE
          }
 
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const std::string& s )
+         {
+            v.unsafe_assign_string( s );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, std::string&& s ) noexcept
+         {
+            v.unsafe_assign_string( std::move( s ) );
+         }
+
          template< template< typename... > class, typename Parts >
          static std::string consume( Parts& parser )
          {
@@ -536,18 +304,6 @@ namespace tao
          static void produce( Consumer& c, std::string&& s )
          {
             c.string( std::move( s ) );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::string& s )
-         {
-            v.unsafe_assign_string( s );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, std::string&& s ) noexcept
-         {
-            v.unsafe_assign_string( std::move( s ) );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -610,16 +366,16 @@ namespace tao
             throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
          }
 
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::string_view sv )
-         {
-            c.string( sv );
-         }
-
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const tao::string_view sv )
          {
             v.unsafe_emplace_string( sv.data(), sv.size() );
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const tao::string_view sv )
+         {
+            c.string( sv );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -753,6 +509,18 @@ namespace tao
             std::abort();  // LCOV_EXCL_LINE
          }
 
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const std::vector< tao::byte >& x )
+         {
+            v.unsafe_assign_binary( x );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, std::vector< tao::byte >&& x ) noexcept
+         {
+            v.unsafe_assign_binary( std::move( x ) );
+         }
+
          template< template< typename... > class, typename Parts >
          static std::vector< tao::byte > consume( Parts& parser )
          {
@@ -769,18 +537,6 @@ namespace tao
          static void produce( Consumer& c, std::vector< tao::byte >&& x )
          {
             c.binary( std::move( x ) );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::vector< tao::byte >& x )
-         {
-            v.unsafe_assign_binary( x );
-         }
-
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, std::vector< tao::byte >&& x ) noexcept
-         {
-            v.unsafe_assign_binary( std::move( x ) );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -843,16 +599,16 @@ namespace tao
             throw std::runtime_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
          }
 
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::byte_view xv )
-         {
-            c.binary( xv );
-         }
-
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const tao::byte_view xv ) noexcept
          {
             v.unsafe_emplace_binary( xv.begin(), xv.end() );
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const tao::byte_view xv )
+         {
+            c.binary( xv );
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -911,6 +667,16 @@ namespace tao
       template< template< typename... > class Traits, typename Base >
       struct traits< std::vector< basic_value< Traits, Base > > >
       {
+         static void assign( basic_value< Traits, Base >& v, const std::vector< basic_value< Traits, Base > >& a )
+         {
+            v.unsafe_assign_array( a );
+         }
+
+         static void assign( basic_value< Traits, Base >& v, std::vector< basic_value< Traits, Base > >&& a ) noexcept
+         {
+            v.unsafe_assign_array( std::move( a ) );
+         }
+
          template< template< typename... > class, typename Consumer >
          static void produce( Consumer& c, const std::vector< basic_value< Traits, Base > >& a )
          {
@@ -932,21 +698,21 @@ namespace tao
             }
             c.end_array( a.size() );
          }
-
-         static void assign( basic_value< Traits, Base >& v, const std::vector< basic_value< Traits, Base > >& a )
-         {
-            v.unsafe_assign_array( a );
-         }
-
-         static void assign( basic_value< Traits, Base >& v, std::vector< basic_value< Traits, Base > >&& a ) noexcept
-         {
-            v.unsafe_assign_array( std::move( a ) );
-         }
       };
 
       template< template< typename... > class Traits, typename Base >
       struct traits< std::map< std::string, basic_value< Traits, Base > > >
       {
+         static void assign( basic_value< Traits, Base >& v, const std::map< std::string, basic_value< Traits, Base > >& o )
+         {
+            v.unsafe_assign_object( std::move( o ) );
+         }
+
+         static void assign( basic_value< Traits, Base >& v, std::map< std::string, basic_value< Traits, Base > >&& o ) noexcept
+         {
+            v.unsafe_assign_object( std::move( o ) );
+         }
+
          template< template< typename... > class, typename Consumer >
          static void produce( Consumer& c, const std::map< std::string, basic_value< Traits, Base > >& o )
          {
@@ -969,16 +735,6 @@ namespace tao
                c.member();
             }
             c.end_array( o.size() );
-         }
-
-         static void assign( basic_value< Traits, Base >& v, const std::map< std::string, basic_value< Traits, Base > >& o )
-         {
-            v.unsafe_assign_object( std::move( o ) );
-         }
-
-         static void assign( basic_value< Traits, Base >& v, std::map< std::string, basic_value< Traits, Base > >&& o ) noexcept
-         {
-            v.unsafe_assign_object( std::move( o ) );
          }
       };
 
@@ -1014,67 +770,13 @@ namespace tao
 
       template< template< typename... > class Traits, typename Base >
       struct traits< basic_value< Traits, Base >* >
-         : traits< const basic_value< Traits, Base >* >
+         : public traits< const basic_value< Traits, Base >* >
       {
       };
 
-      namespace internal
-      {
-         template< typename T >
-         struct indirect_traits_base
-         {
-            template< template< typename... > class Traits >
-            static bool is_nothing( const T& o )
-            {
-               return ( !bool( o ) ) || internal::is_nothing< Traits >( *o );
-            }
-
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const T& o )
-            {
-               if( o ) {
-                  json::events::produce< Traits >( c, *o );
-               }
-               else {
-                  json::events::produce< Traits >( c, null );
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o )
-            {
-               if( o ) {
-                  v = *o;
-               }
-               else {
-                  v = null;
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return rhs ? ( lhs == *rhs ) : ( lhs == null );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return rhs ? ( lhs < *rhs ) : ( lhs < null );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return rhs ? ( lhs > *rhs ) : ( lhs > null );
-            }
-         };
-
-      }  // namespace internal
-
       template< typename T >
       struct traits< tao::optional< T > >
-         : public internal::indirect_traits_base< tao::optional< T > >
+         : public internal::indirect_traits< tao::optional< T > >
       {
          template< template< typename... > class Traits, typename Base >
          static tao::optional< T > as( const basic_value< Traits, Base >& v )
@@ -1101,22 +803,11 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
          {
-            if( v.is_null() ) {
+            if( v == null ) {
                return std::shared_ptr< U >();
             }
             auto t = std::make_shared< T >();  // TODO: More control?
             v.as( *t );
-            return t;
-         }
-
-         template< template< typename... > class Traits, typename Parts >
-         static std::shared_ptr< U > consume( Parts& parser )
-         {
-            if( parser.null() ) {
-               return std::shared_ptr< U >();
-            }
-            auto t = std::make_shared< T >();  // TODO: More control?
-            json::consume< Traits >( parser, *t );
             return t;
          }
 
@@ -1129,6 +820,17 @@ namespace tao
             else {
                v = null;
             }
+         }
+
+         template< template< typename... > class Traits, typename Parts >
+         static std::shared_ptr< U > consume( Parts& parser )
+         {
+            if( parser.null() ) {
+               return std::shared_ptr< U >();
+            }
+            auto t = std::make_shared< T >();  // TODO: More control?
+            json::consume< Traits >( parser, *t );
+            return t;
          }
 
          template< template< typename... > class Traits, typename Consumer >
@@ -1145,7 +847,7 @@ namespace tao
 
       template< typename T >
       struct shared_traits< T, void >
-         : public internal::indirect_traits_base< std::shared_ptr< T > >
+         : public internal::indirect_traits< std::shared_ptr< T > >
       {
          template< typename V >
          using with_base = shared_traits< T, V >;
@@ -1153,7 +855,7 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static std::shared_ptr< T > as( const basic_value< Traits, Base >& v )
          {
-            if( v.is_null() ) {
+            if( v == null ) {
                return std::shared_ptr< T >();
             }
             auto t = std::make_shared< T >();  // TODO: More control?
@@ -1181,7 +883,7 @@ namespace tao
 
       template< typename T, typename U = T >
       struct unique_traits
-         : public internal::indirect_traits_base< std::unique_ptr< T > >
+         : public internal::indirect_traits< std::unique_ptr< T > >
       {
          template< typename V >
          using with_base = unique_traits< T, V >;
@@ -1189,7 +891,7 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static std::unique_ptr< U > as( const basic_value< Traits, Base >& v )
          {
-            if( v.is_null() ) {
+            if( v == null ) {
                return std::unique_ptr< U >();
             }
             std::unique_ptr< U > t( new T() );  // TODO: More control?
@@ -1215,125 +917,12 @@ namespace tao
       {
       };
 
-      namespace internal
-      {
-         template< typename T >
-         struct array_traits_base
-         {
-            template< template< typename... > class Traits >
-            static bool is_nothing( const T& o )
-            {
-               return o.empty();
-            }
-
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const T& o )
-            {
-               c.begin_array( o.size() );
-               for( const auto& i : o ) {
-                  json::events::produce< Traits >( c, i );
-                  c.element();
-               }
-               c.end_array( o.size() );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o )
-            {
-               v.prepare_array();
-               for( const auto& i : o ) {
-                  v.unsafe_emplace_back( i );
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return lhs.is_array() && ( lhs.unsafe_get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin() );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return lhs.is_array() ? std::lexicographical_compare( lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end(), rhs.begin(), rhs.end() ) : ( lhs.type() < type::ARRAY );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return lhs.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end() ) : ( lhs.type() > type::ARRAY );
-            }
-         };
-
-         template< typename T >
-         struct object_traits_base
-         {
-            template< template< typename... > class Traits >
-            static bool is_nothing( const T& o )
-            {
-               return o.empty();
-            }
-
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const T& o )
-            {
-               c.begin_object( o.size() );
-               for( const auto& i : o ) {
-                  c.key( i.first );
-                  json::events::produce< Traits >( c, i.second );
-                  c.member();
-               }
-               c.end_object( o.size() );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o )
-            {
-               v.prepare_object();
-               for( const auto& i : o ) {
-                  v.unsafe_emplace( i.first, i.second );
-               }
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               static const auto eq = []( const typename T::value_type& r, const std::pair< const std::string, basic_value< Traits, Base > >& l ) {
-                  return ( l.first == r.first ) && ( l.second == r.second );
-               };
-               return lhs.is_object() && ( lhs.unsafe_get_object().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), eq );
-            }
-
-            struct pair_less
-            {
-               template< typename L, typename R >
-               bool operator()( const L& l, const R& r ) const
-               {
-                  return ( l.first < r.first ) || ( ( l.first == r.first ) && ( l.second < r.second ) );
-               }
-            };
-
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return lhs.is_object() ? std::lexicographical_compare( lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end(), rhs.begin(), rhs.end(), pair_less() ) : ( lhs.type() < type::OBJECT );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
-            {
-               return lhs.is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end(), pair_less() ) : ( lhs.type() > type::OBJECT );
-            }
-         };
-
-      }  // namespace internal
-
-      template< typename T >
-      struct traits< std::list< T > >
-         : public internal::array_traits_base< std::list< T > >
+      template< typename T, typename... Ts >
+      struct traits< std::list< T, Ts... > >
+         : public internal::array_traits< std::list< T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::list< T >& r )
+         static void as( const basic_value< Traits, Base >& v, std::list< T, Ts... >& r )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
@@ -1342,7 +931,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::list< T >& r )
+         static void consume( Parts& parser, std::list< T, Ts... >& r )
          {
             auto s = parser.begin_array();
             while( parser.element_or_end_array( s ) ) {
@@ -1351,12 +940,12 @@ namespace tao
          }
       };
 
-      template< typename T >
-      struct traits< std::set< T > >
-         : public internal::array_traits_base< std::set< T > >
+      template< typename T, typename... Ts >
+      struct traits< std::set< T, Ts... > >
+         : public internal::array_traits< std::set< T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::set< T >& r )
+         static void as( const basic_value< Traits, Base >& v, std::set< T, Ts... >& r )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
@@ -1365,7 +954,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::set< T >& r )
+         static void consume( Parts& parser, std::set< T, Ts... >& r )
          {
             auto s = parser.begin_array();
             while( parser.element_or_end_array( s ) ) {
@@ -1374,12 +963,12 @@ namespace tao
          }
       };
 
-      template< typename T >
-      struct traits< std::vector< T > >
-         : public internal::array_traits_base< std::vector< T > >
+      template< typename T, typename... Ts >
+      struct traits< std::vector< T, Ts... > >
+         : public internal::array_traits< std::vector< T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::vector< T >& r )
+         static void as( const basic_value< Traits, Base >& v, std::vector< T, Ts... >& r )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
@@ -1388,7 +977,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::vector< T >& v )
+         static void consume( Parts& parser, std::vector< T, Ts... >& v )
          {
             auto s = parser.begin_array();
             if( s.size ) {
@@ -1400,12 +989,12 @@ namespace tao
          }
       };
 
-      template< typename T >
-      struct traits< std::map< std::string, T > >
-         : public internal::object_traits_base< std::map< std::string, T > >
+      template< typename T, typename... Ts >
+      struct traits< std::map< std::string, T, Ts... > >
+         : public internal::object_traits< std::map< std::string, T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::map< std::string, T >& r )
+         static void as( const basic_value< Traits, Base >& v, std::map< std::string, T, Ts... >& r )
          {
             const auto& o = v.get_object();
             for( const auto& i : o ) {
@@ -1414,7 +1003,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::map< std::string, T >& v )
+         static void consume( Parts& parser, std::map< std::string, T, Ts... >& v )
          {
             auto s = parser.begin_object();
             while( parser.member_or_end_object( s ) ) {
