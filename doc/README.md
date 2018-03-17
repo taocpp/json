@@ -1,5 +1,7 @@
 # TAOCPP / JSON Documentation
 
+*Work-in-Progress*
+
 * [Project](https://github.com/taocpp/json)
 * [Overview](Overview.md)
 * [Getting Started](Getting-Started.md)
@@ -50,6 +52,7 @@
   * [Instance sharing with Opaque Pointers](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers)
   * [Making Values Self Contained](Advanced-Use-Cases.md#making-values-self-contained)
   * [Unsafe Value Class Functions](Advanced-Use-Cases.md#unsafe-value-class-functions)
+  * [Polymorphic Object Factory](Advanced-Use-Cases.md#polymorphic-object-factory)
 * [Design Decisions](Design-Decisions.md)
 * [Changelog](Changelog.md)
 

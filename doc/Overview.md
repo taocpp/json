@@ -1,24 +1,6 @@
 # Overview
 
-* [Classification](#classification)
-* [Value Generic Parts](#value-generic-parts)
-* [Custom Type Traits](#custom-type-traits)
-* [Value Specific Parts](#value-specific-parts)
-* [Hybrid Value Model](#hybrid-value-model)
-
-TODO: Add links to relevant sections...
-
-## Classification
-
-JSON libraries for C++ are frequently of one of the following kinds.
-
-1. Libraries with a value-generic in-memory representation based on standard containers that can easily read, write and modify any JSON value.
-2. Libraries with a value-generic library-specific optimised in-memory representation that can easily and very quickly read and write any JSON value, but compromise on easy manipulation of in-memory values.
-3. Libraries that directly use normal C++ data types as value-specific targets to very quickly read and write corresponding JSON values in a type-safe manner.
-
-This library is two-in-one and is of both the first *and* the third kind.
-
-It also supports conversions between arbitrary (custom) types and the generic JSON Value, and a hybrid model where a JSON Value can contain pointers to arbitrary (custom) types as sub-values.
+![Overview](Overview.png)
 
 ## Value Generic Parts
 
@@ -45,6 +27,6 @@ The value specific parts also support advanced use cases like polymorphic object
 
 ## Hybrid Value Model
 
-The [hybrid value model](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers) allows for pointers to (custom) types to be embedded in JSON Value objects and is also supported by the automatically generated "binding" traits functions.
+The [hybrid value model](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers) allows for pointers to (custom) types to be embedded in JSON Value objects and is also supported by the automatically generated "binding" traitss.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

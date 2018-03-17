@@ -6,6 +6,7 @@
 * [Instance sharing with Opaque Pointers](#instance-sharing-with-opaque-pointers)
 * [Making Values Self Contained](#making-values-self-contained)
 * [Unsafe Value Class Functions](#unsafe-value-class-functions)
+* [Poylymorphic Object Factory](#polymorphic-object-factory)
 
 ## Custom Value Annotations
 
@@ -216,5 +217,8 @@ The assign methods like `tao::json::value::assign_boolean()` have an unsafe vers
 
 TODO: List all other unsafe functions.
 
-Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
+## Polymorphic Object Factory
 
+TODO
+
+Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

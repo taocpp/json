@@ -5,13 +5,13 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic JSON Value object and a JSON Events interface to convert, filter and bridge (extended) JSON data.
-The library is highly extensible with a traits mechanism for integration of (custom) C++ types, and supports *all* conversions between the JSON Value, multiple JSON representation formats, the JSON Events interface, *and* arbitrary (custom) C++ types.
+The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic [JSON Value class](doc/Value-Class.md) and a generic [JSON Events interface](doc/Events-Interface.md).
+A [traits mechanism](doc/Type-Traits.md) allows integration of (custom) C++ types and efficient conversions from and to the Value class and multiple JSON representation formats.
 It is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
 
 ## Documentation
 
-* [Work-in-progress Documentation](doc/README.md)
+* [Documentation](doc/README.md)
 
 ## Features
 

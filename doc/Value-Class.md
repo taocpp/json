@@ -1,4 +1,4 @@
-indpe# Value Class
+# Value Class
 
 * [Overview](#overview)
 * [Value and Data Types](#value-and-data-types)
