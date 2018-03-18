@@ -5,9 +5,7 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only library that provides a generic [JSON Value class](doc/Value-Class.md) and a generic [JSON Events interface](doc/Events-Interface.md).
-A [traits mechanism](doc/Type-Traits.md) allows integration of (custom) C++ types and efficient conversions from and to the Value class and multiple JSON representation formats.
-It is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
+The Art of C++ / JSON is a zero-dependency C++11 header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, and an [Events Interface](doc/Events-Interface.md) to convert from and to multiple formats like JSON, CBOR, ...
 
 ## Documentation
 
@@ -26,26 +24,27 @@ It is designed for correctness and simplicity, is based on C++ standard containe
   * [MsgPack]: MessagePack binary format (without extensions).
   * [UBJSON]: Universal Binary JSON.
 
-* [JSON Value Class](doc/Value-Class.md)
+* [Value Class](doc/Value-Class.md)
 
+  * JSON data model extended with binary data, ...
   * Construction of objects and arrays via `std::initializer_list`.
-  * Conversion from and to arbitrary *custom types* via [traits class template](doc/Type-Traits.md).
+  * Conversion from and to arbitrary *user-defined types* via [Type Traits](doc/Type-Traits.md).
   * Built around STL containers `std::string`, `std::map` and `std::vector`.
-  * No memory allocations by the JSON Value class itself (the wrapped containers allocate normally).
-  * Instance sharing for string, binary, JSON Value, and *custom types* via non-owning pointers.
-  * C++11 literal operator for JSON Values, including binary data.
+  * No memory allocations by the Value class itself (the wrapped containers allocate normally).
+  * Instance sharing for string, binary, Value, and *user-defined types* via non-owning pointers.
+  * C++11 literal operator for Values, including binary data.
   * Optional custom annotations for all Values (e.g. [filename and line (sub-)values were parsed from](doc/Advanced-Use-Cases.md#annotate-with-filename-and-line-number).
 
-* [JSON Events Interface](doc/Events-Interface.md)
+* [Events Interface](doc/Events-Interface.md)
 
-  * Simple, straightforward and flexible JSON Events API.
-  * JSON Events-to-Value and Value-to-Events interfaces.
-  * Parse JSON & JAXN string representation to JSON Events.
-  * Stream JSON Events to (prettified) JSON & JAXN string representation.
+  * Simple, straightforward and flexible Events API.
+  * Events-to-Value and Value-to-Events interfaces.
+  * Parse JSON & JAXN string representation to Events.
+  * Stream Events to (prettified) JSON & JAXN string representation.
   * Conversion from and to binary formats, currently [CBOR], [UBJSON], [MsgPack].
   * Conversion from and to *other* JSON libraries (e.g. [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
-  * JSON Events comparison, hashing, counting, and schema validation.
-  * JSON Events filters to manipulate Events in various ways.
+  * Events comparison, hashing, counting, and schema validation.
+  * Events Filters to manipulate Events in various ways.
 
 ## Status
 

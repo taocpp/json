@@ -1,7 +1,7 @@
 # Type Traits
 
 * [Overview](#overview)
-* [The Synthesised Binding Mechanism](#the-binding-mechanism)
+* [Binding Traits Facilities](#binding-traits-facilities)
 * [Create JSON Value from (custom) type](#create-value-from-type)
 * [Convert JSON Value into (custom) type](#convert-value-into-type)
 * [Compare JSON Value to (custom) type](#compare-value-with-type)
@@ -12,24 +12,22 @@
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
 
-TODO: Explain BINDING
-
 ## Overview
 
 The class template passed as `Traits` template parameter, most prominently to `tao::json::basic_value<>`, controls the interaction between the JSON library and other C++ types.
 
-The library includes the traits class template `tao::json::traits<>` with [many specialisations](#default-traits) that is used throughout the library as default.
-A custom traits class can be used to change the behaviour of the default traits, and/or to add support for new types.
+The library includes the Type Traits class template `tao::json::traits<>` with [many specialisations](#default-traits) that is used throughout the library as default.
+A custom Type Traits class can be used to change the behaviour of the default traits, and/or to add support for new types.
 
-In the first case it is necessary to create a new traits class template.
-In the second case it is also possible to (partially) specialise `tao::json::traits<>` for the new types.
+* In the first case it is necessary to create a new traits class template.
+* In the second case it is also possible to (partially) specialise `tao::json::traits<>` for the new types.
 
-For a type `T`, the traits class template instantiated with `T` as template argument is used as traits class for `T`.
+As is common, for any type `T`, the Type Traits class template instantiated with `T` as template argument is used as Type Traits class for `T`.
 
-The default traits use a second template parameter that defaults to `void` to allow to selective enable or disable a particular (partial) specialisation via SFINAE.
-For this reason, any template that takes a traits class template as template parameter should be templated over `template< typename... > class Traits`, rather than the more obvious `template< typename > class Traits`.
+The default Type Traits use a second template parameter that defaults to `void` to selective enable or disable a particular (partial) specialisation via SFINAE.
+For this reason, any template that takes a Type Traits class template as template parameter should be templated over `template< typename... > class Traits`, rather than the more obvious `template< typename > class Traits`.
 
-We will use the following class in the example implementations of the traits functions.
+We will use the following class in the example implementations of the Type Traits functions.
 
 ```c++
 struct my_type
@@ -39,7 +37,7 @@ struct my_type
 };
 ```
 
-While we could simply specialise `tao::json::traits<>` for `my_type`, we will prefer to define a new traits class, an approach that also works when redefining traits for types that the default traits already cover.
+While we could simply specialise `tao::json::traits<>` for `my_type`, we will prefer to define a new Type Traits class, an approach that also works when redefining traits for types that the default Type Traits already cover.
 
 ```c++
 template< typename T >
@@ -53,7 +51,7 @@ struct my_traits
 };
 ```
 
-For convenience, we might add a `using` for the JSON Value class with the new traits.
+For convenience, we might add a `using` for the JSON Value class with the new Type Traits.
 
 ```c++
 using my_value = tao::json::basic_value< my_traits >;
@@ -67,11 +65,56 @@ using my_basic_value = tao::json::basic_value< my_traits, Base >;
 using my_value = tao::json::basic_value< my_traits >;
 ```
 
-Note that all traits functions are `static` member functions, and that not a traits specialisation need not implement all traits functions.
+Note that all Type Traits functions are `static` member functions, and that, depending on the use cases, it is not necessary for a traits specialisation to implement *all* traits functions.
 
-## The Binding Mechanism
+For the common use case of implementing Type Traits for a custom struct or class that uses an Array or an Object for its data members the [Binding Facilities](#binding-traits-facilities) can be used to *automatically* create the Type Traits functions without writing any actual code.
 
-TODO
+## Binding Traits Facilities
+
+The Binding Facilities allow the automatic generation of Type Traits functions for a type from a list of the type's data members.
+
+It requires that Type Traits specialisations for all of the data member types exist, too, either manually implemented, inherited from the [default Type Traits](#default-traits), or again generated with the Binding Facilities.
+
+There are two kinds of Binding, one that uses an Array for the class or struct members, and one that uses an Object.
+
+The Array is more efficient, the Object is more flexible as it allows for optional members, and possible forward and/or backward compatibility with future extensions.
+Given that members are named rather than accessed by index, Objects are also easier to comprehend and debug.
+
+To use an Object it is necessary to derive `my_traits< my_type >` from `tao::json::binding::object`, and to supply a list of member variable pointers with their name.
+It is not technically necessary for the name to match the name of the data member, any string can be used for the key in the Object.
+
+Two macros are used to simplify the binding of the individual member variables.
+When directly parsing an external representation like JSON into a `my_type` with `tao::json::consume()`, or converting a Value into a `my_type` with `tao::json::as()`, an exception will be thrown when a required member is missing.
+
+```c++
+template<>
+struct my_traits< my_type >
+   : tao::json::binding::object< TAO_JSON_BIND_REQUIRED( "title", &my_type::title ),
+                                 TAO_JSON_BIND_OPTIONAL( "values", &my_type::values ) >
+{
+};
+```
+
+Similarly to use an Array it is necessary to derive `my_traits< my_type >` from `tao::json::binding::array`, and supply a list of member variables.
+Here neither a name can be given, nor is there a choice between optional and required.
+
+
+```c++
+template<>
+struct my_traits< my_type >
+   : tao::json::binding::array< TAO_JSON_BIND_ELEMENT( &my_type::title ),
+                                TAO_JSON_BIND_ELEMENT( &my_type::values ) >
+{
+};
+```
+
+As usual it is possible to override some of the functions inherited from `tao::json::binding::object` or `tao::json::binding::array` by defining them in `my_traits< my_type >`.
+
+Regardless of the choice of Array or Object, all of the Type Traits functions (current limitation: except for `less_than()` and `greater_than()`) are automatically generated for the Type Traits of `my_type` :smile:
+
+The examples given below of how to use the individual Type Traits functions all work without manually implementing the underlying functions of the Type Traits specialisation.
+
+The binding facilities also support [some more advanced options](Advanced-Use-Cases.md#advanced-binding-options), a [polymorphic object factory](Advanced-Use-Cases.md#polymorphic-object-factory), and [multiple bindings for the same data type](Advanced-Use-Cases.md#disjunction-of-single-type-traits) for multi-version support.
 
 ## Create Value from Type
 
@@ -246,16 +289,16 @@ assert( ( d >= m ) == ( e >= m ) );
 
 ## Produce Events from Type
 
-Producing [JSON Events](Events-Interface.md) from a type is performed by the type's traits' `produce()` function.
+Producing [JSON Events](Events-Interface.md) from a type is performed by the type's Traits' `produce()` function.
 
 Implementing the `produce()` function is only required for some optimisation techniques, namely:
 
-1. To directly serialise any type to JSON or another supported file format.
+1. To directly serialise any type to JSON or another supported external representation format.
 2. To create an [Opaque pointer JSON Value](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers) instead of using building the JSON data structure for a type.
 
-The `produce()` function receives an arbitrary [Events consumer](Events-Interface.md) as first argument, and can call any [Events functions](Events-Interface.md) on it.
+The `produce()` function receives an arbitrary [Events Consumer](Events-Interface.md) as first argument, and can call any [Events Functions](Events-Interface.md) on it.
 
-It should/must again template over the traits, and, since there is no `basic_value<>` instance from which the traits can be derived, the traits `produce()` functions and the functions in namespace `tao::json::produce` need to be called with the traits class template as explicit template parameter.
+It should/must again template over their traits, and, since there is no `basic_value<>` instance from which the traits can be derived, the traits `produce()` functions and the functions in namespace `tao::json::produce` need to be called with the traits class template as explicit template parameter.
 
 ```c++
 template<>
@@ -276,22 +319,23 @@ struct my_traits< my_type >
 };
 ```
 
-For the first use case mentioned above, the following directly and efficiently generates the JSON representation of a `my_type` instance without creating any JSON Value instance along the way.
+For the first use case mentioned above, the following code snippet directly and efficiently generates the JSON representation of a `my_type` instance without creating any JSON Values along the way.
 
 ```c++
 const my_type d = make_my_type();
 const std::string json = tao::json::produce::to_string< my_traits >( d );
 ```
 
-As with the `assign()` functions, and depending on which Events consumers are used, it might be beneficial to provide a moving-version of `produce()` that moves strings and binary data.
+As with the `assign()` functions, and depending on which Events Consumers are used, it might be beneficial to provide a moving-version of `produce()` that moves strings and binary data.
 
 ## Consume Type from Parser
 
+TODO: Explain pull-interface
 TODO: Explain `traits::consume()`
 
 ## Default Traits Specialisations
 
-The defaults traits support the following types.
+The included Type Traits contain (partial) specialisations for the following types.
 
 | Specialised for | Remarks |
 | -------------- | -------- |
@@ -321,21 +365,21 @@ The defaults traits support the following types.
 | `std::set< T >` | Corresponds to JSON Array. |
 | `std::vector< T >` | Corresponds to JSON Array. |
 | `std::map< std::string, T >` | Corresponds to JSON Object. |
+| `std::pair< U, V >` | Corresponds to JSON Array. |
+| `std::tuple< Ts... >` | Corresponds to JSON Array. |
 
-*`std::pair` and `std::tuple` coming soon.*
-
-The type traits correctly work with nested types.
-Given that `std::string`, `double`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported, so is for example the following type:
+The Type Traits correctly work with nested types.
+Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported, so is for example the following type:
 
 ```c++
-std::shared_ptr< std::map< std::string, std::shared_ptr< std::vector< double > > > >
+std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >
 ```
 
 ## Default Key for Objects
 
 The use of default keys is [shown in the section on creating Values](Value-Class.md#creating-values).
 
-The default key for a type is a C-string that needs to be declared in the traits specialisation.
+The default key for a type is a C-string that needs to be declared in the Traits specialisation.
 
 ```c++
 template<>
@@ -351,6 +395,6 @@ And this is the corresponding definition that needs to be placed in an implement
 const char* my_traits< my_type >::default_key = "fraggle";
 ```
 
-The default traits supplied with the library do not define default keys for any type.
+The default Traits supplied with the library do not define a default key for any type.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

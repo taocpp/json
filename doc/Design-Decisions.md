@@ -3,6 +3,8 @@
 * [Initialiser Lists](#initialiser-lists)
 * [Omitted Functions](#omitted-functions)
 
+This library is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
+
 ## Initialiser-Lists
 
 To prevent the following (and more) ambiguities, only Values for Objects can be created with an initialiser-list argument to the constructor.

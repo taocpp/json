@@ -12,19 +12,19 @@
 
 ## Overview
 
-The Events interface is a calling convention, a kind of abstract (in the conceptual, not object-oriented sense) interface that allows different parts of the library to communicate with each other.
+The Events Interface is a calling convention, a kind of abstract (in the conceptual, not object-oriented sense) interface that allows different parts of the library to communicate with each other.
 
-The Events interface is modelled after the SAX-interface for XML and has functions like `begin_object()` and `boolean( const bool )`.
+The Events Interface is modelled after the SAX-interface for XML and has functions like `begin_object()` and `boolean( const bool )`.
 
-We distinguish betwen *event producers* that usually take some input and generate calls to the Events interface from it, and *event consumers* which implement the functions of the Events interface to usually produce some output.
-*Event filters* occupy both roles, accepting calls to the Events interface and transforming them into (other) calls to another Events interface implementation.
+We distinguish betwen *Event Producers* that usually take some input and generate calls to the Events Interface from it, and *Event Consumers* which implement the functions of the Events Interface to usually produce some output.
+*Event Filters* occupy both roles, accepting calls to the Events Interface and transforming them into (other) calls to another Events Consumer.
 
-For example the `tao::json::events::from_value()` function is an Events producer that takes a Value object of type `tao::json::basic_value< Traits, Base >` for any traits class `Traits` and annotation class `Base` as input, and generates Events depending on the contents.
-It could be used together with the `tao::json::events::to_string()` class, an Events consumer that generates the JSON string representation corresponding to the Events it receives.
-In order to transform binary data in the Value object into something compatible with standard JSON it might be necessary to use an Events filter like `tao::json::events::binary_to_hex` between the producer and consumer.
+For example the `tao::json::events::from_value()` function is an Events Producer that takes a Value object of type `tao::json::basic_value< Traits, Base >` for any Type Traits class `Traits` and annotation class `Base` as input, and generates Events depending on the contents.
+It could be used together with the `tao::json::events::to_string()` class, an Events Consumer that generates the JSON string representation corresponding to the Events it receives.
+In order to transform binary data in the Value object into something compatible with standard JSON it might be necessary to use an Events Filter like `tao::json::events::binary_to_hex` between the Producer and Consumer.
 
-Producers and consumers can be freely coupled, it is not necessary for the beginning or the end of the chain to be a JSON Value object.
-For example an Events producer that parses CBOR can be directly used with an Events consumer that creates UBJSON.
+Producers and Consumers can be freely coupled, it is not necessary for the beginning or the end of the chain to be a JSON Value object.
+For example an Events Producer that parses CBOR can be directly used with an Events Consumer that creates UBJSON.
 
 ```c++
 #include <tao/json.hpp>
@@ -37,7 +37,7 @@ std::string cbor_to_ubjson( const std::string& input )
 }
 ```
 
-A more common use case is parsing a JSON representation into a JSON Value...
+A more common use case is parsing a JSON text representation into a JSON Value...
 
 ```c++
 tao::json::value from_string( const std::string& input )
@@ -49,7 +49,8 @@ tao::json::value from_string( const std::string& input )
 ```
 
 ...which is in fact so common that a (more general) convenience function `tao::json::from_string()` is included with the library.
-See the tables below for a complete list of included Events producers and consumers, and the convenience functions that use them in conjunction with JSON Values.
+
+The tables below list all included Events Producers, Consumers, and Filters, as well as the convenience functions where the source or destination is a Value.
 
 ## Consumer Interface
 
@@ -100,8 +101,8 @@ If a Value in an Array or Object is itself an Array or Object, then it will lead
 
 Calls to `element()` or `member()` are naturally understood to belong to the inner-most Array or Object, i.e. to the last begin-method without end.
 
-An Events producer MUST NOT generate inconsistent sequences of Event calls.
-For example pairing `begin_array()` with `end_object()`, using `member()` when the inner-most container is not an Object, or similar, must all be avoided.
+An Events Producer MUST NOT generate inconsistent sequences of Event calls.
+For example pairing `begin_array()` with `end_object()`, using `member()` when the inner-most container is not an Object, must all be avoided.
 
 ## Reduced Interface
 
@@ -111,7 +112,7 @@ For example consider a consumer that writes some representation to a stream.
 Such a consumer will not benefit from implementing the functions with movable arguments since it has no place to move the arguments to.
 If the format it writes requires the encoding of objects and arrays to start with the number of array elements or object members, respectively, then the consumer might not implement the begin/end-array/object methods without size.
 
-A consumer that does not need the sizes of arrays and objects in the begin/end-calls, and that does not benefit from receiving movable arguments, can implement a reduced interface that - thanks to default arguments and the view-classes' implicit constructors - can still accept all function calls that the full interface can.
+An Events Consumer that does not need the sizes of arrays and objects in the begin/end-calls, and that does not benefit from receiving movable arguments, can implement a reduced interface that - thanks to default arguments and the view-classes' implicit constructors - can still accept all function calls that the full interface can.
 
 ```c++
 struct reduced_consumer
@@ -121,13 +122,13 @@ struct reduced_consumer
    void number( const double );
    void number( const std::int64_t );
    void number( const std::uint64_t );
-   void string( const tao::string_view & );
-   void binary( const tao::binary_view & );
+   void string( const tao::string_view );
+   void binary( const tao::binary_view );
    void begin_array( const std::size_t = 0 );
    void element();
    void end_array( const std::size_t = 0 );
    void begin_object( const std::size_t = 0 );
-   void key( const tao::string_view & );
+   void key( const tao::string_view );
    void member();
    void end_object( const std::size_t = 0 );
 };
@@ -135,7 +136,7 @@ struct reduced_consumer
 
 ## Included Producers
 
-Producers are functions that take some input from which they generate Events that they call on a consumer that they are also provided with.
+Events Producers are functions that take some input from which they generate Events function calls on a provided Consumer.
 
 **The common namespace prefix `tao::json::` is omitted.**
 
@@ -157,7 +158,7 @@ Producers are functions that take some input from which they generate Events tha
 
 ## Convenience Functions
 
-Functions that combine the similarly named Events producer from above with an Events consumer to return a corresponding Value.
+Functions that combine the similarly named Events Producer from above with an Events Consumer to return a corresponding Value.
 
 **The common namespace prefix `tao::json::` is omitted.**
 
@@ -178,8 +179,8 @@ Functions that combine the similarly named Events producer from above with an Ev
 
 ## Included Consumers
 
-Consumers are structs or classes that implement (a complete subset of) the Events interface functions.
-Consumers are usually instantiated and then passed to an Events producer function as argument.
+Events Consumers are structs or classes that implement (a complete subset of) the Events Interface.
+Consumers are usually instantiated and then passed to an Events Producer function as argument.
 
 **The common namespace prefix `tao::json::` is omitted.**
 
@@ -206,7 +207,7 @@ Consumers are usually instantiated and then passed to an Events producer functio
 
 ## Convenience Functions
 
-Functions that combine the similarly named Events consumers with a producer that generates Events from a Value.
+Functions that combine the similarly named Events Consumers with a Producer that generates Events from a Value.
 
 **The common namespace prefix `tao::json::` is omitted.**
 
@@ -223,11 +224,11 @@ Functions that combine the similarly named Events consumers with a producer that
 | `ubjson::to_stream` | Writes UBJSON to a `std::ostream`. |
 | `ubjson::to_string` | Writes UBJSON to a `std::string`. |
 
-Optionally apply an arbitrary list of Filters given as additional template parameters.
+These functions optionally apply an arbitrary list of [Filters](#included-filters) given as additional template parameters.
 
 ## Included Filters
 
-Filters are structs or classes that implement the Events functions as they are consumers that then produce events for another consumer.
+Filters are structs or classes that are both Event Consumers that implement the Events Interface functions, and Event Producers that call the Events Interface functions on one or more other Events Consumers.
 
 **The common namespace prefix `tao::json::` is omitted.**
 

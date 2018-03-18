@@ -1,5 +1,6 @@
 # Advanced Use Cases
 
+* [Advanced Binding Options](#advanced-binding-options)
 * [Custom Value Annotations](#custom-value-annotations)
 * [Annotate with filename and line number](#annotate-with-filename-and-line-number)
 * [Instance sharing with Raw Pointers](#instance-sharing-with-raw-pointers)
@@ -7,6 +8,17 @@
 * [Making Values Self Contained](#making-values-self-contained)
 * [Unsafe Value Class Functions](#unsafe-value-class-functions)
 * [Poylymorphic Object Factory](#polymorphic-object-factory)
+* [Disjunction of Single Type Traits](#disjunction-of-single-type-traits)
+
+## Advanced Binding Options
+
+The [binding traits facilities](Type-Traits.md#binding-traits-facilities) support the following options beyond what is explained on the page on [Type Traits](Type-Traits.md).
+
+TODO: constants
+
+TODO: basic_object
+
+TODO: getters
 
 ## Custom Value Annotations
 
@@ -219,6 +231,10 @@ TODO: List all other unsafe functions.
 
 ## Polymorphic Object Factory
 
-TODO
+TODO: binding::factory
+
+## Disjunction of Single Type Traits
+
+TODO: binding::versions
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
