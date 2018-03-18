@@ -326,6 +326,11 @@ namespace tao
             return m_union.xv;
          }
 
+         tao::binary_view unsafe_get_binary_type() const noexcept
+         {
+            return ( m_type == json::type::BINARY ) ? m_union.x : m_union.xv;
+         }
+
          array_t& unsafe_get_array() noexcept
          {
             return m_union.a;
@@ -412,7 +417,7 @@ namespace tao
 
          tao::string_view get_string_type() const noexcept
          {
-            return ( m_type == json::type::STRING ) ? m_union.s : unsafe_get_string_view();
+            return ( m_type == json::type::STRING_VIEW ) ? m_union.sv : get_string();
          }
 
          binary& get_binary()
@@ -431,6 +436,11 @@ namespace tao
          {
             validate_json_type( json::type::BINARY_VIEW );
             return unsafe_get_binary_view();
+         }
+
+         tao::binary_view get_binary_type() const noexcept
+         {
+            return ( m_type == json::type::BINARY_VIEW ) ? m_union.xv : get_binary();
          }
 
          array_t& get_array()
