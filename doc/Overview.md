@@ -8,11 +8,11 @@ The main parts of the JSON library are
 
 ![Overview](Overview.png)
 
-* The Value Class can be customised with Type Traits and custom annotations.
-* The Events Interface is used for conversion of external representation from and to the Value Class.
-* One or more Events Filters can be used to modify, filter, verify, ... or duplicate Events.
-* The Type Traits control conversion of C++ data types from and to the Value Class.
-* They also control how to generate Events, and thus external representations, from C++ data types, and
-* how to directly parse external representations into C++ data types.
+* The [Value Class](Value-Class.md) can be customised with [Type Traits](Type-Traits.md) and [custom annotations](Advanced-Use-Cases.md#custom-value-annotations).
+* The [Events Interface](Events-Interface.md) is used to convert the [Value Class](Value-Class.md) from and to external representations.
+* One or more [Events Filters](Events-Interface.md#included-filters) can be used to modify, filter, ... Events and to send them to multiple Consumers.
+* The [Type Traits](Type-Traits.md) are used to convert the [Value Class](Value-Class.md) from and to arbitrary C++ data types.
+* They also generate Events, and thus external representations, directly from C++ data types, and
+* are used to directly parse external representations into C++ data types.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

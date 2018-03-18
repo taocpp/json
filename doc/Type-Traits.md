@@ -95,8 +95,8 @@ struct my_traits< my_type >
 };
 ```
 
-Similarly to use an Array it is necessary to derive `my_traits< my_type >` from `tao::json::binding::array`, and supply a list of member variables.
-Here neither a name can be given, nor is there a choice between optional and required.
+To use an Array it is necessary to derive `my_traits< my_type >` from `tao::json::binding::array`, and again supply a list of pointers to member variables.
+Here neither a name can be given, nor is there a choice between optional and required values - everything is required, converting from an Array expects exactly the correct number of Array elements.
 
 
 ```c++
@@ -224,6 +224,36 @@ The `as<>()` functions again template over the traits class, just like `assign()
 
 The employed `get_object()`, `as<>()` and `at()` functions will all throw an exception when something goes wrong, i.e. when the accessed JSON Value is not of the correct type, or when the indexed key does not exist.
 
+Beyond manually calling the Traits' `as()`-function there are four recommended possibilities to create a `my_type` from a Value.
+
+```c++
+const tao::json::value v = ...;
+const my_type mt = v.as< my_type >();
+```
+
+Or alternatively:
+
+```c++
+const tao::json::value v = ...;
+my_type mt;
+v.as( mt );
+```
+
+Or alternatively:
+
+```c++
+const tao::json::value v = ...;
+const my_type mt = tao::json::as< my_type >( v );
+```
+
+Or alternatively:
+
+```c++
+const tao::json::value v = ...;
+my_type mt;
+tao::json::as( v, mt );
+```
+
 In this example no error is thrown when the top-level JSON Object contains additional keys beyond `"title"` and `"values"`.
 
 ## Compare Value with Type
@@ -330,8 +360,50 @@ As with the `assign()` functions, and depending on which Events Consumers are us
 
 ## Consume Type from Parser
 
+Directly creating an instance of a type from a parser is performed by the type's Traits' `consume()` function.
+
+Unlike all other similar parts of the library the `consume()` interface is *not* based on the Events Interface!
+
 TODO: Explain pull-interface
 TODO: Explain `traits::consume()`
+
+Similar to the Traits' `as()`-function there are two possibilities on how to implement this function, one that returns the value, and one that takes a mutable reference as second argument.
+Again it is not *necessary* to implement both functions, either one is sufficient, and when all is equal preference should be given to the version that returns the value.
+
+```c++
+template<>
+struct my_traits< my_type >
+{
+   template< template< typename... > class Traits, typename Producer >
+   static void consume( Producer& p, my_type& mt )
+   {
+      // Easier to use the Binding Facilities to generate this function...
+   }
+
+   template< template< typename... > class Traits, typename Producer >
+   static my_type consume( Producer& p )
+   {
+      // ...and not implement this one.
+   }
+};
+```
+
+Creating instances of `my_type` can then be achieved by manually calling the Traits' `consume()` function, or more conveniently by using one of the global `consume()` functions.
+Both the one- and two-argument version of the global `consume()` function can be called regardless of which version the Traits implement.
+
+```c++
+const std::string json = ...;
+tao::json::parts_parser pp( json, "source" );
+const my_type mt = tao::json::consume< my_type, Traits >( pp );
+```
+
+Or alternatively:
+
+```c++
+tao::json::parts_parser pp( json, "source" );
+my_type mt;
+tao::json::consume< Traits>( pp2, mt );
+```
 
 ## Default Traits Specialisations
 
