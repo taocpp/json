@@ -1,10 +1,10 @@
 # Overview
 
-The main parts of the library are
+The main parts of the JSON library are
 
-* the [JSON Value class](Value-Class.md) to hold (and inspect and modify) arbitrary (extended) JSON data in memory,
-* the [JSON Events interface](Events-Interface.md) as universal adapter to connect different parts of the library (and even other libraries), and
-* the [JSON type traits](Type-Traits.md) to control the interaction between other/custom C++ data types and the Value class and Events interface.
+* the [Value Class](Value-Class.md) to handle (extended) JSON data in memory,
+* the [Events Interface](Events-Interface.md) as universal adapter between different parts of the library (and other libraries), and
+* the [Type Traits](Type-Traits.md) to control the interaction between C++ data types and the Value Class and Events Interface.
 
 ![Overview](Overview.png)
 
