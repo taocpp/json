@@ -364,8 +364,7 @@ Directly creating an instance of a type from a parser is performed by the type's
 
 Unlike all other similar parts of the library the `consume()` interface is *not* based on the Events Interface!
 
-TODO: Explain pull-interface
-TODO: Explain `traits::consume()`
+Instead ... TODO: Explain pull-interface of the parts parsers.
 
 Similar to the Traits' `as()`-function there are two possibilities on how to implement this function, one that returns the value, and one that takes a mutable reference as second argument.
 Again it is not *necessary* to implement both functions, either one is sufficient, and when all is equal preference should be given to the version that returns the value.
@@ -400,9 +399,10 @@ const my_type mt = tao::json::consume< my_type, Traits >( pp );
 Or alternatively:
 
 ```c++
+const std::string json = ...;
 tao::json::parts_parser pp( json, "source" );
 my_type mt;
-tao::json::consume< Traits>( pp2, mt );
+tao::json::consume< Traits>( pp, mt );
 ```
 
 ## Default Traits Specialisations
