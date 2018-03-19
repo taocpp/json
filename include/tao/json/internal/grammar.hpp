@@ -66,21 +66,21 @@ namespace tao
 
                   while( !in.empty() ) {
                      if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
-                        if( ( 0x20 <= t.data ) && ( t.data <= 0x10ffff ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
+                        if( ( 0x20 <= t.data ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
                            in.bump_in_this_line( t.size );
                            result = true;
                            continue;
                         }
                      }
-                     return result;
+                     break;
                   }
-                  throw json_pegtl::parse_error( "invalid character in string", in );
+                  return result;
                }
             };
 
-            struct chars : if_then_else< one< '\\' >, must< escaped >, unescaped > {};
+            struct chars : if_must_else< one< '\\' >, escaped, unescaped > {};
 
-            struct string_content : until< at< one< '"' > >, must< chars > > {};
+            struct string_content : until< at< one< '"' > >, chars > {};
             struct string : seq< one< '"' >, must< string_content >, any >
             {
                using content = string_content;

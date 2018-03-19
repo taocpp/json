@@ -84,7 +84,7 @@ namespace tao
          template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::fdigits >::error_message TAO_JSON_WEAK_SUFFIX = "expected at least one fraction digit";  // NOLINT
          template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::xdigit >::error_message TAO_JSON_WEAK_SUFFIX = "incomplete universal character name";  // NOLINT
          template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::escaped >::error_message TAO_JSON_WEAK_SUFFIX = "unknown escape sequence";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::chars >::error_message TAO_JSON_WEAK_SUFFIX = "invalid character in string";  // NOLINT
+         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::unescaped >::error_message TAO_JSON_WEAK_SUFFIX = "invalid unescaped character";  // NOLINT
          template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::string::content >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated string";  // NOLINT
          template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::key::content >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated key";  // NOLINT
 
