@@ -24,6 +24,10 @@ namespace tao
          test_double( "-1.0", -1.0 );
          test_double( "1.5", 1.5 );
          test_double( "-1.5", -1.5 );
+         test_double( "0.000", 0.0 );
+         test_double( "-0.000", -0.0 );
+         test_double( "0.0001", 0.0001 );
+         test_double( "-0.0001", -0.0001 );
          test_double( "3.1416", 3.1416 );
          test_double( "0E10", 0.0 );
          test_double( "0E+10", 0.0 );
