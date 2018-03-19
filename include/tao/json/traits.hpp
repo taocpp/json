@@ -1029,7 +1029,8 @@ namespace tao
          struct tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
          {
             using tuple_t = std::tuple< Ts... >;
-            using type = binding::array< binding::element< const typename std::tuple_element< Is, tuple_t >::type& ( * )( const tuple_t& ), &std::get< Is, Ts... > >... >;
+            using type = binding::array< binding::element2< const typename std::tuple_element< Is, tuple_t >::type& ( * )( const tuple_t& ), &std::get< Is, Ts... >,
+                                                            typename std::tuple_element< Is, tuple_t >::type& ( * )( tuple_t& ), &std::get< Is, Ts... > >... >;
          };
 
       }  // namespace internal

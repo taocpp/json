@@ -194,6 +194,8 @@ namespace tao
             TEST_ASSERT( v[ 0 ] == 42 );
             TEST_ASSERT( v[ 1 ] == std::string( "hallo" ) );
             TEST_ASSERT( v[ 2 ] == 3.0 );
+            const auto c = v.as< std::tuple< int, std::string, double > >();
+            TEST_ASSERT( b == c );
          }
          {
             baz b;

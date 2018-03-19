@@ -28,10 +28,10 @@ namespace tao
                return v.*P;
             }
 
-            template< typename U >
-            static void write( C& v, U&& u )
+            template< typename W >
+            static void write( C& v, W&& w )
             {
-               v.*P = std::forward< U >( u );
+               v.*P = std::forward< W >( w );
             }
 
             template< template< typename... > class Traits, typename Base >
@@ -74,6 +74,75 @@ namespace tao
             static auto read( const C& v ) -> decltype( P( v ) )
             {
                return P( v );
+            }
+
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& v )
+            {
+               events::produce< Traits >( consumer, P( v ) );
+            }
+         };
+
+         template< typename T, T, typename U, U, typename = void >
+         struct element2;
+
+         template< typename C, typename T, T( *P )( const C& ), typename U, U( *Q )( C& ) >
+         struct element2< T( * )( const C& ), P, U( * )( C& ), Q >
+         {
+            static auto read( const C& v ) -> decltype( P( v ) )
+            {
+               return P( v );
+            }
+
+            template< typename W >
+            static void write( C& v, W&& w )
+            {
+               Q( v ) = std::forward< W >( w );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static void as( const basic_value< Traits, Base >& v, C& x )
+            {
+               v.as( Q( x ) );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& parser, C& v )
+            {
+               json::consume< Traits >( parser, Q( v ) );
+            }
+
+            template< template< typename... > class Traits = traits, typename Consumer >
+            static void produce( Consumer& consumer, const C& v )
+            {
+               events::produce< Traits >( consumer, P( v ) );
+            }
+         };
+
+         template< typename C, typename T, T( *P )( const C& ), typename U, void( *Q )( C&, U&& ) >
+         struct element2< T( * )( const C& ), P, void( * )( C&, U&& ), Q >
+         {
+            static auto read( const C& v ) -> decltype( P( v ) )
+            {
+               return P( v );
+            }
+
+            template< typename W >
+            static void write( C& v, W&& w )
+            {
+               Q( v, std::forward< W >( w ) );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static void as( const basic_value< Traits, Base >& v, C& x )
+            {
+               Q( x, v.template as< typename std::decay< U >::type >() );
+            }
+
+            template< template< typename... > class Traits = traits, typename Producer >
+            static void consume( Producer& parser, C& v )
+            {
+               Q( v, json::consume< Traits >( parser ) );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
