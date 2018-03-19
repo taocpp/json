@@ -10,7 +10,7 @@
 
 ## Overview
 
-The Value Class `tao::json::value` is a C++ class that implements the JAXN data model, a superset of the implicit JSON data model.
+The Value Class `tao::json::value` is a C++ class that implements the JAXN data model, a superset of the JSON data model.
 
 It is implemented as sum-type, or discriminated union, of the JSON types, extended for the JAXN data model.
 On the C++ level the class consists of an `enum` to indicate which type it contains, and a `union` to store the corresponding data.
@@ -151,8 +151,8 @@ const tao::json::value v3 = data;
 ```
 
 The second allows creating Values that represent JSON Objects with an initialiser-list of key-value pairs.
-As per the JSON standard, the keys must be strings (`std::string`, `tao::strinv_view` or `const char*`).
-The values can are individually conveted to JSON Values, and can therefore be of any type that a JSON Value can be constructed from.
+As per the JSON standard, the keys must be strings (`std::string`, `tao::string_view` or `const char*`).
+The values can individually be converted to JSON Values, and can therefore be of any type that a JSON Value can be constructed from.
 
 ```c++
 const tao::json::value v{
@@ -162,41 +162,45 @@ const tao::json::value v{
    { "sub-object", {
       { "value", 1 },
       { "frobnicate", true }
-   } } };
+   } }
+};
 ```
 
 If a certain C++ type is frequently used with the same key in a JSON Object, the key can be put in the [traits for that type](Type-Traits.md).
-When an instances of such a type is used in a JSON Object intialiser-lists *without* a key, then [the key from the traits](Type-Traits.md#default-key-for-objects) will be used by default.
+When an instance of such a type is used in a JSON Object intialiser-list *without* a key, then [the key from the traits](Type-Traits.md#default-key-for-objects) will be used by default.
 
 ```c++
 const type_with_default_key t;
 const tao::json::value v( {
    { "foo", 42 },
    { "bar", true },
-   t  // Shortcut for the following line:
-   { tao::json::traits< type_with_default_key >::default_key, t }
+   t  // Shortcut for: { tao::json::traits< type_with_default_key >::default_key, t }
 } );
 ```
 
 See the [section on default keys](Type-Traits.md#default-key-for-objects) on the [Type Traits page](Type-Traits.md) for details on how to set up a default key for a type.
 Object initialiser-lists can still use (different) keys for types with a default key when they are given explicitly just like for all (other) types.
 
-Since it is [not possible to use initialiser-lists in a way that efficiently and unambiguously works for both Arrays and Objects](Design-Decisions.md#initialiser-lists), it is necessary to disambiguate manyally by using the static `tao::json::value::array()` function to create a Value with an Array from an initialiser-list.
+Since it is [not possible to use initialiser-lists in a way that efficiently and unambiguously works for both Arrays and Objects](Design-Decisions.md#initialiser-lists), it is necessary to disambiguate manually by using the static `tao::json::value::array()` function to create a Value with an Array from an initialiser-list.
 
 ```c++
 const tao::json::value array = tao::json::value::array( {
    42.0,
    "fish",
    true,
+   // an element which is itself an array:
    tao::json::value::array( { 1, 2, 3 } ),
-   { { "an", 1 },
+   // an element which is an object:
+   {
+     { "an", 1 },
      { "object", 2 },
      { "as sub-value", "of the array" }
-   } } );
+   }
+} );
 ```
 
-To simplify creating Values that represent a JSON Null, an empty array, an empty object, or empty binary data, there are types `tao::json::null_t`, `tao::json::empty_array_t`, `tao::json::empty_object_t`, and `tao::json::empty_binary_t` with global `constexpr` instances `tao::json::null`, `tao::json::empty_array`, `tao::json::empty_object`, and `tao::json::empty_binary`.
-They can construct Values, and, like everything else that a Value can be constructed from, can be assigned to Values.
+To simplify creating Values that represent a JSON Null value, an empty array, an empty object, or empty binary data, there are global objects `tao::json::null`, `tao::json::empty_array`, `tao::json::empty_object`, and `tao::json::empty_binary`.
+They can construct Values, and, like everything else that a Value can be constructed from, can be assigned to Values. Additionally, you can compare Values against the global helper objects.
 
 ```c++
 tao::json::value v = tao::json::null;
