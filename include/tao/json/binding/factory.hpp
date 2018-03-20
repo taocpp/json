@@ -96,9 +96,9 @@ namespace tao
             template< typename F >
             struct entry2
             {
-               entry2( F c, const std::string& n )
+               entry2( F c, std::string&& n )
                   : function( c ),
-                    name( n )
+                    name( std::move( n ) )
                {
                }
 

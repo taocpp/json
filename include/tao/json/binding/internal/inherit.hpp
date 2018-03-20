@@ -6,6 +6,8 @@
 
 #include "../../internal/type_traits.hpp"
 
+#include "../inherit.hpp"
+
 namespace tao
 {
    namespace json
