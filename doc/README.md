@@ -1,4 +1,4 @@
-# TAOCPP / JSON Documentation
+# taocpp/json Documentation
 
 *Work-in-Progress*
 

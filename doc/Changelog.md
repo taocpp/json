@@ -2,7 +2,7 @@
 
 ## 1.0.0
 
-**Not yet released*
+**Not yet released**
 
 ## Milestones
 
@@ -23,6 +23,6 @@ Pre-1.0.0 milestones in rough reverse chronological order.
 
 ## History
 
-Development of TAOCPP / JSON started in October 2015 as an experiment to combine the [PEGTL](https://github.com/taocpp/PEGTL) JSON parser with a JSON value class based on a `union` that directly embeds standard containers for arrays, objects and strings.
+Development of taocpp/json started in October 2015 as an experiment to combine the [PEGTL](https://github.com/taocpp/PEGTL) JSON parser with a JSON Value class based on a `union` that directly embeds standard containers for arrays, objects and strings.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
