@@ -208,8 +208,9 @@ namespace tao
                template< template< typename... > class Traits, typename Base, typename C >
                static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
                {
-                  if( bool result = lhs.is_object() && ( lhs.unsafe_get_object().size() == sizeof...( As ) ) ) {
-                     const auto& a = lhs.get_object();
+                  const auto* p = lhs.skip_raw_ptr();
+                  if( bool result = p->is_object() && ( p->unsafe_get_object().size() == sizeof...( As ) ) ) {
+                     const auto& a = p->get_object();
                      (void)json::internal::swallow{ result = result && equal_member< As >( a, rhs )... };
                      return result;
                   }

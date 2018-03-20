@@ -102,8 +102,9 @@ namespace tao
                template< template< typename... > class Traits, typename Base, typename C >
                static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
                {
-                  if( bool result = lhs.is_array() && ( lhs.unsafe_get_array().size() == sizeof...( As ) ) ) {
-                     const auto& a = lhs.get_array();
+                  const auto* p = lhs.skip_raw_ptr();
+                  if( bool result = p->is_array() && ( p->unsafe_get_array().size() == sizeof...( As ) ) ) {
+                     const auto& a = p->get_array();
                      (void)json::internal::swallow{ result = result && equal_element< As, Is >( a, rhs )... };
                      return result;
                   }
