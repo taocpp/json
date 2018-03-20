@@ -50,6 +50,13 @@ namespace tao
       struct traits< null_t >
       {
          template< template< typename... > class Traits, typename Base >
+         static null_t as( const basic_value< Traits, Base >& v ) noexcept
+         {
+            v.validate_json_type( type::NULL_ );
+            return tao::json::null;
+         }
+
+         template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, null_t /*unused*/ ) noexcept
          {
             v.unsafe_assign_null();
@@ -95,8 +102,8 @@ namespace tao
             v.unsafe_assign_boolean( b );
          }
 
-         template< template< typename... > class, typename Parts >
-         static bool consume( Parts& parser )
+         template< template< typename... > class, typename Producer >
+         static bool consume( Producer& parser )
          {
             return parser.boolean();
          }
@@ -288,8 +295,8 @@ namespace tao
             v.unsafe_assign_string( std::move( s ) );
          }
 
-         template< template< typename... > class, typename Parts >
-         static std::string consume( Parts& parser )
+         template< template< typename... > class, typename Producer >
+         static std::string consume( Producer& parser )
          {
             return parser.string();
          }
@@ -427,8 +434,7 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static const char* as( const basic_value< Traits, Base >& v )
          {
-            // NOTE: String views might not be '\0'-terminated.
-            return v.get_string().c_str();
+            return v.get_string().c_str();  // String views might not be '\0'-terminated.
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -521,8 +527,8 @@ namespace tao
             v.unsafe_assign_binary( std::move( x ) );
          }
 
-         template< template< typename... > class, typename Parts >
-         static std::vector< tao::byte > consume( Parts& parser )
+         template< template< typename... > class, typename Producer >
+         static std::vector< tao::byte > consume( Producer& parser )
          {
             return parser.binary();
          }
@@ -787,8 +793,8 @@ namespace tao
             return v.template as< T >();
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static tao::optional< T > consume( Parts& parser )
+         template< template< typename... > class Traits, typename Producer >
+         static tao::optional< T > consume( Producer& parser )
          {
             if( parser.null() ) {
                return tao::nullopt;
@@ -822,8 +828,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static std::shared_ptr< U > consume( Parts& parser )
+         template< template< typename... > class Traits, typename Producer >
+         static std::shared_ptr< U > consume( Producer& parser )
          {
             if( parser.null() ) {
                return std::shared_ptr< U >();
@@ -863,8 +869,8 @@ namespace tao
             return t;
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static std::shared_ptr< T > consume( Parts& parser )
+         template< template< typename... > class Traits, typename Producer >
+         static std::shared_ptr< T > consume( Producer& parser )
          {
             if( parser.null() ) {
                return std::shared_ptr< T >();
@@ -899,8 +905,8 @@ namespace tao
             return t;
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static std::unique_ptr< U > consume( Parts& parser )
+         template< template< typename... > class Traits, typename Producer >
+         static std::unique_ptr< U > consume( Producer& parser )
          {
             if( parser.null() ) {
                return std::unique_ptr< U >();
@@ -930,8 +936,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::list< T, Ts... >& r )
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::list< T, Ts... >& r )
          {
             auto s = parser.begin_array();
             while( parser.element_or_end_array( s ) ) {
@@ -953,8 +959,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::set< T, Ts... >& r )
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::set< T, Ts... >& r )
          {
             auto s = parser.begin_array();
             while( parser.element_or_end_array( s ) ) {
@@ -976,8 +982,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::vector< T, Ts... >& v )
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::vector< T, Ts... >& v )
          {
             auto s = parser.begin_array();
             if( s.size ) {
@@ -1002,8 +1008,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Parts >
-         static void consume( Parts& parser, std::map< std::string, T, Ts... >& v )
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::map< std::string, T, Ts... >& v )
          {
             auto s = parser.begin_object();
             while( parser.member_or_end_object( s ) ) {
