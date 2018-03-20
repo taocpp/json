@@ -15,11 +15,20 @@ namespace tao
    {
       namespace internal
       {
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
          template< typename... Ts >
          struct type_list
          {
             static constexpr std::size_t size = sizeof...( Ts );
          };
+
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic pop
+#endif
 
          template< typename... >
          struct merge_type_lists_t;

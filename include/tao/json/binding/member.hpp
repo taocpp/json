@@ -11,6 +11,7 @@
 #include "../internal/type_traits.hpp"
 
 #include "element.hpp"
+#include "member_kind.hpp"
 
 namespace tao
 {

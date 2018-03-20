@@ -6,6 +6,7 @@
 
 #include <vector>
 
+#include "../../basic_value.hpp"
 #include "../../forward.hpp"
 
 #include "../../external/pegtl/internal/integer_sequence.hpp"
@@ -21,6 +22,11 @@ namespace tao
          {
             template< typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
             struct array;
+
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
 
             template< typename... As, std::size_t... Is >
             struct array< json::internal::type_list< As... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
@@ -104,6 +110,10 @@ namespace tao
                   return false;
                }
             };
+
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic pop
+#endif
 
          }  // namespace internal
 

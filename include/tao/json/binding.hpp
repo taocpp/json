@@ -4,42 +4,12 @@
 #ifndef TAO_JSON_BINDING_HPP
 #define TAO_JSON_BINDING_HPP
 
-namespace tao
-{
-   namespace json
-   {
-      namespace binding
-      {
-         template< typename T >
-         struct inherit;
-
-         enum class member_kind : bool
-         {
-            OPTIONAL,
-            REQUIRED
-         };
-
-         enum class for_unknown_key : bool
-         {
-            THROW,
-            CONTINUE
-         };
-
-         enum class for_nothing_value : bool
-         {
-            ENCODE,
-            SUPPRESS
-         };
-
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
-
 #include "binding/constant.hpp"
 #include "binding/element.hpp"
 #include "binding/factory.hpp"
+#include "binding/for_nothing_value.hpp"
+#include "binding/for_unknown_key.hpp"
+#include "binding/inherit.hpp"
 #include "binding/member.hpp"
 #include "binding/versions.hpp"
 

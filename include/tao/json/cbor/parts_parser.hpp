@@ -4,6 +4,8 @@
 #ifndef TAO_JSON_CBOR_PARTS_PARSER_HPP
 #define TAO_JSON_CBOR_PARTS_PARSER_HPP
 
+#include "../events/discard.hpp"
+#include "../external/optional.hpp"
 #include "../external/pegtl/string_input.hpp"
 #include "../utf8.hpp"
 

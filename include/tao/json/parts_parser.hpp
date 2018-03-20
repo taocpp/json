@@ -9,7 +9,9 @@
 #include "external/pegtl/contrib/json.hpp"
 
 #include "internal/grammar.hpp"
+#include "internal/string_state.hpp"
 #include "internal/throw_parse_error.hpp"
+#include "internal/unescape_action.hpp"
 
 namespace tao
 {
@@ -33,7 +35,7 @@ namespace tao
                          template< typename... > class,
                          template< typename... > class,
                          typename Input >
-               static bool match( Input& in, bool& st )
+               static bool match( Input& in, bool& st ) noexcept( noexcept( in.size( 5 ) ) )
                {
                   const auto s = in.size( 5 );
                   if( s >= 5 ) {

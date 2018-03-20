@@ -53,6 +53,11 @@ namespace tao
             }
          };
 
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnoexcept-type"
+#endif
+
          template< typename C, typename T, T C::*P >
          struct element< T C::*, P, typename std::enable_if< std::is_member_function_pointer< T C::* >::value >::type >
          {
@@ -67,6 +72,10 @@ namespace tao
                events::produce< Traits >( consumer, ( v.*P )() );
             }
          };
+
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic pop
+#endif
 
          template< typename C, typename T, T( *P )( const C& ) >
          struct element< T( * )( const C& ), P >

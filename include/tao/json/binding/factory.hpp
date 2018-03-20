@@ -6,8 +6,13 @@
 
 #include <stdexcept>
 
+#include "../forward.hpp"
+
+#include "../basic_value.hpp"
 #include "../external/pegtl/internal/pegtl_string.hpp"
 #include "../internal/escape.hpp"
+
+#include "member.hpp"
 
 namespace tao
 {
@@ -18,7 +23,7 @@ namespace tao
          template< typename K, typename T, typename U >
          struct factory_type;
 
-         template< char... Cs, typename T, typename U >
+         template< char... Cs, typename T, typename U >  // NOLINT
          struct factory_type< key< Cs... >, T, U >
          {
             static const std::type_info* type()

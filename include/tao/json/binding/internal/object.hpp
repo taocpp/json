@@ -9,8 +9,13 @@
 #include <stdexcept>
 #include <string>
 
+#include "../for_nothing_value.hpp"
+#include "../for_unknown_key.hpp"
+#include "../member_kind.hpp"
+
 #include "../../forward.hpp"
 
+#include "../../basic_value.hpp"
 #include "../../external/pegtl/internal/integer_sequence.hpp"
 #include "../../internal/escape.hpp"
 #include "../../internal/type_traits.hpp"

@@ -19,7 +19,7 @@ namespace tao
    {
       namespace internal
       {
-         bool to_stream( std::ostream& o, const std::type_info& t )
+         inline bool to_stream( std::ostream& o, const std::type_info& t )
          {
             o << ' ' << json_pegtl::internal::demangle( t.name() );
             return true;
