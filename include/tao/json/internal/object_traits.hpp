@@ -54,13 +54,14 @@ namespace tao
                static const auto eq = []( const typename T::value_type& r, const std::pair< const std::string, basic_value< Traits, Base > >& l ) {
                   return ( l.first == r.first ) && ( l.second == r.second );
                };
-               return lhs.is_object() && ( lhs.unsafe_get_object().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), eq );
+               const auto* p = lhs.skip_raw_ptr();
+               return p->is_object() && ( p->unsafe_get_object().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), p->unsafe_get_object().begin(), eq );
             }
 
             struct pair_less
             {
                template< typename L, typename R >
-               bool operator()( const L& l, const R& r ) const
+               bool operator()( const L& l, const R& r ) const noexcept
                {
                   return ( l.first < r.first ) || ( ( l.first == r.first ) && ( l.second < r.second ) );
                }
@@ -69,13 +70,15 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_object() ? std::lexicographical_compare( lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end(), rhs.begin(), rhs.end(), pair_less() ) : ( lhs.type() < type::OBJECT );
+               const auto* p = lhs.skip_raw_ptr();
+               return p->is_object() ? std::lexicographical_compare( p->unsafe_get_object().begin(), p->unsafe_get_object().end(), rhs.begin(), rhs.end(), pair_less() ) : ( p->type() < type::OBJECT );
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_object().begin(), lhs.unsafe_get_object().end(), pair_less() ) : ( lhs.type() > type::OBJECT );
+               const auto* p = lhs.skip_raw_ptr();
+               return p->is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p->unsafe_get_object().begin(), p->unsafe_get_object().end(), pair_less() ) : ( p->type() > type::OBJECT );
             }
          };
 

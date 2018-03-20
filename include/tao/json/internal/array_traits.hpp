@@ -49,19 +49,22 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_array() && ( lhs.unsafe_get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin() );
+               const auto* p = lhs.skip_raw_ptr();
+               return p->is_array() && ( p->unsafe_get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), p->unsafe_get_array().begin() );
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_array() ? std::lexicographical_compare( lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end(), rhs.begin(), rhs.end() ) : ( lhs.type() < type::ARRAY );
+               const auto* p = lhs.skip_raw_ptr();
+               return p->is_array() ? std::lexicographical_compare( p->unsafe_get_array().begin(), p->unsafe_get_array().end(), rhs.begin(), rhs.end() ) : ( p->type() < type::ARRAY );
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
             {
-               return lhs.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), lhs.unsafe_get_array().begin(), lhs.unsafe_get_array().end() ) : ( lhs.type() > type::ARRAY );
+               const auto* p = lhs.skip_raw_ptr();
+               return p->is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p->unsafe_get_array().begin(), p->unsafe_get_array().end() ) : ( p->type() > type::ARRAY );
             }
          };
 
