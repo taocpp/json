@@ -47,7 +47,7 @@ enum class type : std::uint8_t
    BINARY_VIEW,
    ARRAY,
    OBJECT,
-   RAW_PTR,
+   VALUE_PTR,
    OPAQUE_PTR
 };
 ```
@@ -126,9 +126,9 @@ JSON Objects are stored as `std::map< std::string, basic_value >`.
 
 Can be tested for with the member function `tao::json::value::is_object()`.
 
-### Raw Pointers
+### Value Pointers
 
-See the [section on instance sharing with Raw Pointers](Advanced-Use-Cases.md#instance-sharing-with-raw-pointers) on the [advanced use cases page](Advanced-Use-Cases.md).
+See the [section on instance sharing with Value Pointers](Advanced-Use-Cases.md#instance-sharing-with-value-pointers) on the [advanced use cases page](Advanced-Use-Cases.md).
 
 ### Opaque Pointers
 
@@ -261,7 +261,7 @@ They all throw an exception when the type of the Value is not the expected one.
 | `const std::vector< value >& get_array() const` ||
 | `std::map< std::string, value >& get_object()` ||
 | `const std::map< std::string, value >& get_object() const` ||
-| `const value* get_raw_ptr() const` ||
+| `const value* get_value_ptr() const` ||
 
 For particular templated code the `get<>()` accessor function that is templated over the `tao::json::type`-enumeration can be used.
 It behaves just like the correspondingly named get function, i.e. `get< tao::json::type::STRING >` is the same as `get_string()`.
@@ -303,7 +303,7 @@ The following member functions of class `tao::json::value` bypass the Type Trait
 | `void assign_object( std::map< std::string, value >&& ) noexcept` ||
 | `void assign_object( const std::map< std::string, value >& )` ||
 | `template< typename... Ts > void emplace_object( Ts&&... )` | `noexcept` depending on arguments |
-| `void assign_raw_ptr( const value* ) noexcept` ||
+| `void assign_value_ptr( const value* ) noexcept` ||
 | `template< typename T > void assign_opaque_ptr( T* ) noexcept` ||
 | `template< typename T > void assign_opaque_ptr( T*, const producer_t ) noexcept` ||
 
@@ -364,7 +364,7 @@ The comparison is performed at the data model level, abstracting away from imple
 * Numbers are compared by value, independent of which of the possible representations they use.
 * Strings and string views are compared by comparing character sequences, independent of which representation is used.
 * Binary data and binary views are compared by comparing byte sequences, independent of which representation is used.
-* Raw pointers are skipped, the comparison behaves "as if" the pointee Value were copied to the Value with the pointer.
+* Value Pointers are skipped, the comparison behaves "as if" the pointee Value were copied to the Value with the pointer.
 * Values of different incompatible types will be ordered by the numeric Values of their type enum.
 
 Comparison between a JSON Value and another type is performed by either

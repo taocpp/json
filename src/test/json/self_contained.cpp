@@ -33,8 +33,8 @@ namespace tao
          TEST_ASSERT( v1.at( "bar" ).type() == type::OBJECT );
          TEST_ASSERT( v1.at( "baz" ).at( 1 ).type() == type::OBJECT );
 
-         TEST_ASSERT( v2.at( "bar" ).type() == type::RAW_PTR );
-         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::RAW_PTR );
+         TEST_ASSERT( v2.at( "bar" ).type() == type::VALUE_PTR );
+         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::VALUE_PTR );
 
          TEST_ASSERT( is_self_contained( e ) );
 

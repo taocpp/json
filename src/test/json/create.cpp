@@ -31,7 +31,7 @@ namespace tao
          TEST_ASSERT( !v.is_string() );
          TEST_ASSERT( !v.is_array() );
          TEST_ASSERT( !v.is_object() );
-         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_value_ptr() );
          TEST_ASSERT( !v.is_integer() );
          TEST_ASSERT( !v.is_number() );
 
@@ -101,7 +101,7 @@ namespace tao
          TEST_ASSERT( !v.is_string() );
          TEST_ASSERT( !v.is_array() );
          TEST_ASSERT( !v.is_object() );
-         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_value_ptr() );
          TEST_ASSERT( !v.is_integer() );
          TEST_ASSERT( !v.is_number() );
 
@@ -137,7 +137,7 @@ namespace tao
          TEST_ASSERT( !v.is_string() );
          TEST_ASSERT( !v.is_array() );
          TEST_ASSERT( !v.is_object() );
-         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_value_ptr() );
          TEST_ASSERT( !v.is_integer() );
          TEST_ASSERT( !v.is_number() );
 
@@ -147,7 +147,7 @@ namespace tao
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
-         TEST_THROWS( v.get_raw_ptr() );
+         TEST_THROWS( v.get_value_ptr() );
 
          TEST_ASSERT( v.type() == type::BOOLEAN );
          TEST_ASSERT( v.get_boolean() == b );
@@ -175,7 +175,7 @@ namespace tao
          TEST_ASSERT( !v.is_string() );
          TEST_ASSERT( !v.is_array() );
          TEST_ASSERT( !v.is_object() );
-         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_value_ptr() );
          TEST_ASSERT( v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
@@ -185,7 +185,7 @@ namespace tao
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
-         TEST_THROWS( v.get_raw_ptr() );
+         TEST_THROWS( v.get_value_ptr() );
 
          TEST_ASSERT( v.type() == type::SIGNED );
          TEST_ASSERT( v.get_signed() == t );
@@ -221,7 +221,7 @@ namespace tao
          TEST_ASSERT( !v.is_string() );
          TEST_ASSERT( !v.is_array() );
          TEST_ASSERT( !v.is_object() );
-         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_value_ptr() );
          TEST_ASSERT( v.is_integer() );
          TEST_ASSERT( v.is_number() );
 
@@ -231,7 +231,7 @@ namespace tao
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
-         TEST_THROWS( v.get_raw_ptr() );
+         TEST_THROWS( v.get_value_ptr() );
 
          TEST_ASSERT( v.type() == type::UNSIGNED );
          TEST_ASSERT( v.get_unsigned() == t );
@@ -273,7 +273,7 @@ namespace tao
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
-         TEST_THROWS( v.get_raw_ptr() );
+         TEST_THROWS( v.get_value_ptr() );
 
          TEST_ASSERT( v.type() == type::DOUBLE );
          TEST_ASSERT( v.get_double() == d );
@@ -306,7 +306,7 @@ namespace tao
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_array() );
          TEST_THROWS( v.get_object() );
-         TEST_THROWS( v.get_raw_ptr() );
+         TEST_THROWS( v.get_value_ptr() );
 
          TEST_ASSERT( v.type() == type::STRING );
          TEST_ASSERT( v.get_string() == s );
@@ -335,7 +335,7 @@ namespace tao
          TEST_ASSERT( !v.is_string() );
          TEST_ASSERT( v.is_array() );
          TEST_ASSERT( !v.is_object() );
-         TEST_ASSERT( !v.is_raw_ptr() );
+         TEST_ASSERT( !v.is_value_ptr() );
          TEST_ASSERT( !v.is_integer() );
          TEST_ASSERT( !v.is_number() );
 
@@ -345,7 +345,7 @@ namespace tao
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_object() );
-         TEST_THROWS( v.get_raw_ptr() );
+         TEST_THROWS( v.get_value_ptr() );
 
          TEST_ASSERT( v.type() == type::ARRAY );
          TEST_ASSERT( v.get_array().empty() );
@@ -376,7 +376,7 @@ namespace tao
          TEST_THROWS( v.get_double() );
          TEST_THROWS( v.get_string() );
          TEST_THROWS( v.get_array() );
-         TEST_THROWS( v.get_raw_ptr() );
+         TEST_THROWS( v.get_value_ptr() );
 
          TEST_ASSERT( v.type() == type::OBJECT );
          TEST_ASSERT( v.get_object().empty() );

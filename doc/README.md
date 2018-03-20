@@ -49,7 +49,7 @@
   * [Advanced Binding Options](Advanced-Use-Cases.md#advanced-binding-options)
   * [Custom Value Annotations](Advanced-Use-Cases.md#custom-value-annotations)
   * [Annotate with filename and line number](Advanced-Use-Cases.md#annotate-with-filename-and-line-number)
-  * [Instance sharing with Raw Pointers](Advanced-Use-Cases.md#instance-sharing-with-raw-pointers)
+  * [Instance sharing with Value Pointers](Advanced-Use-Cases.md#instance-sharing-with-value-pointers)
   * [Instance sharing with Opaque Pointers](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers)
   * [Making Values Self Contained](Advanced-Use-Cases.md#making-values-self-contained)
   * [Unsafe Value Class Functions](Advanced-Use-Cases.md#unsafe-value-class-functions)

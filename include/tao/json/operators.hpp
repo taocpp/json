@@ -13,13 +13,13 @@ namespace tao
       template< template< typename... > class TraitsL, typename BaseL, template< typename... > class TraitsR, typename BaseR >
       bool operator==( const basic_value< TraitsL, BaseL >& lhs, const basic_value< TraitsR, BaseR >& rhs ) noexcept
       {
-         if( rhs.is_raw_ptr() ) {
-            return lhs == *rhs.skip_raw_ptr();
+         if( rhs.is_value_ptr() ) {
+            return lhs == *rhs.skip_value_ptr();
          }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
-               case type::RAW_PTR:
-                  return *lhs.skip_raw_ptr() == rhs;
+               case type::VALUE_PTR:
+                  return *lhs.skip_value_ptr() == rhs;
 
                case type::SIGNED:
                   if( rhs.type() == type::UNSIGNED ) {
@@ -142,8 +142,8 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() == rhs.unsafe_get_object();
 
-            case type::RAW_PTR:
-               assert( lhs.type() != type::RAW_PTR );
+            case type::VALUE_PTR:
+               assert( lhs.type() != type::VALUE_PTR );
                break;  // LCOV_EXCL_LINE
 
             case type::OPAQUE_PTR:
@@ -228,13 +228,13 @@ namespace tao
       template< template< typename... > class TraitsL, typename BaseL, template< typename... > class TraitsR, typename BaseR >
       bool operator<( const basic_value< TraitsL, BaseL >& lhs, const basic_value< TraitsR, BaseR >& rhs ) noexcept
       {
-         if( rhs.is_raw_ptr() ) {
-            return lhs < *rhs.skip_raw_ptr();
+         if( rhs.is_value_ptr() ) {
+            return lhs < *rhs.skip_value_ptr();
          }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
-               case type::RAW_PTR:
-                  return *lhs.skip_raw_ptr() < rhs;
+               case type::VALUE_PTR:
+                  return *lhs.skip_value_ptr() < rhs;
 
                case type::SIGNED:
                   if( rhs.type() == type::UNSIGNED ) {
@@ -357,8 +357,8 @@ namespace tao
             case type::OBJECT:
                return lhs.unsafe_get_object() < rhs.unsafe_get_object();
 
-            case type::RAW_PTR:
-               assert( lhs.type() != type::RAW_PTR );
+            case type::VALUE_PTR:
+               assert( lhs.type() != type::VALUE_PTR );
                break;  // LCOV_EXCL_LINE
 
             case type::OPAQUE_PTR:

@@ -15,7 +15,7 @@ Pre-1.0.0 milestones in rough reverse chronological order.
 * JAXN data model with binary data and non-finite doubles.
 * JSON Pointer and JSON Patch support.
 * Support for CBOR, UBJSON and MsgPack.
-* Support for Raw Pointer in Values.
+* Support for Value Pointer in Values.
 * Type Traits for interoperation with C++ types.
 * Events Interface for modularity and Transformers.
 * 100% conformance score in [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark).

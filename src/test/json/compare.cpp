@@ -287,14 +287,14 @@ namespace tao
          TEST_ASSERT( a.type() == type::ARRAY );
          TEST_ASSERT( o.type() == type::OBJECT );
 
-         TEST_ASSERT( pn.type() == type::RAW_PTR );
-         TEST_ASSERT( pb.type() == type::RAW_PTR );
-         TEST_ASSERT( pi.type() == type::RAW_PTR );
-         TEST_ASSERT( pu.type() == type::RAW_PTR );
-         TEST_ASSERT( pd.type() == type::RAW_PTR );
-         TEST_ASSERT( ps.type() == type::RAW_PTR );
-         TEST_ASSERT( pa.type() == type::RAW_PTR );
-         TEST_ASSERT( po.type() == type::RAW_PTR );
+         TEST_ASSERT( pn.type() == type::VALUE_PTR );
+         TEST_ASSERT( pb.type() == type::VALUE_PTR );
+         TEST_ASSERT( pi.type() == type::VALUE_PTR );
+         TEST_ASSERT( pu.type() == type::VALUE_PTR );
+         TEST_ASSERT( pd.type() == type::VALUE_PTR );
+         TEST_ASSERT( ps.type() == type::VALUE_PTR );
+         TEST_ASSERT( pa.type() == type::VALUE_PTR );
+         TEST_ASSERT( po.type() == type::VALUE_PTR );
 
          test_lt( n, b );
          test_lt( n, i );

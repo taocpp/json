@@ -280,7 +280,7 @@ namespace tao
             {
                const auto* p = m_value->unsafe_find( s );
                if( p != nullptr ) {
-                  p = p->skip_raw_ptr();
+                  p = p->skip_value_ptr();
                }
                return p;
             }
@@ -345,7 +345,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"allOf\" must have at least one element" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_array() ) {
-                     m_referenced_pointers.insert( e.skip_raw_ptr() );
+                     m_referenced_pointers.insert( e.skip_value_ptr() );
                   }
                   m_all_of = p;
                }
@@ -359,7 +359,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"anyOf\" must have at least one element" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_array() ) {
-                     m_referenced_pointers.insert( e.skip_raw_ptr() );
+                     m_referenced_pointers.insert( e.skip_value_ptr() );
                   }
                   m_any_of = p;
                }
@@ -373,7 +373,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"oneOf\" must have at least one element" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_array() ) {
-                     m_referenced_pointers.insert( e.skip_raw_ptr() );
+                     m_referenced_pointers.insert( e.skip_value_ptr() );
                   }
                   m_one_of = p;
                }
@@ -390,7 +390,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"definitions\" must be of type 'object'" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_object() ) {
-                     m_referenced_pointers.insert( e.second.skip_raw_ptr() );
+                     m_referenced_pointers.insert( e.second.skip_value_ptr() );
                   }
                }
 
@@ -582,7 +582,7 @@ namespace tao
                if( const auto* p = find( "items" ) ) {
                   if( p->is_array() ) {
                      for( const auto& e : p->unsafe_get_array() ) {
-                        m_referenced_pointers.insert( e.skip_raw_ptr() );
+                        m_referenced_pointers.insert( e.skip_value_ptr() );
                      }
                   }
                   else if( p->is_object() ) {
@@ -713,7 +713,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"properties\" must be of type 'object'" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_object() ) {
-                     m_referenced_pointers.insert( e.second.skip_raw_ptr() );
+                     m_referenced_pointers.insert( e.second.skip_value_ptr() );
                   }
                   m_properties = p;
                }
@@ -725,12 +725,12 @@ namespace tao
                   }
                   for( const auto& e : p->unsafe_get_object() ) {
                      try {
-                        m_pattern_properties.emplace_back( std::regex( e.first ), e.second.skip_raw_ptr() );
+                        m_pattern_properties.emplace_back( std::regex( e.first ), e.second.skip_value_ptr() );
                      }
                      catch( const std::regex_error& ex ) {
                         throw std::runtime_error( "invalid JSON Schema: keys in object \"patternProperties\" must be regular expressions: " + std::string( ex.what() ) );  // NOLINT
                      }
-                     m_referenced_pointers.insert( e.second.skip_raw_ptr() );
+                     m_referenced_pointers.insert( e.second.skip_value_ptr() );
                   }
                }
 
@@ -752,7 +752,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"dependencies\" must be of type 'object'" );  // NOLINT
                   }
                   for( const auto& e : p->unsafe_get_object() ) {
-                     const auto* p2 = e.second.skip_raw_ptr();
+                     const auto* p2 = e.second.skip_value_ptr();
                      if( p2->is_object() ) {
                         m_schema_dependencies.emplace( e.first, p2 );
                         m_referenced_pointers.insert( p2 );
@@ -1315,17 +1315,17 @@ namespace tao
                }
                if( const auto* p = m_node->m_all_of ) {
                   for( const auto& e : p->unsafe_get_array() ) {
-                     m_all_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
+                     m_all_of.push_back( m_container->consumer( e.skip_value_ptr() ) );
                   }
                }
                if( const auto* p = m_node->m_any_of ) {
                   for( const auto& e : p->unsafe_get_array() ) {
-                     m_any_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
+                     m_any_of.push_back( m_container->consumer( e.skip_value_ptr() ) );
                   }
                }
                if( const auto* p = m_node->m_one_of ) {
                   for( const auto& e : p->unsafe_get_array() ) {
-                     m_one_of.push_back( m_container->consumer( e.skip_raw_ptr() ) );
+                     m_one_of.push_back( m_container->consumer( e.skip_value_ptr() ) );
                   }
                }
                if( const auto* p = m_node->m_not ) {
@@ -1532,7 +1532,7 @@ namespace tao
                      else {
                         const auto& a = p->unsafe_get_array();
                         if( !a.empty() ) {
-                           m_item = m_container->consumer( a[ 0 ].skip_raw_ptr() );
+                           m_item = m_container->consumer( a[ 0 ].skip_value_ptr() );
                         }
                      }
                   }
@@ -1583,7 +1583,7 @@ namespace tao
                      else {
                         const auto& a = p->unsafe_get_array();
                         if( next < a.size() ) {
-                           m_item = m_container->consumer( a[ next ].skip_raw_ptr() );
+                           m_item = m_container->consumer( a[ next ].skip_value_ptr() );
                         }
                      }
                   }
@@ -1671,7 +1671,7 @@ namespace tao
                      const auto& o = p->unsafe_get_object();
                      const auto it = o.find( v );
                      if( it != o.end() ) {
-                        m_properties.push_back( m_container->consumer( it->second.skip_raw_ptr() ) );
+                        m_properties.push_back( m_container->consumer( it->second.skip_value_ptr() ) );
                      }
                   }
                   for( const auto& e : m_node->m_pattern_properties ) {
@@ -1777,7 +1777,7 @@ namespace tao
 
          public:
             explicit schema_container( const basic_value< Traits, Base >& v )
-               : m_value( *v.skip_raw_ptr() )
+               : m_value( *v.skip_value_ptr() )
             {
                resolve_references( m_value );
                make_node( &m_value );

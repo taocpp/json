@@ -154,7 +154,7 @@ namespace tao
          };
 
          template<>
-         struct get_by_enum< type::RAW_PTR >
+         struct get_by_enum< type::VALUE_PTR >
          {
             template< typename T >
             static const T* get( const value_union< T >& u ) noexcept

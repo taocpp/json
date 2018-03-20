@@ -257,9 +257,9 @@ namespace tao
             return m_type == json::type::OBJECT;
          }
 
-         bool is_raw_ptr() const noexcept
+         bool is_value_ptr() const noexcept
          {
-            return m_type == json::type::RAW_PTR;
+            return m_type == json::type::VALUE_PTR;
          }
 
          bool is_opaque_ptr() const noexcept
@@ -351,7 +351,7 @@ namespace tao
             return m_union.o;
          }
 
-         const basic_value* unsafe_get_raw_ptr() const noexcept
+         const basic_value* unsafe_get_value_ptr() const noexcept
          {
             return m_union.p;
          }
@@ -467,10 +467,10 @@ namespace tao
             return unsafe_get_object();
          }
 
-         const basic_value* get_raw_ptr() const
+         const basic_value* get_value_ptr() const
          {
-            validate_json_type( json::type::RAW_PTR );
-            return unsafe_get_raw_ptr();
+            validate_json_type( json::type::VALUE_PTR );
+            return unsafe_get_value_ptr();
          }
 
          // Does get_opaque_ptr() make sense?
@@ -630,11 +630,11 @@ namespace tao
             return m_union.o.emplace( t );
          }
 
-         void unsafe_assign_raw_ptr( const basic_value* p ) noexcept
+         void unsafe_assign_value_ptr( const basic_value* p ) noexcept
          {
             assert( p );
             m_union.p = p;
-            m_type = json::type::RAW_PTR;
+            m_type = json::type::VALUE_PTR;
          }
 
          template< typename T >
@@ -911,10 +911,10 @@ namespace tao
             }
          }
 
-         void assign_raw_ptr( const basic_value* p ) noexcept
+         void assign_value_ptr( const basic_value* p ) noexcept
          {
             unsafe_discard();
-            unsafe_assign_raw_ptr( p );
+            unsafe_assign_value_ptr( p );
          }
 
          template< typename T >
@@ -930,11 +930,11 @@ namespace tao
             unsafe_assign_opaque_ptr( data, producer );
          }
 
-         const basic_value* skip_raw_ptr() const noexcept
+         const basic_value* skip_value_ptr() const noexcept
          {
             const basic_value* p = this;
-            while( p->is_raw_ptr() ) {
-               p = p->unsafe_get_raw_ptr();
+            while( p->is_value_ptr() ) {
+               p = p->unsafe_get_value_ptr();
                assert( p );
             }
             return p;
@@ -1244,7 +1244,7 @@ namespace tao
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
-               case json::type::RAW_PTR:
+               case json::type::VALUE_PTR:
                case json::type::OPAQUE_PTR:
                   return;
 
@@ -1399,7 +1399,7 @@ namespace tao
 #endif
                   return;
 
-               case json::type::RAW_PTR:
+               case json::type::VALUE_PTR:
                   m_union.p = r.m_union.p;
 #ifndef NDEBUG
                   r.m_type = json::type::DISCARDED;
@@ -1471,7 +1471,7 @@ namespace tao
                   new( &m_union.o ) object_t( r.m_union.o );
                   return;
 
-               case json::type::RAW_PTR:
+               case json::type::VALUE_PTR:
                   m_union.p = r.m_union.p;
                   return;
 

@@ -3,7 +3,7 @@
 * [Advanced Binding Options](#advanced-binding-options)
 * [Custom Value Annotations](#custom-value-annotations)
 * [Annotate with filename and line number](#annotate-with-filename-and-line-number)
-* [Instance sharing with Raw Pointers](#instance-sharing-with-raw-pointers)
+* [Instance sharing with Value Pointers](#instance-sharing-with-value-pointers)
 * [Instance sharing with Opaque Pointers](#instance-sharing-with-opaque-pointers)
 * [Making Values Self Contained](#making-values-self-contained)
 * [Unsafe Value Class Functions](#unsafe-value-class-functions)
@@ -74,7 +74,7 @@ void example( const std::string& filename )
 
 Writing a recursive function that takes any value with positions and prints the types and line numbers of all sub-values is left as an exercise to the reader.
 
-## Instance sharing with Raw Pointers
+## Instance sharing with Value Pointers
 
 The JSON Value class has value semantics, copy construction and copy assignment result in a deep copy.
 Similarly when adding a Value as sub-value to a Value representing a JSON Array or Object, if the source can not be moved then a deep copy is made.
@@ -89,12 +89,12 @@ const tao::json::value log = {
 };
 ```
 
-With Raw pointers, a (sub-)value or can contain a raw, plain and non-owning, pointer to another value instead of copying the pointee.
-This performance optimisation is safe as long as the pointee does not go out of scope before the value containing the Raw pointer does.
+With Value Pointers, a (sub-)value can contain a plain and non-owning pointer to another Value instead of copying the pointee.
+This performance optimisation is safe as long as the pointee does not go out of scope before the value containing the Value Pointer does.
 
-Values with Raw pointers behave mostly "as if" they contained a deep copy of the pointee, serialising, comparing etc. automatically and transparently dereference all Raw pointers they encounter.
+Values with Value Pointers behave mostly "as if" they contained a deep copy of the pointee, serialising, comparing etc. automatically and transparently dereference all Value Pointers they encounter.
 
-The above example is changed to use a Raw pointer, instead of copying, by passing a pointer to `big` instead of its value/reference.
+The above example is changed to use a Value Pointer, instead of copying, by passing a pointer to `big` instead of its value/reference.
 
 ```c++
 const tao::json::value& big = some_big_json_value();
@@ -106,7 +106,7 @@ const tao::json::value log = {
 };
 ```
 
-Raw pointers MUST NOT contain a `nullptr`.
+Value Pointers MUST NOT contain a `nullptr`.
 Usually a JSON Null is used instead of a `nullptr`.
 
 ## Instance sharing with Opaque Pointers
@@ -162,7 +162,7 @@ struct my_traits< const my_data* >
 
 Remember that the `unsafe` in `unsafe_assign_opaque_ptr()` refers to it blindly assuming that `v` is not currently owning any memory, a safe assumption because traits' `assign()` functions are always called with default-initialised value instances as first argument.
 
-Just as for Raw pointers, the key to creating an Opaque pointer is again the address-of operator `&`, creating this more efficient code.
+Just as for Value Pointers, the key to creating an Opaque pointer is again the address-of operator `&`, creating this more efficient code.
 
 ```c++
 const my_data& big = some_data_with_big_json_representation();
@@ -205,16 +205,16 @@ struct my_traits< my_data >
 A JSON Value can contain references to data that it does not manage.
 
 * Values of type `STRING_VIEW` or `BINARY_VIEW` reference memory managed elsewhere.
-* Values of type `RAW_PTR` and `OPAQUE_PTR` reference objects managed elsewhere.
+* Values of type `VALUE_PTR` and `OPAQUE_PTR` reference objects managed elsewhere.
 
 (The views and pointers in sub-values of a Value could be pointing to memory or objects elsewhere in the same Value object, but this case is not recognised or optimised for.)
 
 The function `tao::json::is_self_contained()` can be used to check whether a JSON Value is fully self contained.
-It recursively check the entire JSON Value and all sub-values and returns `false` if it finds a sub-value of type `STRING_VIEW`, `BINARY_VIEW`, `RAW_PTR` or `OPAQUE_PTR`.
+It recursively check the entire JSON Value and all sub-values and returns `false` if it finds a sub-value of type `STRING_VIEW`, `BINARY_VIEW`, `VALUE_PTR` or `OPAQUE_PTR`.
 
 The function `tao::json::make_self_contained()` can be used to make a JSON Value fully self contained.
 Sub-values of type `STRING_VIEW` and `BINARY_VIEW` are transformed into `STRING` and `BINARY`, respectively.
-Occurrences of `RAW_PTR` are replaced with a deep copy of the pointee.
+Occurrences of `VALUE_PTR` are replaced with a deep copy of the pointee.
 
 Occurrences of `OPAQUE_PTR` are replaced with a JSON Value created by using the `produce()` function from the traits as Events producer (or the function supplied as second argument to `basic_value::unsafe_assign_opaque_ptr()`) together with `tao::json::events::to_basic_value` as Events consumer.
 

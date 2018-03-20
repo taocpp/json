@@ -23,11 +23,11 @@ namespace tao
 
          TEST_ASSERT( to_string( v2 ) == "{\"bar\":{\"foo\":1}}" );
 
-         TEST_ASSERT( v2.at( "bar" ).is_raw_ptr() );
+         TEST_ASSERT( v2.at( "bar" ).is_value_ptr() );
 
          TEST_ASSERT( to_string( cv2 ) == "{\"baz\":{\"fuu\":2}}" );
 
-         TEST_ASSERT( cv2.at( "baz" ).is_raw_ptr() );
+         TEST_ASSERT( cv2.at( "baz" ).is_value_ptr() );
       }
 
    }  // namespace json

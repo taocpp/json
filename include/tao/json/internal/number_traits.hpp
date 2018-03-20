@@ -63,7 +63,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED:
                      return p->unsafe_get_signed() == rhs;
@@ -79,7 +79,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED:
                      return p->unsafe_get_signed() < rhs;
@@ -95,7 +95,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED:
                      return p->unsafe_get_signed() > rhs;
@@ -134,7 +134,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED: {
                      const auto v = p->unsafe_get_signed();
@@ -152,7 +152,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED: {
                      const auto v = p->unsafe_get_signed();
@@ -170,7 +170,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED: {
                      const auto v = p->unsafe_get_signed();
@@ -211,7 +211,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED:
                      return p->unsafe_get_signed() == rhs;
@@ -227,7 +227,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED:
                      return p->unsafe_get_signed() < rhs;
@@ -243,7 +243,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_raw_ptr();
+               const auto* p = lhs.skip_value_ptr();
                switch( p->type() ) {
                   case type::SIGNED:
                      return p->unsafe_get_signed() > rhs;

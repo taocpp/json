@@ -92,8 +92,8 @@ namespace tao
                   return;
                }
 
-               case type::RAW_PTR:
-                  events::from_value( consumer, *v.unsafe_get_raw_ptr() );
+               case type::VALUE_PTR:
+                  events::from_value( consumer, *v.unsafe_get_value_ptr() );
                   return;
 
                case type::OPAQUE_PTR: {
@@ -177,8 +177,8 @@ namespace tao
                   consumer.end_object( v.unsafe_get_object().size() );
                   return;
 
-               case type::RAW_PTR:
-                  events::from_value( consumer, *v.unsafe_get_raw_ptr() );
+               case type::VALUE_PTR:
+                  events::from_value( consumer, *v.unsafe_get_value_ptr() );
                   return;
 
                case type::OPAQUE_PTR: {

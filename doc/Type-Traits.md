@@ -427,8 +427,8 @@ The included Type Traits contain (partial) specialisations for the following typ
 | `tao::binary_view` | |
 | `const std::vector< tao::byte >&` | |
 | `std::vector< basic_value< Traits, Base > >` | Corresponds to JSON Array. |
-| `basic_value< Traits, Base >*` | Creates Raw pointer; must not be `nullptr`. |
-| `const basic_value< Traits, Base >*` | Creates Raw pointer; must not be `nullptr`. |
+| `basic_value< Traits, Base >*` | Creates Value Pointer; must not be `nullptr`. |
+| `const basic_value< Traits, Base >*` | Creates Value Pointer; must not be `nullptr`. |
 | `std::map< std::string, basic_value< Traits, Base > >` | Corresponds to JSON Object. |
 | `tao::optional< T >` | Empty optional corresponds to JSON Null. |
 | `std::shared_ptr< T >` | Null pointer corresponds to JSON Null. |

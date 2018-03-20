@@ -21,6 +21,6 @@ Class `tao::json::value` has neither a `size()` nor an `empty()` method due to t
 * Should a JSON Null have size 0 although, unlike Uninitialized, it is a JSON Value?
 * Should a string have size 1 (act as one Value) or return its size (act as container)?
 * Should a binary have size 1 (act as one Value) or return its size (act as container)?
-* Should a Raw pointer have size 1 or forward `size()` and `empty()` to the pointee?
+* Should a Value Pointer have size 1 or forward `size()` and `empty()` to the pointee?
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

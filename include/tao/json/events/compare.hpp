@@ -49,8 +49,8 @@ namespace tao
 
             static const basic_value< Traits, Base >* skip_pointer( const basic_value< Traits, Base >* p ) noexcept
             {
-               while( p && p->is_raw_ptr() ) {
-                  p = p->unsafe_get_raw_ptr();
+               while( p && p->is_value_ptr() ) {
+                  p = p->unsafe_get_value_ptr();
                }
                return p;
             }

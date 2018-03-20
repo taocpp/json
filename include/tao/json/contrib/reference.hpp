@@ -20,7 +20,7 @@ namespace tao
          // NOTE: Currently, only URI fragments are supported.
          // Remote references are ignored, i.e., left untouched.
 
-         // JSON References are replaced with a RAW_PTR,
+         // JSON References are replaced with a VALUE_PTR,
          // which might lead to infinite loops if you try
          // to traverse the value. Make sure you understand
          // the consequences and handle the resulting value
@@ -60,7 +60,7 @@ namespace tao
                      resolve_references( r, e.second );
                   }
                   if( const auto* ref = v.find( "$ref" ) ) {
-                     ref = ref->skip_raw_ptr();
+                     ref = ref->skip_value_ptr();
                      if( ref->is_string_type() ) {
                         const tao::string_view s = ref->unsafe_get_string_type();
                         if( !s.empty() && s[ 0 ] == '#' ) {
@@ -70,7 +70,7 @@ namespace tao
                            while( it != ptr.end() ) {
                               switch( p->type() ) {
                                  case type::ARRAY:
-                                    p = p->at( it->index() ).skip_raw_ptr();
+                                    p = p->at( it->index() ).skip_value_ptr();
                                     break;
                                  case type::OBJECT:
                                     if( const auto* t = p->find( "$ref" ) ) {
@@ -78,7 +78,7 @@ namespace tao
                                           throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );  // NOLINT
                                        }
                                     }
-                                    p = p->at( it->key() ).skip_raw_ptr();
+                                    p = p->at( it->key() ).skip_value_ptr();
                                     break;
                                  default:
                                     throw invalid_type( ptr.begin(), std::next( it ) );  // NOLINT
@@ -88,7 +88,7 @@ namespace tao
                            if( p == &v ) {
                               throw std::runtime_error( "JSON Reference: invalid self reference" );  // NOLINT
                            }
-                           v.assign_raw_ptr( p );
+                           v.assign_value_ptr( p );
                            resolve_references( r, v );
                         }
                         else {
@@ -98,7 +98,7 @@ namespace tao
                      }
                   }
                   return;
-               case type::RAW_PTR:
+               case type::VALUE_PTR:
                   return;
                case type::OPAQUE_PTR:
                   return;

@@ -26,7 +26,7 @@ namespace tao
          BINARY_VIEW,
          ARRAY,
          OBJECT,
-         RAW_PTR,
+         VALUE_PTR,
          OPAQUE_PTR
       };
 
@@ -76,8 +76,8 @@ namespace tao
                return "array";
             case type::OBJECT:
                return "object";
-            case type::RAW_PTR:
-               return "raw_ptr";
+            case type::VALUE_PTR:
+               return "value_ptr";
             case type::OPAQUE_PTR:
                return "opaque_ptr";
          }
