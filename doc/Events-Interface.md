@@ -8,7 +8,7 @@
 * [Convenience Functions](#convenience-functions)
 * [Included Consumers[#included-consumers)
 * [Convenience Functions](#convenience-functions-1)
-* [Included Filters](#included-filters)
+* [Included Transformers](#included-transformers)
 
 ## Overview
 
@@ -17,11 +17,11 @@ The Events Interface is a calling convention, a kind of abstract (in the concept
 The Events Interface is modelled after the SAX-interface for XML and has functions like `begin_object()` and `boolean( const bool )`.
 
 We distinguish betwen *Event Producers* that usually take some input and generate calls to the Events Interface from it, and *Event Consumers* which implement the functions of the Events Interface to usually produce some output.
-*Event Filters* occupy both roles, accepting calls to the Events Interface and transforming them into (other) calls to another Events Consumer.
+*Event Transformers* occupy both roles, accepting calls to the Events Interface and transforming them into (other) calls to another Events Consumer.
 
 For example the `tao::json::events::from_value()` function is an Events Producer that takes a Value object of type `tao::json::basic_value< Traits, Base >` for any Type Traits class `Traits` and annotation class `Base` as input, and generates Events depending on the contents.
 It could be used together with the `tao::json::events::to_string()` class, an Events Consumer that generates the JSON string representation corresponding to the Events it receives.
-In order to transform binary data in the Value object into something compatible with standard JSON it might be necessary to use an Events Filter like `tao::json::events::binary_to_hex` between the Producer and Consumer.
+In order to transform binary data in the Value object into something compatible with standard JSON it might be necessary to use an Events Transformer like `tao::json::events::binary_to_hex` between the Producer and Consumer.
 
 Producers and Consumers can be freely coupled, it is not necessary for the beginning or the end of the chain to be a JSON Value object.
 For example an Events Producer that parses CBOR can be directly used with an Events Consumer that creates UBJSON.
@@ -50,7 +50,7 @@ tao::json::value from_string( const std::string& input )
 
 ...which is in fact so common that a (more general) convenience function `tao::json::from_string()` is included with the library.
 
-The tables below list all included Events Producers, Consumers, and Filters, as well as the convenience functions where the source or destination is a Value.
+The tables below list all included Events Producers, Consumers, and Transformers, as well as the convenience functions where the source or destination is a Value.
 
 ## Consumer Interface
 
@@ -224,16 +224,16 @@ Functions that combine the similarly named Events Consumers with a Producer that
 | `ubjson::to_stream` | Writes UBJSON to a `std::ostream`. |
 | `ubjson::to_string` | Writes UBJSON to a `std::string`. |
 
-These functions optionally apply an arbitrary list of [Filters](#included-filters) given as additional template parameters.
+These functions optionally apply an arbitrary list of [Transformers](#included-transformers) given as additional template parameters.
 
-## Included Filters
+## Included Transformers
 
-Filters are structs or classes that are both Event Consumers that implement the Events Interface functions, and Event Producers that call the Events Interface functions on one or more other Events Consumers.
+Transformers are structs or classes that are both Event Consumers that implement the Events Interface functions, and Event Producers that call the Events Interface functions on one or more other Events Consumers.
 
 **The common namespace prefix `tao::json::` is omitted.**
 
-| Filter | Description |
-| ------ | ----------- |
+| Transformer | Description |
+| ----------- | ----------- |
 | `events::binary_to_base64` | Passes through all Events except for binary data which is converted to base64-encoded strings. |
 | `events::binary_to_base64url` | Passes through all Events except for binary data which is converted to URL-safe base64-encoded strings. |
 | `events::binary_to_exception` | Passes through all Events except for binary data which provokes an exception. |
@@ -247,8 +247,8 @@ Filters are structs or classes that are both Event Consumers that implement the 
 | `events::non_finite_to_string` | Passes through all Events except for numbers of type `double` which contain non-finite values which are passed on as appropriate `string()`. |
 | `events::prefer_signed` | Passes through all Events except for numbers of type `std::uint64_t` which fit into a `std::int64_t` and are passed on as such. |
 | `events::prefer_unsigned` | Passes through all Events except for numbers of type `std::int64_t` which fit into a `std::uint64_t` and are passed on as such. |
-| `events::ref` | Passes all Events to another consumer or filter to which it holds a C++ reference. |
-| `events::tee` | Passes all Events to an arbitrary number of other consumers or filters which it holds in a `std::tuple<>`. |
+| `events::ref` | Passes all Events to another Consumer or Transformer to which it holds a C++ reference. |
+| `events::tee` | Passes all Events to an arbitrary number of other Consumers or Transformers which it holds in a `std::tuple<>`. |
 | `events::validate_keys` | Passes through all Events except for keys which are first validated against a provided PEGTL grammar rule. |
 | `events::virtual_ref` | Like `ref`, but implements the virtual Event functions from `virtual_base`. |
 

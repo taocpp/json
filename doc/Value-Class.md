@@ -96,7 +96,7 @@ JSON Numbers are stored as either `std::int64_t` with `type::SIGNED`, as `std::u
 Can be tested for with the member function `is_number()`, which will return `true` for all three types, or with the more specific `is_integer()`, `is_signed()`, `is_unsigned()` and `is_double()`.
 
 Unlike JSON, non-finite and `NaN` values are allowed for floating point values.
-When serialising to a format that does not support these values, an [Events Filter](Events-Interface.md#included-filters) can be used to [transform these values to something else on-the-fly](Common-Use-Cases.md#serialise-with-base64-strings-for-binary-data).
+When serialising to a format that does not support these values, an [Events Transformers](Events-Interface.md#included-transformers) can be used to [transform these values to something else on-the-fly](Common-Use-Cases.md#serialise-with-base64-strings-for-binary-data).
 
 ### Strings
 
@@ -112,7 +112,7 @@ Binary data is stored as `std::vector< tao::byte >` with `type::BINARY`, or as `
 
 Can be tested for with the member function `is_binary_type()`, which will return `true` for both types, or with the more specific `is_binary()` and `is_binary_view()`.
 
-When serialising to a format that does not support binary data, an [Events Filter](Events-Interface.md#included-filters) can be used to [transform binary data to something else on-the-fly](Common-Use-Cases.md#serialise-with-base64-strings-for-binary-data).
+When serialising to a format that does not support binary data, an [Events Transformer](Events-Interface.md#included-transformers) can be used to [transform binary data to something else on-the-fly](Common-Use-Cases.md#serialise-with-base64-strings-for-binary-data).
 
 ### Arrays
 

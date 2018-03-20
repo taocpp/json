@@ -44,7 +44,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only JSON library that p
   * Conversion from and to binary formats, currently [CBOR], [UBJSON], [MsgPack].
   * Conversion from and to *other* JSON libraries (e.g. [`contrib/nlohmann.cpp`](contrib/nlohmann.cpp)).
   * Events comparison, hashing, counting, and schema validation.
-  * Events Filters to manipulate Events in various ways.
+  * Events Transformers to manipulate Events in various ways.
 
 ## Status
 

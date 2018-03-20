@@ -45,15 +45,15 @@ Passing a `std::string` as third argument uses the given string as line ending i
 
 The JSON format does not allow for binary data.
 Binary data in Values needs to be converted into something else when serialising to JSON.
-This can be done on-the-fly with an [Events filter](Events-Interface.md#overview) like `tao::json::events::binary_to_base64`.
+This can be done on-the-fly with an [Events Transformer](Events-Interface.md#overview) like `tao::json::events::binary_to_base64`.
 
 ```c++
 const std::string l = tao::json::to_string< tao::json::events::binary_to_base64 >( v );
 ```
 
-Another similar common use case is to use a filter like `tao::json::events::non_finite_to_null` to convert non-finite floating-point values (not-a-number, infinity) to something that fits in the JSON data model.
+Another similar common use case is to use a Transformer like `tao::json::events::non_finite_to_null` to convert non-finite floating-point values (not-a-number, infinity) to something that fits in the JSON data model.
 
-See the [Events interface](Events-Interface.md) documentation for [all available Event filters](Events-Interface.md#included-filters).
+See the [Events interface](Events-Interface.md) documentation for [all available Event Transformers](Events-Interface.md#included-transformers).
 
 ## Serialise a JSON Value to an ostream
 
@@ -69,7 +69,7 @@ using namespace tao::json;
 to_stream< events::binary_to_base64, events::non_finite_to_null >( std::cout, v, 3, "\r\n" );
 ```
 
-When no Events filters are needed the usual `operator<<` overloads can be used, too.
+When no Events Transformers are needed the usual `operator<<` overloads can be used, too.
 
 ```c++
 std::cout << v << std::endl;  // Compact.
@@ -123,7 +123,7 @@ Note that `v.emplace()` will work both on values that already represent an Objec
 
 ### Fifth possibility
 
-Use an Event consumer to feed Events to a value.
+Use an Event Consumer to feed Events to a value.
 
 ```c++
 int main()

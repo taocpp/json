@@ -10,7 +10,7 @@ The main parts of the JSON library are
 
 * The [Value Class](Value-Class.md) can be customised with [Type Traits](Type-Traits.md) and [custom annotations](Advanced-Use-Cases.md#custom-value-annotations).
 * The [Events Interface](Events-Interface.md) is used to convert the [Value Class](Value-Class.md) from and to external representations.
-* One or more [Events Filters](Events-Interface.md#included-filters) can be used to modify, filter, ... Events and to send them to multiple Consumers.
+* One or more [Events Transformers](Events-Interface.md#included-transformers) can be used to modify, filter, ... Events and to send them to multiple Consumers.
 * The [Type Traits](Type-Traits.md) are used to convert the [Value Class](Value-Class.md) from and to arbitrary C++ data types.
 * They also generate Events, and thus external representations, directly from C++ data types, and
 * are used to directly parse external representations into C++ data types.

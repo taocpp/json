@@ -41,7 +41,7 @@
   * [Convenience Functions](Events-Interface.md#convenience-functions)
   * [Included Consumers](Events-Interface.md#included-consumers)
   * [Convenience Functions](Events-Interface.md#convenience-functions-1)
-  * [Included Filters](Events-Interface.md#included-filters)
+  * [Included Transformers](Events-Interface.md#included-transformers)
 * [Extended Use Cases](Extended-Use-Cases.md)
   * [JSON Pointer](Extended-Use-Cases.md#json-pointer)
   * [JSON Patch](Extended-Use-Cases.md#json-patch)
