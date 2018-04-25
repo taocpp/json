@@ -115,7 +115,6 @@ matrix:
           packages: ['clang-4.0']
       env:
         - CXX=clang++-4.0
-        - CXXSTD=-std=c++14
 
     - compiler: clang
       addons:
@@ -129,9 +128,35 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0', 'g++-7']
+          packages: ['clang-5.0']
       env:
         - CXX=clang++-5.0
+        - CXXSTD=-std=c++14
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0']
+      env:
+        - CXX=clang++-6.0
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0']
+      env:
+        - CXX=clang++-6.0
+        - CPPFLAGS=-fms-extensions
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0', 'g++-7']
+      env:
+        - CXX=clang++-6.0
         - CXXSTD=-std=c++17
 
     - os: osx
@@ -153,7 +178,7 @@ matrix:
         - CXX=clang++
 
     - os: osx
-      osx_image: xcode9.2
+      osx_image: xcode9.3
       compiler: clang
       env:
         - CXX=clang++
@@ -179,7 +204,7 @@ matrix:
           packages: ['g++-7']
       env:
         - CXX=g++-7
-        - CPPFLAGS=-fsanitize=undefined
+        - CPPFLAGS="-fsanitize=undefined -fuse-ld=gold"
 
     - compiler: gcc
       sudo: required
@@ -194,30 +219,30 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0']
       env:
-        - CXX=clang++-5.0
+        - CXX=clang++-6.0
         - CPPFLAGS=-fsanitize=undefined
 
     - compiler: clang
       sudo: required
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0']
       env:
-        - CXX=clang++-5.0
+        - CXX=clang++-6.0
         - CPPFLAGS=-fsanitize=address
 
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0', 'clang-tidy-5.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          packages: ['clang-6.0', 'clang-tidy-6.0']
       env:
-        - CXX=clang++-5.0
-        - CLANG_TIDY=clang-tidy-5.0
+        - CXX=clang++-6.0
+        - CLANG_TIDY=clang-tidy-6.0
       script:
         - make -kj3 clang-tidy
 
