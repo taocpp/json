@@ -1046,7 +1046,7 @@ namespace tao
             template< std::size_t I >
             using e2 = binding::element2< tuple_helper_cf< tuple_t, I >, &std::get< I >, tuple_helper_f< tuple_t, I >, &std::get< I > >;
 
-            using type = binding::array< e2< Is >... >;
+            using type = binding::array< e2< std::integral_constant< std::size_t, Is >::value >... >;
          };
 
       }  // namespace internal
