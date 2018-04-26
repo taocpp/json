@@ -30,6 +30,7 @@
 #include "external/string_view.hpp"
 
 #include "internal/array_traits.hpp"
+#include "internal/identity.hpp"
 #include "internal/indirect_traits.hpp"
 #include "internal/number_traits.hpp"
 #include "internal/object_traits.hpp"
@@ -1029,10 +1030,10 @@ namespace tao
       namespace internal
       {
          template< typename T, std::size_t I >
-         using tuple_helper_cf = decltype( std::get< I >( std::declval< const T& >() ) ) ( * )( const T& );
+         using tuple_helper_cf = tao::internal::identity_t< decltype( std::get< I >( std::declval< const T& >() ) ) ( * )( const T& ) >;
 
          template< typename T, std::size_t I >
-         using tuple_helper_f = decltype( std::get< I >( std::declval< T& >() ) ) ( * )( T& );
+         using tuple_helper_f = tao::internal::identity_t< decltype( std::get< I >( std::declval< T& >() ) ) ( * )( T& ) >;
 
          template< typename Tuple, typename Indices >
          struct tuple_array;
