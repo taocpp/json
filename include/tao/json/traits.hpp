@@ -1036,10 +1036,19 @@ namespace tao
          {
             using tuple_t = std::tuple< Ts... >;
 
-            template< typename T, std::size_t I >
-            using e2 = binding::element2< const typename std::tuple_element< I, tuple_t >::type& (*)(const tuple_t&), &std::get< I, Ts... >, typename std::tuple_element< I, tuple_t >::type& (*)(tuple_t&), &std::get< I, Ts... > >;
+            template< std::size_t I >
+            using te = typename std::tuple_element< I, tuple_t >::type;
 
-            using type = binding::array< e2< Ts, Is >... >;
+            template< std::size_t I >
+            using cf = const te< I >& (*)( const tuple_t& );
+
+            template< std::size_t I >
+            using f = te< I >& (*)( tuple_t& );
+
+            template< std::size_t I >
+            using e2 = binding::element2< cf< I >, static_cast< cf< I > >( &std::get< I, Ts... > ), f< I >, static_cast< f< I > >( &std::get< I, Ts... > ) >;
+
+            using type = binding::array< e2< Is >... >;
          };
 
       }  // namespace internal
