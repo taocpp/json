@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #endif
