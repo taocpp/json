@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstdint>
 #include <ostream>
+#include <stdexcept>
 #include <string>
 
 #include "../../binary_view.hpp"

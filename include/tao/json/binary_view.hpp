@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstring>
 #include <iterator>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <vector>

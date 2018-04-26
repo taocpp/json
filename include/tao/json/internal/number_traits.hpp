@@ -5,6 +5,7 @@
 #define TAO_JSON_INTERNAL_NUMBER_TRAITS_HPP
 
 #include <cstdint>
+#include <cstdlib>
 
 #include "../forward.hpp"
 #include "../type.hpp"

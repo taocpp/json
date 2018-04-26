@@ -18,16 +18,16 @@ namespace tao
       {
          func();
 
-         std::chrono::high_resolution_clock clock;
+         using clock = std::chrono::high_resolution_clock;
 
          for( std::uint64_t r = 0; r < 42; ++r ) {
             const std::uint64_t c = std::uint64_t( 1 ) << r;
-            const auto start = clock.now();
+            const auto start = clock::now();
 
             for( std::uint64_t i = 0; i < c; ++i ) {
                func();
             }
-            const auto finish = clock.now();
+            const auto finish = clock::now();
             const std::uint64_t e = std::chrono::duration_cast< std::chrono::nanoseconds >( finish - start ).count();
 
             if( e > 1000000000 ) {
