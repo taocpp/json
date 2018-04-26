@@ -177,7 +177,7 @@ namespace tao
             template< template< typename... > class Traits, typename Producer >
             static std::shared_ptr< U > consume( Producer& parser )
             {
-               using F = std::shared_ptr< U > ( * )( Producer & );
+               using F = std::shared_ptr< U > ( * )( Producer& );
                static const std::map< std::string, entry< F > > m = []() {
                   std::map< std::string, entry< F > > t;
                   (void)json::internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };

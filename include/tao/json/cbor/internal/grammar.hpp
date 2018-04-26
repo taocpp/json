@@ -29,11 +29,13 @@ namespace tao
       {
          namespace internal
          {
+            // clang-format off
             template< typename Input, typename... Ts >
             [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
             {
                json::internal::throw_parse_error( in, "cbor:", ts... );
             }
+            // clang-format on
 
             template< typename Input >
             void throw_on_empty( Input& in, const std::size_t size = 1 )

@@ -125,7 +125,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename T >
-         auto is_nothing( const T& /*unused*/ ) -> typename std::enable_if< !has_is_nothing< Traits, T >::value, bool >::type
+         auto is_nothing( const T & /*unused*/ ) -> typename std::enable_if< !has_is_nothing< Traits, T >::value, bool >::type
          {
             return false;
          }

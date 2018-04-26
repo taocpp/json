@@ -77,8 +77,8 @@ namespace tao
 #pragma GCC diagnostic pop
 #endif
 
-         template< typename C, typename T, T( *P )( const C& ) >
-         struct element< T( * )( const C& ), P >
+         template< typename C, typename T, T ( *P )( const C& ) >
+         struct element< T ( * )( const C& ), P >
          {
             static auto read( const C& v ) -> decltype( P( v ) )
             {
@@ -95,8 +95,8 @@ namespace tao
          template< typename T, T, typename U, U, typename = void >
          struct element2;
 
-         template< typename C, typename T, T( *P )( const C& ), typename U, U( *Q )( C& ) >
-         struct element2< T( * )( const C& ), P, U( * )( C& ), Q >
+         template< typename C, typename T, T ( *P )( const C& ), typename U, U ( *Q )( C& ) >
+         struct element2< T ( * )( const C& ), P, U ( * )( C& ), Q >
          {
             static auto read( const C& v ) -> decltype( P( v ) )
             {
@@ -128,8 +128,8 @@ namespace tao
             }
          };
 
-         template< typename C, typename T, T( *P )( const C& ), typename U, void( *Q )( C&, U&& ) >
-         struct element2< T( * )( const C& ), P, void( * )( C&, U&& ), Q >
+         template< typename C, typename T, T ( *P )( const C& ), typename U, void ( *Q )( C&, U&& ) >
+         struct element2< T ( * )( const C& ), P, void ( * )( C&, U&& ), Q >
          {
             static auto read( const C& v ) -> decltype( P( v ) )
             {

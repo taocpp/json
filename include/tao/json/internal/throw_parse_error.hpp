@@ -33,13 +33,14 @@ namespace tao
          }
 
          template< std::size_t N >
-         bool to_stream( std::ostream& o, const char( &t )[ N ] )
+         bool to_stream( std::ostream& o, const char ( &t )[ N ] )
          {
             o << ' ';
             o.write( t, N - 1 );
             return false;
          }
 
+         // clang-format off
          template< typename Input, typename... Ts >
          [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
          {
@@ -48,6 +49,7 @@ namespace tao
             (void)swallow{ to_stream( oss, ts )... };
             throw json_pegtl::parse_error( oss.str(), in );  // NOLINT
          }
+         // clang-format on
 
       }  // namespace internal
 

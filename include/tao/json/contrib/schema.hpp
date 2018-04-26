@@ -543,7 +543,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be of type 'string'" );  // NOLINT
                   }
                   try {
-                     m_pattern.reset( new std::regex( p->unsafe_get_string() ) );
+                     m_pattern = std::unique_ptr< std::regex >( new std::regex( p->unsafe_get_string() ) );  // NOLINT
                   }
                   catch( const std::regex_error& e ) {
                      throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be a regular expression: " + std::string( e.what() ) );  // NOLINT
@@ -1521,7 +1521,7 @@ namespace tao
                      m_hash->begin_array();
                   }
                   else if( m_count.empty() && ( ( m_node->m_flags & HAS_UNIQUE_ITEMS ) != 0 ) ) {
-                     m_hash.reset( new events::hash );
+                     m_hash = std::unique_ptr< events::hash >( new events::hash );  // NOLINT
                   }
                }
                if( m_match && m_count.empty() ) {

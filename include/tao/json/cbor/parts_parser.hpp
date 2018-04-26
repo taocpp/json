@@ -95,7 +95,7 @@ namespace tao
             tao::binary_view binary_view()
             {
                const auto b = internal::peek_byte_safe( m_input );
-               if( b!= std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
+               if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
                   internal::throw_parse_error( m_input, "expected definitive binary" );
                }
                return internal::parse_string_1< utf8_mode::TRUST, tao::binary_view >( m_input );
