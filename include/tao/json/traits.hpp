@@ -1029,24 +1029,22 @@ namespace tao
 
       namespace internal
       {
-         template< typename T, std::size_t I >
-         using tuple_helper_cf = tao::internal::identity_t< decltype( std::get< I >( std::declval< const T& >() ) ) ( * )( const T& ) >;
-
-         template< typename T, std::size_t I >
-         using tuple_helper_f = tao::internal::identity_t< decltype( std::get< I >( std::declval< T& >() ) ) ( * )( T& ) >;
-
          template< typename Tuple, typename Indices >
          struct tuple_array;
 
-         template< typename... Ts, std::size_t... Is >
-         struct tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+         template< typename Tuple, std::size_t... Is >
+         struct tuple_array< Tuple, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
          {
-            using tuple_t = std::tuple< Ts... >;
+            template< std::size_t I >
+            using cf = tao::internal::identity_t< decltype( std::get< I >( std::declval< const Tuple& >() ) ) ( * )( const Tuple& ) >;
 
             template< std::size_t I >
-            using e2 = binding::element2< tuple_helper_cf< tuple_t, I >, &std::get< I >, tuple_helper_f< tuple_t, I >, &std::get< I > >;
+            using f = tao::internal::identity_t< decltype( std::get< I >( std::declval< Tuple& >() ) ) ( * )( Tuple& ) >;
 
-            using type = binding::array< e2< std::integral_constant< std::size_t, Is >::value >... >;
+            template< std::size_t I >
+            using e = binding::element2< cf< I >, &std::get< I >, f< I >, &std::get< I > >;
+
+            using type = binding::array< e< std::integral_constant< std::size_t, Is >::value >... >;
          };
 
       }  // namespace internal
