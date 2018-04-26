@@ -1037,16 +1037,13 @@ namespace tao
             using tuple_t = std::tuple< Ts... >;
 
             template< std::size_t I >
-            using te = typename std::tuple_element< I, tuple_t >::type;
+            using cf = decltype( std::get< I >( std::declval< const tuple_t& >() ) ) ( * )( const tuple_t& );
 
             template< std::size_t I >
-            using cf = const te< I >& (*)( const tuple_t& );
+            using f = decltype( std::get< I >( std::declval< tuple_t& >() ) ) ( * )( tuple_t& );
 
             template< std::size_t I >
-            using f = te< I >& (*)( tuple_t& );
-
-            template< std::size_t I >
-            using e2 = binding::element2< cf< I >, static_cast< cf< I > >( &std::get< I, Ts... > ), f< I >, static_cast< f< I > >( &std::get< I, Ts... > ) >;
+            using e2 = binding::element2< cf< I >, &std::get< I, Ts... >, f< I >, &std::get< I, Ts... > >;
 
             using type = binding::array< e2< Is >... >;
          };
