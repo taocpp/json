@@ -1035,14 +1035,18 @@ namespace tao
          struct tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
          {
             using tuple_t = std::tuple< Ts... >;
-            using type = binding::array< binding::element2< const typename std::tuple_element< Is, tuple_t >::type& (*)(const tuple_t&), &std::get< Is, Ts... >, typename std::tuple_element< Is, tuple_t >::type& (*)(tuple_t&), &std::get< Is, Ts... > >... >;
+
+            template< typename T, std::size_t I >
+            using e2 = binding::element2< const typename std::tuple_element< I, tuple_t >::type& (*)(const tuple_t&), &std::get< I, Ts... >, typename std::tuple_element< I, tuple_t >::type& (*)(tuple_t&), &std::get< I, Ts... > >;
+
+            using type = binding::array< e2< Ts, Is >... >;
          };
 
       }  // namespace internal
 
       template< typename... Ts >
       struct traits< std::tuple< Ts... > >
-         : public internal::tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< sizeof...( Ts ) > >::type
+         : public internal::tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence_for< Ts... > >::type
       {
       };
 
