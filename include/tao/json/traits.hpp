@@ -1028,6 +1028,12 @@ namespace tao
 
       namespace internal
       {
+         template< typename T, std::size_t I >
+         using tuple_helper_cf = decltype( std::get< I >( std::declval< const T& >() ) ) ( * )( const T& );
+
+         template< typename T, std::size_t I >
+         using tuple_helper_f = decltype( std::get< I >( std::declval< T& >() ) ) ( * )( T& );
+
          template< typename Tuple, typename Indices >
          struct tuple_array;
 
@@ -1037,13 +1043,7 @@ namespace tao
             using tuple_t = std::tuple< Ts... >;
 
             template< std::size_t I >
-            using cf = decltype( std::get< I >( std::declval< const tuple_t& >() ) ) ( * )( const tuple_t& );
-
-            template< std::size_t I >
-            using f = decltype( std::get< I >( std::declval< tuple_t& >() ) ) ( * )( tuple_t& );
-
-            template< std::size_t I >
-            using e2 = binding::element2< cf< I >, &std::get< I, Ts... >, f< I >, &std::get< I, Ts... > >;
+            using e2 = binding::element2< tuple_helper_cf< tuple_t, I >, &std::get< I >, tuple_helper_f< tuple_t, I >, &std::get< I > >;
 
             using type = binding::array< e2< Is >... >;
          };
