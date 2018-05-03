@@ -1300,6 +1300,10 @@ namespace tao
          }
 
       private:
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
          void seize( basic_value&& r ) noexcept
          {
             assert( m_type != json::type::DESTROYED );
@@ -1415,6 +1419,9 @@ namespace tao
             }
             assert( false );  // LCOV_EXCL_LINE
          }
+#if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
+#pragma GCC diagnostic pop
+#endif
 
          void embed( const basic_value& r )
          {

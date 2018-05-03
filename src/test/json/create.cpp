@@ -5,11 +5,6 @@
 
 #include "test.hpp"
 
-// prevent false positives from GCC 7
-#if defined( __GNUC__ ) && ( __GNUC__ == 7 )
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
-
 #include <tao/json/from_string.hpp>
 #include <tao/json/value.hpp>
 
