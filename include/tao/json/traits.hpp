@@ -1036,15 +1036,15 @@ namespace tao
          struct tuple_array< Tuple, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
          {
             template< std::size_t I >
-            using cf = tao::internal::identity_t< decltype( std::get< I >( std::declval< const Tuple& >() ) ) ( * )( const Tuple& ) >;
+            using cf = decltype( std::get< I >( std::declval< const Tuple& >() ) ) ( * )( const Tuple& );
 
             template< std::size_t I >
-            using f = tao::internal::identity_t< decltype( std::get< I >( std::declval< Tuple& >() ) ) ( * )( Tuple& ) >;
+            using f = decltype( std::get< I >( std::declval< Tuple& >() ) ) ( * )( Tuple& );
 
             template< std::size_t I >
             using e = binding::element2< cf< I >, &std::get< I >, f< I >, &std::get< I > >;
 
-            using type = binding::array< e< std::integral_constant< std::size_t, Is >::value >... >;
+            using type = binding::array< e< Is >... >;
          };
 
       }  // namespace internal
