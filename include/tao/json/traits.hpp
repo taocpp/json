@@ -983,6 +983,10 @@ namespace tao
             }
          }
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4127 )
+#endif
          template< template< typename... > class Traits, typename Producer >
          static void consume( Producer& parser, std::vector< T, Ts... >& v )
          {
@@ -994,6 +998,9 @@ namespace tao
                v.emplace_back( json::consume< T, Traits >( parser ) );
             }
          }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
       };
 
       template< typename T, typename... Ts >
