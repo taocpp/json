@@ -36,6 +36,10 @@ namespace tao
                return false;
             }
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4702 )
+#endif
             bool boolean()
             {
                const auto b = internal::peek_byte_safe( m_input );
@@ -49,6 +53,9 @@ namespace tao
                }
                std::abort();
             }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
             void check_major( const internal::major m, const char* e )
             {
@@ -119,6 +126,10 @@ namespace tao
                return std::int64_t( ~u );
             }
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4702 )
+#endif
             std::int64_t number_signed()
             {
                const auto b = internal::peek_major_safe( m_input );
@@ -132,6 +143,9 @@ namespace tao
                }
                std::abort();
             }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
             std::uint64_t number_unsigned()
             {
