@@ -1046,11 +1046,6 @@ namespace tao
             struct cf_i
             {
                using type = decltype( std::get< I >( std::declval< const Tuple& >() ) ) ( * )( const Tuple& );
-
-               static void f( const Tuple& t )
-               {
-                  (void)std::get< I >( t );
-               }
             };
 
             template< std::size_t I >
@@ -1060,11 +1055,6 @@ namespace tao
             struct f_i
             {
                using type = decltype( std::get< I >( std::declval< Tuple& >() ) ) ( * )( Tuple& );
-
-               static void f( Tuple& t )
-               {
-                  (void)std::get< I >( t );
-               }
             };
 
             template< std::size_t I >
