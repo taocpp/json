@@ -1,4 +1,4 @@
-// Copyright (C) 2011 - 2016 Andrzej Krzemienski.
+// Copyright (C) 2011 - 2017 Andrzej Krzemienski.
 //
 // Use, modification, and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -987,6 +987,17 @@ TEST(optional_ref_assign)
   assert (ori != orj);
   assert (j == 2);
   assert (i == 9);
+};
+
+TEST(optional_swap)
+{
+  namespace tr2 = std::experimental;
+  tr2::optional<int> oi {1}, oj {};
+  swap(oi, oj);
+  assert (oj);
+  assert (*oj == 1);
+  assert (!oi);
+  static_assert(noexcept(swap(oi, oj)), "swap() is not noexcept");
 };
 
 

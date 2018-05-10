@@ -236,6 +236,19 @@ T* static_addressof(T& ref)
 template <class U>
 constexpr U convert(U v) { return v; }
   
+
+namespace swap_ns
+{
+  using std::swap;
+    
+  template <class T>
+  void adl_swap(T& t, T& u) noexcept(noexcept(swap(t, u)))
+  {
+    swap(t, u);
+  }
+
+} // namespace swap_ns
+
 } // namespace detail
 
 
@@ -486,7 +499,8 @@ public:
   }
   
   // 20.5.4.4, Swap
-  void swap(optional<T>& rhs) noexcept(is_nothrow_move_constructible<T>::value && noexcept(swap(declval<T&>(), declval<T&>())))
+  void swap(optional<T>& rhs) noexcept(is_nothrow_move_constructible<T>::value
+                                       && noexcept(detail_::swap_ns::adl_swap(declval<T&>(), declval<T&>())))
   {
     if      (initialized() == true  && rhs.initialized() == false) { rhs.initialize(std::move(**this)); clear(); }
     else if (initialized() == false && rhs.initialized() == true)  { initialize(std::move(*rhs)); rhs.clear(); }
