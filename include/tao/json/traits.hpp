@@ -1063,6 +1063,9 @@ namespace tao
             template< std::size_t I >
             struct e_i
             {
+               static constexpr const cf< I > cdummy = &std::get< I >;
+               static constexpr const f< I > dummy = &std::get< I >;
+
                using type = binding::element2< cf< I >, &std::get< I >, f< I >, &std::get< I > >;
             };
 
