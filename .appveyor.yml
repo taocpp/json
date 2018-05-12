@@ -13,9 +13,9 @@ configuration:
 
 environment:
   matrix:
-    - GENERATOR: Visual Studio 14 2015
+#    - GENERATOR: Visual Studio 14 2015
 
-    - GENERATOR: Visual Studio 14 2015 Win64
+#    - GENERATOR: Visual Studio 14 2015 Win64
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       GENERATOR: Visual Studio 15 2017
@@ -23,8 +23,8 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       GENERATOR: Visual Studio 15 2017 Win64
 
-    - GENERATOR: MinGW Makefiles
-      BINDIR: C:\MinGW\bin
+#    - GENERATOR: MinGW Makefiles
+#      BINDIR: C:\MinGW\bin
 
     - GENERATOR: MinGW Makefiles
       COMPILER: MinGW 5
@@ -34,9 +34,9 @@ environment:
       COMPILER: MinGW 6
       BINDIR: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
 
-    - GENERATOR: MinGW Makefiles
-      COMPILER: MinGW 6
-      BINDIR: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+#    - GENERATOR: MinGW Makefiles
+#      COMPILER: MinGW 6
+#      BINDIR: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
 
 init: []
 
