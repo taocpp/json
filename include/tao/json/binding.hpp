@@ -23,8 +23,19 @@ namespace tao
    {
       namespace binding
       {
+         namespace internal
+         {
+            template< typename... As >
+            struct make_array
+            {
+               using list = json::internal::merge_type_lists< internal::inherit_elements< As >... >;
+               using type = internal::array< list >;
+            };
+
+         }  // namespace internal
+
          template< typename... As >
-         using array = internal::array< json::internal::merge_type_lists< internal::inherit_elements< As >... > >;
+         using array = typename internal::make_array< As... >::type;
 
          template< for_unknown_key E, for_nothing_value N, typename... As >
          using basic_object = internal::basic_object< E, N, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
