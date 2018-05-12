@@ -9,6 +9,11 @@
 
 #include "virtual_base.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4373 )
+#endif
+
 namespace tao
 {
    namespace json
@@ -164,5 +169,9 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #endif
