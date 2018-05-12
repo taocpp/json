@@ -66,6 +66,26 @@ namespace tao
                }
             };
 
+            template<>
+            struct action< rules::local_time >
+            {
+               template< typename Input, typename Consumer >
+               static void apply( const Input& in, Consumer& consumer )
+               {
+                  consumer.string( "local_time '" + in.string() + "'" );
+               }
+            };
+
+            template<>
+            struct action< rules::date_sequence >
+            {
+               template< typename Input, typename Consumer >
+               static void apply( const Input& in, Consumer& consumer )
+               {
+                  consumer.string( "date_sequence '" + in.string() + "'" );
+               }
+            };
+
             template< bool NEG >
             struct action< rules::hexnum< NEG > >
             {

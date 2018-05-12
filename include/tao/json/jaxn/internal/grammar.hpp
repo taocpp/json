@@ -34,6 +34,8 @@ namespace tao
                template< typename R, typename P = ws >
                using padr = json_pegtl::internal::seq< R, json_pegtl::internal::star< P > >;
 
+               struct time_separator : one< ':' > {};
+               struct date_separator : one< '-' > {};
                struct begin_array : padr< one< '[' > > {};
                struct begin_object : padr< one< '{' > > {};
                struct end_array : one< ']' > {};
@@ -114,6 +116,23 @@ namespace tao
                struct string_fragment : sor< qstring< '"' >, qstring< '\'' > > {};
 
                struct string : list_must< string_fragment, value_concat > {};
+
+               struct date_fullyear : rep< 4, abnf::DIGIT > {};
+               struct date_month : rep< 2, abnf::DIGIT > {}; // 01-12
+               struct date_mday : rep< 2, abnf::DIGIT > {}; // 01-28, 01-29, 01-30, 01-31 based on month/year
+
+               struct time_hour : rep< 2, abnf::DIGIT > {}; // 00-23
+               struct time_minute : rep< 2, abnf::DIGIT > {}; // 00-59
+               struct time_second : rep< 2, abnf::DIGIT > {}; // 00-58, 00-59, 00-60 based on leap-second-rules
+               struct time_secfrac : plus< abnf::DIGIT > {};
+
+               struct time_numoffset : if_must< one< '+', '-' >, time_hour, time_separator, time_minute > {};
+               struct time_offset : sor< one< 'Z' >, time_numoffset > {};
+
+               struct local_time : if_must< time_hour, time_separator, time_minute, time_separator, time_second, opt< if_must< one< '.' >, time_secfrac > > > {};
+
+               struct local_date : if_must< date_fullyear, date_separator, date_month, date_separator, date_mday > {};
+               struct date_sequence : seq< local_date, opt< if_must< one< 'T' >, local_time >, opt< time_offset > > > {};
 
                struct binary_prefix : one< '$' > {};
 
@@ -285,6 +304,26 @@ namespace tao
                             template< typename... > class Control,
                             typename Input,
                             typename... States >
+                  static bool match_number_or_date_time( Input& in, States&&... st )
+                  {
+                     if( in.size( 5 ) >= 5 && std::isdigit( in.peek_char() ) && std::isdigit( in.peek_char( 1 ) ) ) {
+                        const auto c = in.peek_char( 2 );
+                        if( c == ':' ) {
+                           return Control< local_time >::template match< A, M, Action, Control >( in, st... );
+                        }
+                        if( std::isdigit( c ) && std::isdigit( in.peek_char( 3 ) ) && ( in.peek_char( 4 ) == '-' ) ) {
+                           return Control< date_sequence >::template match< A, M, Action, Control >( in, st... );
+                        }
+                     }
+                     return match_number< false, A, M, Action, Control >( in, st... );
+                  }
+
+                  template< apply_mode A,
+                            rewind_mode M,
+                            template< typename... > class Action,
+                            template< typename... > class Control,
+                            typename Input,
+                            typename... States >
                   static bool match_impl( Input& in, States&&... st )
                   {
                      switch( in.peek_char() ) {
@@ -316,7 +355,7 @@ namespace tao
                            return true;
 
                         default:
-                           return match_number< false, A, M, Action, Control >( in, st... );
+                           return match_number_or_date_time< A, M, Action, Control >( in, st... );
                      }
                   }
 
