@@ -35,8 +35,8 @@ namespace tao
             const std::type_info* id = nullptr;
             std::string source;
 
-            internal::iterator m_begin;
-            internal::iterator m_end;
+            TAO_JSON_PEGTL_NAMESPACE::internal::iterator m_begin;
+            TAO_JSON_PEGTL_NAMESPACE::internal::iterator m_end;
 
             // each node will be default constructed
             basic_node() = default;
@@ -185,11 +185,23 @@ namespace tao
             template< template< typename > class S, template< typename > class C >
             struct make_control
             {
-               template< typename Rule, bool = S< Rule >::value >
+               template< typename Rule, bool >
                struct control;
 
                template< typename Rule >
-               using type = control< Rule >;
+               using type = control< Rule, S< Rule >::value >;
+            };
+
+            template< typename Control, template< typename... > class Action, typename Input, typename... States >
+            struct return_type_apply0
+            {
+               using type = decltype( Control::template apply0< Action >( std::declval< const Input& >(), std::declval< States&& >()... ) );
+            };
+
+            template< typename Control, template< typename... > class Action, typename Iterator, typename Input, typename... States >
+            struct return_type_apply
+            {
+               using type = decltype( Control::template apply< Action >( std::declval< const Iterator& >(), std::declval< const Input& >(), std::declval< States&& >()... ) );
             };
 
             template< template< typename > class S, template< typename > class C >
@@ -198,14 +210,16 @@ namespace tao
                : C< Rule >
             {
                template< typename Input, typename Node, typename... States >
-               static void start( const Input& /*unused*/, state< Node >& state, States&&... /*unused*/ )
+               static void start( const Input& in, state< Node >& state, States&&... st )
                {
+                  C< Rule >::start( in, st... );
                   state.emplace_back();
                }
 
                template< typename Input, typename Node, typename... States >
-               static void success( const Input& /*unused*/, state< Node >& state, States&&... /*unused*/ )
+               static void success( const Input& in, state< Node >& state, States&&... st )
                {
+                  C< Rule >::success( in, st... );
                   auto n = std::move( state.back() );
                   state.pop_back();
                   for( auto& c : n->children ) {
@@ -214,9 +228,28 @@ namespace tao
                }
 
                template< typename Input, typename Node, typename... States >
-               static void failure( const Input& /*unused*/, state< Node >& state, States&&... /*unused*/ ) noexcept
+               static void failure( const Input& in, state< Node >& state, States&&... st ) noexcept( noexcept( C< Rule >::failure( in, st... ) ) )
                {
+                  C< Rule >::failure( in, st... );
                   state.pop_back();
+               }
+
+               template< typename Input, typename Node, typename... States >
+               static void raise( const Input& in, state< Node >& /*unused*/, States&&... st )
+               {
+                  C< Rule >::raise( in, st... );
+               }
+
+               template< template< typename... > class Action, typename Input, typename Node, typename... States >
+               static typename return_type_apply0< C< Rule >, Action, Input, States... >::type apply0( const Input& in, state< Node >& /*unused*/, States&&... st )
+               {
+                  return C< Rule >::template apply0< Action >( in, st... );
+               }
+
+               template< template< typename... > class Action, typename Iterator, typename Input, typename Node, typename... States >
+               static typename return_type_apply< C< Rule >, Action, Iterator, Input, States... >::type apply( const Iterator& begin, const Input& in, state< Node >& /*unused*/, States&&... st )
+               {
+                  return C< Rule >::template apply< Action >( begin, in, st... );
                }
             };
 
@@ -228,6 +261,7 @@ namespace tao
                template< typename Input, typename Node, typename... States >
                static void start( const Input& in, state< Node >& state, States&&... st )
                {
+                  C< Rule >::start( in, st... );
                   state.emplace_back();
                   state.back()->template start< Rule >( in, st... );
                }
@@ -235,6 +269,7 @@ namespace tao
                template< typename Input, typename Node, typename... States >
                static void success( const Input& in, state< Node >& state, States&&... st )
                {
+                  C< Rule >::success( in, st... );
                   auto n = std::move( state.back() );
                   state.pop_back();
                   n->template success< Rule >( in, st... );
@@ -245,10 +280,29 @@ namespace tao
                }
 
                template< typename Input, typename Node, typename... States >
-               static void failure( const Input& in, state< Node >& state, States&&... st ) noexcept( noexcept( std::declval< node& >().template failure< Rule >( in, st... ) ) )
+               static void failure( const Input& in, state< Node >& state, States&&... st ) noexcept( noexcept( C< Rule >::failure( in, st... ) ) && noexcept( std::declval< node& >().template failure< Rule >( in, st... ) ) )
                {
+                  C< Rule >::failure( in, st... );
                   state.back()->template failure< Rule >( in, st... );
                   state.pop_back();
+               }
+
+               template< typename Input, typename Node, typename... States >
+               static void raise( const Input& in, state< Node >& /*unused*/, States&&... st )
+               {
+                  C< Rule >::raise( in, st... );
+               }
+
+               template< template< typename... > class Action, typename Input, typename Node, typename... States >
+               static typename return_type_apply0< C< Rule >, Action, Input, States... >::type apply0( const Input& in, state< Node >& /*unused*/, States&&... st )
+               {
+                  return C< Rule >::template apply0< Action >( in, st... );
+               }
+
+               template< template< typename... > class Action, typename Iterator, typename Input, typename Node, typename... States >
+               static typename return_type_apply< C< Rule >, Action, Iterator, Input, States... >::type apply( const Iterator& begin, const Input& in, state< Node >& /*unused*/, States&&... st )
+               {
+                  return C< Rule >::template apply< Action >( begin, in, st... );
                }
             };
 
@@ -294,7 +348,7 @@ namespace tao
          };
 
          template< typename Rule, typename Node, template< typename > class S = internal::store_all, template< typename > class C = normal, typename Input, typename... States >
-         std::unique_ptr< Node > parse( Input& in, States&&... st )
+         std::unique_ptr< Node > parse( Input&& in, States&&... st )
          {
             internal::state< Node > state;
             if( !TAO_JSON_PEGTL_NAMESPACE::parse< Rule, nothing, internal::make_control< S, C >::template type >( in, state, st... ) ) {
@@ -305,7 +359,7 @@ namespace tao
          }
 
          template< typename Rule, template< typename > class S = internal::store_all, template< typename > class C = normal, typename Input, typename... States >
-         std::unique_ptr< node > parse( Input& in, States&&... st )
+         std::unique_ptr< node > parse( Input&& in, States&&... st )
          {
             return parse< Rule, node, S, C >( in, st... );
          }

@@ -339,8 +339,10 @@ namespace tao
 
          const char* end_of_line( const TAO_JSON_PEGTL_NAMESPACE::position& p ) const noexcept
          {
-            memory_input< tracking_mode::LAZY, Eol, const char* > in( at( p ), this->end(), nullptr );
-            normal< internal::until< internal::at< internal::eolf > > >::match< apply_mode::NOTHING, rewind_mode::DONTCARE, nothing, normal >( in );
+            using input_t = memory_input< tracking_mode::LAZY, Eol, const char* >;
+            input_t in( at( p ), this->end(), "" );
+            using grammar = internal::until< internal::at< internal::eolf > >;
+            normal< grammar >::match< apply_mode::NOTHING, rewind_mode::DONTCARE, nothing, normal >( in );
             return in.current();
          }
 
