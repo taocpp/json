@@ -125,14 +125,16 @@ namespace tao
                struct time_minute : rep< 2, abnf::DIGIT > {}; // 00-59
                struct time_second : rep< 2, abnf::DIGIT > {}; // 00-58, 00-59, 00-60 based on leap-second-rules
                struct time_secfrac : plus< abnf::DIGIT > {};
+               struct time_extfrac : opt_must< one< '.' >, time_secfrac > {};
 
                struct time_numoffset : if_must< one< '+', '-' >, time_hour, time_separator, time_minute > {};
                struct time_offset : sor< one< 'Z' >, time_numoffset > {};
+               struct time_extoffset : opt< time_offset > {};
 
-               struct local_time : if_must< time_hour, time_separator, time_minute, time_separator, time_second, opt< if_must< one< '.' >, time_secfrac > > > {};
+               struct local_time : if_must< time_hour, time_separator, time_minute, time_separator, time_second, time_extfrac > {};
 
                struct local_date : if_must< date_fullyear, date_separator, date_month, date_separator, date_mday > {};
-               struct date_sequence : seq< local_date, opt< if_must< one< 'T' >, local_time >, opt< time_offset > > > {};
+               struct date_sequence : seq< local_date, opt_must< one< 'T' >, local_time, time_extoffset > > {};
 
                struct binary_prefix : one< '$' > {};
 
