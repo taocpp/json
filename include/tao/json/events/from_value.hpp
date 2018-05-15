@@ -67,6 +67,22 @@ namespace tao
                   consumer.binary( v.unsafe_get_binary_view() );
                   return;
 
+               case type::LOCAL_DATE:
+                  consumer.local_date( v.unsafe_get_local_date() );
+                  return;
+
+               case type::LOCAL_TIME:
+                  consumer.local_time( v.unsafe_get_local_time() );
+                  return;
+
+               case type::LOCAL_DATE_TIME:
+                  consumer.local_date_time( v.unsafe_get_local_date_time() );
+                  return;
+
+               case type::OFFSET_DATE_TIME:
+                  consumer.offset_date_time( v.unsafe_get_offset_date_time() );
+                  return;
+
                case type::ARRAY: {
                   const auto& a = v.unsafe_get_array();
                   const auto s = a.size();
@@ -156,6 +172,22 @@ namespace tao
 
                case type::BINARY_VIEW:
                   consumer.binary( v.unsafe_get_binary_view() );
+                  return;
+
+               case type::LOCAL_DATE:
+                  consumer.local_date( v.unsafe_get_local_date() );
+                  return;
+
+               case type::LOCAL_TIME:
+                  consumer.local_time( v.unsafe_get_local_time() );
+                  return;
+
+               case type::LOCAL_DATE_TIME:
+                  consumer.local_date_time( v.unsafe_get_local_date_time() );
+                  return;
+
+               case type::OFFSET_DATE_TIME:
+                  consumer.offset_date_time( v.unsafe_get_offset_date_time() );
                   return;
 
                case type::ARRAY:

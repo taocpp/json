@@ -14,6 +14,7 @@
 #include "../external/string_view.hpp"
 
 #include "../binary_view.hpp"
+#include "../date_time.hpp"
 #include "../value.hpp"
 
 namespace tao
@@ -82,6 +83,26 @@ namespace tao
             void binary( std::vector< tao::byte >&& v )
             {
                value.unsafe_assign_binary( std::move( v ) );
+            }
+
+            void local_date( const local_date_t v )
+            {
+               value.unsafe_assign_local_date( v );
+            }
+
+            void local_time( const local_time_t v )
+            {
+               value.unsafe_assign_local_time( v );
+            }
+
+            void local_date_time( const local_date_time_t v )
+            {
+               value.unsafe_assign_local_date_time( v );
+            }
+
+            void offset_date_time( const offset_date_time_t v )
+            {
+               value.unsafe_assign_offset_date_time( v );
             }
 
             void begin_array()

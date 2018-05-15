@@ -19,6 +19,7 @@
 #include "binary_view.hpp"
 #include "binding.hpp"
 #include "consume.hpp"
+#include "date_time.hpp"
 #include "forward.hpp"
 #include "type.hpp"
 
@@ -153,6 +154,202 @@ namespace tao
       template<> struct traits< float > : internal::float_trait< float > {};
       template<> struct traits< double > : internal::float_trait< double > {};
       // clang-format on
+
+      template<>
+      struct traits< local_date_t >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static local_date_t as( const basic_value< Traits, Base >& v )
+         {
+            return v.get_local_date();
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const local_date_t ld ) noexcept
+         {
+            v.unsafe_assign_local_date( ld );
+         }
+
+         template< template< typename... > class, typename Producer >
+         static local_date_t consume( Producer& parser )
+         {
+            return parser.local_date();
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const local_date_t ld )
+         {
+            c.local_date( ld );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool equal( const basic_value< Traits, Base >& lhs, const local_date_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return p->is_local_date() && ( p->unsafe_get_local_date() == rhs );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool less_than( const basic_value< Traits, Base >& lhs, const local_date_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() < type::LOCAL_DATE ) || ( p->is_local_date() && ( p->unsafe_get_local_date() < rhs ) );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const local_date_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() > type::LOCAL_DATE ) || ( p->is_local_date() && ( p->unsafe_get_local_date() > rhs ) );
+         }
+      };
+
+      template<>
+      struct traits< local_time_t >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static local_time_t as( const basic_value< Traits, Base >& v )
+         {
+            return v.get_local_time();
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const local_time_t lt ) noexcept
+         {
+            v.unsafe_assign_local_time( lt );
+         }
+
+         template< template< typename... > class, typename Producer >
+         static local_time_t consume( Producer& parser )
+         {
+            return parser.local_time();
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const local_time_t lt )
+         {
+            c.local_time( lt );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool equal( const basic_value< Traits, Base >& lhs, const local_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return p->is_local_time() && ( p->unsafe_get_local_time() == rhs );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool less_than( const basic_value< Traits, Base >& lhs, const local_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() < type::LOCAL_TIME ) || ( p->is_local_time() && ( p->unsafe_get_local_time() < rhs ) );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const local_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() > type::LOCAL_TIME ) || ( p->is_local_time() && ( p->unsafe_get_local_time() > rhs ) );
+         }
+      };
+
+      template<>
+      struct traits< local_date_time_t >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static local_date_time_t as( const basic_value< Traits, Base >& v )
+         {
+            return v.get_local_date_time();
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const local_date_time_t ldt ) noexcept
+         {
+            v.unsafe_assign_local_date_time( ldt );
+         }
+
+         template< template< typename... > class, typename Producer >
+         static local_date_time_t consume( Producer& parser )
+         {
+            return parser.local_date_time();
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const local_date_time_t ldt )
+         {
+            c.local_date_time( ldt );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool equal( const basic_value< Traits, Base >& lhs, const local_date_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return p->is_local_date_time() && ( p->unsafe_get_local_date_time() == rhs );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool less_than( const basic_value< Traits, Base >& lhs, const local_date_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() < type::LOCAL_DATE_TIME ) || ( p->is_local_date_time() && ( p->unsafe_get_local_date_time() < rhs ) );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const local_date_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() > type::LOCAL_DATE_TIME ) || ( p->is_local_date_time() && ( p->unsafe_get_local_date_time() > rhs ) );
+         }
+      };
+
+      template<>
+      struct traits< offset_date_time_t >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static offset_date_time_t as( const basic_value< Traits, Base >& v )
+         {
+            return v.get_offset_date_time();
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const offset_date_time_t odt ) noexcept
+         {
+            v.unsafe_assign_offset_date_time( odt );
+         }
+
+         template< template< typename... > class, typename Producer >
+         static offset_date_time_t consume( Producer& parser )
+         {
+            return parser.offset_date_time();
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const offset_date_time_t odt )
+         {
+            c.offset_date_time( odt );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool equal( const basic_value< Traits, Base >& lhs, const offset_date_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return p->is_offset_date_time() && ( p->unsafe_get_offset_date_time() == rhs );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool less_than( const basic_value< Traits, Base >& lhs, const offset_date_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() < type::OFFSET_DATE_TIME ) || ( p->is_offset_date_time() && ( p->unsafe_get_offset_date_time() < rhs ) );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const offset_date_time_t rhs ) noexcept
+         {
+            const auto* p = lhs.skip_value_ptr();
+            return ( p->type() > type::OFFSET_DATE_TIME ) || ( p->is_offset_date_time() && ( p->unsafe_get_offset_date_time() > rhs ) );
+         }
+      };
 
       template<>
       struct traits< empty_binary_t >

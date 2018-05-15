@@ -136,6 +136,18 @@ namespace tao
             case type::BINARY_VIEW:
                return lhs.unsafe_get_binary_view() == rhs.unsafe_get_binary_view();
 
+            case type::LOCAL_DATE:
+               return lhs.unsafe_get_local_date() == rhs.unsafe_get_local_date();
+
+            case type::LOCAL_TIME:
+               return lhs.unsafe_get_local_time() == rhs.unsafe_get_local_time();
+
+            case type::LOCAL_DATE_TIME:
+               return lhs.unsafe_get_local_date_time() == rhs.unsafe_get_local_date_time();
+
+            case type::OFFSET_DATE_TIME:
+               return lhs.unsafe_get_offset_date_time() == rhs.unsafe_get_offset_date_time();
+
             case type::ARRAY:
                return lhs.unsafe_get_array() == rhs.unsafe_get_array();
 
@@ -350,6 +362,18 @@ namespace tao
 
             case type::BINARY_VIEW:
                return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary_view();
+
+            case type::LOCAL_DATE:
+               return lhs.unsafe_get_local_date() < rhs.unsafe_get_local_date();
+
+            case type::LOCAL_TIME:
+               return lhs.unsafe_get_local_time() < rhs.unsafe_get_local_time();
+
+            case type::LOCAL_DATE_TIME:
+               return lhs.unsafe_get_local_date_time() < rhs.unsafe_get_local_date_time();
+
+            case type::OFFSET_DATE_TIME:
+               return lhs.unsafe_get_offset_date_time() < rhs.unsafe_get_offset_date_time();
 
             case type::ARRAY:
                return lhs.unsafe_get_array() < rhs.unsafe_get_array();

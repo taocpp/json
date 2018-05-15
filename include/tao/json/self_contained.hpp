@@ -41,6 +41,10 @@ namespace tao
             case type::DOUBLE:
             case type::STRING:
             case type::BINARY:
+            case type::LOCAL_DATE:
+            case type::LOCAL_TIME:
+            case type::LOCAL_DATE_TIME:
+            case type::OFFSET_DATE_TIME:
                return true;
 
             case type::STRING_VIEW:
@@ -99,6 +103,10 @@ namespace tao
             case type::DOUBLE:
             case type::STRING:
             case type::BINARY:
+            case type::LOCAL_DATE:
+            case type::LOCAL_TIME:
+            case type::LOCAL_DATE_TIME:
+            case type::OFFSET_DATE_TIME:
                return;
 
             case type::STRING_VIEW: {

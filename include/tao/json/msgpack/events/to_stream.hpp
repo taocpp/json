@@ -142,6 +142,26 @@ namespace tao
                   os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
                }
 
+               void local_date( const local_date_t /*unused*/ )
+               {
+                  // TODO: implement this
+               }
+
+               void local_time( const local_time_t /*unused*/ )
+               {
+                  // TODO: implement this
+               }
+
+               void local_date_time( const local_date_time_t /*unused*/ )
+               {
+                  // TODO: implement this
+               }
+
+               void offset_date_time( const offset_date_time_t /*unused*/ )
+               {
+                  // TODO: implement this
+               }
+
                void begin_array()
                {
                   throw std::runtime_error( "msgpack requires array size" );  // NOLINT

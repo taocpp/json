@@ -26,6 +26,7 @@
 #include "internal/value_union.hpp"
 
 #include "binary_view.hpp"
+#include "date_time.hpp"
 #include "pointer.hpp"
 #include "type.hpp"
 
@@ -247,6 +248,26 @@ namespace tao
             return is_binary() || is_binary_view();
          }
 
+         bool is_local_date() const noexcept
+         {
+            return m_type == json::type::LOCAL_DATE;
+         }
+
+         bool is_local_time() const noexcept
+         {
+            return m_type == json::type::LOCAL_TIME;
+         }
+
+         bool is_local_date_time() const noexcept
+         {
+            return m_type == json::type::LOCAL_DATE_TIME;
+         }
+
+         bool is_offset_date_time() const noexcept
+         {
+            return m_type == json::type::OFFSET_DATE_TIME;
+         }
+
          bool is_array() const noexcept
          {
             return m_type == json::type::ARRAY;
@@ -329,6 +350,26 @@ namespace tao
          tao::binary_view unsafe_get_binary_type() const noexcept
          {
             return ( m_type == json::type::BINARY ) ? m_union.x : m_union.xv;
+         }
+
+         local_date_t unsafe_get_local_date() const noexcept
+         {
+            return m_union.ld;
+         }
+
+         local_time_t unsafe_get_local_time() const noexcept
+         {
+            return m_union.lt;
+         }
+
+         local_date_time_t unsafe_get_local_date_time() const noexcept
+         {
+            return m_union.ldt;
+         }
+
+         offset_date_time_t unsafe_get_offset_date_time() const noexcept
+         {
+            return m_union.odt;
          }
 
          array_t& unsafe_get_array() noexcept
@@ -443,6 +484,30 @@ namespace tao
             return ( m_type == json::type::BINARY_VIEW ) ? m_union.xv : get_binary();
          }
 
+         local_date_t get_local_date() const noexcept
+         {
+            validate_json_type( json::type::LOCAL_DATE );
+            return m_union.ld;
+         }
+
+         local_time_t get_local_time() const noexcept
+         {
+            validate_json_type( json::type::LOCAL_TIME );
+            return m_union.lt;
+         }
+
+         local_date_time_t get_local_date_time() const noexcept
+         {
+            validate_json_type( json::type::LOCAL_DATE_TIME );
+            return m_union.ldt;
+         }
+
+         offset_date_time_t get_offset_date_time() const noexcept
+         {
+            validate_json_type( json::type::OFFSET_DATE_TIME );
+            return m_union.odt;
+         }
+
          array_t& get_array()
          {
             validate_json_type( json::type::ARRAY );
@@ -473,7 +538,11 @@ namespace tao
             return unsafe_get_value_ptr();
          }
 
-         // Does get_opaque_ptr() make sense?
+         const internal::opaque_ptr_t get_opaque_ptr() const noexcept
+         {
+            validate_json_type( json::type::OPAQUE_PTR );
+            return unsafe_get_opaque_ptr();
+         }
 
          template< json::type E >
          decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) get()
@@ -562,6 +631,30 @@ namespace tao
          {
             m_union.xv = xv;
             m_type = json::type::BINARY_VIEW;
+         }
+
+         void unsafe_assign_local_date( const local_date_t ld ) noexcept
+         {
+            m_union.ld = ld;
+            m_type = json::type::LOCAL_DATE;
+         }
+
+         void unsafe_assign_local_time( const local_time_t lt ) noexcept
+         {
+            m_union.lt = lt;
+            m_type = json::type::LOCAL_TIME;
+         }
+
+         void unsafe_assign_local_date_time( const local_date_time_t ldt ) noexcept
+         {
+            m_union.ldt = ldt;
+            m_type = json::type::LOCAL_DATE_TIME;
+         }
+
+         void unsafe_assign_offset_date_time( const offset_date_time_t odt ) noexcept
+         {
+            m_union.odt = odt;
+            m_type = json::type::OFFSET_DATE_TIME;
          }
 
          template< typename... Ts >
@@ -765,6 +858,30 @@ namespace tao
          {
             unsafe_discard();
             unsafe_assign_binary_view( xv );
+         }
+
+         void assign_local_date( const local_date_t ld ) noexcept
+         {
+            unsafe_discard();
+            unsafe_assign_local_date( ld );
+         }
+
+         void assign_local_time( const local_time_t lt ) noexcept
+         {
+            unsafe_discard();
+            unsafe_assign_local_time( lt );
+         }
+
+         void assign_local_date_time( const local_date_time_t ldt ) noexcept
+         {
+            unsafe_discard();
+            unsafe_assign_local_date_time( ldt );
+         }
+
+         void assign_offset_date_time( const offset_date_time_t odt ) noexcept
+         {
+            unsafe_discard();
+            unsafe_assign_offset_date_time( odt );
          }
 
          template< typename... Ts >
@@ -1244,6 +1361,10 @@ namespace tao
                case json::type::SIGNED:
                case json::type::UNSIGNED:
                case json::type::DOUBLE:
+               case json::type::LOCAL_DATE:
+               case json::type::LOCAL_TIME:
+               case json::type::LOCAL_DATE_TIME:
+               case json::type::OFFSET_DATE_TIME:
                case json::type::VALUE_PTR:
                case json::type::OPAQUE_PTR:
                   return;
@@ -1389,6 +1510,34 @@ namespace tao
 #endif
                   return;
 
+               case json::type::LOCAL_DATE:
+                  m_union.ld = r.m_union.ld;
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
+                  return;
+
+               case json::type::LOCAL_TIME:
+                  m_union.lt = r.m_union.lt;
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
+                  return;
+
+               case json::type::LOCAL_DATE_TIME:
+                  m_union.ldt = r.m_union.ldt;
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
+                  return;
+
+               case json::type::OFFSET_DATE_TIME:
+                  m_union.odt = r.m_union.odt;
+#ifndef NDEBUG
+                  r.m_type = json::type::DISCARDED;
+#endif
+                  return;
+
                case json::type::ARRAY:
                   new( &m_union.a ) array_t( std::move( r.m_union.a ) );
 #ifndef NDEBUG
@@ -1468,6 +1617,22 @@ namespace tao
 
                case json::type::BINARY_VIEW:
                   new( &m_union.xv ) tao::binary_view( r.m_union.xv );
+                  return;
+
+               case json::type::LOCAL_DATE:
+                  m_union.ld = r.m_union.ld;
+                  return;
+
+               case json::type::LOCAL_TIME:
+                  m_union.lt = r.m_union.lt;
+                  return;
+
+               case json::type::LOCAL_DATE_TIME:
+                  m_union.ldt = r.m_union.ldt;
+                  return;
+
+               case json::type::OFFSET_DATE_TIME:
+                  m_union.odt = r.m_union.odt;
                   return;
 
                case json::type::ARRAY:

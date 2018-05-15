@@ -1505,6 +1505,26 @@ namespace tao
                // TODO: What?
             }
 
+            void local_date( const local_date_t /*unused*/ )
+            {
+               // TODO: What?
+            }
+
+            void local_time( const local_time_t /*unused*/ )
+            {
+               // TODO: What?
+            }
+
+            void local_date_time( const local_date_time_t /*unused*/ )
+            {
+               // TODO: What?
+            }
+
+            void offset_date_time( const offset_date_time_t /*unused*/ )
+            {
+               // TODO: What?
+            }
+
             void begin_array( const std::size_t /*unused*/ = 0 )
             {
                if( m_match ) {

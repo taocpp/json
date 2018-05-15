@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "../binary_view.hpp"
+#include "../date_time.hpp"
 #include "../forward.hpp"
 
 #include "../external/byte.hpp"
@@ -55,6 +56,11 @@ namespace tao
 
             std::vector< tao::byte > x;
             tao::binary_view xv;
+
+            local_date_t ld;         // local date
+            local_time_t lt;         // local time
+            local_date_time_t ldt;   // local date-time
+            offset_date_time_t odt;  // offset-date-time
 
             std::vector< T > a;
 

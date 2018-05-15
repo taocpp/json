@@ -123,6 +123,34 @@ namespace tao
                m_digests.back()->feed( v.data(), v.size() );
             }
 
+            void local_date( const local_date_t v )
+            {
+               m_digests.back()->feed( 'D' );
+               // TODO: validate when proper type is used
+               m_digests.back()->feed( &v, sizeof( v ) );
+            }
+
+            void local_time( const local_time_t v )
+            {
+               m_digests.back()->feed( 'T' );
+               // TODO: validate when proper type is used
+               m_digests.back()->feed( &v, sizeof( v ) );
+            }
+
+            void local_date_time( const local_date_time_t v )
+            {
+               m_digests.back()->feed( 'F' );
+               // TODO: validate when proper type is used
+               m_digests.back()->feed( &v, sizeof( v ) );
+            }
+
+            void offset_date_time( const offset_date_time_t v )
+            {
+               m_digests.back()->feed( 'Z' );
+               // TODO: validate when proper type is used
+               m_digests.back()->feed( &v, sizeof( v ) );
+            }
+
             void begin_array( const std::size_t /*unused*/ = 0 )
             {
                m_digests.back()->feed( '[' );

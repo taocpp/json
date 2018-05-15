@@ -37,79 +37,104 @@ namespace tao
             std::size_t binary_count = 0;
             std::size_t binary_lengths = 0;
 
+            std::size_t local_date_count = 0;
+            std::size_t local_time_count = 0;
+            std::size_t local_date_time_count = 0;
+            std::size_t offset_date_time_count = 0;
+
             std::size_t array_count = 0;
             std::size_t array_elements = 0;
             std::size_t object_count = 0;
             std::size_t object_members = 0;
 
-            void null()
+            void null() noexcept
             {
                ++null_count;
             }
 
-            void boolean( const bool v )
+            void boolean( const bool v ) noexcept
             {
                ++( v ? true_count : false_count );
             }
 
-            void number( const std::int64_t /*unused*/ )
+            void number( const std::int64_t /*unused*/ ) noexcept
             {
                ++signed_count;
             }
 
-            void number( const std::uint64_t /*unused*/ )
+            void number( const std::uint64_t /*unused*/ ) noexcept
             {
                ++unsigned_count;
             }
 
-            void number( const double /*unused*/ )
+            void number( const double /*unused*/ ) noexcept
             {
                ++double_count;
             }
 
-            void string( const tao::string_view v )
+            void string( const tao::string_view v ) noexcept
             {
                ++string_count;
                string_lengths += v.size();
             }
 
-            void binary( const tao::binary_view v )
+            void binary( const tao::binary_view v ) noexcept
             {
                ++binary_count;
                binary_lengths += v.size();
             }
 
-            void begin_array( const std::size_t /*unused*/ = 0 )
+            void local_date( const local_date_t /*unused*/ ) noexcept
+            {
+               ++local_date_count;
+            }
+
+            void local_time( const local_time_t /*unused*/ ) noexcept
+            {
+               ++local_time_count;
+            }
+
+            void local_date_time( const local_date_time_t /*unused*/ ) noexcept
+            {
+               ++local_date_time_count;
+            }
+
+            void offset_date_time( const offset_date_time_t /*unused*/ ) noexcept
+            {
+               ++offset_date_time_count;
+            }
+
+            void begin_array( const std::size_t /*unused*/ = 0 ) noexcept
             {
                ++array_count;
             }
 
-            void element()
+            void element() noexcept
             {
                ++array_elements;
             }
 
-            void end_array( const std::size_t /*unused*/ = 0 )
+            void end_array( const std::size_t /*unused*/ = 0 ) noexcept
             {
             }
 
-            void begin_object( const std::size_t /*unused*/ = 0 )
+            void begin_object( const std::size_t /*unused*/ = 0 ) noexcept
             {
                ++object_count;
             }
 
-            void key( const tao::string_view v )
+            void key( const tao::string_view v ) noexcept
             {
                ++key_count;
                key_lengths += v.size();
             }
 
-            void member()
+            void member() noexcept
             {
                ++object_members;
             }
 
-            void end_object( const std::size_t /*unused*/ = 0 )
+            void end_object( const std::size_t /*unused*/ = 0 ) noexcept
             {
             }
          };

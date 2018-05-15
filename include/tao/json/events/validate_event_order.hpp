@@ -141,6 +141,26 @@ namespace tao
                atom( "binary(...)" );
             }
 
+            void local_date( const local_date_t /*unused*/ )
+            {
+               atom( "local_date(...)" );
+            }
+
+            void local_time( const local_time_t /*unused*/ )
+            {
+               atom( "local_time(...)" );
+            }
+
+            void local_date_time( const local_date_time_t /*unused*/ )
+            {
+               atom( "local_date_time(...)" );
+            }
+
+            void offset_date_time( const offset_date_time_t /*unused*/ )
+            {
+               atom( "offset_date_time(...)" );
+            }
+
             void begin_array()
             {
                switch( state ) {

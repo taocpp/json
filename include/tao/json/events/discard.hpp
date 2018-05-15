@@ -50,6 +50,22 @@ namespace tao
             {
             }
 
+            void local_date( const local_date_t /*unused*/ ) noexcept
+            {
+            }
+
+            void local_time( const local_time_t /*unused*/ ) noexcept
+            {
+            }
+
+            void local_date_time( const local_date_time_t /*unused*/ ) noexcept
+            {
+            }
+
+            void offset_date_time( const offset_date_time_t /*unused*/ ) noexcept
+            {
+            }
+
             void begin_array( const std::size_t /*unused*/ = 0 ) noexcept
             {
             }
