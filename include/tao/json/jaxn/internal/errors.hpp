@@ -106,6 +106,9 @@ namespace tao
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::time_minute >::error_message TAO_JSON_WEAK_SUFFIX = "expected minutes (two digits)";  // NOLINT
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::time_second >::error_message TAO_JSON_WEAK_SUFFIX = "expected seconds (two digits)";  // NOLINT
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::time_secfrac >::error_message TAO_JSON_WEAK_SUFFIX = "expected digit";  // NOLINT
+            template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::time_extfrac >::error_message TAO_JSON_WEAK_SUFFIX = "THIS SHOULD NEVER HAPPEN";  // NOLINT
+            template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::time_extoffset >::error_message TAO_JSON_WEAK_SUFFIX = "THIS SHOULD NEVER HAPPEN";  // NOLINT
+
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::date_separator >::error_message TAO_JSON_WEAK_SUFFIX = "expected '-'";  // NOLINT
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::date_month >::error_message TAO_JSON_WEAK_SUFFIX = "expected month (two digits)";  // NOLINT
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::date_mday >::error_message TAO_JSON_WEAK_SUFFIX = "expected day (two digits)";  // NOLINT
