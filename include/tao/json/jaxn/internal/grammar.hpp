@@ -4,6 +4,8 @@
 #ifndef TAO_JSON_JAXN_INTERNAL_GRAMMAR_HPP
 #define TAO_JSON_JAXN_INTERNAL_GRAMMAR_HPP
 
+#include <cctype>
+
 #include "../../external/pegtl.hpp"
 #include "../../external/pegtl/contrib/abnf.hpp"
 
