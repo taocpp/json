@@ -72,7 +72,9 @@ namespace tao
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )
                {
-                  consumer.string( "local_time '" + in.string() + "'" );
+                  // TODO: proper parsing
+                  (void)in;
+                  consumer.local_time( {} );
                }
             };
 
@@ -82,7 +84,17 @@ namespace tao
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )
                {
-                  consumer.string( "date_sequence '" + in.string() + "'" );
+                  // TODO: proper parsing, distinguish local-/offset-date-time for default
+                  switch( in.size() ) {
+                     case 10:
+                        consumer.local_date( {} );
+                        break;
+                     case 19:
+                        consumer.local_date_time( {} );
+                        break;
+                     default:
+                        consumer.offset_date_time( {} );
+                  }
                }
             };
 

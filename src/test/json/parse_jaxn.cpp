@@ -227,12 +227,13 @@ namespace tao
 
          TEST_ASSERT( custom_from_string( "$'Hello, world!'" ) == 0x48656c6c6f2c20776f726c6421_binary );
 
-         TEST_ASSERT( custom_from_string( "01:02:03" ) == "local_time '01:02:03'" );
-         TEST_ASSERT( custom_from_string( "2018-01-01" ) == "date_sequence '2018-01-01'" );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03" ) == "date_sequence '2018-01-01T01:02:03'" );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03Z" ) == "date_sequence '2018-01-01T01:02:03Z'" );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456" ) == "date_sequence '2018-01-01T01:02:03.456'" );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456Z" ) == "date_sequence '2018-01-01T01:02:03.456Z'" );
+         // TODO: Write real tests
+         TEST_ASSERT( custom_from_string( "01:02:03" ) == local_time_t{} );
+         TEST_ASSERT( custom_from_string( "2018-01-01" ) == local_date_t{} );
+         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03" ) == local_date_time_t{} );
+         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03Z" ) == offset_date_time_t{} );
+         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456" ) == offset_date_time_t{} );  // should be local_date_time_t
+         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456Z" ) == offset_date_time_t{} );
 
          TEST_THROWS( custom_from_string( "01:02:0" ) );
          TEST_THROWS( custom_from_string( "01:0:02" ) );
