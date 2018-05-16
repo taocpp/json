@@ -9,6 +9,7 @@
 #include <string>
 
 #include "../binary_view.hpp"
+#include "../date_time.hpp"
 
 #include "../external/string_view.hpp"
 

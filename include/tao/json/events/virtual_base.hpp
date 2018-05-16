@@ -197,10 +197,10 @@ namespace tao
             virtual void v_binary( std::vector< byte >&& ) = 0;
             virtual void v_binary( const std::vector< byte >& ) = 0;
             virtual void v_binary( tao::binary_view ) = 0;
-            virtual void v_local_date( const local_date_t v ) = 0;
-            virtual void v_local_time( const local_time_t v ) = 0;
-            virtual void v_local_date_time( const local_date_time_t v ) = 0;
-            virtual void v_offset_date_time( const offset_date_time_t v ) = 0;
+            virtual void v_local_date( local_date_t v ) = 0;
+            virtual void v_local_time( local_time_t v ) = 0;
+            virtual void v_local_date_time( local_date_time_t v ) = 0;
+            virtual void v_offset_date_time( offset_date_time_t v ) = 0;
             virtual void v_begin_array() = 0;
             virtual void v_begin_array( std::size_t ) = 0;
             virtual void v_element() = 0;

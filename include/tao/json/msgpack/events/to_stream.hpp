@@ -12,8 +12,10 @@
 #include <string>
 
 #include "../../binary_view.hpp"
-#include "../../external/byte.hpp"
+#include "../../date_time.hpp"
+
 #include "../../external/string_view.hpp"
+
 #include "../../internal/endian.hpp"
 
 #ifdef _MSC_VER

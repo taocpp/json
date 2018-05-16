@@ -13,7 +13,10 @@
 #include <vector>
 
 #include "../binary_view.hpp"
+#include "../date_time.hpp"
+
 #include "../external/string_view.hpp"
+
 #include "../internal/sha256.hpp"
 
 namespace tao

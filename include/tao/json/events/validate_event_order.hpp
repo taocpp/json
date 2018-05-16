@@ -11,6 +11,8 @@
 #include <vector>
 
 #include "../binary_view.hpp"
+#include "../date_time.hpp"
+
 #include "../external/byte.hpp"
 #include "../external/optional.hpp"
 #include "../external/string_view.hpp"
