@@ -45,6 +45,37 @@ namespace tao
                   }
                }
 
+               void binary( const tao::binary_view v )
+               {
+                  next();
+                  os.put( '$' );
+                  json::internal::hexdump( os, v );
+               }
+
+               void local_date( const local_date_t /*unused*/ )
+               {
+                  next();
+                  os << "1970-01-01";  // TODO: implement me
+               }
+
+               void local_time( const local_time_t /*unused*/ )
+               {
+                  next();
+                  os << "00:00:00";  // TODO: implement me
+               }
+
+               void local_date_time( const local_date_time_t /*unused*/ )
+               {
+                  next();
+                  os << "1970-01-01T00:00:00";  // TODO: implement me
+               }
+
+               void offset_date_time( const offset_date_time_t /*unused*/ )
+               {
+                  next();
+                  os << "1970-01-01T00:00:00Z";  // TODO: implement me
+               }
+
                void key( const tao::string_view v )
                {
                   if( json::jaxn::is_identifier( v ) ) {
@@ -57,13 +88,6 @@ namespace tao
                   os.write( ": ", 2 );
                   first = true;
                   after_key = true;
-               }
-
-               void binary( const tao::binary_view v )
-               {
-                  next();
-                  os.put( '$' );
-                  json::internal::hexdump( os, v );
                }
             };
 
