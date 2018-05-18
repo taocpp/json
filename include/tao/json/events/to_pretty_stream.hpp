@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <iomanip>
 #include <ostream>
 #include <stdexcept>
 #include <string>
@@ -34,8 +35,10 @@ namespace tao
          protected:
             std::ostream& os;
             const std::size_t indent;
+            const std::string eol;
 
-            std::string current = "\n";
+            std::size_t current_indent = 0;
+
             bool first = true;
             bool after_key = true;
 
@@ -48,14 +51,15 @@ namespace tao
                   after_key = false;
                }
                else {
-                  os << current;
+                  os << eol << std::setw( current_indent ) << "";
                }
             }
 
          public:
             to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
                : os( in_os ),
-                 indent( in_indent )
+                 indent( in_indent ),
+                 eol( "\n" )
             {
             }
 
@@ -63,7 +67,7 @@ namespace tao
             to_pretty_stream( std::ostream& in_os, const std::size_t in_indent, S&& in_eol )
                : os( in_os ),
                  indent( in_indent ),
-                 current( std::forward< S >( in_eol ) )
+                 eol( std::forward< S >( in_eol ) )
             {
             }
 
@@ -148,7 +152,7 @@ namespace tao
             {
                next();
                os.put( '[' );
-               current.resize( current.size() + indent, ' ' );
+               current_indent += indent;
                first = true;
             }
 
@@ -159,9 +163,9 @@ namespace tao
 
             void end_array( const std::size_t /*unused*/ = 0 )
             {
-               current.resize( current.size() - indent );
+               current_indent -= indent;
                if( !first ) {
-                  os << current;
+                  os << eol << std::setw( current_indent ) << "";
                }
                os.put( ']' );
             }
@@ -170,7 +174,7 @@ namespace tao
             {
                next();
                os.put( '{' );
-               current.resize( current.size() + indent, ' ' );
+               current_indent += indent;
                first = true;
             }
 
@@ -189,9 +193,9 @@ namespace tao
 
             void end_object( const std::size_t /*unused*/ = 0 )
             {
-               current.resize( current.size() - indent );
+               current_indent -= indent;
                if( !first ) {
-                  os << current;
+                  os << eol << std::setw( current_indent ) << "";
                }
                os.put( '}' );
             }
