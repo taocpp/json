@@ -12,6 +12,8 @@
 
 #include "../../internal/number_state.hpp"
 
+#include <iostream>
+
 namespace tao
 {
    namespace json
@@ -84,15 +86,45 @@ namespace tao
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )
                {
-                  // TODO: proper parsing, distinguish local-/offset-date-time for default
-                  switch( in.size() ) {
-                     case 10:
+                  const auto s = in.size();
+                  switch( s ) {
+                     case 10:  // 1970-01-01
                         consumer.local_date( {} );
                         break;
-                     case 19:
+                     case 19:  // 1970-01-01T00:00:00
+                        consumer.local_date_time( {} );
+                        break;
+                     case 20:  // 1970-01-01T00:00:00Z
+                        std::cout << "ZULU!" << std::endl;
+                        consumer.offset_date_time( {} );
+                        break;
+                     case 21:  // 1970-01-01T00:00:00.0
+                        std::cout << "LOCAL!" << std::endl;
                         consumer.local_date_time( {} );
                         break;
                      default:
+                        assert( s > 21 );
+                        if( in.peek_char( s - 1 ) == 'Z' ) {
+                           std::cout << "ZULU" << std::endl;
+                           consumer.offset_date_time( {} );
+                           return;
+                        }
+                        if( s < 25 ) {
+                           std::cout << "LOCAL" << std::endl;
+                           consumer.local_date_time( {} );
+                           return;
+                        }
+                        if( in.peek_char( 19 ) == '.' ) {
+                           std::cout << "CHECK..." << std::endl;
+                           const tao::string_view sv( in.begin() + 20, s - 20 );
+                           const auto p = sv.find_first_of( "+-" );
+                           if( p == tao::string_view::npos ) {
+                              std::cout << "LOCAL" << std::endl;
+                              consumer.local_date_time( {} );
+                              return;
+                           }
+                        }
+                        std::cout << "OFFSET" << std::endl;
                         consumer.offset_date_time( {} );
                   }
                }

@@ -126,32 +126,51 @@ namespace tao
                m_digests.back()->feed( v.data(), v.size() );
             }
 
+            void local_date_impl( const local_date_t v )
+            {
+               m_digests.back()->feed( &v.year, sizeof( v.year ) );
+               m_digests.back()->feed( &v.month, sizeof( v.month ) );
+               m_digests.back()->feed( &v.day, sizeof( v.day ) );
+            }
+
             void local_date( const local_date_t v )
             {
                m_digests.back()->feed( 'D' );
-               // TODO: validate when proper type is used
-               m_digests.back()->feed( &v, sizeof( v ) );
+               local_date_impl( v );
+            }
+
+            void local_time_impl( const local_time_t v )
+            {
+               m_digests.back()->feed( &v.hour, sizeof( v.hour ) );
+               m_digests.back()->feed( &v.minute, sizeof( v.minute ) );
+               m_digests.back()->feed( &v.second, sizeof( v.second ) );
+               m_digests.back()->feed( &v.nanosecond, sizeof( v.nanosecond ) );
             }
 
             void local_time( const local_time_t v )
             {
                m_digests.back()->feed( 'T' );
-               // TODO: validate when proper type is used
-               m_digests.back()->feed( &v, sizeof( v ) );
+               local_time_impl( v );
+            }
+
+            void local_date_time_impl( const local_date_time_t v )
+            {
+               local_date_impl( v.date );
+               local_time_impl( v.time );
             }
 
             void local_date_time( const local_date_time_t v )
             {
-               m_digests.back()->feed( 'F' );
-               // TODO: validate when proper type is used
-               m_digests.back()->feed( &v, sizeof( v ) );
+               m_digests.back()->feed( 'L' );
+               local_date_time_impl( v );
             }
 
             void offset_date_time( const offset_date_time_t v )
             {
-               m_digests.back()->feed( 'Z' );
-               // TODO: validate when proper type is used
-               m_digests.back()->feed( &v, sizeof( v ) );
+               m_digests.back()->feed( 'O' );
+               local_date_time_impl( v.date_time );
+               m_digests.back()->feed( &v.offset_hour, sizeof( v.offset_hour ) );
+               m_digests.back()->feed( &v.offset_minute, sizeof( v.offset_minute ) );
             }
 
             void begin_array( const std::size_t /*unused*/ = 0 )

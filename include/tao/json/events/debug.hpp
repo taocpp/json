@@ -90,26 +90,22 @@ namespace tao
 
             void local_date( const local_date_t v )
             {
-               // TODO: Fix when real data type is available
-               os << "local_date: " << static_cast< std::uint64_t >( v ) << '\n';
+               os << "local_date: " << v << '\n';
             }
 
             void local_time( const local_time_t v )
             {
-               // TODO: Fix when real data type is available
-               os << "local_time: " << static_cast< std::uint64_t >( v ) << '\n';
+               os << "local_time: " << v << '\n';
             }
 
             void local_date_time( const local_date_time_t v )
             {
-               // TODO: Fix when real data type is available
-               os << "local_date_time: " << static_cast< std::uint64_t >( v ) << '\n';
+               os << "local_date_time: " << v << '\n';
             }
 
             void offset_date_time( const offset_date_time_t v )
             {
-               // TODO: Fix when real data type is available
-               os << "offset_date_time: " << static_cast< std::uint64_t >( v ) << '\n';
+               os << "offset_date_time: " << v << '\n';
             }
 
             void begin_array()
