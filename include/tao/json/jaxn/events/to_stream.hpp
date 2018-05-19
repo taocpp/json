@@ -64,6 +64,30 @@ namespace tao
                   os.put( '$' );
                   json::internal::hexdump( os, v );
                }
+
+               void local_date( const local_date_t v )
+               {
+                  next();
+                  os << v;
+               }
+
+               void local_time( const local_time_t v )
+               {
+                  next();
+                  os << v;
+               }
+
+               void local_date_time( const local_date_time_t v )
+               {
+                  next();
+                  os << v;
+               }
+
+               void offset_date_time( const offset_date_time_t v )
+               {
+                  next();
+                  os << v;
+               }
             };
 
          }  // namespace events
