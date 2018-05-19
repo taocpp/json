@@ -10,7 +10,10 @@
 #include "errors.hpp"
 #include "grammar.hpp"
 
-#include "../../date_time.hpp"
+#include "../../local_date.hpp"
+#include "../../local_date_time.hpp"
+#include "../../local_time.hpp"
+#include "../../offset_date_time.hpp"
 
 #include "../../internal/number_state.hpp"
 
@@ -74,7 +77,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )
                {
-                  consumer.local_time( local_time_t( tao::string_view( in.begin(), in.size() ) ) );
+                  consumer.local_time( local_time( tao::string_view( in.begin(), in.size() ) ) );
                }
             };
 
@@ -87,33 +90,33 @@ namespace tao
                   const auto s = in.size();
                   switch( s ) {
                      case 10:  // 1970-01-01
-                        consumer.local_date( local_date_t( tao::string_view( in.begin(), s ) ) );
+                        consumer.local_date( local_date( tao::string_view( in.begin(), s ) ) );
                         break;
                      case 19:  // 1970-01-01T00:00:00
-                        consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
+                        consumer.local_date_time( local_date_time( tao::string_view( in.begin(), s ) ) );
                         break;
                      case 20:  // 1970-01-01T00:00:00Z
-                        consumer.offset_date_time( offset_date_time_t( tao::string_view( in.begin(), s - 1 ), "Z" ) );
+                        consumer.offset_date_time( offset_date_time( tao::string_view( in.begin(), s - 1 ), "Z" ) );
                         break;
                      case 21:  // 1970-01-01T00:00:00.0
-                        consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
+                        consumer.local_date_time( local_date_time( tao::string_view( in.begin(), s ) ) );
                         break;
                      default:
                         assert( s > 21 );
                         if( in.peek_char( s - 1 ) == 'Z' ) {
-                           consumer.offset_date_time( offset_date_time_t( tao::string_view( in.begin(), s - 1 ), "Z" ) );
+                           consumer.offset_date_time( offset_date_time( tao::string_view( in.begin(), s - 1 ), "Z" ) );
                         }
                         else if( s < 25 ) {
-                           consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
+                           consumer.local_date_time( local_date_time( tao::string_view( in.begin(), s ) ) );
                         }
                         else {
                            const tao::string_view sv( in.begin(), s );
                            const auto p = sv.find_first_of( "+-", 19 );
                            if( p == tao::string_view::npos ) {
-                              consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
+                              consumer.local_date_time( local_date_time( tao::string_view( in.begin(), s ) ) );
                            }
                            else {
-                              consumer.offset_date_time( offset_date_time_t( sv.substr( 0, p ), sv.substr( p ) ) );
+                              consumer.offset_date_time( offset_date_time( sv.substr( 0, p ), sv.substr( p ) ) );
                            }
                         }
                   }

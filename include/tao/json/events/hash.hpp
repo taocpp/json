@@ -13,7 +13,10 @@
 #include <vector>
 
 #include "../binary_view.hpp"
-#include "../date_time.hpp"
+#include "../local_date.hpp"
+#include "../local_date_time.hpp"
+#include "../local_time.hpp"
+#include "../offset_date_time.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -126,20 +129,20 @@ namespace tao
                m_digests.back()->feed( v.data(), v.size() );
             }
 
-            void local_date_impl( const local_date_t v )
+            void local_date_impl( const json::local_date v )
             {
                m_digests.back()->feed( &v.year, sizeof( v.year ) );
                m_digests.back()->feed( &v.month, sizeof( v.month ) );
                m_digests.back()->feed( &v.day, sizeof( v.day ) );
             }
 
-            void local_date( const local_date_t v )
+            void local_date( const json::local_date v )
             {
                m_digests.back()->feed( 'D' );
                local_date_impl( v );
             }
 
-            void local_time_impl( const local_time_t v )
+            void local_time_impl( const json::local_time v )
             {
                m_digests.back()->feed( &v.hour, sizeof( v.hour ) );
                m_digests.back()->feed( &v.minute, sizeof( v.minute ) );
@@ -147,25 +150,25 @@ namespace tao
                m_digests.back()->feed( &v.nanosecond, sizeof( v.nanosecond ) );
             }
 
-            void local_time( const local_time_t v )
+            void local_time( const json::local_time v )
             {
                m_digests.back()->feed( 'T' );
                local_time_impl( v );
             }
 
-            void local_date_time_impl( const local_date_time_t v )
+            void local_date_time_impl( const json::local_date_time v )
             {
                local_date_impl( v.date );
                local_time_impl( v.time );
             }
 
-            void local_date_time( const local_date_time_t v )
+            void local_date_time( const json::local_date_time v )
             {
                m_digests.back()->feed( 'L' );
                local_date_time_impl( v );
             }
 
-            void offset_date_time( const offset_date_time_t v )
+            void offset_date_time( const json::offset_date_time v )
             {
                m_digests.back()->feed( 'O' );
                local_date_time_impl( v.date_time );

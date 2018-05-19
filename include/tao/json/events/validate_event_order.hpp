@@ -11,7 +11,10 @@
 #include <vector>
 
 #include "../binary_view.hpp"
-#include "../date_time.hpp"
+#include "../local_date.hpp"
+#include "../local_date_time.hpp"
+#include "../local_time.hpp"
+#include "../offset_date_time.hpp"
 
 #include "../external/byte.hpp"
 #include "../external/optional.hpp"
@@ -143,22 +146,22 @@ namespace tao
                atom( "binary(...)" );
             }
 
-            void local_date( const local_date_t /*unused*/ )
+            void local_date( const json::local_date /*unused*/ )
             {
                atom( "local_date(...)" );
             }
 
-            void local_time( const local_time_t /*unused*/ )
+            void local_time( const json::local_time /*unused*/ )
             {
                atom( "local_time(...)" );
             }
 
-            void local_date_time( const local_date_time_t /*unused*/ )
+            void local_date_time( const json::local_date_time /*unused*/ )
             {
                atom( "local_date_time(...)" );
             }
 
-            void offset_date_time( const offset_date_time_t /*unused*/ )
+            void offset_date_time( const json::offset_date_time /*unused*/ )
             {
                atom( "offset_date_time(...)" );
             }

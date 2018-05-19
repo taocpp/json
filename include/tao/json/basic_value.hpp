@@ -26,7 +26,10 @@
 #include "internal/value_union.hpp"
 
 #include "binary_view.hpp"
-#include "date_time.hpp"
+#include "local_date.hpp"
+#include "local_date_time.hpp"
+#include "local_time.hpp"
+#include "offset_date_time.hpp"
 #include "pointer.hpp"
 #include "type.hpp"
 
@@ -352,22 +355,22 @@ namespace tao
             return ( m_type == json::type::BINARY ) ? m_union.x : m_union.xv;
          }
 
-         local_date_t unsafe_get_local_date() const noexcept
+         local_date unsafe_get_local_date() const noexcept
          {
             return m_union.ld;
          }
 
-         local_time_t unsafe_get_local_time() const noexcept
+         local_time unsafe_get_local_time() const noexcept
          {
             return m_union.lt;
          }
 
-         local_date_time_t unsafe_get_local_date_time() const noexcept
+         local_date_time unsafe_get_local_date_time() const noexcept
          {
             return m_union.ldt;
          }
 
-         offset_date_time_t unsafe_get_offset_date_time() const noexcept
+         offset_date_time unsafe_get_offset_date_time() const noexcept
          {
             return m_union.odt;
          }
@@ -484,25 +487,25 @@ namespace tao
             return ( m_type == json::type::BINARY_VIEW ) ? m_union.xv : get_binary();
          }
 
-         local_date_t get_local_date() const noexcept
+         local_date get_local_date() const noexcept
          {
             validate_json_type( json::type::LOCAL_DATE );
             return m_union.ld;
          }
 
-         local_time_t get_local_time() const noexcept
+         local_time get_local_time() const noexcept
          {
             validate_json_type( json::type::LOCAL_TIME );
             return m_union.lt;
          }
 
-         local_date_time_t get_local_date_time() const noexcept
+         local_date_time get_local_date_time() const noexcept
          {
             validate_json_type( json::type::LOCAL_DATE_TIME );
             return m_union.ldt;
          }
 
-         offset_date_time_t get_offset_date_time() const noexcept
+         offset_date_time get_offset_date_time() const noexcept
          {
             validate_json_type( json::type::OFFSET_DATE_TIME );
             return m_union.odt;
@@ -633,25 +636,25 @@ namespace tao
             m_type = json::type::BINARY_VIEW;
          }
 
-         void unsafe_assign_local_date( const local_date_t ld ) noexcept
+         void unsafe_assign_local_date( const local_date ld ) noexcept
          {
             m_union.ld = ld;
             m_type = json::type::LOCAL_DATE;
          }
 
-         void unsafe_assign_local_time( const local_time_t lt ) noexcept
+         void unsafe_assign_local_time( const local_time lt ) noexcept
          {
             m_union.lt = lt;
             m_type = json::type::LOCAL_TIME;
          }
 
-         void unsafe_assign_local_date_time( const local_date_time_t ldt ) noexcept
+         void unsafe_assign_local_date_time( const local_date_time ldt ) noexcept
          {
             m_union.ldt = ldt;
             m_type = json::type::LOCAL_DATE_TIME;
          }
 
-         void unsafe_assign_offset_date_time( const offset_date_time_t odt ) noexcept
+         void unsafe_assign_offset_date_time( const offset_date_time odt ) noexcept
          {
             m_union.odt = odt;
             m_type = json::type::OFFSET_DATE_TIME;
@@ -860,25 +863,25 @@ namespace tao
             unsafe_assign_binary_view( xv );
          }
 
-         void assign_local_date( const local_date_t ld ) noexcept
+         void assign_local_date( const local_date ld ) noexcept
          {
             unsafe_discard();
             unsafe_assign_local_date( ld );
          }
 
-         void assign_local_time( const local_time_t lt ) noexcept
+         void assign_local_time( const local_time lt ) noexcept
          {
             unsafe_discard();
             unsafe_assign_local_time( lt );
          }
 
-         void assign_local_date_time( const local_date_time_t ldt ) noexcept
+         void assign_local_date_time( const local_date_time ldt ) noexcept
          {
             unsafe_discard();
             unsafe_assign_local_date_time( ldt );
          }
 
-         void assign_offset_date_time( const offset_date_time_t odt ) noexcept
+         void assign_offset_date_time( const offset_date_time odt ) noexcept
          {
             unsafe_discard();
             unsafe_assign_offset_date_time( odt );

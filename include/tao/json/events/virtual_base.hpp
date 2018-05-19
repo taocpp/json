@@ -10,7 +10,10 @@
 #include <vector>
 
 #include "../binary_view.hpp"
-#include "../date_time.hpp"
+#include "../local_date.hpp"
+#include "../local_date_time.hpp"
+#include "../local_time.hpp"
+#include "../offset_date_time.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -80,22 +83,22 @@ namespace tao
                v_binary( v );
             }
 
-            void local_date( const local_date_t v )
+            void local_date( const json::local_date v )
             {
                v_local_date( v );
             }
 
-            void local_time( const local_time_t v )
+            void local_time( const json::local_time v )
             {
                v_local_time( v );
             }
 
-            void local_date_time( const local_date_time_t v )
+            void local_date_time( const json::local_date_time v )
             {
                v_local_date_time( v );
             }
 
-            void offset_date_time( const offset_date_time_t v )
+            void offset_date_time( const json::offset_date_time v )
             {
                v_offset_date_time( v );
             }
@@ -197,10 +200,10 @@ namespace tao
             virtual void v_binary( std::vector< byte >&& ) = 0;
             virtual void v_binary( const std::vector< byte >& ) = 0;
             virtual void v_binary( tao::binary_view ) = 0;
-            virtual void v_local_date( local_date_t v ) = 0;
-            virtual void v_local_time( local_time_t v ) = 0;
-            virtual void v_local_date_time( local_date_time_t v ) = 0;
-            virtual void v_offset_date_time( offset_date_time_t v ) = 0;
+            virtual void v_local_date( json::local_date v ) = 0;
+            virtual void v_local_time( json::local_time v ) = 0;
+            virtual void v_local_date_time( json::local_date_time v ) = 0;
+            virtual void v_offset_date_time( json::offset_date_time v ) = 0;
             virtual void v_begin_array() = 0;
             virtual void v_begin_array( std::size_t ) = 0;
             virtual void v_element() = 0;

@@ -13,7 +13,10 @@
 
 #include "discard.hpp"
 
-#include "../date_time.hpp"
+#include "../local_date.hpp"
+#include "../local_date_time.hpp"
+#include "../local_time.hpp"
+#include "../offset_date_time.hpp"
 
 #include "../external/pegtl/internal/integer_sequence.hpp"
 
@@ -80,22 +83,22 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void local_date( std::tuple< Ts... >& /*unused*/, const local_date_t /*unused*/ )
+            static void local_date( std::tuple< Ts... >& /*unused*/, const json::local_date /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void local_time( std::tuple< Ts... >& /*unused*/, const local_time_t /*unused*/ )
+            static void local_time( std::tuple< Ts... >& /*unused*/, const json::local_time /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void local_date_time( std::tuple< Ts... >& /*unused*/, const local_date_time_t /*unused*/ )
+            static void local_date_time( std::tuple< Ts... >& /*unused*/, const json::local_date_time /*unused*/ )
             {
             }
 
             template< typename... Ts >
-            static void offset_date_time( std::tuple< Ts... >& /*unused*/, const offset_date_time_t /*unused*/ )
+            static void offset_date_time( std::tuple< Ts... >& /*unused*/, const json::offset_date_time /*unused*/ )
             {
             }
 
@@ -203,25 +206,25 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void local_date( std::tuple< Ts... >& t, const local_date_t v )
+            static void local_date( std::tuple< Ts... >& t, const json::local_date v )
             {
                (void)sink{ ( std::get< Is >( t ).local_date( v ), true )... };
             }
 
             template< typename... Ts >
-            static void local_time( std::tuple< Ts... >& t, const local_time_t v )
+            static void local_time( std::tuple< Ts... >& t, const json::local_time v )
             {
                (void)sink{ ( std::get< Is >( t ).local_time( v ), true )... };
             }
 
             template< typename... Ts >
-            static void local_date_time( std::tuple< Ts... >& t, const local_date_time_t v )
+            static void local_date_time( std::tuple< Ts... >& t, const json::local_date_time v )
             {
                (void)sink{ ( std::get< Is >( t ).local_date_time( v ), true )... };
             }
 
             template< typename... Ts >
-            static void offset_date_time( std::tuple< Ts... >& t, const offset_date_time_t v )
+            static void offset_date_time( std::tuple< Ts... >& t, const json::offset_date_time v )
             {
                (void)sink{ ( std::get< Is >( t ).offset_date_time( v ), true )... };
             }
@@ -369,22 +372,22 @@ namespace tao
                std::get< S - 1 >( ts ).binary( std::move( v ) );
             }
 
-            void local_date( const local_date_t v )
+            void local_date( const json::local_date v )
             {
                internal::events_apply< I >::local_date( ts, v );
             }
 
-            void local_time( const local_time_t v )
+            void local_time( const json::local_time v )
             {
                internal::events_apply< I >::local_time( ts, v );
             }
 
-            void local_date_time( const local_date_time_t v )
+            void local_date_time( const json::local_date_time v )
             {
                internal::events_apply< I >::local_date_time( ts, v );
             }
 
-            void offset_date_time( const offset_date_time_t v )
+            void offset_date_time( const json::offset_date_time v )
             {
                internal::events_apply< I >::offset_date_time( ts, v );
             }

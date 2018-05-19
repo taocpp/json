@@ -11,7 +11,10 @@
 #include <string>
 
 #include "../binary_view.hpp"
-#include "../date_time.hpp"
+#include "../local_date.hpp"
+#include "../local_date_time.hpp"
+#include "../local_time.hpp"
+#include "../offset_date_time.hpp"
 
 #include "../external/double.hpp"
 
@@ -88,22 +91,22 @@ namespace tao
                os << '\n';
             }
 
-            void local_date( const local_date_t v )
+            void local_date( const json::local_date v )
             {
                os << "local_date: " << v << '\n';
             }
 
-            void local_time( const local_time_t v )
+            void local_time( const json::local_time v )
             {
                os << "local_time: " << v << '\n';
             }
 
-            void local_date_time( const local_date_time_t v )
+            void local_date_time( const json::local_date_time v )
             {
                os << "local_date_time: " << v << '\n';
             }
 
-            void offset_date_time( const offset_date_time_t v )
+            void offset_date_time( const json::offset_date_time v )
             {
                os << "offset_date_time: " << v << '\n';
             }

@@ -1505,22 +1505,22 @@ namespace tao
                // TODO: What?
             }
 
-            void local_date( const local_date_t /*unused*/ )
+            void local_date( const local_date /*unused*/ )
             {
                // TODO: What?
             }
 
-            void local_time( const local_time_t /*unused*/ )
+            void local_time( const local_time /*unused*/ )
             {
                // TODO: What?
             }
 
-            void local_date_time( const local_date_time_t /*unused*/ )
+            void local_date_time( const local_date_time /*unused*/ )
             {
                // TODO: What?
             }
 
-            void offset_date_time( const offset_date_time_t /*unused*/ )
+            void offset_date_time( const offset_date_time /*unused*/ )
             {
                // TODO: What?
             }

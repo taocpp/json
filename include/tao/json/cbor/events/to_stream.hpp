@@ -11,7 +11,10 @@
 #include "../internal/major.hpp"
 
 #include "../../binary_view.hpp"
-#include "../../date_time.hpp"
+#include "../../local_date.hpp"
+#include "../../local_date_time.hpp"
+#include "../../local_time.hpp"
+#include "../../offset_date_time.hpp"
 
 #include "../../external/string_view.hpp"
 
@@ -113,22 +116,22 @@ namespace tao
                   os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
                }
 
-               void local_date( const local_date_t /*unused*/ )
+               void local_date( const json::local_date /*unused*/ )
                {
                   // TODO: implement this
                }
 
-               void local_time( const local_time_t /*unused*/ )
+               void local_time( const json::local_time /*unused*/ )
                {
                   // TODO: implement this
                }
 
-               void local_date_time( const local_date_time_t /*unused*/ )
+               void local_date_time( const json::local_date_time /*unused*/ )
                {
                   // TODO: implement this
                }
 
-               void offset_date_time( const offset_date_time_t /*unused*/ )
+               void offset_date_time( const json::offset_date_time /*unused*/ )
                {
                   // TODO: implement this
                }

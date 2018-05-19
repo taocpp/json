@@ -93,22 +93,22 @@ namespace tao
                m_r.binary( v );
             }
 
-            void v_local_date( const local_date_t v ) override
+            void v_local_date( const json::local_date v ) override
             {
                m_r.local_date( v );
             }
 
-            void v_local_time( const local_time_t v ) override
+            void v_local_time( const json::local_time v ) override
             {
                m_r.local_time( v );
             }
 
-            void v_local_date_time( const local_date_time_t v ) override
+            void v_local_date_time( const json::local_date_time v ) override
             {
                m_r.local_date_time( v );
             }
 
-            void v_offset_date_time( const offset_date_time_t v ) override
+            void v_offset_date_time( const json::offset_date_time v ) override
             {
                m_r.offset_date_time( v );
             }

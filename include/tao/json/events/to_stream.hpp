@@ -12,7 +12,10 @@
 #include <string>
 
 #include "../binary_view.hpp"
-#include "../date_time.hpp"
+#include "../local_date.hpp"
+#include "../local_date_time.hpp"
+#include "../local_time.hpp"
+#include "../offset_date_time.hpp"
 
 #include "../external/double.hpp"
 #include "../external/string_view.hpp"
@@ -100,27 +103,27 @@ namespace tao
                throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
             }
 
-            void local_date( const local_date_t /*unused*/ )
+            void local_date( const json::local_date /*unused*/ )
             {
                // if this throws, consider using local_date_to_* transformers
                throw std::runtime_error( "local date invalid for JSON string representation" );  // NOLINT
             }
 
-            void local_time( const local_time_t /*unused*/ )
+            void local_time( const json::local_time /*unused*/ )
             {
-               // if this throws, consider using local_date_to_* transformers
+               // if this throws, consider using local_time_to_* transformers
                throw std::runtime_error( "local time invalid for JSON string representation" );  // NOLINT
             }
 
-            void local_date_time( const local_date_time_t /*unused*/ )
+            void local_date_time( const json::local_date_time /*unused*/ )
             {
-               // if this throws, consider using local_date_to_* transformers
+               // if this throws, consider using local_date_time_to_* transformers
                throw std::runtime_error( "local date-time invalid for JSON string representation" );  // NOLINT
             }
 
-            void offset_date_time( const offset_date_time_t /*unused*/ )
+            void offset_date_time( const json::offset_date_time /*unused*/ )
             {
-               // if this throws, consider using local_date_to_* transformers
+               // if this throws, consider using offset_date_time_to_* transformers
                throw std::runtime_error( "offset date-time invalid for JSON string representation" );  // NOLINT
             }
 

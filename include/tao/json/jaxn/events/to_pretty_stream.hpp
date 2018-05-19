@@ -8,6 +8,11 @@
 
 #include "../../events/to_pretty_stream.hpp"
 
+#include "../../local_date.hpp"
+#include "../../local_date_time.hpp"
+#include "../../local_time.hpp"
+#include "../../offset_date_time.hpp"
+
 #include "../is_identifier.hpp"
 
 namespace tao
@@ -52,28 +57,28 @@ namespace tao
                   json::internal::hexdump( os, v );
                }
 
-               void local_date( const local_date_t /*unused*/ )
+               void local_date( const json::local_date v )
                {
                   next();
-                  os << "1970-01-01";  // TODO: implement me
+                  os << v;
                }
 
-               void local_time( const local_time_t /*unused*/ )
+               void local_time( const json::local_time v )
                {
                   next();
-                  os << "00:00:00";  // TODO: implement me
+                  os << v;
                }
 
-               void local_date_time( const local_date_time_t /*unused*/ )
+               void local_date_time( const json::local_date_time v )
                {
                   next();
-                  os << "1970-01-01T00:00:00";  // TODO: implement me
+                  os << v;
                }
 
-               void offset_date_time( const offset_date_time_t /*unused*/ )
+               void offset_date_time( const json::offset_date_time v )
                {
                   next();
-                  os << "1970-01-01T00:00:00Z";  // TODO: implement me
+                  os << v;
                }
 
                void key( const tao::string_view v )
