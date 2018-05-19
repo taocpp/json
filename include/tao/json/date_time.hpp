@@ -99,7 +99,7 @@ namespace tao
          std::uint8_t month = 1;
          std::uint8_t day = 1;
 
-         local_date_t() = default;
+         constexpr local_date_t() = default;
 
          local_date_t( const std::uint16_t in_year, const std::uint8_t in_month, const std::uint8_t in_day )
             : year( in_year ), month( in_month ), day( in_day )
@@ -205,7 +205,7 @@ namespace tao
          std::uint8_t nanodigits = 0;
          std::uint32_t nanosecond = 0;
 
-         local_time_t() = default;
+         constexpr local_time_t() = default;
 
          local_time_t( const std::uint8_t in_hour, const std::uint8_t in_minute, const std::uint8_t in_second, const std::uint32_t in_nanosecond = 0 )
             : hour( in_hour ), minute( in_minute ), second( in_second ), nanosecond( in_nanosecond )
@@ -241,7 +241,7 @@ namespace tao
 
          constexpr local_date_time_t() = default;
 
-         constexpr local_date_time_t( const local_date_t in_date, const local_time_t in_time )
+         local_date_time_t( const local_date_t in_date, const local_time_t in_time )
             : date( in_date ), time( in_time )
          {
          }
@@ -252,12 +252,83 @@ namespace tao
          }
       };
 
-      struct offset_date_time_t
-         : private internal::date_time_ops< offset_date_time_t >
+      class offset_date_time_t
+         : internal::date_time_ops< offset_date_time_t >
       {
+         static bool validate_offset_basics( const tao::string_view sv )
+         {
+            if( sv.size() == 1 ) {
+               if( sv[ 0 ] != 'Z' ) {
+                  throw std::runtime_error( "invalid offset character: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
+               }
+               return true;
+            }
+            if( sv.size() != 6 ) {
+               throw std::runtime_error( "invalid offset length: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
+            }
+            if( ( sv[ 0 ] != '+' ) && ( sv[ 0 ] != '-' ) ) {
+               throw std::runtime_error( "invalid prefix: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
+            }
+            if( sv[ 3 ] != ':' ) {
+               throw std::runtime_error( "invalid separator: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
+            }
+            return true;
+         }
+
+         void validate() const
+         {
+            if( offset_hour < 0 ) {
+               if( offset_hour < -23 ) {
+                  throw std::runtime_error( "invalid offset hour '" + std::to_string( offset_hour ) + "'" );  // NOLINT
+               }
+               if( offset_minute > 0 ) {
+                  throw std::runtime_error( "invalid offset minute, inconsistent signedness '" + std::to_string( offset_minute ) + "'" );  // NOLINT
+               }
+               if( offset_minute < -59 ) {
+                  throw std::runtime_error( "invalid offset minute '" + std::to_string( offset_minute ) + "'" );  // NOLINT
+               }
+            }
+            else {
+               if( offset_hour > 23 ) {
+                  throw std::runtime_error( "invalid offset hour '" + std::to_string( offset_hour ) + "'" );  // NOLINT
+               }
+               if( offset_minute < 0 ) {
+                  throw std::runtime_error( "invalid offset minute, inconsistent signedness '" + std::to_string( offset_minute ) + "'" );  // NOLINT
+               }
+               if( offset_minute > 59 ) {
+                  throw std::runtime_error( "invalid offset minute '" + std::to_string( offset_minute ) + "'" );  // NOLINT
+               }
+            }
+         }
+
+         offset_date_time_t( const tao::string_view sv_date_time, const tao::string_view sv_offset, const bool /*is_validated*/ )
+            : date_time( local_date_time_t( sv_date_time ) ),
+              offset_hour( ( sv_offset.size() == 1 ) ? 0 : internal::get_two< 1 >( sv_offset ) ),
+              offset_minute( ( sv_offset.size() == 1 ) ? 0 : internal::get_two< 4 >( sv_offset ) )
+         {
+            if( sv_offset[ 0 ] == '-' ) {
+               offset_hour *= -1;
+               offset_minute *= -1;
+            }
+         }
+
+      public:
          local_date_time_t date_time;
          std::int8_t offset_hour = 0;
          std::int8_t offset_minute = 0;  // note: if hour is negative, minute is negative as well (if not 0)
+
+         constexpr offset_date_time_t() = default;
+
+         offset_date_time_t( const local_date_time_t in_date_time, const std::int8_t in_offset_hour, const std::int8_t in_offset_minutes )
+            : date_time( in_date_time ), offset_hour( in_offset_hour ), offset_minute( in_offset_minutes )
+         {
+            validate();
+         }
+
+         offset_date_time_t( const tao::string_view sv_date_time, const tao::string_view sv_offset )
+            : offset_date_time_t( sv_date_time, sv_offset, validate_offset_basics( sv_offset ) )
+         {
+         }
       };
 
       inline bool operator==( const local_date_t lhs, const local_date_t rhs ) noexcept

@@ -14,8 +14,6 @@
 
 #include "../../internal/number_state.hpp"
 
-#include <iostream>
-
 namespace tao
 {
    namespace json
@@ -95,7 +93,7 @@ namespace tao
                         consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
                         break;
                      case 20:  // 1970-01-01T00:00:00Z
-                        consumer.offset_date_time( {} );
+                        consumer.offset_date_time( offset_date_time_t( tao::string_view( in.begin(), s - 1 ), "Z" ) );
                         break;
                      case 21:  // 1970-01-01T00:00:00.0
                         consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
@@ -103,23 +101,20 @@ namespace tao
                      default:
                         assert( s > 21 );
                         if( in.peek_char( s - 1 ) == 'Z' ) {
-                           consumer.offset_date_time( {} );
+                           consumer.offset_date_time( offset_date_time_t( tao::string_view( in.begin(), s - 1 ), "Z" ) );
                         }
                         else if( s < 25 ) {
                            consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
                         }
-                        else if( in.peek_char( 19 ) == '.' ) {
-                           const tao::string_view sv( in.begin() + 20, s - 20 );
-                           const auto p = sv.find_first_of( "+-" );
+                        else {
+                           const tao::string_view sv( in.begin(), s );
+                           const auto p = sv.find_first_of( "+-", 19 );
                            if( p == tao::string_view::npos ) {
                               consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
                            }
                            else {
-                              consumer.offset_date_time( {} );
+                              consumer.offset_date_time( offset_date_time_t( sv.substr( 0, p ), sv.substr( p ) ) );
                            }
-                        }
-                        else {
-                           consumer.offset_date_time( {} );
                         }
                   }
                }
