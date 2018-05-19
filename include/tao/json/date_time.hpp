@@ -21,22 +21,22 @@ namespace tao
          template< typename T >
          struct date_time_ops
          {
-            friend bool operator!=( const T lhs, const T rhs ) noexcept
+            friend bool operator!=( const T lhs, const T rhs ) noexcept  // NOLINT
             {
                return !( lhs == rhs );
             };
 
-            friend bool operator>( const T lhs, const T rhs ) noexcept
+            friend bool operator>( const T lhs, const T rhs ) noexcept  // NOLINT
             {
                return rhs < lhs;
             };
 
-            friend bool operator<=( const T lhs, const T rhs ) noexcept
+            friend bool operator<=( const T lhs, const T rhs ) noexcept  // NOLINT
             {
                return !( lhs > rhs );
             };
 
-            friend bool operator>=( const T lhs, const T rhs ) noexcept
+            friend bool operator>=( const T lhs, const T rhs ) noexcept  // NOLINT
             {
                return !( lhs < rhs );
             };
@@ -63,10 +63,10 @@ namespace tao
          static bool validate_basics( const tao::string_view sv )
          {
             if( sv.size() != 10 ) {
-               throw std::runtime_error( "invalid length: '" + std::string( sv.begin(), sv.end() ) + "'" );
+               throw std::runtime_error( "invalid length: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
             }
             if( ( sv[ 4 ] != '-' ) || ( sv[ 7 ] != '-' ) ) {
-               throw std::runtime_error( "invalid separator: '" + std::string( sv.begin(), sv.end() ) + "'" );
+               throw std::runtime_error( "invalid separator: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
             }
             return true;
          }
@@ -89,10 +89,10 @@ namespace tao
             : year( in_year ), month( in_month ), day( in_day )
          {
             if( ( month == 0 ) || ( month > 12 ) ) {
-               throw std::runtime_error( "invalid month '" + std::to_string( month ) + "'" );
+               throw std::runtime_error( "invalid month '" + std::to_string( month ) + "'" );  // NOLINT
             }
             if( ( day == 0 ) || ( day > days_of_month( year, month ) ) ) {
-               throw std::runtime_error( "invalid day '" + std::to_string( day ) + "' for year '" + std::to_string( year ) + "', month '" + std::to_string( month ) + "'" );
+               throw std::runtime_error( "invalid day '" + std::to_string( day ) + "' for year '" + std::to_string( year ) + "', month '" + std::to_string( month ) + "'" );  // NOLINT
             }
          }
 
@@ -199,7 +199,7 @@ namespace tao
                case 3: os << std::setw( 3 ) << ( v.nanosecond / 1000000 ); break;
                case 2: os << std::setw( 2 ) << ( v.nanosecond / 10000000 ); break;
                case 1: os << std::setw( 1 ) << ( v.nanosecond / 100000000 ); break;
-               default: throw std::logic_error( "invalid nanodigits: " + std::to_string( v.nanodigits ) ); // NOLINT
+               default: throw std::logic_error( "invalid nanodigits: " + std::to_string( v.nanodigits ) );  // NOLINT
             }
             // clang-format on
             os.fill( f );
