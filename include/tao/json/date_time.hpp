@@ -129,8 +129,8 @@ namespace tao
          os << std::setw( 2 ) << v.hour << ':' << std::setw( 2 ) << v.minute << ':' << std::setw( 2 ) << v.second;
          if( v.nanodigits != 0U ) {
             os << '.';
+            // clang-format off
             switch( v.nanodigits ) {
-               // clang-format off
                case 9: os << std::setw( 9 ) << v.nanosecond; break;
                case 8: os << std::setw( 8 ) << ( v.nanosecond / 10 ); break;
                case 7: os << std::setw( 7 ) << ( v.nanosecond / 100 ); break;
@@ -141,8 +141,8 @@ namespace tao
                case 2: os << std::setw( 2 ) << ( v.nanosecond / 10000000 ); break;
                case 1: os << std::setw( 1 ) << ( v.nanosecond / 100000000 ); break;
                default: throw std::logic_error( "invalid nanodigits: " + std::to_string( v.nanodigits ) ); // NOLINT
-                  // clang-format on
             }
+            // clang-format on
          }
          os.fill( f );
          return os;
