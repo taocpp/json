@@ -19,22 +19,22 @@ namespace tao
          template< typename T >
          struct date_time_ops
          {
-            friend bool operator!=( const T& lhs, const T& rhs ) noexcept
+            friend bool operator!=( const T lhs, const T rhs ) noexcept
             {
                return !( lhs == rhs );
             };
 
-            friend bool operator>( const T& lhs, const T& rhs ) noexcept
+            friend bool operator>( const T lhs, const T rhs ) noexcept
             {
                return rhs < lhs;
             };
 
-            friend bool operator<=( const T& lhs, const T& rhs ) noexcept
+            friend bool operator<=( const T lhs, const T rhs ) noexcept
             {
                return !( lhs > rhs );
             };
 
-            friend bool operator>=( const T& lhs, const T& rhs ) noexcept
+            friend bool operator>=( const T lhs, const T rhs ) noexcept
             {
                return !( lhs < rhs );
             };
@@ -72,50 +72,50 @@ namespace tao
       {
          local_date_time_t date_time;
          std::int8_t offset_hour = 0;
-         std::int8_t offset_minute = 0;
+         std::int8_t offset_minute = 0;  // note: if hour is negative, minute is negative as well (if not 0)
       };
 
-      inline bool operator==( const local_date_t& lhs, const local_date_t& rhs ) noexcept
+      inline bool operator==( const local_date_t lhs, const local_date_t rhs ) noexcept
       {
          return std::tie( lhs.year, lhs.month, lhs.day ) == std::tie( rhs.year, rhs.month, rhs.day );
       }
 
-      inline bool operator==( const local_time_t& lhs, const local_time_t& rhs ) noexcept
+      inline bool operator==( const local_time_t lhs, const local_time_t rhs ) noexcept
       {
          return std::tie( lhs.hour, lhs.minute, lhs.second, lhs.nanosecond ) == std::tie( rhs.hour, rhs.minute, rhs.second, rhs.nanosecond );
       }
 
-      inline bool operator==( const local_date_time_t& lhs, const local_date_time_t& rhs ) noexcept
+      inline bool operator==( const local_date_time_t lhs, const local_date_time_t rhs ) noexcept
       {
          return std::tie( lhs.date, lhs.time ) == std::tie( rhs.date, rhs.time );
       }
 
-      inline bool operator==( const offset_date_time_t& lhs, const offset_date_time_t& rhs ) noexcept
+      inline bool operator==( const offset_date_time_t lhs, const offset_date_time_t rhs ) noexcept
       {
          return std::tie( lhs.date_time, lhs.offset_hour, lhs.offset_minute ) == std::tie( rhs.date_time, rhs.offset_hour, rhs.offset_minute );
       }
 
-      inline bool operator<( const local_date_t& lhs, const local_date_t& rhs ) noexcept
+      inline bool operator<( const local_date_t lhs, const local_date_t rhs ) noexcept
       {
          return std::tie( lhs.year, lhs.month, lhs.day ) < std::tie( rhs.year, rhs.month, rhs.day );
       }
 
-      inline bool operator<( const local_time_t& lhs, const local_time_t& rhs ) noexcept
+      inline bool operator<( const local_time_t lhs, const local_time_t rhs ) noexcept
       {
          return std::tie( lhs.hour, lhs.minute, lhs.second, lhs.nanosecond ) < std::tie( rhs.hour, rhs.minute, rhs.second, rhs.nanosecond );
       }
 
-      inline bool operator<( const local_date_time_t& lhs, const local_date_time_t& rhs ) noexcept
+      inline bool operator<( const local_date_time_t lhs, const local_date_time_t rhs ) noexcept
       {
          return std::tie( lhs.date, lhs.time ) < std::tie( rhs.date, rhs.time );
       }
 
-      inline bool operator<( const offset_date_time_t& lhs, const offset_date_time_t& rhs ) noexcept
+      inline bool operator<( const offset_date_time_t lhs, const offset_date_time_t rhs ) noexcept
       {
          return std::tie( lhs.date_time, lhs.offset_hour, lhs.offset_minute ) < std::tie( rhs.date_time, rhs.offset_hour, rhs.offset_minute );
       }
 
-      inline std::ostream& operator<<( std::ostream& os, const local_date_t& v )
+      inline std::ostream& operator<<( std::ostream& os, const local_date_t v )
       {
          const auto f = os.fill( '0' );
          os << std::setw( 4 ) << v.year << '-' << std::setw( 2 ) << v.month << '-' << std::setw( 2 ) << v.day;
@@ -123,11 +123,11 @@ namespace tao
          return os;
       }
 
-      inline std::ostream& operator<<( std::ostream& os, const local_time_t& v )
+      inline std::ostream& operator<<( std::ostream& os, const local_time_t v )
       {
          const auto f = os.fill( '0' );
          os << std::setw( 2 ) << v.hour << ':' << std::setw( 2 ) << v.minute << ':' << std::setw( 2 ) << v.second;
-         if( v.nanodigits != 0U ) {
+         if( v.nanodigits != 0 ) {
             os << '.';
             // clang-format off
             switch( v.nanodigits ) {
@@ -148,13 +148,13 @@ namespace tao
          return os;
       }
 
-      inline std::ostream& operator<<( std::ostream& os, const local_date_time_t& v )
+      inline std::ostream& operator<<( std::ostream& os, const local_date_time_t v )
       {
          os << v.date << 'T' << v.time;
          return os;
       }
 
-      inline std::ostream& operator<<( std::ostream& os, const offset_date_time_t& v )
+      inline std::ostream& operator<<( std::ostream& os, const offset_date_time_t v )
       {
          os << v.date_time;
          if( ( v.offset_hour == 0 ) && ( v.offset_minute == 0 ) ) {
