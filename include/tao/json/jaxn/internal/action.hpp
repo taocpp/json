@@ -89,7 +89,7 @@ namespace tao
                   const auto s = in.size();
                   switch( s ) {
                      case 10:  // 1970-01-01
-                        consumer.local_date( {} );
+                        consumer.local_date( local_date_t( tao::string_view( in.begin(), 10 ) ) );
                         break;
                      case 19:  // 1970-01-01T00:00:00
                         consumer.local_date_time( {} );

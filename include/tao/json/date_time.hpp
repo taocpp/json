@@ -10,6 +10,8 @@
 #include <stdexcept>
 #include <tuple>
 
+#include "external/string_view.hpp"
+
 namespace tao
 {
    namespace json
@@ -43,8 +45,8 @@ namespace tao
          template< typename T >
          void write_two( std::ostream& os, const T v )
          {
-            os.put( '0' + v / 10 );
-            os.put( '0' + v % 10 );
+            os.put( static_cast< char >( '0' + v / 10 ) );
+            os.put( static_cast< char >( '0' + v % 10 ) );
          }
 
       }  // namespace internal
@@ -52,9 +54,52 @@ namespace tao
       struct local_date_t
          : private internal::date_time_ops< local_date_t >
       {
-         std::uint16_t year = 0;
-         std::uint8_t month = 0;
-         std::uint8_t day = 0;
+      private:
+         static std::uint8_t days_of_month( const std::uint16_t year, const std::uint8_t month ) noexcept
+         {
+            return ( month == 2 ) ? ( ( ( year % 4 == 0 ) && ( ( year % 100 != 0 ) || ( year % 400 == 0 ) ) ) ? 29 : 28 ) : ( ( ( month == 4 ) || ( month == 6 ) || ( month == 9 ) || ( month == 11 ) ) ? 30 : 31 );
+         }
+
+         static bool validate_basics( const tao::string_view sv )
+         {
+            if( sv.size() != 10 ) {
+               throw std::runtime_error( "invalid length: '" + std::string( sv.begin(), sv.end() ) + "'" );
+            }
+            if( ( sv[ 4 ] != '-' ) || ( sv[ 7 ] != '-' ) ) {
+               throw std::runtime_error( "invalid separator: '" + std::string( sv.begin(), sv.end() ) + "'" );
+            }
+            return true;
+         }
+
+         explicit local_date_t( const tao::string_view sv, const bool /*is_validated*/ )
+            : local_date_t( ( ( ( sv[ 0 ] - '0' ) * 10 + ( sv[ 1 ] - '0' ) ) * 10 + ( sv[ 2 ] - '0' ) ) * 10 + ( sv[ 3 ] - '0' ),
+                            ( sv[ 5 ] - '0' ) * 10 + ( sv[ 6 ] - '0' ),
+                            ( sv[ 8 ] - '0' ) * 10 + ( sv[ 9 ] - '0' ) )
+         {
+         }
+
+      public:
+         std::uint16_t year = 1970;
+         std::uint8_t month = 1;
+         std::uint8_t day = 1;
+
+         local_date_t() = default;
+
+         local_date_t( const std::uint16_t in_year, const std::uint8_t in_month, const std::uint8_t in_day )
+            : year( in_year ), month( in_month ), day( in_day )
+         {
+            if( ( month == 0 ) || ( month > 12 ) ) {
+               throw std::runtime_error( "invalid month '" + std::to_string( month ) + "'" );
+            }
+            if( ( day == 0 ) || ( day > days_of_month( year, month ) ) ) {
+               throw std::runtime_error( "invalid day '" + std::to_string( day ) + "' for year '" + std::to_string( year ) + "', month '" + std::to_string( month ) + "'" );
+            }
+         }
+
+         explicit local_date_t( const tao::string_view sv )
+            : local_date_t( sv, validate_basics( sv ) )
+         {
+         }
       };
 
       struct local_time_t

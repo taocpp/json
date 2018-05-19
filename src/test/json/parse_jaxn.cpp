@@ -229,7 +229,7 @@ namespace tao
 
          // TODO: Write real tests
          TEST_ASSERT( custom_from_string( "01:02:03" ) == local_time_t{} );
-         TEST_ASSERT( custom_from_string( "2018-01-01" ) == local_date_t{} );
+         TEST_ASSERT( custom_from_string( "2018-01-01" ) == local_date_t{ 2018, 1, 1 } );
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03" ) == local_date_time_t{} );
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03Z" ) == offset_date_time_t{} );
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03+00:00" ) == offset_date_time_t{} );
@@ -240,6 +240,16 @@ namespace tao
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789" ) == local_date_time_t{} );
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789Z" ) == offset_date_time_t{} );
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789+00:00" ) == offset_date_time_t{} );
+
+         TEST_THROWS( custom_from_string( "2018-00-01" ) );
+         TEST_THROWS( custom_from_string( "2018-01-00" ) );
+         TEST_THROWS( custom_from_string( "2018-13-01" ) );
+         TEST_THROWS( custom_from_string( "2018-02-30" ) );
+
+         TEST_THROWS( custom_from_string( "1900-02-29" ) );
+         TEST_ASSERT( custom_from_string( "2000-02-29" ) == local_date_t{ 2000, 2, 29 } );
+         TEST_ASSERT( custom_from_string( "2016-02-29" ) == local_date_t{ 2016, 2, 29 } );
+         TEST_THROWS( custom_from_string( "2018-02-29" ) );
 
          TEST_THROWS( custom_from_string( "01:02:0" ) );
          TEST_THROWS( custom_from_string( "01:0:02" ) );
