@@ -127,7 +127,7 @@ namespace tao
       {
          const auto f = os.fill( '0' );
          os << std::setw( 2 ) << v.hour << ':' << std::setw( 2 ) << v.minute << ':' << std::setw( 2 ) << v.second;
-         if( v.nanodigits ) {
+         if( v.nanodigits != 0U ) {
             os << '.';
             switch( v.nanodigits ) {
                // clang-format off
