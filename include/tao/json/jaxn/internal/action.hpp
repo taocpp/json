@@ -76,9 +76,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )
                {
-                  // TODO: proper parsing
-                  (void)in;
-                  consumer.local_time( {} );
+                  consumer.local_time( local_time_t( tao::string_view( in.begin(), in.size() ) ) );
                }
             };
 
@@ -91,43 +89,38 @@ namespace tao
                   const auto s = in.size();
                   switch( s ) {
                      case 10:  // 1970-01-01
-                        consumer.local_date( local_date_t( tao::string_view( in.begin(), 10 ) ) );
+                        consumer.local_date( local_date_t( tao::string_view( in.begin(), s ) ) );
                         break;
                      case 19:  // 1970-01-01T00:00:00
-                        consumer.local_date_time( {} );
+                        consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
                         break;
                      case 20:  // 1970-01-01T00:00:00Z
-                        std::cout << "ZULU!" << std::endl;
                         consumer.offset_date_time( {} );
                         break;
                      case 21:  // 1970-01-01T00:00:00.0
-                        std::cout << "LOCAL!" << std::endl;
-                        consumer.local_date_time( {} );
+                        consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
                         break;
                      default:
                         assert( s > 21 );
                         if( in.peek_char( s - 1 ) == 'Z' ) {
-                           std::cout << "ZULU" << std::endl;
                            consumer.offset_date_time( {} );
-                           return;
                         }
-                        if( s < 25 ) {
-                           std::cout << "LOCAL" << std::endl;
-                           consumer.local_date_time( {} );
-                           return;
+                        else if( s < 25 ) {
+                           consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
                         }
-                        if( in.peek_char( 19 ) == '.' ) {
-                           std::cout << "CHECK..." << std::endl;
+                        else if( in.peek_char( 19 ) == '.' ) {
                            const tao::string_view sv( in.begin() + 20, s - 20 );
                            const auto p = sv.find_first_of( "+-" );
                            if( p == tao::string_view::npos ) {
-                              std::cout << "LOCAL" << std::endl;
-                              consumer.local_date_time( {} );
-                              return;
+                              consumer.local_date_time( local_date_time_t( tao::string_view( in.begin(), s ) ) );
+                           }
+                           else {
+                              consumer.offset_date_time( {} );
                            }
                         }
-                        std::cout << "OFFSET" << std::endl;
-                        consumer.offset_date_time( {} );
+                        else {
+                           consumer.offset_date_time( {} );
+                        }
                   }
                }
             };
