@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <iomanip>
 #include <ostream>
+#include <stdexcept>
 #include <tuple>
 
 namespace tao
@@ -139,6 +140,7 @@ namespace tao
                case 3: os << std::setw( 3 ) << ( v.nanosecond / 1000000 ); break;
                case 2: os << std::setw( 2 ) << ( v.nanosecond / 10000000 ); break;
                case 1: os << std::setw( 1 ) << ( v.nanosecond / 100000000 ); break;
+               default: throw std::logic_error( "invalid nanodigits: " + std::to_string( v.nanodigits ) ); // NOLINT
                   // clang-format on
             }
          }
