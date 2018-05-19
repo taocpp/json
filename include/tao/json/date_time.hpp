@@ -40,6 +40,13 @@ namespace tao
             };
          };
 
+         template< typename T >
+         void write_two( std::ostream& os, const T v )
+         {
+            os.put( '0' + v / 10 );
+            os.put( '0' + v % 10 );
+         }
+
       }  // namespace internal
 
       struct local_date_t
@@ -117,18 +124,25 @@ namespace tao
 
       inline std::ostream& operator<<( std::ostream& os, const local_date_t v )
       {
-         const auto f = os.fill( '0' );
-         os << std::setw( 4 ) << v.year << '-' << std::setw( 2 ) << v.month << '-' << std::setw( 2 ) << v.day;
-         os.fill( f );
+         internal::write_two( os, v.year / 100 );
+         internal::write_two( os, v.year % 100 );
+         os.put( '-' );
+         internal::write_two( os, v.month );
+         os.put( '-' );
+         internal::write_two( os, v.day );
          return os;
       }
 
       inline std::ostream& operator<<( std::ostream& os, const local_time_t v )
       {
-         const auto f = os.fill( '0' );
-         os << std::setw( 2 ) << v.hour << ':' << std::setw( 2 ) << v.minute << ':' << std::setw( 2 ) << v.second;
+         internal::write_two( os, v.hour );
+         os.put( ':' );
+         internal::write_two( os, v.minute );
+         os.put( ':' );
+         internal::write_two( os, v.second );
          if( v.nanodigits != 0 ) {
             os << '.';
+            const auto f = os.fill( '0' );
             // clang-format off
             switch( v.nanodigits ) {
                case 9: os << std::setw( 9 ) << v.nanosecond; break;
@@ -143,8 +157,8 @@ namespace tao
                default: throw std::logic_error( "invalid nanodigits: " + std::to_string( v.nanodigits ) ); // NOLINT
             }
             // clang-format on
+            os.fill( f );
          }
-         os.fill( f );
          return os;
       }
 
@@ -161,14 +175,18 @@ namespace tao
             os << 'Z';
          }
          else {
-            const auto f = os.fill( '0' );
             if( v.offset_hour > 0 ) {
-               os << '+' << std::setw( 2 ) << v.offset_hour << ':' << std::setw( 2 ) << v.offset_minute;
+               os.put( '+' );
+               internal::write_two( os, v.offset_hour );
+               os.put( ':' );
+               internal::write_two( os, v.offset_minute );
             }
             else {
-               os << '-' << std::setw( 2 ) << -v.offset_hour << ':' << std::setw( 2 ) << v.offset_minute;
+               os.put( '-' );
+               internal::write_two( os, -v.offset_hour );
+               os.put( ':' );
+               internal::write_two( os, -v.offset_minute );
             }
-            os.fill( f );
          }
          return os;
       }
