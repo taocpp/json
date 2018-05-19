@@ -157,7 +157,12 @@ namespace tao
             validate();
 
             if( sv.size() > 8 ) {
-               nanodigits = sv.size() - 9;
+               if( sv.size() > 18 ) {
+                  nanodigits = 9;
+               }
+               else {
+                  nanodigits = static_cast< std::uint8_t >( sv.size() - 9 );
+               }
                switch( nanodigits ) {
                   case 1:
                      nanosecond = 100000000 * internal::get< 9 >( sv );
@@ -193,7 +198,6 @@ namespace tao
 
                   default:
                      nanosecond = internal::get_four< 9 >( sv ) * 100000 + internal::get_four< 13 >( sv ) * 10 + internal::get< 17 >( sv );
-                     nanodigits = 9;
                }
             }
          }
