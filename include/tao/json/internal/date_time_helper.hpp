@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_DATE_TIME_HELPER_HPP
-#define TAO_JSON_DATE_TIME_HELPER_HPP
+#ifndef TAO_JSON_INTERNAL_DATE_TIME_HELPER_HPP
+#define TAO_JSON_INTERNAL_DATE_TIME_HELPER_HPP
 
 #include <cstdint>
 #include <ostream>
