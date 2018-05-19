@@ -79,12 +79,15 @@ namespace tao
             }
          }
 
+         offset_date_time( const tao::string_view sv, const tao::string_view::size_type p )
+            : offset_date_time( sv.substr( 0, p ), sv.substr( p ) )
+         {
+         }
+
       public:
          local_date_time date_time;
          std::int8_t offset_hour = 0;
          std::int8_t offset_minute = 0;  // note: if hour is negative, minute is negative as well (if not 0)
-
-         constexpr offset_date_time() = default;
 
          offset_date_time( const local_date_time in_date_time, const std::int8_t in_offset_hour, const std::int8_t in_offset_minutes )
             : date_time( in_date_time ), offset_hour( in_offset_hour ), offset_minute( in_offset_minutes )
@@ -94,6 +97,11 @@ namespace tao
 
          offset_date_time( const tao::string_view sv_date_time, const tao::string_view sv_offset )
             : offset_date_time( sv_date_time, sv_offset, validate_offset_basics( sv_offset ) )
+         {
+         }
+
+         offset_date_time( const tao::string_view sv )
+            : offset_date_time( sv, sv.find_first_of( "Z+-", 19 ) )
          {
          }
       };

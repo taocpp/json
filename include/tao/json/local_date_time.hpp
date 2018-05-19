@@ -24,8 +24,6 @@ namespace tao
          local_date date;
          local_time time;
 
-         constexpr local_date_time() = default;
-
          local_date_time( const local_date in_date, const local_time in_time )
             : date( in_date ), time( in_time )
          {

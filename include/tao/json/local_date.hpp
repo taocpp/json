@@ -41,8 +41,6 @@ namespace tao
          std::uint8_t month = 1;
          std::uint8_t day = 1;
 
-         constexpr local_date() = default;
-
          local_date( const std::uint16_t in_year, const std::uint8_t in_month, const std::uint8_t in_day )
             : year( in_year ), month( in_month ), day( in_day )
          {

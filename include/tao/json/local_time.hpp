@@ -112,8 +112,6 @@ namespace tao
          std::uint8_t nanodigits = 0;
          std::uint32_t nanosecond = 0;
 
-         constexpr local_time() = default;
-
          local_time( const std::uint8_t in_hour, const std::uint8_t in_minute, const std::uint8_t in_second, const std::uint32_t in_nanosecond = 0 )
             : hour( in_hour ), minute( in_minute ), second( in_second ), nanodigits( internal::nanodigits_from_nanosecond( in_nanosecond ) ), nanosecond( in_nanosecond )
          {
