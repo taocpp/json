@@ -132,22 +132,26 @@ namespace tao
 
                void local_date( const json::local_date /*unused*/ )
                {
-                  // TODO: implement this
+                  // if this throws, consider using local_date_to_* transformers
+                  throw std::runtime_error( "local date invalid for UBJSON representation" );  // NOLINT
                }
 
                void local_time( const json::local_time /*unused*/ )
                {
-                  // TODO: implement this
+                  // if this throws, consider using local_time_to_* transformers
+                  throw std::runtime_error( "local time invalid for UBJSON representation" );  // NOLINT
                }
 
                void local_date_time( const json::local_date_time /*unused*/ )
                {
-                  // TODO: implement this
+                  // if this throws, consider using local_date_time_to_* transformers
+                  throw std::runtime_error( "local date-time invalid for UBJSON representation" );  // NOLINT
                }
 
                void offset_date_time( const json::offset_date_time /*unused*/ )
                {
-                  // TODO: implement this
+                  // if this throws, consider using offset_date_time_to_* transformers
+                  throw std::runtime_error( "offset date-time invalid for UBJSON representation" );  // NOLINT
                }
 
                void begin_array()
