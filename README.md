@@ -5,7 +5,7 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 
-The Art of C++ / JSON is a zero-dependency C++11 header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, and an [Events Interface](doc/Events-Interface.md) to convert from and to multiple formats like JSON, CBOR, ...
+The Art of C++ / JSON is a zero-dependency C++11 header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, and provides an [Events Interface](doc/Events-Interface.md) to convert from and to multiple additional formats like JSON, JAXN, CBOR, MsgPack, ...
 
 ## Documentation
 
@@ -13,20 +13,20 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only JSON library that p
 
 ## Features
 
-* Standards
+* Supported Standards
 
   * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
   * Achieves a **100%** conformance score in the [Native JSON Benchmark] tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
   * [RFC7049]: Concise Binary Object Representation ([CBOR]).
-  * [JAXN]: Relaxed JSON with binary data and non-finite numbers.
+  * [JAXN]: Relaxed JSON.
   * [MsgPack]: MessagePack binary format (without extensions).
   * [UBJSON]: Universal Binary JSON.
 
 * [Value Class](doc/Value-Class.md)
 
-  * JSON data model extended with binary data, ...
+  * JSON data model extended with non-finite number values, date-time values, and binary data.
   * Construction of objects and arrays via `std::initializer_list`.
   * Conversion from and to arbitrary *user-defined types* via [Type Traits](doc/Type-Traits.md).
   * Built around STL containers `std::string`, `std::map` and `std::vector`.
@@ -56,7 +56,9 @@ This library also serves as a real-world example application of the [Parsing Exp
 
 ## License
 
-The Art of C++ / JSON is certified [Open Source] software. It may be used for any purpose, including commercial purposes, at absolutely no cost. It is distributed under the terms of the [MIT license] reproduced here.
+The Art of C++ / JSON is certified [Open Source] software.
+It may be used for any purpose, including commercial purposes, at absolutely no cost.
+It is distributed under the terms of the [MIT license] reproduced here.
 
 > Copyright (c) 2015-2018 Dr. Colin Hirsch and Daniel Frey
 >
