@@ -100,7 +100,7 @@ namespace tao
          {
          }
 
-         offset_date_time( const tao::string_view sv )
+         explicit offset_date_time( const tao::string_view sv )
             : offset_date_time( sv, sv.find_first_of( "Z+-", 19 ) )
          {
          }
