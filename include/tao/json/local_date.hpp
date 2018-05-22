@@ -44,6 +44,9 @@ namespace tao
          local_date( const std::uint16_t in_year, const std::uint8_t in_month, const std::uint8_t in_day )
             : year( in_year ), month( in_month ), day( in_day )
          {
+            if( year > 9999 ) {
+               throw std::runtime_error( "invalid year '" + std::to_string( year ) + "'" );  // NOLINT
+            }
             if( ( month == 0 ) || ( month > 12 ) ) {
                throw std::runtime_error( "invalid month '" + std::to_string( month ) + "'" );  // NOLINT
             }

@@ -41,6 +41,7 @@ namespace tao
             if( minute > 59 ) {
                throw std::runtime_error( "invalid minute '" + std::to_string( minute ) + "'" );  // NOLINT
             }
+            // TODO: Allow leap seconds?
             if( second > 59 ) {
                throw std::runtime_error( "invalid second '" + std::to_string( second ) + "'" );  // NOLINT
             }
