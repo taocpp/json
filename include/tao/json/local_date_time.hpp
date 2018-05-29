@@ -6,6 +6,8 @@
 
 #include <cstdint>
 #include <ostream>
+#include <stdexcept>
+#include <string>
 #include <tuple>
 
 #include "local_date.hpp"
@@ -18,9 +20,26 @@ namespace tao
 {
    namespace json
    {
-      struct local_date_time
-         : private internal::date_time_ops< local_date_time >
+      class local_date_time
+         : internal::date_time_ops< local_date_time >
       {
+         static bool validate_basics( const tao::string_view sv )
+         {
+            if( sv.size() < 19 ) {
+               throw std::runtime_error( "invalid length: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
+            }
+            if( ( sv[ 10 ] != 'T' ) && ( sv[ 10 ] != ' ' ) ) {
+               throw std::runtime_error( "invalid separator(s): '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
+            }
+            return true;
+         }
+
+         local_date_time( const tao::string_view sv, const bool /*is_validated*/ )
+            : local_date_time( local_date( sv.substr( 0, 10 ) ), local_time( sv.substr( 11 ) ) )
+         {
+         }
+
+      public:
          local_date date;
          local_time time;
 
@@ -30,7 +49,7 @@ namespace tao
          }
 
          explicit local_date_time( const tao::string_view sv )
-            : local_date_time( local_date( sv.substr( 0, 10 ) ), local_time( sv.substr( 11 ) ) )
+            : local_date_time( sv, validate_basics( sv ) )
          {
          }
       };

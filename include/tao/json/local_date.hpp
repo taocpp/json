@@ -31,7 +31,7 @@ namespace tao
             return true;
          }
 
-         explicit local_date( const tao::string_view sv, const bool /*is_validated*/ )
+         local_date( const tao::string_view sv, const bool /*is_validated*/ )
             : local_date( internal::get_four< 0 >( sv ), internal::get_two< 5 >( sv ), internal::get_two< 8 >( sv ) )
          {
          }

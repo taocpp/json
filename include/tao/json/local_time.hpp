@@ -53,7 +53,7 @@ namespace tao
             }
          }
 
-         explicit local_time( const tao::string_view sv, const bool /*is_validated*/ )
+         local_time( const tao::string_view sv, const bool /*is_validated*/ )
             : hour( internal::get_two< 0 >( sv ) ),
               minute( internal::get_two< 3 >( sv ) ),
               second( internal::get_two< 6 >( sv ) )
