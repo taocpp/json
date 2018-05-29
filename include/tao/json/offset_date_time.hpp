@@ -25,7 +25,7 @@ namespace tao
          static bool validate_offset_basics( const tao::string_view sv )
          {
             if( sv.size() == 1 ) {
-               if( sv[ 0 ] != 'Z' ) {
+               if( ( sv[ 0 ] != 'Z' ) && ( sv[ 0 ] != 'z' ) ) {
                   throw std::runtime_error( "invalid offset character: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
                }
                return true;
@@ -101,7 +101,7 @@ namespace tao
          }
 
          explicit offset_date_time( const tao::string_view sv )
-            : offset_date_time( sv, sv.find_first_of( "Z+-", 19 ) )
+            : offset_date_time( sv, sv.find_first_of( "Zz+-", 19 ) )
          {
          }
       };

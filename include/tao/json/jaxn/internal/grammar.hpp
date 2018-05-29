@@ -130,13 +130,13 @@ namespace tao
                struct time_extfrac : opt_must< one< '.' >, time_secfrac > {};
 
                struct time_numoffset : if_must< one< '+', '-' >, time_hour, time_separator, time_minute > {};
-               struct time_offset : sor< one< 'Z' >, time_numoffset > {};
+               struct time_offset : sor< one< 'Z', 'z' >, time_numoffset > {};
                struct time_extoffset : opt< time_offset > {};
 
                struct local_time : if_must< time_hour, time_separator, time_minute, time_separator, time_second, time_extfrac > {};
 
                struct local_date : if_must< date_fullyear, date_separator, date_month, date_separator, date_mday > {};
-               struct date_sequence : seq< local_date, opt_must< one< 'T', ' ' >, local_time, time_extoffset > > {};
+               struct date_sequence : seq< local_date, opt_must< one< 'T', 't', ' ' >, local_time, time_extoffset > > {};
 
                struct binary_prefix : one< '$' > {};
 

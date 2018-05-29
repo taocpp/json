@@ -28,7 +28,8 @@ namespace tao
             if( sv.size() < 19 ) {
                throw std::runtime_error( "invalid length: '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
             }
-            if( ( sv[ 10 ] != 'T' ) && ( sv[ 10 ] != ' ' ) ) {
+            const char c = sv[ 10 ];
+            if( ( c != 'T' ) && ( c != 't' ) && ( c != ' ' ) ) {
                throw std::runtime_error( "invalid separator(s): '" + std::string( sv.begin(), sv.end() ) + "'" );  // NOLINT
             }
             return true;

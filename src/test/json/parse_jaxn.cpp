@@ -239,6 +239,7 @@ namespace tao
          TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
          TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
+         TEST_ASSERT( custom_from_string( "2018-01-01t01:02:03z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
          TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
 
          TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03.4" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 400000000 } } );

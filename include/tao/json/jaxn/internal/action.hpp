@@ -103,7 +103,8 @@ namespace tao
                         break;
                      default:
                         assert( s > 21 );
-                        if( in.peek_char( s - 1 ) == 'Z' ) {
+                        const auto c = in.peek_char( s - 1 );
+                        if( ( c == 'Z' ) || ( c == 'z' ) ) {
                            consumer.offset_date_time( offset_date_time( tao::string_view( in.begin(), s - 1 ), "Z" ) );
                         }
                         else if( s < 25 ) {
