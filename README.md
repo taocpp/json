@@ -15,7 +15,7 @@ The Art of C++ / JSON is a zero-dependency C++11 header-only JSON library that p
 
 * Supported Standards
 
-  * [RFC7159], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
+  * [RFC8259], [ECMA-404]: The JavaScript Object Notation (JSON) Data Interchange Format.
   * Achieves a **100%** conformance score in the [Native JSON Benchmark] tests.
   * [RFC6901]: JavaScript Object Notation (JSON) Pointer.
   * [RFC6902]: JavaScript Object Notation (JSON) Patch.
@@ -102,5 +102,5 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 [RFC6901]: https://tools.ietf.org/html/rfc6901
 [RFC6902]: https://tools.ietf.org/html/rfc6902
 [RFC7049]: https://tools.ietf.org/html/rfc7049
-[RFC7159]: https://tools.ietf.org/html/rfc7159
+[RFC8259]: https://tools.ietf.org/html/rfc8259
 [UBJSON]: http://ubjson.org
