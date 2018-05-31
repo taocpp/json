@@ -99,6 +99,10 @@ namespace tao
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::chars< '\'' > >::error_message TAO_JSON_WEAK_SUFFIX = "invalid character in string";  // NOLINT
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::qstring_content< '"' > >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated string";  // NOLINT
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::qstring_content< '\'' > >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated string";  // NOLINT
+            template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::mchars< '"' > >::error_message TAO_JSON_WEAK_SUFFIX = "invalid character in multiline string";  // NOLINT
+            template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::mchars< '\'' > >::error_message TAO_JSON_WEAK_SUFFIX = "invalid character in multiline string";  // NOLINT
+            template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::mqstring_content< '"' > >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated multiline string";  // NOLINT
+            template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::mqstring_content< '\'' > >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated multiline string";  // NOLINT
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::string_fragment >::error_message TAO_JSON_WEAK_SUFFIX = "expected string";  // NOLINT
 
             template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::time_separator >::error_message TAO_JSON_WEAK_SUFFIX = "expected ':'";  // NOLINT

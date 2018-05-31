@@ -115,7 +115,43 @@ namespace tao
                template< char D >
                struct qstring : seq< one< D >, must< qstring_content< D > >, any > {};
 
-               struct string_fragment : sor< qstring< '"' >, qstring< '\'' > > {};
+               // TODO: This should be part of the PEGTL
+               template< char C > struct three : json_pegtl::internal::string< C, C, C > {};
+
+               template< char D >
+               struct mchars_non_eol
+               {
+                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+
+                  template< typename Input >
+                  static bool match( Input& in )
+                  {
+                     bool result = false;
+
+                     while( !in.empty() ) {
+                        if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
+if( ( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != D ) ) || ( t.data == '\t' ) ) {
+                              in.bump_in_this_line( t.size );
+                              result = true;
+                              continue;
+                           }
+                        }
+                        return result;
+                     }
+                     throw json_pegtl::parse_error( "invalid character in string", in );
+                  }
+               };
+
+               template< char D >
+               struct mchars : sor< mchars_non_eol< D >, one< D >, eol > {};
+
+               template< char D >
+               struct mqstring_content : until< at< three< D > >, must< mchars< D > > > {};
+
+               template< char D >
+               struct mqstring : seq< three< D >, must< mqstring_content< D > >, any, any, any > {};
+
+               struct string_fragment : sor< mqstring< '"' >, mqstring< '\'' >, qstring< '"' >, qstring< '\'' > > {};
 
                struct string : list_must< string_fragment, value_concat > {};
 

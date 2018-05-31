@@ -149,6 +149,9 @@ namespace tao
          TEST_ASSERT( custom_from_string( "''" ) == "" );
          TEST_ASSERT( custom_from_string( "'\"'" ) == "\"" );
          TEST_ASSERT( custom_from_string( "'foo'" ) == "foo" );
+         TEST_ASSERT( custom_from_string( "'''foo'''" ) == "foo" );
+         TEST_ASSERT( custom_from_string( "\"\"\"foo\"\"\"" ) == "foo" );
+         TEST_ASSERT( custom_from_string( "'''foo\nbar\\n'''" ) == "foo\nbar\\n" );
          TEST_ASSERT( custom_from_string( "'fo\\\"o'" ) == "fo\"o" );
          TEST_ASSERT( custom_from_string( "'fo\\'o'" ) == "fo'o" );
          TEST_ASSERT( custom_from_string( "'fo\\\\o'" ) == "fo\\o" );
