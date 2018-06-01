@@ -130,7 +130,7 @@ namespace tao
 
                      while( !in.empty() ) {
                         if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
-if( ( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != D ) ) || ( t.data == '\t' ) ) {
+                           if( ( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != D ) ) || ( t.data == '\t' ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;
                               continue;
