@@ -149,7 +149,7 @@ namespace tao
                struct mqstring_content : until< at< three< D > >, must< mchars< D > > > {};
 
                template< char D >
-               struct mqstring : seq< three< D >, must< mqstring_content< D > >, any, any, any > {};
+               struct mqstring : seq< three< D >, opt< eol >, must< mqstring_content< D > >, any, any, any > {};
 
                struct string_fragment : sor< mqstring< '"' >, mqstring< '\'' >, qstring< '"' >, qstring< '\'' > > {};
 
