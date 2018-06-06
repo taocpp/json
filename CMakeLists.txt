@@ -1,14 +1,18 @@
 cmake_minimum_required (VERSION 3.2.0 FATAL_ERROR)
 
-# set project and version
 project (taocpp-json VERSION 1.0.0 LANGUAGES CXX)
+
+# installation directories
+set (TAOCPP_JSON_INSTALL_INCLUDE_DIR "include" CACHE STRING "The installation include directory")
+set (TAOCPP_JSON_INSTALL_DOC_DIR "share/doc/tao/json" CACHE STRING "The installation doc directory")
+set (TAOCPP_JSON_INSTALL_CMAKE_DIR "share/taocpp-json/cmake" CACHE STRING "The installation cmake directory")
 
 # define a header-only library
 add_library (taocpp-json INTERFACE)
 add_library (taocpp::json ALIAS taocpp-json)
 target_include_directories (taocpp-json INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+  $<INSTALL_INTERFACE:${TAOCPP_JSON_INSTALL_INCLUDE_DIR}>
 )
 
 # features used by taocpp/json
@@ -52,10 +56,14 @@ if (TAOCPP_JSON_BUILD_EXAMPLES)
   add_subdirectory (src/example/json)
 endif ()
 
-# installation directories
-set (TAOCPP_JSON_INSTALL_INCLUDE_DIR "include" CACHE STRING "The installation include directory")
-set (TAOCPP_JSON_INSTALL_DOC_DIR "share/doc/tao/json" CACHE STRING "The installation doc directory")
+# install and export target
+install (TARGETS taocpp-json EXPORT taocpp-json-targets)
 
-# install
+install (EXPORT taocpp-json-targets
+  FILE taocpp-json-config.cmake
+  NAMESPACE taocpp::
+  DESTINATION ${TAOCPP_JSON_INSTALL_CMAKE_DIR}
+)
+
 install (DIRECTORY include/ DESTINATION ${TAOCPP_JSON_INSTALL_INCLUDE_DIR})
 install (FILES LICENSE DESTINATION ${TAOCPP_JSON_INSTALL_DOC_DIR})
