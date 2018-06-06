@@ -162,6 +162,9 @@ namespace tao
          TEST_ASSERT( custom_from_string( "'\\uD834\\uDF06'" ) == "𝌆" );
          TEST_ASSERT( custom_from_string( "'\\u{1D306}'" ) == "𝌆" );
          TEST_ASSERT( custom_from_string( "'x\\uD834\\uDF06\\u{000000000000001D306}y'" ) == "x𝌆𝌆y" );
+         TEST_ASSERT( custom_from_string( "\"foo\"" ) == value( "foo" ) );
+         TEST_ASSERT( custom_from_string( "\"f\\u007Fo\"" ) == value( "f\177o" ) );
+         TEST_THROWS( custom_from_string( "\"f\177o\"" ) );
 
          test_array();
          test_object();

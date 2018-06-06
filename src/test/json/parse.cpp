@@ -114,6 +114,9 @@ namespace tao
          TEST_ASSERT( custom_from_string( "-9223372036854775808" ) == -9223372036854775807ll - 1 );
          TEST_ASSERT( custom_from_string( "18446744073709551615" ) == 18446744073709551615ull );
 
+         TEST_ASSERT( custom_from_string( "\"foo\"" ) == value( "foo" ) );
+         TEST_ASSERT( custom_from_string( "\"f\177o\"" ) == value( "f\177o" ) );
+
          test_array();
          test_object();
 
