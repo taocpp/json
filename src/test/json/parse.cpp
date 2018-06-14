@@ -117,6 +117,16 @@ namespace tao
          TEST_ASSERT( custom_from_string( "\"foo\"" ) == value( "foo" ) );
          TEST_ASSERT( custom_from_string( "\"f\177o\"" ) == value( "f\177o" ) );
 
+         // TODO: This is sometimes allowed to allow embedded null-bytes within a null-terminated string. (Modified UTF-8)
+         TEST_THROWS( custom_from_string( "\"f\300\200o\"" ) );  // Codepoint 0x00 as 2 byte UTF-8 - overlong encoding.
+
+         TEST_THROWS( custom_from_string( "\"f\300\201o\"" ) );          // Codepoint 0x01 as 2 byte UTF-8 - overlong encoding.
+         TEST_THROWS( custom_from_string( "\"f\340\200\201o\"" ) );      // Codepoint 0x01 as 3 byte UTF-8 - overlong encoding.
+         TEST_THROWS( custom_from_string( "\"f\360\200\200\201o\"" ) );  // Codepoint 0x01 as 4 byte UTF-8 - overlong encoding.
+
+         TEST_THROWS( custom_from_string( "\"f\355\240\200o\"" ) );      // Codepoint 0xD800 as UTF-8 - UTF-16 surrogate.
+         TEST_THROWS( custom_from_string( "\"f\364\220\200\200o\"" ) );  // Codepoint 0x110000 as UTF-8 - codepoint too large.
+
          test_array();
          test_object();
 
