@@ -115,9 +115,6 @@ namespace tao
                template< char D >
                struct qstring : seq< one< D >, must< qstring_content< D > >, any > {};
 
-               // TODO: This should be part of the PEGTL
-               template< char C > struct three : json_pegtl::internal::string< C, C, C > {};
-
                template< char D >
                struct mchars_non_eol
                {
