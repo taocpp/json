@@ -95,10 +95,10 @@ namespace tao
          template< typename T, T, typename U, U, typename = void >
          struct element2;
 
-         template< typename C, typename T, T ( *P )( const C& ), typename U, U ( *Q )( C& ) >
-         struct element2< T ( * )( const C& ), P, U ( * )( C& ), Q >
+         template< typename CC, typename T, T ( *P )( const CC& ), typename C, typename U, U ( *Q )( C& ) >
+         struct element2< T ( * )( const CC& ), P, U ( * )( C& ), Q >
          {
-            static auto read( const C& v ) -> decltype( P( v ) )
+            static auto read( const CC& v ) -> decltype( P( v ) )
             {
                return P( v );
             }
@@ -122,16 +122,16 @@ namespace tao
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce( Consumer& consumer, const C& v )
+            static void produce( Consumer& consumer, const CC& v )
             {
                events::produce< Traits >( consumer, P( v ) );
             }
          };
 
-         template< typename C, typename T, T ( *P )( const C& ), typename U, void ( *Q )( C&, U&& ) >
-         struct element2< T ( * )( const C& ), P, void ( * )( C&, U&& ), Q >
+         template< typename CC, typename T, T ( *P )( const CC& ), typename C, typename U, void ( *Q )( C&, U&& ) >
+         struct element2< T ( * )( const CC& ), P, void ( * )( C&, U&& ), Q >
          {
-            static auto read( const C& v ) -> decltype( P( v ) )
+            static auto read( const CC& v ) -> decltype( P( v ) )
             {
                return P( v );
             }
@@ -155,7 +155,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce( Consumer& consumer, const C& v )
+            static void produce( Consumer& consumer, const CC& v )
             {
                events::produce< Traits >( consumer, P( v ) );
             }
