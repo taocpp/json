@@ -92,10 +92,13 @@ namespace tao
             }
          };
 
+         template< typename T, typename... Args >
+         using fptr = T ( * )( Args... );
+
          template< typename T, T, typename U, U, typename = void >
          struct element2;
 
-         template< typename CC, typename T, T ( *P )( const CC& ), typename C, typename U, U ( *Q )( C& ) >
+         template< typename T, typename CC, fptr< T, const CC& > P, typename U, typename C, fptr< U, C& > Q >
          struct element2< T ( * )( const CC& ), P, U ( * )( C& ), Q >
          {
             static auto read( const CC& v ) -> decltype( P( v ) )
@@ -128,7 +131,7 @@ namespace tao
             }
          };
 
-         template< typename CC, typename T, T ( *P )( const CC& ), typename C, typename U, void ( *Q )( C&, U&& ) >
+         template< typename T, typename CC, fptr< T, const CC& > P, typename C, typename U, fptr< void, C&, U&& > Q >
          struct element2< T ( * )( const CC& ), P, void ( * )( C&, U&& ), Q >
          {
             static auto read( const CC& v ) -> decltype( P( v ) )
