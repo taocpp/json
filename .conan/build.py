@@ -32,7 +32,7 @@ class BuilderSettings(object):
         ci_manager = CIManager(printer)
         branch = ci_manager.get_branch()
 
-        patterns = ["v?\d+\.\d+\.\d+-.*", self.stable_branch_pattern]
+        patterns = [r"v?\d+\.\d+\.\d+-.*", self.stable_branch_pattern]
         for pattern in patterns:
             prog = re.compile(pattern)
             if branch and prog.match(branch):
