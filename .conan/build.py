@@ -32,7 +32,7 @@ class BuilderSettings(object):
         ci_manager = CIManager(printer)
         branch = ci_manager.get_branch()
 
-        patterns = ["master$", self.stable_branch_pattern]
+        patterns = ["v?\d+\.\d+\.\d+-.*", self.stable_branch_pattern]
         for pattern in patterns:
             prog = re.compile(pattern)
             if branch and prog.match(branch):
@@ -50,7 +50,7 @@ class BuilderSettings(object):
     def stable_branch_pattern(self):
         """ Only upload the package the branch name is like a tag
         """
-        return os.getenv("CONAN_STABLE_BRANCH_PATTERN", r"\d+\.\d+\.\d+-?.*")
+        return os.getenv("CONAN_STABLE_BRANCH_PATTERN", r"v?\d+\.\d+\.\d+")
 
     @property
     def reference(self):
