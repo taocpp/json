@@ -9,4 +9,4 @@ conan_basic_setup()
 find_package(taocpp-json REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME} test_package.cpp)
-target_link_libraries(${PROJECT_NAME} taocpp::taocpp-json)
+target_link_libraries(${PROJECT_NAME} taocpp::json)
