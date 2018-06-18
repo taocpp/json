@@ -5,12 +5,8 @@
 #define TAO_JSON_EXTERNAL_STRING_VIEW_HPP
 
 #ifndef TAO_JSON_USE_STD_STRING_VIEW
-#if( __cplusplus >= 201703L )
+#if( __cplusplus >= 201703L ) || ( defined( _MSVC_LANG ) && ( _MSVC_LANG >= 201703L ) )
 #define TAO_JSON_USE_STD_STRING_VIEW
-#elif defined( _MSC_VER ) && ( _MSC_VER >= 1910L )
-#if defined( _MSC_LANG ) && ( _MSC_LANG >= 201703L )
-#define TAO_JSON_USE_STD_STRING_VIEW
-#endif
 #endif
 #endif
 
@@ -526,7 +522,7 @@ namespace tao
       return os << std::string( str.begin(), str.end() );
    }
 
-      // TODO: 24.4.5, hash support
+   // TODO: 24.4.5, hash support
 
 #endif
 

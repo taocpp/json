@@ -5,16 +5,14 @@
 #define TAO_JSON_EXTERNAL_OPTIONAL_HPP
 
 #ifndef TAO_JSON_USE_STD_OPTIONAL
-#if __cplusplus >= 201703L
-#define TAO_JSON_USE_STD_OPTIONAL
-#elif defined( _MSC_VER ) && ( _MSC_VER >= 1910L ) && defined( _MSC_LANG ) && ( _MSC_LANG >= 201703L )
+#if( __cplusplus >= 201703L ) || ( defined( _MSVC_LANG ) && ( _MSVC_LANG >= 201703L ) )
 #define TAO_JSON_USE_STD_OPTIONAL
 #endif
 #endif
 
 #ifndef TAO_JSON_USE_STD_OPTIONAL
 #ifndef TAO_JSON_USE_TS_OPTIONAL
-#if( __cplusplus >= 201402L ) && ( ( __GNUC__ > 4 ) || ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 ) )
+#if( __cplusplus >= 201402L ) && defined( __GNUC__ ) && ( ( __GNUC__ > 4 ) || ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ >= 9 ) )
 #define TAO_JSON_USE_TS_OPTIONAL
 #endif
 #endif
