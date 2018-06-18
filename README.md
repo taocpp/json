@@ -1,7 +1,7 @@
 # The Art of C++ / JSON
 
 [![Release](https://img.shields.io/github/release/taocpp/json.svg)](https://github.com/taocpp/json/releases/latest)
-[![Download](https://api.bintray.com/packages/taocpp/public-conan/json%3Ataocpp/images/download.svg) ](https://bintray.com/taocpp/public-conan/json%3Ataocpp/_latestVersion)
+[![Download](https://api.bintray.com/packages/taocpp/public-conan/json%3Ataocpp/images/download.svg)](https://bintray.com/taocpp/public-conan/json%3Ataocpp/_latestVersion)
 [![TravisCI](https://travis-ci.org/taocpp/json.svg)](https://travis-ci.org/taocpp/json)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
