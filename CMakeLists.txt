@@ -8,15 +8,15 @@ set (TAOCPP_JSON_INSTALL_DOC_DIR "share/doc/tao/json" CACHE STRING "The installa
 set (TAOCPP_JSON_INSTALL_CMAKE_DIR "share/taocpp-json/cmake" CACHE STRING "The installation cmake directory")
 
 # define a header-only library
-add_library (taocpp-json INTERFACE)
-add_library (taocpp::json ALIAS taocpp-json)
-target_include_directories (taocpp-json INTERFACE
+add_library (json INTERFACE)
+add_library (taocpp::json ALIAS json)
+target_include_directories (json INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${TAOCPP_JSON_INSTALL_INCLUDE_DIR}>
 )
 
 # features used by taocpp/json
-target_compile_features (taocpp-json INTERFACE
+target_compile_features (json INTERFACE
   cxx_alias_templates
   cxx_auto_type
   cxx_constexpr
@@ -57,7 +57,7 @@ if (TAOCPP_JSON_BUILD_EXAMPLES)
 endif ()
 
 # install and export target
-install (TARGETS taocpp-json EXPORT taocpp-json-targets)
+install (TARGETS json EXPORT taocpp-json-targets)
 
 install (EXPORT taocpp-json-targets
   FILE taocpp-json-config.cmake

@@ -2,10 +2,6 @@ language: generic
 os: linux
 dist: trusty
 
-branches:
-  only:
-    - master
-
 matrix:
   include:
     - compiler: gcc
@@ -253,6 +249,32 @@ matrix:
         - CLANG_TIDY=clang-tidy-6.0
       script:
         - make -kj3 clang-tidy
+
+    - language: python
+      python:
+        - "3.6"
+      sudo: required
+      install:
+        - pip install conan conan-package-tools
+      env:
+        - CONAN_GCC_VERSIONS=7
+        - CONAN_DOCKER_IMAGE=lasote/conangcc7
+      script:
+        - python .conan/build.py
+
+    - compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-7']
+      env:
+        - CXX=g++-7
+      script:
+        - mkdir build
+        - cd build
+        - cmake ..
+        - cmake --build .
+        - cmake --build . --target test
 
 script:
   - $CXX --version
