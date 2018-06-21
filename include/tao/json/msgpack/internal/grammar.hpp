@@ -11,7 +11,10 @@
 #include "../../external/pegtl.hpp"
 #include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
+#include "../../internal/throw_parse_error.hpp"
 #include "../../utf8.hpp"
+
+#include "format.hpp"
 
 namespace tao
 {
@@ -21,12 +24,39 @@ namespace tao
       {
          namespace internal
          {
+            // clang-format off
+            template< typename Input, typename... Ts >
+            [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
+            {
+               json::internal::throw_parse_error( in, "msgpack:", ts... );
+            }
+            // clang-format on
+
             template< typename Input >
             void throw_on_empty( Input& in, const std::size_t required = 1 )
             {
                if( in.size( required ) < required ) {
-                  throw json_pegtl::parse_error( "unexpected end of msgpack input", in );
+                  throw_parse_error( in, "unexpected end of input" );
                }
+            }
+
+            template< typename Input >
+            format peek_format( Input& in )
+            {
+               return static_cast< format >( in.peek_byte() );
+            }
+
+            template< typename Input >
+            std::uint8_t peek_byte_safe( Input& in )
+            {
+               throw_on_empty( in );
+               return in.peek_byte();
+            }
+
+            template< typename Input >
+            format peek_format_safe( Input& in )
+            {
+               return static_cast< format >( peek_byte_safe( in ) );
             }
 
             template< typename Result, typename Number, typename Input >
@@ -52,21 +82,21 @@ namespace tao
             template< utf8_mode U, typename Input >
             tao::string_view parse_key( Input& in )
             {
-               throw_on_empty( in, 1 );
-               const auto b = in.peek_byte();
-               if( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
+               const auto b = peek_byte_safe( in );
+               if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
                   in.bump_in_this_line();
-                  return parse_container< U, tao::string_view >( in, b - 0xa0 );
+                  return parse_container< U, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) );
                }
-               switch( b ) {
-                  case 0xd9:
+               switch( format( b ) ) {
+                  case format::STR8:
                      return parse_container< U, tao::string_view >( in, parse_number< std::size_t, std::uint8_t >( in ) );
-                  case 0xda:
+                  case format::STR16:
                      return parse_container< U, tao::string_view >( in, parse_number< std::size_t, std::uint16_t >( in ) );
-                  case 0xdb:
+                  case format::STR32:
                      return parse_container< U, tao::string_view >( in, parse_number< std::size_t, std::uint32_t >( in ) );
+                  default:
+                     throw_parse_error( in, "unexpected key type" );
                }
-               throw json_pegtl::parse_error( "unexpected ubjson key type", in );
             }
 
             template< utf8_mode V >
@@ -90,126 +120,127 @@ namespace tao
                static bool match_impl( Input& in, Consumer& consumer )
                {
                   const auto b = in.peek_byte();
-                  if( b <= 0x7f ) {
+                  if( b <= std::uint8_t( format::POSITIVE_MAX )) {
                      consumer.number( std::uint64_t( b ) );
                      in.bump_in_this_line();
                      return true;
                   }
-                  if( b >= 0xe0 ) {
+                  if( b >= std::uint8_t( format::NEGATIVE_MIN ) ) {
                      consumer.number( std::int64_t( std::int8_t( b ) ) );
                      in.bump_in_this_line();
                      return true;
                   }
-                  if( ( 0x80 <= b ) && ( b <= 0x8f ) ) {
+                  if( ( std::uint8_t( format::FIXMAP_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXMAP_MAX ) ) ) {
                      in.bump_in_this_line();
-                     return match_object( in, consumer, b - 0x80 );
+                     return match_object( in, consumer, b - std::uint8_t( format::FIXMAP_MIN ) );
                   }
-                  if( ( 0x90 <= b ) && ( b <= 0x9f ) ) {
+                  if( ( std::uint8_t( format::FIXARRAY_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXARRAY_MAX ) ) ) {
                      in.bump_in_this_line();
-                     return match_array( in, consumer, b - 0x90 );
+                     return match_array( in, consumer, b - std::uint8_t( format::FIXARRAY_MIN ) );
                   }
-                  if( ( 0xa0 <= b ) && ( b <= 0xbf ) ) {
+                  if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
                      in.bump_in_this_line();
-                     consumer.string( parse_container< V, tao::string_view >( in, b - 0xa0 ) );
+                     consumer.string( parse_container< V, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) ) );
                      return true;
                   }
-                  switch( b ) {
-                     case 0xc0:
+                  switch( format( b ) ) {
+                     case format::NIL:
                         consumer.null();
                         in.bump_in_this_line();
                         return true;
-                     case 0xc1:
-                        throw json_pegtl::parse_error( "unused msgpack first byte 0xc1", in );
-                     case 0xc2:
-                     case 0xc3:
+                     case format::UNUSED:
+                        throw_parse_error( in, "unused first byte 0xc1" );
+                     case format::TRUE:
+                     case format::FALSE:
                         consumer.boolean( b & 1 );
                         in.bump_in_this_line();
                         return true;
-                     case 0xc4:
+                     case format::BIN8:
                         consumer.binary( parse_container< utf8_mode::TRUST, tao::binary_view >( in, parse_number< std::size_t, std::uint8_t >( in ) ) );
                         return true;
-                     case 0xc5:
+                     case format::BIN16:
                         consumer.binary( parse_container< utf8_mode::TRUST, tao::binary_view >( in, parse_number< std::size_t, std::uint16_t >( in ) ) );
                         return true;
-                     case 0xc6:
+                     case format::BIN32:
                         consumer.binary( parse_container< utf8_mode::TRUST, tao::binary_view >( in, parse_number< std::size_t, std::uint32_t >( in ) ) );
                         return true;
-                     case 0xc7:
+                     case format::EXT8:
                         discard( in, parse_number< std::size_t, std::uint8_t >( in ) + 1 );
                         return true;
-                     case 0xc8:
+                     case format::EXT16:
                         discard( in, parse_number< std::size_t, std::uint16_t >( in ) + 1 );
                         return true;
-                     case 0xc9:
+                     case format::EXT32:
                         discard( in, parse_number< std::size_t, std::uint32_t >( in ) + 1 );
                         return true;
-                     case 0xca:
+                     case format::FLOAT32:
                         consumer.number( parse_number< double, float >( in ) );
                         return true;
-                     case 0xcb:
+                     case format::FLOAT64:
                         consumer.number( parse_number< double, double >( in ) );
                         return true;
-                     case 0xcc:
+                     case format::UINT8:
                         consumer.number( parse_number< std::uint64_t, std::uint8_t >( in ) );
                         return true;
-                     case 0xcd:
+                     case format::UINT16:
                         consumer.number( parse_number< std::uint64_t, std::uint16_t >( in ) );
                         return true;
-                     case 0xce:
+                     case format::UINT32:
                         consumer.number( parse_number< std::uint64_t, std::uint32_t >( in ) );
                         return true;
-                     case 0xcf:
+                     case format::UINT64:
                         consumer.number( parse_number< std::uint64_t, std::uint64_t >( in ) );
                         return true;
-                     case 0xd0:
+                     case format::INT8:
                         consumer.number( parse_number< std::int64_t, std::int8_t >( in ) );
                         return true;
-                     case 0xd1:
+                     case format::INT16:
                         consumer.number( parse_number< std::int64_t, std::int16_t >( in ) );
                         return true;
-                     case 0xd2:
+                     case format::INT32:
                         consumer.number( parse_number< std::int64_t, std::int32_t >( in ) );
                         return true;
-                     case 0xd3:
+                     case format::INT64:
                         consumer.number( parse_number< std::int64_t, std::int64_t >( in ) );
                         return true;
-                     case 0xd4:
+                     case format::FIXEXT1:
                         discard( in, 3 );
                         return true;
-                     case 0xd5:
+                     case format::FIXEXT2:
                         discard( in, 4 );
                         return true;
-                     case 0xd6:
+                     case format::FIXEXT4:
                         discard( in, 6 );
                         return true;
-                     case 0xd7:
+                     case format::FIXEXT8:
                         discard( in, 10 );
                         return true;
-                     case 0xd8:
+                     case format::FIXEXT16:
                         discard( in, 18 );
                         return true;
-                     case 0xd9:
+                     case format::STR8:
                         consumer.string( parse_container< V, tao::string_view >( in, parse_number< std::size_t, std::uint8_t >( in ) ) );
                         return true;
-                     case 0xda:
+                     case format::STR16:
                         consumer.string( parse_container< V, tao::string_view >( in, parse_number< std::size_t, std::uint16_t >( in ) ) );
                         return true;
-                     case 0xdb:
+                     case format::STR32:
                         consumer.string( parse_container< V, tao::string_view >( in, parse_number< std::size_t, std::uint32_t >( in ) ) );
                         return true;
-                     case 0xdc:
+                     case format::ARRAY16:
                         return match_array( in, consumer, parse_number< std::size_t, std::uint16_t >( in ) );
-                     case 0xdd:
+                     case format::ARRAY32:
                         return match_array( in, consumer, parse_number< std::size_t, std::uint32_t >( in ) );
-                     case 0xde:
+                     case format::MAP16:
                         return match_object( in, consumer, parse_number< std::size_t, std::uint16_t >( in ) );
-                     case 0xdf:
+                     case format::MAP32:
                         return match_object( in, consumer, parse_number< std::size_t, std::uint32_t >( in ) );
+                     default:
+                        // LCOV_EXCL_START
+                        assert( false );
+                        return false;
+                        // LCOV_EXCL_STOP
                   }
-                  // LCOV_EXCL_START
-                  assert( false );
-                  return false;
-                  // LCOV_EXCL_STOP
                }
 
                template< typename Input >
