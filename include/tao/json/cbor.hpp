@@ -8,6 +8,7 @@
 
 #include "cbor/from_string.hpp"
 #include "cbor/parse_file.hpp"
+#include "cbor/parts_parser.hpp"
 #include "cbor/to_stream.hpp"
 #include "cbor/to_string.hpp"
 
