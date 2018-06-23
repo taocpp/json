@@ -92,75 +92,72 @@ namespace tao
             }
          };
 
-         template< typename T, typename... Args >
-         using fptr = T ( * )( Args... );
-
-         template< typename T, T, typename U, U, typename = void >
+         template< typename CP, CP, typename P, P, typename = void >
          struct element2;
 
-         template< typename T, typename CC, fptr< T, const CC& > P, typename U, typename C, fptr< U, C& > Q >
-         struct element2< T ( * )( const CC& ), P, U ( * )( C& ), Q >
+         template< typename A, typename CR, CR ( *CP )( const A& ), typename R, R ( *P )( A& ) >
+         struct element2< CR ( * )( const A& ), CP, R ( * )( A& ), P >
          {
-            static auto read( const CC& v ) -> decltype( P( v ) )
+            static auto read( const A& v ) -> decltype( CP( v ) )
             {
-               return P( v );
+               return CP( v );
             }
 
             template< typename W >
-            static void write( C& v, W&& w )
+            static void write( A& v, W&& w )
             {
-               Q( v ) = std::forward< W >( w );
+               P( v ) = std::forward< W >( w );
             }
 
             template< template< typename... > class Traits, typename Base >
-            static void as( const basic_value< Traits, Base >& v, C& x )
+            static void as( const basic_value< Traits, Base >& v, A& x )
             {
-               v.as( Q( x ) );
+               v.as( P( x ) );
             }
 
             template< template< typename... > class Traits = traits, typename Producer >
-            static void consume( Producer& parser, C& v )
+            static void consume( Producer& parser, A& v )
             {
-               json::consume< Traits >( parser, Q( v ) );
+               json::consume< Traits >( parser, P( v ) );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce( Consumer& consumer, const CC& v )
+            static void produce( Consumer& consumer, const A& v )
             {
-               events::produce< Traits >( consumer, P( v ) );
+               events::produce< Traits >( consumer, CP( v ) );
             }
          };
 
-         template< typename T, typename CC, fptr< T, const CC& > P, typename C, typename U, fptr< void, C&, U&& > Q >
-         struct element2< T ( * )( const CC& ), P, void ( * )( C&, U&& ), Q >
+         template< typename A, typename CR, CR ( *CP )( const A& ), typename R, void ( *P )( A&, R&& ) >
+         struct element2< CR ( * )( const A& ), CP, void ( * )( A&, R&& ), P >
          {
-            static auto read( const CC& v ) -> decltype( P( v ) )
+            static auto read( const A& v ) -> decltype( CP( v ) )
             {
-               return P( v );
+               return CP( v );
             }
 
             template< typename W >
-            static void write( C& v, W&& w )
+            static void write( A& v, W&& w )
             {
-               Q( v, std::forward< W >( w ) );
+               CP( v, std::forward< W >( w ) );
             }
 
             template< template< typename... > class Traits, typename Base >
-            static void as( const basic_value< Traits, Base >& v, C& x )
+            static void as( const basic_value< Traits, Base >& v, A& x )
             {
-               Q( x, v.template as< typename std::decay< U >::type >() );
+               CP( x, v.template as< typename std::decay< R >::type >() );
             }
 
             template< template< typename... > class Traits = traits, typename Producer >
-            static void consume( Producer& parser, C& v )
+            static void consume( Producer& parser, A& v )
             {
-               Q( v, json::consume< Traits >( parser ) );
+               P( v, json::consume< Traits >( parser ) );
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce( Consumer& consumer, const CC& v )
+            static void produce( Consumer& consumer, const A& v )
             {
-               events::produce< Traits >( consumer, P( v ) );
+               events::produce< Traits >( consumer, CP( v ) );
             }
          };
 
