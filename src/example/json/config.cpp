@@ -148,6 +148,26 @@ namespace config
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
+         static bool match_number_or_date_time( Input& in, States&&... st )
+         {
+            if( in.size( 5 ) >= 5 && std::isdigit( in.peek_char() ) && std::isdigit( in.peek_char( 1 ) ) ) {
+               const auto c = in.peek_char( 2 );
+               if( c == ':' ) {
+                  return Control< jaxn::local_time >::template match< A, M, Action, Control >( in, st... );
+               }
+               if( std::isdigit( c ) && std::isdigit( in.peek_char( 3 ) ) && ( in.peek_char( 4 ) == '-' ) ) {
+                  return Control< jaxn::date_sequence >::template match< A, M, Action, Control >( in, st... );
+               }
+            }
+            return match_number< false, A, M, Action, Control >( in, st... );
+         }
+
+         template< apply_mode A,
+                   rewind_mode M,
+                   template< typename... > class Action,
+                   template< typename... > class Control,
+                   typename Input,
+                   typename... States >
          static bool match_impl( Input& in, States&&... st )
          {
             switch( in.peek_char() ) {
@@ -184,7 +204,7 @@ namespace config
                   return true;
 
                default:
-                  return match_number< false, A, M, Action, Control >( in, st... );
+                  return match_number_or_date_time< A, M, Action, Control >( in, st... );
             }
          }
 
