@@ -22,7 +22,7 @@ namespace tao
          {
             Consumer* c_;
 
-            explicit array_t( Consumer& c ) noexcept
+            explicit array_t( Consumer& c ) noexcept( noexcept( c_->begin_array() ) )
                : c_( &c )
             {
                c_->begin_array();
@@ -61,7 +61,7 @@ namespace tao
          {
             Consumer* c_;
 
-            explicit object_t( Consumer& c ) noexcept
+            explicit object_t( Consumer& c ) noexcept( noexcept( c_->begin_object() ) )
                : c_( &c )
             {
                c_->begin_object();
@@ -97,13 +97,13 @@ namespace tao
          };
 
          template< template< typename... > class Traits, typename Consumer >
-         array_t< Traits, Consumer > array( Consumer& c ) noexcept
+         array_t< Traits, Consumer > array( Consumer& c ) noexcept( noexcept( array_t< Traits, Consumer >( c ) ) )
          {
             return array_t< Traits, Consumer >( c );
          }
 
          template< template< typename... > class Traits, typename Consumer >
-         object_t< Traits, Consumer > object( Consumer& c ) noexcept
+         object_t< Traits, Consumer > object( Consumer& c ) noexcept( noexcept( object_t< Traits, Consumer >( c ) ) )
          {
             return object_t< Traits, Consumer >( c );
          }
