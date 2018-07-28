@@ -663,8 +663,9 @@ namespace tao
             std::uint64_t m2;
             // Case distinction; exit early for the easy cases.
             if (ieeeExponent == ((1u << exponentBits) - 1u)) {
-               std::strcpy( result, (ieeeMantissa != 0) ? "NaN" : ( sign ? "-Infinity" : "Infinity" ) );
-               return std::strlen( result );  // TODO: Do we need to support these cases here?
+               assert( false );  // TODO: Or do we need to support these cases here?
+               //               std::strcpy( result, (ieeeMantissa != 0) ? "NaN" : ( sign ? "-Infinity" : "Infinity" ) );
+               //               return std::strlen( result );
             } else if (ieeeExponent == 0) {
                if (ieeeMantissa == 0) {
                   std::strcpy( result, sign ? "-0E0" : "0E0" );
@@ -881,7 +882,7 @@ namespace tao
                ++index;
             }
             // Print the exponent.
-            result[index++] = 'E';
+            result[index++] = 'e';
             if (exp < 0) {
                result[index++] = '-';
                exp = -exp;
