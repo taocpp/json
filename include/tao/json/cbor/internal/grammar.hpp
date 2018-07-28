@@ -46,6 +46,13 @@ namespace tao
             }
 
             template< typename Input >
+            void consume_or_throw( Input& in, const std::size_t size = 1 )
+            {
+               throw_on_empty( in, size );
+               in.bump_in_this_line( size );
+            }
+
+            template< typename Input >
             major peek_major( Input& in )
             {
                return static_cast< major >( in.peek_byte() & major_mask );
@@ -399,16 +406,16 @@ namespace tao
                         in.bump_in_this_line();
                         break;
                      case 24:
-                        in.bump_in_this_line( 2 );
+                        consume_or_throw( in, 2 );
                         break;
                      case 25:
-                        in.bump_in_this_line( 3 );
+                        consume_or_throw( in, 3 );
                         break;
                      case 26:
-                        in.bump_in_this_line( 5 );
+                        consume_or_throw( in, 5 );
                         break;
                      case 27:
-                        in.bump_in_this_line( 9 );
+                        consume_or_throw( in, 9 );
                         break;
                      case 28:
                      case 29:
