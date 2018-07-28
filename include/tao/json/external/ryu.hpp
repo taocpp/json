@@ -657,7 +657,7 @@ namespace tao
             // Decode bits into sign, mantissa, and exponent.
             const bool sign = ((bits >> (mantissaBits + exponentBits)) & 1) != 0;
             const std::uint64_t ieeeMantissa = bits & ((1ull << mantissaBits) - 1);
-            const std::uint32_t ieeeExponent = (uint32_t) ((bits >> mantissaBits) & ((1u << exponentBits) - 1));
+            const std::uint32_t ieeeExponent = std::uint32_t((bits >> mantissaBits) & ((1u << exponentBits) - 1));
 
             std::int32_t e2;
             std::uint64_t m2;
@@ -727,9 +727,9 @@ namespace tao
                const std::int32_t j = q - k;
                vr = mulShiftAll(m2, TAO_RYU_DOUBLE_POW5_SPLIT[i], j, &vp, &vm, mmShift);
                if (q <= 1) {
-                  vrIsTrailingZeros = (~((uint32_t) mv) & 1) >= (uint32_t) q;
+                  vrIsTrailingZeros = (~(std::uint32_t(mv)) & 1) >= std::uint32_t( q );
                   if (acceptBounds) {
-                     vmIsTrailingZeros = (~((uint32_t) (mv - 1 - mmShift)) & 1) >= (uint32_t) q;
+                     vmIsTrailingZeros = (~(std::uint32_t(mv - 1 - mmShift)) & 1) >= std::uint32_t( q );
                   } else {
                      --vp;
                   }
@@ -758,7 +758,7 @@ namespace tao
                   vmIsTrailingZeros &= vm % 10 == 0;
 #endif
                   vrIsTrailingZeros &= lastRemovedDigit == 0;
-                  lastRemovedDigit = (uint8_t) (vr % 10);
+                  lastRemovedDigit = std::uint8_t(vr % 10);
                   vr /= 10;
                   vp /= 10;
                   vm /= 10;
@@ -767,7 +767,7 @@ namespace tao
                if (vmIsTrailingZeros) {
                   while (vm % 10 == 0) {
                      vrIsTrailingZeros &= lastRemovedDigit == 0;
-                     lastRemovedDigit = (uint8_t) (vr % 10);
+                     lastRemovedDigit = std::uint8_t(vr % 10);
                      vr /= 10;
                      vp /= 10;
                      vm /= 10;
@@ -784,7 +784,7 @@ namespace tao
             } else {
                // Specialized for the common case (>99%).
                while (vp / 10 > vm / 10) {
-                  lastRemovedDigit = (uint8_t) (vr % 10);
+                  lastRemovedDigit = std::uint8_t(vr % 10);
                   vr /= 10;
                   vp /= 10;
                   vm /= 10;
@@ -812,7 +812,7 @@ namespace tao
             std::uint32_t output2;
             while ((output >> 32) != 0) {
                // Expensive 64-bit division.
-               output2 = (uint32_t) (output % 1000000000);
+               output2 = std::uint32_t(output % 1000000000);
                output /= 1000000000;
 
                // Cheap 32-bit divisions.
@@ -831,16 +831,16 @@ namespace tao
                result[index + olength - i - 8] = (char) ('0' + output2);
                i += 9;
             }
-            output2 = (uint32_t) output;
+            output2 = std::uint32_t( output );
 #else // ^^^ known 32-bit platforms ^^^ / vvv other platforms vvv
             // 64-bit division is efficient on 64-bit platforms.
             std::uint64_t output2 = output;
 #endif // ^^^ other platforms ^^^
             while (output2 >= 10000) {
 #ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=38217
-               const std::uint32_t c = (uint32_t) (output2 - 10000 * (output2 / 10000));
+               const std::uint32_t c = std::uint32_t(output2 - 10000 * (output2 / 10000));
 #else
-               const std::uint32_t c = (uint32_t) (output2 % 10000);
+               const std::uint32_t c = std::uint32_t(output2 % 10000);
 #endif
                output2 /= 10000;
                const std::uint32_t c0 = (c % 100) << 1;
@@ -850,13 +850,13 @@ namespace tao
                i += 4;
             }
             if (output2 >= 100) {
-               const std::uint32_t c = (uint32_t) ((output2 % 100) << 1);
+               const std::uint32_t c = std::uint32_t((output2 % 100) << 1);
                output2 /= 100;
                std::memcpy(result + index + olength - i - 1, DIGIT_TABLE + c, 2);
                i += 2;
             }
             if (output2 >= 10) {
-               const std::uint32_t c = (uint32_t) (output2 << 1);
+               const std::uint32_t c = std::uint32_t(output2 << 1);
                result[index + olength - i] = DIGIT_TABLE[c + 1];
                result[index] = DIGIT_TABLE[c];
             } else {
@@ -865,7 +865,7 @@ namespace tao
             }
 #else
             // Print decimal digits after the decimal point.
-            for (uint32_t i = 0; i < olength - 1; ++i) {
+            for (std::uint32_t i = 0; i < olength - 1; ++i) {
                const std::uint32_t c = output % 10;
                output /= 10;
                result[index + olength - i] = (char) ('0' + c);
