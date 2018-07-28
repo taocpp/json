@@ -345,8 +345,7 @@ namespace tao
 
             void skip_value()
             {
-               // TODO: Optimise?
-               json::events::discard consumer;
+               json::events::discard consumer;  // TODO: Optimise?
                json_pegtl::parse< json_pegtl::must< internal::data< V > > >( m_input, consumer );
             }
 

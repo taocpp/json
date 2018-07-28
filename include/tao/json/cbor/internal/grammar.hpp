@@ -115,7 +115,7 @@ namespace tao
             template< typename Unsigned, typename Input >
             std::uint64_t parse_unsigned_impl( Input& in )
             {
-               if( 1 + in.size( sizeof( Unsigned ) ) > sizeof( Unsigned ) ) {
+               if( 1 + in.size( sizeof( Unsigned ) ) >= 1 + sizeof( Unsigned ) ) {
                   const Unsigned result = json::internal::be_to_h< Unsigned >( in.current() + 1 );
                   in.bump_in_this_line( 1 + sizeof( Unsigned ) );
                   return result;
@@ -231,35 +231,6 @@ namespace tao
                   assert( false );
                   return false;
                   // LCOV_EXCL_STOP
-               }
-
-               template< typename Input >
-               static void skip_unsigned( Input& in )
-               {
-                  // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
-
-                  switch( const auto m = peek_minor( in ) ) {
-                     default:
-                        in.bump_in_this_line();
-                        return;
-                     case 24:
-                        in.bump_in_this_line( 2 );
-                        return;
-                     case 25:
-                        in.bump_in_this_line( 3 );
-                        return;
-                     case 26:
-                        in.bump_in_this_line( 5 );
-                        return;
-                     case 27:
-                        in.bump_in_this_line( 9 );
-                        return;
-                     case 28:
-                     case 29:
-                     case 30:
-                     case 31:
-                        throw_parse_error( in, "unexpected minor", m, "for number or length" );
-                  }
                }
 
                template< typename Input, typename Consumer >
@@ -404,10 +375,47 @@ namespace tao
                   return true;
                }
 
+               // template< typename Input, typename Consumer >
+               // static bool match_date_time_string( Input& in, Consumer& consumer )
+               // {
+               // }
+
+               // template< typename Input, typename Consumer >
+               // static bool match_date_time_number( Input& in, Consumer& consumer )
+               // {
+               // }
+
                template< typename Input, typename Consumer >
                static bool match_tag( Input& in, Consumer& /*unused*/ )
                {
-                  skip_unsigned( in );
+                  switch( const auto m = peek_minor( in ) ) {
+                     case 0:
+                        in.bump_in_this_line();
+                        return true;  // TODO: match_date_time_string( in, consumer );
+                     case 1:
+                        in.bump_in_this_line();
+                        return true;  // TODO: match_date_time_number( in, consumer );
+                     default:
+                        in.bump_in_this_line();
+                        break;
+                     case 24:
+                        in.bump_in_this_line( 2 );
+                        break;
+                     case 25:
+                        in.bump_in_this_line( 3 );
+                        break;
+                     case 26:
+                        in.bump_in_this_line( 5 );
+                        break;
+                     case 27:
+                        in.bump_in_this_line( 9 );
+                        break;
+                     case 28:
+                     case 29:
+                     case 30:
+                     case 31:
+                        throw_parse_error( in, "unexpected minor", m, "for tag value" );
+                  }
                   return true;
                }
 
