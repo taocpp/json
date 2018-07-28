@@ -668,7 +668,7 @@ namespace tao
                //               return std::strlen( result );
             } else if (ieeeExponent == 0) {
                if (ieeeMantissa == 0) {
-                  std::strcpy( result, sign ? "-0E0" : "0E0" );
+                  std::strcpy( result, sign ? "-0e0" : "0e0" );
                   return sign ? 4 : 3;
                }
                // We subtract 2 so that the bounds computation has 2 additional bits.
