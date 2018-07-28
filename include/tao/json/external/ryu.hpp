@@ -800,7 +800,7 @@ namespace tao
 
             // Step 5: Print the decimal representation.
             int index = 0;
-            if(sign ) {
+            if( sign ) {
                result[index++] = '-';
             }
 
@@ -868,7 +868,7 @@ namespace tao
             for (std::uint32_t i = 0; i < olength - 1; ++i) {
                const std::uint32_t c = output % 10;
                output /= 10;
-               result[index + olength - i] = (char) ('0' + c);
+               result[index + olength - i] = char( '0' + c );
             }
             // Print the leading decimal digit.
             result[index] = '0' + output % 10;
@@ -891,22 +891,22 @@ namespace tao
             if (exp >= 100) {
                const std::int32_t c = exp % 10;
                std::memcpy(result + index, DIGIT_TABLE + (2 * (exp / 10)), 2);
-               result[index + 2] = (char) ('0' + c);
+               result[index + 2] = char( '0' + c );
                index += 3;
             } else if (exp >= 10) {
                std::memcpy(result + index, DIGIT_TABLE + (2 * exp), 2);
                index += 2;
             } else {
-               result[index++] = (char) ('0' + exp);
+               result[index++] = char( '0' + exp );
             }
 #else
             if (exp >= 100) {
-               result[index++] = (char) ('0' + exp / 100);
+               result[index++] = char('0' + exp / 100 );
             }
             if (exp >= 10) {
-               result[index++] = '0' + (exp / 10) % 10;
+               result[index++] = char( '0' + (exp / 10) % 10 );
             }
-            result[index++] = '0' + exp % 10;
+            result[index++] = char( '0' + exp % 10 );
 #endif // NO_DIGIT_TABLE
 
             // Terminate the string.

@@ -31,7 +31,12 @@ namespace tao
          const auto a = dc_string( v );
          const auto b = ryu_string( v );
 
-         std::cout << ( a == b ? "= " : "! " ) << a << " " << b << std::endl;
+         if( a == b ) {
+            std::cout << "= " << a << std::endl;
+         }
+         else {
+            std::cout << "! " << a << " " << b << std::endl;
+         }
       }
 
       void unit_test()
