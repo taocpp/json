@@ -828,7 +828,7 @@ namespace tao
                std::memcpy(result + index + olength - i - 3, DIGIT_TABLE + c1, 2);
                std::memcpy(result + index + olength - i - 5, DIGIT_TABLE + d0, 2);
                std::memcpy(result + index + olength - i - 7, DIGIT_TABLE + d1, 2);
-               result[index + olength - i - 8] = (char) ('0' + output2);
+               result[index + olength - i - 8] = char( '0' + output2 );
                i += 9;
             }
             output2 = std::uint32_t( output );
@@ -861,7 +861,7 @@ namespace tao
                result[index] = DIGIT_TABLE[c];
             } else {
                // Print the leading decimal digit.
-               result[index] = (char) ('0' + output2);
+               result[index] = char( '0' + output2 );
             }
 #else
             // Print decimal digits after the decimal point.
