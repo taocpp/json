@@ -16,7 +16,7 @@
 #include "../local_time.hpp"
 #include "../offset_date_time.hpp"
 
-#include "../external/double.hpp"
+#include "../external/ryu.hpp"
 
 #include "../internal/escape.hpp"
 #include "../internal/hexdump.hpp"
@@ -72,7 +72,7 @@ namespace tao
                   os << v;
                }
                else {
-                  json_double_conversion::Dtostr( os, v );
+                  ryu::d2s_stream( os, v );
                }
                os << '\n';
             }

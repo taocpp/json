@@ -6,6 +6,8 @@
 
 #include "../../events/to_stream.hpp"
 
+#include "../../external/ryu.hpp"
+
 #include "../../internal/hexdump.hpp"
 
 #include "../../local_date.hpp"
@@ -46,7 +48,7 @@ namespace tao
                      }
                   }
                   else {
-                     json_double_conversion::Dtostr( os, v );
+                     ryu::d2s_stream( os, v );
                   }
                }
 

@@ -20,7 +20,7 @@
 #include "../local_time.hpp"
 #include "../offset_date_time.hpp"
 
-#include "../external/double.hpp"
+#include "../external/ryu.hpp"
 #include "../external/string_view.hpp"
 
 #include "../internal/escape.hpp"
@@ -110,7 +110,7 @@ namespace tao
                   // if this throws, consider using non_finite_to_* transformers
                   throw std::runtime_error( "non-finite double value invalid for JSON string representation" );  // NOLINT
                }
-               json_double_conversion::Dtostr( os, v );
+               ryu::d2s_stream( os, v );
             }
 
             void string( const tao::string_view v )
