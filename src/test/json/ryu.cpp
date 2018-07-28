@@ -53,7 +53,15 @@ namespace tao
          test_double( 42.0 );
          test_double( -42.0 );
          test_double( 0.1 );
-         test_double( 1e10 );
+         test_double( 1e5 );
+         test_double( 1e6 );
+         test_double( 1e7 );
+         test_double( 1e20 );
+         test_double( 1e21 );
+         test_double( 1e22 );
+         test_double( 1e-5 );
+         test_double( 1e-6 );
+         test_double( 1e-7 );
          test_double( -1e10 );
          test_double( -1E+10 );
          test_double( -1E-10 );

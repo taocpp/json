@@ -25,8 +25,6 @@
 #ifndef TAO_JSON_EXTERNAL_RYU_HPP
 #define TAO_JSON_EXTERNAL_RYU_HPP
 
-#define TAO_RYU_USE_DIGIT_TABLE
-
 // Runtime compiler options:
 // -DRYU_ONLY_64_BIT_OPS Avoid using uint128_t or 64-bit intrinsics. Slower,
 //     depending on your compiler.
@@ -645,7 +643,115 @@ namespace tao
             return 1;
          }
 
-         std::uint32_t d2s_buffered( const double f, char* result )
+         inline std::uint32_t d2s_simplistic_step5( std::uint64_t output, std::int32_t exp, const std::int32_t olength, char* result )
+         {
+            std::uint32_t index = 0;
+
+            // TODO: Use digit_table?
+            // TODO: Check for simplifications.
+
+            if( exp <= 0 ) {
+               result[ index++ ] = '0';
+               result[ index++ ] = '.';
+               for( exp = -exp; exp; --exp ) {
+                  result[ index++ ] = '0';
+               }
+               for( std::int32_t i = 0; i < olength; ++i ) {
+                  const std::uint32_t c = output % 10;
+                  output /= 10;
+                  result[ index + olength - i - 1 ] = char( '0' + c );
+               }
+               index += olength;
+            }
+            else if ( exp >= olength ) {
+               for( std::int32_t i = 0; i < olength; ++i ) {
+                  const std::uint32_t c = output % 10;
+                  output /= 10;
+                  result[ olength - i - 1 ] = char( '0' + c );
+               }
+               for( std::int32_t i = olength; i < exp; ++i ) {
+                  result[ i ] = '0';
+               }
+               result[ exp ] = '.';
+               result[ exp + 1 ] = '0';
+               return exp + 2;
+            }
+            else {  // ( exp > 0 ) && ( exp < olength )
+               for( std::int32_t i = 0; i < olength - exp; ++i ) {
+                  const std::uint32_t c = output % 10;
+                  output /= 10;
+                  result[ olength - i ] = char( '0' + c );
+               }
+               result[ exp ] = '.';
+               for( std::int32_t i = 0; i < exp; ++i ) {
+                  const std::uint32_t c = output % 10;
+                  output /= 10;
+                  result[ exp - i - 1 ] = char( '0' + c );
+               }
+               return olength + 1;
+            }
+            return index;
+         }
+
+         inline std::uint32_t d2s_scientific_step5( std::uint64_t output, std::int32_t exp, const std::uint32_t olength, char* result )
+         {
+            // Print decimal digits after the decimal point.
+            std::uint32_t i = 0;
+            while( output >= 10000 ) {
+#ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=38217
+               const std::uint32_t c = std::uint32_t(output - 10000 * (output / 10000));
+#else
+               const std::uint32_t c = std::uint32_t(output % 10000);
+#endif
+               output /= 10000;
+               const std::uint32_t c0 = (c % 100) << 1;
+               const std::uint32_t c1 = (c / 100) << 1;
+               std::memcpy(result + olength - i - 1, digit_table + c0, 2);
+               std::memcpy(result + olength - i - 3, digit_table + c1, 2);
+               i += 4;
+            }
+            if (output >= 100) {
+               const std::uint32_t c = std::uint32_t((output % 100) << 1);
+               output /= 100;
+               std::memcpy(result + olength - i - 1, digit_table + c, 2);
+               i += 2;
+            }
+            if (output >= 10) {
+               const std::uint32_t c = std::uint32_t(output << 1);
+               result[olength - i] = digit_table[c + 1];
+               result[0] = digit_table[c];
+            } else {
+               result[0] = char( '0' + output );  // Print the leading decimal digit.
+            }
+            int index = 1;
+
+            // Print decimal point if needed.
+            if ( olength > 1 ) {
+               result[ 1 ] = '.';
+               index += olength;
+            }
+            if( exp ) {
+               result[ index++ ] = 'e';
+               if( exp < 0 ) {
+                  result[ index++ ] = '-';
+                  exp = -exp;
+               }
+               if( exp >= 100 ) {
+                  const std::int32_t c = exp % 10;
+                  std::memcpy( result + index, digit_table + ( 2 * ( exp / 10 ) ), 2 );
+                  result[ index + 2 ] = char( '0' + c );
+                  index += 3;
+               } else if( exp >= 10 ) {
+                  std::memcpy( result + index, digit_table + ( 2 * exp ), 2 );
+                  index += 2;
+               } else {
+                  result[ index++ ] = char( '0' + exp );
+               }
+            }
+            return index;
+         }
+
+         inline std::uint32_t d2s_finite( const double f, char* result )
          {
             // Step 1: Decode the floating-point number, and unify normalized and subnormal cases.
             const std::uint32_t mantissaBits = TAO_RYU_DOUBLE_MANTISSA_BITS;
@@ -663,12 +769,14 @@ namespace tao
 
             std::int32_t e2;
             std::uint64_t m2;
+
+            // NOTE: For taocpp/json this function assumes that f is finite!
+            //            if (ieeeExponent == ((1u << exponentBits) - 1u)) {
+            //               std::strcpy( result, (ieeeMantissa != 0) ? "NaN" : ( sign ? "-Infinity" : "Infinity" ) );
+            //               return std::strlen( result );
+            //            } else if (ieeeExponent == 0) {
             // Case distinction; exit early for the easy cases.
-            if (ieeeExponent == ((1u << exponentBits) - 1u)) {
-               assert( false );  // TODO: Or do we need to support these cases here?
-               //               std::strcpy( result, (ieeeMantissa != 0) ? "NaN" : ( sign ? "-Infinity" : "Infinity" ) );
-               //               return std::strlen( result );
-            } else if (ieeeExponent == 0) {
+            if (ieeeExponent == 0) {
                if (ieeeMantissa == 0) {
                   std::strcpy( result, sign ? "-0.0" : "0.0" );
                   return sign ? 4 : 3;
@@ -680,8 +788,7 @@ namespace tao
                e2 = ieeeExponent - offset - mantissaBits - 2;
                m2 = (1ull << mantissaBits) | ieeeMantissa;
             }
-            const bool even = (m2 & 1) == 0;
-            const bool acceptBounds = even;
+            const bool acceptBounds = (m2 & 1) == 0;
 
             // Step 2: Determine the interval of legal decimal representations.
             const std::uint64_t mv = 4 * m2;
@@ -694,8 +801,10 @@ namespace tao
             // Step 3: Convert to a decimal power base using 128-bit arithmetic.
             std::uint64_t vr, vp, vm;
             std::int32_t e10;
+
             bool vmIsTrailingZeros = false;
             bool vrIsTrailingZeros = false;
+
             if (e2 >= 0) {
                // I tried special-casing q == 0, but there was no effect on performance.
                // This expression is slightly faster than max(0, log10Pow2(e2) - 1).
@@ -795,134 +904,27 @@ namespace tao
                // We need to take vr+1 if vr is outside bounds or we need to round up.
                output = vr + ((vr == vm) || (lastRemovedDigit >= 5));
             }
-            // The average output length is 16.38 digits.
-            const std::uint32_t olength = decimalLength(output);
-            const std::uint32_t vplength = olength + removed;
-            std::int32_t exp = e10 + vplength - 1;
-
             // Step 5: Print the decimal representation.
-            int index = 0;
+
             if( sign ) {
-               result[index++] = '-';
+               *result++ = '-';
             }
+            // The average output length is 16.38 digits.
+            const std::uint32_t olength = decimalLength( output );
+            const std::int32_t exp = e10 + olength + removed;
 
-#ifdef TAO_RYU_USE_DIGIT_TABLE
-            // Print decimal digits after the decimal point.
-            std::uint32_t i = 0;
-#if defined(_M_IX86) || defined(_M_ARM)
-            // 64-bit division is inefficient on 32-bit platforms.
-            std::uint32_t output2;
-            while ((output >> 32) != 0) {
-               // Expensive 64-bit division.
-               output2 = std::uint32_t(output % 1000000000);
-               output /= 1000000000;
-
-               // Cheap 32-bit divisions.
-               const std::uint32_t c = output2 % 10000;
-               output2 /= 10000;
-               const std::uint32_t d = output2 % 10000;
-               output2 /= 10000;
-               const std::uint32_t c0 = (c % 100) << 1;
-               const std::uint32_t c1 = (c / 100) << 1;
-               const std::uint32_t d0 = (d % 100) << 1;
-               const std::uint32_t d1 = (d / 100) << 1;
-               std::memcpy(result + index + olength - i - 1, digit_table + c0, 2);
-               std::memcpy(result + index + olength - i - 3, digit_table + c1, 2);
-               std::memcpy(result + index + olength - i - 5, digit_table + d0, 2);
-               std::memcpy(result + index + olength - i - 7, digit_table + d1, 2);
-               result[index + olength - i - 8] = char( '0' + output2 );
-               i += 9;
+            if( ( -6 < exp ) && ( exp < 22 ) ) {
+               return d2s_simplistic_step5( output, exp, olength, result ) + std::uint32_t( sign );
             }
-            output2 = std::uint32_t( output );
-#else // ^^^ known 32-bit platforms ^^^ / vvv other platforms vvv
-            // 64-bit division is efficient on 64-bit platforms.
-            std::uint64_t output2 = output;
-#endif // ^^^ other platforms ^^^
-            while (output2 >= 10000) {
-#ifdef __clang__ // https://bugs.llvm.org/show_bug.cgi?id=38217
-               const std::uint32_t c = std::uint32_t(output2 - 10000 * (output2 / 10000));
-#else
-               const std::uint32_t c = std::uint32_t(output2 % 10000);
-#endif
-               output2 /= 10000;
-               const std::uint32_t c0 = (c % 100) << 1;
-               const std::uint32_t c1 = (c / 100) << 1;
-               std::memcpy(result + index + olength - i - 1, digit_table + c0, 2);
-               std::memcpy(result + index + olength - i - 3, digit_table + c1, 2);
-               i += 4;
+            else {
+               return d2s_scientific_step5( output, exp - 1, olength, result ) + std::uint32_t( sign );
             }
-            if (output2 >= 100) {
-               const std::uint32_t c = std::uint32_t((output2 % 100) << 1);
-               output2 /= 100;
-               std::memcpy(result + index + olength - i - 1, digit_table + c, 2);
-               i += 2;
-            }
-            if (output2 >= 10) {
-               const std::uint32_t c = std::uint32_t(output2 << 1);
-               result[index + olength - i] = digit_table[c + 1];
-               result[index] = digit_table[c];
-            } else {
-               // Print the leading decimal digit.
-               result[index] = char( '0' + output2 );
-            }
-#else
-            // Print decimal digits after the decimal point.
-            for (std::uint32_t i = 0; i < olength - 1; ++i) {
-               const std::uint32_t c = output % 10;
-               output /= 10;
-               result[index + olength - i] = char( '0' + c );
-            }
-            // Print the leading decimal digit.
-            result[index] = '0' + output % 10;
-#endif // TAO_RYU_USE_DIGIT_TABLE
-
-            // Print decimal point if needed.
-            if (olength > 1) {
-               result[index + 1] = '.';
-               index += olength + 1;
-            } else {
-               ++index;
-            }
-
-            // Print exponent intro.
-
-            result[ index++ ] = 'e';
-
-            if( exp < 0 ) {
-               result[ index++ ] = '-';
-               exp = -exp;
-            }
-
-            // Print exponent digits.
-            // TODO: Choose one implementation.
-#ifdef TAO_RYU_USE_DIGIT_TABLE
-            if( exp >= 100 ) {
-               const std::int32_t c = exp % 10;
-               std::memcpy( result + index, digit_table + ( 2 * ( exp / 10 ) ), 2 );
-               result[ index + 2 ] = char( '0' + c );
-               index += 3;
-            } else if( exp >= 10 ) {
-               std::memcpy( result + index, digit_table + ( 2 * exp ), 2 );
-               index += 2;
-            } else {
-               result[ index++ ] = char( '0' + exp );
-            }
-#else
-            if( exp >= 100 ) {
-               result[ index++ ] = char( '0' + exp / 100 );
-            }
-            if( exp >= 10 ) {
-               result[ index++ ] = char( '0' + ( exp / 10 ) % 10 );
-            }
-            result[ index++ ] = char( '0' + exp % 10 );
-#endif // TAO_RYU_USE_DIGIT_TABLE
-            return index;
          }
 
          inline void d2s_stream( std::ostream& o, const double f )
          {
-            char b[ 24 ];
-            const auto s = d2s_buffered( f, b );
+            char b[ 28 ];
+            const auto s = d2s_finite( f, b );
             o.write( b, s );
          }
 
