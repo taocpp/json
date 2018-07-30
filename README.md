@@ -92,6 +92,21 @@ The Art of C++ / JSON contains slightly modified portions of the [double-convers
 >
 > THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+The Art of C++ / JSON contains slightly modified portions of [Ulf Adams' Ryu implementation](https://github.com/ulfjack/ryu) which is licensed as follows:
+
+> Copyright 2018 Ulf Adams
+>
+> The contents of this file may be used under the terms of the Apache License, Version 2.0.
+>
+>    (See accompanying file LICENSE.ryu or copy at
+>     http://www.apache.org/licenses/LICENSE-2.0)
+>
+> Alternatively, the contents of this file may be used under the terms of the Boost Software License, Version 1.0.
+>    (See accompanying file LICENSE-Boost or copy at
+>     https://www.boost.org/LICENSE_1_0.txt)
+>
+> Unless required by applicable law or agreed to in writing, this software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
 [CBOR]: http://cbor.io
 [ECMA-404]: http://www.ecma-international.org/publications/standards/Ecma-404.htm
 [JAXN]: https://github.com/stand-art/jaxn
