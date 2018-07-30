@@ -1203,9 +1203,10 @@ namespace tao
             if( vmIsTrailingZeros || vrIsTrailingZeros ) {
                // General case, which happens rarely (<1%).
                while( vp / 10 > vm / 10 ) {
-#ifdef __clang__  // https://bugs.llvm.org/show_bug.cgi?id=23106              \
-   // The compiler does not realize that vm % 10 can be computed from vm / 10 \
-   // as vm - (vm / 10) * 10.
+#ifdef __clang__
+                  // https://bugs.llvm.org/show_bug.cgi?id=23106
+                  // The compiler does not realize that vm % 10 can be computed from vm / 10
+                  // as vm - (vm / 10) * 10.
                   vmIsTrailingZeros &= vm - ( vm / 10 ) * 10 == 0;
 #else
                   vmIsTrailingZeros &= vm % 10 == 0;
