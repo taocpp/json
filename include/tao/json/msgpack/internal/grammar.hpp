@@ -120,7 +120,7 @@ namespace tao
                static bool match_impl( Input& in, Consumer& consumer )
                {
                   const auto b = in.peek_byte();
-                  if( b <= std::uint8_t( format::POSITIVE_MAX )) {
+                  if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
                      consumer.number( std::uint64_t( b ) );
                      in.bump_in_this_line();
                      return true;
@@ -150,9 +150,12 @@ namespace tao
                         return true;
                      case format::UNUSED:
                         throw_parse_error( in, "unused first byte 0xc1" );
-                     case format::TRUE:
-                     case format::FALSE:
-                        consumer.boolean( b & 1 );
+                     case format::BOOL_TRUE:
+                        consumer.boolean( true );
+                        in.bump_in_this_line();
+                        return true;
+                     case format::BOOL_FALSE:
+                        consumer.boolean( false );
                         in.bump_in_this_line();
                         return true;
                      case format::BIN8:
