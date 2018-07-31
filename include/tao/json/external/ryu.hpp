@@ -83,7 +83,7 @@ namespace tao
 
 #elif defined( HAS_64_BIT_INTRINSICS )
 
-         inline std::uint64_t umul128( const std::uint64_t a, const std::uint64_t b, std::uint64_t& const productHi )
+         inline std::uint64_t umul128( const std::uint64_t a, const std::uint64_t b, std::uint64_t& productHi )
          {
             return _umul128( a, b, &productHi );
          }
@@ -104,7 +104,7 @@ namespace tao
 
 #else
 
-         static inline std::uint64_t umul128( const std::uint64_t a, const std::uint64_t b, std::uint64_t& const productHi )
+         static inline std::uint64_t umul128( const std::uint64_t a, const std::uint64_t b, std::uint64_t& productHi )
          {
             // The casts here help MSVC to avoid calls to the __allmul library function.
             const std::uint32_t aLo = (std::uint32_t)a;
