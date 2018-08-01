@@ -71,7 +71,7 @@ namespace tao
                template< typename A, std::size_t I >
                static bool set_optional_bit( std::bitset< sizeof...( As ) >& t )
                {
-                  t.set( I, A::kind == member_kind::OPTIONAL );
+                  t.set( I, A::kind == member_kind::OPTIONAL_MEMBER );
                   return true;
                }
 
