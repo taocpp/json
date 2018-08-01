@@ -23,7 +23,6 @@ namespace tao
 
       void test_double( const std::string& s, const double v, const std::string& r )
       {
-         std::cout << s << " " << r << " " << double2string( v ) << std::endl;
          TEST_ASSERT( v == string2double( s ) );
          TEST_ASSERT( r == double2string( v ) );
       }
