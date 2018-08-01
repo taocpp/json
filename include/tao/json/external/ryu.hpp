@@ -1114,8 +1114,9 @@ namespace tao
             // Case distinction; exit early for the easy cases.
             if( ieeeExponent == 0 ) {
                if( ieeeMantissa == 0 ) {
-                  std::strcpy( result, sign ? "-0.0" : "0.0" );
-                  return sign ? 4 : 3;
+                  const std::uint32_t size = sign ? 4 : 3;
+                  std::memcpy( result, "-0.0" + 4 - size, size );
+                  return size;
                }
                // We subtract 2 so that the bounds computation has 2 additional bits.
                e2 = 1 - offset - mantissaBits - 2;
