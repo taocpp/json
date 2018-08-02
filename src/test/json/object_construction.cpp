@@ -39,7 +39,7 @@ namespace tao
          {
             {
                // NON-UNIFORM: Does not call the default ctor
-               value v();  // most vexing parse, declares a function
+               // value v();  // most vexing parse, declares a function
             }
             // special case: nothing, work-around for the most vexing parse
             {
@@ -62,10 +62,12 @@ namespace tao
             }
 
             // second-level curly brackets, uniform: create an object with members
+#if ( __GNUC__ != 7 ) || ( __cplusplus < 201703L )
             {
                value v( {} );
                TEST_ASSERT( json::to_string( v ) == "{}" );
             }
+#endif
             {
                value v( empty_object );
                TEST_ASSERT( json::to_string( v ) == "{}" );
