@@ -7,10 +7,10 @@ This library is designed for correctness and simplicity, is based on C++ standar
 
 ## Initialiser-Lists
 
-To prevent the following (and more) ambiguities, only Values for Objects can be created with an initialiser-list argument to the constructor.
+The Value constructor that accepts an initialiser-list as argument will always (attempt to) create a Value that is an Object, i.e. it will never attempt to create a Value that is an Array, because it is not possible for the same function to accept initialiser-lists for both Arrays and Objects without introducing ambiguities:
 
 * Is `{ { "hallo", 1 }, { "world", 2 } }` an Array with two Arrays as elements, or an Object with two members?
-* If `foo` and `bar` both have a default key in the traits, is `{ foo, bar }` an Array with two elements, or an Object with two members?
+* If `foo` has a [default key](Type-Traits.md#default-key-for-objects) in the traits, is `{ foo }` an Array with one element, or an Object with one member?
 
 Creating an Array from an initialiser-list is still possible with the static `tao::json::value::array()` function.
 
@@ -18,9 +18,10 @@ Creating an Array from an initialiser-list is still possible with the static `ta
 
 Class `tao::json::value` has neither a `size()` nor an `empty()` method due to the lack of unambiguous canonical semantics.
 
-* Should a JSON Null have size 0 although, unlike Uninitialized, it is a JSON Value?
-* Should a string have size 1 (act as one Value) or return its size (act as container)?
-* Should a binary have size 1 (act as one Value) or return its size (act as container)?
-* Should a Value Pointer have size 1 or forward `size()` and `empty()` to the pointee?
+* Should atomic JSON Values have size `0` or size `1`, or should everything except for Null have size `1`?
+* Should special values (like `UNINITIALIZED`) have size `0`, or should they throw when checking the size?
+* Should strings use container semantics for `size()` and `empty()`, or should they behave like atomic Values?
+* Should a Value Pointer have size `1`, or should it forward `size()` and `empty()` to the pointee Value?
+* Should an Opaque Pointer have size `1`, or should it report the size of the JSON representation of the pointee?
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
