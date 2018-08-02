@@ -25,6 +25,7 @@ set(testsources
   key_snake_case_to_camel_case.cpp
   literal.cpp
   msgpack.cpp
+  object_construction.cpp
   object_operators.cpp
   opaque.cpp
   ostream.cpp
