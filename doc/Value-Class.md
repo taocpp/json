@@ -379,7 +379,7 @@ They all throw an exception when the type of the Value is not the expected one.
 | `std::vector< tao::byte >& get_binary()` ||
 | `const std::vector< tao::byte >& get_binary() const` ||
 | `tao::binary_view get_binary_view() const` ||
-| `tao::binary_view get_binary_type() const` || `type::BINARY` and `type::BINARY_VIEW` |
+| `tao::binary_view get_binary_type() const` | `type::BINARY` and `type::BINARY_VIEW` |
 | `std::vector< value >& get_array()` ||
 | `const std::vector< value >& get_array() const` ||
 | `std::map< std::string, value >& get_object()` ||
