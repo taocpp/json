@@ -367,7 +367,7 @@ The following member functions of class `tao::json::value` bypass the Type Trait
 They all throw an exception when the type of the Value is not the expected one.
 
 | Value Class Member Function | Remarks |
------------------------------------------
+|-----------------------------|---------|
 | `bool get_boolean() const` ||
 | `std::int64_t get_signed() const` ||
 | `std::uint64_t get_unsigned() const` ||
@@ -407,6 +407,7 @@ Like the equivalent constructor, the assignment operators that accept any type u
 The following member functions of class `tao::json::value` bypass the Type Traits and directly assign to the underlying data in a Value.
 
 | Value Class Member Function | Remarks |
+|-----------------------------|---------|
 | `void assign_null() noexcept` ||
 | `void assign_boolean( const bool ) noexcept` ||
 | `void assign_signed( const std::int64_t ) noexcept` ||
