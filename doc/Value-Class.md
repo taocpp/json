@@ -155,7 +155,7 @@ As per the JSON standard, the keys must be strings (`std::string`, `tao::string_
 The values can individually be converted to JSON Values, and can therefore be of any type that a JSON Value can be constructed from.
 
 ```c++
-const tao::json::value v{
+const tao::json::value v = {
    { "hello", "world" },
    { "answer", 41.0 },
    { "correct", false },
@@ -184,7 +184,7 @@ Object initialiser-lists can still use (different) keys for types with a default
 Since it is [not possible to use initialiser-lists in a way that efficiently and unambiguously works for both Arrays and Objects](Design-Decisions.md#initialiser-lists), it is necessary to disambiguate manually by using the static `tao::json::value::array()` function to create a Value with an Array from an initialiser-list.
 
 ```c++
-const tao::json::value array = tao::json::value::array( {
+const auto array = tao::json::value::array( {
    42.0,
    "fish",
    true,
@@ -210,6 +210,47 @@ v = {
    { "empty binary", tao::json::empty_binary }
 };
 ```
+
+## Uniform Initialization
+
+As Value has a constructor and assignment operator taking an initializer list, uniform initialization and assignment are not as uniform as one might think. There are a few pitfalls, often related to empty objects or "simple" values.
+
+As a guideline, always use `tao::json::empty_object` instead of `{}`. The latter will use the default constructor in several important cases and thereby create an uninitialized value, e.g. a Value with the type `type::UNINITIALIZED`.
+
+The following lines behave as expected:
+
+```c++
+tao::json::value v( tao::json::empty_object );
+tao::json::value v = tao::json::empty_object;
+auto v = tao::json::value( tao::json::empty_object );
+v = tao::json::empty_object;
+v = { { "foo", tao::json::empty_object } };
+```
+
+The following versions using `{}` will yield a few surprises:
+
+```c++
+tao::json::value v{}; // default ctor, not initializer_list ctor
+tao::json::value v = {}; // default ctor, not initializer_list ctor
+tao::json::value v( {} ); // initializer_list ctor, does create an empty object
+v = {}; // assign a default-constructed value
+v = { { "foo", {} } }; // object with one member, key "foo" and an uninitialized value
+```
+
+A few more points to consider:
+
+```c++
+// creates v with type tao::json::empty_object_t, not tao::json::value
+auto v = tao::json::empty_object;
+
+// default ctor:
+tao::json::value v;
+
+// most vexing parse, declares a function
+tao::json::value v();
+```
+
+TODO: Continue
 
 ## Accessing Values
 
