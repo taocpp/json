@@ -3,6 +3,7 @@
 * [Overview](#overview)
 * [Value and Data Types](#value-and-data-types)
 * [Creating Values](#creating-values)
+* [Uniform Initialization](#uniform-initialization)
 * [Accessing Values](#accessing-values)
 * [Manipulating Values](#manipulating-values)
 * [Container Functions](#container-functions)
@@ -213,26 +214,37 @@ v = {
 
 ## Uniform Initialization
 
-As Value has a constructor and assignment operator taking an initializer list, uniform initialization and assignment are not as uniform as one might think. There are a few pitfalls, often related to empty objects or "simple" values.
+As Value has a constructor and assignment operator taking an initializer list, it assigns a special meaning to the use of curly brackets.
+This has consequences wrt the so called "uniform initialization".
+Normally, uniform initialization for most users means that you "always" use curly brackets instead of round brackets when you want to construct an object.
+As curly brackets for Values are use to denote a JSON object they should not be confused with or blindly replace round brackets.
 
-As a guideline, always use `tao::json::empty_object` instead of `{}`. The latter will use the default constructor in several important cases and thereby create an uninitialized value, e.g. a Value with the type `type::UNINITIALIZED`.
+### `empty_object`
+
+**Guideline:** Always use `tao::json::empty_object` instead of `{}` when you want an empty JSON object.
+
+The curly brackets are the default constructor in several important cases and thereby create an uninitialized value, e.g. a Value with the type `type::UNINITIALIZED`.
 
 The following lines behave as expected:
 
 ```c++
 tao::json::value v( tao::json::empty_object );
 tao::json::value v = tao::json::empty_object;
+
 auto v = tao::json::value( tao::json::empty_object );
+
 v = tao::json::empty_object;
 v = { { "foo", tao::json::empty_object } };
 ```
 
-The following versions using `{}` will yield a few surprises:
+The following lines using `{}` will yield a few surprises:
 
 ```c++
 tao::json::value v{}; // default ctor, not initializer_list ctor
 tao::json::value v = {}; // default ctor, not initializer_list ctor
+
 tao::json::value v( {} ); // initializer_list ctor, does create an empty object
+
 v = {}; // assign a default-constructed value
 v = { { "foo", {} } }; // object with one member, key "foo" and an uninitialized value
 ```
@@ -240,7 +252,7 @@ v = { { "foo", {} } }; // object with one member, key "foo" and an uninitialized
 A few more points to consider:
 
 ```c++
-// creates v with type tao::json::empty_object_t, not tao::json::value
+// creates a variable 'v' with type tao::json::empty_object_t, not tao::json::value
 auto v = tao::json::empty_object;
 
 // default ctor:
@@ -250,7 +262,77 @@ tao::json::value v;
 tao::json::value v();
 ```
 
-TODO: Continue
+### Single Argument Constructors
+
+If you want to copy/move a Value or construct a Value from a single value via the traits, use round brackets or assignment.
+
+**Guideline:** Avoid using curly brackets *unless* you mean to create/assign a non-empty JSON object.
+
+The following should behave as expected:
+
+```c++
+tao::json::value v = 42; // uses traits
+tao::json::value v = "Hallo"; // uses traits
+
+tao::json::value v( 42 ); // uses traits
+tao::json::value v( "Hallo" ); // uses traits
+
+tao::json::value v2 = v; // copy ctor
+tao::json::value v2 = std::move( v ); // move ctor
+
+tao::json::value v2( v ); // copy ctor
+tao::json::value v2( std::move( v ) ); // move ctor
+
+// any non-empty initializer list for a JSON object is OK
+tao::json::value v = { { "foo", 42 } };
+tao::json::value v( { { "foo", 42 } } );
+
+v = { { "foo", 42 } };
+```
+
+Again, as a reminder:
+
+```c++
+// avoid empty curly brackets:
+tao::json::value v{}; // an uninitialized Value
+tao::json::value v = {}; // an uninitialized Value
+tao::json::value v( {} ); // empty JSON object (*)
+tao::json::value v( tao::json::empty_object ); // preferred
+
+v = {}; // Assigns a default constructed (uninitialized) Value
+```
+
+Note that the line marked with (*) does not work on GCC 7 due to a compiler bug. Hence it should also be avoided, even if it is technically correct.
+
+### Implicit construction
+
+**Guideline:** When calling a function with a Value parameter, use curly brackets for non-empty JSON objects only.
+
+Example:
+
+```c++
+void f( const tao::json::value& );
+
+f( 42 );
+f( "Hello" );
+f( tao::json::empty_object );
+f( { { "foo", 42 } } );
+```
+
+Here's the problematic cases:
+
+```c++
+f( {} ); // default ctor for v, uninitialized object
+f( { 42 } ); // won't call the ctor with int (*)
+f( { v2 } ); // won't call the copy ctor (*)
+```
+
+Again, having a ctor taking an initializer list breaks the "uniform initialization", meaning that you can't provide parameters for other constructors by using curly brackets. Instead, the following would work as expected (although it's slightly pointless):
+
+```c++
+f( tao::json::value( 42 ) );
+f( tao::json::value( v2 ) );
+```
 
 ## Accessing Values
 
