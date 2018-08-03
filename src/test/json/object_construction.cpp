@@ -21,7 +21,7 @@ namespace tao
       {
          static const char* default_key;
 
-         static void assign( value& v, const X& )
+         static void assign( value& v, const X& /*unused*/ )
          {
             v = "X_value";
          }
