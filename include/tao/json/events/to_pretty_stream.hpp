@@ -20,6 +20,7 @@
 #include "../local_time.hpp"
 #include "../offset_date_time.hpp"
 
+#include "../external/jeaiii.hpp"
 #include "../external/ryu.hpp"
 #include "../external/string_view.hpp"
 
@@ -94,13 +95,13 @@ namespace tao
             void number( const std::int64_t v )
             {
                next();
-               os << v;
+               jeaiii::i64tos( os, v );
             }
 
             void number( const std::uint64_t v )
             {
                next();
-               os << v;
+               jeaiii::u64tos( os, v );
             }
 
             void number( const double v )
