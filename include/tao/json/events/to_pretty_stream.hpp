@@ -51,7 +51,7 @@ namespace tao
             {
                os << eol;
                std::size_t len = current_indent;
-               while( len ) {
+               while( len != 0 ) {
                   const auto chunk = ( std::min )( indent, sizeof( buffer ) );
                   os.write( buffer, chunk );
                   len -= chunk;
@@ -74,6 +74,7 @@ namespace tao
          public:
             to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
                : os( in_os ),
+                 buffer(),
                  indent( in_indent ),
                  eol( "\n" )
             {
@@ -83,6 +84,7 @@ namespace tao
             template< typename S >
             to_pretty_stream( std::ostream& in_os, const std::size_t in_indent, S&& in_eol )
                : os( in_os ),
+                 buffer(),
                  indent( in_indent ),
                  eol( std::forward< S >( in_eol ) )
             {
