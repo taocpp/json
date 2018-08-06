@@ -1,9 +1,7 @@
-// Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
-// Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
-
-// This file contains a slightly modified version of d2s part of the RYU
-// library by Ulf Adams. The original copyright notice is included below.
-// Please see LICENSE.ryu for the complete Apache License Version 2.0.
+// This header include/tao/json/external/ryu.hpp contains
+// modified portions of the ulfjack/ryu library from
+//   https://github.com/ulfjack/ryu
+// which is licensed as follows:
 
 // Copyright 2018 Ulf Adams
 //
