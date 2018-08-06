@@ -989,7 +989,7 @@ namespace tao
             }
             else if( exp >= olength ) {
                jeaiii::u64toa( output, result );  // Return value MUST be result + olength
-               std::memset( result + olength, '0', exp + 2 );
+               std::memset( result + olength, '0', exp + 2 - olength );
                result[ exp ] = '.';
                return exp + 2;
             }
