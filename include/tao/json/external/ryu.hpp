@@ -1011,8 +1011,6 @@ namespace tao
 
          inline std::uint32_t d2s_scientific_step5( std::uint64_t output, std::int32_t exp, const std::uint32_t olength, char* result )
          {
-            static const char* digit_table = reinterpret_cast< const char* >( jeaiii::s_pairs );
-
             int index = olength;
 
             if( olength > 1 ) {
@@ -1026,23 +1024,8 @@ namespace tao
             }
             if( exp ) {
                result[ index++ ] = 'e';
-               if( exp < 0 ) {
-                  result[ index++ ] = '-';
-                  exp = -exp;
-               }
-               if( exp >= 100 ) {
-                  const std::int32_t c = exp % 10;
-                  std::memcpy( result + index, digit_table + ( 2 * ( exp / 10 ) ), 2 );
-                  result[ index + 2 ] = char( '0' + c );
-                  index += 3;
-               }
-               else if( exp >= 10 ) {
-                  std::memcpy( result + index, digit_table + ( 2 * exp ), 2 );
-                  index += 2;
-               }
-               else {
-                  result[ index++ ] = char( '0' + exp );
-               }
+               const auto end = jeaiii::i32toa( exp, result + index );
+               return end - result;
             }
             return index;
          }

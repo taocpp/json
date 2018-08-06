@@ -8,6 +8,7 @@
 int main( int, char** )
 {
    char b[ 28 ];
+
    tao::bench::mark( "pd", "0.0", [&]() { tao::json::ryu::d2s_finite( 0.0, b ); } );
 
    tao::bench::mark( "pd", "1.0", [&]() { tao::json::ryu::d2s_finite( 3.0, b ); } );
@@ -28,5 +29,6 @@ int main( int, char** )
    tao::bench::mark( "pd", "1e200", [&]() { tao::json::ryu::d2s_finite( 1e200, b ); } );
    tao::bench::mark( "pd", "123456789e200", [&]() { tao::json::ryu::d2s_finite( 123456789e200, b ); } );
    tao::bench::mark( "pd", "12345678987654321e200", [&]() { tao::json::ryu::d2s_finite( 12345678987654321e200, b ); } );
+
    return 0;
 }
