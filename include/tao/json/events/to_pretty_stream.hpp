@@ -20,6 +20,7 @@
 #include "../local_time.hpp"
 #include "../offset_date_time.hpp"
 
+#include "../external/fill_ostream.hpp"
 #include "../external/jeaiii.hpp"
 #include "../external/ryu.hpp"
 #include "../external/string_view.hpp"
@@ -55,7 +56,8 @@ namespace tao
                   after_key = false;
                }
                else {
-                  os << eol << std::setw( current_indent ) << "";
+                  os << eol;
+                  tao::fill_ostream( os, current_indent );
                }
             }
 
@@ -169,7 +171,8 @@ namespace tao
             {
                current_indent -= indent;
                if( !first ) {
-                  os << eol << std::setw( current_indent ) << "";
+                  os << eol;
+                  tao::fill_ostream( os, current_indent );
                }
                os.put( ']' );
             }
@@ -199,7 +202,8 @@ namespace tao
             {
                current_indent -= indent;
                if( !first ) {
-                  os << eol << std::setw( current_indent ) << "";
+                  os << eol;
+                  tao::fill_ostream( os, current_indent );
                }
                os.put( '}' );
             }

@@ -24,6 +24,7 @@
 #include <experimental/string_view>
 #else
 #include "../internal/identity.hpp"
+#include "fill_ostream.hpp"
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
@@ -518,8 +519,30 @@ namespace tao
    template< class charT, class traits >
    std::basic_ostream< charT, traits >& operator<<( std::basic_ostream< charT, traits >& os, basic_string_view< charT, traits > str )
    {
-      // TODO: This is easy, but also inefficient.
-      return os << std::string( str.begin(), str.end() );
+      typename std::basic_ostream< charT, traits >::sentry sentry( os );
+      if( sentry ) {
+         std::size_t lpad = 0;
+         std::size_t rpad = 0;
+         const std::size_t w = os.width();
+         if( w > str.size() ) {
+            const std::size_t pad = w - str.size();
+            if( ( os.flags() & os.adjustflag ) == os.left ) {
+               lpad = pad;
+            }
+            else {
+               rpad = pad;
+            }
+         }
+         if( lpad > 0 ) {
+            fill_ostream( os, lpad );
+         }
+         os.write( str.data(), str.size() );
+         if( rpad > 0 ) {
+            fill_ostream( os, rpad );
+         }
+         os.width( 0 );
+      }
+      return os;
    }
 
    // TODO: 24.4.5, hash support
