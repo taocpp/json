@@ -24,9 +24,9 @@
 #include <experimental/string_view>
 #else
 #include "../internal/identity.hpp"
-#include "fill_ostream.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <cstring>
 #include <iterator>
 #include <stdexcept>
 #include <string>
@@ -515,6 +515,22 @@ namespace tao
       return x.compare( y ) >= 0;
    }
 
+   namespace impl
+   {
+      template< class charT, class traits >
+      void fill_ostream( std::basic_ostream< charT, traits >& os, std::size_t len )
+      {
+         char buffer[ 32 ];
+         std::memset( buffer, os.fill(), sizeof( buffer ) );
+         while( len ) {
+            const auto chunk = ( std::min )( len, sizeof( buffer ) );
+            os.write( buffer, chunk );
+            len -= chunk;
+         }
+      }
+
+   }  // namespace impl
+
    // 24.4.4, inserters and extractors
    template< class charT, class traits >
    std::basic_ostream< charT, traits >& operator<<( std::basic_ostream< charT, traits >& os, basic_string_view< charT, traits > str )
@@ -534,11 +550,11 @@ namespace tao
             }
          }
          if( lpad > 0 ) {
-            fill_ostream( os, lpad );
+            impl::fill_ostream( os, lpad );
          }
          os.write( str.data(), str.size() );
          if( rpad > 0 ) {
-            fill_ostream( os, rpad );
+            impl::fill_ostream( os, rpad );
          }
          os.width( 0 );
       }

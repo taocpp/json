@@ -20,7 +20,6 @@
 #include "../local_time.hpp"
 #include "../offset_date_time.hpp"
 
-#include "../external/fill_ostream.hpp"
 #include "../external/jeaiii.hpp"
 #include "../external/ryu.hpp"
 #include "../external/string_view.hpp"
@@ -39,6 +38,7 @@ namespace tao
          {
          protected:
             std::ostream& os;
+            char buffer[ 32 ];
             const std::size_t indent;
             const std::string eol;
 
@@ -46,6 +46,17 @@ namespace tao
 
             bool first = true;
             bool after_key = true;
+
+            void next_line()
+            {
+               os << eol;
+               std::size_t len = current_indent;
+               while( len ) {
+                  const auto chunk = ( std::min )( indent, sizeof( buffer ) );
+                  os.write( buffer, chunk );
+                  len -= chunk;
+               }
+            }
 
             void next()
             {
@@ -56,8 +67,7 @@ namespace tao
                   after_key = false;
                }
                else {
-                  os << eol;
-                  tao::fill_ostream( os, current_indent );
+                  next_line();
                }
             }
 
@@ -67,6 +77,7 @@ namespace tao
                  indent( in_indent ),
                  eol( "\n" )
             {
+               std::memset( buffer, os.fill(), sizeof( buffer ) );
             }
 
             template< typename S >
@@ -75,6 +86,7 @@ namespace tao
                  indent( in_indent ),
                  eol( std::forward< S >( in_eol ) )
             {
+               std::memset( buffer, os.fill(), sizeof( buffer ) );
             }
 
             void null()
@@ -171,8 +183,7 @@ namespace tao
             {
                current_indent -= indent;
                if( !first ) {
-                  os << eol;
-                  tao::fill_ostream( os, current_indent );
+                  next_line();
                }
                os.put( ']' );
             }
@@ -202,8 +213,7 @@ namespace tao
             {
                current_indent -= indent;
                if( !first ) {
-                  os << eol;
-                  tao::fill_ostream( os, current_indent );
+                  next_line();
                }
                os.put( '}' );
             }
