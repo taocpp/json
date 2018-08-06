@@ -5,7 +5,7 @@
 
 #include "bench_mark.hpp"
 
-int main( int, char** )
+int main( int /*unused*/, char** /*unused*/ )
 {
    char b[ 28 ];
 
