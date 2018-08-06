@@ -1025,7 +1025,7 @@ namespace tao
             if( exp ) {
                result[ index++ ] = 'e';
                const auto end = jeaiii::i32toa( exp, result + index );
-               return end - result;
+               return static_cast<std::uint32_t>( end - result );
             }
             return index;
          }
