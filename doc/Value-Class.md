@@ -16,16 +16,16 @@ The Value Class `tao::json::value` is a C++ class that implements the JAXN data 
 It is implemented as sum-type, or discriminated union, of the JSON types, extended for the JAXN data model.
 On the C++ level the class consists of an `enum` to indicate which type it contains, and a `union` to store the corresponding data.
 
-More precisely class `tao::json::value` is an instantiation of the class template `tao::json::basic_value` with the [included default traits](Type-Traits.md) and an [empty base class](Advanced-Use-Cases.md#custom-value-annotations) as template parameters.
+More precisely, class `tao::json::value` is an instantiation of the class template `tao::json::basic_value<>` with the [included default traits](Type-Traits.md) and an [empty base class](Advanced-Use-Cases.md#custom-value-annotations) as template parameters.
 
 In order to simplify the following discussion, we will mostly ignore the traits and pretend that the behaviour from the [default traits](Type-Traits.md) is hard-wired.
 Please read the [page on Type Traits](Type-Traits.md) to see which aspects of the behaviour of the JSON Value Class can be extended and customised, and how.
 
 Just remember that everywhere `tao::json::value` is referenced it could also be a customised version `tao::json::value< MyTraits, MyBase >` with [custom traits](Type-Traits.md) and [custom annotation base class](Advanced-Use-Cases.md#custom-value-annotations).
 
-A JSON Value that is an Array or an Object contains -- when not empty -- other JSON Values, whereby a single JSON Value can store arbitrarily large and complicated JSON data structures consisting of arbitrarily nested Arrays and Objects with many sub-values.
+A JSON Value that is an Array or an Object contains -- when not empty -- other JSON Values, whereby a single JSON Value can store arbitrarily large and complicated JSON data structures consisting of arbitrarily nested Arrays and Objects with many sub-values, that are again instances of class `tao::json::value`.
 
-The Value class API has a large set of functions to create, inspect, and manipulate JSON values.
+The Value class API has a large set of functions to create, inspect, and manipulate JSON (or JAXN) values.
 
 ## Value and Data Types
 
@@ -96,12 +96,13 @@ JSON Numbers are stored as either `std::int64_t` with `type::SIGNED`, as `std::u
 
 Can be tested for with the member function `is_number()`, which will return `true` for all three types, or with the more specific `is_integer()`, `is_signed()`, `is_unsigned()` and `is_double()`.
 
-Unlike JSON, non-finite and `NaN` values are allowed for floating point values.
+Unlike JSON, non-finite and `NaN` values are allowed for floating point values!
+
 When serialising to a format that does not support these values, an [Events Transformers](Events-Interface.md#included-transformers) can be used to [transform these values to something else on-the-fly](Common-Use-Cases.md#serialise-with-base64-strings-for-binary-data).
 
 ### Strings
 
-Strings are sequences of Unicode code points stored as UTF-8 as `std::string` with `type::STRING`, or as `tao::string_view` with `type::STRING_VIEW`; the view is an alias for `std::string_view` when available.
+Strings are sequences of Unicode code points stored as UTF-8 as `std::string` with `type::STRING`, or as `tao::string_view` with `type::STRING_VIEW`; the view class is an alias for `std::string_view` when available.
 
 Checking for valid UTF-8, and (un)escaping according to the representation format like JSON, is performed "at the edges" by the respective parsers and encoders (although some parsers might choose to omit this check for performance reasons).
 
@@ -117,15 +118,19 @@ When serialising to a format that does not support binary data, an [Events Trans
 
 ### Arrays
 
-JSON Arrays are stored as `std::vector< basic_value >`.
+JSON Arrays are stored as `std::vector< tao::json::value >`.
 
 Can be tested for with the member function `tao::json::value::is_array()`.
 
+(The sub-values share the [type traits](Type-Traits.md) and [base class](Advanced-Use-Cases.md#custom-value-annotations) of the containing `basic_value<>`.)
+
 ### Objects
 
-JSON Objects are stored as `std::map< std::string, basic_value >`.
+JSON Objects are stored as `std::map< std::string, tao::json::value >`.
 
 Can be tested for with the member function `tao::json::value::is_object()`.
+
+(The sub-values share the [type traits](Type-Traits.md) and [base class](Advanced-Use-Cases.md#custom-value-annotations) of the containing `basic_value<>`.)
 
 ### Value Pointers
 
@@ -140,7 +145,7 @@ See the [section on instance sharing with Opaque Pointers](Advanced-Use-Cases.md
 The Value Class has a default constructor that creates a Value with `type::UNINITIALIZED`.
 It also has copy and move constructors (and copy and move assignment operators, and a `swap()` member function).
 
-There are also two **non**-explicit constructors, one that takes an argument of any type and uses [the Type Traits](Type-Traits.md) for the details of how to create the Value, and one that takes an initialiser-list for an Object.
+There are also two **non**-explicit constructors, one that takes an argument of any type and uses [the Type Traits](Type-Traits.md) for the details of how to create the Value, and one that takes an initialiser-list to create an Object.
 
 The first allows creating (or assigning to) a Value from [a list of types](Type-Traits.md#default-traits-specialisations) [that can be extended](Type-Traits.md).
 
@@ -214,16 +219,15 @@ v = {
 
 ## Uniform Initialization
 
-As Value has a constructor and assignment operator taking an initializer list, it assigns a special meaning to the use of curly brackets.
-This has consequences wrt the so called "uniform initialization".
-Normally, uniform initialization for most users means that you "always" use curly brackets instead of round brackets when you want to construct an object.
-As curly brackets for Values are use to denote a JSON object they should not be confused with or blindly replace round brackets.
+The Value class has both a constructor and an assignment operator accepting an initializer list which assigns a special meaning to curly brackets in these contexts and has consequences regarding the so called "uniform initialization".
+The idealized intention of uniform initialization was to "always" use curly brackets instead of round brackets to construct an object.
+However as curly brackets for Values are used to denote a JSON Object, they should not be confused with, or blindly replace, round brackets.
 
 ### `empty_object`
 
-**Guideline:** Always use `tao::json::empty_object` instead of `{}` when you want an empty JSON object.
+**Guideline:** Always use `tao::json::empty_object` instead of `{}` to create an empty JSON Object.
 
-The curly brackets are the default constructor in several important cases and thereby create an uninitialized value, e.g. a Value with the type `type::UNINITIALIZED`.
+The curly brackets are the default constructor in several important cases and thereby create an uninitialized value, i.e. a Value of `type::UNINITIALIZED`.
 
 The following lines behave as expected:
 
@@ -237,16 +241,16 @@ v = tao::json::empty_object;
 v = { { "foo", tao::json::empty_object } };
 ```
 
-The following lines using `{}` will yield a few surprises:
+The following lines using `{}` might produce surprising behaviour:
 
 ```c++
 tao::json::value v{}; // default ctor, not initializer_list ctor
 tao::json::value v = {}; // default ctor, not initializer_list ctor
 
-tao::json::value v( {} ); // initializer_list ctor, does create an empty object
+tao::json::value v( {} ); // initializer_list ctor, creates an empty object
 
 v = {}; // assign a default-constructed value
-v = { { "foo", {} } }; // object with one member, key "foo" and an uninitialized value
+v = { { "foo", {} } }; // object with one member, key "foo" with an uninitialized value
 ```
 
 A few more points to consider:
@@ -264,9 +268,9 @@ tao::json::value v();
 
 ### Single Argument Constructors
 
-If you want to copy/move a Value or construct a Value from a single value via the traits, use round brackets or assignment.
+To copy/move a Value, or construct a Value from a single value via the traits, use round brackets or assignment.
 
-**Guideline:** Avoid using curly brackets *unless* you mean to create/assign a non-empty JSON object.
+**Guideline:** Avoid using curly brackets *unless* you mean to create/assign a non-empty JSON Object.
 
 The following should behave as expected:
 
@@ -302,13 +306,13 @@ tao::json::value v( tao::json::empty_object ); // preferred
 v = {}; // Assigns a default constructed (uninitialized) Value
 ```
 
-Note that the line marked with (*) does not work on GCC 7 due to a compiler bug. Hence it should also be avoided, even if it is technically correct.
+Note that the line marked with (\*) does not work on GCC 7 due to a compiler bug. Hence it should also be avoided, even if it is technically correct.
 
 ### Implicit construction
 
-**Guideline:** When calling a function with a Value parameter, use curly brackets for non-empty JSON objects only.
+**Guideline:** When calling a function with a Value as parameter, only use curly brackets to indicate non-empty JSON Objects.
 
-Example:
+Examples:
 
 ```c++
 void f( const tao::json::value& );
@@ -319,7 +323,7 @@ f( tao::json::empty_object );
 f( { { "foo", 42 } } );
 ```
 
-Here's the problematic cases:
+With the problematic cases being:
 
 ```c++
 f( {} ); // default ctor for v, uninitialized object
@@ -327,7 +331,9 @@ f( { 42 } ); // won't call the ctor with int (*)
 f( { v2 } ); // won't call the copy ctor (*)
 ```
 
-Again, having a ctor taking an initializer list breaks the "uniform initialization", meaning that you can't provide parameters for other constructors by using curly brackets. Instead, the following would work as expected (although it's slightly pointless):
+Again, having a ctor taking an initializer list breaks "uniform initialization", meaning that you can not provide parameters for other constructors using curly brackets.
+
+The following works as expected (albeit being overly verbose and therefore slightly pointless):
 
 ```c++
 f( tao::json::value( 42 ) );
@@ -336,7 +342,7 @@ f( tao::json::value( v2 ) );
 
 ## Accessing Values
 
-The function `tao::json::value::type()` and the functions like `tao::json::value::is_boolean()` mentioned above can be used to determine the type of a Value.
+The function `tao::json::value::type()`, and the functions like `tao::json::value::is_boolean()` mentioned above, can be used to determine the type of a Value.
 
 The data held by a Value can be extracted and converted with the `tao::json::value::as< T >()` functions, of which there are two.
 
