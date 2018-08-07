@@ -16,6 +16,7 @@ foreach (examplesourcefile ${examplesources})
     message (SEND_ERROR "File ${examplesourcefile} is missing from src/example/json")
   endif ()
   get_filename_component (exename ${examplesourcefile} NAME_WE)
+  set_executable (exename "tao-json-example-${exename}")
   add_executable (${exename} ${examplesourcefile})
   target_link_libraries (${exename} PRIVATE taocpp::json)
   set_target_properties (${exename} PROPERTIES
