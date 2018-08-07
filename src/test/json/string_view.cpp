@@ -6,6 +6,8 @@
 #include <tao/json/external/string_view.hpp>
 #include <tao/json/value.hpp>
 
+#include <sstream>
+
 namespace tao
 {
    namespace json
@@ -60,6 +62,10 @@ namespace tao
 
          TEST_ASSERT( v.as< tao::string_view >() == s );
          TEST_ASSERT( v.as< std::string >() == s );
+
+         std::ostringstream oss;
+         oss << sv;
+         TEST_ASSERT( oss.str() == sv );
       }
 
    }  // namespace json

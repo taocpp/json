@@ -542,7 +542,7 @@ namespace tao
          const std::size_t w = os.width();
          if( w > str.size() ) {
             const std::size_t pad = w - str.size();
-            if( ( os.flags() & os.adjustflag ) == os.left ) {
+            if( ( os.flags() & os.adjustfield ) == os.left ) {
                lpad = pad;
             }
             else {
