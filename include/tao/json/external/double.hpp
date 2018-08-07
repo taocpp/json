@@ -33,6 +33,8 @@
 #ifndef TAO_JSON_EXTERNAL_DOUBLE_HPP
 #define TAO_JSON_EXTERNAL_DOUBLE_HPP
 
+// clang-format off
+
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
