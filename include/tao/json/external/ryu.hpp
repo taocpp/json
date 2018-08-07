@@ -985,7 +985,7 @@ namespace tao
                std::memcpy( result, "0.", 2 );
                std::memset( result + 2, '0', -exp );
                const auto* end = jeaiii::u64toa( output, result + 2 - exp );
-               return end - result;
+               return static_cast<std::uint32_t>( end - result );
             }
             else if( exp >= olength ) {
                jeaiii::u64toa( output, result );  // Return value MUST be result + olength
@@ -1025,7 +1025,7 @@ namespace tao
             if( exp ) {
                result[ index++ ] = 'e';
                const auto end = jeaiii::i32toa( exp, result + index );
-               return end - result;
+               return static_cast<std::uint32_t>( end - result );
             }
             return index;
          }
