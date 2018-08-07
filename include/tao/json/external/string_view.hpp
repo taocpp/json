@@ -539,7 +539,7 @@ namespace tao
       if( sentry ) {
          std::size_t lpad = 0;
          std::size_t rpad = 0;
-         const std::size_t w = os.width();
+         const std::size_t w = static_cast< std::size_t >( os.width() );
          if( w > str.size() ) {
             const std::size_t pad = w - str.size();
             if( ( os.flags() & os.adjustfield ) == os.left ) {
