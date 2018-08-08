@@ -147,8 +147,9 @@ namespace tao
             void feed( const void* p, std::size_t s ) noexcept
             {
                auto* q = static_cast< const unsigned char* >( p );
-               while( s-- ) {  // NOLINT
+               while( s != 0 ) {
                   feed( *q++ );
+                  --s;
                }
             }
 
@@ -203,9 +204,9 @@ namespace tao
 
             std::string get()
             {
-               unsigned char result[ 32 ];
-               store_unsafe( result );
-               return std::string( static_cast< const char* >( static_cast< const void* >( result ) ), 32 );
+               std::string result( 32, '\0' );
+               store_unsafe( static_cast< unsigned char* >( static_cast< void* >( const_cast< char* >( result.data() ) ) ) );
+               return result;
             }
          };
 
