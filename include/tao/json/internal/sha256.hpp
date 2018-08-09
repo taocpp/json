@@ -205,7 +205,7 @@ namespace tao
             std::string get()
             {
                std::string result( 32, '\0' );
-               store_unsafe( static_cast< unsigned char* >( static_cast< void* >( const_cast< char* >( result.data() ) ) ) );
+               store_unsafe( static_cast< unsigned char* >( static_cast< void* >( const_cast< char* >( result.data() ) ) ) );  // NOLINT
                return result;
             }
          };
