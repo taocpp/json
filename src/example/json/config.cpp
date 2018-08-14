@@ -2,17 +2,20 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include <tao/json/external/pegtl.hpp>
+#include <tao/json/external/pegtl/contrib/parse_tree.hpp>
 #include <tao/json/jaxn/internal/grammar.hpp>
+
+#include <iostream>
 
 using namespace tao::json_pegtl;  // NOLINT
 
 namespace config
 {
+   namespace jaxn = tao::json::jaxn::internal::rules;
+
    // clang-format off
    namespace rules
    {
-      namespace jaxn = tao::json::jaxn::internal::rules;
-
       using ws = plus< jaxn::ws >;
 
       struct value;
@@ -29,7 +32,7 @@ namespace config
       struct binary_fragment : sor< expression, jaxn::bvalue > {};
       struct binary : list_must< binary_fragment, jaxn::value_concat > {};
 
-      struct array_element;
+      struct array_element; // TODO: rename to element
       struct array_content : opt< list_tail< array_element, jaxn::element_separator > > {};
       struct array_value : seq< jaxn::begin_array, array_content, must< jaxn::end_array > >
       {
@@ -240,13 +243,69 @@ namespace config
 
    }  // namespace rules
 
+   // clang-format off
+   template< typename Rule > struct selector : std::false_type {};
+   template<> struct selector< rules::statement > : parse_tree::remove_content {};
+   template<> struct selector< rules::include_file > : parse_tree::remove_content {};
+   template<> struct selector< rules::delete_keys > : parse_tree::remove_content {};
+   template<> struct selector< rules::string > : parse_tree::remove_content {};
+   template<> struct selector< rules::mkey > : parse_tree::remove_content {};
+   template<> struct selector< rules::member > : parse_tree::remove_content {};
+   template<> struct selector< rules::identifier > : std::true_type {};
+   template<> struct selector< rules::array > : parse_tree::remove_content {};
+   template<> struct selector< rules::object > : parse_tree::remove_content {};
+   template<> struct selector< rules::function > : parse_tree::remove_content {};
+   template<> struct selector< rules::function_param > : parse_tree::remove_content {};
+   template<> struct selector< rules::expression > : parse_tree::remove_content {};
+   template<> struct selector< rules::rkey > : parse_tree::remove_content {};
+   template<> struct selector< rules::binary > : parse_tree::remove_content {};
+   template<> struct selector< rules::array_element > : parse_tree::remove_content {};
+
+   template<> struct selector< jaxn::null > : parse_tree::remove_content {};
+   template<> struct selector< jaxn::true_ > : parse_tree::remove_content {};
+   template<> struct selector< jaxn::false_ > : parse_tree::remove_content {};
+   template<> struct selector< jaxn::local_time > : std::true_type {};
+   template<> struct selector< jaxn::date_sequence > : std::true_type {};
+   template<> struct selector< jaxn::nan > : parse_tree::remove_content {};
+   template<> struct selector< jaxn::bvalue > : std::true_type {};
+   template<> struct selector< jaxn::string_fragment > : std::true_type {};
+
+   template< bool NEG > struct selector< jaxn::infinity< NEG > > : parse_tree::remove_content {};
+   template< bool NEG > struct selector< jaxn::number< NEG > > : std::true_type {};
+   template< bool NEG > struct selector< jaxn::hexnum< NEG > > : std::true_type {};
+   // clang-format on
+
+   void print_node( const parse_tree::node& n, const std::string& s = "" )
+   {
+      // detect the root node:
+      if( n.is_root() ) {
+         std::cout << "ROOT" << std::endl;
+      }
+      else {
+         if( n.has_content() ) {
+            std::cout << s << n.name() << " \"" << n.content() << "\" at " << n.begin() << " to " << n.end() << std::endl;
+         }
+         else {
+            std::cout << s << n.name() << " at " << n.begin() << std::endl;
+         }
+      }
+      // print all child nodes
+      if( !n.children.empty() ) {
+         const auto s2 = s + "  ";
+         for( auto& up : n.children ) {
+            print_node( *up, s2 );
+         }
+      }
+   }
+
 }  // namespace config
 
 int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       file_input<> in( argv[ i ] );
-      parse< config::rules::grammar >( in );
+      const auto root = parse_tree::parse< config::rules::grammar, config::selector >( in );  // TODO: Add error_control
+      config::print_node( *root );
    }
    return 0;
 }
