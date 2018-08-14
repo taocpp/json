@@ -58,11 +58,9 @@ namespace tao
             char o;
          };
 
-#define TAO_JSON_JEAIII_P( T )                                                                                 \
-   { T, '0' }, { T, '1' }, { T, '2' }, { T, '3' }, { T, '4' }, { T, '5' }, { T, '6' }, { T, '7' }, { T, '8' }, \
-   {                                                                                                           \
-      T, '9'                                                                                                   \
-   }
+         // clang-format off
+#define TAO_JSON_JEAIII_P( T ) { T, '0' }, { T, '1' }, { T, '2' }, { T, '3' }, { T, '4' }, { T, '5' }, { T, '6' }, { T, '7' }, { T, '8' }, { T, '9' }
+         // clang-format on
 
          static const pair s_pairs[] = { TAO_JSON_JEAIII_P( '0' ),
                                          TAO_JSON_JEAIII_P( '1' ),
