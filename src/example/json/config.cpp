@@ -243,37 +243,40 @@ namespace config
 
    }  // namespace rules
 
-   // clang-format off
-   template< typename Rule > struct selector : std::false_type {};
-   template<> struct selector< rules::statement > : parse_tree::remove_content {};
-   template<> struct selector< rules::include_file > : parse_tree::remove_content {};
-   template<> struct selector< rules::delete_keys > : parse_tree::remove_content {};
-   template<> struct selector< rules::string > : parse_tree::remove_content {};
-   template<> struct selector< rules::mkey > : parse_tree::remove_content {};
-   template<> struct selector< rules::member > : parse_tree::remove_content {};
-   template<> struct selector< rules::identifier > : std::true_type {};
-   template<> struct selector< rules::array > : parse_tree::remove_content {};
-   template<> struct selector< rules::object > : parse_tree::remove_content {};
-   template<> struct selector< rules::function > : parse_tree::remove_content {};
-   template<> struct selector< rules::function_param > : parse_tree::remove_content {};
-   template<> struct selector< rules::expression > : parse_tree::remove_content {};
-   template<> struct selector< rules::rkey > : parse_tree::remove_content {};
-   template<> struct selector< rules::binary > : parse_tree::remove_content {};
-   template<> struct selector< rules::array_element > : parse_tree::remove_content {};
-
-   template<> struct selector< jaxn::null > : parse_tree::remove_content {};
-   template<> struct selector< jaxn::true_ > : parse_tree::remove_content {};
-   template<> struct selector< jaxn::false_ > : parse_tree::remove_content {};
-   template<> struct selector< jaxn::local_time > : std::true_type {};
-   template<> struct selector< jaxn::date_sequence > : std::true_type {};
-   template<> struct selector< jaxn::nan > : parse_tree::remove_content {};
-   template<> struct selector< jaxn::bvalue > : std::true_type {};
-   template<> struct selector< jaxn::string_fragment > : std::true_type {};
-
-   template< bool NEG > struct selector< jaxn::infinity< NEG > > : parse_tree::remove_content {};
-   template< bool NEG > struct selector< jaxn::number< NEG > > : std::true_type {};
-   template< bool NEG > struct selector< jaxn::hexnum< NEG > > : std::true_type {};
-   // clang-format on
+   template< typename Rule >
+   using selector = parse_tree::selector<
+      Rule,
+      parse_tree::apply_remove_content::to<
+         rules::include_file,
+         rules::delete_keys,
+         rules::member,
+         rules::string,
+         rules::array,
+         rules::object,
+         rules::function,
+         rules::function_param,
+         rules::expression,
+         rules::rkey,
+         rules::binary,
+         rules::array_element,
+         jaxn::infinity< true >,
+         jaxn::infinity< false >,
+         jaxn::null,
+         jaxn::true_,
+         jaxn::false_,
+         jaxn::nan >,
+      parse_tree::apply_fold_one::to<
+         rules::mkey >,
+      parse_tree::apply_store_content::to<
+         rules::identifier,
+         jaxn::local_time,
+         jaxn::date_sequence,
+         jaxn::bvalue,
+         jaxn::number< true >,
+         jaxn::number< false >,
+         jaxn::hexnum< true >,
+         jaxn::hexnum< false >,
+         jaxn::string_fragment > >;
 
    void print_node( const parse_tree::node& n, const std::string& s = "" )
    {
