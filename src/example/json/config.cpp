@@ -64,107 +64,8 @@ namespace config
       struct rkey : seq< star< one< '.' > >, list< mkey_part, one< '.' > > > {};
       struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary, object, array > > > > > {};
 
-      struct sor_value
+      struct sor_value : jaxn::sor_value
       {
-         using analyze_t = analysis::generic< analysis::rule_type::SOR, string, jaxn::number< false >, object, array, jaxn::false_, jaxn::true_, jaxn::null >;
-
-         template< typename Rule,
-                   apply_mode A,
-                   template< typename... > class Action,
-                   template< typename... > class Control,
-                   typename Input,
-                   typename... States >
-         static bool match_must( Input& in, States&&... st )
-         {
-            return Control< must< Rule > >::template match< A, rewind_mode::DONTCARE, Action, Control >( in, st... );
-         }
-
-         template< bool NEG,
-                   apply_mode A,
-                   rewind_mode M,
-                   template< typename... > class Action,
-                   template< typename... > class Control,
-                   typename Input,
-                   typename... States >
-         static bool match_zero( Input& in, States&&... st )
-         {
-            if( in.size( 2 ) > 1 ) {
-               switch( in.peek_char( 1 ) ) {
-                  case '.':
-                  case 'e':
-                  case 'E':
-                     return Control< jaxn::number< NEG > >::template match< A, M, Action, Control >( in, st... );
-
-                  case 'x':
-                  case 'X':
-                     in.bump_in_this_line( 2 );
-                     return Control< must< jaxn::hexnum< NEG > > >::template match< A, M, Action, Control >( in, st... );
-
-                  case '0':
-                  case '1':
-                  case '2':
-                  case '3':
-                  case '4':
-                  case '5':
-                  case '6':
-                  case '7':
-                  case '8':
-                  case '9':
-                     throw parse_error( "invalid leading zero", in );
-               }
-            }
-            in.bump_in_this_line();
-            // TODO: Control< jaxn::zero< NEG > >::template apply0< Action >( in, st... );
-            return true;
-         }
-
-         template< bool NEG,
-                   apply_mode A,
-                   rewind_mode M,
-                   template< typename... > class Action,
-                   template< typename... > class Control,
-                   typename Input,
-                   typename... States >
-         static bool match_number( Input& in, States&&... st )
-         {
-            switch( in.peek_char() ) {
-               case 'N':
-                  return Control< must< jaxn::nan > >::template match< A, M, Action, Control >( in, st... );
-
-               case 'I':
-                  return Control< must< jaxn::infinity< NEG > > >::template match< A, M, Action, Control >( in, st... );
-
-               case '0':
-                  if( !match_zero< NEG, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
-                     throw parse_error( "incomplete number", in );
-                  }
-                  return true;
-
-               default:
-                  return Control< jaxn::number< NEG > >::template match< A, M, Action, Control >( in, st... );
-            }
-         }
-
-         template< apply_mode A,
-                   rewind_mode M,
-                   template< typename... > class Action,
-                   template< typename... > class Control,
-                   typename Input,
-                   typename... States >
-         static bool match_number_or_date_time( Input& in, States&&... st )
-         {
-            if( in.size( 5 ) >= 5 && std::isdigit( in.peek_char() ) && std::isdigit( in.peek_char( 1 ) ) ) {
-               const auto c = in.peek_char( 2 );
-               if( c == ':' ) {
-                  return Control< jaxn::local_time >::template match< A, M, Action, Control >( in, st... );
-               }
-               if( std::isdigit( c ) && std::isdigit( in.peek_char( 3 ) ) && ( in.peek_char( 4 ) == '-' ) ) {
-                  return Control< jaxn::date_sequence >::template match< A, M, Action, Control >( in, st... );
-               }
-            }
-            return match_number< false, A, M, Action, Control >( in, st... );
-         }
-
          template< apply_mode A,
                    rewind_mode M,
                    template< typename... > class Action,
@@ -243,6 +144,23 @@ namespace config
 
    }  // namespace rules
 
+   // TODO: add error control
+   template< typename Rule >
+   struct control
+      : normal< Rule >
+   {
+   };
+
+   // temporary hack to allow re-using the JAXN grammar
+   template< bool NEG >
+   struct control< jaxn::zero< NEG > >
+   {
+      template< template< typename... > class Action, typename... States >
+      static void apply0( States&&... /*unused*/ ) noexcept
+      {
+      }
+   };
+
    template< typename Rule >
    using selector = parse_tree::selector<
       Rule,
@@ -307,7 +225,7 @@ int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       file_input<> in( argv[ i ] );
-      const auto root = parse_tree::parse< config::rules::grammar, config::selector >( in );  // TODO: Add error_control
+      const auto root = parse_tree::parse< config::rules::grammar, config::selector, config::control >( in );
       config::print_node( *root );
    }
    return 0;
