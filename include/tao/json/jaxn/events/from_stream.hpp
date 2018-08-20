@@ -25,7 +25,7 @@ namespace tao
             void from_stream( Consumer& consumer, std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
             {
                json_pegtl::istream_input<> in( stream, maximum_buffer_size, source ? source : "tao::json::events::jaxn::from_stream" );
-               json_pegtl::parse< jaxn::internal::grammar, jaxn::internal::action, jaxn::internal::control >( in, consumer );
+               json_pegtl::parse< internal::grammar, internal::action, internal::control >( in, consumer );
             }
 
             template< typename Consumer >

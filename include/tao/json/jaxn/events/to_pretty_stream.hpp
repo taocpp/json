@@ -85,7 +85,7 @@ namespace tao
 
                void key( const tao::string_view v )
                {
-                  if( json::jaxn::is_identifier( v ) ) {
+                  if( jaxn::is_identifier( v ) ) {
                      next();
                      os.write( v.data(), v.size() );
                   }

@@ -20,7 +20,7 @@ namespace tao
          std::string to_string( const basic_value< Traits, Base >& v )
          {
             std::ostringstream o;
-            jaxn::to_stream< Transformers... >( o, v );
+            to_stream< Transformers... >( o, v );
             return o.str();
          }
 
@@ -28,7 +28,7 @@ namespace tao
          std::string to_string( const basic_value< Traits, Base >& v, const unsigned indent )
          {
             std::ostringstream o;
-            jaxn::to_stream< Transformers... >( o, v, indent );
+            to_stream< Transformers... >( o, v, indent );
             return o.str();
          }
 

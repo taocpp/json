@@ -21,7 +21,7 @@ namespace tao
          basic_value< Traits, Base > basic_from_string( Ts&&... ts )
          {
             json::events::transformer< json::events::to_basic_value< Traits, Base >, Transformers... > consumer;
-            msgpack::events::from_string( consumer, std::forward< Ts >( ts )... );
+            events::from_string( consumer, std::forward< Ts >( ts )... );
             return std::move( consumer.value );
          }
 

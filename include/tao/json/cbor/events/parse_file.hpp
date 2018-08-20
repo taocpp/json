@@ -25,7 +25,7 @@ namespace tao
             void parse_file( Consumer& consumer, T&& filename )
             {
                json_pegtl::file_input< json_pegtl::tracking_mode::LAZY > in( std::forward< T >( filename ) );
-               json_pegtl::parse< cbor::internal::grammar >( in, consumer );
+               json_pegtl::parse< internal::grammar >( in, consumer );
             }
 
          }  // namespace events

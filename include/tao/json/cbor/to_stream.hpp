@@ -22,7 +22,7 @@ namespace tao
          template< template< typename... > class... Transformers, template< typename... > class Traits, typename Base >
          void to_stream( std::ostream& os, const basic_value< Traits, Base >& v )
          {
-            json::events::transformer< cbor::events::to_stream, Transformers... > consumer( os );
+            json::events::transformer< events::to_stream, Transformers... > consumer( os );
             json::events::from_value( consumer, v );
          }
 
