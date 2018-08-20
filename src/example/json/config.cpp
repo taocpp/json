@@ -16,14 +16,14 @@ namespace config
    // clang-format off
    namespace rules
    {
-      using ws = plus< jaxn::ws >;
+      using rws = plus< jaxn::ws >;
 
       struct value;
       struct identifier : plus< ranges< 'a', 'z', 'A', 'Z', '0', '9', '-', '-', '_', '_', '$' > > {};
 
       struct rkey;
       struct function_param : if_must< identifier, jaxn::name_separator, value > {};
-      struct function : seq< identifier, ws, list< function_param, jaxn::value_separator > > {};
+      struct function : seq< identifier, rws, list< function_param, jaxn::value_separator > > {};
       struct expression : if_must< string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
 
       struct string_fragment : sor< expression, jaxn::string_fragment > {};
@@ -134,12 +134,12 @@ namespace config
       struct kw_include : TAO_JSON_PEGTL_STRING( "include" ) {};
       struct kw_delete : TAO_JSON_PEGTL_STRING( "delete" ) {};
 
-      struct include_file : seq< kw_include, ws, string > {};
-      struct delete_keys : seq< kw_delete, ws, mkey > {};
+      struct include_file : seq< kw_include, rws, string > {};
+      struct delete_keys : seq< kw_delete, rws, mkey > {};
 
       struct statement : sor< include_file, delete_keys, member > {};
 
-      struct grammar : until< eof, sor< ws, must< rules::statement > > > {};
+      struct grammar : until< eof, sor< jaxn::ws, must< rules::statement > > > {};
       // clang-format on
 
    }  // namespace rules
