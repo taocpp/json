@@ -30,17 +30,13 @@ namespace tao
                switch( v.type() ) {
                   case type::SIGNED:
                      return static_cast< T >( v.unsafe_get_signed() );
-                     break;
                   case type::UNSIGNED:
                      return static_cast< T >( v.unsafe_get_unsigned() );
-                     break;
                   case type::DOUBLE:
                      return static_cast< T >( v.unsafe_get_double() );
-                     break;
                   default:
-                     v.throw_invalid_json_type();
+                     throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to number" );  // NOLINT
                }
-               throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
             }
          };
 

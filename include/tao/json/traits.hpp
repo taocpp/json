@@ -479,9 +479,8 @@ namespace tao
                   return std::string( sv.data(), sv.size() );
                }
                default:
-                  v.throw_invalid_json_type();
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to std::string" );  // NOLINT
             }
-            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -569,9 +568,8 @@ namespace tao
                case type::STRING_VIEW:
                   return v.unsafe_get_string_view();
                default:
-                  v.throw_invalid_json_type();
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to tao::string_view" );  // NOLINT
             }
-            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -711,9 +709,8 @@ namespace tao
                   return std::vector< tao::byte >( xv.begin(), xv.end() );
                }
                default:
-                  v.throw_invalid_json_type();
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to std::vector< tao::byte >" );  // NOLINT
             }
-            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Base >
@@ -801,9 +798,8 @@ namespace tao
                case type::BINARY_VIEW:
                   return v.unsafe_get_binary_view();
                default:
-                  v.throw_invalid_json_type();
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to tao::binary_view" );  // NOLINT
             }
-            throw std::logic_error( "code should be unreachable: v.throw_invalid_json_type() did not throw an exception" );  // NOLINT, LCOV_EXCL_LINE
          }
 
          template< template< typename... > class Traits, typename Base >

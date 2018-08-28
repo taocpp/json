@@ -915,7 +915,7 @@ namespace tao
                case json::type::ARRAY:
                   break;
                default:
-                  throw_invalid_json_type();
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "' for prepare_array()" );  // NOLINT
             }
          }
 
@@ -986,7 +986,7 @@ namespace tao
                case json::type::OBJECT:
                   break;
                default:
-                  throw_invalid_json_type();
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "' for prepare_object()" );  // NOLINT
             }
          }
 
@@ -1409,11 +1409,6 @@ namespace tao
          {
             unsafe_discard();
             m_type = json::type::UNINITIALIZED;
-         }
-
-         void throw_invalid_json_type() const
-         {
-            throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + '\'' );  // NOLINT
          }
 
          void validate_json_type( const json::type t ) const
