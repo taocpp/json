@@ -28,23 +28,6 @@ namespace tao
       {
          namespace internal
          {
-            template< for_unknown_key >
-            struct throw_o
-            {
-               static void r_continue( const std::string& k )
-               {
-                  throw std::runtime_error( "unknown object key " + json::internal::escape( k ) );  // NOLINT
-               }
-            };
-
-            template<>
-            struct throw_o< for_unknown_key::CONTINUE >
-            {
-               static void r_continue( const std::string& /*unused*/ )
-               {
-               }
-            };
-
             // TODO: Control how to create the instances?
 
             template< for_unknown_key E, for_nothing_value N, typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
@@ -104,8 +87,12 @@ namespace tao
                      const auto& k = p.first;
                      const auto i = m.find( k );
                      if( i == m.end() ) {
-                        internal::throw_o< E >::r_continue( k );
-                        continue;
+                        if( E == for_unknown_key::CONTINUE ) {
+                           continue;
+                        }
+                        else {
+                           throw std::runtime_error( "unknown object key " + json::internal::escape( k ) + json::base_message_extension( v.base() ) );  // NOLINT
+                        }
                      }
                      i->second.function( p.second, x );
                      b.set( i->second.index );
@@ -113,7 +100,7 @@ namespace tao
                   b |= o;
                   if( !b.all() ) {
                      // TODO: List the missing required key(s) in the exception?
-                     throw std::runtime_error( "missing required key(s)" );  // NOLINT
+                     throw std::runtime_error( "missing required key(s)" + json::base_message_extension( v.base() ) );  // NOLINT
                   }
                }
 
@@ -162,8 +149,13 @@ namespace tao
                      const auto k = parser.key();
                      const auto i = m.find( k );
                      if( i == m.end() ) {
-                        binding::internal::throw_o< E >::r_continue( k );
-                        parser.skip_value();
+                        if( E == for_unknown_key::CONTINUE ) {
+                           parser.skip_value();
+                           continue;
+                        }
+                        else {
+                           parser.throw_parse_error( "unknown object key ", json::internal::escape( k ) );  // NOLINT
+                        }
                         continue;
                      }
                      if( b.test( i->second.index ) ) {
@@ -175,7 +167,7 @@ namespace tao
                   b |= o;
                   if( !b.all() ) {
                      // TODO: List the missing required key(s) in the exception?
-                     throw std::runtime_error( "missing required key(s)" );  // NOLINT
+                     parser.throw_parse_error( "missing required key(s)" );  // NOLINT
                   }
                }
 

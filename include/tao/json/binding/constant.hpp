@@ -31,7 +31,7 @@ namespace tao
             static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                if( v.template as< bool >() != V ) {
-                  throw std::runtime_error( "boolean mismatch" );  // NOLINT
+                  throw std::runtime_error( "boolean mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
                }
             }
 
@@ -64,7 +64,7 @@ namespace tao
             static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                if( v.template as< std::int64_t >() != V ) {
-                  throw std::runtime_error( "signed mismatch" );  // NOLINT
+                  throw std::runtime_error( "signed mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
                }
             }
 
@@ -97,7 +97,7 @@ namespace tao
             static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                if( v.template as< std::uint64_t >() != V ) {
-                  throw std::runtime_error( "unsigned mismatch" );  // NOLINT
+                  throw std::runtime_error( "unsigned mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
                }
             }
 
@@ -138,7 +138,7 @@ namespace tao
             {
                static const char s[] = { Cs..., 0 };
                if( v.template as< tao::string_view >() != tao::string_view( s, sizeof...( Cs ) ) ) {
-                  throw std::runtime_error( "string mismatch" );  // NOLINT
+                  throw std::runtime_error( "string mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
                }
             }
 

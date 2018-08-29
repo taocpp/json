@@ -23,7 +23,7 @@ namespace tao
             const pointer path_pointer( path );
             if( op == "test" ) {
                if( v.at( path_pointer ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path );  // NOLINT
+                  throw std::runtime_error( "test failed for: " + path + json::base_message_extension( v.base() ) );  // NOLINT
                }
             }
             else if( op == "remove" ) {
@@ -60,7 +60,7 @@ namespace tao
             const pointer path_pointer( path );
             if( op == "test" ) {
                if( v.at( path_pointer ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path );  // NOLINT
+                  throw std::runtime_error( "test failed for: " + path + json::base_message_extension( v.base() ) );  // NOLINT
                }
             }
             else if( op == "remove" ) {

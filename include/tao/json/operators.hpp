@@ -565,7 +565,7 @@ namespace tao
          auto& o = v.get_object();
          for( const auto& k : l ) {
             if( o.erase( k ) == 0 ) {
-               throw std::runtime_error( "JSON object key not found: " + k );  // NOLINT
+               throw std::runtime_error( "JSON object key not found: " + k + json::base_message_extension( v.base() ) );  // NOLINT
             }
          }
          return v;

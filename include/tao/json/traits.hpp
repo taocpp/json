@@ -709,7 +709,7 @@ namespace tao
                   return std::vector< tao::byte >( xv.begin(), xv.end() );
                }
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to std::vector< tao::byte >" );  // NOLINT
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to std::vector< tao::byte >" + json::base_message_extension( v.base() ) );  // NOLINT
             }
          }
 
@@ -798,7 +798,7 @@ namespace tao
                case type::BINARY_VIEW:
                   return v.unsafe_get_binary_view();
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to tao::binary_view" );  // NOLINT
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to tao::binary_view" + json::base_message_extension( v.base() ) );  // NOLINT
             }
          }
 

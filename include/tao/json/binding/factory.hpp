@@ -127,12 +127,12 @@ namespace tao
 
                const auto& a = v.get_object();
                if( a.size() != 1 ) {
-                  throw std::runtime_error( "unexpected json object size for polymorphic object factory" );  // NOLINT
+                  throw std::runtime_error( "unexpected JSON object size for polymorphic object factory" + json::base_message_extension( v.base() ) );  // NOLINT
                }
                const auto b = a.begin();
                const auto i = m.find( b->first );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + json::internal::escape( b->first ) );  // NOLINT
+                  throw std::runtime_error( "unknown factory type " + json::internal::escape( b->first ) + json::base_message_extension( v.base() ) );  // NOLINT
                }
                return i->second.function( b->second );
             }

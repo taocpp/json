@@ -25,6 +25,7 @@
 #include "internal/type_traits.hpp"
 #include "internal/value_union.hpp"
 
+#include "base_message_extension.hpp"
 #include "binary_view.hpp"
 #include "local_date.hpp"
 #include "local_date_time.hpp"
@@ -762,7 +763,7 @@ namespace tao
             for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first + json::base_message_extension( base() ) );  // NOLINT
                }
             }
          }
@@ -773,7 +774,7 @@ namespace tao
             for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first + json::base_message_extension( base() ) );  // NOLINT
                }
             }
          }
@@ -915,7 +916,7 @@ namespace tao
                case json::type::ARRAY:
                   break;
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "' for prepare_array()" );  // NOLINT
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "' for prepare_array()" + json::base_message_extension( base() ) );  // NOLINT
             }
          }
 
@@ -986,7 +987,7 @@ namespace tao
                case json::type::OBJECT:
                   break;
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "' for prepare_object()" );  // NOLINT
+                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "' for prepare_object()" + json::base_message_extension( base() ) );  // NOLINT
             }
          }
 
@@ -1015,7 +1016,7 @@ namespace tao
             for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first + json::base_message_extension( base() ) );  // NOLINT
                }
             }
          }
@@ -1026,7 +1027,7 @@ namespace tao
             for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if( !r.second ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first );  // NOLINT
+                  throw std::runtime_error( "duplicate JSON object key: " + r.first->first + json::base_message_extension( base() ) );  // NOLINT
                }
             }
          }
@@ -1280,7 +1281,8 @@ namespace tao
             validate_json_type( json::type::ARRAY );
             auto& a = m_union.a;
             if( index >= a.size() ) {
-               throw std::out_of_range( "JSON array index out of bounds" );  // NOLINT
+               // TODO: Add index to error message
+               throw std::out_of_range( "JSON array index out of bounds" + json::base_message_extension( base() ) );  // NOLINT
             }
             a.erase( a.begin() + index );
          }
@@ -1289,14 +1291,14 @@ namespace tao
          {
             validate_json_type( json::type::OBJECT );
             if( m_union.o.erase( key ) == 0 ) {
-               throw std::out_of_range( "JSON object key not found: " + key );  // NOLINT
+               throw std::out_of_range( "JSON object key not found: " + key + json::base_message_extension( base() ) );  // NOLINT
             }
          }
 
          void erase( const pointer& k )
          {
             if( !k ) {
-               throw std::runtime_error( "invalid root JSON Pointer for erase" );  // NOLINT
+               throw std::runtime_error( "invalid root JSON Pointer for erase" + json::base_message_extension( base() ) );  // NOLINT
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
@@ -1330,7 +1332,7 @@ namespace tao
                   }
                   const auto i = e->index();
                   if( i >= v.m_union.a.size() ) {
-                     throw std::out_of_range( "invalid JSON Pointer '" + internal::tokens_to_string( b, std::next( e ) ) + "' -- array index out of bounds" );  // NOLINT
+                     throw std::out_of_range( "invalid JSON Pointer '" + internal::tokens_to_string( b, std::next( e ) ) + "' -- array index out of bounds" + json::base_message_extension( base() ) );  // NOLINT
                   }
                   v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
                   return v.m_union.a.at( i );
@@ -1414,7 +1416,7 @@ namespace tao
          void validate_json_type( const json::type t ) const
          {
             if( m_type != t ) {
-               throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "', expected '" + to_string( t ) + '\'' );  // NOLINT
+               throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "', expected '" + to_string( t ) + '\'' + json::base_message_extension( base() ) );  // NOLINT
             }
          }
 

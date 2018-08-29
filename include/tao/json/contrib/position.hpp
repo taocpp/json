@@ -4,6 +4,7 @@
 #ifndef TAO_JSON_CONTRIB_POSITION_HPP
 #define TAO_JSON_CONTRIB_POSITION_HPP
 
+#include <tao/json/base_message_extension.hpp>
 #include <tao/json/events/to_value.hpp>
 #include <tao/json/events/transformer.hpp>
 #include <tao/json/parse_file.hpp>
@@ -56,6 +57,12 @@ namespace tao
          std::ostringstream o;
          o << p;
          return o.str();
+      }
+
+      template<>
+      inline std::string base_message_extension< position >( const position& p )
+      {
+         return " [" + to_string( p ) + ']';
       }
 
       namespace internal

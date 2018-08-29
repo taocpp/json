@@ -75,7 +75,7 @@ namespace tao
                         break;
 
                      default:
-                        throw std::runtime_error( "invalid character in unescape" );  // NOLINT, LCOV_EXCL_LINE
+                        throw json_pegtl::parse_error( "invalid character in unescape", in );  // NOLINT, LCOV_EXCL_LINE
                   }
                }
             };

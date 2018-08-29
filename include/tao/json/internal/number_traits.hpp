@@ -35,7 +35,7 @@ namespace tao
                   case type::DOUBLE:
                      return static_cast< T >( v.unsafe_get_double() );
                   default:
-                     throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to number" );  // NOLINT
+                     throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to number" + json::base_message_extension( v.base() ) );  // NOLINT
                }
             }
          };
