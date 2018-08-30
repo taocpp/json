@@ -12,7 +12,7 @@ namespace tao
    namespace json
    {
       template< typename T >
-      std::string base_message_extension( const T& )
+      std::string base_message_extension( const T& /*unused*/ )
       {
          return typeid( T ).name();
       }

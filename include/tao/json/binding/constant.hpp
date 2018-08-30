@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <string>
 
+#include "../base_message_extension.hpp"
 #include "../external/pegtl/internal/pegtl_string.hpp"
 
 #include "element.hpp"

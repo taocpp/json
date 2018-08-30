@@ -90,9 +90,7 @@ namespace tao
                         if( E == for_unknown_key::CONTINUE ) {
                            continue;
                         }
-                        else {
-                           throw std::runtime_error( "unknown object key " + json::internal::escape( k ) + json::base_message_extension( v.base() ) );  // NOLINT
-                        }
+                        throw std::runtime_error( "unknown object key " + json::internal::escape( k ) + json::base_message_extension( v.base() ) );  // NOLINT
                      }
                      i->second.function( p.second, x );
                      b.set( i->second.index );
@@ -151,7 +149,6 @@ namespace tao
                      if( i == m.end() ) {
                         if( E == for_unknown_key::CONTINUE ) {
                            parser.skip_value();
-                           continue;
                         }
                         else {
                            parser.throw_parse_error( "unknown object key ", json::internal::escape( k ) );  // NOLINT
