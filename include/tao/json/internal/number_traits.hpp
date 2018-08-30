@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <stdexcept>
 
+#include "../base_message_extension.hpp"
 #include "../forward.hpp"
 #include "../type.hpp"
 
