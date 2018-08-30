@@ -5,6 +5,7 @@
 #define TAO_JSON_BASE_MESSAGE_EXTENSION_HPP
 
 #include <string>
+#include <typeinfo>
 
 namespace tao
 {
