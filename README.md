@@ -34,7 +34,7 @@
   * No memory allocations by the Value class itself (the wrapped containers allocate normally).
   * Instance sharing for string, binary, Value, and *user-defined types* via non-owning pointers.
   * C++11 literal operator for Values, including binary data.
-  * Optional custom annotations for all Values (e.g. [filename and line (sub-)values were parsed from](doc/Advanced-Use-Cases.md#annotate-with-filename-and-line-number).
+  * Optional [Base class for Values](doc/Advanced-Use-Cases.md#custom-base-class-for-values) (e.g. to [annotate (sub-)values with file and line](doc/Advanced-Use-Cases.md#annotate-with-filename-and-line-number)).
 
 * [Events Interface](doc/Events-Interface.md)
 

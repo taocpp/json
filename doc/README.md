@@ -1,6 +1,6 @@
 # taocpp/json Documentation
 
-*Work-in-Progress*
+*Work-in-Progress - will be finished for 1.0 release*
 
 * [Project](https://github.com/taocpp/json)
 * [Overview](Overview.md)
