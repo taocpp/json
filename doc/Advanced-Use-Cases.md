@@ -1,7 +1,7 @@
 # Advanced Use Cases
 
 * [Advanced Binding Options](#advanced-binding-options)
-* [Custom Value Annotations](#custom-value-annotations)
+* [Custom Base Class for Values](#custom-base-class-for-values)
 * [Annotate with filename and line number](#annotate-with-filename-and-line-number)
 * [Instance sharing with Value Pointers](#instance-sharing-with-value-pointers)
 * [Instance sharing with Opaque Pointers](#instance-sharing-with-opaque-pointers)
@@ -20,19 +20,19 @@ TODO: basic_object
 
 TODO: getters
 
-## Custom Value Annotations
+## Custom Base Class for Values
 
 The class template `tao::json::basic_value<>` has two template parameters, the type traits, and a `Base` class that it (privately) inherits from.
 
-This allows applications to add arbitrary custom data to every single JSON Value instance, including recursively in all nested sub-values contained in Arrays and Objects.
+This allows applications to add arbitrary custom data to every single JSON Value instance, including, recursively, in all nested sub-values contained in Arrays and Objects.
 
 The library preserves the contents of the base class, and otherwise ignores it.
 More precisely:
 
-* The base is copied when the value is copy constructed or assigned.
-* The base is moved when the value is move constructed or assigned.
-* Otherwise the base is default initialised when constructing a value.
-* The base is ignored by the default comparison operators.
+* The Base is copied when the value is copy constructed or assigned.
+* The Base is moved when the value is move constructed or assigned.
+* Otherwise the Base is default initialised when constructing a value.
+* The Base is ignored by the default comparison operators.
 
 Access to the `Base` instance of a value is given through two accessor functions named `base()`.
 
@@ -44,11 +44,11 @@ template< template< typename... > class Traits, class Base >
 const Base& basic_value< Traits, Base >::base() const noexcept;
 ```
 
-The application can use the base class for whatever it wants, for example to add filenames and line numbers to parsed values as shown below.
+The application can use the Base for whatever it wants, for example to add filenames and line numbers to parsed values as [shown below](#annotate-with-filename-and-line-number).
 
 ## Annotate with filename and line number
 
-A frequent use case for Value annotations is to add the filename, line number, and starting byte position to every (sub-)value during parsing.
+A natural use case for [custom Base classes for Values](#custom-base-class-for-values) is to add the filename, line number, and starting byte position to every (sub-)value during parsing.
 
 The two functions `tao::json::parse_file_with_position()` and `tao::json::basic_parse_file_with_position()` in `include/tao/json/contrib/position.hpp` do just that and can be directly used, or customised as required.
 

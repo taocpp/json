@@ -10,7 +10,7 @@ Pre-1.0.0 milestones in rough reverse chronological order.
 
 * Direct parsing to arbitrary types.
 * Binding facilities and polymorphic factory.
-* Optional base class for Value annotations.
+* Optional custom Base class for Values.
 * Support for Opaque Pointers in Values.
 * JAXN data model with binary data and non-finite doubles.
 * JSON Pointer and JSON Patch support.

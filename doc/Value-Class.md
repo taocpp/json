@@ -16,12 +16,12 @@ The Value Class `tao::json::value` is a C++ class that implements the JAXN data 
 It is implemented as sum-type, or discriminated union, of the JSON types, extended for the JAXN data model.
 On the C++ level the class consists of an `enum` to indicate which type it contains, and a `union` to store the corresponding data.
 
-More precisely, class `tao::json::value` is an instantiation of the class template `tao::json::basic_value<>` with the [included default traits](Type-Traits.md) and an [empty base class](Advanced-Use-Cases.md#custom-value-annotations) as template parameters.
+More precisely, class `tao::json::value` is an instantiation of the class template `tao::json::basic_value<>` with the [included default traits](Type-Traits.md) and an [empty Base class](Advanced-Use-Cases.md#custom-base-class-for-values) as template parameters.
 
 In order to simplify the following discussion, we will mostly ignore the traits and pretend that the behaviour from the [default traits](Type-Traits.md) is hard-wired.
 Please read the [page on Type Traits](Type-Traits.md) to see which aspects of the behaviour of the JSON Value Class can be extended and customised, and how.
 
-Just remember that everywhere `tao::json::value` is referenced it could also be a customised version `tao::json::value< MyTraits, MyBase >` with [custom traits](Type-Traits.md) and [custom annotation base class](Advanced-Use-Cases.md#custom-value-annotations).
+Just remember that everywhere `tao::json::value` is referenced it could also be a customised version `tao::json::value< MyTraits, MyBase >` with [custom traits](Type-Traits.md) and [custom Base class for Values](Advanced-Use-Cases.md#custom-base-class-for-values).
 
 A JSON Value that is an Array or an Object contains -- when not empty -- other JSON Values, whereby a single JSON Value can store arbitrarily large and complicated JSON data structures consisting of arbitrarily nested Arrays and Objects with many sub-values, that are again instances of class `tao::json::value`.
 
@@ -122,7 +122,7 @@ JSON Arrays are stored as `std::vector< tao::json::value >`.
 
 Can be tested for with the member function `tao::json::value::is_array()`.
 
-(The sub-values share the [type traits](Type-Traits.md) and [base class](Advanced-Use-Cases.md#custom-value-annotations) of the containing `basic_value<>`.)
+(The sub-values share the [type traits](Type-Traits.md) and [base class](Advanced-Use-Cases.md#custom-base-class-for-values) of the containing `basic_value<>`.)
 
 ### Objects
 
@@ -130,7 +130,7 @@ JSON Objects are stored as `std::map< std::string, tao::json::value >`.
 
 Can be tested for with the member function `tao::json::value::is_object()`.
 
-(The sub-values share the [type traits](Type-Traits.md) and [base class](Advanced-Use-Cases.md#custom-value-annotations) of the containing `basic_value<>`.)
+(The sub-values share the [type traits](Type-Traits.md) and [base class](Advanced-Use-Cases.md#custom-base-class-for-values) of the containing `basic_value<>`.)
 
 ### Value Pointers
 

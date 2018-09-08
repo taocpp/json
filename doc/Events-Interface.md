@@ -19,7 +19,7 @@ The Events Interface is modelled after the SAX-interface for XML and has functio
 We distinguish betwen *Event Producers* that usually take some input and generate calls to the Events Interface from it, and *Event Consumers* which implement the functions of the Events Interface to usually produce some output.
 *Event Transformers* occupy both roles, accepting calls to the Events Interface and transforming them into (other) calls to another Events Consumer.
 
-For example the `tao::json::events::from_value()` function is an Events Producer that takes a Value object of type `tao::json::basic_value< Traits, Base >` for any Type Traits class `Traits` and annotation class `Base` as input, and generates Events depending on the contents.
+For example the `tao::json::events::from_value()` function is an Events Producer that takes a Value object of type `tao::json::basic_value< Traits, Base >` for any Type Traits class `Traits` and Value base class `Base` as input, and generates Events depending on the contents.
 It could be used together with the `tao::json::events::to_string()` class, an Events Consumer that generates the JSON string representation corresponding to the Events it receives.
 In order to transform binary data in the Value object into something compatible with standard JSON it might be necessary to use an Events Transformer like `tao::json::events::binary_to_hex` between the Producer and Consumer.
 

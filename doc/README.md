@@ -47,7 +47,7 @@
   * [JSON Patch](Extended-Use-Cases.md#json-patch)
 * [Advanced Use Cases](Advanced-Use-Cases.md)
   * [Advanced Binding Options](Advanced-Use-Cases.md#advanced-binding-options)
-  * [Custom Value Annotations](Advanced-Use-Cases.md#custom-value-annotations)
+  * [Custom Base Class for Values](Advanced-Use-Cases.md#custom-base-class-for-values)
   * [Annotate with filename and line number](Advanced-Use-Cases.md#annotate-with-filename-and-line-number)
   * [Instance sharing with Value Pointers](Advanced-Use-Cases.md#instance-sharing-with-value-pointers)
   * [Instance sharing with Opaque Pointers](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers)

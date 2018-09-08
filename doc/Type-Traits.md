@@ -57,7 +57,7 @@ For convenience, we might add a `using` for the JSON Value class with the new Ty
 using my_value = tao::json::basic_value< my_traits >;
 ```
 
-Or, if we are planning on using [custom value annotations](Advanced-Use-Cases.md#custom-value-annotations), we might be more elaborate.
+Or, if we are planning on using [custom Base class for Values](Advanced-Use-Cases.md#custom-base-class-for-values), we might be more elaborate.
 
 ```c++
 template< typename Base >
