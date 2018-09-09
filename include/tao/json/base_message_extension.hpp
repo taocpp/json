@@ -5,7 +5,6 @@
 #define TAO_JSON_BASE_MESSAGE_EXTENSION_HPP
 
 #include <string>
-#include <typeinfo>
 
 namespace tao
 {
@@ -14,7 +13,7 @@ namespace tao
       template< typename T >
       std::string base_message_extension( const T& /*unused*/ )
       {
-         return typeid( T ).name();
+         return "";
       }
 
    }  // namespace json
