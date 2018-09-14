@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.3.0 FATAL_ERROR)
 
 set(testsources
-  as.cpp
+  access.cpp
   big_list_of_naughty_strings.cpp
   binding.cpp
   cbor.cpp
