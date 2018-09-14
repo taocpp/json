@@ -34,17 +34,17 @@ namespace tao
                using elements = json::internal::type_list< As... >;
 
                template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename C >
-               static bool as_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
+               static bool to_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
                {
-                  A::as( a.at( I ), x );
+                  A::to( a.at( I ), x );
                   return true;
                }
 
                template< template< typename... > class Traits, typename Base, typename C >
-               static void as( const basic_value< Traits, Base >& v, C& x )
+               static void to( const basic_value< Traits, Base >& v, C& x )
                {
                   const auto& a = v.get_array();
-                  (void)json::internal::swallow{ as_element< As, Is >( a, x )... };
+                  (void)json::internal::swallow{ to_element< As, Is >( a, x )... };
                }
 
                template< typename A, template< typename... > class Traits, typename Base, typename C >

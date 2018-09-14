@@ -43,10 +43,10 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static std::exception_ptr first_as( const basic_value< Traits, Base >& v, C& x )
+            static std::exception_ptr first_to( const basic_value< Traits, Base >& v, C& x )
             {
                try {
-                  V::as( v, x );
+                  V::to( v, x );
                   return std::exception_ptr();
                }
                catch( ... ) {
@@ -55,10 +55,10 @@ namespace tao
             }
 
             template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool attempt_as( const basic_value< Traits, Base >& v, C& x )
+            static bool attempt_to( const basic_value< Traits, Base >& v, C& x )
             {
                try {
-                  A::as( v, x );
+                  A::to( v, x );
                   return true;
                }
                catch( ... ) {
@@ -67,11 +67,11 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static void as( const basic_value< Traits, Base >& v, C& x )
+            static void to( const basic_value< Traits, Base >& v, C& x )
             {
-               const std::exception_ptr e = first_as( v, x );
+               const std::exception_ptr e = first_to( v, x );
                bool ok = ( e == std::exception_ptr() );
-               (void)json::internal::swallow{ ( ok = ok || attempt_as< Vs >( v, x ) )... };
+               (void)json::internal::swallow{ ( ok = ok || attempt_to< Vs >( v, x ) )... };
                throw_on_error( ok, e );
             }
 

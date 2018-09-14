@@ -1010,7 +1010,7 @@ namespace tao
                return std::shared_ptr< U >();
             }
             auto t = std::make_shared< T >();  // TODO: More control?
-            v.as( *t );
+            v.to( *t );
             return t;
          }
 
@@ -1062,7 +1062,7 @@ namespace tao
                return std::shared_ptr< T >();
             }
             auto t = std::make_shared< T >();  // TODO: More control?
-            v.as( *t );
+            v.to( *t );
             return t;
          }
 
@@ -1098,7 +1098,7 @@ namespace tao
                return std::unique_ptr< U >();
             }
             std::unique_ptr< U > t( new T() );  // TODO: More control?
-            v.as( *static_cast< T* >( t.get() ) );
+            v.to( *static_cast< T* >( t.get() ) );
             return t;
          }
 
@@ -1125,7 +1125,7 @@ namespace tao
          : public internal::array_traits< std::list< T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::list< T, Ts... >& r )
+         static void to( const basic_value< Traits, Base >& v, std::list< T, Ts... >& r )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
@@ -1148,7 +1148,7 @@ namespace tao
          : public internal::array_traits< std::set< T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::set< T, Ts... >& r )
+         static void to( const basic_value< Traits, Base >& v, std::set< T, Ts... >& r )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
@@ -1171,7 +1171,7 @@ namespace tao
          : public internal::array_traits< std::vector< T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::vector< T, Ts... >& r )
+         static void to( const basic_value< Traits, Base >& v, std::vector< T, Ts... >& r )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
@@ -1204,7 +1204,7 @@ namespace tao
          : public internal::object_traits< std::map< std::string, T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base >
-         static void as( const basic_value< Traits, Base >& v, std::map< std::string, T, Ts... >& r )
+         static void to( const basic_value< Traits, Base >& v, std::map< std::string, T, Ts... >& r )
          {
             const auto& o = v.get_object();
             for( const auto& i : o ) {

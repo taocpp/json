@@ -59,9 +59,9 @@ namespace tao
                }
 
                template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename F >
-               static bool emplace_as( std::map< std::string, entry< F > >& m )
+               static bool emplace_to( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::key(), entry< F >( &A::template as< Traits, Base >, I ) );
+                  m.emplace( A::key(), entry< F >( &A::template to< Traits, Base >, I ) );
                   return true;
                }
 
@@ -70,12 +70,12 @@ namespace tao
 #pragma warning( disable : 4127 )
 #endif
                template< template< typename... > class Traits, typename Base, typename C >
-               static void as( const basic_value< Traits, Base >& v, C& x )
+               static void to( const basic_value< Traits, Base >& v, C& x )
                {
                   using F = void ( * )( const basic_value< Traits, Base >&, C& );
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     (void)json::internal::swallow{ emplace_as< As, Is, Traits, Base >( t )... };
+                     (void)json::internal::swallow{ emplace_to< As, Is, Traits, Base >( t )... };
                      assert( t.size() == sizeof...( As ) );
                      return t;
                   }();

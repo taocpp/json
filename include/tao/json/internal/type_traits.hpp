@@ -69,22 +69,22 @@ namespace tao
          };
 
          template< typename, typename, typename = void >
-         struct has_as_one : std::false_type
+         struct has_as : std::false_type
          {
          };
 
          template< typename T, typename V >
-         struct has_as_one< T, V, decltype( T::as( std::declval< const V& >() ), void() ) > : std::true_type
+         struct has_as< T, V, decltype( T::as( std::declval< const V& >() ), void() ) > : std::true_type
          {
          };
 
          template< typename, typename, typename, typename = void >
-         struct has_as_two : std::false_type
+         struct has_to : std::false_type
          {
          };
 
          template< typename T, typename V, typename U >
-         struct has_as_two< T, V, U, decltype( T::as( std::declval< const V& >(), std::declval< U& >() ), void() ) > : std::true_type
+         struct has_to< T, V, U, decltype( T::to( std::declval< const V& >(), std::declval< U& >() ), void() ) > : std::true_type
          {
          };
 

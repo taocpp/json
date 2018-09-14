@@ -344,15 +344,15 @@ f( tao::json::value( v2 ) );
 
 The function `tao::json::value::type()`, and the functions like `tao::json::value::is_boolean()` mentioned above, can be used to determine the type of a Value.
 
-The data held by a Value can be extracted and converted with the `tao::json::value::as< T >()` functions, of which there are two.
+The data held by a Value can be extracted and converted with the `tao::json::value::as< T >()` and `tao::json::value::to< T >( T& )` functions.
 
-1. The first overload takes no argument and returns the value of type `T`.
-2. The second overload takes a non-const reference to an instance of type `T`.
+1. `as()` takes no argument and returns the value of type `T`.
+2. `to()` takes a non-const reference to an instance of type `T`.
 
 ```c++
 const tao::json::value v = 3;
 int i = v.as< int >();  // Sets i to 3.
-v.as( i );  // Also sets i to 3.
+v.to( i );  // Also sets i to 3.
 ```
 
 Note that the [default Type Traits](Type-Traits.md) do **not** perform range checking when converting between different arithmetic types!
@@ -366,7 +366,7 @@ const auto w = v.as< std::vector< std::shared_ptr< int > > >();
 
 When the Type Traits are correctly specialised for a custom type then [a JSON Value can be directly converted into the custom type](Type-Traits.md#convert-value-into-type) with `tao::json::value::as()`.
 
-The function `tao::json::value::optional< T >()` is similar to `tao::json::value::as< T >()` without argument, but it returns a `tao::optional< T >`.
+The function `tao::json::value::optional< T >()` is similar to `tao::json::value::as< T >()`, but it returns a `tao::optional< T >`.
 The return value is an empty optional when the Value on which the method was called is Null, else an optional initalised with the result of a call to `tao::json::value::as< T >()` is returned.
 
 The following member functions of class `tao::json::value` bypass the Type Traits and provide direct access to the data in a Value.

@@ -1227,27 +1227,27 @@ namespace tao
          }
 
          template< typename T >
-         typename std::enable_if< internal::has_as_one< Traits< T >, basic_value >::value, T >::type as() const
+         typename std::enable_if< internal::has_as< Traits< T >, basic_value >::value, T >::type as() const
          {
             return Traits< T >::as( *this );
          }
 
          template< typename T >
-         typename std::enable_if< !internal::has_as_one< Traits< T >, basic_value >::value, T >::type as() const
+         typename std::enable_if< !internal::has_as< Traits< T >, basic_value >::value, T >::type as() const
          {
             T nrv;
-            this->as( nrv );
+            this->to( nrv );
             return nrv;
          }
 
          template< typename T >
-         typename std::enable_if< internal::has_as_two< Traits< T >, basic_value, T >::value, void >::type as( T& v ) const
+         typename std::enable_if< internal::has_to< Traits< T >, basic_value, T >::value, void >::type to( T& v ) const
          {
-            Traits< typename std::decay< T >::type >::as( *this, v );
+            Traits< typename std::decay< T >::type >::to( *this, v );
          }
 
          template< typename T >
-         typename std::enable_if< !internal::has_as_two< Traits< T >, basic_value, T >::value, void >::type as( T& v ) const
+         typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T >::value, void >::type to( T& v ) const
          {
             v = Traits< typename std::decay< T >::type >::as( *this );
          }

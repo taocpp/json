@@ -35,9 +35,9 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base >
-            static void as( const basic_value< Traits, Base >& v, C& x )
+            static void to( const basic_value< Traits, Base >& v, C& x )
             {
-               v.as( x.*P );
+               v.to( x.*P );
             }
 
             template< template< typename... > class Traits = traits, typename Producer >
@@ -110,9 +110,9 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base >
-            static void as( const basic_value< Traits, Base >& v, A& x )
+            static void to( const basic_value< Traits, Base >& v, A& x )
             {
-               v.as( P( x ) );
+               v.to( P( x ) );
             }
 
             template< template< typename... > class Traits = traits, typename Producer >
@@ -143,7 +143,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base >
-            static void as( const basic_value< Traits, Base >& v, A& x )
+            static void to( const basic_value< Traits, Base >& v, A& x )
             {
                CP( x, v.template as< typename std::decay< R >::type >() );
             }

@@ -84,7 +84,7 @@ To use an Object it is necessary to derive `my_traits< my_type >` from `tao::jso
 It is not technically necessary for the name to match the name of the data member, any string can be used for the key in the Object.
 
 Two macros are used to simplify the binding of the individual member variables.
-When directly parsing an external representation like JSON into a `my_type` with `tao::json::consume()`, or converting a Value into a `my_type` with `tao::json::as()`, an exception will be thrown when a required member is missing.
+When directly parsing an external representation like JSON into a `my_type` with `tao::json::consume()`, or converting a Value into a `my_type` with `tao::json::as()` or `tao::json::to()`, an exception will be thrown when a required member is missing.
 
 ```c++
 template<>
@@ -185,23 +185,23 @@ In the following we will assume the implementation from above.
 
 ## Convert Value into Type
 
-The traits' `as()` functions are used to convert Values into any type `T`.
+The traits' `as()` and/or `to()` functions are used to convert Values into any type `T`.
 
-There are two possible signatures for the `as()` function of which *only one needs to be implemented*.
-If not particularly awkward or slow it is recommended to implement the version that returns the `T`.
+If not particularly awkward or slow it is recommended to implement `as()`, which returns the `T`, rather than `to()`.
 
-The user-facing functions `tao::json::as()` and `tao::json::basic_value<>::as()` are always available in both versions, regardless of which version the traits implement, subject to the following limitation:
+The user-facing functions `tao::json::as()/to()` and `tao::json::basic_value<>::as()/to()` are all available, regardless of which function(s) the traits implement, subject to the following limitation:
 
-* In order to provide the one-argument version when the traits implement only the two-argument form the type has to be default-constructible.
+* `T` needs to be copy-assignable to use the front-end `to()` when the traits only implement `as()`.
+* `T` needs to be default-constructible to use the front-end `as()` when the traits only implement `to()`.
 
-Both possible implementations are shown even though a real-world traits class will typically only implement either one of them.
+Here both functions are shown even though a real-world traits class will typically only implement either one of them.
 
 ```c++
 template<>
 struct my_traits< my_type >
 {
    template< template< typename... > class Traits, typename Base >
-   static void as( const tao::json::basic_value< Traits, Base >& v, my_type& d )
+   static void to( const tao::json::basic_value< Traits, Base >& v, my_type& d )
    {
       const auto& object = v.get_object();
       d.title = v.at( "title" ).template as< std::string >();
@@ -220,11 +220,11 @@ struct my_traits< my_type >
 };
 ```
 
-The `as<>()` functions again template over the traits class, just like `assign()`, and for the same reasons.
+The `as<>()` and `to()` functions again template over the traits class, just like `assign()`, and for the same reasons.
 
-The employed `get_object()`, `as<>()` and `at()` functions will all throw an exception when something goes wrong, i.e. when the accessed JSON Value is not of the correct type, or when the indexed key does not exist.
+The employed `get_object()`, `as<>()`, `to<>()` and `at()` functions will all throw an exception when something goes wrong, i.e. when the accessed JSON Value is not of the correct type, or when the indexed key does not exist.
 
-Beyond manually calling the Traits' `as()`-function there are four recommended possibilities to create a `my_type` from a Value.
+Instead of manually calling the Traits' `as()`- and `to()`-functions it is recommended to use one of the following to create a `T` from a Value.
 
 ```c++
 const tao::json::value v = ...;
@@ -236,7 +236,7 @@ Or alternatively:
 ```c++
 const tao::json::value v = ...;
 my_type mt;
-v.as( mt );
+v.to( mt );
 ```
 
 Or alternatively:
@@ -251,7 +251,7 @@ Or alternatively:
 ```c++
 const tao::json::value v = ...;
 my_type mt;
-tao::json::as( v, mt );
+tao::json::to( v, mt );
 ```
 
 In this example no error is thrown when the top-level JSON Object contains additional keys beyond `"title"` and `"values"`.

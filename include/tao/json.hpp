@@ -26,6 +26,7 @@
 #include "json/binding.hpp"
 #include "json/consume.hpp"
 #include "json/produce.hpp"
+#include "json/to.hpp"
 
 // JAXN Format
 #include "json/jaxn.hpp"

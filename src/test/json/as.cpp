@@ -41,7 +41,7 @@ namespace tao
       struct traits< two >
       {
          template< typename T >
-         static void as( const T& /*unused*/, two& t )
+         static void to( const T& /*unused*/, two& t )
          {
             t = two{ 2 };
          }
@@ -57,7 +57,7 @@ namespace tao
          }
 
          template< typename T >
-         static void as( const T& /*unused*/, both& t )
+         static void to( const T& /*unused*/, both& t )
          {
             t = both{ 4 };
          }
@@ -70,19 +70,19 @@ namespace tao
          TEST_ASSERT( v.as< one >().i == 1 );
          {
             one i = { 0 };
-            v.as( i );
+            v.to( i );
             TEST_ASSERT( i.i == 1 );
          }
          TEST_ASSERT( v.as< two >().i == 2 );
          {
             two i = { 0 };
-            v.as( i );
+            v.to( i );
             TEST_ASSERT( i.i == 2 );
          }
          TEST_ASSERT( v.as< both >().i == 3 );
          {
             both i = { 0 };
-            v.as( i );
+            v.to( i );
             TEST_ASSERT( i.i == 4 );
          }
       }
