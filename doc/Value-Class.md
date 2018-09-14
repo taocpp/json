@@ -346,13 +346,13 @@ The function `tao::json::value::type()`, and the functions like `tao::json::valu
 
 The data held by a Value can be extracted and converted with the `tao::json::value::as< T >()` and `tao::json::value::to< T >( T& )` functions.
 
-1. `as()` takes no argument and returns the value of type `T`.
+1. The basic form of `as()` returns the value of type `T`, while
 2. `to()` takes a non-const reference to an instance of type `T`.
 
 ```c++
 const tao::json::value v = 3;
-int i = v.as< int >();  // Sets i to 3.
-v.to( i );  // Also sets i to 3.
+int i = v.as< int >();  // Initialised i to 3.
+v.to( i );  // Sets i to 3.
 ```
 
 Note that the [default Type Traits](Type-Traits.md) do **not** perform range checking when converting between different arithmetic types!
@@ -368,6 +368,24 @@ When the Type Traits are correctly specialised for a custom type then [a JSON Va
 
 The function `tao::json::value::optional< T >()` is similar to `tao::json::value::as< T >()`, but it returns a `tao::optional< T >`.
 The return value is an empty optional when the Value on which the method was called is Null, else an optional initalised with the result of a call to `tao::json::value::as< T >()` is returned.
+
+When the Value in question is an Object, the variants of `as()`, `to()` and `optional()` that take an Object key as (additional) argument can be used.
+
+The `optional()` function with a key returns an empty optional when the key is not found in the Object; when the Value is not an Object or the unconditional conversion to the target type fails, an exception is thrown.
+
+```c++
+const tao::json::value v = {
+   { "foo", 4 },
+   { "bar", tao::json::null }
+};
+int i = v.as< int >( "foo" );  // Like v.at( "foo" ).as< int >()
+v.to( i, "foo" );  // Like v.at( "foo" ).to( i )
+
+auto a = v.optional< int >( "foo" );  // a has value 4
+auto b = v.optional< int >( "xyz" );  // b is empty
+auto c = v.optional< int >( "bar" );  // throws -- null is not an int
+auto d = v.at( "foo" ).optional< int >( "bar" );  // throws -- 4 is not an Object
+```
 
 The following member functions of class `tao::json::value` bypass the Type Traits and provide direct access to the data in a Value.
 They all throw an exception when the type of the Value is not the expected one.

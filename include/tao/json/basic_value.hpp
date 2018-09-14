@@ -1240,6 +1240,18 @@ namespace tao
             return nrv;
          }
 
+         template< typename T, typename K >
+         T as( const K& key ) const
+         {
+            return this->at( key ).template as< T >();
+         }
+
+         template< typename T >
+         T as( const std::string& key ) const
+         {
+            return this->template as< T, std::string >( key );
+         }
+
          template< typename T >
          typename std::enable_if< internal::has_to< Traits< T >, basic_value, T >::value, void >::type to( T& v ) const
          {
@@ -1250,6 +1262,18 @@ namespace tao
          typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T >::value, void >::type to( T& v ) const
          {
             v = Traits< typename std::decay< T >::type >::as( *this );
+         }
+
+         template< typename T, typename K >
+         void to( T& v, const K& key )
+         {
+            this->at( key ).to( v );
+         }
+
+         template< typename T >
+         void to( T& v, const std::string& key )
+         {
+            this->template to< T, std::string >( v, key );
          }
 
          template< typename T >
