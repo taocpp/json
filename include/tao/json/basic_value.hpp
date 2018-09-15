@@ -1320,7 +1320,7 @@ namespace tao
                   }
                   v.m_union.a.insert( v.m_union.a.begin() + i, std::move( value ) );
                   return v.m_union.a.at( i );
-               } break;
+               }
                case json::type::OBJECT: {
                   const auto& key = e->key();
                   const auto it = v.m_union.o.find( key );
@@ -1331,7 +1331,7 @@ namespace tao
                   }
                   it->second = std::move( value );
                   return it->second;
-               } break;
+               }
                default:
                   throw internal::invalid_type( b, std::next( e ) );  // NOLINT
             }
