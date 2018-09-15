@@ -1061,20 +1061,8 @@ namespace tao
             return p;
          }
 
-         basic_value* unsafe_find( const std::string& key ) noexcept
-         {
-            const auto it = m_union.o.find( key );
-            return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
-         }
-
          template< typename T >
          basic_value* unsafe_find( const T& key ) noexcept
-         {
-            const auto it = m_union.o.find( key );
-            return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
-         }
-
-         const basic_value* unsafe_find( const std::string& key ) const noexcept
          {
             const auto it = m_union.o.find( key );
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
@@ -1087,20 +1075,8 @@ namespace tao
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
-         basic_value* find( const std::string& key )
-         {
-            validate_json_type( json::type::OBJECT );
-            return unsafe_find( key );
-         }
-
          template< typename T >
          basic_value* find( const T& key )
-         {
-            validate_json_type( json::type::OBJECT );
-            return unsafe_find( key );
-         }
-
-         const basic_value* find( const std::string& key ) const
          {
             validate_json_type( json::type::OBJECT );
             return unsafe_find( key );
@@ -1202,25 +1178,21 @@ namespace tao
             switch( v.m_type ) {
                case json::type::ARRAY: {
                   if( e->key() == "-" ) {
-                     basic_value d;
-                     d.unsafe_assign_null();
-                     v.unsafe_emplace_back( std::move( d ) );
+                     v.unsafe_emplace_back( null );
                      return v.m_union.a.back();
                   }
                   return v.at( e->index() );
-               } break;
+               }
                case json::type::OBJECT: {
                   const auto& key = e->key();
                   const auto it = v.m_union.o.find( key );
-                  if( it == v.m_union.o.end() ) {
-                     basic_value d;
-                     d.unsafe_assign_null();
-                     const auto r = v.unsafe_emplace( key, std::move( d ) );
-                     assert( r.second );
-                     return r.first->second;
+                  if( it != v.m_union.o.end() ) {
+                     return it->second;
                   }
-                  return it->second;
-               } break;
+                  const auto r = v.unsafe_emplace( key, null );
+                  assert( r.second );
+                  return r.first->second;
+               }
                default:
                   throw internal::invalid_type( b, std::next( e ) );  // NOLINT
             }
@@ -1250,12 +1222,6 @@ namespace tao
          }
 
          template< typename T >
-         T as( const std::string& key ) const
-         {
-            return this->template as< T, std::string >( key );
-         }
-
-         template< typename T >
          typename std::enable_if< internal::has_to< Traits< T >, basic_value, T >::value, void >::type to( T& v ) const
          {
             Traits< typename std::decay< T >::type >::to( *this, v );
@@ -1264,7 +1230,7 @@ namespace tao
          template< typename T >
          typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T >::value && internal::has_as< Traits< T >, basic_value >::value, void >::type to( T& v ) const
          {
-            v = Traits< typename std::decay< T >::type >::as( *this );
+            v = this->template as< typename std::decay< T >::type >();
          }
 
          template< typename T >
@@ -1274,12 +1240,6 @@ namespace tao
          void to( T& v, const K& key )
          {
             this->at( key ).to( v );
-         }
-
-         template< typename T >
-         void to( T& v, const std::string& key )
-         {
-            this->template to< T, std::string >( v, key );
          }
 
          template< typename T >
@@ -1298,12 +1258,6 @@ namespace tao
                return p->template as< T >();
             }
             return tao::nullopt;
-         }
-
-         template< typename T >
-         tao::optional< T > optional( const std::string& key ) const
-         {
-            return optional< T, std::string >( key );
          }
 
          void erase( const std::size_t index )
