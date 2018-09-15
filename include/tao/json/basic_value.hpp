@@ -1235,9 +1235,9 @@ namespace tao
          template< typename T >
          typename std::enable_if< !internal::has_as< Traits< T >, basic_value >::value && internal::has_to< Traits< T >, basic_value, T >::value, T >::type as() const
          {
-            T nrv;
-            this->to( nrv );
-            return nrv;
+            T v;
+            Traits< T >::to( *this, v );
+            return v;
          }
 
          template< typename T >
