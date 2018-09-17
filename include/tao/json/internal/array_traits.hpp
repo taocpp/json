@@ -29,9 +29,10 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static void assign( basic_value< Traits, Base >& v, const T& o )
             {
-               v.prepare_array();
-               for( const auto& i : o ) {
-                  v.unsafe_emplace_back( i );
+               v.unsafe_emplace_array();
+               v.unsafe_get_array().reserve( o.size() );
+               for( const auto& e : o ) {
+                  v.unsafe_emplace_back( e );
                }
             }
 
