@@ -1000,9 +1000,13 @@ namespace tao
          }
       };
 
-      template< typename T, typename U = void >
+      template< typename T, typename U = T >
       struct shared_traits
+         : public internal::indirect_traits< std::shared_ptr< T > >
       {
+         template< typename V >
+         using with_base = shared_traits< T, V >;
+
          template< template< typename... > class Traits, typename Base >
          static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
          {
@@ -1014,63 +1018,11 @@ namespace tao
             return t;
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< U >& p )
-         {
-            if( p ) {
-               v = static_cast< const T& >( *p );
-            }
-            else {
-               v = null;
-            }
-         }
-
          template< template< typename... > class Traits, typename Producer >
          static std::shared_ptr< U > consume( Producer& parser )
          {
             if( parser.null() ) {
                return std::shared_ptr< U >();
-            }
-            auto t = std::make_shared< T >();  // TODO: More control?
-            json::consume< Traits >( parser, *t );
-            return t;
-         }
-
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const T& p )
-         {
-            if( p ) {
-               json::events::produce< Traits >( c, static_cast< const T& >( *p ) );
-            }
-            else {
-               json::events::produce< Traits >( c, null );
-            }
-         }
-      };
-
-      template< typename T >
-      struct shared_traits< T, void >
-         : public internal::indirect_traits< std::shared_ptr< T > >
-      {
-         template< typename V >
-         using with_base = shared_traits< T, V >;
-
-         template< template< typename... > class Traits, typename Base >
-         static std::shared_ptr< T > as( const basic_value< Traits, Base >& v )
-         {
-            if( v == null ) {
-               return std::shared_ptr< T >();
-            }
-            auto t = std::make_shared< T >();  // TODO: More control?
-            v.to( *t );
-            return t;
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static std::shared_ptr< T > consume( Producer& parser )
-         {
-            if( parser.null() ) {
-               return std::shared_ptr< T >();
             }
             auto t = std::make_shared< T >();  // TODO: More control?
             json::consume< Traits >( parser, *t );

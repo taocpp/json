@@ -20,31 +20,37 @@ namespace tao
          template< typename T >
          struct indirect_traits
          {
+            template< typename U >
+            static const U& add_const( const U& u )
+            {
+               return u;
+            }
+
             template< template< typename... > class Traits >
             static bool is_nothing( const T& o )
             {
-               return ( !bool( o ) ) || internal::is_nothing< Traits >( *o );
-            }
-
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const T& o )
-            {
-               if( o ) {
-                  json::events::produce< Traits >( c, *o );
-               }
-               else {
-                  json::events::produce< Traits >( c, null );
-               }
+               return ( !bool( o ) ) || internal::is_nothing< Traits >( add_const( *o ) );
             }
 
             template< template< typename... > class Traits, typename Base >
             static void assign( basic_value< Traits, Base >& v, const T& o )
             {
                if( o ) {
-                  v = *o;
+                  v = add_const( *o );
                }
                else {
                   v = null;
+               }
+            }
+
+            template< template< typename... > class Traits, typename Consumer >
+            static void produce( Consumer& c, const T& o )
+            {
+               if( o ) {
+                  json::events::produce< Traits >( c, add_const( *o ) );
+               }
+               else {
+                  json::events::produce< Traits >( c, null );
                }
             }
 
