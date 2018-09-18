@@ -5,7 +5,6 @@
 #define TAO_JSON_BINDING_CONSTANT_HPP
 
 #include <cstdint>
-#include <iomanip>
 #include <string>
 
 #include "../base_message_extension.hpp"
@@ -36,7 +35,7 @@ namespace tao
             {
                const auto t = v.template as< bool >();
                if( t != V ) {
-                  throw std::runtime_error( json::internal::format( std::boolalpha, "boolean mismatch, expected ", V, " parsed ", t, json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::runtime_error( json::internal::format( "boolean mismatch, expected '", V, "' parsed '", t, '\'', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -51,7 +50,7 @@ namespace tao
             {
                const auto t = parser.boolean();
                if( t != V ) {
-                  parser.throw_parse_error( json::internal::format( std::boolalpha, "boolean mismatch, expected ", V, " parsed ", t ) );
+                  parser.throw_parse_error( json::internal::format( "boolean mismatch, expected '", V, "' parsed '", t, '\'' ) );
                }
             }
          };
@@ -70,7 +69,7 @@ namespace tao
             {
                const auto t = v.template as< std::int64_t >();
                if( t != V ) {
-                  throw std::runtime_error( json::internal::format( "signed integer mismatch, expected ", V, " parsed ", t, json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::runtime_error( json::internal::format( "signed integer mismatch, expected '", V, "' parsed '", t, '\'', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -85,7 +84,7 @@ namespace tao
             {
                const auto t = parser.number_signed();
                if( t != V ) {
-                  parser.throw_parse_error( json::internal::format( "signed integer mismatch, expected ", V, " parsed ", t ) );
+                  parser.throw_parse_error( json::internal::format( "signed integer mismatch, expected '", V, "' parsed '", t, '\'' ) );
                }
             }
          };
@@ -104,7 +103,7 @@ namespace tao
             {
                const auto t = v.template as< std::uint64_t >();
                if( t != V ) {
-                  throw std::runtime_error( json::internal::format( "unsigned integer mismatch, expected ", V, " parsed ", t, json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::runtime_error( json::internal::format( "unsigned integer mismatch, expected '", V, "' parsed '", t, '\'', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -119,7 +118,7 @@ namespace tao
             {
                const auto t = parser.number_unsigned();
                if( t != V ) {
-                  parser.throw_parse_error( json::internal::format( "unsigned integer mismatch, expected ", V, " parsed ", t ) );
+                  parser.throw_parse_error( json::internal::format( "unsigned integer mismatch, expected '", V, "' parsed '", t, '\'' ) );
                }
             }
          };

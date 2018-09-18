@@ -23,6 +23,11 @@ namespace tao
             os << json_pegtl::internal::demangle( t.name() );
          }
 
+         inline void to_stream( std::ostream& os, const bool v )
+         {
+            os << ( v ? "true" : "false" );
+         }
+
          template< typename T >
          void to_stream( std::ostream& os, const T& t )
          {

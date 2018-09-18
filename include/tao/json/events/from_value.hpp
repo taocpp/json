@@ -7,6 +7,7 @@
 #include <stdexcept>
 
 #include "../basic_value.hpp"
+#include "../internal/format.hpp"
 
 #include "virtual_ref.hpp"
 
@@ -119,7 +120,7 @@ namespace tao
                   return;
                }
             }
-            throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
+            throw std::logic_error( internal::format( "invalid value '", static_cast< std::uint8_t >( v.type() ), "' for tao::json::type" ) );  // NOLINT, LCOV_EXCL_LINE
          }
 
          // Events producer to generate events from an rvalue JSON value.
@@ -220,7 +221,7 @@ namespace tao
                   return;
                }
             }
-            throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
+            throw std::logic_error( internal::format( "invalid value '", static_cast< std::uint8_t >( v.type() ), "' for tao::json::type" ) );  // NOLINT, LCOV_EXCL_LINE
          }
 
       }  // namespace events
