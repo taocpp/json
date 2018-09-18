@@ -572,12 +572,12 @@ namespace tao
 
          void throw_index_out_of_bound_exception( const std::size_t i ) const
          {
-            throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::base_message_extension( base() ) ) );
+            throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::base_message_extension( base() ) ) );  // NOLINT
          }
 
          void throw_key_not_found_exception( const tao::string_view k ) const
          {
-            throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::base_message_extension( base() ) ) );
+            throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::base_message_extension( base() ) ) );  // NOLINT
          }
 
       public:
