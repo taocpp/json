@@ -18,7 +18,7 @@
 #include "../../external/string_view.hpp"
 #include "../../forward.hpp"
 #include "../../internal/endian.hpp"
-#include "../../internal/throw_parse_error.hpp"
+#include "../../internal/format.hpp"
 #include "../../utf8.hpp"
 
 namespace tao
@@ -29,19 +29,11 @@ namespace tao
       {
          namespace internal
          {
-            // clang-format off
-            template< typename Input, typename... Ts >
-            [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
-            {
-               json::internal::throw_parse_error( in, "cbor:", ts... );
-            }
-            // clang-format on
-
             template< typename Input >
             void throw_on_empty( Input& in, const std::size_t size = 1 )
             {
                if( in.size( size ) < size ) {
-                  throw_parse_error( in, "unexpected end of input" );
+                  throw json_pegtl::parse_error( "unexpected end of input", in );
                }
             }
 
@@ -127,7 +119,7 @@ namespace tao
                   in.bump_in_this_line( 1 + sizeof( Unsigned ) );
                   return result;
                }
-               throw_parse_error( in, "unexpected end of input" );
+               throw json_pegtl::parse_error( "unexpected end of input", in );
             }
 
             template< typename Input >
@@ -148,7 +140,7 @@ namespace tao
                   case 29:
                   case 30:
                   case 31:
-                     throw_parse_error( in, "unexpected minor", m, "for number or length" );
+                     throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for number or length" ), in );
                }
             }
 
@@ -183,7 +175,7 @@ namespace tao
                in.bump_in_this_line();
                while( peek_byte_safe( in ) != 0xff ) {
                   if( peek_major( in ) != m ) {
-                     throw_parse_error( in, "non-matching fragment in indefinite length string" );
+                     throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
                   }
                   const auto size = parse_size( in );
                   throw_on_empty( in, size );
@@ -252,7 +244,7 @@ namespace tao
                {
                   const auto u = parse_unsigned( in );
                   if( u > 9223372036854775808ull ) {
-                     throw_parse_error( in, "negative integer overflow" );
+                     throw json_pegtl::parse_error( "negative integer overflow", in );
                   }
                   consumer.number( std::int64_t( ~u ) );
                   return true;
@@ -331,7 +323,7 @@ namespace tao
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
                      if( peek_major_safe( in ) != major::STRING ) {
-                        throw_parse_error( in, "non-string object key" );
+                        throw json_pegtl::parse_error( "non-string object key", in );
                      }
                      throw_on_empty( in );
                      if( peek_minor( in ) != minor_mask ) {
@@ -354,7 +346,7 @@ namespace tao
                   consumer.begin_object();
                   while( peek_byte_safe( in ) != 0xff ) {
                      if( peek_major( in ) != major::STRING ) {
-                        throw_parse_error( in, "non-string object key" );
+                        throw json_pegtl::parse_error( "non-string object key", in );
                      }
                      if( peek_minor( in ) != minor_mask ) {
                         consumer.key( parse_string_1< V, tao::string_view >( in ) );
@@ -421,7 +413,7 @@ namespace tao
                      case 29:
                      case 30:
                      case 31:
-                        throw_parse_error( in, "unexpected minor", m, "for tag value" );
+                        throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for tag value" ), in );
                   }
                   return true;
                }
@@ -453,7 +445,7 @@ namespace tao
                         return true;
                      case 24:
                      default:
-                        throw_parse_error( in, "unsupported minor", m, "for major 7" );
+                        throw json_pegtl::parse_error( json::internal::format( "unsupported minor ", m, " for major 7" ), in );
                   }
                }
             };

@@ -49,7 +49,7 @@ namespace tao
                      m_input.bump_in_this_line( 1 );
                      return bool( b - std::uint8_t( internal::major::OTHER ) - 20 );
                   default:
-                     internal::throw_parse_error( m_input, "expected boolean" );
+                     throw json_pegtl::parse_error( "expected boolean", m_input );  // NOLINT
                }
                std::abort();
             }
@@ -61,7 +61,7 @@ namespace tao
             {
                const auto b = internal::peek_major_safe( m_input );
                if( b != m ) {
-                  internal::throw_parse_error( m_input, e );
+                  throw json_pegtl::parse_error( e, m_input );  // NOLINT
                }
             }
 
@@ -94,7 +94,7 @@ namespace tao
             {
                const auto b = internal::peek_byte_safe( m_input );
                if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
-                  internal::throw_parse_error( m_input, "expected definitive string" );
+                  throw json_pegtl::parse_error( "expected definitive string", m_input );  // NOLINT
                }
                return internal::parse_string_1< V, tao::string_view >( m_input );
             }
@@ -103,7 +103,7 @@ namespace tao
             {
                const auto b = internal::peek_byte_safe( m_input );
                if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
-                  internal::throw_parse_error( m_input, "expected definitive binary" );
+                  throw json_pegtl::parse_error( "expected definitive binary", m_input );  // NOLINT
                }
                return internal::parse_string_1< utf8_mode::TRUST, tao::binary_view >( m_input );
             }
@@ -112,7 +112,7 @@ namespace tao
             {
                const auto u = internal::parse_unsigned( m_input );
                if( u > 9223372036854775807ull ) {
-                  internal::throw_parse_error( m_input, "positive integer overflow" );
+                  throw json_pegtl::parse_error( "positive integer overflow", m_input );  // NOLINT
                }
                return std::int64_t( u );
             }
@@ -121,7 +121,7 @@ namespace tao
             {
                const auto u = internal::parse_unsigned( m_input );
                if( u > 9223372036854775808ull ) {
-                  internal::throw_parse_error( m_input, "negative integer overflow" );
+                  throw json_pegtl::parse_error( "negative integer overflow", m_input );  // NOLINT
                }
                return std::int64_t( ~u );
             }
@@ -139,7 +139,7 @@ namespace tao
                   case internal::major::NEGATIVE:
                      return number_signed_negative();
                   default:
-                     internal::throw_parse_error( m_input, "expected integer" );
+                     throw json_pegtl::parse_error( "expected integer", m_input );  // NOLINT
                }
                std::abort();
             }
@@ -164,7 +164,7 @@ namespace tao
                   case std::uint8_t( internal::major::OTHER ) + 27:
                      return internal::parse_floating_impl< double >( m_input );
                   default:
-                     internal::throw_parse_error( m_input, "expected floating point number" );
+                     throw json_pegtl::parse_error( "expected floating point number", m_input );  // NOLINT
                }
             }
 
@@ -204,21 +204,21 @@ namespace tao
             void end_array_sized( state_t& p )
             {
                if( *p.size != p.i ) {
-                  internal::throw_parse_error( m_input, "array size mismatch" );
+                  throw json_pegtl::parse_error( "array size mismatch", m_input );  // NOLINT
                }
             }
 
             void end_object_sized( state_t& p )
             {
                if( *p.size != p.i ) {
-                  internal::throw_parse_error( m_input, "object size mismatch" );
+                  throw json_pegtl::parse_error( "object size mismatch", m_input );  // NOLINT
                }
             }
 
             void end_array_indefinitive( state_t& /*unused*/ )
             {
                if( internal::peek_byte_safe( m_input ) != 0xff ) {
-                  internal::throw_parse_error( m_input, "array not at end" );
+                  throw json_pegtl::parse_error( "array not at end", m_input );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
             }
@@ -226,7 +226,7 @@ namespace tao
             void end_object_indefinitive( state_t& /*unused*/ )
             {
                if( internal::peek_byte_safe( m_input ) != 0xff ) {
-                  internal::throw_parse_error( m_input, "object not at end" );
+                  throw json_pegtl::parse_error( "object not at end", m_input );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
             }
@@ -254,28 +254,28 @@ namespace tao
             void element_sized( state_t& p )
             {
                if( p.i++ >= *p.size ) {
-                  internal::throw_parse_error( m_input, "unexpected array end" );
+                  throw json_pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
                }
             }
 
             void member_sized( state_t& p )
             {
                if( p.i++ >= *p.size ) {
-                  internal::throw_parse_error( m_input, "unexpected object end" );
+                  throw json_pegtl::parse_error( "unexpected object end", m_input );  // NOLINT
                }
             }
 
             void element_indefinitive( state_t& /*unused*/ )
             {
                if( internal::peek_byte_safe( m_input ) == 0xff ) {
-                  internal::throw_parse_error( m_input, "unexpected array end" );
+                  throw json_pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
                }
             }
 
             void member_indefinitive( state_t& /*unused*/ )
             {
                if( internal::peek_byte_safe( m_input ) == 0xff ) {
-                  internal::throw_parse_error( m_input, "unexpected object end" );
+                  throw json_pegtl::parse_error( "unexpected object end", m_input );
                }
             }
 
@@ -354,10 +354,10 @@ namespace tao
                return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
             }
 
-            template< typename... Ts >
-            void throw_parse_error( const Ts&... ts )
+            template< typename T >
+            void throw_parse_error( T&& t ) const
             {
-               internal::throw_parse_error( m_input, ts... );
+               throw json_pegtl::parse_error( std::forward< T >( t ), m_input );
             }
 
          private:

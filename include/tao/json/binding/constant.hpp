@@ -5,10 +5,13 @@
 #define TAO_JSON_BINDING_CONSTANT_HPP
 
 #include <cstdint>
+#include <iomanip>
 #include <string>
 
 #include "../base_message_extension.hpp"
 #include "../external/pegtl/internal/pegtl_string.hpp"
+#include "../internal/escape.hpp"
+#include "../internal/format.hpp"
 
 #include "element.hpp"
 #include "member.hpp"
@@ -31,8 +34,9 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename C >
             static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
-               if( v.template as< bool >() != V ) {
-                  throw std::runtime_error( "boolean mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
+               const auto t = v.template as< bool >();
+               if( t != V ) {
+                  throw std::runtime_error( json::internal::format( std::boolalpha, "boolean mismatch, expected ", V, " parsed ", t, json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -47,7 +51,7 @@ namespace tao
             {
                const auto t = parser.boolean();
                if( t != V ) {
-                  parser.throw_parse_error( "boolean mismatch -- expected", V, "parsed", t );
+                  parser.throw_parse_error( json::internal::format( std::boolalpha, "boolean mismatch, expected ", V, " parsed ", t ) );
                }
             }
          };
@@ -64,8 +68,9 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename C >
             static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
-               if( v.template as< std::int64_t >() != V ) {
-                  throw std::runtime_error( "signed mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
+               const auto t = v.template as< std::int64_t >();
+               if( t != V ) {
+                  throw std::runtime_error( json::internal::format( "signed integer mismatch, expected ", V, " parsed ", t, json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -80,7 +85,7 @@ namespace tao
             {
                const auto t = parser.number_signed();
                if( t != V ) {
-                  parser.throw_parse_error( "signed mismatch -- expected", V, "parsed", t );
+                  parser.throw_parse_error( json::internal::format( "signed integer mismatch, expected ", V, " parsed ", t ) );
                }
             }
          };
@@ -97,8 +102,9 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename C >
             static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
-               if( v.template as< std::uint64_t >() != V ) {
-                  throw std::runtime_error( "unsigned mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
+               const auto t = v.template as< std::uint64_t >();
+               if( t != V ) {
+                  throw std::runtime_error( json::internal::format( "unsigned integer mismatch, expected ", V, " parsed ", t, json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -113,7 +119,7 @@ namespace tao
             {
                const auto t = parser.number_unsigned();
                if( t != V ) {
-                  parser.throw_parse_error( "unsigned mismatch -- expected", V, "parsed", t );
+                  parser.throw_parse_error( json::internal::format( "unsigned integer mismatch, expected ", V, " parsed ", t ) );
                }
             }
          };
@@ -138,8 +144,9 @@ namespace tao
             static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                static const char s[] = { Cs..., 0 };
-               if( v.template as< tao::string_view >() != tao::string_view( s, sizeof...( Cs ) ) ) {
-                  throw std::runtime_error( "string mismatch" + json::base_message_extension( v.base() ) );  // NOLINT
+               const auto sv = v.template as< tao::string_view >();
+               if( sv != tao::string_view( s, sizeof...( Cs ) ) ) {
+                  throw std::runtime_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sv ), "\" parsed \"", json::internal::escape( tao::string_view( s, sizeof...( Cs ) ) ), '"', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -156,7 +163,7 @@ namespace tao
                static const char s[] = { Cs..., 0 };
                const auto t = parser.string();
                if( t != s ) {
-                  parser.throw_parse_error( "string mismatch -- expected", s, "parsed", t );
+                  parser.throw_parse_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( s ), "\" parsed \"", json::internal::escape( t ), '"' ) );
                }
             }
          };

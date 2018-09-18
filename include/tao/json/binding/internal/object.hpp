@@ -162,12 +162,12 @@ namespace tao
                            parser.skip_value();
                         }
                         else {
-                           parser.throw_parse_error( "unknown object key ", json::internal::escape( k ) );  // NOLINT
+                           parser.throw_parse_error( json::internal::format( "unknown object key \"", json::internal::escape( k ), '"' ) );  // NOLINT
                         }
                         continue;
                      }
                      if( b.test( i->second.index ) ) {
-                        parser.throw_parse_error( "duplicate object key", json::internal::escape( k ), "for type", typeid( C ) );
+                        parser.throw_parse_error( json::internal::format( "duplicate object key \"", json::internal::escape( k ), "\" for type ", typeid( C ) ) );
                      }
                      i->second.function( parser, x );
                      b.set( i->second.index );

@@ -11,7 +11,7 @@
 #include "../../external/pegtl.hpp"
 #include "../../external/string_view.hpp"
 #include "../../internal/endian.hpp"
-#include "../../internal/throw_parse_error.hpp"
+#include "../../internal/format.hpp"
 #include "../../utf8.hpp"
 
 #include "format.hpp"
@@ -24,19 +24,11 @@ namespace tao
       {
          namespace internal
          {
-            // clang-format off
-            template< typename Input, typename... Ts >
-            [[noreturn]] void throw_parse_error( Input& in, const Ts&... ts )
-            {
-               json::internal::throw_parse_error( in, "msgpack:", ts... );
-            }
-            // clang-format on
-
             template< typename Input >
             void throw_on_empty( Input& in, const std::size_t required = 1 )
             {
                if( in.size( required ) < required ) {
-                  throw_parse_error( in, "unexpected end of input" );
+                  throw json_pegtl::parse_error( "unexpected end of input", in );
                }
             }
 
@@ -95,7 +87,7 @@ namespace tao
                   case format::STR32:
                      return parse_container< U, tao::string_view >( in, parse_number< std::size_t, std::uint32_t >( in ) );
                   default:
-                     throw_parse_error( in, "unexpected key type" );
+                     throw json_pegtl::parse_error( "unexpected key type", in );
                }
             }
 
@@ -149,7 +141,7 @@ namespace tao
                         in.bump_in_this_line();
                         return true;
                      case format::UNUSED:
-                        throw_parse_error( in, "unused first byte 0xc1" );
+                        throw json_pegtl::parse_error( "unused first byte 0xc1", in );
                      case format::BOOL_TRUE:
                         consumer.boolean( true );
                         in.bump_in_this_line();

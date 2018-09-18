@@ -8,9 +8,9 @@
 #include "external/pegtl/contrib/integer.hpp"
 #include "external/pegtl/contrib/json.hpp"
 
+#include "internal/format.hpp"
 #include "internal/grammar.hpp"
 #include "internal/string_state.hpp"
-#include "internal/throw_parse_error.hpp"
 #include "internal/unescape_action.hpp"
 
 namespace tao
@@ -231,10 +231,10 @@ namespace tao
             return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
          }
 
-         template< typename... Ts >
-         void throw_parse_error( const Ts&... ts )
+         template< typename T >
+         void throw_parse_error( T&& t ) const
          {
-            internal::throw_parse_error( m_input, ts... );
+            throw json_pegtl::parse_error( std::forward< T >( t ), m_input );
          }
 
       private:
