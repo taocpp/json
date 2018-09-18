@@ -564,6 +564,23 @@ namespace tao
             return internal::get_by_enum< E >::get( m_union );
          }
 
+      private:
+         void throw_duplicate_key_exception( const tao::string_view k ) const
+         {
+            throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( k ), '"', json::base_message_extension( base() ) ) );  // NOLINT
+         }
+
+         void throw_index_out_of_bound_exception( const std::size_t i ) const
+         {
+            throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::base_message_extension( base() ) ) );
+         }
+
+         void throw_key_not_found_exception( const tao::string_view k ) const
+         {
+            throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::base_message_extension( base() ) ) );
+         }
+
+      public:
          void unsafe_assign_null() noexcept
          {
             m_type = json::type::NULL_;
@@ -765,7 +782,7 @@ namespace tao
             for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if( !r.second ) {
-                  throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( r.first->first ), '"', json::base_message_extension( base() ) ) );  // NOLINT
+                  throw_duplicate_key_exception( r.first->first );
                }
             }
          }
@@ -776,7 +793,7 @@ namespace tao
             for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if( !r.second ) {
-                  throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( r.first->first ), '"', json::base_message_extension( base() ) ) );  // NOLINT
+                  throw_duplicate_key_exception( r.first->first );
                }
             }
          }
@@ -1018,7 +1035,7 @@ namespace tao
             for( auto& e : l ) {
                const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
                if( !r.second ) {
-                  throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( r.first->first ), '"', json::base_message_extension( base() ) ) );  // NOLINT
+                  throw_duplicate_key_exception( r.first->first );
                }
             }
          }
@@ -1029,7 +1046,7 @@ namespace tao
             for( const auto& e : l ) {
                const auto r = unsafe_emplace( e.key, e.value );
                if( !r.second ) {
-                  throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( r.first->first ), '"', json::base_message_extension( base() ) ) );  // NOLINT
+                  throw_duplicate_key_exception( r.first->first );
                }
             }
          }
@@ -1116,7 +1133,7 @@ namespace tao
             validate_json_type( json::type::ARRAY );
             auto& a = m_union.a;
             if( index >= a.size() ) {
-               throw std::out_of_range( internal::format( "JSON array index '", index, "' out of bound '", a.size(), '\'', json::base_message_extension( base() ) ) );
+               throw_index_out_of_bound_exception( index );
             }
             return a[ index ];
          }
@@ -1126,7 +1143,7 @@ namespace tao
             validate_json_type( json::type::ARRAY );
             const auto& a = m_union.a;
             if( index >= a.size() ) {
-               throw std::out_of_range( internal::format( "JSON array index '", index, "' out of bound '", a.size(), '\'', json::base_message_extension( base() ) ) );
+               throw_index_out_of_bound_exception( index );
             }
             return a[ index ];
          }
@@ -1136,7 +1153,7 @@ namespace tao
             validate_json_type( json::type::OBJECT );
             const auto it = m_union.o.find( key );
             if( it == m_union.o.end() ) {
-               throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( key ), "\" not found", json::base_message_extension( base() ) ) );
+               throw_key_not_found_exception( key );
             }
             return it->second;
          }
@@ -1146,7 +1163,7 @@ namespace tao
             validate_json_type( json::type::OBJECT );
             const auto it = m_union.o.find( key );
             if( it == m_union.o.end() ) {
-               throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( key ), "\" not found", json::base_message_extension( base() ) ) );
+               throw_key_not_found_exception( key );
             }
             return it->second;
          }
@@ -1283,7 +1300,7 @@ namespace tao
             validate_json_type( json::type::ARRAY );
             auto& a = m_union.a;
             if( index >= a.size() ) {
-               throw std::out_of_range( internal::format( "JSON array index '", index, "' out of bound ", a.size(), json::base_message_extension( base() ) ) );
+               throw_index_out_of_bound_exception( index );
             }
             a.erase( a.begin() + index );
          }
@@ -1292,7 +1309,7 @@ namespace tao
          {
             validate_json_type( json::type::OBJECT );
             if( m_union.o.erase( key ) == 0 ) {
-               throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( key ), "\" not found", json::base_message_extension( base() ) ) );
+               throw_key_not_found_exception( key );
             }
          }
 
