@@ -181,13 +181,13 @@ namespace tao
                         consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int32_t >( in ) );
                         break;
                      case 'L':
-                        consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int64_t >( in ) );
+                        consumer.number( json::internal::read_be_number_safe< std::int64_t >( in ) );
                         break;
                      case 'd':
                         consumer.number( json::internal::read_be_number_safe< double, float >( in ) );
                         break;
                      case 'D':
-                        consumer.number( json::internal::read_be_number_safe< double, double >( in ) );
+                        consumer.number( json::internal::read_be_number_safe< double >( in ) );
                         break;
                      case 'H':
                         match_high_precision( in, consumer );

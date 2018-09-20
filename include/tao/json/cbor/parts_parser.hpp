@@ -160,9 +160,9 @@ namespace tao
                   case std::uint8_t( internal::major::OTHER ) + 25:
                      return internal::parse_floating_half_impl( m_input );
                   case std::uint8_t( internal::major::OTHER ) + 26:
-                     return internal::parse_floating_impl< float >( m_input );
+                     return json::internal::read_be_number_safe< float >( m_input + 1 );
                   case std::uint8_t( internal::major::OTHER ) + 27:
-                     return internal::parse_floating_impl< double >( m_input );
+                     return json::internal::read_be_number_safe< double >( m_input + 1 );
                   default:
                      throw json_pegtl::parse_error( "expected floating point number", m_input );  // NOLINT
                }

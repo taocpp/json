@@ -57,15 +57,6 @@ namespace tao
 
             // Assume in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
-            template< typename Floating, typename Input >
-            double parse_floating_impl( Input& in )
-            {
-               json::internal::throw_on_empty( in, 1 + sizeof( Floating ) );
-               const Floating result = json::internal::be_to_h< Floating >( in.current() + 1 );
-               in.bump_in_this_line( 1 + sizeof( Floating ) );
-               return result;
-            }
-
             template< typename Input >
             double parse_floating_half_impl( Input& in )
             {
@@ -110,7 +101,7 @@ namespace tao
                   case 26:
                      return json::internal::read_be_number_safe< std::uint64_t, std::uint32_t >( in, 1 );
                   case 27:
-                     return json::internal::read_be_number_safe< std::uint64_t, std::uint64_t >( in, 1 );
+                     return json::internal::read_be_number_safe< std::uint64_t >( in, 1 );
                   case 28:
                   case 29:
                   case 30:
@@ -413,12 +404,11 @@ namespace tao
                         consumer.number( parse_floating_half_impl( in ) );
                         return true;
                      case 26:
-                        consumer.number( parse_floating_impl< float >( in ) );
+                        consumer.number( json::internal::read_be_number_safe< float >( in, 1 ) );
                         return true;
                      case 27:
-                        consumer.number( parse_floating_impl< double >( in ) );
+                        consumer.number( json::internal::read_be_number_safe< double >( in, 1 ) );
                         return true;
-                     case 24:
                      default:
                         throw json_pegtl::parse_error( json::internal::format( "unsupported minor ", m, " for major 7" ), in );
                   }

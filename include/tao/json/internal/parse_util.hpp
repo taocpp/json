@@ -55,7 +55,7 @@ namespace tao
             return r;
          }
 
-         template< typename Result, typename Number, typename Input >
+         template< typename Result, typename Number = Result, typename Input >
          Result read_be_number_safe( Input& in, const std::size_t extra = 0 )
          {
             throw_on_empty( in, extra + sizeof( Number ) );

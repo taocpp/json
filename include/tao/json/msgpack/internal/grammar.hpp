@@ -148,7 +148,7 @@ namespace tao
                         consumer.number( json::internal::read_be_number_safe< double, float >( in, 1 ) );
                         return true;
                      case format::FLOAT64:
-                        consumer.number( json::internal::read_be_number_safe< double, double >( in, 1 ) );
+                        consumer.number( json::internal::read_be_number_safe< double >( in, 1 ) );
                         return true;
                      case format::UINT8:
                         consumer.number( json::internal::read_be_number_safe< std::uint64_t, std::uint8_t >( in, 1 ) );
@@ -160,7 +160,7 @@ namespace tao
                         consumer.number( json::internal::read_be_number_safe< std::uint64_t, std::uint32_t >( in, 1 ) );
                         return true;
                      case format::UINT64:
-                        consumer.number( json::internal::read_be_number_safe< std::uint64_t, std::uint64_t >( in, 1 ) );
+                        consumer.number( json::internal::read_be_number_safe< std::uint64_t >( in, 1 ) );
                         return true;
                      case format::INT8:
                         consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int8_t >( in, 1 ) );
@@ -172,7 +172,7 @@ namespace tao
                         consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int32_t >( in, 1 ) );
                         return true;
                      case format::INT64:
-                        consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int64_t >( in, 1 ) );
+                        consumer.number( json::internal::read_be_number_safe< std::int64_t >( in, 1 ) );
                         return true;
                      case format::FIXEXT1:
                         discard( in, 3 );
