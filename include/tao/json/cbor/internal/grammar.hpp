@@ -19,6 +19,7 @@
 #include "../../forward.hpp"
 #include "../../internal/endian.hpp"
 #include "../../internal/format.hpp"
+#include "../../internal/parse_util.hpp"
 #include "../../utf8.hpp"
 
 namespace tao
@@ -30,17 +31,9 @@ namespace tao
          namespace internal
          {
             template< typename Input >
-            void throw_on_empty( Input& in, const std::size_t size = 1 )
-            {
-               if( in.size( size ) < size ) {
-                  throw json_pegtl::parse_error( "unexpected end of input", in );
-               }
-            }
-
-            template< typename Input >
             void consume_or_throw( Input& in, const std::size_t size = 1 )
             {
-               throw_on_empty( in, size );
+               json::internal::throw_on_empty( in, size );
                in.bump_in_this_line( size );
             }
 
@@ -57,16 +50,9 @@ namespace tao
             }
 
             template< typename Input >
-            std::uint8_t peek_byte_safe( Input& in )
-            {
-               throw_on_empty( in );
-               return in.peek_byte();
-            }
-
-            template< typename Input >
             major peek_major_safe( Input& in )
             {
-               return static_cast< major >( peek_byte_safe( in ) & major_mask );
+               return static_cast< major >( json::internal::peek_byte_safe( in ) & major_mask );
             }
 
             // Assume in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
@@ -74,7 +60,7 @@ namespace tao
             template< typename Floating, typename Input >
             double parse_floating_impl( Input& in )
             {
-               throw_on_empty( in, 1 + sizeof( Floating ) );
+               json::internal::throw_on_empty( in, 1 + sizeof( Floating ) );
                const Floating result = json::internal::be_to_h< Floating >( in.current() + 1 );
                in.bump_in_this_line( 1 + sizeof( Floating ) );
                return result;
@@ -83,7 +69,7 @@ namespace tao
             template< typename Input >
             double parse_floating_half_impl( Input& in )
             {
-               throw_on_empty( in, 3 );
+               json::internal::throw_on_empty( in, 3 );
 
                const int half = ( in.peek_byte( 1 ) << 8 ) + in.peek_byte( 2 );
                const int exp = ( half >> 10 ) & 0x1f;
@@ -111,17 +97,6 @@ namespace tao
                return result;
             }
 
-            template< typename Unsigned, typename Input >
-            std::uint64_t parse_unsigned_impl( Input& in )
-            {
-               if( 1 + in.size( sizeof( Unsigned ) ) >= 1 + sizeof( Unsigned ) ) {
-                  const Unsigned result = json::internal::be_to_h< Unsigned >( in.current() + 1 );
-                  in.bump_in_this_line( 1 + sizeof( Unsigned ) );
-                  return result;
-               }
-               throw json_pegtl::parse_error( "unexpected end of input", in );
-            }
-
             template< typename Input >
             std::uint64_t parse_unsigned( Input& in )
             {
@@ -129,13 +104,13 @@ namespace tao
                   default:
                      return parse_embedded_impl( in );
                   case 24:
-                     return parse_unsigned_impl< std::uint8_t >( in );
+                     return json::internal::read_be_number_safe< std::uint64_t, std::uint8_t >( in, 1 );
                   case 25:
-                     return parse_unsigned_impl< std::uint16_t >( in );
+                     return json::internal::read_be_number_safe< std::uint64_t, std::uint16_t >( in, 1 );
                   case 26:
-                     return parse_unsigned_impl< std::uint32_t >( in );
+                     return json::internal::read_be_number_safe< std::uint64_t, std::uint32_t >( in, 1 );
                   case 27:
-                     return parse_unsigned_impl< std::uint64_t >( in );
+                     return json::internal::read_be_number_safe< std::uint64_t, std::uint64_t >( in, 1 );
                   case 28:
                   case 29:
                   case 30:
@@ -160,7 +135,7 @@ namespace tao
             Result parse_string_1( Input& in )
             {
                const auto size = parse_size( in );
-               throw_on_empty( in, size );
+               json::internal::throw_on_empty( in, size );
                using value_t = typename Result::value_type;
                const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                Result result( pointer, size );
@@ -173,12 +148,12 @@ namespace tao
             {
                Result result;
                in.bump_in_this_line();
-               while( peek_byte_safe( in ) != 0xff ) {
+               while( json::internal::peek_byte_safe( in ) != 0xff ) {
                   if( peek_major( in ) != m ) {
                      throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
                   }
                   const auto size = parse_size( in );
-                  throw_on_empty( in, size );
+                  json::internal::throw_on_empty( in, size );
                   using value_t = typename Result::value_type;
                   const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
                   result.insert( result.end(), pointer, pointer + size );
@@ -284,7 +259,7 @@ namespace tao
                   const auto size = parse_size( in );
                   consumer.begin_array( size );
                   for( std::size_t i = 0; i < size; ++i ) {
-                     throw_on_empty( in );
+                     json::internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.element();
                   }
@@ -296,7 +271,7 @@ namespace tao
                {
                   in.bump_in_this_line();
                   consumer.begin_array();
-                  while( peek_byte_safe( in ) != 0xff ) {
+                  while( json::internal::peek_byte_safe( in ) != 0xff ) {
                      match_impl( in, consumer );
                      consumer.element();
                   }
@@ -325,14 +300,14 @@ namespace tao
                      if( peek_major_safe( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
-                     throw_on_empty( in );
+                     json::internal::throw_on_empty( in );
                      if( peek_minor( in ) != minor_mask ) {
                         consumer.key( parse_string_1< V, tao::string_view >( in ) );
                      }
                      else {
                         consumer.key( parse_string_n< V, std::string >( in, major::STRING ) );
                      }
-                     throw_on_empty( in );
+                     json::internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.member();
                   }
@@ -344,7 +319,7 @@ namespace tao
                {
                   in.bump_in_this_line();
                   consumer.begin_object();
-                  while( peek_byte_safe( in ) != 0xff ) {
+                  while( json::internal::peek_byte_safe( in ) != 0xff ) {
                      if( peek_major( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
@@ -354,7 +329,7 @@ namespace tao
                      else {
                         consumer.key( parse_string_n< V, std::string >( in, major::STRING ) );
                      }
-                     throw_on_empty( in );
+                     json::internal::throw_on_empty( in );
                      match_impl( in, consumer );
                      consumer.member();
                   }

@@ -29,7 +29,7 @@ namespace tao
 
             bool null()
             {
-               if( internal::peek_byte_safe( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {
+               if( json::internal::peek_byte_safe( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {
                   m_input.bump_in_this_line( 1 );
                   return true;
                }
@@ -42,7 +42,7 @@ namespace tao
 #endif
             bool boolean()
             {
-               const auto b = internal::peek_byte_safe( m_input );
+               const auto b = json::internal::peek_byte_safe( m_input );
                switch( b ) {
                   case std::uint8_t( internal::major::OTHER ) + 20:
                   case std::uint8_t( internal::major::OTHER ) + 21:
@@ -92,7 +92,7 @@ namespace tao
 
             tao::string_view string_view()
             {
-               const auto b = internal::peek_byte_safe( m_input );
+               const auto b = json::internal::peek_byte_safe( m_input );
                if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected definitive string", m_input );  // NOLINT
                }
@@ -101,7 +101,7 @@ namespace tao
 
             tao::binary_view binary_view()
             {
-               const auto b = internal::peek_byte_safe( m_input );
+               const auto b = json::internal::peek_byte_safe( m_input );
                if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected definitive binary", m_input );  // NOLINT
                }
@@ -155,7 +155,7 @@ namespace tao
 
             double number_double()
             {
-               const auto b = internal::peek_byte_safe( m_input );
+               const auto b = json::internal::peek_byte_safe( m_input );
                switch( b ) {
                   case std::uint8_t( internal::major::OTHER ) + 25:
                      return internal::parse_floating_half_impl( m_input );
@@ -217,7 +217,7 @@ namespace tao
 
             void end_array_indefinitive( state_t& /*unused*/ )
             {
-               if( internal::peek_byte_safe( m_input ) != 0xff ) {
+               if( json::internal::peek_byte_safe( m_input ) != 0xff ) {
                   throw json_pegtl::parse_error( "array not at end", m_input );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
@@ -225,7 +225,7 @@ namespace tao
 
             void end_object_indefinitive( state_t& /*unused*/ )
             {
-               if( internal::peek_byte_safe( m_input ) != 0xff ) {
+               if( json::internal::peek_byte_safe( m_input ) != 0xff ) {
                   throw json_pegtl::parse_error( "object not at end", m_input );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
@@ -267,14 +267,14 @@ namespace tao
 
             void element_indefinitive( state_t& /*unused*/ )
             {
-               if( internal::peek_byte_safe( m_input ) == 0xff ) {
+               if( json::internal::peek_byte_safe( m_input ) == 0xff ) {
                   throw json_pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
                }
             }
 
             void member_indefinitive( state_t& /*unused*/ )
             {
-               if( internal::peek_byte_safe( m_input ) == 0xff ) {
+               if( json::internal::peek_byte_safe( m_input ) == 0xff ) {
                   throw json_pegtl::parse_error( "unexpected object end", m_input );
                }
             }
@@ -311,7 +311,7 @@ namespace tao
 
             bool element_or_end_array_indefinitive( state_t& /*unused*/ )
             {
-               if( internal::peek_byte_safe( m_input ) == 0xff ) {
+               if( json::internal::peek_byte_safe( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
                   return false;
                }
@@ -320,7 +320,7 @@ namespace tao
 
             bool member_or_end_object_indefinitive( state_t& /*unused*/ )
             {
-               if( internal::peek_byte_safe( m_input ) == 0xff ) {
+               if( json::internal::peek_byte_safe( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
                   return false;
                }
