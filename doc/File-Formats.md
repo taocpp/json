@@ -1,10 +1,10 @@
 # File Formats
 
-* [JSON](#JSON)
-* [JAXN](#JAXN)
-* [CBOR](#CBOR)
-* [MsgPack](#MsgPack)
-* [UBJSON](#UBJSON)
+* [JSON](#json)
+* [JAXN](#jaxn)
+* [CBOR](#cbor)
+* [MsgPack](#msgpack)
+* [UBJSON](#ubjson)
 
 ## JSON
 
