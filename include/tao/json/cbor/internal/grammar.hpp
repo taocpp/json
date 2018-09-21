@@ -38,19 +38,19 @@ namespace tao
             }
 
             template< typename Input >
-            major peek_major( Input& in )
+            major peek_major_unsafe( Input& in )
             {
                return static_cast< major >( in.peek_byte() & major_mask );
             }
 
             template< typename Input >
-            std::uint8_t peek_minor( Input& in )
+            std::uint8_t peek_minor_unsafe( Input& in )
             {
                return in.peek_byte() & minor_mask;
             }
 
             template< typename Input >
-            major peek_major_safe( Input& in )
+            major peek_major( Input& in )
             {
                return static_cast< major >( json::internal::peek_byte_safe( in ) & major_mask );
             }
@@ -83,7 +83,7 @@ namespace tao
             template< typename Input >
             std::uint64_t parse_embedded_impl( Input& in )
             {
-               const auto result = peek_minor( in ) & minor_mask;
+               const auto result = peek_minor_unsafe( in ) & minor_mask;
                in.bump_in_this_line();
                return result;
             }
@@ -91,7 +91,7 @@ namespace tao
             template< typename Input >
             std::uint64_t parse_unsigned( Input& in )
             {
-               switch( const auto m = peek_minor( in ) ) {
+               switch( const auto m = peek_minor_unsafe( in ) ) {
                   default:
                      return parse_embedded_impl( in );
                   case 24:
@@ -140,7 +140,7 @@ namespace tao
                Result result;
                in.bump_in_this_line();
                while( json::internal::peek_byte_safe( in ) != 0xff ) {
-                  if( peek_major( in ) != m ) {
+                  if( peek_major_unsafe( in ) != m ) {
                      throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
                   }
                   const auto size = parse_size( in );
@@ -174,7 +174,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_impl( Input& in, Consumer& consumer )
                {
-                  switch( peek_major( in ) ) {
+                  switch( peek_major_unsafe( in ) ) {
                      case major::UNSIGNED:
                         return match_unsigned( in, consumer );
                      case major::NEGATIVE:
@@ -221,7 +221,7 @@ namespace tao
                {
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
-                  if( peek_minor( in ) != minor_mask ) {
+                  if( peek_minor_unsafe( in ) != minor_mask ) {
                      consumer.string( parse_string_1< V, tao::string_view >( in ) );
                   }
                   else {
@@ -235,7 +235,7 @@ namespace tao
                {
                   // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
-                  if( peek_minor( in ) != minor_mask ) {
+                  if( peek_minor_unsafe( in ) != minor_mask ) {
                      consumer.binary( parse_string_1< utf8_mode::TRUST, tao::binary_view >( in ) );
                   }
                   else {
@@ -273,7 +273,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_array( Input& in, Consumer& consumer )
                {
-                  if( peek_minor( in ) != minor_mask ) {
+                  if( peek_minor_unsafe( in ) != minor_mask ) {
                      match_array_1( in, consumer );
                   }
                   else {
@@ -288,11 +288,11 @@ namespace tao
                   const auto size = parse_size( in );
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
-                     if( peek_major_safe( in ) != major::STRING ) {
+                     if( peek_major( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
                      json::internal::throw_on_empty( in );
-                     if( peek_minor( in ) != minor_mask ) {
+                     if( peek_minor_unsafe( in ) != minor_mask ) {
                         consumer.key( parse_string_1< V, tao::string_view >( in ) );
                      }
                      else {
@@ -311,10 +311,10 @@ namespace tao
                   in.bump_in_this_line();
                   consumer.begin_object();
                   while( json::internal::peek_byte_safe( in ) != 0xff ) {
-                     if( peek_major( in ) != major::STRING ) {
+                     if( peek_major_unsafe( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
-                     if( peek_minor( in ) != minor_mask ) {
+                     if( peek_minor_unsafe( in ) != minor_mask ) {
                         consumer.key( parse_string_1< V, tao::string_view >( in ) );
                      }
                      else {
@@ -331,7 +331,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_object( Input& in, Consumer& consumer )
                {
-                  if( peek_minor( in ) != minor_mask ) {
+                  if( peek_minor_unsafe( in ) != minor_mask ) {
                      match_object_1( in, consumer );
                   }
                   else {
@@ -353,7 +353,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_tag( Input& in, Consumer& /*unused*/ )
                {
-                  switch( const auto m = peek_minor( in ) ) {
+                  switch( const auto m = peek_minor_unsafe( in ) ) {
                      case 0:
                         in.bump_in_this_line();
                         return true;  // TODO: match_date_time_string( in, consumer );
@@ -387,7 +387,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static bool match_other( Input& in, Consumer& consumer )
                {
-                  switch( const auto m = peek_minor( in ) ) {
+                  switch( const auto m = peek_minor_unsafe( in ) ) {
                      case 20:
                         consumer.boolean( false );
                         in.bump_in_this_line();

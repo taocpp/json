@@ -59,7 +59,7 @@ namespace tao
 
             void check_major( const internal::major m, const char* e )
             {
-               const auto b = internal::peek_major_safe( m_input );
+               const auto b = internal::peek_major( m_input );
                if( b != m ) {
                   throw json_pegtl::parse_error( e, m_input );  // NOLINT
                }
@@ -69,7 +69,7 @@ namespace tao
             T cbor_string( const internal::major m, const char* e )
             {
                check_major( m, e );
-               if( internal::peek_minor( m_input ) != internal::minor_mask ) {
+               if( internal::peek_minor_unsafe( m_input ) != internal::minor_mask ) {
                   return internal::parse_string_1< U, T >( m_input );
                }
                return internal::parse_string_n< U, T >( m_input, m );
@@ -132,7 +132,7 @@ namespace tao
 #endif
             std::int64_t number_signed()
             {
-               const auto b = internal::peek_major_safe( m_input );
+               const auto b = internal::peek_major( m_input );
                switch( b ) {
                   case internal::major::UNSIGNED:
                      return number_signed_unsigned();
@@ -184,7 +184,7 @@ namespace tao
             state_t begin_container( const internal::major m, const char* e )
             {
                check_major( m, e );
-               if( internal::peek_minor( m_input ) == 31 ) {
+               if( internal::peek_minor_unsafe( m_input ) == 31 ) {
                   m_input.bump_in_this_line( 1 );
                   return state_t();
                }

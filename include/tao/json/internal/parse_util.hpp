@@ -39,7 +39,7 @@ namespace tao
          }
 
          template< typename Input >
-         char read_char_safe( Input& in )
+         char read_char( Input& in )
          {
             throw_on_empty( in );
             const auto r = in.peek_char();

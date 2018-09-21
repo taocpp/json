@@ -27,12 +27,6 @@ namespace tao
             template< typename Input >
             format peek_format( Input& in )
             {
-               return static_cast< format >( in.peek_byte() );
-            }
-
-            template< typename Input >
-            format peek_format_safe( Input& in )
-            {
                return static_cast< format >( json::internal::peek_byte_safe( in ) );
             }
 

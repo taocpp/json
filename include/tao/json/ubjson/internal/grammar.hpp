@@ -90,7 +90,7 @@ namespace tao
             template< typename Input >
             std::int64_t parse_size_impl( Input& in )
             {
-               switch( const auto c = json::internal::read_char_safe( in ) ) {
+               switch( const auto c = json::internal::read_char( in ) ) {
                   case 'i':
                      return json::internal::read_be_number_safe< std::int64_t, std::int8_t >( in );
                   case 'U':
@@ -100,7 +100,7 @@ namespace tao
                   case 'l':
                      return json::internal::read_be_number_safe< std::int64_t, std::int32_t >( in );
                   case 'L':
-                     return json::internal::read_be_number_safe< std::int64_t, std::int64_t >( in );
+                     return json::internal::read_be_number_safe< std::int64_t >( in );
                   default:
                      throw json_pegtl::parse_error( "unknown ubjson size type " + std::to_string( unsigned( c ) ), in );
                }
@@ -267,8 +267,8 @@ namespace tao
                template< typename Input, typename Consumer >
                static void match_typed_array( Input& in, Consumer& consumer )
                {
-                  const auto c = json::internal::read_char_safe( in );
-                  if( json::internal::read_char_safe( in ) != '#' ) {
+                  const auto c = json::internal::read_char( in );
+                  if( json::internal::read_char( in ) != '#' ) {
                      throw json_pegtl::parse_error( "ubjson array type not followed by size", in );
                   }
                   if( c == 'U' ) {
@@ -338,8 +338,8 @@ namespace tao
                template< typename Input, typename Consumer >
                static void match_typed_object( Input& in, Consumer& consumer )
                {
-                  const auto c = json::internal::read_char_safe( in );
-                  if( json::internal::read_char_safe( in ) != '#' ) {
+                  const auto c = json::internal::read_char( in );
+                  if( json::internal::read_char( in ) != '#' ) {
                      throw json_pegtl::parse_error( "ubjson object type not followed by size", in );
                   }
                   const auto size = parse_size< L >( in );
