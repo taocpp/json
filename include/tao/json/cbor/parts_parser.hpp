@@ -108,6 +108,11 @@ namespace tao
                return internal::read_string_1< utf8_mode::TRUST, tao::binary_view >( m_input );
             }
 
+            tao::string_view key_view()
+            {
+               return string_view();
+            }
+
             std::int64_t number_signed_unsigned()
             {
                const auto u = internal::read_unsigned_unsafe( m_input );

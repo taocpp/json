@@ -6,7 +6,7 @@
 * [Reduced Interface](#reduced-interface)
 * [Included Producers](#included-producers)
 * [Convenience Functions](#convenience-functions)
-* [Included Consumers[#included-consumers)
+* [Included Consumers](#included-consumers)
 * [Convenience Functions](#convenience-functions-1)
 * [Included Transformers](#included-transformers)
 
