@@ -25,7 +25,7 @@ namespace tao
          namespace internal
          {
             template< utf8_mode U, typename Input >
-            tao::string_view read_key( Input& in )
+            tao::string_view read_string( Input& in )
             {
                const auto b = json::internal::peek_byte( in );
                if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
@@ -182,7 +182,7 @@ namespace tao
                         consumer.string( json::internal::read_string< V, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
                         return;
                      case format::ARRAY16:
-                        parse_array( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1) );
+                        parse_array( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );
                         return;
                      case format::ARRAY32:
                         parse_array( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
@@ -224,7 +224,7 @@ namespace tao
                {
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
-                     consumer.key( read_key< V >( in ) );
+                     consumer.key( read_string< V >( in ) );
                      json::internal::throw_on_empty( in );
                      parse_unsafe( in, consumer );
                      consumer.member();

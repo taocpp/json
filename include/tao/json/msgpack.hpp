@@ -8,6 +8,7 @@
 
 #include "msgpack/from_string.hpp"
 #include "msgpack/parse_file.hpp"
+#include "msgpack/parts_parser.hpp"
 #include "msgpack/to_stream.hpp"
 #include "msgpack/to_string.hpp"
 
