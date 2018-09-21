@@ -52,13 +52,13 @@ namespace tao
             template< typename Input >
             major peek_major( Input& in )
             {
-               return static_cast< major >( json::internal::peek_byte_safe( in ) & major_mask );
+               return static_cast< major >( json::internal::peek_byte( in ) & major_mask );
             }
 
             // Assume in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
 
             template< typename Input >
-            double parse_floating_half_impl( Input& in )
+            double read_fp16( Input& in )
             {
                json::internal::throw_on_empty( in, 3 );
 
@@ -81,7 +81,7 @@ namespace tao
             }
 
             template< typename Input >
-            std::uint64_t parse_embedded_impl( Input& in )
+            std::uint64_t read_embedded_unsafe( Input& in )
             {
                const auto result = peek_minor_unsafe( in ) & minor_mask;
                in.bump_in_this_line();
@@ -89,19 +89,19 @@ namespace tao
             }
 
             template< typename Input >
-            std::uint64_t parse_unsigned( Input& in )
+            std::uint64_t read_unsigned_unsafe( Input& in )
             {
                switch( const auto m = peek_minor_unsafe( in ) ) {
                   default:
-                     return parse_embedded_impl( in );
+                     return read_embedded_unsafe( in );
                   case 24:
-                     return json::internal::read_be_number_safe< std::uint64_t, std::uint8_t >( in, 1 );
+                     return json::internal::read_big_endian_number< std::uint64_t, std::uint8_t >( in, 1 );
                   case 25:
-                     return json::internal::read_be_number_safe< std::uint64_t, std::uint16_t >( in, 1 );
+                     return json::internal::read_big_endian_number< std::uint64_t, std::uint16_t >( in, 1 );
                   case 26:
-                     return json::internal::read_be_number_safe< std::uint64_t, std::uint32_t >( in, 1 );
+                     return json::internal::read_big_endian_number< std::uint64_t, std::uint32_t >( in, 1 );
                   case 27:
-                     return json::internal::read_be_number_safe< std::uint64_t >( in, 1 );
+                     return json::internal::read_big_endian_number< std::uint64_t >( in, 1 );
                   case 28:
                   case 29:
                   case 30:
@@ -111,21 +111,29 @@ namespace tao
             }
 
             template< typename Input >
-            std::size_t parse_size( Input& in )
+            std::int64_t read_negative_unsafe( Input& in )
             {
-               const auto s = parse_unsigned( in );
+               const auto u = read_unsigned_unsafe( in );
+               if( u > 9223372036854775808ull ) {
+                  throw json_pegtl::parse_error( "negative integer overflow", in );
+               }
+               return std::int64_t( ~u );
+            }
+
+            template< typename Input >
+            std::size_t read_size_unsafe( Input& in )
+            {
+               const auto s = read_unsigned_unsafe( in );
                if( s > static_cast< std::uint64_t >( ( std::numeric_limits< std::size_t >::max )() ) ) {
                   throw json_pegtl::parse_error( "cbor size exceeds size_t " + std::to_string( s ), in );
                }
                return static_cast< std::size_t >( s );
             }
 
-            // "String" is text string or byte string in RFC 7049 terminology.
-
             template< utf8_mode U, typename Result, typename Input >
-            Result parse_string_1( Input& in )
+            Result read_string_1( Input& in )
             {
-               const auto size = parse_size( in );
+               const auto size = read_size_unsafe( in );
                json::internal::throw_on_empty( in, size );
                using value_t = typename Result::value_type;
                const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
@@ -135,15 +143,15 @@ namespace tao
             }
 
             template< utf8_mode U, typename Result, typename Input >
-            Result parse_string_n( Input& in, const major m )
+            Result read_string_n( Input& in, const major m )
             {
                Result result;
                in.bump_in_this_line();
-               while( json::internal::peek_byte_safe( in ) != 0xff ) {
+               while( json::internal::peek_byte( in ) != 0xff ) {
                   if( peek_major_unsafe( in ) != m ) {
                      throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
                   }
-                  const auto size = parse_size( in );
+                  const auto size = read_size_unsafe( in );
                   json::internal::throw_on_empty( in, size );
                   using value_t = typename Result::value_type;
                   const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
@@ -167,103 +175,101 @@ namespace tao
                          typename Consumer >
                static bool match( Input& in, Consumer& consumer )
                {
-                  // This rule never returns false unless the input is empty.
-                  return ( !in.empty() ) && match_impl( in, consumer );
+                  if( !in.empty() ) {
+                     parse_unsafe( in, consumer );
+                     return true;
+                  }
+                  return false;
                }
 
+            private:
                template< typename Input, typename Consumer >
-               static bool match_impl( Input& in, Consumer& consumer )
+               static void parse_unsafe( Input& in, Consumer& consumer )
                {
                   switch( peek_major_unsafe( in ) ) {
                      case major::UNSIGNED:
-                        return match_unsigned( in, consumer );
+                        consumer.number( read_unsigned_unsafe( in ) );
+                        return;
                      case major::NEGATIVE:
-                        return match_negative( in, consumer );
+                        consumer.number( read_negative_unsafe( in ) );
+                        return;
                      case major::BINARY:
-                        return match_binary( in, consumer );
+                        parse_binary_unsafe( in, consumer );
+                        return;
                      case major::STRING:
-                        return match_string( in, consumer );
+                        parse_string_unsafe( in, consumer );
+                        return;
                      case major::ARRAY:
-                        return match_array( in, consumer );
+                        parse_array_unsafe( in, consumer );
+                        return;
                      case major::OBJECT:
-                        return match_object( in, consumer );
+                        parse_object_unsafe( in, consumer );
+                        return;
                      case major::TAG:
-                        return match_tag( in, consumer );
+                        parse_tag_unsafe( in, consumer );
+                        return;
                      case major::OTHER:
-                        return match_other( in, consumer );
+                        parse_other_unsafe( in, consumer );
+                        return;
                   }
                   // LCOV_EXCL_START
                   assert( false );
-                  return false;
                   // LCOV_EXCL_STOP
                }
 
                template< typename Input, typename Consumer >
-               static bool match_unsigned( Input& in, Consumer& consumer )
+               static void parse_string_unsafe( Input& in, Consumer& consumer )
                {
-                  consumer.number( parse_unsigned( in ) );
-                  return true;
-               }
-
-               template< typename Input, typename Consumer >
-               static bool match_negative( Input& in, Consumer& consumer )
-               {
-                  const auto u = parse_unsigned( in );
-                  if( u > 9223372036854775808ull ) {
-                     throw json_pegtl::parse_error( "negative integer overflow", in );
-                  }
-                  consumer.number( std::int64_t( ~u ) );
-                  return true;
-               }
-
-               template< typename Input, typename Consumer >
-               static bool match_string( Input& in, Consumer& consumer )
-               {
-                  // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
-
                   if( peek_minor_unsafe( in ) != minor_mask ) {
-                     consumer.string( parse_string_1< V, tao::string_view >( in ) );
+                     consumer.string( read_string_1< V, tao::string_view >( in ) );
                   }
                   else {
-                     consumer.string( parse_string_n< V, std::string >( in, major::STRING ) );
+                     consumer.string( read_string_n< V, std::string >( in, major::STRING ) );
                   }
-                  return true;
                }
 
                template< typename Input, typename Consumer >
-               static bool match_binary( Input& in, Consumer& consumer )
+               static void parse_binary_unsafe( Input& in, Consumer& consumer )
                {
-                  // Assumes in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
-
                   if( peek_minor_unsafe( in ) != minor_mask ) {
-                     consumer.binary( parse_string_1< utf8_mode::TRUST, tao::binary_view >( in ) );
+                     consumer.binary( read_string_1< utf8_mode::TRUST, tao::binary_view >( in ) );
                   }
                   else {
-                     consumer.binary( parse_string_n< utf8_mode::TRUST, std::vector< tao::byte > >( in, major::BINARY ) );
+                     consumer.binary( read_string_n< utf8_mode::TRUST, std::vector< tao::byte > >( in, major::BINARY ) );
                   }
-                  return true;
                }
 
                template< typename Input, typename Consumer >
-               static void match_array_1( Input& in, Consumer& consumer )
+               static void parse_key_unsafe( Input& in, Consumer& consumer )
                {
-                  const auto size = parse_size( in );
+                  if( peek_minor_unsafe( in ) != minor_mask ) {
+                     consumer.key( read_string_1< V, tao::string_view >( in ) );
+                  }
+                  else {
+                     consumer.key( read_string_n< V, std::string >( in, major::STRING ) );
+                  }
+               }
+
+               template< typename Input, typename Consumer >
+               static void parse_array_1( Input& in, Consumer& consumer )
+               {
+                  const auto size = read_size_unsafe( in );
                   consumer.begin_array( size );
                   for( std::size_t i = 0; i < size; ++i ) {
                      json::internal::throw_on_empty( in );
-                     match_impl( in, consumer );
+                     parse_unsafe( in, consumer );
                      consumer.element();
                   }
                   consumer.end_array( size );
                }
 
                template< typename Input, typename Consumer >
-               static void match_array_n( Input& in, Consumer& consumer )
+               static void parse_array_n( Input& in, Consumer& consumer )
                {
                   in.bump_in_this_line();
                   consumer.begin_array();
-                  while( json::internal::peek_byte_safe( in ) != 0xff ) {
-                     match_impl( in, consumer );
+                  while( json::internal::peek_byte( in ) != 0xff ) {
+                     parse_unsafe( in, consumer );
                      consumer.element();
                   }
                   in.bump_in_this_line();
@@ -271,57 +277,46 @@ namespace tao
                }
 
                template< typename Input, typename Consumer >
-               static bool match_array( Input& in, Consumer& consumer )
+               static bool parse_array_unsafe( Input& in, Consumer& consumer )
                {
                   if( peek_minor_unsafe( in ) != minor_mask ) {
-                     match_array_1( in, consumer );
+                     parse_array_1( in, consumer );
                   }
                   else {
-                     match_array_n( in, consumer );
+                     parse_array_n( in, consumer );
                   }
                   return true;
                }
 
                template< typename Input, typename Consumer >
-               static void match_object_1( Input& in, Consumer& consumer )
+               static void parse_object_1( Input& in, Consumer& consumer )
                {
-                  const auto size = parse_size( in );
+                  const auto size = read_size_unsafe( in );
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
                      if( peek_major( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
+                     parse_key_unsafe( in, consumer );
                      json::internal::throw_on_empty( in );
-                     if( peek_minor_unsafe( in ) != minor_mask ) {
-                        consumer.key( parse_string_1< V, tao::string_view >( in ) );
-                     }
-                     else {
-                        consumer.key( parse_string_n< V, std::string >( in, major::STRING ) );
-                     }
-                     json::internal::throw_on_empty( in );
-                     match_impl( in, consumer );
+                     parse_unsafe( in, consumer );
                      consumer.member();
                   }
                   consumer.end_object( size );
                }
 
                template< typename Input, typename Consumer >
-               static void match_object_n( Input& in, Consumer& consumer )
+               static void parse_object_n( Input& in, Consumer& consumer )
                {
                   in.bump_in_this_line();
                   consumer.begin_object();
-                  while( json::internal::peek_byte_safe( in ) != 0xff ) {
+                  while( json::internal::peek_byte( in ) != 0xff ) {
                      if( peek_major_unsafe( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }
-                     if( peek_minor_unsafe( in ) != minor_mask ) {
-                        consumer.key( parse_string_1< V, tao::string_view >( in ) );
-                     }
-                     else {
-                        consumer.key( parse_string_n< V, std::string >( in, major::STRING ) );
-                     }
+                     parse_key_unsafe( in, consumer );
                      json::internal::throw_on_empty( in );
-                     match_impl( in, consumer );
+                     parse_unsafe( in, consumer );
                      consumer.member();
                   }
                   in.bump_in_this_line();
@@ -329,15 +324,14 @@ namespace tao
                }
 
                template< typename Input, typename Consumer >
-               static bool match_object( Input& in, Consumer& consumer )
+               static void parse_object_unsafe( Input& in, Consumer& consumer )
                {
                   if( peek_minor_unsafe( in ) != minor_mask ) {
-                     match_object_1( in, consumer );
+                     parse_object_1( in, consumer );
                   }
                   else {
-                     match_object_n( in, consumer );
+                     parse_object_n( in, consumer );
                   }
-                  return true;
                }
 
                // template< typename Input, typename Consumer >
@@ -351,64 +345,63 @@ namespace tao
                // }
 
                template< typename Input, typename Consumer >
-               static bool match_tag( Input& in, Consumer& /*unused*/ )
+               static void parse_tag_unsafe( Input& in, Consumer& /*unused*/ )
                {
                   switch( const auto m = peek_minor_unsafe( in ) ) {
                      case 0:
                         in.bump_in_this_line();
-                        return true;  // TODO: match_date_time_string( in, consumer );
+                        return;  // TODO: match_date_time_string( in, consumer );
                      case 1:
                         in.bump_in_this_line();
-                        return true;  // TODO: match_date_time_number( in, consumer );
+                        return;  // TODO: match_date_time_number( in, consumer );
                      default:
                         in.bump_in_this_line();
-                        break;
+                        return;
                      case 24:
                         consume_or_throw( in, 2 );
-                        break;
+                        return;
                      case 25:
                         consume_or_throw( in, 3 );
-                        break;
+                        return;
                      case 26:
                         consume_or_throw( in, 5 );
-                        break;
+                        return;
                      case 27:
                         consume_or_throw( in, 9 );
-                        break;
+                        return;
                      case 28:
                      case 29:
                      case 30:
                      case 31:
                         throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for tag value" ), in );
                   }
-                  return true;
                }
 
                template< typename Input, typename Consumer >
-               static bool match_other( Input& in, Consumer& consumer )
+               static void parse_other_unsafe( Input& in, Consumer& consumer )
                {
                   switch( const auto m = peek_minor_unsafe( in ) ) {
                      case 20:
                         consumer.boolean( false );
                         in.bump_in_this_line();
-                        return true;
+                        return;
                      case 21:
                         consumer.boolean( true );
                         in.bump_in_this_line();
-                        return true;
+                        return;
                      case 22:
                         consumer.null();
                         in.bump_in_this_line();
-                        return true;
+                        return;
                      case 25:
-                        consumer.number( parse_floating_half_impl( in ) );
-                        return true;
+                        consumer.number( read_fp16( in ) );
+                        return;
                      case 26:
-                        consumer.number( json::internal::read_be_number_safe< float >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< float >( in, 1 ) );
+                        return;
                      case 27:
-                        consumer.number( json::internal::read_be_number_safe< double >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< double >( in, 1 ) );
+                        return;
                      default:
                         throw json_pegtl::parse_error( json::internal::format( "unsupported minor ", m, " for major 7" ), in );
                   }

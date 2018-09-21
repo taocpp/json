@@ -24,38 +24,21 @@ namespace tao
       {
          namespace internal
          {
-            template< typename Input >
-            format peek_format( Input& in )
-            {
-               return static_cast< format >( json::internal::peek_byte_safe( in ) );
-            }
-
-            template< utf8_mode U, typename Result, typename Input >
-            Result parse_container( Input& in, const std::size_t size )
-            {
-               using value_t = typename Result::value_type;
-               json::internal::throw_on_empty( in, size );
-               const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
-               Result result( pointer, size );
-               json::internal::consume_utf8< U >( in, size );
-               return result;
-            }
-
             template< utf8_mode U, typename Input >
-            tao::string_view parse_key( Input& in )
+            tao::string_view read_key( Input& in )
             {
-               const auto b = json::internal::peek_byte_safe( in );
+               const auto b = json::internal::peek_byte( in );
                if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
                   in.bump_in_this_line();
-                  return parse_container< U, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) );
+                  return json::internal::read_string< U, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) );
                }
                switch( format( b ) ) {
                   case format::STR8:
-                     return parse_container< U, tao::string_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint8_t >( in, 1 ) );
+                     return json::internal::read_string< U, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) );
                   case format::STR16:
-                     return parse_container< U, tao::string_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint16_t >( in, 1 ) );
+                     return json::internal::read_string< U, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );
                   case format::STR32:
-                     return parse_container< U, tao::string_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint32_t >( in, 1 ) );
+                     return json::internal::read_string< U, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
                   default:
                      throw json_pegtl::parse_error( "unexpected key type", in );
                }
@@ -74,136 +57,145 @@ namespace tao
                          typename Consumer >
                static bool match( Input& in, Consumer& consumer )
                {
-                  // This rule never returns false unless the input is empty.
-                  return ( !in.empty() ) && match_impl( in, consumer );
+                  if( !in.empty() ) {
+                     parse_unsafe( in, consumer );
+                     return true;
+                  }
+                  return false;
                }
 
+            private:
                template< typename Input, typename Consumer >
-               static bool match_impl( Input& in, Consumer& consumer )
+               static void parse_unsafe( Input& in, Consumer& consumer )
                {
                   const auto b = in.peek_byte();
                   if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
                      consumer.number( std::uint64_t( b ) );
                      in.bump_in_this_line();
-                     return true;
+                     return;
                   }
                   if( b >= std::uint8_t( format::NEGATIVE_MIN ) ) {
                      consumer.number( std::int64_t( std::int8_t( b ) ) );
                      in.bump_in_this_line();
-                     return true;
+                     return;
                   }
                   if( ( std::uint8_t( format::FIXMAP_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXMAP_MAX ) ) ) {
                      in.bump_in_this_line();
-                     return match_object( in, consumer, b - std::uint8_t( format::FIXMAP_MIN ) );
+                     parse_object( in, consumer, b - std::uint8_t( format::FIXMAP_MIN ) );
+                     return;
                   }
                   if( ( std::uint8_t( format::FIXARRAY_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXARRAY_MAX ) ) ) {
                      in.bump_in_this_line();
-                     return match_array( in, consumer, b - std::uint8_t( format::FIXARRAY_MIN ) );
+                     parse_array( in, consumer, b - std::uint8_t( format::FIXARRAY_MIN ) );
+                     return;
                   }
                   if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
                      in.bump_in_this_line();
-                     consumer.string( parse_container< V, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) ) );
-                     return true;
+                     consumer.string( json::internal::read_string< V, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) ) );
+                     return;
                   }
                   switch( format( b ) ) {
                      case format::NIL:
                         consumer.null();
                         in.bump_in_this_line();
-                        return true;
+                        return;
                      case format::UNUSED:
                         throw json_pegtl::parse_error( "unused first byte 0xc1", in );
                      case format::BOOL_TRUE:
                         consumer.boolean( true );
                         in.bump_in_this_line();
-                        return true;
+                        return;
                      case format::BOOL_FALSE:
                         consumer.boolean( false );
                         in.bump_in_this_line();
-                        return true;
+                        return;
                      case format::BIN8:
-                        consumer.binary( parse_container< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint8_t >( in, 1 ) ) );
-                        return true;
+                        consumer.binary( json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) ) );
+                        return;
                      case format::BIN16:
-                        consumer.binary( parse_container< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint16_t >( in, 1 ) ) );
-                        return true;
+                        consumer.binary( json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) ) );
+                        return;
                      case format::BIN32:
-                        consumer.binary( parse_container< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint32_t >( in, 1 ) ) );
-                        return true;
+                        consumer.binary( json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
+                        return;
                      case format::EXT8:
-                        discard( in, json::internal::read_be_number_safe< std::size_t, std::uint8_t >( in, 1 ) + 1 );
-                        return true;
+                        discard( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) + 1 );
+                        return;
                      case format::EXT16:
-                        discard( in, json::internal::read_be_number_safe< std::size_t, std::uint16_t >( in, 1 ) + 1 );
-                        return true;
+                        discard( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) + 1 );
+                        return;
                      case format::EXT32:
-                        discard( in, json::internal::read_be_number_safe< std::size_t, std::uint32_t >( in, 1 ) + 1 );
-                        return true;
+                        discard( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) + 1 );
+                        return;
                      case format::FLOAT32:
-                        consumer.number( json::internal::read_be_number_safe< double, float >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< double, float >( in, 1 ) );
+                        return;
                      case format::FLOAT64:
-                        consumer.number( json::internal::read_be_number_safe< double >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< double >( in, 1 ) );
+                        return;
                      case format::UINT8:
-                        consumer.number( json::internal::read_be_number_safe< std::uint64_t, std::uint8_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::uint64_t, std::uint8_t >( in, 1 ) );
+                        return;
                      case format::UINT16:
-                        consumer.number( json::internal::read_be_number_safe< std::uint64_t, std::uint16_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::uint64_t, std::uint16_t >( in, 1 ) );
+                        return;
                      case format::UINT32:
-                        consumer.number( json::internal::read_be_number_safe< std::uint64_t, std::uint32_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::uint64_t, std::uint32_t >( in, 1 ) );
+                        return;
                      case format::UINT64:
-                        consumer.number( json::internal::read_be_number_safe< std::uint64_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::uint64_t >( in, 1 ) );
+                        return;
                      case format::INT8:
-                        consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int8_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::int64_t, std::int8_t >( in, 1 ) );
+                        return;
                      case format::INT16:
-                        consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int16_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::int64_t, std::int16_t >( in, 1 ) );
+                        return;
                      case format::INT32:
-                        consumer.number( json::internal::read_be_number_safe< std::int64_t, std::int32_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::int64_t, std::int32_t >( in, 1 ) );
+                        return;
                      case format::INT64:
-                        consumer.number( json::internal::read_be_number_safe< std::int64_t >( in, 1 ) );
-                        return true;
+                        consumer.number( json::internal::read_big_endian_number< std::int64_t >( in, 1 ) );
+                        return;
                      case format::FIXEXT1:
                         discard( in, 3 );
-                        return true;
+                        return;
                      case format::FIXEXT2:
                         discard( in, 4 );
-                        return true;
+                        return;
                      case format::FIXEXT4:
                         discard( in, 6 );
-                        return true;
+                        return;
                      case format::FIXEXT8:
                         discard( in, 10 );
-                        return true;
+                        return;
                      case format::FIXEXT16:
                         discard( in, 18 );
-                        return true;
+                        return;
                      case format::STR8:
-                        consumer.string( parse_container< V, tao::string_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint8_t >( in, 1 ) ) );
-                        return true;
+                        consumer.string( json::internal::read_string< V, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) ) );
+                        return;
                      case format::STR16:
-                        consumer.string( parse_container< V, tao::string_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint16_t >( in, 1 ) ) );
-                        return true;
+                        consumer.string( json::internal::read_string< V, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) ) );
+                        return;
                      case format::STR32:
-                        consumer.string( parse_container< V, tao::string_view >( in, json::internal::read_be_number_safe< std::size_t, std::uint32_t >( in, 1 ) ) );
-                        return true;
+                        consumer.string( json::internal::read_string< V, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
+                        return;
                      case format::ARRAY16:
-                        return match_array( in, consumer, json::internal::read_be_number_safe< std::size_t, std::uint16_t >( in, 1) );
+                        parse_array( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1) );
+                        return;
                      case format::ARRAY32:
-                        return match_array( in, consumer, json::internal::read_be_number_safe< std::size_t, std::uint32_t >( in, 1 ) );
+                        parse_array( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
+                        return;
                      case format::MAP16:
-                        return match_object( in, consumer, json::internal::read_be_number_safe< std::size_t, std::uint16_t >( in, 1 ) );
+                        parse_object( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );
+                        return;
                      case format::MAP32:
-                        return match_object( in, consumer, json::internal::read_be_number_safe< std::size_t, std::uint32_t >( in, 1 ) );
+                        parse_object( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
+                        return;
                      default:
                         // LCOV_EXCL_START
                         assert( false );
-                        return false;
                         // LCOV_EXCL_STOP
                   }
                }
@@ -216,30 +208,28 @@ namespace tao
                }
 
                template< typename Input, typename Consumer >
-               static bool match_array( Input& in, Consumer& consumer, const std::size_t size )
+               static void parse_array( Input& in, Consumer& consumer, const std::size_t size )
                {
                   consumer.begin_array( size );
                   for( std::size_t i = 0; i < size; ++i ) {
                      json::internal::throw_on_empty( in );
-                     match_impl( in, consumer );
+                     parse_unsafe( in, consumer );
                      consumer.element();
                   }
                   consumer.end_array( size );
-                  return true;
                }
 
                template< typename Input, typename Consumer >
-               static bool match_object( Input& in, Consumer& consumer, const std::size_t size )
+               static void parse_object( Input& in, Consumer& consumer, const std::size_t size )
                {
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
-                     consumer.key( parse_key< V >( in ) );
+                     consumer.key( read_key< V >( in ) );
                      json::internal::throw_on_empty( in );
-                     match_impl( in, consumer );
+                     parse_unsafe( in, consumer );
                      consumer.member();
                   }
                   consumer.end_object( size );
-                  return true;
                }
             };
 
