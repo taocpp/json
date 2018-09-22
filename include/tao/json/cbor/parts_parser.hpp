@@ -216,21 +216,21 @@ namespace tao
                return begin_container( internal::major::OBJECT, "expected object" );
             }
 
-            void end_array_sized( state_t& p )
+            void end_array_sized( const state_t& p )
             {
                if( *p.size != p.i ) {
                   throw json_pegtl::parse_error( "array size mismatch", m_input );  // NOLINT
                }
             }
 
-            void end_object_sized( state_t& p )
+            void end_object_sized( const state_t& p )
             {
                if( *p.size != p.i ) {
                   throw json_pegtl::parse_error( "object size mismatch", m_input );  // NOLINT
                }
             }
 
-            void end_array_indefinite( state_t& /*unused*/ )
+            void end_array_indefinite( const state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) != 0xff ) {
                   throw json_pegtl::parse_error( "array not at end", m_input );  // NOLINT
@@ -238,7 +238,7 @@ namespace tao
                m_input.bump_in_this_line( 1 );
             }
 
-            void end_object_indefinite( state_t& /*unused*/ )
+            void end_object_indefinite( const state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) != 0xff ) {
                   throw json_pegtl::parse_error( "object not at end", m_input );  // NOLINT
@@ -246,7 +246,7 @@ namespace tao
                m_input.bump_in_this_line( 1 );
             }
 
-            void end_array( state_t& p )
+            void end_array( const state_t& p )
             {
                if( p.size ) {
                   end_array_sized( p );
@@ -256,7 +256,7 @@ namespace tao
                }
             }
 
-            void end_object( state_t& p )
+            void end_object( const state_t& p )
             {
                if( p.size ) {
                   end_object_sized( p );
@@ -280,14 +280,14 @@ namespace tao
                }
             }
 
-            void element_indefinite( state_t& /*unused*/ )
+            void element_indefinite( const state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   throw json_pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
                }
             }
 
-            void member_indefinite( state_t& /*unused*/ )
+            void member_indefinite( const state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   throw json_pegtl::parse_error( "unexpected object end", m_input );
@@ -324,7 +324,7 @@ namespace tao
                return p.i++ < *p.size;
             }
 
-            bool element_or_end_array_indefinite( state_t& /*unused*/ )
+            bool element_or_end_array_indefinite( const state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
@@ -333,7 +333,7 @@ namespace tao
                return true;
             }
 
-            bool member_or_end_object_indefinite( state_t& /*unused*/ )
+            bool member_or_end_object_indefinite( const state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
