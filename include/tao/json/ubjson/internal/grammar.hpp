@@ -15,6 +15,8 @@
 #include "../../internal/parse_util.hpp"
 #include "../../utf8.hpp"
 
+#include "marker.hpp"
+
 #if defined( _MSC_VER )
 #define TAO_JSON_WEAK_PREFIX __declspec( selectany )
 #define TAO_JSON_WEAK_SUFFIX
@@ -64,7 +66,7 @@ namespace tao
                   if( in.peek_char() == '-' ) {
                      in.bump_in_this_line();
                      if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, json_pegtl::rewind_mode::DONTCARE, Action, Control >( in, consumer ) ) {
-                        throw json_pegtl::parse_error( "incomplete number", in );
+                        throw json_pegtl::parse_error( "incomplete ubjson high-precision number", in );
                      }
                      return true;
                   }
@@ -89,18 +91,36 @@ namespace tao
          namespace internal
          {
             template< typename Input >
+            marker peek_marker( Input& in )
+            {
+               return marker( json::internal::peek_char( in ) );
+            }
+
+            template< typename Input >
+            marker read_marker( Input& in )
+            {
+               return marker( json::internal::read_char( in ) );
+            }
+
+            template< typename Input >
+            marker read_marker_unsafe( Input& in )
+            {
+               return marker( json::internal::read_char_unsafe( in ) );
+            }
+
+            template< typename Input >
             std::int64_t read_size_read( Input& in )
             {
-               switch( const auto c = json::internal::read_char( in ) ) {
-                  case 'i':
+               switch( const auto c = read_marker( in ) ) {
+                  case marker::INT8:
                      return json::internal::read_big_endian_number< std::int64_t, std::int8_t >( in );
-                  case 'U':
+                  case marker::UINT8:
                      return json::internal::read_big_endian_number< std::int64_t, std::uint8_t >( in );
-                  case 'I':
+                  case marker::INT16:
                      return json::internal::read_big_endian_number< std::int64_t, std::int16_t >( in );
-                  case 'l':
+                  case marker::INT32:
                      return json::internal::read_big_endian_number< std::int64_t, std::int32_t >( in );
-                  case 'L':
+                  case marker::INT64:
                      return json::internal::read_big_endian_number< std::int64_t >( in );
                   default:
                      throw json_pegtl::parse_error( "unknown ubjson size type " + std::to_string( unsigned( c ) ), in );
@@ -119,6 +139,17 @@ namespace tao
                   throw json_pegtl::parse_error( "ubjson size exceeds limit " + std::to_string( t ), in );
                }
                return static_cast< std::size_t >( t );
+            }
+
+            template< typename Result, typename Input >
+            Result read_char( Input& in )
+            {
+               if( in.empty() || ( in.peek_byte( 0 ) > 127 ) ) {
+                  throw json_pegtl::parse_error( "missing or invalid ubjson char", in );
+               }
+               Result result( in.current(), 1 );
+               in.bump_in_this_line( 1 );
+               return result;
             }
 
             template< std::size_t L, utf8_mode U, typename Result, typename Input >
@@ -152,80 +183,69 @@ namespace tao
                template< typename Input, typename Consumer >
                static void parse( Input& in, Consumer& consumer )
                {
-                  parse( in, consumer, json::internal::read_char( in ) );
+                  parse( in, consumer, read_marker( in ) );
                }
 
                template< typename Input, typename Consumer >
                static void parse_unsafe( Input& in, Consumer& consumer )
                {
-                  parse( in, consumer, json::internal::read_char_unsafe( in ) );
+                  parse( in, consumer, read_marker_unsafe( in ) );
                }
 
                template< typename Input, typename Consumer >
-               static void parse( Input& in, Consumer& consumer, const char c )
+               static void parse( Input& in, Consumer& consumer, const marker c )
                {
                   switch( c ) {
-                     case 'Z':
+                     case marker::NULL_:
                         consumer.null();
                         break;
-                     case 'T':
+                     case marker::TRUE_:
                         consumer.boolean( true );
                         break;
-                     case 'F':
+                     case marker::FALSE_:
                         consumer.boolean( false );
                         break;
-                     case 'i':
+                     case marker::INT8:
                         consumer.number( json::internal::read_big_endian_number< std::int64_t, std::int8_t >( in ) );
                         break;
-                     case 'U':
+                     case marker::UINT8:
                         consumer.number( json::internal::read_big_endian_number< std::uint64_t, std::uint8_t >( in ) );
                         break;
-                     case 'I':
+                     case marker::INT16:
                         consumer.number( json::internal::read_big_endian_number< std::int64_t, std::int16_t >( in ) );
                         break;
-                     case 'l':
+                     case marker::INT32:
                         consumer.number( json::internal::read_big_endian_number< std::int64_t, std::int32_t >( in ) );
                         break;
-                     case 'L':
+                     case marker::INT64:
                         consumer.number( json::internal::read_big_endian_number< std::int64_t >( in ) );
                         break;
-                     case 'd':
+                     case marker::FLOAT32:
                         consumer.number( json::internal::read_big_endian_number< double, float >( in ) );
                         break;
-                     case 'D':
+                     case marker::FLOAT64:
                         consumer.number( json::internal::read_big_endian_number< double >( in ) );
                         break;
-                     case 'H':
+                     case marker::HIGH_PRECISION:
                         parse_high_precision( in, consumer );
                         break;
-                     case 'C':
-                        parse_char( in, consumer );
+                     case marker::CHAR:
+                        consumer.string( read_char< tao::string_view >( in ) );
                         break;
-                     case 'S':
+                     case marker::STRING:
                         consumer.string( read_string< L, V, tao::string_view >( in ) );
                         break;
-                     case '[':
+                     case marker::BEGIN_ARRAY:
                         parse_array( in, consumer );
                         break;
-                     case '{':
+                     case marker::BEGIN_OBJECT:
                         parse_object( in, consumer );
                         break;
-                     case 'N':
+                     case marker::NO_OP:
                         throw json_pegtl::parse_error( "unsupported ubjson no-op", in );
-                        break;
                      default:
                         throw json_pegtl::parse_error( "unknown ubjson type " + std::to_string( unsigned( c ) ), in );
                   }
-               }
-
-               template< typename Input, typename Consumer >
-               static void parse_char( Input& in, Consumer& consumer )
-               {
-                  if( in.empty() || ( in.peek_byte( 0 ) > 127 ) ) {
-                     throw json_pegtl::parse_error( "missing or invalid ubjson char", in );
-                  }
-                  consumer.string( std::string( 1, in.peek_char( 0 ) ) );
-                  in.bump_in_this_line( 1 );
                }
 
                template< typename Input, typename Consumer >
@@ -241,12 +261,12 @@ namespace tao
                template< typename Input, typename Consumer >
                static void parse_array( Input& in, Consumer& consumer )
                {
-                  switch( json::internal::peek_char( in ) ) {
-                     case '#':
+                  switch( peek_marker( in ) ) {
+                     case marker::CONTAINER_SIZE:
                         in.bump_in_this_line( 1 );
                         parse_sized_array( in, consumer );
                         break;
-                     case '$':
+                     case marker::CONTAINER_TYPE:
                         in.bump_in_this_line( 1 );
                         parse_typed_array( in, consumer );
                         break;
@@ -271,11 +291,11 @@ namespace tao
                template< typename Input, typename Consumer >
                static void parse_typed_array( Input& in, Consumer& consumer )
                {
-                  const auto c = json::internal::read_char( in );
-                  if( json::internal::read_char( in ) != '#' ) {
+                  const auto c = read_marker( in );
+                  if( read_marker( in ) != marker::CONTAINER_SIZE ) {
                      throw json_pegtl::parse_error( "ubjson array type not followed by size", in );
                   }
-                  if( c == 'U' ) {
+                  if( c == marker::UINT8 ) {
                      // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
                      consumer.binary( read_string< L, utf8_mode::TRUST, tao::binary_view >( in ) );
                      return;
@@ -293,7 +313,7 @@ namespace tao
                static void parse_basic_array( Input& in, Consumer& consumer )
                {
                   consumer.begin_array();
-                  while( json::internal::peek_char( in ) != ']' ) {
+                  while( peek_marker( in ) != marker::END_ARRAY ) {
                      parse_unsafe( in, consumer );
                      consumer.element();
                   }
@@ -310,12 +330,12 @@ namespace tao
                template< typename Input, typename Consumer >
                static void parse_object( Input& in, Consumer& consumer )
                {
-                  switch( json::internal::peek_char( in ) ) {
-                     case '#':
+                  switch( peek_marker( in ) ) {
+                     case marker::CONTAINER_SIZE:
                         in.bump_in_this_line( 1 );
                         parse_sized_object( in, consumer );
                         break;
-                     case '$':
+                     case marker::CONTAINER_TYPE:
                         in.bump_in_this_line( 1 );
                         parse_typed_object( in, consumer );
                         break;
@@ -341,8 +361,8 @@ namespace tao
                template< typename Input, typename Consumer >
                static void parse_typed_object( Input& in, Consumer& consumer )
                {
-                  const auto c = json::internal::read_char( in );
-                  if( json::internal::read_char( in ) != '#' ) {
+                  const auto c = read_marker( in );
+                  if( read_marker( in ) != marker::CONTAINER_SIZE ) {
                      throw json_pegtl::parse_error( "ubjson object type not followed by size", in );
                   }
                   const auto size = read_size< L >( in );
@@ -359,7 +379,7 @@ namespace tao
                static void parse_basic_object( Input& in, Consumer& consumer )
                {
                   consumer.begin_object();
-                  while( json::internal::peek_char( in ) != '}' ) {
+                  while( peek_marker( in ) != marker::END_OBJECT ) {
                      parse_key( in, consumer );
                      parse( in, consumer );
                      consumer.member();
@@ -369,7 +389,7 @@ namespace tao
                }
             };
 
-            struct nops : json_pegtl::star< json_pegtl::one< 'N' > >
+            struct nops : json_pegtl::star< json_pegtl::one< char( marker::NO_OP ) > >
             {
             };
 

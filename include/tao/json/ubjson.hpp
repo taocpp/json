@@ -8,6 +8,7 @@
 
 #include "ubjson/from_string.hpp"
 #include "ubjson/parse_file.hpp"
+#include "ubjson/parts_parser.hpp"
 #include "ubjson/to_stream.hpp"
 #include "ubjson/to_string.hpp"
 

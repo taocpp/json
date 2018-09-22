@@ -17,6 +17,32 @@ namespace tao
    {
       namespace cbor
       {
+         namespace internal
+         {
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4702 )
+#endif
+            template< typename Input >
+            bool read_boolean( Input& in )
+            {
+               const auto b = json::internal::peek_byte( in );
+               switch( b ) {
+                  case std::uint8_t( internal::major::OTHER ) + 20:
+                  case std::uint8_t( internal::major::OTHER ) + 21:
+                     in.bump_in_this_line( 1 );
+                     return bool( b - std::uint8_t( internal::major::OTHER ) - 20 );
+                  default:
+                     throw json_pegtl::parse_error( "expected boolean", in );  // NOLINT
+               }
+               std::abort();
+            }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
+
+         }  // namespace internal
+
          template< utf8_mode V = utf8_mode::CHECK, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::LAZY > >
          class basic_parts_parser
          {
@@ -36,26 +62,10 @@ namespace tao
                return false;
             }
 
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4702 )
-#endif
             bool boolean()
             {
-               const auto b = json::internal::peek_byte( m_input );
-               switch( b ) {
-                  case std::uint8_t( internal::major::OTHER ) + 20:
-                  case std::uint8_t( internal::major::OTHER ) + 21:
-                     m_input.bump_in_this_line( 1 );
-                     return bool( b - std::uint8_t( internal::major::OTHER ) - 20 );
-                  default:
-                     throw json_pegtl::parse_error( "expected boolean", m_input );  // NOLINT
-               }
-               std::abort();
+               return read_boolean( m_input );
             }
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
 
             void check_major( const internal::major m, const char* e )
             {
@@ -220,7 +230,7 @@ namespace tao
                }
             }
 
-            void end_array_indefinitive( state_t& /*unused*/ )
+            void end_array_indefinite( state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) != 0xff ) {
                   throw json_pegtl::parse_error( "array not at end", m_input );  // NOLINT
@@ -228,7 +238,7 @@ namespace tao
                m_input.bump_in_this_line( 1 );
             }
 
-            void end_object_indefinitive( state_t& /*unused*/ )
+            void end_object_indefinite( state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) != 0xff ) {
                   throw json_pegtl::parse_error( "object not at end", m_input );  // NOLINT
@@ -242,7 +252,7 @@ namespace tao
                   end_array_sized( p );
                }
                else {
-                  end_array_indefinitive( p );
+                  end_array_indefinite( p );
                }
             }
 
@@ -252,7 +262,7 @@ namespace tao
                   end_object_sized( p );
                }
                else {
-                  end_object_indefinitive( p );
+                  end_object_indefinite( p );
                }
             }
 
@@ -270,14 +280,14 @@ namespace tao
                }
             }
 
-            void element_indefinitive( state_t& /*unused*/ )
+            void element_indefinite( state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   throw json_pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
                }
             }
 
-            void member_indefinitive( state_t& /*unused*/ )
+            void member_indefinite( state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   throw json_pegtl::parse_error( "unexpected object end", m_input );
@@ -290,7 +300,7 @@ namespace tao
                   element_sized( p );
                }
                else {
-                  element_indefinitive( p );
+                  element_indefinite( p );
                }
             }
 
@@ -300,7 +310,7 @@ namespace tao
                   member_sized( p );
                }
                else {
-                  member_indefinitive( p );
+                  member_indefinite( p );
                }
             }
 
@@ -314,7 +324,7 @@ namespace tao
                return p.i++ < *p.size;
             }
 
-            bool element_or_end_array_indefinitive( state_t& /*unused*/ )
+            bool element_or_end_array_indefinite( state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
@@ -323,7 +333,7 @@ namespace tao
                return true;
             }
 
-            bool member_or_end_object_indefinitive( state_t& /*unused*/ )
+            bool member_or_end_object_indefinite( state_t& /*unused*/ )
             {
                if( json::internal::peek_byte( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
@@ -337,7 +347,7 @@ namespace tao
                if( p.size ) {
                   return element_or_end_array_sized( p );
                }
-               return element_or_end_array_indefinitive( p );
+               return element_or_end_array_indefinite( p );
             }
 
             bool member_or_end_object( state_t& p )
@@ -345,7 +355,7 @@ namespace tao
                if( p.size ) {
                   return member_or_end_object_sized( p );
                }
-               return member_or_end_object_indefinitive( p );
+               return member_or_end_object_indefinite( p );
             }
 
             void skip_value()

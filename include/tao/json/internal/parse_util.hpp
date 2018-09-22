@@ -48,20 +48,18 @@ namespace tao
          }
 
          template< typename Input >
-         char read_char( Input& in )
+         char read_char_unsafe( Input& in )
          {
-            throw_on_empty( in );
             const auto r = in.peek_char();
             in.bump_in_this_line( 1 );
             return r;
          }
 
          template< typename Input >
-         char read_char_unsafe( Input& in )
+         char read_char( Input& in )
          {
-            const auto r = in.peek_char();
-            in.bump_in_this_line( 1 );
-            return r;
+            throw_on_empty( in );
+            return read_char_unsafe( in );
          }
 
          template< utf8_mode U, typename Result, typename Input >

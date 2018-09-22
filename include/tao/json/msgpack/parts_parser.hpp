@@ -23,8 +23,7 @@ namespace tao
             template< typename Input >
             format peek_format( Input& in )
             {
-               json::internal::throw_on_empty( in );
-               return format( in.peek_byte() );
+               return format( json::internal::peek_byte( in ) );
             }
 
             template< typename Input >
@@ -59,7 +58,7 @@ namespace tao
 
             inline std::int64_t test_signed( const std::uint64_t i )
             {
-               if( i & ( std::uint64_t( 1 ) << 63 ) ) {
+               if( ( i & ( std::uint64_t( 1 ) << 63 ) ) != 0 ) {
                   throw std::runtime_error( "integer overflow for signed" );  // NOLINT
                }
                return std::int64_t( i );
