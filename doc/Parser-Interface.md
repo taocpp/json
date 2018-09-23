@@ -1,10 +1,10 @@
 # Parser Interface
 
-Work in progress.
+*Work in progress*
 
-This interface is used when parsing directly into a C++ data type (without using an intermediate Value) *and* *not* using the binding facilities to auto-generate the Traits functions.
+This interface is used when parsing directly into a C++ data type (without using an intermediate Value) *and not* using the [Binding Traits Facilities](Type-Traits.md#binding-traits-facilities) to auto-generate the [Traits](Type-Traits.md).
 
-Basic parts parser interface.
+The public interface of a parts parser, an object that unconditionally attempts to read parts of an encoded Value from the input that it was supplied in the constructor.
 
 ```c++
 struct parts_parser
@@ -32,9 +32,9 @@ struct parts_parser
 
    void skip_value();  // Skips one complete value in the input, whatever it is.
 
-   unknown_3 mark();  // TODO: Explain, with reference to PEGTL concept of same name.
+   unknown_3 mark();  // TODO: Explain, with reference to PEGTL markers and when/how to use them.
 
-   void throw_parse_error( TBD ) const;
+   void throw_parse_error( TBD ) const;  // TODO: Decide whether this is part of the public interface.
 };
 ```
 

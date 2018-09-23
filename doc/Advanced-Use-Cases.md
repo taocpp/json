@@ -14,11 +14,19 @@
 
 The [binding traits facilities](Type-Traits.md#binding-traits-facilities) support the following options beyond what is explained on the page on [Type Traits](Type-Traits.md).
 
+### Constants
+
 TODO: constants
 
-TODO: basic_object
+### Object Options
 
-TODO: getters
+TODO: Explain `for_unknown_key`.
+
+TODO: Explain `for_nothing_value`, but first check consistency of implementation with sized objects.
+
+### Binding via Functions
+
+TODO: Explain how to use getter and setter functions for a binding rather than binding directly to a reference.
 
 ## Custom Base Class for Values
 

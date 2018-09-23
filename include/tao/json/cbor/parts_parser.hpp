@@ -317,9 +317,7 @@ namespace tao
                if( p.size ) {
                   return next_or_end_container_sized( p );
                }
-               else {
-                  return next_or_end_container_indefinite();
-               }
+               return next_or_end_container_indefinite();
             }
 
          public:
