@@ -67,6 +67,7 @@ namespace tao
                return read_boolean( m_input );
             }
 
+         private:
             void check_major( const internal::major m, const char* e )
             {
                const auto b = internal::peek_major( m_input );
@@ -76,7 +77,7 @@ namespace tao
             }
 
             template< utf8_mode U, typename T >
-            T cbor_string( const internal::major m, const char* e )
+            T string_impl( const internal::major m, const char* e )
             {
                check_major( m, e );
                if( internal::peek_minor_unsafe( m_input ) != internal::minor_mask ) {
@@ -85,14 +86,15 @@ namespace tao
                return internal::read_string_n< U, T >( m_input, m );
             }
 
+         public:
             std::string string()
             {
-               return cbor_string< V, std::string >( internal::major::STRING, "expected string" );
+               return string_impl< V, std::string >( internal::major::STRING, "expected string" );
             }
 
             std::string binary()
             {
-               return cbor_string< utf8_mode::TRUST, std::vector< tao::byte > >( internal::major::BINARY, "expected binary" );
+               return string_impl< utf8_mode::TRUST, std::vector< tao::byte > >( internal::major::BINARY, "expected binary" );
             }
 
             std::string key()
@@ -123,6 +125,7 @@ namespace tao
                return string_view();
             }
 
+         private:
             std::int64_t number_signed_unsigned()
             {
                const auto u = internal::read_unsigned_unsafe( m_input );
@@ -145,6 +148,7 @@ namespace tao
 #pragma warning( push )
 #pragma warning( disable : 4702 )
 #endif
+         public:
             std::int64_t number_signed()
             {
                const auto b = internal::peek_major( m_input );
@@ -183,6 +187,7 @@ namespace tao
                }
             }
 
+         private:
             struct state_t
             {
                state_t() = default;
@@ -196,9 +201,8 @@ namespace tao
                tao::optional< std::size_t > size;
             };
 
-            state_t begin_container( const internal::major m, const char* e )
+            state_t begin_container()
             {
-               check_major( m, e );
                if( internal::peek_minor_unsafe( m_input ) == 31 ) {
                   m_input.bump_in_this_line( 1 );
                   return state_t();
@@ -206,156 +210,127 @@ namespace tao
                return state_t( internal::read_size_unsafe( m_input ) );
             }
 
+         public:
             state_t begin_array()
             {
-               return begin_container( internal::major::ARRAY, "expected array" );
+               check_major( internal::major::ARRAY, "expected array" );
+               return begin_container();
             }
 
             state_t begin_object()
             {
-               return begin_container( internal::major::OBJECT, "expected object" );
+               check_major( internal::major::OBJECT, "expected object" );
+               return begin_container();
             }
 
-            void end_array_sized( const state_t& p )
+         private:
+            void end_container_sized( const state_t& p )
             {
                if( *p.size != p.i ) {
-                  throw json_pegtl::parse_error( "array size mismatch", m_input );  // NOLINT
+                  throw json_pegtl::parse_error( "container size mismatch", m_input );  // NOLINT
                }
             }
 
-            void end_object_sized( const state_t& p )
-            {
-               if( *p.size != p.i ) {
-                  throw json_pegtl::parse_error( "object size mismatch", m_input );  // NOLINT
-               }
-            }
-
-            void end_array_indefinite( const state_t& /*unused*/ )
+            void end_container_indefinite()
             {
                if( json::internal::peek_byte( m_input ) != 0xff ) {
-                  throw json_pegtl::parse_error( "array not at end", m_input );  // NOLINT
+                  throw json_pegtl::parse_error( "container not at end", m_input );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
             }
 
-            void end_object_indefinite( const state_t& /*unused*/ )
-            {
-               if( json::internal::peek_byte( m_input ) != 0xff ) {
-                  throw json_pegtl::parse_error( "object not at end", m_input );  // NOLINT
-               }
-               m_input.bump_in_this_line( 1 );
-            }
-
-            void end_array( const state_t& p )
+            void end_container( const state_t& p )
             {
                if( p.size ) {
-                  end_array_sized( p );
+                  end_container_sized( p );
                }
                else {
-                  end_array_indefinite( p );
+                  end_container_indefinite();
                }
+            }
+
+         public:
+            void end_array( const state_t& p )
+            {
+               end_container( p );
             }
 
             void end_object( const state_t& p )
             {
+               end_container( p );
+            }
+
+         private:
+            void next_in_container_sized( state_t& p )
+            {
+               if( p.i++ >= *p.size ) {
+                  throw json_pegtl::parse_error( "unexpected end of sized container", m_input );  // NOLINT
+               }
+            }
+
+            void next_in_container_indefinite()
+            {
+               if( json::internal::peek_byte( m_input ) == 0xff ) {
+                  throw json_pegtl::parse_error( "unexpected end of indefinite container", m_input );  // NOLINT
+               }
+            }
+
+            void next_in_container( state_t& p )
+            {
                if( p.size ) {
-                  end_object_sized( p );
+                  next_in_container_sized( p );
                }
                else {
-                  end_object_indefinite( p );
+                  next_in_container_indefinite();
                }
             }
 
-            void element_sized( state_t& p )
-            {
-               if( p.i++ >= *p.size ) {
-                  throw json_pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
-               }
-            }
-
-            void member_sized( state_t& p )
-            {
-               if( p.i++ >= *p.size ) {
-                  throw json_pegtl::parse_error( "unexpected object end", m_input );  // NOLINT
-               }
-            }
-
-            void element_indefinite( const state_t& /*unused*/ )
-            {
-               if( json::internal::peek_byte( m_input ) == 0xff ) {
-                  throw json_pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
-               }
-            }
-
-            void member_indefinite( const state_t& /*unused*/ )
-            {
-               if( json::internal::peek_byte( m_input ) == 0xff ) {
-                  throw json_pegtl::parse_error( "unexpected object end", m_input );
-               }
-            }
-
+         public:
             void element( state_t& p )
             {
-               if( p.size ) {
-                  element_sized( p );
-               }
-               else {
-                  element_indefinite( p );
-               }
+               next_in_container( p );
+
             }
 
             void member( state_t& p )
             {
+               next_in_container( p );
+            }
+
+         private:
+            bool next_or_end_container_sized( state_t& p )
+            {
+               return p.i++ < *p.size;
+            }
+
+            bool next_or_end_container_indefinite()
+            {
+               if( json::internal::peek_byte( m_input ) == 0xff ) {
+                  m_input.bump_in_this_line( 1 );
+                  return false;
+               }
+               return true;
+            }
+
+            bool next_or_end_container( state_t& p )
+            {
                if( p.size ) {
-                  member_sized( p );
+                  return next_or_end_container_sized( p );
                }
                else {
-                  member_indefinite( p );
+                  return next_or_end_container_indefinite();
                }
             }
 
-            bool element_or_end_array_sized( state_t& p )
-            {
-               return p.i++ < *p.size;
-            }
-
-            bool member_or_end_object_sized( state_t& p )
-            {
-               return p.i++ < *p.size;
-            }
-
-            bool element_or_end_array_indefinite( const state_t& /*unused*/ )
-            {
-               if( json::internal::peek_byte( m_input ) == 0xff ) {
-                  m_input.bump_in_this_line( 1 );
-                  return false;
-               }
-               return true;
-            }
-
-            bool member_or_end_object_indefinite( const state_t& /*unused*/ )
-            {
-               if( json::internal::peek_byte( m_input ) == 0xff ) {
-                  m_input.bump_in_this_line( 1 );
-                  return false;
-               }
-               return true;
-            }
-
+         public:
             bool element_or_end_array( state_t& p )
             {
-               if( p.size ) {
-                  return element_or_end_array_sized( p );
-               }
-               return element_or_end_array_indefinite( p );
+               return next_or_end_container( p );
             }
 
             bool member_or_end_object( state_t& p )
             {
-               if( p.size ) {
-                  return member_or_end_object_sized( p );
-               }
-               return member_or_end_object_indefinite( p );
+               return next_or_end_container( p );
             }
 
             void skip_value()
