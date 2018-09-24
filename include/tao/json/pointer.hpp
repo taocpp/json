@@ -81,6 +81,12 @@ namespace tao
          {
          }
 
+         explicit token( const std::size_t in_index )
+            : m_index( in_index ),
+              m_key( std::to_string( m_index ) )
+         {
+         }
+
          token( const token& ) = default;
          token( token&& v ) noexcept
             : m_index( v.m_index ),
@@ -223,6 +229,11 @@ namespace tao
             m_tokens.emplace_back( std::move( v ) );
          }
 
+         void push_back( const std::size_t i )
+         {
+            m_tokens.emplace_back( i );
+         }
+
          friend bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
          {
             return lhs.m_tokens == rhs.m_tokens;
@@ -266,6 +277,12 @@ namespace tao
          return lhs;
       }
 
+      inline pointer& operator+=( pointer& lhs, const std::size_t rhs )
+      {
+         lhs.push_back( rhs );
+         return lhs;
+      }
+
       inline pointer operator+( const pointer& p, const std::string& v )
       {
          pointer nrv( p );
@@ -277,6 +294,13 @@ namespace tao
       {
          pointer nrv( p );
          nrv += std::move( v );
+         return nrv;
+      }
+
+      inline pointer operator+( const pointer& p, const std::size_t i )
+      {
+         pointer nrv( p );
+         nrv += i;
          return nrv;
       }
 
