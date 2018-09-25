@@ -162,15 +162,36 @@ namespace tao
       {
       };
 
+      struct test_suppress
+      {
+         std::list< int > list;
+      };
+
+      template<>
+      struct my_traits< test_suppress >
+         : binding::basic_object< binding::for_unknown_key::CONTINUE,
+                                  binding::for_nothing_value::SUPPRESS,
+                                  TAO_JSON_BIND_OPTIONAL( "list", &test_suppress::list ) >
+      {
+      };
+
       using my_value = basic_value< my_traits >;
 
       void unit_test()
       {
          {
-            test_empty w;
+            test_suppress w;
             basic_value< my_traits > v = w;
             TEST_ASSERT( v.is_object() );
             TEST_ASSERT( v.unsafe_get_object().empty() );
+         }
+         {
+            test_empty w;
+            basic_value< my_traits > v = w;
+            TEST_ASSERT( v.is_object() );
+            TEST_ASSERT( v.unsafe_get_object().size() == 1 );
+            TEST_ASSERT( v.unsafe_get_object().at( "list" ).is_array() );
+            TEST_ASSERT( v.unsafe_get_object().at( "list" ).unsafe_get_array().empty() );
             w.list.push_back( 3 );
             basic_value< my_traits > x = w;
             TEST_ASSERT( x.is_object() );

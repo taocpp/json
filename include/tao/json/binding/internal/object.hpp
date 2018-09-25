@@ -33,6 +33,41 @@ namespace tao
             template< for_unknown_key E, for_nothing_value N, typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
             struct basic_object;
 
+            template< for_nothing_value N >
+            struct consumer_object_size_helper;
+
+            template<>
+            struct consumer_object_size_helper< for_nothing_value::ENCODE >
+            {
+               template< typename Consumer >
+               static void begin( Consumer& consumer, const std::size_t n )
+               {
+                  consumer.begin_object( n );
+               }
+
+               template< typename Consumer >
+               static void end( Consumer& consumer, const std::size_t n )
+               {
+                  consumer.end_object( n );
+               }
+            };
+
+            template<>
+            struct consumer_object_size_helper< for_nothing_value::SUPPRESS >
+            {
+               template< typename Consumer >
+               static void begin( Consumer& consumer, const std::size_t /*unused*/ )
+               {
+                  consumer.begin_object();
+               }
+
+               template< typename Consumer >
+               static void end( Consumer& consumer, const std::size_t /*unused*/ )
+               {
+                  consumer.end_object();
+               }
+            };
+
             template< for_unknown_key E, for_nothing_value N, typename... As, std::size_t... Is >
             struct basic_object< E, N, json::internal::type_list< As... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
             {
@@ -112,7 +147,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Base, typename C >
                static bool assign_member( basic_value< Traits, Base >& v, const C& x )
                {
-                  if( ( N == for_nothing_value::ENCODE ) && ( !A::template is_nothing< Traits >( x ) ) ) {
+                  if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      v.unsafe_emplace( A::key(), A::read( x ) );
                   }
                   return true;
@@ -185,7 +220,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
                static bool produce_member( Consumer& consumer, const C& x )
                {
-                  if( ( N == for_nothing_value::ENCODE ) && ( !A::template is_nothing< Traits >( x ) ) ) {
+                  if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      A::template produce_key< Traits >( consumer );
                      A::template produce< Traits >( consumer, x );
                      consumer.member();
@@ -196,9 +231,9 @@ namespace tao
                template< template< typename... > class Traits = traits, typename Consumer, typename C >
                static void produce( Consumer& consumer, const C& x )
                {
-                  consumer.begin_object( sizeof...( As ) );
+                  consumer_object_size_helper< N >::begin( consumer, sizeof...( As ) );
                   (void)json::internal::swallow{ produce_member< As, Traits >( consumer, x )... };
-                  consumer.end_object( sizeof...( As ) );
+                  consumer_object_size_helper< N >::end( consumer, sizeof...( As ) );
                }
 
                template< typename A, template< typename... > class Traits, typename Base, typename C >
