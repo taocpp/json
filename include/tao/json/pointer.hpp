@@ -188,6 +188,11 @@ namespace tao
          {
          }
 
+         explicit pointer( const std::initializer_list< token >& l )
+            : m_tokens( l )
+         {
+         }
+
          ~pointer() = default;
 
          pointer& operator=( const pointer& ) = default;
@@ -201,6 +206,12 @@ namespace tao
          pointer& operator=( const std::string& v )
          {
             m_tokens = parse( v );
+            return *this;
+         }
+
+         pointer& operator=( const std::initializer_list< token >& l )
+         {
+            m_tokens = l;
             return *this;
          }
 
