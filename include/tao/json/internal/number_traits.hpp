@@ -66,14 +66,14 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED:
-                     return p->unsafe_get_signed() == rhs;
+                     return p.unsafe_get_signed() == rhs;
                   case type::UNSIGNED:
-                     return ( rhs >= 0 ) && ( p->unsafe_get_unsigned() == static_cast< std::uint64_t >( rhs ) );
+                     return ( rhs >= 0 ) && ( p.unsafe_get_unsigned() == static_cast< std::uint64_t >( rhs ) );
                   case type::DOUBLE:
-                     return p->unsafe_get_double() == rhs;
+                     return p.unsafe_get_double() == rhs;
                   default:
                      return false;
                }
@@ -82,32 +82,32 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED:
-                     return p->unsafe_get_signed() < rhs;
+                     return p.unsafe_get_signed() < rhs;
                   case type::UNSIGNED:
-                     return ( rhs >= 0 ) && ( p->unsafe_get_unsigned() < static_cast< std::uint64_t >( rhs ) );
+                     return ( rhs >= 0 ) && ( p.unsafe_get_unsigned() < static_cast< std::uint64_t >( rhs ) );
                   case type::DOUBLE:
-                     return p->unsafe_get_double() < rhs;
+                     return p.unsafe_get_double() < rhs;
                   default:
-                     return p->type() < type::SIGNED;
+                     return p.type() < type::SIGNED;
                }
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED:
-                     return p->unsafe_get_signed() > rhs;
+                     return p.unsafe_get_signed() > rhs;
                   case type::UNSIGNED:
-                     return ( rhs < 0 ) || ( p->unsafe_get_unsigned() > static_cast< std::uint64_t >( rhs ) );
+                     return ( rhs < 0 ) || ( p.unsafe_get_unsigned() > static_cast< std::uint64_t >( rhs ) );
                   case type::DOUBLE:
-                     return p->unsafe_get_double() > rhs;
+                     return p.unsafe_get_double() > rhs;
                   default:
-                     return p->type() > type::SIGNED;
+                     return p.type() > type::SIGNED;
                }
             }
          };
@@ -137,16 +137,16 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED: {
-                     const auto v = p->unsafe_get_signed();
+                     const auto v = p.unsafe_get_signed();
                      return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs );
                   }
                   case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() == rhs;
+                     return p.unsafe_get_unsigned() == rhs;
                   case type::DOUBLE:
-                     return p->unsafe_get_double() == rhs;
+                     return p.unsafe_get_double() == rhs;
                   default:
                      return false;
                }
@@ -155,36 +155,36 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED: {
-                     const auto v = p->unsafe_get_signed();
+                     const auto v = p.unsafe_get_signed();
                      return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs );
                   }
                   case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() < rhs;
+                     return p.unsafe_get_unsigned() < rhs;
                   case type::DOUBLE:
-                     return p->unsafe_get_double() < rhs;
+                     return p.unsafe_get_double() < rhs;
                   default:
-                     return p->type() < type::UNSIGNED;
+                     return p.type() < type::UNSIGNED;
                }
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED: {
-                     const auto v = p->unsafe_get_signed();
+                     const auto v = p.unsafe_get_signed();
                      return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) > rhs );
                   }
                   case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() > rhs;
+                     return p.unsafe_get_unsigned() > rhs;
                   case type::DOUBLE:
-                     return p->unsafe_get_double() > rhs;
+                     return p.unsafe_get_double() > rhs;
                   default:
-                     return p->type() > type::UNSIGNED;
+                     return p.type() > type::UNSIGNED;
                }
             }
          };
@@ -214,14 +214,14 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED:
-                     return p->unsafe_get_signed() == rhs;
+                     return p.unsafe_get_signed() == rhs;
                   case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() == rhs;
+                     return p.unsafe_get_unsigned() == rhs;
                   case type::DOUBLE:
-                     return p->unsafe_get_double() == rhs;
+                     return p.unsafe_get_double() == rhs;
                   default:
                      return false;
                }
@@ -230,32 +230,32 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED:
-                     return p->unsafe_get_signed() < rhs;
+                     return p.unsafe_get_signed() < rhs;
                   case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() < rhs;
+                     return p.unsafe_get_unsigned() < rhs;
                   case type::DOUBLE:
-                     return p->unsafe_get_double() < rhs;
+                     return p.unsafe_get_double() < rhs;
                   default:
-                     return p->type() < type::DOUBLE;
+                     return p.type() < type::DOUBLE;
                }
             }
 
             template< template< typename... > class Traits, typename Base >
             static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
             {
-               const auto* p = lhs.skip_value_ptr();
-               switch( p->type() ) {
+               const auto& p = lhs.skip_value_ptr();
+               switch( p.type() ) {
                   case type::SIGNED:
-                     return p->unsafe_get_signed() > rhs;
+                     return p.unsafe_get_signed() > rhs;
                   case type::UNSIGNED:
-                     return p->unsafe_get_unsigned() > rhs;
+                     return p.unsafe_get_unsigned() > rhs;
                   case type::DOUBLE:
-                     return p->unsafe_get_double() > rhs;
+                     return p.unsafe_get_double() > rhs;
                   default:
-                     return p->type() > type::DOUBLE;
+                     return p.type() > type::DOUBLE;
                }
             }
          };

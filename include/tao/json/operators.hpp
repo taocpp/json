@@ -14,12 +14,12 @@ namespace tao
       bool operator==( const basic_value< TraitsL, BaseL >& lhs, const basic_value< TraitsR, BaseR >& rhs ) noexcept
       {
          if( rhs.is_value_ptr() ) {
-            return lhs == *rhs.skip_value_ptr();
+            return lhs == rhs.skip_value_ptr();
          }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::VALUE_PTR:
-                  return *lhs.skip_value_ptr() == rhs;
+                  return lhs.skip_value_ptr() == rhs;
 
                case type::SIGNED:
                   if( rhs.type() == type::UNSIGNED ) {
@@ -241,12 +241,12 @@ namespace tao
       bool operator<( const basic_value< TraitsL, BaseL >& lhs, const basic_value< TraitsR, BaseR >& rhs ) noexcept
       {
          if( rhs.is_value_ptr() ) {
-            return lhs < *rhs.skip_value_ptr();
+            return lhs < rhs.skip_value_ptr();
          }
          if( lhs.type() != rhs.type() ) {
             switch( lhs.type() ) {
                case type::VALUE_PTR:
-                  return *lhs.skip_value_ptr() < rhs;
+                  return lhs.skip_value_ptr() < rhs;
 
                case type::SIGNED:
                   if( rhs.type() == type::UNSIGNED ) {

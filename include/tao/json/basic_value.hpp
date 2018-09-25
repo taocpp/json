@@ -1070,14 +1070,14 @@ namespace tao
             unsafe_assign_opaque_ptr( data, producer );
          }
 
-         const basic_value* skip_value_ptr() const noexcept
+         const basic_value& skip_value_ptr() const noexcept
          {
             const basic_value* p = this;
             while( p->is_value_ptr() ) {
                p = p->unsafe_get_value_ptr();
                assert( p );
             }
-            return p;
+            return *p;
          }
 
          template< typename T >

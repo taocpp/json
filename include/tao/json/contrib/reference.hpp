@@ -64,7 +64,7 @@ namespace tao
                      resolve_references( r, e.second );
                   }
                   if( const auto* ref = v.find( "$ref" ) ) {
-                     ref = ref->skip_value_ptr();
+                     ref = &ref->skip_value_ptr();
                      if( ref->is_string_type() ) {
                         const tao::string_view s = ref->unsafe_get_string_type();
                         if( !s.empty() && s[ 0 ] == '#' ) {
@@ -74,7 +74,7 @@ namespace tao
                            while( it != ptr.end() ) {
                               switch( p->type() ) {
                                  case type::ARRAY:
-                                    p = p->at( it->index() ).skip_value_ptr();
+                                    p = &p->at( it->index() ).skip_value_ptr();
                                     break;
                                  case type::OBJECT:
                                     if( const auto* t = p->find( "$ref" ) ) {
@@ -82,7 +82,7 @@ namespace tao
                                           throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );  // NOLINT
                                        }
                                     }
-                                    p = p->at( it->key() ).skip_value_ptr();
+                                    p = &p->at( it->key() ).skip_value_ptr();
                                     break;
                                  default:
                                     throw invalid_type( ptr.begin(), std::next( it ) );  // NOLINT
