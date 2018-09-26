@@ -37,13 +37,13 @@ namespace tao
                      std::rethrow_exception( e );  // TODO: Did I miss a way to avoid the throw?
                   }
                   catch( ... ) {
-                     std::throw_with_nested( std::runtime_error( "all variants failed -- see nested for first error" ) );
+                     std::throw_with_nested( std::runtime_error( "all versions parse failed -- see nested for first error" ) );
                   }
                }
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static std::exception_ptr first_to( const basic_value< Traits, Base >& v, C& x )
+            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< internal::has_to< V, basic_value< Traits, Base >, C >::value, std::exception_ptr >::type
             {
                try {
                   V::to( v, x );
@@ -54,11 +54,35 @@ namespace tao
                }
             }
 
+            template< template< typename... > class Traits, typename Base, typename C >
+            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< V, basic_value< Traits, Base >, C >::value && internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr >::type
+            {
+               try {
+                  x = V::as( v );
+                  return std::exception_ptr();
+               }
+               catch( ... ) {
+                  return std::current_exception();
+               }
+            }
+
             template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static bool attempt_to( const basic_value< Traits, Base >& v, C& x )
+            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< internal::has_to< A, basic_value< Traits, Base >, C >::value, bool >::type
             {
                try {
                   A::to( v, x );
+                  return true;
+               }
+               catch( ... ) {
+                  return false;
+               }
+            }
+
+            template< typename A, template< typename... > class Traits, typename Base, typename C >
+            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< internal::has_to< A, basic_value< Traits, Base >, C >::value && internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type
+            {
+               try {
+                  x = A::as( v );
                   return true;
                }
                catch( ... ) {
@@ -71,7 +95,7 @@ namespace tao
             {
                const std::exception_ptr e = first_to( v, x );
                bool ok = ( e == std::exception_ptr() );
-               (void)json::internal::swallow{ ( ok = ok || attempt_to< Vs >( v, x ) )... };
+               (void)json::internal::swallow{ ( ok = ok || later_to< Vs >( v, x ) )... };
                throw_on_error( ok, e );
             }
 
@@ -90,7 +114,7 @@ namespace tao
             }
 
             template< typename A, template< typename... > class Traits, typename Producer, typename C >
-            static bool attempt_consume( Producer& parser, C& x )
+            static bool later_consume( Producer& parser, C& x )
             {
                try {
                   auto m = parser.mark();
@@ -107,7 +131,7 @@ namespace tao
             {
                const std::exception_ptr e = first_consume< Traits >( parser, x );
                bool ok = ( e == std::exception_ptr() );
-               (void)json::internal::swallow{ ( ok = ok || attempt_consume< Vs, Traits >( parser, x ) )... };
+               (void)json::internal::swallow{ ( ok = ok || later_consume< Vs, Traits >( parser, x ) )... };
                throw_on_error( ok, e );
             }
          };
