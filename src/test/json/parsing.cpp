@@ -76,6 +76,12 @@ namespace tao
       {
       };
 
+      template<>
+      struct my_traits< std::unique_ptr< base_class > >
+         : my_traits< std::shared_ptr< base_class > >::template with_pointer< std::unique_ptr >
+      {
+      };
+
       struct foo
       {
          std::string a = "hello";
@@ -310,6 +316,13 @@ namespace tao
             parts_parser pp( "{ \"two\":{ \"i\" : 17 }}", __FUNCTION__ );
             const auto v = consume< std::shared_ptr< base_class >, my_traits >( pp );
             const auto c = std::dynamic_pointer_cast< derived_two >( v );
+            TEST_ASSERT( c );
+            TEST_ASSERT( c->i == 17 );
+         }
+         {
+            parts_parser pp( "{ \"two\":{ \"i\" : 17 }}", __FUNCTION__ );
+            const auto v = consume< std::unique_ptr< base_class >, my_traits >( pp );
+            const auto* c = dynamic_cast< derived_two* >( v.get() );
             TEST_ASSERT( c );
             TEST_ASSERT( c->i == 17 );
          }
