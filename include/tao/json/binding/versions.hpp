@@ -67,6 +67,9 @@ namespace tao
                }
             }
 
+            template< template< typename... > class Traits, typename Base, typename C >
+            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< V, basic_value< Traits, Base >, C >::value && !internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr >::type = delete;
+
             template< typename A, template< typename... > class Traits, typename Base, typename C >
             static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< internal::has_to< A, basic_value< Traits, Base >, C >::value, bool >::type
             {
@@ -80,7 +83,7 @@ namespace tao
             }
 
             template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< internal::has_to< A, basic_value< Traits, Base >, C >::value && internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type
+            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< A, basic_value< Traits, Base >, C >::value && internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type
             {
                try {
                   x = A::as( v );
@@ -90,6 +93,9 @@ namespace tao
                   return false;
                }
             }
+
+            template< typename A, template< typename... > class Traits, typename Base, typename C >
+            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< A, basic_value< Traits, Base >, C >::value && !internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type = delete;
 
             template< template< typename... > class Traits, typename Base, typename C >
             static void to( const basic_value< Traits, Base >& v, C& x )
