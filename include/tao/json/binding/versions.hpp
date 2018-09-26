@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "../forward.hpp"
+#include "../internal/type_traits.hpp"
 
 namespace tao
 {
