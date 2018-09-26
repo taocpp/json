@@ -188,7 +188,7 @@ namespace tao
          {
          }
 
-         explicit pointer( const std::initializer_list< token >& l )
+         pointer( const std::initializer_list< token >& l )
             : m_tokens( l )
          {
          }

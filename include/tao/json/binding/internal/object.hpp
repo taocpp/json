@@ -140,9 +140,6 @@ namespace tao
                      throw std::runtime_error( "missing required key(s)" + json::base_message_extension( v.base() ) );  // NOLINT
                   }
                }
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
 
                template< typename A, template< typename... > class Traits, typename Base, typename C >
                static bool assign_member( basic_value< Traits, Base >& v, const C& x )
@@ -167,10 +164,6 @@ namespace tao
                   return true;
                }
 
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4127 )
-#endif
                template< template< typename... > class Traits = traits, typename Producer, typename C >
                static void consume( Producer& parser, C& x )
                {
@@ -213,9 +206,6 @@ namespace tao
                      parser.throw_parse_error( "missing required key(s)" );  // NOLINT
                   }
                }
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
 
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
                static bool produce_member( Consumer& consumer, const C& x )
@@ -227,6 +217,9 @@ namespace tao
                   }
                   return true;
                }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
                template< template< typename... > class Traits = traits, typename Consumer, typename C >
                static void produce( Consumer& consumer, const C& x )
