@@ -27,7 +27,7 @@ namespace tao
       template<>
       struct traits< user >
       {
-         static const char* default_key;
+         TAO_JSON_DEFAULT_KEY( "user" );
 
          static void assign( value& v, const user& u )
          {
@@ -46,8 +46,6 @@ namespace tao
                          v.at( "age" ).template as< unsigned >() );
          }
       };
-
-      const char* traits< user >::default_key = "user";
 
       void unit_test()
       {

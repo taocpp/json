@@ -19,15 +19,13 @@ namespace tao
       template<>
       struct traits< X >
       {
-         static const char* default_key;
+         TAO_JSON_DEFAULT_KEY( "X_key" );
 
          static void assign( value& v, const X& /*unused*/ )
          {
             v = "X_value";
          }
       };
-
-      const char* traits< X >::default_key = "X_key";
 
       void unit_test()
       {

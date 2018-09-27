@@ -24,7 +24,7 @@ namespace tao
 
             template< typename U >
             pair( U&& v )  // NOLINT
-               : key( Traits< typename std::decay< U >::type >::default_key ),
+               : key( Traits< typename std::decay< U >::type >::default_key::as_string() ),
                  value( std::forward< U >( v ) )
             {
             }

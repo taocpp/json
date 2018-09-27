@@ -17,7 +17,7 @@ namespace tao
       template<>
       struct traits< my_data >
       {
-         static const char* default_key;
+         TAO_JSON_DEFAULT_KEY( "my_data" );
 
          static void assign( value& v, const my_data& /*unused*/ )
          {
@@ -28,8 +28,6 @@ namespace tao
             };
          }
       };
-
-      const char* traits< my_data >::default_key = "my_data";
 
       void unit_test()
       {

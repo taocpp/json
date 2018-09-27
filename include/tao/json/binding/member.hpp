@@ -6,8 +6,7 @@
 
 #include <string>
 
-#include "../external/pegtl/internal/pegtl_string.hpp"
-#include "../external/string_view.hpp"
+#include "../internal/string_t.hpp"
 #include "../internal/type_traits.hpp"
 
 #include "element.hpp"
@@ -20,7 +19,7 @@ namespace tao
       namespace binding
       {
          template< char... Cs >
-         using key = json_pegtl::string< Cs... >;
+         using key = internal::string_t< Cs... >;
 
          template< member_kind R, typename K >
          struct member_key;
@@ -32,15 +31,13 @@ namespace tao
 
             static std::string key()
             {
-               static const char s[] = { Cs..., 0 };
-               return std::string( s, sizeof...( Cs ) );
+               return binding::key< Cs... >::as_string();
             }
 
             template< template< typename... > class Traits = traits, typename Consumer >
             static void produce_key( Consumer& consumer )
             {
-               static const char s[] = { Cs..., 0 };
-               consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
+               consumer.key( binding::key< Cs... >::as_string_view() );
             }
          };
 
