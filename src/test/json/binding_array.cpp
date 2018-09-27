@@ -302,6 +302,68 @@ namespace tao
             type_4 a;
             TEST_THROWS( v.to( a ) );
          }
+         {
+            type_4 a;
+            a.i = 80;
+            const value v = a;
+            TEST_ASSERT( a == v );
+            TEST_ASSERT( v.is_array() );
+            TEST_ASSERT( v.unsafe_get_array().size() == 5 );
+            TEST_ASSERT( v.unsafe_get_array()[ 0 ].is_integer() );
+            TEST_ASSERT( v.unsafe_get_array()[ 0 ].as< int >() == 80 );
+            TEST_ASSERT( v.unsafe_get_array()[ 1 ].is_boolean() );
+            TEST_ASSERT( v.unsafe_get_array()[ 1 ].as< bool >() == true );
+            TEST_ASSERT( v.unsafe_get_array()[ 2 ].is_integer() );
+            TEST_ASSERT( v.unsafe_get_array()[ 2 ].as< int >() == 90 );
+            TEST_ASSERT( v.unsafe_get_array()[ 3 ].is_integer() );
+            TEST_ASSERT( v.unsafe_get_array()[ 3 ].as< int >() == -5 );
+            TEST_ASSERT( v.unsafe_get_array()[ 4 ].is_string_type() );
+            TEST_ASSERT( v.unsafe_get_array()[ 4 ].as< std::string >() == "abc" );
+            const value w = produce::to_value( a );
+            TEST_ASSERT( w == a );
+            TEST_ASSERT( v == w );
+         }
+         {
+            parts_parser p( "[7,true,90,-5,\"abc\"]", __FUNCTION__ );
+            const auto a = consume< type_4 >( p );
+            TEST_ASSERT( a.i == 7 );
+         }
+         {
+            parts_parser p( "[7,true,90,-5,\"abc\",null]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "[7,true,90,-5]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "[7,false,90,-5,\"abc\"]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "[7,true,91,-5,\"abc\"]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "[7,true,90,-6,\"abc\"]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "[7,true,90,-5,\"abcd\"]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "[7,true,90,-5,90]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "[]", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
+         {
+            parts_parser p( "null", __FUNCTION__ );
+            TEST_THROWS( consume< type_4 >( p ) );
+         }
       }
 
    }  // namespace json
