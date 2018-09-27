@@ -44,6 +44,9 @@ namespace tao
                static void to( const basic_value< Traits, Base >& v, C& x )
                {
                   const auto& a = v.get_array();
+                  if( a.size() != sizeof...( As ) ) {
+                     throw std::runtime_error( "binding array size mismatch in as()" );  // NOLINT
+                  }
                   (void)json::internal::swallow{ to_element< As, Is >( a, x )... };
                }
 
