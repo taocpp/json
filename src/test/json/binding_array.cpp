@@ -37,6 +37,21 @@ namespace tao
       {
       };
 
+      struct type_4
+      {
+         int i = 0;
+      };
+
+      template<>
+      struct traits< type_4 >
+         : binding::array< TAO_JSON_BIND_ELEMENT( &type_4::i ),
+                           binding::element_b< true >,
+                           binding::element_u< 90 >,
+                           binding::element_i< -5 >,
+                           binding::element_s< json_pegtl::string< 'a', 'b', 'c' > > >
+      {
+      };
+
       void unit_test()
       {
          {
@@ -210,6 +225,82 @@ namespace tao
          {
             parts_parser p( "{}", __FUNCTION__ );
             TEST_THROWS( consume< type_1 >( p ) );
+         }
+         {
+            type_3 a;
+            const value v = a;
+            TEST_ASSERT( v.is_array() );
+            TEST_ASSERT( v.unsafe_get_array().size() == 2 );
+            TEST_ASSERT( v.unsafe_get_array()[ 0 ].is_integer() );
+            TEST_ASSERT( v.unsafe_get_array()[ 0 ].as< int >() == 7 );
+            TEST_ASSERT( v.unsafe_get_array()[ 1 ].is_string_type() );
+            TEST_ASSERT( v.unsafe_get_array()[ 1 ].as< std::string >() == "dangerous" );
+            const auto w = produce::to_value( a );
+            TEST_ASSERT( v == w );
+            TEST_ASSERT( a == v );
+            TEST_ASSERT( w == a );
+         }
+         {
+            const auto v = value::array( { 1, true, 90, -5, "abc" } );
+            const auto a = v.as< type_4 >();
+            TEST_ASSERT( a.i == 1 );
+            type_4 b;
+            TEST_ASSERT( b.i == 0 );
+            v.to( b );
+            TEST_ASSERT( b.i == 1 );
+            TEST_ASSERT( a == v );
+            TEST_ASSERT( v == b );
+            TEST_ASSERT( !( a != v ) );
+            TEST_ASSERT( !( v != b ) );
+         }
+         {
+            const auto v = value::array( { 200, true, 90, -5, "abc" } );
+            const auto a = v.as< type_4 >();
+            TEST_ASSERT( a.i == 200 );
+            type_4 b;
+            TEST_ASSERT( b.i == 0 );
+            v.to( b );
+            TEST_ASSERT( b.i == 200 );
+            TEST_ASSERT( a == v );
+            TEST_ASSERT( v == b );
+            TEST_ASSERT( !( a != v ) );
+            TEST_ASSERT( !( v != b ) );
+         }
+         {
+            const auto v = value::array( { 1, false, 90, -5, "abc" } );
+            TEST_THROWS( v.as< type_4 >() );
+            type_4 a;
+            TEST_THROWS( v.to( a ) );
+         }
+         {
+            const auto v = value::array( { 1, true, 91, -5, "abc" } );
+            TEST_THROWS( v.as< type_4 >() );
+            type_4 a;
+            TEST_THROWS( v.to( a ) );
+         }
+         {
+            const auto v = value::array( { 1, true, 90, -6, "abc" } );
+            TEST_THROWS( v.as< type_4 >() );
+            type_4 a;
+            TEST_THROWS( v.to( a ) );
+         }
+         {
+            const auto v = value::array( { 1, true, 90, -5, "abcd" } );
+            TEST_THROWS( v.as< type_4 >() );
+            type_4 a;
+            TEST_THROWS( v.to( a ) );
+         }
+         {
+            const auto v = value::array( { 1, 1, 90, -5, "abc" } );
+            TEST_THROWS( v.as< type_4 >() );
+            type_4 a;
+            TEST_THROWS( v.to( a ) );
+         }
+         {
+            const auto v = value::array( { 1, true, 90, -5, "abc", 2 } );
+            TEST_THROWS( v.as< type_4 >() );
+            type_4 a;
+            TEST_THROWS( v.to( a ) );
          }
       }
 

@@ -45,7 +45,7 @@ namespace tao
                {
                   const auto& a = v.get_array();
                   if( a.size() != sizeof...( As ) ) {
-                     throw std::runtime_error( "binding array size mismatch in as()" );  // NOLINT
+                     throw std::runtime_error( "binding array size mismatch" );  // NOLINT
                   }
                   (void)json::internal::swallow{ to_element< As, Is >( a, x )... };
                }

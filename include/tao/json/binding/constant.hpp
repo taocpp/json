@@ -31,7 +31,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                const auto t = v.template as< bool >();
                if( t != V ) {
@@ -65,7 +65,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                const auto t = v.template as< std::int64_t >();
                if( t != V ) {
@@ -99,7 +99,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                const auto t = v.template as< std::uint64_t >();
                if( t != V ) {
@@ -140,7 +140,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static void as( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                static const char s[] = { Cs..., 0 };
                const auto sv = v.template as< tao::string_view >();
