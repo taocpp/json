@@ -165,7 +165,7 @@ namespace tao
             TEST_ASSERT( a == v );
          }
          {
-            const type_2 a = { 20, "hola", false };
+            const type_2 a( 20, "hola", false );
             const value v = a;
             TEST_ASSERT( v.is_array() );
             TEST_ASSERT( v.unsafe_get_array().size() == 3 );
@@ -180,8 +180,8 @@ namespace tao
             TEST_ASSERT( v == a );
             TEST_ASSERT( !( a != v ) );
             TEST_ASSERT( !( v != a ) );
-            const type_2 b = { 19, "hola", false };
-            const type_2 c = { 20, "hola", true };
+            const type_2 b( 19, "hola", false );
+            const type_2 c( 20, "hola", true );
             TEST_ASSERT( b != c );
             TEST_ASSERT( c != b );
             TEST_ASSERT( a != b );
