@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.3.0 FATAL_ERROR)
 set(testsources
   access.cpp
   big_list_of_naughty_strings.cpp
-  binding.cpp
+  binding_array.cpp
   cbor.cpp
   compare.cpp
   composite_traits.cpp
@@ -32,7 +32,6 @@ set(testsources
   ostream_jaxn.cpp
   parse.cpp
   parse_jaxn.cpp
-  parsing.cpp
   pointer.cpp
   position.cpp
   reference.cpp
@@ -40,6 +39,8 @@ set(testsources
   self_contained.cpp
   sha256.cpp
   string_view.cpp
+  temporary_binding.cpp
+  temporary_parsing.cpp
   traits.cpp
   type.cpp
   ubjson.cpp
