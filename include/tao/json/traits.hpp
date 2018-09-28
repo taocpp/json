@@ -38,7 +38,9 @@
 #include "internal/indirect_traits.hpp"
 #include "internal/number_traits.hpp"
 #include "internal/object_traits.hpp"
+#include "internal/shared_traits.hpp"
 #include "internal/type_traits.hpp"
+#include "internal/unique_traits.hpp"
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -1000,75 +1002,15 @@ namespace tao
          }
       };
 
-      template< typename T, typename U = T >
-      struct shared_traits
-         : public internal::indirect_traits< std::shared_ptr< T > >
-      {
-         template< typename V >
-         using with_base = shared_traits< T, V >;
-
-         template< template< typename... > class Traits, typename Base >
-         static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
-         {
-            if( v == null ) {
-               return std::shared_ptr< U >();
-            }
-            auto t = std::make_shared< T >();  // TODO: More control?
-            v.to( *t );
-            return t;
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static std::shared_ptr< U > consume( Producer& parser )
-         {
-            if( parser.null() ) {
-               return std::shared_ptr< U >();
-            }
-            auto t = std::make_shared< T >();  // TODO: More control?
-            json::consume< Traits >( parser, *t );
-            return t;
-         }
-      };
-
       template< typename T >
       struct traits< std::shared_ptr< T > >
-         : public shared_traits< T >
+         : public internal::shared_traits< T >
       {
-      };
-
-      template< typename T, typename U = T >
-      struct unique_traits
-         : public internal::indirect_traits< std::unique_ptr< T > >
-      {
-         template< typename V >
-         using with_base = unique_traits< T, V >;
-
-         template< template< typename... > class Traits, typename Base >
-         static std::unique_ptr< U > as( const basic_value< Traits, Base >& v )
-         {
-            if( v == null ) {
-               return std::unique_ptr< U >();
-            }
-            std::unique_ptr< U > t( new T() );  // TODO: More control?
-            v.to( *static_cast< T* >( t.get() ) );
-            return t;
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static std::unique_ptr< U > consume( Producer& parser )
-         {
-            if( parser.null() ) {
-               return std::unique_ptr< U >();
-            }
-            std::unique_ptr< U > t( new T() );  // TODO: More control?
-            json::consume< Traits >( parser, *static_cast< T* >( t.get() ) );
-            return t;
-         }
       };
 
       template< typename T >
       struct traits< std::unique_ptr< T > >
-         : public unique_traits< T >
+         : public internal::unique_traits< T >
       {
       };
 

@@ -42,8 +42,8 @@ namespace tao
                template< template< typename... > class Traits, typename Base >
                static void assign( basic_value< Traits, Base >& v, const P< U >& p )
                {
-                  using R = Traits< T >;  // OK to bypass Traits< P< T > >?
-                  R::assign( v, static_cast< const T& >( *p ) );
+                  using R = typename Traits< P< T > >::template with_base< U >;
+                  R::assign( v, p );
                }
 
                template< template< typename... > class Traits, typename Producer >
@@ -56,8 +56,8 @@ namespace tao
                template< template< typename... > class Traits, typename Consumer >
                static void produce( Consumer& c, const P< U >& p )
                {
-                  using R = Traits< T >;  // OK to bypass Traits< P< T > >?
-                  R::template produce< Traits >( c, static_cast< const T& >( *p ) );
+                  using R = typename Traits< P< T > >::template with_base< U >;
+                  R::template produce< Traits >( c, p );
                }
             };
 
