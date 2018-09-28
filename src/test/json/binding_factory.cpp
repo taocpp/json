@@ -94,6 +94,31 @@ namespace tao
       void unit_test_2()
       {
          const value v = {
+            { "one", {
+                  { "s", "foo" }
+               }
+            }
+         };
+         const auto a = v.as< std::unique_ptr< base > >();
+         TEST_ASSERT( a );
+         const auto* b = dynamic_cast< derived_1* >( a.get() );
+         TEST_ASSERT( b );
+         TEST_ASSERT( b->s == "foo" );
+         const value w = a;
+         TEST_ASSERT( w == v );
+         const value x = produce::to_value( a );
+         TEST_ASSERT( w == x );
+         parts_parser p( to_string( v ), __FUNCTION__ );
+         const auto c = consume< std::unique_ptr< base > >( p );
+         TEST_ASSERT( c );
+         const auto d = dynamic_cast< derived_1* >( c.get() );
+         TEST_ASSERT( d );
+         TEST_ASSERT( d->s == "foo" );
+      }
+
+      void unit_test_3()
+      {
+         const value v = {
             { "two", {
                   { "i", 42 },
                   { "j", 23 }
@@ -119,10 +144,40 @@ namespace tao
          TEST_ASSERT( d->j == 23 );
       }
 
+      void unit_test_4()
+      {
+         const value v = {
+            { "two", {
+                  { "i", 42 },
+                  { "j", 23 }
+               }
+            }
+         };
+         const auto a = v.as< std::unique_ptr< base > >();
+         TEST_ASSERT( a );
+         const auto* b = dynamic_cast< derived_2* >( a.get() );
+         TEST_ASSERT( b );
+         TEST_ASSERT( b->i == 42 );
+         TEST_ASSERT( b->j == 23 );
+         const value w = a;
+         TEST_ASSERT( w == v );
+         const value x = produce::to_value( a );
+         TEST_ASSERT( w == x );
+         parts_parser p( to_string( v ), __FUNCTION__ );
+         const auto c = consume< std::unique_ptr< base > >( p );
+         TEST_ASSERT( c );
+         const auto* d = dynamic_cast< derived_2* >( c.get() );
+         TEST_ASSERT( d );
+         TEST_ASSERT( d->i == 42 );
+         TEST_ASSERT( d->j == 23 );
+      }
+
       void unit_test()
       {
          unit_test_1();
          unit_test_2();
+         unit_test_3();
+         unit_test_4();
       }
 
    }  // namespace json
