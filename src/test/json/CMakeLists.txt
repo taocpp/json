@@ -41,7 +41,6 @@ set(testsources
   self_contained.cpp
   sha256.cpp
   string_view.cpp
-  temporary_binding.cpp
   temporary_parsing.cpp
   traits.cpp
   type.cpp
