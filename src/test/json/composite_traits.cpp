@@ -31,6 +31,11 @@ namespace tao
             const auto g = v.as< tao::optional< std::string > >();
             TEST_ASSERT( *g == *f );
          }
+         {
+            const tao::optional< int > i;
+            const value v = null;
+            TEST_ASSERT( i == v );
+         }
       }
 
       void test_shared()

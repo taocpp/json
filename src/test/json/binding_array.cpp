@@ -4,7 +4,6 @@
 #include "../../test/json/test.hpp"
 
 #include <tao/json.hpp>
-#include <tao/json/binding.hpp>
 
 namespace tao
 {

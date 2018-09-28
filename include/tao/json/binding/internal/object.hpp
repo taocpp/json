@@ -232,8 +232,14 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Base, typename C >
                static bool equal_member( const std::map< std::string, basic_value< Traits, Base > >& a, C& x )
                {
-                  // TODO: If we could assume the As... to be sorted by their keys we could easily optimise this, otherwise it's slightly more involved...
-                  return a[ A::template key< Traits >() ] == A::read( x );
+                  if( !A::template is_nothing< Traits >( x ) ) {
+                     return a.at( A::template key< Traits >() ) == A::read( x );
+                  }
+                  if( N == for_nothing_value::ENCODE ) {
+                     return a.at( A::template key< Traits >() ).is_null();
+                  }
+                  const auto i = a.find( A::template key< Traits >() );
+                  return ( i == a.end() ) || i->second.is_null();
                }
 
                template< template< typename... > class Traits, typename Base, typename C >
