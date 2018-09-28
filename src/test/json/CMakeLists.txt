@@ -6,6 +6,7 @@ set(testsources
   binding_array.cpp
   binding_factory.cpp
   binding_object.cpp
+  binding_versions.cpp
   cbor.cpp
   compare.cpp
   composite_traits.cpp
