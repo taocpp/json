@@ -23,7 +23,7 @@ namespace tao
          template< typename C, typename T, T C::*P >
          struct element< T C::*, P, typename std::enable_if< std::is_member_object_pointer< T C::* >::value >::type >
          {
-            using internal_t = typename std::decay< T >::type;
+            using internal_t = typename std::decay< decltype( std::declval< C >().*P ) >::type;
 
             static auto read( const C& v ) -> decltype( v.*P )
             {
@@ -63,7 +63,7 @@ namespace tao
          template< typename C, typename T, T C::*P >
          struct element< T C::*, P, typename std::enable_if< std::is_member_function_pointer< T C::* >::value >::type >
          {
-            using internal_t = typename std::decay< T >::type;
+            using internal_t = typename std::decay< decltype( ( std::declval< const C >().*P )() ) >::type;
 
             static auto read( const C& v ) -> decltype( ( v.*P )() )
             {
