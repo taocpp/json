@@ -11,8 +11,7 @@
 #include "../basic_value.hpp"
 #include "../external/pegtl/internal/pegtl_string.hpp"
 #include "../internal/escape.hpp"
-
-#include "member.hpp"
+#include "../internal/string_t.hpp"
 
 namespace tao
 {
@@ -24,7 +23,7 @@ namespace tao
          struct factory_type;
 
          template< char... Cs, typename T, typename U, template< typename... > class P >  // NOLINT
-         struct factory_type< key< Cs... >, T, U, P >
+         struct factory_type< json::internal::string_t< Cs... >, T, U, P >
          {
             static const std::type_info* type()
             {
@@ -236,6 +235,6 @@ namespace tao
 
 }  // namespace tao
 
-#define TAO_JSON_FACTORY_BIND( KeY, ... ) tao::json::binding::factory_temp< TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::binding::key, KeY ), __VA_ARGS__ >
+#define TAO_JSON_FACTORY_BIND( KeY, ... ) tao::json::binding::factory_temp< TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, KeY ), __VA_ARGS__ >
 
 #endif

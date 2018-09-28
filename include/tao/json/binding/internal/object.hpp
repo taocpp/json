@@ -96,7 +96,7 @@ namespace tao
                template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename F >
                static bool emplace_to( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::key(), entry< F >( &A::template to< Traits, Base >, I ) );
+                  m.emplace( A::template key< Traits >(), entry< F >( &A::template to< Traits, Base >, I ) );
                   return true;
                }
 
@@ -145,7 +145,7 @@ namespace tao
                static bool assign_member( basic_value< Traits, Base >& v, const C& x )
                {
                   if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
-                     v.unsafe_emplace( A::key(), A::read( x ) );
+                     v.unsafe_emplace( A::template key< Traits >(), A::read( x ) );
                   }
                   return true;
                }
@@ -160,7 +160,7 @@ namespace tao
                template< typename A, std::size_t I, template< typename... > class Traits, typename Producer, typename F >
                static bool emplace_consume( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::key(), entry< F >( &A::template consume< Traits, Producer >, I ) );
+                  m.emplace( A::template key< Traits >(), entry< F >( &A::template consume< Traits, Producer >, I ) );
                   return true;
                }
 
@@ -233,7 +233,7 @@ namespace tao
                static bool equal_member( const std::map< std::string, basic_value< Traits, Base > >& a, C& x )
                {
                   // TODO: If we could assume the As... to be sorted by their keys we could easily optimise this, otherwise it's slightly more involved...
-                  return a[ A::key() ] == A::read( x );
+                  return a[ A::template key< Traits >() ] == A::read( x );
                }
 
                template< template< typename... > class Traits, typename Base, typename C >

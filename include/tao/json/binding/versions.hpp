@@ -44,7 +44,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< internal::has_to< V, basic_value< Traits, Base >, C >::value, std::exception_ptr >::type
+            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< json::internal::has_to< V, basic_value< Traits, Base >, C >::value, std::exception_ptr >::type
             {
                try {
                   V::to( v, x );
@@ -56,7 +56,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< V, basic_value< Traits, Base >, C >::value && internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr >::type
+            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !json::internal::has_to< V, basic_value< Traits, Base >, C >::value && json::internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr >::type
             {
                try {
                   x = V::as( v );
@@ -68,10 +68,10 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
-            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< V, basic_value< Traits, Base >, C >::value && !internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr >::type = delete;
+            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !json::internal::has_to< V, basic_value< Traits, Base >, C >::value && !json::internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr >::type = delete;
 
             template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< internal::has_to< A, basic_value< Traits, Base >, C >::value, bool >::type
+            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< json::internal::has_to< A, basic_value< Traits, Base >, C >::value, bool >::type
             {
                try {
                   A::to( v, x );
@@ -83,7 +83,7 @@ namespace tao
             }
 
             template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< A, basic_value< Traits, Base >, C >::value && internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type
+            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !json::internal::has_to< A, basic_value< Traits, Base >, C >::value && json::internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type
             {
                try {
                   x = A::as( v );
@@ -95,7 +95,7 @@ namespace tao
             }
 
             template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !internal::has_to< A, basic_value< Traits, Base >, C >::value && !internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type = delete;
+            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> typename std::enable_if< !json::internal::has_to< A, basic_value< Traits, Base >, C >::value && !json::internal::has_as< A, basic_value< Traits, Base > >::value, bool >::type = delete;
 
             template< template< typename... > class Traits, typename Base, typename C >
             static void to( const basic_value< Traits, Base >& v, C& x )
