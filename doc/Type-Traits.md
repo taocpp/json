@@ -451,21 +451,17 @@ std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int >
 
 The use of default keys is [shown in the section on creating Values](Value-Class.md#creating-values).
 
-The default key for a type is a C-string that needs to be declared in the Traits specialisation.
+The default key for a type is a compile-time string that needs to be declared in the Traits specialisation.
 
 ```c++
 template<>
 struct my_traits< my_type >
 {
-   static const char* default_key;
+   TAO_JSON_DEFAULT_KEY( "fraggle" );
 };
 ```
 
-And this is the corresponding definition that needs to be placed in an implementation (`.cpp`) file.
-
-```c++
-const char* my_traits< my_type >::default_key = "fraggle";
-```
+Further uses of the default key are for object bindings and the polymorphic object factory (TODO: Links).
 
 The default Traits supplied with the library do not define a default key for any type.
 

@@ -180,7 +180,7 @@ const type_with_default_key t;
 const tao::json::value v( {
    { "foo", 42 },
    { "bar", true },
-   t  // Shortcut for: { tao::json::traits< type_with_default_key >::default_key, t }
+   t  // Shortcut for: { tao::json::traits< type_with_default_key >::default_key::as_string(), t }
 } );
 ```
 
