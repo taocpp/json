@@ -15,7 +15,7 @@
 #include "element.hpp"
 #include "member_kind.hpp"
 
-#include "internal/member_key.hpp"
+#include "internal/type_key.hpp"
 
 namespace tao
 {
@@ -172,7 +172,7 @@ namespace tao
          template< member_kind R, typename K, bool B >
          struct member_b
             : public element_b< B >,
-              public internal::member_key< K, void >
+              public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
          };
@@ -180,7 +180,7 @@ namespace tao
          template< member_kind R, typename K, std::int64_t V >
          struct member_i
             : public element_i< V >,
-              public internal::member_key< K, void >
+              public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
          };
@@ -188,7 +188,7 @@ namespace tao
          template< member_kind R, typename K, std::uint64_t V >
          struct member_u
             : public element_u< V >,
-              public internal::member_key< K, void >
+              public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
          };
@@ -196,7 +196,7 @@ namespace tao
          template< member_kind R, typename K, typename S >
          struct member_s
             : public element_s< S >,
-              public internal::member_key< K, void >
+              public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
          };

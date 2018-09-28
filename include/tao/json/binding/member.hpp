@@ -9,7 +9,7 @@
 #include "element.hpp"
 #include "member_kind.hpp"
 
-#include "internal/member_key.hpp"
+#include "internal/type_key.hpp"
 
 namespace tao
 {
@@ -20,7 +20,7 @@ namespace tao
          template< member_kind R, typename K, typename T, T P >
          struct member
             : public element< T, P >,
-              public internal::member_key< K, typename element< T, P >::internal_t >
+              public internal::type_key< K, typename element< T, P >::internal_t >
          {
             static constexpr member_kind kind = R;
 

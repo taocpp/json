@@ -1,7 +1,7 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#include "../../test/json/test.hpp"
+#include "test.hpp"
 
 #include <tao/json.hpp>
 
@@ -128,6 +128,7 @@ namespace tao
       }
 
       // TODO: Test consume...
+      // TODO: Test inheriting binding for derived classes.
       // TODO: Test additional keys in input.
       // TODO: Test with different for_unknown_key.
       // TODO: Test with different for_nothing_value (incl. consistency of size to consumer).

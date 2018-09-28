@@ -4,6 +4,7 @@ set(testsources
   access.cpp
   big_list_of_naughty_strings.cpp
   binding_array.cpp
+  binding_factory.cpp
   binding_object.cpp
   cbor.cpp
   compare.cpp

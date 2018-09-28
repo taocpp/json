@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_BINDING_INTERNAL_MEMBER_KEY_HPP
-#define TAO_JSON_BINDING_INTERNAL_MEMBER_KEY_HPP
+#ifndef TAO_JSON_BINDING_INTERNAL_TYPE_KEY_HPP
+#define TAO_JSON_BINDING_INTERNAL_TYPE_KEY_HPP
 
 #include <string>
 
@@ -22,10 +22,10 @@ namespace tao
             };
 
             template< typename K, typename V >
-            struct member_key;
+            struct type_key;
 
             template< char... Cs, typename V >
-            struct member_key< json::internal::string_t< Cs... >, V >
+            struct type_key< json::internal::string_t< Cs... >, V >
             {
                template< template< typename... > class Traits >
                static std::string key()
@@ -42,7 +42,7 @@ namespace tao
 
 
             template< typename V >
-            struct member_key< use_default_key, V >
+            struct type_key< use_default_key, V >
             {
                template< template< typename... > class Traits >
                static std::string key()

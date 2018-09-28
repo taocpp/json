@@ -13,70 +13,62 @@
 #include "../internal/escape.hpp"
 #include "../internal/string_t.hpp"
 
+#include "internal/type_key.hpp"
+
 namespace tao
 {
    namespace json
    {
       namespace binding
       {
-         template< typename K, typename T, typename U, template< typename... > class P >
-         struct factory_type;
-
-         template< char... Cs, typename T, typename U, template< typename... > class P >  // NOLINT
-         struct factory_type< json::internal::string_t< Cs... >, T, U, P >
+         namespace internal
          {
-            static const std::type_info* type()
+            template< typename K, typename T, typename U, template< typename... > class P >
+            struct factory_type
+               : public type_key< K, T >
             {
-               return &typeid( T );
-            }
+               static const std::type_info* type()
+               {
+                  return &typeid( T );
+               }
 
-            static std::string name()
-            {
-               static const char s[] = { Cs..., 0 };
-               return std::string( s, sizeof...( Cs ) );
-            }
+               template< template< typename... > class Traits, typename Base >
+               static P< U > as( const basic_value< Traits, Base >& v )
+               {
+                  using R = typename Traits< P< T > >::template with_base< U >;
+                  return R::as( v );
+               }
 
-            template< template< typename... > class Traits = traits, typename Consumer >
-            static void produce_name( Consumer& consumer )
-            {
-               static const char s[] = { Cs..., 0 };
-               consumer.key( tao::string_view( s, sizeof...( Cs ) ) );
-            }
+               template< template< typename... > class Traits, typename Base >
+               static void assign( basic_value< Traits, Base >& v, const P< U >& p )
+               {
+                  using R = typename Traits< P< T > >::template with_base< U >;
+                  R::assign( v, std::static_pointer_cast< T >( p ) );  // TODO: What can we do for unique pointers? Always reinterpret_cast< const P< T >& >( p )?
+               }
 
-            template< template< typename... > class Traits, typename Base >
-            static P< U > as( const basic_value< Traits, Base >& v )
-            {
-               using R = typename Traits< P< T > >::template with_base< U >;
-               return R::as( v );
-            }
+               template< template< typename... > class Traits, typename Producer >
+               static P< U > consume( Producer& parser )
+               {
+                  using R = typename Traits< P< T > >::template with_base< U >;
+                  return R::template consume< Traits >( parser );
+               }
 
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const P< U >& p )
-            {
-               using R = typename Traits< P< T > >::template with_base< U >;
-               R::assign( v, p );
-            }
+               template< template< typename... > class Traits, typename Consumer >
+               static void produce( Consumer& c, const P< U >& p )
+               {
+                  using R = typename Traits< P< T > >::template with_base< U >;
+                  R::template produce< Traits >( c, std::static_pointer_cast< T >( p ) );  // TODO: What can we do for unique pointers? Always reinterpret_cast< const P< T >& >( p )?
+               }
+            };
 
-            template< template< typename... > class Traits, typename Producer >
-            static P< U > consume( Producer& parser )
+            template< typename K, typename T >
+            struct factory_temp
             {
-               using R = typename Traits< P< T > >::template with_base< U >;
-               return R::template consume< Traits >( parser );
-            }
-            template< template< typename... > class Traits, typename Consumer >
-            static void produce( Consumer& c, const P< U >& p )
-            {
-               using R = typename Traits< P< T > >::template with_base< U >;
-               R::template produce< Traits >( c, p );
-            }
-         };
+               template< typename U, template< typename... > class P >
+               using bind = factory_type< K, T, U, P >;
+            };
 
-         template< typename K, typename T >
-         struct factory_temp
-         {
-            template< typename U, template< typename... > class P >
-            using bind = factory_type< K, T, U, P >;
-         };
+         }  // namespace internal
 
          template< template< typename... > class P, typename U, typename... Ts >
          struct basic_factory
@@ -111,7 +103,7 @@ namespace tao
             static bool emplace_as( std::map< std::string, entry< F > >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::name(), entry< F >( &W::template as< Traits, Base > ) );
+               m.emplace( W::template key< Traits >(), entry< F >( &W::template as< Traits, Base > ) );
                return true;
             }
 
@@ -142,7 +134,7 @@ namespace tao
             static bool emplace_assign( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::type(), entry2< F >( &W::template assign< Traits, Base >, W::name() ) );
+               m.emplace( W::type(), entry2< F >( &W::template assign< Traits, Base >, W::template key< Traits >() ) );
                return true;
             }
 
@@ -171,7 +163,7 @@ namespace tao
             static bool emplace_consume( std::map< std::string, entry< F > >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::name(), entry< F >( &W::template consume< Traits, Producer > ) );
+               m.emplace( W::template key< Traits >(), entry< F >( &W::template consume< Traits, Producer > ) );
                return true;
             }
 
@@ -200,7 +192,7 @@ namespace tao
             static bool emplace_produce( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::type(), entry2< F >( &W::template produce< Traits, Consumer >, W::name() ) );
+               m.emplace( W::type(), entry2< F >( &W::template produce< Traits, Consumer >, W::template key< Traits >() ) );
                return true;
             }
 
@@ -235,6 +227,8 @@ namespace tao
 
 }  // namespace tao
 
-#define TAO_JSON_FACTORY_BIND( KeY, ... ) tao::json::binding::factory_temp< TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, KeY ), __VA_ARGS__ >
+#define TAO_JSON_FACTORY_BIND( KeY, ... ) tao::json::binding::internal::factory_temp< TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, KeY ), __VA_ARGS__ >
+
+#define TAO_JSON_FACTORY_BIND1( ... ) tao::json::binding::internal::factory_temp< tao::json::binding::internal::use_default_key, __VA_ARGS__ >
 
 #endif
