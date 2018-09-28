@@ -21,7 +21,7 @@ namespace tao
 
       struct type_1
       {
-         int i;
+         int i = 8000;
          std::string s;
          tao::optional< bool > b;
          tao::optional< double > d;
@@ -77,7 +77,7 @@ namespace tao
          };
          const auto a = v.as< type_1 >();
          TEST_ASSERT( a.i == 42 );
-         TEST_ASSERT( a.s == "" );
+         TEST_ASSERT( a.s.empty() );
          TEST_ASSERT( a.b && ( *a.b == true ) );
          TEST_ASSERT( !a.d );
          TEST_ASSERT( a.z.first == 5 );
