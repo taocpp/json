@@ -22,6 +22,7 @@ set(testsources
   include_json.cpp
   index.cpp
   integer.cpp
+  json_parts_parser.cpp
   json_patch.cpp
   json_pointer.cpp
   key_camel_case_to_snake_case.cpp

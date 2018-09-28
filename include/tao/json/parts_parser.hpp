@@ -5,11 +5,13 @@
 #define TAO_JSON_PARTS_PARSER_HPP
 
 #include "external/pegtl.hpp"
+#include "external/pegtl/contrib/changes.hpp"
 #include "external/pegtl/contrib/integer.hpp"
 #include "external/pegtl/contrib/json.hpp"
 
 #include "internal/format.hpp"
 #include "internal/grammar.hpp"
+#include "internal/number_state.hpp"
 #include "internal/string_state.hpp"
 #include "internal/unescape_action.hpp"
 
@@ -56,12 +58,6 @@ namespace tao
                }
             };
 
-            template< typename I >
-            struct integer_state
-            {
-               I converted = 0;
-            };
-
             template< typename Rule >
             struct integer_action
                : json_pegtl::nothing< Rule >
@@ -80,7 +76,82 @@ namespace tao
             {
             };
 
+            struct double_rule
+            {
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+
+               template< apply_mode A,
+                         rewind_mode M,
+                         template< typename... > class Action,
+                         template< typename... > class Control,
+                         typename Input,
+                         typename... States >
+               static bool match_impl( Input& in, States&&... st )
+               {
+                  switch( in.peek_char() ) {
+                     case '-':
+                        in.bump_in_this_line();
+                        if( in.empty() || !sor_value::match_number< true, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
+                           throw json_pegtl::parse_error( "incomplete number", in );
+                        }
+                        return true;
+
+                     default:
+                        return sor_value::match_number< false, A, M, Action, Control >( in, st... );
+                  }
+               }
+
+               template< apply_mode A,
+                         rewind_mode M,
+                         template< typename... > class Action,
+                         template< typename... > class Control,
+                         typename Input,
+                         typename... States >
+               static bool match( Input& in, States&&... st )
+               {
+                  return in.size( 2 ) && match_impl< A, M, Action, Control >( in, st... );
+               }
+            };
+
          }  // namespace rules
+
+         template< typename I >
+         struct integer_state
+         {
+            I converted = 0;
+         };
+
+         template< typename Rule >
+         struct double_control
+            : json_pegtl::normal< Rule >
+         {
+         };
+
+         template< bool NEG >
+         struct double_control< rules::number< NEG > >
+            : json_pegtl::change_state< rules::number< NEG >, number_state< NEG > >
+         {
+         };
+
+         struct double_state_and_consumer
+         {
+            void number( const double d )
+            {
+               converted = d;
+            }
+
+            void number( const std::int64_t i )
+            {
+               converted = i;
+            }
+
+            void number( const std::uint64_t u )
+            {
+               converted = u;
+            }
+
+            double converted;  // NOLINT
+         };
 
       }  // namespace internal
 
@@ -97,6 +168,11 @@ namespace tao
             json_pegtl::parse< internal::rules::wss >( m_input );
          }
 
+         bool empty()
+         {
+            return m_input.empty();
+         }
+
          bool null()
          {
             return json_pegtl::parse< json_pegtl::seq< internal::rules::null, internal::rules::wss > >( m_input );
@@ -111,21 +187,21 @@ namespace tao
 
          double number_double()
          {
-            // TODO
-            assert( false );
-            return 42.0;
+            internal::double_state_and_consumer st;
+            json_pegtl::parse< json_pegtl::must< internal::rules::double_rule, internal::rules::wss >, internal::action, internal::double_control >( m_input, st );
+            return st.converted;
          }
 
          std::int64_t number_signed()
          {
-            internal::rules::integer_state< std::int64_t > st;
+            internal::integer_state< std::int64_t > st;
             json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }
 
          std::uint64_t number_unsigned()
          {
-            internal::rules::integer_state< std::uint64_t > st;
+            internal::integer_state< std::uint64_t > st;
             json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }

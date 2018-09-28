@@ -123,6 +123,11 @@ namespace tao
             {
             }
 
+            bool empty()
+            {
+               return m_input.empty();
+            }
+
             bool null()
             {
                if( internal::peek_marker( m_input ) == internal::marker::NULL_ ) {
