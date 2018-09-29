@@ -9,6 +9,7 @@
 #include "external/pegtl/contrib/integer.hpp"
 #include "external/pegtl/contrib/json.hpp"
 
+#include "internal/action.hpp"
 #include "internal/format.hpp"
 #include "internal/grammar.hpp"
 #include "internal/number_state.hpp"
@@ -118,7 +119,7 @@ namespace tao
          template< typename I >
          struct integer_state
          {
-            I converted = 0;
+            I converted;
          };
 
          template< typename Rule >
