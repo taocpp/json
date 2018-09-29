@@ -25,6 +25,10 @@ set(testsources
   include_json.cpp
   index.cpp
   integer.cpp
+  jaxn_ostream.cpp
+  jaxn_parse.cpp
+  json_ostream.cpp
+  json_parse.cpp
   json_parts_parser.cpp
   json_patch.cpp
   json_pointer.cpp
@@ -34,12 +38,7 @@ set(testsources
   msgpack.cpp
   object_construction.cpp
   object_operators.cpp
-  opaque.cpp
-  ostream.cpp
-  ostream_jaxn.cpp
-  parse.cpp
-  parse_jaxn.cpp
-  pointer.cpp
+  opaque_pointer.cpp
   position.cpp
   self_contained.cpp
   sha256.cpp
@@ -51,6 +50,7 @@ set(testsources
   uri_fragment.cpp
   user.cpp
   validate_event_interfaces.cpp
+  value_pointer.cpp
 )
 
 # file (GLOB ...) is used to validate the above list of test_sources
