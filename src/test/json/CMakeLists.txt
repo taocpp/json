@@ -44,7 +44,6 @@ set(testsources
   sha256.cpp
   string_view.cpp
   temporary_parsing.cpp
-  traits.cpp
   type.cpp
   ubjson.cpp
   uri_fragment.cpp
