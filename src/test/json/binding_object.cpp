@@ -151,13 +151,13 @@ namespace tao
       {
       };
 
-      // void unit_test_4()
-      // {
-      //    const value v = from_string( "{ \"i\": 5, \"j\": 6 }" );
-      //    const auto a = as< type_4 >( v );
-      //    TEST_ASSERT( a.i == 5 );
-      //    TEST_ASSERT( a.j == 6 );
-      // }
+      void unit_test_4()
+      {
+         const value v = from_string( "{ \"i\": 5, \"j\": 6 }" );
+         const auto a = as< type_4 >( v );
+         TEST_ASSERT( a.i == 5 );
+         TEST_ASSERT( a.j == 6 );
+      }
 
       // TODO: Test consume...
       // TODO: Test additional keys in input.
@@ -170,7 +170,7 @@ namespace tao
          unit_test_1();
          unit_test_2();
          unit_test_3();
-         //         unit_test_4();  // TODO: Fix the type mismatch in the functions for the maps used in binding::object (as opposed to binding::array where they are called directly).
+         unit_test_4();  // TODO: Fix the type mismatch in the functions for the maps used in binding::object (as opposed to binding::array where they are called directly).
       }
 
    }  // namespace json
