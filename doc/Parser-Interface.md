@@ -9,6 +9,8 @@ The public interface of a parts parser, an object that unconditionally attempts 
 ```c++
 struct parts_parser
 {
+   bool empty();
+
    bool null();  // Returns 'false' when next value is not a JSON Null.
    bool boolean();
 
