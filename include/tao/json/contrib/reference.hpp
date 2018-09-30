@@ -4,9 +4,9 @@
 #ifndef TAO_JSON_CONTRIB_REFERENCE_HPP
 #define TAO_JSON_CONTRIB_REFERENCE_HPP
 
-#include <tao/json/internal/uri_fragment.hpp>
-#include <tao/json/pointer.hpp>
-#include <tao/json/value.hpp>
+#include "../internal/uri_fragment.hpp"
+#include "../pointer.hpp"
+#include "../value.hpp"
 
 namespace tao
 {

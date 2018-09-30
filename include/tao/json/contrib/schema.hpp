@@ -15,15 +15,16 @@
 #include <string>
 #include <type_traits>
 
-#include <tao/json/contrib/reference.hpp>
-#include <tao/json/events/compare.hpp>
-#include <tao/json/events/from_value.hpp>
-#include <tao/json/events/hash.hpp>
-#include <tao/json/pointer.hpp>
-#include <tao/json/value.hpp>
+#include "reference.hpp"
 
-#include <tao/json/external/pegtl/contrib/uri.hpp>
-#include <tao/json/external/pegtl/parse.hpp>
+#include "../events/compare.hpp"
+#include "../events/from_value.hpp"
+#include "../events/hash.hpp"
+#include "../pointer.hpp"
+#include "../value.hpp"
+
+#include "../external/pegtl/contrib/uri.hpp"
+#include "../external/pegtl/parse.hpp"
 
 namespace tao
 {

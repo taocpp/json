@@ -6,7 +6,7 @@
 
 #include <memory>
 
-#include <tao/json/forward.hpp>
+#include "../forward.hpp"
 
 #include "internal/indirect_traits.hpp"
 #include "internal/type_traits.hpp"

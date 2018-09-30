@@ -4,11 +4,11 @@
 #ifndef TAO_JSON_CONTRIB_POSITION_HPP
 #define TAO_JSON_CONTRIB_POSITION_HPP
 
-#include <tao/json/base_message_extension.hpp>
-#include <tao/json/events/to_value.hpp>
-#include <tao/json/events/transformer.hpp>
-#include <tao/json/parse_file.hpp>
-#include <tao/json/value.hpp>
+#include "../base_message_extension.hpp"
+#include "../events/to_value.hpp"
+#include "../events/transformer.hpp"
+#include "../parse_file.hpp"
+#include "../value.hpp"
 
 namespace tao
 {

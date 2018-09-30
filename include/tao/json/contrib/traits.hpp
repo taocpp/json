@@ -4,23 +4,23 @@
 #ifndef TAO_JSON_CONTRIB_TRAITS_HPP
 #define TAO_JSON_CONTRIB_TRAITS_HPP
 
-#include <tao/json/traits.hpp>
+#include "../traits.hpp"
 
-#include <tao/json/contrib/pair_traits.hpp>
-#include <tao/json/contrib/tuple_traits.hpp>
+#include "pair_traits.hpp"
+#include "tuple_traits.hpp"
 
-#include <tao/json/contrib/array_traits.hpp>
-#include <tao/json/contrib/deque_traits.hpp>
-#include <tao/json/contrib/list_traits.hpp>
-#include <tao/json/contrib/set_traits.hpp>
-#include <tao/json/contrib/unordered_set_traits.hpp>
-#include <tao/json/contrib/vector_traits.hpp>
+#include "array_traits.hpp"
+#include "deque_traits.hpp"
+#include "list_traits.hpp"
+#include "set_traits.hpp"
+#include "unordered_set_traits.hpp"
+#include "vector_traits.hpp"
 
-#include <tao/json/contrib/map_traits.hpp>
-#include <tao/json/contrib/unordered_map_traits.hpp>
+#include "map_traits.hpp"
+#include "unordered_map_traits.hpp"
 
-#include <tao/json/contrib/shared_ptr_traits.hpp>
-#include <tao/json/contrib/unique_ptr_traits.hpp>
+#include "shared_ptr_traits.hpp"
+#include "unique_ptr_traits.hpp"
 
 namespace tao
 {

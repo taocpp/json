@@ -6,9 +6,9 @@
 
 #include <tuple>
 
-#include <tao/json/binding.hpp>
+#include "../binding.hpp"
 
-#include <tao/json/external/pegtl/internal/integer_sequence.hpp>
+#include "../external/pegtl/internal/integer_sequence.hpp"
 
 namespace tao
 {

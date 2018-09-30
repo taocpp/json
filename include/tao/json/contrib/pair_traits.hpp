@@ -6,7 +6,7 @@
 
 #include <utility>
 
-#include <tao/json/binding.hpp>
+#include "../binding.hpp"
 
 namespace tao
 {

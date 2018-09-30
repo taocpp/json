@@ -6,10 +6,10 @@
 
 #include <algorithm>
 
-#include <tao/json/forward.hpp>
-#include <tao/json/type.hpp>
+#include "../forward.hpp"
+#include "../type.hpp"
 
-#include <tao/json/events/produce.hpp>
+#include "../events/produce.hpp"
 
 namespace tao
 {

@@ -6,8 +6,8 @@
 
 #include <list>
 
-#include <tao/json/consume.hpp>
-#include <tao/json/forward.hpp>
+#include "../consume.hpp"
+#include "../forward.hpp"
 
 #include "internal/array_traits.hpp"
 

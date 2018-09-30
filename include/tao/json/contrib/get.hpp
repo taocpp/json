@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_CONTRIB_GET_HPP
 #define TAO_JSON_CONTRIB_GET_HPP
 
-#include <tao/json/basic_value.hpp>
+#include "../basic_value.hpp"
 
 namespace tao
 {
@@ -75,7 +75,7 @@ namespace tao
             get::to( v.skip_value_ptr().at( key ), t, ks... );
          }
 
-         template< typename T, typename U = T, template< typename... > class Traits, typename Base  >
+         template< typename T, typename U = T, template< typename... > class Traits, typename Base >
          tao::optional< T > optional( const basic_value< Traits, Base >& v )
          {
             if( v ) {
