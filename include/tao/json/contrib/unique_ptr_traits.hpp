@@ -10,6 +10,7 @@
 #include <tao/json/forward.hpp>
 
 #include "internal/indirect_traits.hpp"
+#include "internal/type_traits.hpp"
 
 namespace tao
 {
@@ -21,13 +22,31 @@ namespace tao
          struct unique_ptr_traits
          {
             template< template< typename... > class Traits, typename Base >
-            static std::unique_ptr< U > as( const basic_value< Traits, Base >& v )
+            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_first_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
             {
                if( v == null ) {
                   return std::unique_ptr< U >();
                }
-               std::unique_ptr< U > t( new T() );  // TODO: More control?
-               v.to( static_cast< T& >( *t ) );
+               return std::unique_ptr< U >( new T( v ) );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
+            {
+               if( v == null ) {
+                  return std::unique_ptr< U >();
+               }
+               return std::unique_ptr< U >( new T( Traits< T >::as( v ) ) );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_third_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
+            {
+               if( v == null ) {
+                  return std::unique_ptr< U >();
+               }
+               std::unique_ptr< U > t( new T() );
+               Traits< T >::to( v, static_cast< T& >( *t ) );
                return t;
             }
 

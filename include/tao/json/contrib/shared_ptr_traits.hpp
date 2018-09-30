@@ -5,11 +5,13 @@
 #define TAO_JSON_CONTRIB_SHARED_PTR_TRAITS_HPP
 
 #include <memory>
+#include <type_traits>
 
 #include <tao/json/consume.hpp>
 #include <tao/json/forward.hpp>
 
 #include "internal/indirect_traits.hpp"
+#include "internal/type_traits.hpp"
 
 namespace tao
 {
@@ -21,13 +23,31 @@ namespace tao
          struct shared_ptr_traits
          {
             template< template< typename... > class Traits, typename Base >
-            static std::shared_ptr< U > as( const basic_value< Traits, Base >& v )
+            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_first_ptr_as< T, Traits, Base >::value, std::shared_ptr< U > >::type
             {
                if( v == null ) {
                   return std::shared_ptr< U >();
                }
-               auto t = std::make_shared< T >();  // TODO: More control?
-               v.to( *t );
+               return std::make_shared< T >( v );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base >::value, std::shared_ptr< U > >::type
+            {
+               if( v == null ) {
+                  return std::shared_ptr< U >();
+               }
+               return std::make_shared< T >( Traits< T >::as( v ) );
+            }
+
+            template< template< typename... > class Traits, typename Base >
+            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_third_ptr_as< T, Traits, Base >::value, std::shared_ptr< U > >::type
+            {
+               if( v == null ) {
+                  return std::shared_ptr< U >();
+               }
+               auto t = std::make_shared< T >();
+               Traits< T >::to( v, *t );
                return t;
             }
 
