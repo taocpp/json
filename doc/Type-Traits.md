@@ -441,16 +441,16 @@ It is also possible to include `tao/json/contrib/traits.hpp` which adds appropri
 
 | Implementation for | Header |
 | -------------- | -------- |
-| `std::pair< U, V >` | `tao/json/contrib/tuple_traits.hpp` |
+| `std::pair< U, V >` | `tao/json/contrib/pair_traits.hpp` |
 | `std::tuple< Ts... >` | `tao/json/contrib/tuple_traits.hpp` |
-| `std::array< T, N >` | |
-| `std::deque< T >` | |
-| `std::list< T >` | |
-| `std::set< T >` | |
-| `std::unordered_set< T >` | |
-| `std::vector< T >` | |
-| `std::map< std::string, T >` | |
-| `std::unordered_map< std::string, T >` | |
+| `std::array< T, N >` | `tao/json/contrib/array_traits.hpp` |
+| `std::deque< T >` | `tao/json/contrib/deque_traits.hpp` |
+| `std::list< T >` | `tao/json/contrib/list_traits.hpp` |
+| `std::set< T >` | `tao/json/contrib/set_traits.hpp` |
+| `std::unordered_set< T >` | `tao/json/contrib/unordered_set_traits.hpp` |
+| `std::vector< T >` | `tao/json/contrib/vector_traits.hpp` |
+| `std::map< std::string, T >` | `tao/json/contrib/map_traits.hpp` |
+| `std::unordered_map< std::string, T >` | `tao/json/contrib/unordered_map_traits.hpp` |
 | `std::shared_ptr< T >` | `tao/json/contrib/shared_ptr_traits.hpp` |
 | `std::unique_ptr< T >` | `tao/json/contrib/unique_ptr_traits.hpp` |
 

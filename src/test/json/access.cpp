@@ -8,6 +8,8 @@
 #include <tao/json/to_string.hpp>
 #include <tao/json/value.hpp>
 
+#include <tao/json/contrib/traits.hpp>
+
 namespace tao
 {
    namespace json

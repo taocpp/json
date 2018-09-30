@@ -8,14 +8,8 @@
 #include <cstdlib>
 
 #include <algorithm>
-#include <array>
-#include <deque>
-#include <list>
 #include <map>
-#include <set>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 #include "binary_view.hpp"
@@ -34,11 +28,9 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
-#include "internal/array_traits.hpp"
 #include "internal/identity.hpp"
 #include "internal/indirect_traits.hpp"
 #include "internal/number_traits.hpp"
-#include "internal/object_traits.hpp"
 #include "internal/string_t.hpp"
 #include "internal/type_traits.hpp"
 
@@ -1004,204 +996,6 @@ namespace tao
                return tao::nullopt;
             }
             return json::consume< T, Traits >( parser );
-         }
-      };
-
-      template< typename T, std::size_t N >
-      struct traits< std::array< T, N > >
-         : public internal::array_traits< std::array< T, N > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::array< T, N >& r )
-         {
-            const auto& a = v.get_array();
-            for( std::size_t i = 0; i < N; ++i ) {
-               v.to( r[ i ] );
-            }
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::array< T, N >& r )
-         {
-            auto s = parser.begin_array();
-            for( std::size_t i = 0; i < N; ++i ) {
-               parser.element( s );
-               json::consume< Traits >( parser, r[ i ] );
-            }
-            parser.end_array( s );
-         }
-      };
-
-      template< typename T, typename... Ts >
-      struct traits< std::list< T, Ts... > >
-         : public internal::array_traits< std::list< T, Ts... > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::list< T, Ts... >& r )
-         {
-            const auto& a = v.get_array();
-            for( const auto& i : a ) {
-               r.emplace_back( i.template as< T >() );
-            }
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::list< T, Ts... >& r )
-         {
-            auto s = parser.begin_array();
-            while( parser.element_or_end_array( s ) ) {
-               r.emplace_back( json::consume< T, Traits >( parser ) );
-            }
-         }
-      };
-
-      template< typename T, typename... Ts >
-      struct traits< std::set< T, Ts... > >
-         : public internal::array_traits< std::set< T, Ts... > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::set< T, Ts... >& r )
-         {
-            const auto& a = v.get_array();
-            for( const auto& i : a ) {
-               r.emplace( i.template as< T >() );
-            }
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::set< T, Ts... >& r )
-         {
-            auto s = parser.begin_array();
-            while( parser.element_or_end_array( s ) ) {
-               r.emplace( json::consume< T, Traits >( parser ) );
-            }
-         }
-      };
-
-      template< typename T, typename... Ts >
-      struct traits< std::unordered_set< T, Ts... > >
-         : public internal::array_traits< std::unordered_set< T, Ts... > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::unordered_set< T, Ts... >& r )
-         {
-            const auto& a = v.get_array();
-            for( const auto& i : a ) {
-               r.emplace( i.template as< T >() );
-            }
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::unordered_set< T, Ts... >& r )
-         {
-            auto s = parser.begin_array();
-            while( parser.element_or_end_array( s ) ) {
-               r.emplace( json::consume< T, Traits >( parser ) );
-            }
-         }
-      };
-
-      template< typename T, typename... Ts >
-      struct traits< std::vector< T, Ts... > >
-         : public internal::array_traits< std::vector< T, Ts... > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::vector< T, Ts... >& r )
-         {
-            const auto& a = v.get_array();
-            for( const auto& i : a ) {
-               r.emplace_back( i.template as< T >() );
-            }
-         }
-
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4127 )
-#endif
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::vector< T, Ts... >& v )
-         {
-            auto s = parser.begin_array();
-            if( s.size ) {
-               v.reserve( *s.size );
-            }
-            while( parser.element_or_end_array( s ) ) {
-               v.emplace_back( json::consume< T, Traits >( parser ) );
-            }
-         }
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
-      };
-
-      template< typename T, typename... Ts >
-      struct traits< std::deque< T, Ts... > >
-         : public internal::array_traits< std::deque< T, Ts... > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::deque< T, Ts... >& r )
-         {
-            const auto& a = v.get_array();
-            for( const auto& i : a ) {
-               r.emplace_back( i.template as< T >() );
-            }
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::vector< T, Ts... >& v )
-         {
-            auto s = parser.begin_array();
-            while( parser.element_or_end_array( s ) ) {
-               v.emplace_back( json::consume< T, Traits >( parser ) );
-            }
-         }
-      };
-
-      template< typename T, typename... Ts >
-      struct traits< std::map< std::string, T, Ts... > >
-         : public internal::object_traits< std::map< std::string, T, Ts... > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::map< std::string, T, Ts... >& r )
-         {
-            const auto& o = v.get_object();
-            for( const auto& i : o ) {
-               r.emplace( i.first, i.second.template as< T >() );
-            }
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::map< std::string, T, Ts... >& v )
-         {
-            auto s = parser.begin_object();
-            while( parser.member_or_end_object( s ) ) {
-               auto k = parser.key();
-               v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
-            }
-         }
-      };
-
-      template< typename T, typename... Ts >
-      struct traits< std::unordered_map< std::string, T, Ts... > >
-         : public internal::object_traits< std::unordered_map< std::string, T, Ts... > >
-      {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::unordered_map< std::string, T, Ts... >& r )
-         {
-            const auto& o = v.get_object();
-            for( const auto& i : o ) {
-               r.emplace( i.first, i.second.template as< T >() );
-            }
-         }
-
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::unordered_map< std::string, T, Ts... >& v )
-         {
-            auto s = parser.begin_object();
-            while( parser.member_or_end_object( s ) ) {
-               auto k = parser.key();
-               v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
-            }
          }
       };
 
