@@ -29,7 +29,6 @@
 #include "external/string_view.hpp"
 
 #include "internal/identity.hpp"
-#include "internal/indirect_traits.hpp"
 #include "internal/number_traits.hpp"
 #include "internal/string_t.hpp"
 #include "internal/type_traits.hpp"
@@ -978,8 +977,13 @@ namespace tao
 
       template< typename T >
       struct traits< tao::optional< T > >
-         : public internal::indirect_traits< tao::optional< T > >
       {
+         template< template< typename... > class Traits >
+         static bool is_nothing( const tao::optional< T >& o )
+         {
+            return ( !bool( o ) ) || internal::is_nothing< Traits >( *o );  // TODO: Only query o?
+         }
+
          template< template< typename... > class Traits, typename Base >
          static tao::optional< T > as( const basic_value< Traits, Base >& v )
          {
@@ -989,6 +993,17 @@ namespace tao
             return v.template as< T >();
          }
 
+         template< template< typename... > class Traits, typename Base >
+         static void assign( basic_value< Traits, Base >& v, const tao::optional< T >& o )
+         {
+            if( o ) {
+               v = *o;
+            }
+            else {
+               v = null;
+            }
+         }
+
          template< template< typename... > class Traits, typename Producer >
          static tao::optional< T > consume( Producer& parser )
          {
@@ -996,6 +1011,35 @@ namespace tao
                return tao::nullopt;
             }
             return json::consume< T, Traits >( parser );
+         }
+
+         template< template< typename... > class Traits, typename Consumer >
+         static void produce( Consumer& c, const tao::optional< T >& o )
+         {
+            if( o ) {
+               json::events::produce< Traits >( c, *o );
+            }
+            else {
+               json::events::produce< Traits >( c, null );
+            }
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool equal( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
+         {
+            return rhs ? ( lhs == *rhs ) : ( lhs == null );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool less_than( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
+         {
+            return rhs ? ( lhs < *rhs ) : ( lhs < null );
+         }
+
+         template< template< typename... > class Traits, typename Base >
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
+         {
+            return rhs ? ( lhs > *rhs ) : ( lhs > null );
          }
       };
 

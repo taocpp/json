@@ -9,7 +9,7 @@
 #include <tao/json/consume.hpp>
 #include <tao/json/forward.hpp>
 
-#include <tao/json/internal/indirect_traits.hpp>
+#include "internal/indirect_traits.hpp"
 
 namespace tao
 {

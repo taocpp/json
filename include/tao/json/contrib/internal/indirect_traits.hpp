@@ -1,15 +1,15 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_INTERNAL_INDIRECT_TRAITS_HPP
-#define TAO_JSON_INTERNAL_INDIRECT_TRAITS_HPP
+#ifndef TAO_JSON_CONTRIB_INDIRECT_TRAITS_HPP
+#define TAO_JSON_CONTRIB_INDIRECT_TRAITS_HPP
 
-#include "../forward.hpp"
-#include "../type.hpp"
+#include <tao/json/forward.hpp>
+#include <tao/json/type.hpp>
 
-#include "../events/produce.hpp"
+#include <tao/json/events/produce.hpp>
 
-#include "type_traits.hpp"
+#include <tao/json/internal/type_traits.hpp>
 
 namespace tao
 {
@@ -29,7 +29,7 @@ namespace tao
             template< template< typename... > class Traits >
             static bool is_nothing( const T& o )
             {
-               return ( !bool( o ) ) || internal::is_nothing< Traits >( add_const( *o ) );
+               return ( !bool( o ) ) || internal::is_nothing< Traits >( add_const( *o ) );  // TODO: Only query o?
             }
 
             template< template< typename... > class Traits, typename Base >
