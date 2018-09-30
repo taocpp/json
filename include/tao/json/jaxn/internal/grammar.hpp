@@ -252,7 +252,7 @@ namespace tao
                };
 
                template< bool NEG >
-               struct zero {};
+               struct zero : one< '0' > {};
 
                struct sor_value
                {
@@ -303,9 +303,7 @@ namespace tao
                               throw json_pegtl::parse_error( "invalid leading zero", in );
                         }
                      }
-                     in.bump_in_this_line();
-                     Control< zero< NEG > >::template apply0< Action >( in, st... );
-                     return true;
+                     return Control< zero< NEG > >::template match< A, M, Action, Control >( in, st... );
                   }
 
                   template< bool NEG,

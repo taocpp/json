@@ -66,6 +66,19 @@ namespace config
 
       struct sor_value : jaxn::sor_value
       {
+         using analyze_t = typename sor< object,
+                                         array,
+                                         jaxn::null,
+                                         jaxn::true_,
+                                         jaxn::false_,
+                                         jaxn::number< true >,
+                                         jaxn::number< false >,
+                                         string,
+                                         binary,
+                                         expression_list,
+                                         jaxn::local_time,
+                                         jaxn::date_sequence >::analyze_t;
+
          template< apply_mode A,
                    rewind_mode M,
                    template< typename... > class Action,
@@ -144,23 +157,6 @@ namespace config
 
    }  // namespace rules
 
-   // TODO: add error control
-   template< typename Rule >
-   struct control
-      : normal< Rule >
-   {
-   };
-
-   // temporary hack to allow re-using the JAXN grammar
-   template< bool NEG >
-   struct control< jaxn::zero< NEG > >
-   {
-      template< template< typename... > class Action, typename... States >
-      static void apply0( States&&... /*unused*/ ) noexcept
-      {
-      }
-   };
-
    template< typename Rule >
    using selector = parse_tree::selector<
       Rule,
@@ -225,7 +221,7 @@ int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       file_input<> in( argv[ i ] );
-      const auto root = parse_tree::parse< config::rules::grammar, config::selector, config::control >( in );
+      const auto root = parse_tree::parse< config::rules::grammar, config::selector >( in );
       config::print_node( *root );
    }
    return 0;
