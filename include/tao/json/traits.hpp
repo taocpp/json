@@ -8,6 +8,8 @@
 #include <cstdlib>
 
 #include <algorithm>
+#include <array>
+#include <deque>
 #include <list>
 #include <map>
 #include <memory>
@@ -1014,6 +1016,31 @@ namespace tao
       {
       };
 
+      template< typename T, std::size_t N >
+      struct traits< std::array< T, N > >
+         : public internal::array_traits< std::array< T, N > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void to( const basic_value< Traits, Base >& v, std::array< T, N >& r )
+         {
+            const auto& a = v.get_array();
+            for( std::size_t i = 0; i < N; ++i ) {
+               v.to( r[ i ] );
+            }
+         }
+
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::array< T, N >& r )
+         {
+            auto s = parser.begin_array();
+            for( std::size_t i = 0; i < N; ++i ) {
+               parser.element( s );
+               json::consume< Traits >( parser, r[ i ] );
+            }
+            parser.end_array( s );
+         }
+      };
+
       template< typename T, typename... Ts >
       struct traits< std::list< T, Ts... > >
          : public internal::array_traits< std::list< T, Ts... > >
@@ -1091,6 +1118,29 @@ namespace tao
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif
+      };
+
+      template< typename T, typename... Ts >
+      struct traits< std::deque< T, Ts... > >
+         : public internal::array_traits< std::deque< T, Ts... > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void to( const basic_value< Traits, Base >& v, std::deque< T, Ts... >& r )
+         {
+            const auto& a = v.get_array();
+            for( const auto& i : a ) {
+               r.emplace_back( i.template as< T >() );
+            }
+         }
+
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::vector< T, Ts... >& v )
+         {
+            auto s = parser.begin_array();
+            while( parser.element_or_end_array( s ) ) {
+               v.emplace_back( json::consume< T, Traits >( parser ) );
+            }
+         }
       };
 
       template< typename T, typename... Ts >
