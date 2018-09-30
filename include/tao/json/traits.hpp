@@ -12,7 +12,6 @@
 #include <deque>
 #include <list>
 #include <map>
-#include <memory>
 #include <set>
 #include <string>
 #include <tuple>
@@ -42,9 +41,7 @@
 #include "internal/indirect_traits.hpp"
 #include "internal/number_traits.hpp"
 #include "internal/object_traits.hpp"
-#include "internal/shared_traits.hpp"
 #include "internal/type_traits.hpp"
-#include "internal/unique_traits.hpp"
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -1004,18 +1001,6 @@ namespace tao
             }
             return json::consume< T, Traits >( parser );
          }
-      };
-
-      template< typename T >
-      struct traits< std::shared_ptr< T > >
-         : public internal::shared_traits< T >
-      {
-      };
-
-      template< typename T >
-      struct traits< std::unique_ptr< T > >
-         : public internal::unique_traits< T >
-      {
       };
 
       template< typename T, std::size_t N >

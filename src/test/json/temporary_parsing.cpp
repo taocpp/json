@@ -18,6 +18,8 @@
 #include <tao/json/cbor/parts_parser.hpp>
 #include <tao/json/parts_parser.hpp>
 
+#include <tao/json/contrib/traits.hpp>
+
 namespace tao
 {
    namespace json
