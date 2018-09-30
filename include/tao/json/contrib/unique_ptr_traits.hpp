@@ -6,7 +6,6 @@
 
 #include <memory>
 
-#include <tao/json/consume.hpp>
 #include <tao/json/forward.hpp>
 
 #include "internal/indirect_traits.hpp"
@@ -31,7 +30,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base >
-            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
+            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base >::value || use_fourth_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
             {
                if( v == null ) {
                   return std::unique_ptr< U >();
@@ -51,13 +50,22 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Producer >
-            static std::unique_ptr< U > consume( Producer& parser )
+            static auto consume( Producer& parser ) -> typename std::enable_if< use_first_ptr_consume< T, Traits, Producer >::value || use_third_ptr_consume< T, Traits, Producer >::value, std::unique_ptr< U > >::type
             {
                if( parser.null() ) {
                   return std::unique_ptr< U >();
                }
-               std::unique_ptr< U > t( new T() );  // TODO: More control?
-               json::consume< Traits >( parser, static_cast< T& >( *t ) );
+               return Traits< T >::template consume< Traits >( parser );
+            }
+
+            template< template< typename... > class Traits, typename Producer >
+            static auto consume( Producer& parser ) -> typename std::enable_if< use_second_ptr_consume< T, Traits, Producer >::value, std::unique_ptr< U > >::type
+            {
+               if( parser.null() ) {
+                  return std::unique_ptr< U >();
+               }
+               std::unique_ptr< U > t( new T() );
+               Traits< T >::template consume< Traits >( parser, static_cast< T& >( *t ) );
                return t;
             }
          };
