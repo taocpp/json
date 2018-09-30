@@ -47,21 +47,16 @@ namespace tao
          struct shared_traits
             : public shared_partial_traits< T, U >
          {
-            static const T& to_type( const std::shared_ptr< U >& o )
-            {
-               return static_cast< const T& >( *o );
-            }
-
             template< template< typename... > class Traits, typename Base >
             static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< U >& o )
             {
-               v = to_type( o );  // Unconditional dereference for use in binding::factory.
+               v = static_cast< const T& >( *o );  // Unconditional dereference for use in binding::factory.
             }
 
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const std::shared_ptr< U >& o )
             {
-               json::events::produce< Traits >( c, to_type( o ) );  // Unconditional dereference for use in binding::factory.
+               json::events::produce< Traits >( c, static_cast< const T& >( *o ) );  // Unconditional dereference for use in binding::factory.
             }
          };
 
