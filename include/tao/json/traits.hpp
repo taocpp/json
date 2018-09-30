@@ -16,6 +16,8 @@
 #include <set>
 #include <string>
 #include <tuple>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include "binary_view.hpp"
@@ -1088,6 +1090,29 @@ namespace tao
       };
 
       template< typename T, typename... Ts >
+      struct traits< std::unordered_set< T, Ts... > >
+         : public internal::array_traits< std::unordered_set< T, Ts... > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void to( const basic_value< Traits, Base >& v, std::unordered_set< T, Ts... >& r )
+         {
+            const auto& a = v.get_array();
+            for( const auto& i : a ) {
+               r.emplace( i.template as< T >() );
+            }
+         }
+
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::unordered_set< T, Ts... >& r )
+         {
+            auto s = parser.begin_array();
+            while( parser.element_or_end_array( s ) ) {
+               r.emplace( json::consume< T, Traits >( parser ) );
+            }
+         }
+      };
+
+      template< typename T, typename... Ts >
       struct traits< std::vector< T, Ts... > >
          : public internal::array_traits< std::vector< T, Ts... > >
       {
@@ -1158,6 +1183,30 @@ namespace tao
 
          template< template< typename... > class Traits, typename Producer >
          static void consume( Producer& parser, std::map< std::string, T, Ts... >& v )
+         {
+            auto s = parser.begin_object();
+            while( parser.member_or_end_object( s ) ) {
+               auto k = parser.key();
+               v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
+            }
+         }
+      };
+
+      template< typename T, typename... Ts >
+      struct traits< std::unordered_map< std::string, T, Ts... > >
+         : public internal::object_traits< std::unordered_map< std::string, T, Ts... > >
+      {
+         template< template< typename... > class Traits, typename Base >
+         static void to( const basic_value< Traits, Base >& v, std::unordered_map< std::string, T, Ts... >& r )
+         {
+            const auto& o = v.get_object();
+            for( const auto& i : o ) {
+               r.emplace( i.first, i.second.template as< T >() );
+            }
+         }
+
+         template< template< typename... > class Traits, typename Producer >
+         static void consume( Producer& parser, std::unordered_map< std::string, T, Ts... >& v )
          {
             auto s = parser.begin_object();
             while( parser.member_or_end_object( s ) ) {
