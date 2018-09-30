@@ -6,6 +6,8 @@
 
 #include <tao/json/traits.hpp>
 
+#include <tao/json/contrib/tuple_traits.hpp>
+
 #include <tao/json/contrib/shared_ptr_traits.hpp>
 #include <tao/json/contrib/unique_ptr_traits.hpp>
 
@@ -22,6 +24,18 @@ namespace tao
       template< typename T >
       struct traits< std::unique_ptr< T > >
          : public unique_ptr_traits< T >
+      {
+      };
+
+      template< typename U, typename V >
+      struct traits< std::pair< U, V > >
+         : public tuple_traits< std::pair< U, V > >
+      {
+      };
+
+      template< typename... Ts >
+      struct traits< std::tuple< Ts... > >
+         : public tuple_traits< std::tuple< Ts... > >
       {
       };
 

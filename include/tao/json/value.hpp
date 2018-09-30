@@ -18,7 +18,4 @@ namespace tao
 
 }  // namespace tao
 
-#define TAO_JSON_DEFAULT_KEY( x ) \
-   using default_key = TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, x )
-
 #endif

@@ -31,6 +31,7 @@
   * [Produce JSON Events from (custom) type](Type-Traits.md#produce-events-from-type)
   * [Consume a (custom) type from a parser](Type-Traits.md#consume-type-from-parser)
   * [Default Traits Specialisations](Type-Traits.md#default-traits-specialisations)
+  * [Contrib Traits Specialisations](Type-Traits.md#contrib-traits-specialisations)
   * [Default Key for Objects](Type-Traits.md#default-key-for-objects)
 * [Events Interface](Events-Interface.md)
   * [Overview](Events-Interface.md#overview)

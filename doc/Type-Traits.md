@@ -8,6 +8,7 @@
 * [Produce JSON Events from (custom) type](#produce-events-from-type)
 * [Consume a (custom) type from a parser](#consume-type-from-parser)
 * [Default Traits Specialisations](#default-traits-specialisations)
+* [Contrib Traits Specialisations](#contrib-traits-specialisations)
 * [Default Key for Objects](#default-key-for-objects)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
@@ -431,17 +432,30 @@ The included Type Traits contain (partial) specialisations for the following typ
 | `const basic_value< Traits, Base >*` | Creates Value Pointer; must not be `nullptr`. |
 | `std::map< std::string, basic_value< Traits, Base > >` | Corresponds to JSON Object. |
 | `tao::optional< T >` | Empty optional corresponds to JSON Null. |
-| `std::shared_ptr< T >` | Null pointer corresponds to JSON Null. |
-| `std::unique_ptr< T >` | Null pointer corresponds to JSON Null. |
-| `std::list< T >` | Corresponds to JSON Array. |
-| `std::set< T >` | Corresponds to JSON Array. |
-| `std::vector< T >` | Corresponds to JSON Array. |
-| `std::map< std::string, T >` | Corresponds to JSON Object. |
-| `std::pair< U, V >` | Corresponds to JSON Array. |
-| `std::tuple< Ts... >` | Corresponds to JSON Array. |
+
+## Contrib Traits Specialisations
+
+The following additional specialisations are part of various additional traits classes.
+These classes are defined in various headers in `tao/json/contrib`.
+It is also possible to include `tao/json/contrib/traits.hpp` which adds appropriate specialisations to the default traits `tao::json::traits<>`.
+
+| Implementation for | Header |
+| -------------- | -------- |
+| `std::pair< U, V >` | `tao/json/contrib/tuple_traits.hpp` |
+| `std::tuple< Ts... >` | `tao/json/contrib/tuple_traits.hpp` |
+| `std::array< T, N >` | |
+| `std::deque< T >` | |
+| `std::list< T >` | |
+| `std::set< T >` | |
+| `std::unordered_set< T >` | |
+| `std::vector< T >` | |
+| `std::map< std::string, T >` | |
+| `std::unordered_map< std::string, T >` | |
+| `std::shared_ptr< T >` | `tao/json/contrib/shared_ptr_traits.hpp` |
+| `std::unique_ptr< T >` | `tao/json/contrib/unique_ptr_traits.hpp` |
 
 The Type Traits correctly work with nested types.
-Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported, so is for example the following type:
+Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported (when including the contrib traits), so is for example the following type:
 
 ```c++
 std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >

@@ -14,13 +14,11 @@
 #include <map>
 #include <set>
 #include <string>
-#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
 #include "binary_view.hpp"
-#include "binding.hpp"
 #include "consume.hpp"
 #include "forward.hpp"
 #include "local_date.hpp"
@@ -41,7 +39,13 @@
 #include "internal/indirect_traits.hpp"
 #include "internal/number_traits.hpp"
 #include "internal/object_traits.hpp"
+#include "internal/string_t.hpp"
 #include "internal/type_traits.hpp"
+
+#include "external/pegtl/internal/pegtl_string.hpp"
+
+#define TAO_JSON_DEFAULT_KEY( x ) \
+   using default_key = TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, x )
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -1199,63 +1203,6 @@ namespace tao
                v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
             }
          }
-      };
-
-      template< typename U, typename V >
-      struct traits< std::pair< U, V > >
-         : public binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
-                                  TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
-      {
-      };
-
-      namespace internal
-      {
-         template< typename Tuple, typename Indices >
-         struct tuple_array;
-
-         template< typename Tuple, std::size_t... Is >
-         struct tuple_array< Tuple, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
-         {
-            template< std::size_t I >
-            struct cf_i
-            {
-               using type = decltype( std::get< I >( std::declval< const Tuple& >() ) ) ( * )( const Tuple& );
-            };
-
-            template< std::size_t I >
-            using cf = typename cf_i< I >::type;
-
-            template< std::size_t I >
-            struct f_i
-            {
-               using type = decltype( std::get< I >( std::declval< Tuple& >() ) ) ( * )( Tuple& );
-            };
-
-            template< std::size_t I >
-            using f = typename f_i< I >::type;
-
-            template< std::size_t I >
-            struct e_i
-            {
-#ifdef _MSC_VER
-               static constexpr const cf< I > cdummy = &std::get< I >;
-               static constexpr const f< I > dummy = &std::get< I >;
-#endif
-               using type = binding::element2< cf< I >, &std::get< I >, f< I >, &std::get< I > >;
-            };
-
-            template< std::size_t I >
-            using e = typename e_i< I >::type;
-
-            using type = binding::array< e< Is >... >;
-         };
-
-      }  // namespace internal
-
-      template< typename... Ts >
-      struct traits< std::tuple< Ts... > >
-         : public internal::tuple_array< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence_for< Ts... > >::type
-      {
       };
 
    }  // namespace json

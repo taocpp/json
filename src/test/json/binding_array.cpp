@@ -5,6 +5,8 @@
 
 #include <tao/json.hpp>
 
+#include <tao/json/contrib/traits.hpp>
+
 namespace tao
 {
    namespace json
