@@ -93,10 +93,16 @@ namespace tao
                   return true;
                }
 
-               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename F >
+               template< typename A, typename C, template< typename... > class Traits, typename Base >
+               static void to_wrapper( const basic_value< Traits, Base >& v, C& x )
+               {
+                  A::template to< Traits, Base >( v, x );
+               }
+
+               template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename Base, typename F >
                static bool emplace_to( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::template key< Traits >(), entry< F >( &A::template to< Traits, Base >, I ) );
+                  m.emplace( A::template key< Traits >(), entry< F >( &basic_object::to_wrapper< A, C, Traits, Base >, I ) );
                   return true;
                }
 
@@ -110,7 +116,7 @@ namespace tao
                   using F = void ( * )( const basic_value< Traits, Base >&, C& );
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     (void)json::internal::swallow{ emplace_to< As, Is, Traits, Base >( t )... };
+                     (void)json::internal::swallow{ emplace_to< As, Is, C, Traits, Base >( t )... };
                      assert( t.size() == sizeof...( As ) );
                      return t;
                   }();
@@ -157,10 +163,16 @@ namespace tao
                   (void)json::internal::swallow{ assign_member< As >( v, x )... };
                }
 
-               template< typename A, std::size_t I, template< typename... > class Traits, typename Producer, typename F >
+               template< typename A, typename C, template< typename... > class Traits, typename Producer >
+               static void consume_wrapper( Producer& parser, C& x )
+               {
+                  A::template consume< Traits, Producer >( parser, x );
+               }
+
+               template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename Producer, typename F >
                static bool emplace_consume( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::template key< Traits >(), entry< F >( &A::template consume< Traits, Producer >, I ) );
+                  m.emplace( A::template key< Traits >(), entry< F >( &basic_object::consume_wrapper< A, C, Traits, Producer >, I ) );
                   return true;
                }
 
@@ -170,7 +182,7 @@ namespace tao
                   using F = void ( * )( Producer&, C& );
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     (void)json::internal::swallow{ emplace_consume< As, Is, Traits, Producer >( t )... };
+                     (void)json::internal::swallow{ emplace_consume< As, Is, C, Traits, Producer >( t )... };
                      assert( t.size() == sizeof...( As ) );
                      return t;
                   }();

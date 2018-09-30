@@ -439,6 +439,40 @@ namespace tao
          TEST_THROWS( consume< type_4 >( p ) );
       }
 
+      // TODO: Test inheriting binding for derived classes.
+
+      struct type_a
+      {
+         int i = 3;
+      };
+
+      struct type_b
+         : public type_a
+      {
+         int j = 4;
+      };
+
+      template<>
+      struct traits< type_a >
+         : public binding::array< TAO_JSON_BIND_ELEMENT( &type_a::i ) >
+      {
+      };
+
+      template<>
+      struct traits< type_b >
+         : public binding::array< binding::inherit< traits< type_a > >,
+                                   TAO_JSON_BIND_ELEMENT( &type_b::j ) >
+      {
+      };
+
+      void unit_test_40()
+      {
+         const value v = from_string( "[ 5, 6 ]" );
+         const auto a = v.as< type_b >();
+         TEST_ASSERT( a.i == 5 );
+         TEST_ASSERT( a.j == 6 );
+      }
+
       void unit_test()
       {
          unit_test_1();
@@ -480,6 +514,7 @@ namespace tao
          unit_test_37();
          unit_test_38();
          unit_test_39();
+         unit_test_40();
       }
 
    }  // namespace json

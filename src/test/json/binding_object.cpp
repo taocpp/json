@@ -127,8 +127,39 @@ namespace tao
          TEST_ASSERT( v == w );
       }
 
+      struct type_3
+      {
+         int i = 3;
+      };
+
+      struct type_4
+         : public type_3
+      {
+         int j = 4;
+      };
+
+      template<>
+      struct traits< type_3 >
+         : public binding::object< TAO_JSON_BIND_REQUIRED( "i", &type_3::i ) >
+      {
+      };
+
+      template<>
+      struct traits< type_4 >
+         : public binding::object< binding::inherit< traits< type_3 > >,
+                                   TAO_JSON_BIND_REQUIRED( "j", &type_4::j ) >
+      {
+      };
+
+      void unit_test_4()
+      {
+         const value v = from_string( "{ \"i\": 5, \"j\": 6 }" );
+         const auto a = as< type_4 >( v );
+         TEST_ASSERT( a.i == 5 );
+         TEST_ASSERT( a.j == 6 );
+      }
+
       // TODO: Test consume...
-      // TODO: Test inheriting binding for derived classes.
       // TODO: Test additional keys in input.
       // TODO: Test with different for_unknown_key.
       // TODO: Test with different for_nothing_value (incl. consistency of size to consumer).
@@ -139,6 +170,7 @@ namespace tao
          unit_test_1();
          unit_test_2();
          unit_test_3();
+         unit_test_4();  // TODO: Fix the type mismatch in the functions for the maps used in binding::object (as opposed to binding::array where they are called directly).
       }
 
    }  // namespace json

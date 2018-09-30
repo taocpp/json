@@ -179,6 +179,11 @@ namespace tao
             {
             }
 
+            bool empty()
+            {
+               return m_input.empty();
+            }
+
             bool null()
             {
                if( internal::peek_format( m_input ) == internal::format::NIL ) {

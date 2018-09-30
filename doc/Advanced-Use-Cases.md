@@ -28,6 +28,10 @@ TODO: Explain `for_nothing_value`, but first check consistency of implementation
 
 TODO: Explain how to use getter and setter functions for a binding rather than binding directly to a reference.
 
+### Inheriting Bindings
+
+TODO: Explain how to use `binding::inherit` when a base class already uses `binding::array` or `binding::object`.
+
 ## Custom Base Class for Values
 
 The class template `tao::json::basic_value<>` has two template parameters, the type traits, and a `Base` class that it (privately) inherits from.

@@ -53,6 +53,11 @@ namespace tao
             {
             }
 
+            bool empty()
+            {
+               return m_input.empty();
+            }
+
             bool null()
             {
                if( json::internal::peek_byte( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {

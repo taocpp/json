@@ -6,9 +6,13 @@ set(testsources
   binding_array.cpp
   binding_factory.cpp
   binding_object.cpp
+  binding_versions.cpp
   cbor.cpp
   compare.cpp
   composite_traits.cpp
+  contrib_get.cpp
+  contrib_reference.cpp
+  contrib_schema.cpp
   create.cpp
   double.cpp
   dump_sizes.cpp
@@ -21,6 +25,11 @@ set(testsources
   include_json.cpp
   index.cpp
   integer.cpp
+  jaxn_ostream.cpp
+  jaxn_parse.cpp
+  json_ostream.cpp
+  json_parse.cpp
+  json_parts_parser.cpp
   json_patch.cpp
   json_pointer.cpp
   key_camel_case_to_snake_case.cpp
@@ -29,25 +38,18 @@ set(testsources
   msgpack.cpp
   object_construction.cpp
   object_operators.cpp
-  opaque.cpp
-  ostream.cpp
-  ostream_jaxn.cpp
-  parse.cpp
-  parse_jaxn.cpp
-  pointer.cpp
+  opaque_pointer.cpp
   position.cpp
-  reference.cpp
-  schema.cpp
   self_contained.cpp
   sha256.cpp
   string_view.cpp
   temporary_parsing.cpp
-  traits.cpp
   type.cpp
   ubjson.cpp
   uri_fragment.cpp
   user.cpp
   validate_event_interfaces.cpp
+  value_pointer.cpp
 )
 
 # file (GLOB ...) is used to validate the above list of test_sources

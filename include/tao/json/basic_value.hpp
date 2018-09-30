@@ -151,6 +151,20 @@ namespace tao
             return v;
          }
 
+         static basic_value object( std::initializer_list< internal::pair< Traits, Base > >&& l )
+         {
+            basic_value v;
+            v.insert( std::move( l ) );
+            return v;
+         }
+
+         static basic_value object( const std::initializer_list< internal::pair< Traits, Base > >& l )
+         {
+            basic_value v;
+            v.insert( l );
+            return v;
+         }
+
          basic_value& operator=( basic_value v ) noexcept
          {
             unsafe_discard();
