@@ -40,6 +40,13 @@ namespace tao
          int j = 106;
       };
 
+      class derived_3
+         : public base
+      {
+      public:
+         int k = 107;
+      };
+
       template<>
       struct traits< derived_1 >
          : binding::object< TAO_JSON_BIND_REQUIRED( "s", &derived_1::s ) >
@@ -174,12 +181,43 @@ namespace tao
          TEST_ASSERT( d->j == 23 );
       }
 
+      void unit_test_5()
+      {
+         const value z = empty_object;
+         TEST_THROWS( z.as< std::unique_ptr< base > >() );
+         const value v = {
+            { "one", {
+                  { "s", "foo" }
+               }
+            },
+            { "two", {
+                  { "i", 42 },
+                  { "j", 23 }
+               },
+            }
+         };
+         TEST_THROWS( v.as< std::unique_ptr< base > >() );
+         const value w = {
+            { "1", {
+                  { "s", "foo" }
+               }
+            }
+         };
+         TEST_THROWS( w.as< std::unique_ptr< base > >() );
+         TEST_THROWS( value( std::shared_ptr< base >( new derived_3 ) ) );
+         events::discard d;
+         TEST_THROWS( events::produce( d, std::shared_ptr< base >( new derived_3 ) ) );
+         parts_parser p( "{ \"four\", null }", __FUNCTION__ );
+         TEST_THROWS( consume< std::shared_ptr< base > >( p ) );
+      }
+
       void unit_test()
       {
          unit_test_1();
          unit_test_2();
          unit_test_3();
          unit_test_4();
+         unit_test_5();
       }
 
    }  // namespace json
