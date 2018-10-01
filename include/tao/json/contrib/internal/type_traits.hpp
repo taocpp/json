@@ -4,9 +4,9 @@
 #ifndef TAO_JSON_CONTRIB_INTERNAL_TYPE_TRAITS_HPP
 #define TAO_JSON_CONTRIB_INTERNAL_TYPE_TRAITS_HPP
 
-#include "../forward.hpp"
+#include "../../forward.hpp"
 
-#include "../internal/type_traits.hpp"
+#include "../../internal/type_traits.hpp"
 
 namespace tao
 {

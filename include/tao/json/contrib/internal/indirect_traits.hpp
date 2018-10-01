@@ -4,12 +4,12 @@
 #ifndef TAO_JSON_CONTRIB_INDIRECT_TRAITS_HPP
 #define TAO_JSON_CONTRIB_INDIRECT_TRAITS_HPP
 
-#include "../forward.hpp"
-#include "../type.hpp"
+#include "../../forward.hpp"
+#include "../../type.hpp"
 
-#include "../events/produce.hpp"
+#include "../../events/produce.hpp"
 
-#include "../internal/type_traits.hpp"
+#include "../../internal/type_traits.hpp"
 
 namespace tao
 {
