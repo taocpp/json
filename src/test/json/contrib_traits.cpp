@@ -13,33 +13,6 @@ namespace tao
 {
    namespace json
    {
-      void test_optional()
-      {
-         {
-            const tao::optional< std::string > f;
-            value v = f;
-            TEST_ASSERT( v == f );
-            TEST_ASSERT( v.is_null() );
-            const auto g = v.as< tao::optional< std::string > >();
-            TEST_ASSERT( g == f );
-         }
-         {
-            const tao::optional< std::string > f( "hallo" );
-            value v = f;
-            TEST_ASSERT( v == f );
-            TEST_ASSERT( v.is_string() );
-            TEST_ASSERT( v == "hallo" );
-            TEST_ASSERT( v.get_string() == "hallo" );
-            const auto g = v.as< tao::optional< std::string > >();
-            TEST_ASSERT( *g == *f );
-         }
-         {
-            const tao::optional< int > i;
-            const value v = null;
-            TEST_ASSERT( i == v );
-         }
-      }
-
       void test_shared()
       {
          {
@@ -80,6 +53,21 @@ namespace tao
             TEST_ASSERT( g != f );
             TEST_ASSERT( *g == *f );
          }
+      }
+
+      void test_deque()
+      {
+         const std::deque< std::uint64_t > f = { 1, 2, 3, 4 };
+         value v = f;
+         TEST_ASSERT( v == f );
+         TEST_ASSERT( v.is_array() );
+         TEST_ASSERT( v.unsafe_get_array().size() == 4 );
+         TEST_ASSERT( v[ 0 ] == 1 );
+         TEST_ASSERT( v[ 1 ] == 2 );
+         TEST_ASSERT( v[ 2 ] == 3 );
+         TEST_ASSERT( v[ 3 ] == 4 );
+         const auto g = v.as< std::deque< std::uint64_t > >();
+         TEST_ASSERT( g == f );
       }
 
       void test_list()
@@ -190,10 +178,10 @@ namespace tao
 
       void unit_test()
       {
-         test_optional();
          test_shared();
          test_unique();
 
+         test_deque();
          test_list();
          test_set();
          test_vector();

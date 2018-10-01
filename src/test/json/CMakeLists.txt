@@ -9,10 +9,11 @@ set(testsources
   binding_versions.cpp
   cbor.cpp
   compare.cpp
-  composite_traits.cpp
   contrib_get.cpp
+  contrib_position.cpp
   contrib_reference.cpp
   contrib_schema.cpp
+  contrib_traits.cpp
   create.cpp
   double.cpp
   dump_sizes.cpp
@@ -39,7 +40,7 @@ set(testsources
   object_construction.cpp
   object_operators.cpp
   opaque_pointer.cpp
-  position.cpp
+  optional.cpp
   self_contained.cpp
   sha256.cpp
   string_view.cpp
@@ -47,7 +48,6 @@ set(testsources
   type.cpp
   ubjson.cpp
   uri_fragment.cpp
-  user.cpp
   validate_event_interfaces.cpp
   value_pointer.cpp
   with_arguments.cpp
