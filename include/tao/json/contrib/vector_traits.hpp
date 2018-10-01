@@ -19,12 +19,12 @@ namespace tao
       struct vector_traits
          : public internal::array_traits< std::vector< T, Ts... > >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::vector< T, Ts... >& r )
+         template< template< typename... > class Traits, typename Base, typename... With >
+         static void to( const basic_value< Traits, Base >& v, std::vector< T, Ts... >& r, const With&... with )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
-               r.emplace_back( i.template as< T >() );
+               r.emplace_back( i.template as_with< T >( with... ) );
             }
          }
 

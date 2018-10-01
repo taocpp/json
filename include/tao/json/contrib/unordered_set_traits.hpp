@@ -19,12 +19,12 @@ namespace tao
       struct unordered_set_traits
          : public internal::array_traits< std::unordered_set< T, Ts... > >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::unordered_set< T, Ts... >& r )
+         template< template< typename... > class Traits, typename Base, typename... With >
+         static void to( const basic_value< Traits, Base >& v, std::unordered_set< T, Ts... >& r, const With&... with )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {
-               r.emplace( i.template as< T >() );
+               r.emplace( Traits< T >::as( i, with... ) );
             }
          }
 

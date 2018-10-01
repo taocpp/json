@@ -20,12 +20,12 @@ namespace tao
       struct unordered_map_traits
          : public internal::object_traits< std::unordered_map< std::string, T, Ts... > >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void to( const basic_value< Traits, Base >& v, std::unordered_map< std::string, T, Ts... >& r )
+         template< template< typename... > class Traits, typename Base, typename... With >
+         static void to( const basic_value< Traits, Base >& v, std::unordered_map< std::string, T, Ts... >& r, const With&... with )
          {
             const auto& o = v.get_object();
             for( const auto& i : o ) {
-               r.emplace( i.first, i.second.template as< T >() );
+               r.emplace( i.first, Traits< T >::as( i.second, with... ) );
             }
          }
 

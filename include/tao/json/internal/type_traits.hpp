@@ -68,23 +68,35 @@ namespace tao
          {
          };
 
-         template< typename, typename, typename = void >
-         struct has_as : std::false_type
-         {
-         };
-
-         template< typename T, typename V >
-         struct has_as< T, V, decltype( T::as( std::declval< const V& >() ), void() ) > : std::true_type
-         {
-         };
-
          template< typename, typename, typename, typename = void >
-         struct has_to : std::false_type
+         struct has_as_impl : std::false_type
          {
          };
 
-         template< typename T, typename V, typename U >
-         struct has_to< T, V, U, decltype( T::to( std::declval< const V& >(), std::declval< U& >() ), void() ) > : std::true_type
+         template< typename T, typename V, typename... With >
+         struct has_as_impl< T, V, type_list< With... >, decltype( T::as( std::declval< const V& >(), std::declval< const With& >()... ), void() ) > : std::true_type
+         {
+         };
+
+         template< typename T, typename V, typename... With >
+         struct has_as
+            : public has_as_impl< T, V, type_list< With... > >
+         {
+         };
+
+         template< typename, typename, typename, typename, typename = void >
+         struct has_to_impl : std::false_type
+         {
+         };
+
+         template< typename T, typename V, typename U, typename... With >
+         struct has_to_impl< T, V, U, type_list< With... >, decltype( T::to( std::declval< const V& >(), std::declval< U& >(), std::declval< const With& >()... ), void() ) > : std::true_type
+         {
+         };
+
+         template< typename T, typename V, typename U, typename... With >
+         struct has_to
+            : public has_to_impl< T, V, U, type_list< With... > >
          {
          };
 

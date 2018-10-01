@@ -21,32 +21,32 @@ namespace tao
          template< typename T, typename U >
          struct shared_ptr_traits
          {
-            template< template< typename... > class Traits, typename Base >
-            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_first_ptr_as< T, Traits, Base >::value, std::shared_ptr< U > >::type
+            template< template< typename... > class Traits, typename Base, typename... With >
+            static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_first_ptr_as< T, Traits, Base, With... >::value, std::shared_ptr< U > >::type
             {
                if( v == null ) {
                   return std::shared_ptr< U >();
                }
-               return std::make_shared< T >( v );
+               return std::make_shared< T >( v, with... );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base >::value || use_fourth_ptr_as< T, Traits, Base >::value, std::shared_ptr< U > >::type
+            template< template< typename... > class Traits, typename Base, typename... With >
+            static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base, With... >::value || use_fourth_ptr_as< T, Traits, Base, With... >::value, std::shared_ptr< U > >::type
             {
                if( v == null ) {
                   return std::shared_ptr< U >();
                }
-               return std::make_shared< T >( Traits< T >::as( v ) );
+               return std::make_shared< T >( Traits< T >::as( v, with... ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_third_ptr_as< T, Traits, Base >::value, std::shared_ptr< U > >::type
+            template< template< typename... > class Traits, typename Base, typename... With >
+            static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_third_ptr_as< T, Traits, Base, With... >::value, std::shared_ptr< U > >::type
             {
                if( v == null ) {
                   return std::shared_ptr< U >();
                }
                auto t = std::make_shared< T >();
-               Traits< T >::to( v, *t );
+               Traits< T >::to( v, *t, with... );
                return t;
             }
 

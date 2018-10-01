@@ -50,6 +50,7 @@ set(testsources
   user.cpp
   validate_event_interfaces.cpp
   value_pointer.cpp
+  with_arguments.cpp
 )
 
 # file (GLOB ...) is used to validate the above list of test_sources

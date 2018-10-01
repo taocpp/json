@@ -20,32 +20,32 @@ namespace tao
          template< typename T, typename U >
          struct unique_ptr_traits
          {
-            template< template< typename... > class Traits, typename Base >
-            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_first_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
+            template< template< typename... > class Traits, typename Base, typename... With >
+            static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_first_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >::type
             {
                if( v == null ) {
                   return std::unique_ptr< U >();
                }
-               return std::unique_ptr< U >( new T( v ) );
+               return std::unique_ptr< U >( new T( v, with... ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base >::value || use_fourth_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
+            template< template< typename... > class Traits, typename Base, typename... With >
+            static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base, With... >::value || use_fourth_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >::type
             {
                if( v == null ) {
                   return std::unique_ptr< U >();
                }
-               return std::unique_ptr< U >( new T( Traits< T >::as( v ) ) );
+               return std::unique_ptr< U >( new T( Traits< T >::as( v, with... ) ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static auto as( const basic_value< Traits, Base >& v ) -> typename std::enable_if< use_third_ptr_as< T, Traits, Base >::value, std::unique_ptr< U > >::type
+            template< template< typename... > class Traits, typename Base, typename... With >
+            static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_third_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >::type
             {
                if( v == null ) {
                   return std::unique_ptr< U >();
                }
                std::unique_ptr< U > t( new T() );
-               Traits< T >::to( v, static_cast< T& >( *t ) );
+               Traits< T >::to( v, static_cast< T& >( *t ), with... );
                return t;
             }
 
