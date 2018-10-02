@@ -3,8 +3,9 @@
 
 #include "test.hpp"
 
-#include <tao/json/patch.hpp>
 #include <tao/json/value.hpp>
+
+#include <tao/json/contrib/patch.hpp>
 
 namespace tao
 {

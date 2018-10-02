@@ -1,14 +1,14 @@
 // Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_PATCH_HPP
-#define TAO_JSON_PATCH_HPP
+#ifndef TAO_JSON_CONTRIB_PATCH_HPP
+#define TAO_JSON_CONTRIB_PATCH_HPP
 
 #include <stdexcept>
 #include <utility>
 
-#include "pointer.hpp"
-#include "value.hpp"
+#include "../pointer.hpp"
+#include "../value.hpp"
 
 namespace tao
 {
@@ -23,7 +23,7 @@ namespace tao
             const pointer path_pointer( path );
             if( op == "test" ) {
                if( v.at( path_pointer ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path + json::base_message_extension( v.base() ) );  // NOLINT
+                  throw std::runtime_error( internal::format( "json patch 'test' failed for '", path, '\'', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
             else if( op == "remove" ) {
@@ -46,7 +46,7 @@ namespace tao
                v.insert( path_pointer, v.at( from ) );
             }
             else {
-               throw std::runtime_error( "unknown patch operation: '" + op + '\'' );  // NOLINT
+               throw std::runtime_error( internal::format( "unknown json patch operation '", op, '\'' ) );  // NOLINT
             }
          }
       }
@@ -60,7 +60,7 @@ namespace tao
             const pointer path_pointer( path );
             if( op == "test" ) {
                if( v.at( path_pointer ) != entry.at( "value" ) ) {
-                  throw std::runtime_error( "test failed for: " + path + json::base_message_extension( v.base() ) );  // NOLINT
+                  throw std::runtime_error( internal::format( "json patch 'test' failed for '", path, '\'', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
             else if( op == "remove" ) {
@@ -83,7 +83,7 @@ namespace tao
                v.insert( path_pointer, v.at( from ) );
             }
             else {
-               throw std::runtime_error( "unknown patch operation: '" + op + '\'' );  // NOLINT
+               throw std::runtime_error( internal::format( "unknown json patch operation '", op, '\'' ) );  // NOLINT
             }
          }
       }

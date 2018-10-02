@@ -210,7 +210,7 @@ namespace tao
          }
          {
             const basic_value< my_traits > v = basic_value< my_traits >::array( { "a", "b", 3 } );
-            const auto f = as< foo2 >( v );
+            const auto f = v.as< foo2 >();
             TEST_ASSERT( f.a == "a" );
             TEST_ASSERT( f.b == "b" );
             TEST_ASSERT( f.plus == 3 );

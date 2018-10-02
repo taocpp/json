@@ -10,6 +10,7 @@ set(testsources
   cbor.cpp
   compare.cpp
   contrib_get.cpp
+  contrib_patch.cpp
   contrib_position.cpp
   contrib_reference.cpp
   contrib_schema.cpp
@@ -31,7 +32,6 @@ set(testsources
   json_ostream.cpp
   json_parse.cpp
   json_parts_parser.cpp
-  json_patch.cpp
   json_pointer.cpp
   key_camel_case_to_snake_case.cpp
   key_snake_case_to_camel_case.cpp

@@ -154,7 +154,7 @@ namespace tao
       void unit_test_4()
       {
          const value v = from_string( "{ \"i\": 5, \"j\": 6 }" );
-         const auto a = as< type_4 >( v );
+         const auto a = v.as< type_4 >();
          TEST_ASSERT( a.i == 5 );
          TEST_ASSERT( a.j == 6 );
       }

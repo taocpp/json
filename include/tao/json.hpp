@@ -19,15 +19,12 @@
 #include "json/to_string.hpp"
 
 // Value Support
-#include "json/patch.hpp"
 #include "json/self_contained.hpp"
 
 // Custom Types
-#include "json/as.hpp"
 #include "json/binding.hpp"
 #include "json/consume.hpp"
 #include "json/produce.hpp"
-#include "json/to.hpp"
 
 // JAXN Format
 #include "json/jaxn.hpp"
@@ -42,8 +39,5 @@
 
 // Events Implementations
 #include "json/events.hpp"
-
-// Member Binding etc.
-#include "json/binding.hpp"
 
 #endif

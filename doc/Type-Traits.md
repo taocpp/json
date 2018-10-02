@@ -85,7 +85,7 @@ To use an Object it is necessary to derive `my_traits< my_type >` from `tao::jso
 It is not technically necessary for the name to match the name of the data member, any string can be used for the key in the Object.
 
 Two macros are used to simplify the binding of the individual member variables.
-When directly parsing an external representation like JSON into a `my_type` with `tao::json::consume()`, or converting a Value into a `my_type` with `tao::json::as()` or `tao::json::to()`, an exception will be thrown when a required member is missing.
+When directly parsing an external representation like JSON into a `my_type` with `tao::json::consume()`, or converting a Value into a `my_type` with `tao::json::value::as()` or `tao::json::value::to()`, an exception will be thrown when a required member is missing.
 
 ```c++
 template<>
@@ -190,7 +190,7 @@ The traits' `as()` and/or `to()` functions are used to convert Values into any t
 
 If not particularly awkward or slow it is recommended to implement `as()`, which returns the `T`, rather than `to()`.
 
-The user-facing functions `tao::json::as()/to()` and `tao::json::basic_value<>::as()/to()` are all available, regardless of which function(s) the traits implement, subject to the following limitation:
+The user-facing functions `tao::json::basic_value<>::as()/to()` are all available, regardless of which function(s) the traits implement, subject to the following limitation:
 
 * `T` needs to be copy-assignable to use the front-end `to()` when the traits only implement `as()`.
 * `T` needs to be default-constructible to use the front-end `as()` when the traits only implement `to()`.
@@ -238,21 +238,6 @@ Or alternatively:
 const tao::json::value v = ...;
 my_type mt;
 v.to( mt );
-```
-
-Or alternatively:
-
-```c++
-const tao::json::value v = ...;
-const my_type mt = tao::json::as< my_type >( v );
-```
-
-Or alternatively:
-
-```c++
-const tao::json::value v = ...;
-my_type mt;
-tao::json::to( v, mt );
 ```
 
 In this example no error is thrown when the top-level JSON Object contains additional keys beyond `"title"` and `"values"`.
