@@ -6,6 +6,8 @@
 
 #include "basic_value.hpp"
 
+#include "internal/format.hpp"
+
 namespace tao
 {
    namespace json
@@ -565,7 +567,7 @@ namespace tao
          auto& o = v.get_object();
          for( const auto& k : l ) {
             if( o.erase( k ) == 0 ) {
-               throw std::runtime_error( "JSON object key not found: " + k + json::base_message_extension( v.base() ) );  // NOLINT
+               throw std::runtime_error( internal::format( "json object key '", internal::escape( k ), "'", json::base_message_extension( v.base() ) ) );  // NOLINT
             }
          }
          return v;

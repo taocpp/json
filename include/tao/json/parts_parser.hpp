@@ -216,7 +216,7 @@ namespace tao
 
          std::vector< tao::byte > binary()
          {
-            throw std::runtime_error( "JSON format does not support binary" );  // NOLINT
+            throw std::runtime_error( "json format does not support binary" );  // NOLINT
          }
 
          std::string key()

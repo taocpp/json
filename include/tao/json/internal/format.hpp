@@ -8,7 +8,11 @@
 #include <sstream>
 #include <typeinfo>
 
+#include "escape.hpp"
+
+#include "../base_message_extension.hpp"
 #include "../forward.hpp"
+#include "../type.hpp"
 
 #include "../external/pegtl/internal/demangle.hpp"
 
@@ -18,14 +22,19 @@ namespace tao
    {
       namespace internal
       {
-         inline void to_stream( std::ostream& os, const std::type_info& t )
-         {
-            os << json_pegtl::internal::demangle( t.name() );
-         }
-
          inline void to_stream( std::ostream& os, const bool v )
          {
             os << ( v ? "true" : "false" );
+         }
+
+         inline void to_stream( std::ostream& os, const type t )
+         {
+            os << to_string( t );
+         }
+
+         inline void to_stream( std::ostream& os, const std::type_info& t )
+         {
+            os << json_pegtl::internal::demangle( t.name() );
          }
 
          template< typename T >

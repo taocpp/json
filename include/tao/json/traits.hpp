@@ -28,6 +28,7 @@
 #include "external/optional.hpp"
 #include "external/string_view.hpp"
 
+#include "internal/format.hpp"
 #include "internal/identity.hpp"
 #include "internal/number_traits.hpp"
 #include "internal/string_t.hpp"
@@ -477,7 +478,7 @@ namespace tao
                   return std::string( sv.data(), sv.size() );
                }
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to std::string" );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string", json::base_message_extension( v.base() ) ) );  // NOLINT
             }
          }
 
@@ -566,7 +567,7 @@ namespace tao
                case type::STRING_VIEW:
                   return v.unsafe_get_string_view();
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to tao::string_view" );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::string_view", json::base_message_extension( v.base() ) ) );  // NOLINT
             }
          }
 
@@ -707,7 +708,7 @@ namespace tao
                   return std::vector< tao::byte >( xv.begin(), xv.end() );
                }
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to std::vector< tao::byte >" + json::base_message_extension( v.base() ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::vector< tao::byte >", json::base_message_extension( v.base() ) ) );  // NOLINT
             }
          }
 
@@ -796,7 +797,7 @@ namespace tao
                case type::BINARY_VIEW:
                   return v.unsafe_get_binary_view();
                default:
-                  throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to tao::binary_view" + json::base_message_extension( v.base() ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::binary_view", json::base_message_extension( v.base() ) ) );  // NOLINT
             }
          }
 

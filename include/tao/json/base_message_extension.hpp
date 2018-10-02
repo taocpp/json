@@ -4,6 +4,7 @@
 #ifndef TAO_JSON_BASE_MESSAGE_EXTENSION_HPP
 #define TAO_JSON_BASE_MESSAGE_EXTENSION_HPP
 
+#include <ostream>
 #include <string>
 
 namespace tao

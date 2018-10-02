@@ -12,6 +12,8 @@
 
 #include "type.hpp"
 
+#include "internal/format.hpp"
+
 namespace tao
 {
    namespace json
@@ -112,7 +114,7 @@ namespace tao
          std::size_t index() const
          {
             if( m_index == std::string::npos ) {
-               throw std::invalid_argument( "unable to resolve JSON Pointer, invalid token for array access '" + m_key + '\'' );  // NOLINT
+               throw std::invalid_argument( internal::format( "unable to resolve json pointer with array, token '", m_key, "' is not an index" ) );  // NOLINT
             }
             return m_index;
          }
@@ -140,7 +142,7 @@ namespace tao
                const char* p = v.data();
                const char* const e = p + v.size();
                if( *p++ != '/' ) {
-                  throw std::invalid_argument( "invalid JSON Pointer value, must be empty or begin with '/'" );  // NOLINT
+                  throw std::invalid_argument( internal::format( "invalid json pointer '", internal::escape( v ), "', must be empty or begin with '/'" ) );  // NOLINT
                }
                std::string token;
                while( p != e ) {
@@ -157,7 +159,7 @@ namespace tao
                                  continue;
                            }
                         }
-                        throw std::invalid_argument( "invalid JSON Pointer escape sequence, '~' must be followed by '0' or '1'" );  // NOLINT
+                        throw std::invalid_argument( internal::format( "invalid escape sequence in json pointer '", internal::escape( v ), "', '~' must be followed by '0' or '1'" ) );  // NOLINT
 
                      case '/':
                         result.emplace_back( std::move( token ) );
@@ -366,7 +368,7 @@ namespace tao
 
          inline std::runtime_error invalid_type( const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
          {
-            return std::runtime_error( "unable to resolve JSON Pointer '" + tokens_to_string( begin, end ) + "' -- value type is neither 'object' nor 'array'" );
+            return std::runtime_error( internal::format( "unable to resolve JSON Pointer '", tokens_to_string( begin, end ), "' -- value type is neither 'object' nor 'array'" ) );
          }
 
          template< typename T >

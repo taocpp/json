@@ -11,6 +11,8 @@
 #include "to_stream.hpp"
 #include "value.hpp"
 
+#include "internal/format.hpp"
+
 namespace tao
 {
    namespace json
@@ -23,7 +25,7 @@ namespace tao
          const auto w = o.width( 0 );
          if( w > 0 ) {
             if( w >= 256 ) {
-               throw std::runtime_error( "indentation too large" );  // NOLINT
+               throw std::runtime_error( internal::format( "indentation ", w, " larger than 255" ) );  // NOLINT
             }
             json::to_stream( o, v, static_cast< std::size_t >( w ) );
          }

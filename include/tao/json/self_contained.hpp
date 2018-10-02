@@ -92,10 +92,10 @@ namespace tao
                return;
 
             case type::DISCARDED:
-               throw std::logic_error( "attempt to use a discarded value" );  // NOLINT
+               throw std::logic_error( "attempt to use a discarded json value" );  // NOLINT
 
             case type::DESTROYED:
-               throw std::logic_error( "attempt to use a destroyed value" );  // NOLINT
+               throw std::logic_error( "attempt to use a destroyed json value" );  // NOLINT
 
             case type::NULL_:
             case type::BOOLEAN:

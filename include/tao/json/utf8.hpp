@@ -34,7 +34,7 @@ namespace tao
             while( i < todo.todo ) {
                const auto p = json_pegtl::internal::peek_utf8::peek( in ).size;
                if( ( p == 0 ) || ( ( i += p ) > todo.todo ) ) {
-                  throw json_pegtl::parse_error( "validate utf8 failed", in );
+                  throw json_pegtl::parse_error( "invalid utf8", in );
                }
                in.bump( p );
             }
