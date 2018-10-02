@@ -4,6 +4,7 @@
 #include <limits>
 
 #include "test.hpp"
+#include "test_events.hpp"
 
 #include <tao/json.hpp>
 
@@ -15,22 +16,39 @@ namespace tao
    {
       void test_shared()
       {
+         using namespace test;
          {
             const std::shared_ptr< std::uint64_t > f;
+            TEST_ASSERT( traits< std::shared_ptr< uint64_t > >::is_nothing< traits >( f ) );
             value v = f;
             TEST_ASSERT( v == f );
             TEST_ASSERT( v.is_null() );
             const auto g = v.as< std::shared_ptr< std::uint64_t > >();
             TEST_ASSERT( g == f );
+            TEST_ASSERT( !g );
+            std::shared_ptr< std::uint64_t > h;
+            v.to( h );
+            TEST_ASSERT( h == g );
+            TEST_ASSERT( !h );
+            consumer c = { event_data() };
+            events::produce( c, f );
          }
          {
             const auto f = std::make_shared< std::uint64_t >( 42 );
+            TEST_ASSERT( !traits< std::shared_ptr< uint64_t > >::is_nothing< traits >( f ) );
             value v = f;
             TEST_ASSERT( v == f );
             TEST_ASSERT( v.is_number() );
             const auto g = v.as< std::shared_ptr< std::uint64_t > >();
             TEST_ASSERT( g != f );
             TEST_ASSERT( *g == *f );
+            std::shared_ptr< std::uint64_t > h;
+            v.to( h );
+            TEST_ASSERT( h != f );
+            TEST_ASSERT( g != h );
+            TEST_ASSERT( *g == *h );
+            consumer c = { uint64( 42 ) };
+            events::produce( c, f );
          }
       }
 
