@@ -8,11 +8,11 @@
 int main( int argc, char** argv )
 {
    if( argc != 2 ) {
-      std::cerr << "usage: " << argv[ 0 ] << " file.json" << std::endl;
-      std::cerr << "  parses the json file and writes it to stdout as ubjson" << std::endl;
+      std::cerr << "usage: " << argv[ 0 ] << " file.msgpack" << std::endl;
+      std::cerr << "  parses the msgpack file and writes it to stdout as ubjson" << std::endl;
       return 1;
    }
    tao::json::ubjson::events::to_stream consumer( std::cout );
-   tao::json::events::parse_file( consumer, argv[ 1 ] );
+   tao::json::msgpack::events::parse_file( consumer, argv[ 1 ] );
    return 0;
 }

@@ -2,9 +2,34 @@ cmake_minimum_required (VERSION 3.3.0 FATAL_ERROR)
 
 set (examplesources
   config.cpp
+  cbor_to_jaxn.cpp
+  cbor_to_json.cpp
+  cbor_to_msgpack.cpp
+  cbor_to_pretty_jaxn.cpp
+  cbor_to_pretty_json.cpp
+  cbor_to_ubjson.cpp
+  jaxn_to_cbor.cpp
+  jaxn_to_jaxn.cpp
+  jaxn_to_msgpack.cpp
+  jaxn_to_pretty_jaxn.cpp
+  jaxn_to_ubjson.cpp
   json_to_cbor.cpp
+  json_to_json.cpp
   json_to_msgpack.cpp
+  json_to_pretty_json.cpp
   json_to_ubjson.cpp
+  msgpack_to_cbor.cpp
+  msgpack_to_jaxn.cpp
+  msgpack_to_json.cpp
+  msgpack_to_pretty_jaxn.cpp
+  msgpack_to_pretty_json.cpp
+  msgpack_to_ubjson.cpp
+  ubjson_to_cbor.cpp
+  ubjson_to_jaxn.cpp
+  ubjson_to_json.cpp
+  ubjson_to_msgpack.cpp
+  ubjson_to_pretty_jaxn.cpp
+  ubjson_to_pretty_json.cpp
   validate_event_order.cpp
   validate_integer.cpp
 )
