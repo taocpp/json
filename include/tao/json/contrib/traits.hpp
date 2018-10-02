@@ -19,6 +19,9 @@
 #include "map_traits.hpp"
 #include "unordered_map_traits.hpp"
 
+#include "multiset_traits.hpp"
+#include "multimap_traits.hpp"
+
 #include "shared_ptr_traits.hpp"
 #include "unique_ptr_traits.hpp"
 
@@ -83,6 +86,18 @@ namespace tao
       template< typename T, typename... Ts >
       struct traits< std::unordered_map< std::string, T, Ts... > >
          : public unordered_map_traits< T, Ts... >
+      {
+      };
+
+      template< typename T, typename... Ts >
+      struct traits< std::multiset< T, Ts... > >
+         : public multiset_traits< T, Ts... >
+      {
+      };
+
+      template< typename T, typename... Ts >
+      struct traits< std::multimap< std::string, T, Ts... > >
+         : public multimap_traits< T, Ts... >
       {
       };
 

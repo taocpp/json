@@ -19,13 +19,16 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         struct object_traits
+         struct object_multi_traits
          {
             template< template< typename... > class Traits >
             static bool is_nothing( const T& o )
             {
                return o.empty();
             }
+
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const T& o ) = delete;  // TODO: Static assert for better error message?
 
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
@@ -37,15 +40,6 @@ namespace tao
                   c.member();
                }
                c.end_object( o.size() );
-            }
-
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o )
-            {
-               v.prepare_object();
-               for( const auto& i : o ) {
-                  v.unsafe_emplace( i.first, i.second );
-               }
             }
 
             template< template< typename... > class Traits, typename Base >
@@ -79,6 +73,20 @@ namespace tao
             {
                const auto& p = lhs.skip_value_ptr();
                return p.is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p.unsafe_get_object().begin(), p.unsafe_get_object().end(), pair_less() ) : ( p.type() > type::OBJECT );
+            }
+         };
+
+         template< typename T >
+         struct object_traits
+            : public object_multi_traits< T >
+         {
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const T& o )
+            {
+               v.prepare_object();
+               for( const auto& i : o ) {
+                  v.unsafe_emplace( i.first, i.second );
+               }
             }
          };
 

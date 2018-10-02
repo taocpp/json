@@ -18,7 +18,7 @@ namespace tao
       namespace internal
       {
          template< typename T >
-         struct array_traits
+         struct array_multi_traits
          {
             template< template< typename... > class Traits >
             static bool is_nothing( const T& o )
@@ -27,14 +27,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o )
-            {
-               v.unsafe_emplace_array();
-               v.unsafe_get_array().reserve( o.size() );
-               for( const auto& e : o ) {
-                  v.unsafe_emplace_back( e );
-               }
-            }
+            static void assign( basic_value< Traits, Base >& v, const T& o ) = delete;  // TODO: Static assert for better error message?
 
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
@@ -66,6 +59,21 @@ namespace tao
             {
                const auto& p = lhs.skip_value_ptr();
                return p.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p.unsafe_get_array().begin(), p.unsafe_get_array().end() ) : ( p.type() > type::ARRAY );
+            }
+         };
+
+         template< typename T >
+         struct array_traits
+            : public array_multi_traits< T >
+         {
+            template< template< typename... > class Traits, typename Base >
+            static void assign( basic_value< Traits, Base >& v, const T& o )
+            {
+               v.unsafe_emplace_array();
+               v.unsafe_get_array().reserve( o.size() );
+               for( const auto& e : o ) {
+                  v.unsafe_emplace_back( e );
+               }
             }
          };
 
