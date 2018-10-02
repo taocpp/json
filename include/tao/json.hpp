@@ -19,6 +19,7 @@
 #include "json/to_string.hpp"
 
 // Value Support
+#include "json/operators.hpp"
 #include "json/self_contained.hpp"
 
 // Custom Types
@@ -26,14 +27,12 @@
 #include "json/consume.hpp"
 #include "json/produce.hpp"
 
-// JAXN Format
-#include "json/jaxn.hpp"
-
 // Binary Literals
 #include "json/binary.hpp"
 
-// Binary Formats
+// Other Formats
 #include "json/cbor.hpp"
+#include "json/jaxn.hpp"
 #include "json/msgpack.hpp"
 #include "json/ubjson.hpp"
 
