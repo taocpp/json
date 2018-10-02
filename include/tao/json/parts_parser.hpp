@@ -119,7 +119,7 @@ namespace tao
          template< typename I >
          struct integer_state
          {
-            I converted;
+            I converted = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
          };
 
          template< typename Rule >
@@ -151,7 +151,7 @@ namespace tao
                converted = u;
             }
 
-            double converted;
+            double converted = 0.0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
          };
 
       }  // namespace internal
@@ -188,21 +188,21 @@ namespace tao
 
          double number_double()
          {
-            internal::double_state_and_consumer st{};
+            internal::double_state_and_consumer st;
             json_pegtl::parse< json_pegtl::must< internal::rules::double_rule, internal::rules::wss >, internal::action, internal::double_control >( m_input, st );
             return st.converted;
          }
 
          std::int64_t number_signed()
          {
-            internal::integer_state< std::int64_t > st{};
+            internal::integer_state< std::int64_t > st;
             json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }
 
          std::uint64_t number_unsigned()
          {
-            internal::integer_state< std::uint64_t > st{};
+            internal::integer_state< std::uint64_t > st;
             json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }
