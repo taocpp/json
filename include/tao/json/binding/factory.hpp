@@ -32,11 +32,11 @@ namespace tao
                   return &typeid( T );
                }
 
-               template< template< typename... > class Traits, typename Base >
-               static P< U > as( const basic_value< Traits, Base >& v )
+               template< template< typename... > class Traits, typename Base, typename... With >
+               static P< U > as( const basic_value< Traits, Base >& v, const With&... with )
                {
                   using R = typename Traits< P< T > >::template with_base< U >;
-                  return R::as( v );
+                  return R::as( v, with... );
                }
 
                template< template< typename... > class Traits, typename Base >
@@ -99,21 +99,22 @@ namespace tao
                std::string name;
             };
 
-            template< typename V, template< typename... > class Traits, typename Base, typename F >
-            static bool emplace_as( std::map< std::string, entry< F > >& m )
+            template< template< typename... > class Traits, typename Base, typename... With > using as_func_t = P< U >( * )( const basic_value< Traits, Base >&, const With&... );
+
+            template< typename V, template< typename... > class Traits, typename Base, typename... With >
+            static bool emplace_as( std::map< std::string, entry< as_func_t< Traits, Base, With... > > >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::template key< Traits >(), entry< F >( &W::template as< Traits, Base > ) );
+               m.emplace( W::template key< Traits >(), entry< as_func_t< Traits, Base, With... > >( &W::template as< Traits, Base, With... > ) );
                return true;
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static P< U > as( const basic_value< Traits, Base >& v )
+            template< template< typename... > class Traits, typename Base, typename... With >
+            static P< U > as( const basic_value< Traits, Base >& v, const With&... with )
             {
-               using F = P< U > ( * )( const basic_value< Traits, Base >& );
-               static const std::map< std::string, entry< F > > m = []() {
-                  std::map< std::string, entry< F > > t;
-                  (void)json::internal::swallow{ emplace_as< Ts, Traits, Base >( t )... };
+               static const std::map< std::string, entry< as_func_t< Traits, Base, With... > > > m = []() {
+                  std::map< std::string, entry< as_func_t< Traits, Base, With... > > > t;
+                  (void)json::internal::swallow{ emplace_as< Ts, Traits, Base, With... >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
@@ -127,7 +128,7 @@ namespace tao
                if( i == m.end() ) {
                   throw std::runtime_error( "unknown factory type " + json::internal::escape( b->first ) + json::base_message_extension( v.base() ) );  // NOLINT
                }
-               return i->second.function( b->second );
+               return i->second.function( b->second, with... );
             }
 
             template< typename V, template< typename... > class Traits, typename Base, typename F >

@@ -11,29 +11,29 @@ namespace tao
 {
    namespace json
    {
-      class base
+      class base_1
       {
       public:
-         virtual ~base() = default;
+         virtual ~base_1() = default;
 
-         base( const base& ) = delete;
-         base( base&& ) = delete;
-         void operator=( const base& ) = delete;
-         void operator=( base&& ) = delete;
+         base_1( const base_1& ) = delete;
+         base_1( base_1&& ) = delete;
+         void operator=( const base_1& ) = delete;
+         void operator=( base_1&& ) = delete;
 
       protected:
-         base() = default;
+         base_1() = default;
       };
 
       class derived_1
-         : public base
+         : public base_1
       {
       public:
          std::string s;
       };
 
       class derived_2
-         : public base
+         : public base_1
       {
       public:
          int i = 105;
@@ -41,7 +41,7 @@ namespace tao
       };
 
       class derived_3
-         : public base
+         : public base_1
       {
       public:
          int k = 107;
@@ -62,16 +62,16 @@ namespace tao
       };
 
       template<>
-      struct traits< std::shared_ptr< base > >
-         : binding::factory< base,
+      struct traits< std::shared_ptr< base_1 > >
+         : binding::factory< base_1,
                              TAO_JSON_FACTORY_BIND( "one", derived_1 ),
                              TAO_JSON_FACTORY_BIND1( derived_2 ) >
       {
       };
 
       template<>
-      struct traits< std::unique_ptr< base > >
-         : traits< std::shared_ptr< base > >::template with_pointer< std::unique_ptr >
+      struct traits< std::unique_ptr< base_1 > >
+         : traits< std::shared_ptr< base_1 > >::template with_pointer< std::unique_ptr >
       {
       };
 
@@ -83,7 +83,7 @@ namespace tao
                }
             }
          };
-         const auto a = v.as< std::shared_ptr< base > >();
+         const auto a = v.as< std::shared_ptr< base_1 > >();
          TEST_ASSERT( a );
          const auto b = std::dynamic_pointer_cast< derived_1 >( a );
          TEST_ASSERT( b );
@@ -93,7 +93,7 @@ namespace tao
          const value x = produce::to_value( a );
          TEST_ASSERT( w == x );
          parts_parser p( to_string( v ), __FUNCTION__ );
-         const auto c = consume< std::shared_ptr< base > >( p );
+         const auto c = consume< std::shared_ptr< base_1 > >( p );
          TEST_ASSERT( c );
          const auto d = std::dynamic_pointer_cast< derived_1 >( c );
          TEST_ASSERT( d );
@@ -108,7 +108,7 @@ namespace tao
                }
             }
          };
-         const auto a = v.as< std::unique_ptr< base > >();
+         const auto a = v.as< std::unique_ptr< base_1 > >();
          TEST_ASSERT( a );
          const auto* b = dynamic_cast< derived_1* >( a.get() );
          TEST_ASSERT( b );
@@ -118,7 +118,7 @@ namespace tao
          const value x = produce::to_value( a );
          TEST_ASSERT( w == x );
          parts_parser p( to_string( v ), __FUNCTION__ );
-         const auto c = consume< std::unique_ptr< base > >( p );
+         const auto c = consume< std::unique_ptr< base_1 > >( p );
          TEST_ASSERT( c );
          const auto d = dynamic_cast< derived_1* >( c.get() );
          TEST_ASSERT( d );
@@ -134,7 +134,7 @@ namespace tao
                }
             }
          };
-         const auto a = v.as< std::shared_ptr< base > >();
+         const auto a = v.as< std::shared_ptr< base_1 > >();
          TEST_ASSERT( a );
          const auto b = std::dynamic_pointer_cast< derived_2 >( a );
          TEST_ASSERT( b );
@@ -145,7 +145,7 @@ namespace tao
          const value x = produce::to_value( a );
          TEST_ASSERT( w == x );
          parts_parser p( to_string( v ), __FUNCTION__ );
-         const auto c = consume< std::shared_ptr< base > >( p );
+         const auto c = consume< std::shared_ptr< base_1 > >( p );
          TEST_ASSERT( c );
          const auto d = std::dynamic_pointer_cast< derived_2 >( c );
          TEST_ASSERT( d );
@@ -162,7 +162,7 @@ namespace tao
                }
             }
          };
-         const auto a = v.as< std::unique_ptr< base > >();
+         const auto a = v.as< std::unique_ptr< base_1 > >();
          TEST_ASSERT( a );
          const auto* b = dynamic_cast< derived_2* >( a.get() );
          TEST_ASSERT( b );
@@ -173,7 +173,7 @@ namespace tao
          const value x = produce::to_value( a );
          TEST_ASSERT( w == x );
          parts_parser p( to_string( v ), __FUNCTION__ );
-         const auto c = consume< std::unique_ptr< base > >( p );
+         const auto c = consume< std::unique_ptr< base_1 > >( p );
          TEST_ASSERT( c );
          const auto* d = dynamic_cast< derived_2* >( c.get() );
          TEST_ASSERT( d );
@@ -184,7 +184,7 @@ namespace tao
       void unit_test_5()
       {
          const value z = empty_object;
-         TEST_THROWS( z.as< std::unique_ptr< base > >() );
+         TEST_THROWS( z.as< std::unique_ptr< base_1 > >() );
          const value v = {
             { "one", {
                   { "s", "foo" }
@@ -196,19 +196,72 @@ namespace tao
                },
             }
          };
-         TEST_THROWS( v.as< std::unique_ptr< base > >() );
+         TEST_THROWS( v.as< std::unique_ptr< base_1 > >() );
          const value w = {
             { "1", {
                   { "s", "foo" }
                }
             }
          };
-         TEST_THROWS( w.as< std::unique_ptr< base > >() );
-         TEST_THROWS( value( std::shared_ptr< base >( new derived_3 ) ) );
+         TEST_THROWS( w.as< std::unique_ptr< base_1 > >() );
+         TEST_THROWS( value( std::shared_ptr< base_1 >( new derived_3 ) ) );
          events::discard d;
-         TEST_THROWS( events::produce( d, std::shared_ptr< base >( new derived_3 ) ) );
+         TEST_THROWS( events::produce( d, std::shared_ptr< base_1 >( new derived_3 ) ) );
          parts_parser p( "{ \"four\", null }", __FUNCTION__ );
-         TEST_THROWS( consume< std::shared_ptr< base > >( p ) );
+         TEST_THROWS( consume< std::shared_ptr< base_1 > >( p ) );
+      }
+
+      class base_2
+      {
+      public:
+         base_2( const base_2& ) = delete;
+         base_2( base_2&& ) = delete;
+         void operator=( const base_2& ) = delete;
+         void operator=( base_2&& ) = delete;
+
+      protected:
+         base_2() = default;
+         ~base_2() = default;
+      };
+
+      struct arg_dummy
+      {
+         arg_dummy()
+         {
+         }
+      };
+
+      struct derived_8
+         : public base_2
+      {
+         derived_8( const value& /*unused*/, const arg_dummy& /*unused*/ )
+         {
+         }
+      };
+
+      struct derived_9
+         : public base_2
+      {
+         derived_9( const value& /*unused*/, const arg_dummy& /*unused*/ )
+         {
+         }
+      };
+
+      template<>
+      struct traits< std::shared_ptr< base_2 > >
+         : binding::factory< base_2,
+                             TAO_JSON_FACTORY_BIND( "eight", derived_8 ),
+                             TAO_JSON_FACTORY_BIND( "nine", derived_9 ) >
+      {
+      };
+
+      void unit_test_6()
+      {
+         arg_dummy d;
+
+         const auto v = from_string( "{ \"nine\" : 1 }" );
+         const auto a = v.as_with< std::shared_ptr< base_2 > >( d );
+         TEST_ASSERT( a );
       }
 
       void unit_test()
@@ -218,6 +271,7 @@ namespace tao
          unit_test_3();
          unit_test_4();
          unit_test_5();
+         unit_test_6();
       }
 
    }  // namespace json
