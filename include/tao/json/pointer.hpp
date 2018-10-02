@@ -220,6 +220,26 @@ namespace tao
             return !m_tokens.empty();
          }
 
+         bool empty() const noexcept
+         {
+            return m_tokens.empty();
+         }
+
+         std::size_t size() const noexcept
+         {
+            return m_tokens.size();
+         }
+
+         const token& at( const std::size_t i ) const noexcept
+         {
+            return m_tokens.at( i );
+         }
+
+         const token& operator[]( const std::size_t i ) const noexcept
+         {
+            return m_tokens[ i ];
+         }
+
          std::vector< token >::const_iterator begin() const noexcept
          {
             return m_tokens.begin();
