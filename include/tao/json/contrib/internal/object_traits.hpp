@@ -28,7 +28,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o ) = delete;  // TODO: Static assert for better error message?
+            static void assign( basic_value< Traits, Base >& v, const T& o ) = delete;
 
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )

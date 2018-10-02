@@ -79,9 +79,10 @@ namespace tao
          // LCOV_EXCL_STOP
       }
 
-      // removes all VALUE_PTR and OPAQIE nodes, recursively,
-      // by copying/generating their content,
-      // replaces STRING_VIEW and BINARY_VIEW with copies.
+      // Removes all VALUE_PTR and OPAQUE_PTR nodes,
+      // recursively, by copying/generating their content;
+      // replaces STRING_VIEW and BINARY_VIEW with STRING
+      // and BINARY, respectively, with a copy of the data.
 
       template< template< typename... > class Traits, typename Base >
       void make_self_contained( basic_value< Traits, Base >& v )
@@ -143,12 +144,20 @@ namespace tao
                events::to_basic_value< Traits, Base > consumer;
                events::virtual_ref< events::to_basic_value< Traits, Base > > ref( consumer );
                q.producer( ref, q.data );
-               consumer.value.base() = v.base();  // TODO: Enable move -- or not retain base here?
+               consumer.value.base() = std::move( v.base() );
                v = std::move( consumer.value );
                return;
             }
          }
          throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
+      }
+
+      template< template< typename... > class Traits, typename Base >
+      basic_value< Traits, Base > self_contained_copy( const basic_value< Traits, Base >& v )
+      {
+         basic_value< Traits, Base > r = &v;
+         make_self_contained( r );
+         return r;
       }
 
    }  // namespace json

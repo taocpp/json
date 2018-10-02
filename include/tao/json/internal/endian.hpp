@@ -7,8 +7,6 @@
 #include <cstdint>
 #include <cstring>
 
-// TODO: Where to put this header?
-
 #if defined( _WIN32 ) && !defined( __MINGW32__ )
 #include "endian_win.hpp"
 #else

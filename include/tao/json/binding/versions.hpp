@@ -29,8 +29,6 @@ namespace tao
          struct versions< V, Vs... >
             : public V
          {
-            // TODO: Clear x between attempts? How?
-
             static void throw_on_error( const bool ok, const std::exception_ptr& e )
             {
                if( !ok ) {

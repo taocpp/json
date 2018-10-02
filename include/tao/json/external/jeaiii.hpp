@@ -37,14 +37,12 @@
 // and multiply the lower 32 bits by 10 to get the next digit and so on
 // we can do 2 digits at a time by multiplying by 100 each time
 
-// TODO:
-// x64 optimized version (no need to line up on 32bit boundary, so can multiply by 5 instead of 10 using lea instruction)
-// full 64 bit LG()
-// try splitting the number into chucks that can be processed independently
-// try odd digit first
-// try writing 4 chars at a time
-
-// 2 chars at a time
+// MISSING:
+// - x64 optimized version (no need to line up on 32bit boundary, so can multiply by 5 instead of 10 using lea instruction)
+// - full 64 bit LG()
+// - try splitting the number into chucks that can be processed independently
+// - try odd digit first
+// - try writing 4 chars at a time
 
 namespace tao
 {

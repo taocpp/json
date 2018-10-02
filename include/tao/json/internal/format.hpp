@@ -41,10 +41,16 @@ namespace tao
          }
 
          template< typename... Ts >
+         void format_to( std::ostream& oss, const Ts&... ts )
+         {
+            (void)swallow{ ( internal::to_stream( oss, ts ), true )... };
+         }
+
+         template< typename... Ts >
          std::string format( const Ts&... ts )
          {
             std::ostringstream oss;
-            (void)swallow{ ( internal::to_stream( oss, ts ), true )... };
+            format_to( oss, ts... );
             return oss.str();
          }
 

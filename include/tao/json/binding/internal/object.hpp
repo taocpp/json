@@ -18,6 +18,7 @@
 #include "../../basic_value.hpp"
 #include "../../external/pegtl/internal/integer_sequence.hpp"
 #include "../../internal/escape.hpp"
+#include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"
 
 namespace tao
@@ -28,13 +29,21 @@ namespace tao
       {
          namespace internal
          {
-            // TODO: Control how to create the instances?
-
             template< for_unknown_key E, for_nothing_value N, typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
             struct basic_object;
 
             template< for_nothing_value N >
             struct consumer_object_size_helper;
+
+            template< std::size_t N, typename... Ts >
+            void list_missing_bits( std::ostream& o, const std::bitset< N >& t, const std::map< std::string, Ts... >& m )
+            {
+               for( const auto& p : m ) {
+                  if( !t.test( p.second.index ) ) {
+                     o << ' ' << p.first;
+                  }
+               }
+            }
 
             template<>
             struct consumer_object_size_helper< for_nothing_value::ENCODE >
@@ -142,8 +151,11 @@ namespace tao
                   }
                   b |= o;
                   if( !b.all() ) {
-                     // TODO: List the missing required key(s) in the exception?
-                     throw std::runtime_error( "missing required key(s)" + json::base_message_extension( v.base() ) );  // NOLINT
+                     std::ostringstream oss;
+                     json::internal::format_to( oss, "missing required key(s)" );
+                     list_missing_bits( oss, b, m );
+                     json::internal::format_to( oss, " for type ", typeid( C ), json::base_message_extension( v.base() ) );
+                     throw std::runtime_error( oss.str() );  // NOLINT
                   }
                }
 
@@ -214,8 +226,11 @@ namespace tao
                   }
                   b |= o;
                   if( !b.all() ) {
-                     // TODO: List the missing required key(s) in the exception?
-                     parser.throw_parse_error( "missing required key(s)" );  // NOLINT
+                     std::ostringstream oss;
+                     json::internal::format_to( oss, "missing required key(s)" );
+                     list_missing_bits( oss, b, m );
+                     json::internal::format_to( oss, " for type ", typeid( C ) );
+                     throw std::runtime_error( oss.str() );  // NOLINT
                   }
                }
 

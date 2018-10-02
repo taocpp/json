@@ -249,4 +249,6 @@ TODO: binding::factory
 
 TODO: binding::versions
 
+Note that `binding::versions` uses the traits' `to()` method to fill-in an existing or default-constructed object, and that it does *not* clear or reset the target object between attempts.
+
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
