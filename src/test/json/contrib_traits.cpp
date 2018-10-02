@@ -18,22 +18,6 @@ namespace tao
       {
          using namespace test;  // NOLINT
          {
-            const std::shared_ptr< std::uint64_t > f;
-            TEST_ASSERT( traits< std::shared_ptr< uint64_t > >::is_nothing< traits >( f ) );
-            value v = f;
-            TEST_ASSERT( v == f );
-            TEST_ASSERT( v.is_null() );
-            const auto g = v.as< std::shared_ptr< std::uint64_t > >();
-            TEST_ASSERT( g == f );
-            TEST_ASSERT( !g );
-            std::shared_ptr< std::uint64_t > h;
-            v.to( h );
-            TEST_ASSERT( h == g );
-            TEST_ASSERT( !h );
-            consumer c = { event_data() };
-            events::produce( c, f );
-         }
-         {
             const auto f = std::make_shared< std::uint64_t >( 42 );
             TEST_ASSERT( !traits< std::shared_ptr< uint64_t > >::is_nothing< traits >( f ) );
             value v = f;
@@ -54,14 +38,6 @@ namespace tao
 
       void test_unique()
       {
-         {
-            const std::unique_ptr< std::uint64_t > f;
-            value v = f;
-            TEST_ASSERT( v == f );
-            TEST_ASSERT( v.is_null() );
-            const auto g = v.as< std::unique_ptr< std::uint64_t > >();
-            TEST_ASSERT( g == f );
-         }
          {
             const std::unique_ptr< std::uint64_t > f( new std::uint64_t( 42 ) );
             value v = f;

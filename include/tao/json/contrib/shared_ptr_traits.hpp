@@ -4,6 +4,7 @@
 #ifndef TAO_JSON_CONTRIB_SHARED_PTR_TRAITS_HPP
 #define TAO_JSON_CONTRIB_SHARED_PTR_TRAITS_HPP
 
+#include <cassert>
 #include <memory>
 #include <type_traits>
 
@@ -65,12 +66,14 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< U >& o )
          {
+            assert( o );
             v = static_cast< const T& >( *o );
          }
 
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const std::shared_ptr< U >& o )
          {
+            assert( o );
             json::events::produce< Traits >( c, static_cast< const T& >( *o ) );
          }
       };

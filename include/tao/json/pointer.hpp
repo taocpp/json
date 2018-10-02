@@ -12,6 +12,7 @@
 
 #include "type.hpp"
 
+#include "external/pegtl.hpp"
 #include "internal/format.hpp"
 
 namespace tao
@@ -130,49 +131,77 @@ namespace tao
          }
       };
 
+      namespace internal
+      {
+         // clang-format off
+         struct pointer_zero : json_pegtl::one< '0' > {};
+         struct pointer_one : json_pegtl::one< '1' > {};
+         struct pointer_tilde : json_pegtl::one< '~' > {};
+         struct pointer_escaped : json_pegtl::sor< pointer_zero, pointer_one > {};
+         struct pointer_slash : json_pegtl::one< '/' > {};
+         struct pointer_char : json_pegtl::utf8::not_one< '/' > {};
+         struct pointer_escape : json_pegtl::if_must< pointer_tilde, pointer_escaped > {};
+         struct pointer_token : json_pegtl::star< json_pegtl::sor< pointer_escape, pointer_char > > {};
+         struct pointer_rule : json_pegtl::until< json_pegtl::eof, json_pegtl::must< pointer_slash, pointer_token > > {};
+         struct pointer_grammar : json_pegtl::must< pointer_rule > {};
+         // clang-format on
+
+         template< typename Rule >
+         struct pointer_action
+            : public json_pegtl::nothing< Rule >
+         {
+         };
+
+         template<>
+         struct pointer_action< pointer_zero >
+         {
+            static void apply0( std::vector< token >& /*unused*/, std::string& t )
+            {
+               t += '~';
+            }
+         };
+
+         template<>
+         struct pointer_action< pointer_one >
+         {
+            static void apply0( std::vector< token >& /*unused*/, std::string& t )
+            {
+               t += '/';
+            }
+         };
+
+         template<>
+         struct pointer_action< pointer_char >
+         {
+            template< typename Input >
+            static void apply( const Input& in, std::vector< token >& /*unused*/, std::string& t )
+            {
+               t.append( in.begin(), in.size() );
+            }
+         };
+
+         template<>
+         struct pointer_action< pointer_token >
+         {
+            static void apply0( std::vector< token >& v, std::string& t )
+            {
+               v.push_back( token( std::move( t ) ) );
+               t.clear();
+            }
+         };
+
+      }  // namespace internal
+
       class pointer
       {
       private:
          std::vector< token > m_tokens;
 
-         static std::vector< token > parse( const std::string& v )
+         void parse( const std::string& v )
          {
-            std::vector< token > result;
-            if( !v.empty() ) {
-               const char* p = v.data();
-               const char* const e = p + v.size();
-               if( *p++ != '/' ) {
-                  throw std::invalid_argument( internal::format( "invalid json pointer '", internal::escape( v ), "', must be empty or begin with '/'" ) );  // NOLINT
-               }
-               std::string token;
-               while( p != e ) {
-                  const char c = *p++;
-                  switch( c ) {
-                     case '~':
-                        if( p != e ) {
-                           switch( *p++ ) {
-                              case '0':
-                                 token += '~';
-                                 continue;
-                              case '1':
-                                 token += '/';
-                                 continue;
-                           }
-                        }
-                        throw std::invalid_argument( internal::format( "invalid escape sequence in json pointer '", internal::escape( v ), "', '~' must be followed by '0' or '1'" ) );  // NOLINT
-
-                     case '/':
-                        result.emplace_back( std::move( token ) );
-                        token.clear();
-                        continue;
-
-                     default:
-                        token += c;
-                  }
-               }
-               result.emplace_back( std::move( token ) );
-            }
-            return result;
+            std::string t;
+            json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, const char* > in( v, __PRETTY_FUNCTION__ );
+            json_pegtl::parse< internal::pointer_grammar, internal::pointer_action >( in, m_tokens, t );
          }
 
       public:
@@ -186,8 +215,8 @@ namespace tao
          }
 
          explicit pointer( const std::string& v )
-            : m_tokens( parse( v ) )
          {
+            parse( v );
          }
 
          pointer( const std::initializer_list< token >& l )
@@ -207,7 +236,8 @@ namespace tao
 
          pointer& operator=( const std::string& v )
          {
-            m_tokens = parse( v );
+            m_tokens.clear();
+            parse( v );
             return *this;
          }
 

@@ -4,6 +4,8 @@
 #ifndef TAO_JSON_CONTRIB_INTERNAL_INDIRECT_TRAITS_HPP
 #define TAO_JSON_CONTRIB_INTERNAL_INDIRECT_TRAITS_HPP
 
+#include <cassert>
+
 #include "../../forward.hpp"
 #include "../../type.hpp"
 
@@ -29,18 +31,21 @@ namespace tao
             template< template< typename... > class Traits >
             static bool is_nothing( const T& o )
             {
+               assert( o );
                return internal::is_nothing< Traits >( add_const( *o ) );
             }
 
             template< template< typename... > class Traits, typename Base >
             static void assign( basic_value< Traits, Base >& v, const T& o )
             {
+               assert( o );
                v = add_const( *o );
             }
 
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
             {
+               assert( o );
                json::events::produce< Traits >( c, add_const( *o ) );
             }
 
