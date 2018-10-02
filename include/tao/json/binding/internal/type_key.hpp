@@ -47,13 +47,13 @@ namespace tao
                template< template< typename... > class Traits >
                static std::string key()
                {
-                  return Traits< V >::default_key::as_string();
+                  return Traits< V >::template default_key< Traits >::as_string();
                }
 
                template< template< typename... > class Traits = traits, typename Consumer >
                static void produce_key( Consumer& consumer )
                {
-                  consumer.key( Traits< V >::default_key::as_string_view() );
+                  consumer.key( Traits< V >::template default_key< Traits >::as_string_view() );
                }
             };
 

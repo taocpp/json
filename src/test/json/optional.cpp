@@ -11,6 +11,21 @@ namespace tao
 {
    namespace json
    {
+      struct type_1
+      {
+      };
+
+      template<>
+      struct traits< type_1 >
+      {
+         TAO_JSON_DEFAULT_KEY( "type_1" );
+
+         static void assign( value& v, const type_1 /*unused*/ )
+         {
+            v = 42;
+         }
+      };
+
       void unit_test()
       {
          {
@@ -35,6 +50,30 @@ namespace tao
             const tao::optional< int > i;
             const value v = null;
             TEST_ASSERT( i == v );
+         }
+         {
+            const type_1 a;
+            const value v = { a };
+            TEST_ASSERT( v.is_object() );
+            TEST_ASSERT( v.unsafe_get_object().size() == 1 );
+            TEST_ASSERT( v.unsafe_get_object().begin()->first == "type_1" );
+            TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
+         }
+         {
+            const tao::optional< type_1 > a = type_1();
+            const value v = { a };
+            TEST_ASSERT( v.is_object() );
+            TEST_ASSERT( v.unsafe_get_object().size() == 1 );
+            TEST_ASSERT( v.unsafe_get_object().begin()->first == "type_1" );
+            TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
+         }
+         {
+            const tao::optional< tao::optional< type_1 > > a = tao::optional< type_1 >( type_1() );
+            const value v = { a };
+            TEST_ASSERT( v.is_object() );
+            TEST_ASSERT( v.unsafe_get_object().size() == 1 );
+            TEST_ASSERT( v.unsafe_get_object().begin()->first == "type_1" );
+            TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
          }
       }
 

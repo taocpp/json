@@ -36,7 +36,7 @@
 #include "external/pegtl/internal/pegtl_string.hpp"
 
 #define TAO_JSON_DEFAULT_KEY( x ) \
-   using default_key = TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, x )
+   template< template< typename... > class Traits > using default_key = TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, x )
 
 #ifdef _MSC_VER
 #pragma warning( push )
@@ -978,6 +978,8 @@ namespace tao
       template< typename T >
       struct traits< tao::optional< T > >
       {
+         template< template< typename... > class Traits > using default_key = typename Traits< T >::template default_key< Traits >;
+
          template< template< typename... > class Traits >
          static bool is_nothing( const tao::optional< T >& o )
          {
