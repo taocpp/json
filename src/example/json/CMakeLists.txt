@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 3.3.0 FATAL_ERROR)
 
 set (examplesources
   config.cpp
+  json_to_cbor.cpp
+  json_to_msgpack.cpp
+  json_to_ubjson.cpp
   validate_event_order.cpp
   validate_integer.cpp
 )
