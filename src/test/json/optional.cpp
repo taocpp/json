@@ -13,9 +13,7 @@ namespace tao
    {
       struct type_1
       {
-         type_1()
-         {
-         }
+         type_1() = default;
       };
 
       template<>

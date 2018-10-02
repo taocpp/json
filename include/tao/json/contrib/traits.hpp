@@ -19,8 +19,8 @@
 #include "map_traits.hpp"
 #include "unordered_map_traits.hpp"
 
-#include "multiset_traits.hpp"
 #include "multimap_traits.hpp"
+#include "multiset_traits.hpp"
 
 #include "shared_ptr_traits.hpp"
 #include "unique_ptr_traits.hpp"

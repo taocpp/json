@@ -16,7 +16,7 @@ namespace tao
    {
       void test_shared()
       {
-         using namespace test;
+         using namespace test;  // NOLINT
          {
             const std::shared_ptr< std::uint64_t > f;
             TEST_ASSERT( traits< std::shared_ptr< uint64_t > >::is_nothing< traits >( f ) );

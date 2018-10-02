@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_CONTRIB_INDIRECT_TRAITS_HPP
-#define TAO_JSON_CONTRIB_INDIRECT_TRAITS_HPP
+#ifndef TAO_JSON_CONTRIB_INTERNAL_INDIRECT_TRAITS_HPP
+#define TAO_JSON_CONTRIB_INTERNAL_INDIRECT_TRAITS_HPP
 
 #include "../../forward.hpp"
 #include "../../type.hpp"

@@ -1,7 +1,7 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_SRC_TEST_JSON_TEST_EVENTS_HPP
+#ifndef TAO_JSON_SRC_TEST_JSON_TEST_EVENTS_HPP  // NOLINT
 #define TAO_JSON_SRC_TEST_JSON_TEST_EVENTS_HPP
 
 #include <tao/json.hpp>
@@ -32,17 +32,17 @@ namespace tao
 
          struct event_data
          {
-            event_data()
+            event_data()  // NOLINT
                : t( event_type::NULL_ )
             {
             }
 
-            event_data( const event_type in_t )
+            event_data( const event_type in_t )  // NOLINT
                : t( in_t )
             {
             }
 
-            event_data( const bool in_b )
+            event_data( const bool in_b )  // NOLINT
                : t( event_type::BOOLEAN ),
                  b( in_b )
             {
@@ -93,6 +93,12 @@ namespace tao
                : m_e( events )
             {
             }
+
+            consumer( consumer&& ) = delete;
+            consumer( const consumer& ) = delete;
+
+            void operator=( consumer&& ) = delete;
+            void operator=( const consumer& ) = delete;
 
             ~consumer()
             {
