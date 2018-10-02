@@ -23,27 +23,18 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename... With >
             static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_first_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >::type
             {
-               if( v == null ) {
-                  return std::unique_ptr< U >();
-               }
                return std::unique_ptr< U >( new T( v, with... ) );
             }
 
             template< template< typename... > class Traits, typename Base, typename... With >
             static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_second_ptr_as< T, Traits, Base, With... >::value || use_fourth_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >::type
             {
-               if( v == null ) {
-                  return std::unique_ptr< U >();
-               }
                return std::unique_ptr< U >( new T( Traits< T >::as( v, with... ) ) );
             }
 
             template< template< typename... > class Traits, typename Base, typename... With >
             static auto as( const basic_value< Traits, Base >& v, const With&... with ) -> typename std::enable_if< use_third_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >::type
             {
-               if( v == null ) {
-                  return std::unique_ptr< U >();
-               }
                std::unique_ptr< U > t( new T() );
                Traits< T >::to( v, static_cast< T& >( *t ), with... );
                return t;
@@ -52,18 +43,12 @@ namespace tao
             template< template< typename... > class Traits, typename Producer >
             static auto consume( Producer& parser ) -> typename std::enable_if< use_first_ptr_consume< T, Traits, Producer >::value || use_third_ptr_consume< T, Traits, Producer >::value, std::unique_ptr< U > >::type
             {
-               if( parser.null() ) {
-                  return std::unique_ptr< U >();
-               }
                return Traits< T >::template consume< Traits >( parser );
             }
 
             template< template< typename... > class Traits, typename Producer >
             static auto consume( Producer& parser ) -> typename std::enable_if< use_second_ptr_consume< T, Traits, Producer >::value, std::unique_ptr< U > >::type
             {
-               if( parser.null() ) {
-                  return std::unique_ptr< U >();
-               }
                std::unique_ptr< U > t( new T() );
                Traits< T >::template consume< Traits >( parser, static_cast< T& >( *t ) );
                return t;
@@ -79,13 +64,13 @@ namespace tao
          template< template< typename... > class Traits, typename Base >
          static void assign( basic_value< Traits, Base >& v, const std::unique_ptr< U >& o )
          {
-            v = static_cast< const T& >( *o );  // Unconditional dereference for use in binding::factory.
+            v = static_cast< const T& >( *o );
          }
 
          template< template< typename... > class Traits, typename Consumer >
          static void produce( Consumer& c, const std::unique_ptr< U >& o )
          {
-            json::events::produce< Traits >( c, static_cast< const T& >( *o ) );  // Unconditional dereference for use in binding::factory.
+            json::events::produce< Traits >( c, static_cast< const T& >( *o ) );
          }
       };
 
