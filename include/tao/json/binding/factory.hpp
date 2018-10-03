@@ -114,7 +114,7 @@ namespace tao
             {
                static const std::map< std::string, entry< as_func_t< Traits, Base, With... > > > m = []() {
                   std::map< std::string, entry< as_func_t< Traits, Base, With... > > > t;
-                  (void)json::internal::swallow{ basic_factory::emplace_as< Ts, Traits, Base, With... >( t )... };
+                  (void)json::internal::swallow{ basic_factory::emplace_as< Ts >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
