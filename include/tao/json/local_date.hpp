@@ -73,8 +73,7 @@ namespace tao
 
       inline std::ostream& operator<<( std::ostream& os, const local_date v )
       {
-         internal::write_two( os, v.year / 100 );
-         internal::write_two( os, v.year % 100 );
+         internal::write_four( os, v.year );
          os.put( '-' );
          internal::write_two( os, v.month );
          os.put( '-' );

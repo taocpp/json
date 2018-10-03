@@ -65,6 +65,13 @@ namespace tao
             os.put( static_cast< char >( '0' + v % 10 ) );
          }
 
+         template< typename T >
+         void write_four( std::ostream& os, const T v )
+         {
+            write_two( os, v / 100 );
+            write_two( os, v % 100 );
+         }
+
          constexpr bool is_leap_year( const std::uint16_t year ) noexcept
          {
             return ( year % 4 == 0 ) && ( ( year % 100 != 0 ) || ( year % 400 == 0 ) );

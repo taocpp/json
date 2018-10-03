@@ -104,6 +104,11 @@ namespace tao
             : offset_date_time( sv, sv.find_first_of( "Zz+-", 19 ) )
          {
          }
+
+         bool has_offset() const noexcept
+         {
+            return ( offset_hour != 0 ) || ( offset_minute != 0);
+         }
       };
 
       inline bool operator==( const offset_date_time lhs, const offset_date_time rhs ) noexcept
@@ -119,22 +124,21 @@ namespace tao
       inline std::ostream& operator<<( std::ostream& os, const offset_date_time v )
       {
          os << v.date_time;
-         if( ( v.offset_hour == 0 ) && ( v.offset_minute == 0 ) ) {
+         if( !v.has_offset() ) {
             os << 'Z';
+            return os;
+         }
+         if( v.offset_hour > 0 ) {
+            os.put( '+' );
+            internal::write_two( os, v.offset_hour );
+            os.put( ':' );
+            internal::write_two( os, v.offset_minute );
          }
          else {
-            if( v.offset_hour > 0 ) {
-               os.put( '+' );
-               internal::write_two( os, v.offset_hour );
-               os.put( ':' );
-               internal::write_two( os, v.offset_minute );
-            }
-            else {
-               os.put( '-' );
-               internal::write_two( os, -v.offset_hour );
-               os.put( ':' );
-               internal::write_two( os, -v.offset_minute );
-            }
+            os.put( '-' );
+            internal::write_two( os, -v.offset_hour );
+            os.put( ':' );
+            internal::write_two( os, -v.offset_minute );
          }
          return os;
       }
