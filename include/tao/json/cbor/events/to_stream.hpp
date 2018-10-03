@@ -118,17 +118,17 @@ namespace tao
 
                void local_date( const json::local_date /*unused*/ )
                {
-                  throw std::runtime_error( "cbor does not support local date (without time and offset)" );
+                  throw std::runtime_error( "cbor does not support local date (without time and offset)" );  // NOLINT
                }
 
                void local_time( const json::local_time /*unused*/ )
                {
-                  throw std::runtime_error( "cbor does not support local time (without date and offset)" );
+                  throw std::runtime_error( "cbor does not support local time (without date and offset)" );  // NOLINT
                }
 
                void local_date_time( const json::local_date_time /*unused*/ )
                {
-                  throw std::runtime_error( "cbor does not support local date and time (without an offset)" );
+                  throw std::runtime_error( "cbor does not support local date and time (without an offset)" );  // NOLINT
                }
 
                void offset_date_time( const json::offset_date_time odt )
