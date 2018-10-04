@@ -19,7 +19,10 @@
 
 ## CBOR
 
-CBOR is supported within the data model this library, the biggest restriction being that only strings are supported as keys in objects/maps.
+CBOR is supported within the data model this library.
+Only strings are supported as keys in objects/maps.
+
+Semantic tags are currently not supported.
 
 ### Major Type 7
 
@@ -37,23 +40,12 @@ The following table lists the supported Minors for Major type 7.
 
 Note that 16 and 32-bit floating point numbers are correctly decoded, but, given the internal representation that exclusively uses `double`, are never encoded.
 
-### Major Type 6
-
-The following table lists the supported semantic tags as encoded with Major type 6.
-
-| Tag | Note |
-|-----|------|
-| 0 | Date-time string according to RFC 3339 and Section 3.3 of RFC 4287. |
-
-Note that all other semantic tags are currently ignored.
-
 ## MsgPack
 
 MsgPack does not support open-ended Arrays or Objects, i.e. in MsgPack every Array and Object has to contain the number of elements, or members, respectively, at the beginning.
-Consequently the Events consumers that encode MsgPack will throw an exception when the `begin_array()` or `begin_object()` function without a size is called.
+The Events Consumers that encode MsgPack will throw an exception when the `begin_array()` or `begin_object()` functions are called without a size.
 
-* Timestamp support is coming soon...
-* Other extension types are not supported.
+Extension types are currently not supported.
 
 ## UBJSON
 
