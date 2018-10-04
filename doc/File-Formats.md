@@ -24,7 +24,7 @@ CBOR is supported within the data model this library, the biggest restriction be
 
 * Date-time support is coming soon...
 
-###### Major Type 7
+### Major Type 7
 
 The following table lists the supported Minors for Major type 7.
 
@@ -40,7 +40,7 @@ The following table lists the supported Minors for Major type 7.
 
 Note that 16 and 32-bit floating point numbers are correctly decoded, but, given the internal representation that exclusively uses `double`, are never encoded.
 
-###### Major Type 6
+### Major Type 6
 
 The following table lists the supported semantic tags as encoded with Major type 6.
 
