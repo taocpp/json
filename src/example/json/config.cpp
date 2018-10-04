@@ -21,8 +21,10 @@ namespace config
       struct value;
       struct identifier : plus< ranges< 'a', 'z', 'A', 'Z', '0', '9', '-', '-', '_', '_', '$' > > {};
 
+      struct name_separator : pad< one< ':', '=' >, jaxn::ws > {};
+
       struct rkey;
-      struct function_param : if_must< identifier, jaxn::name_separator, value > {};
+      struct function_param : if_must< identifier, name_separator, value > {};
       struct function : seq< identifier, rws, list< function_param, jaxn::value_separator > > {};
       struct expression : if_must< string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
 
@@ -48,7 +50,7 @@ namespace config
 
       struct mkey_part : sor< key, identifier > {};
       struct mkey : list< mkey_part, one< '.' > > {};
-      struct member : if_must< mkey, jaxn::name_separator, value > {};
+      struct member : if_must< mkey, name_separator, value > {};
       struct object_content : star< member, opt< jaxn::value_separator > > {};
       struct object_value : seq< jaxn::begin_object, object_content, must< jaxn::end_object > >
       {
