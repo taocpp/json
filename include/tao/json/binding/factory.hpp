@@ -33,7 +33,7 @@ namespace tao
                }
 
                template< template< typename... > class Traits, typename Base, typename... With >
-               static P< U > as( const basic_value< Traits, Base >& v, const With&... with )
+               static P< U > as( const basic_value< Traits, Base >& v, With&... with )
                {
                   using R = typename Traits< P< T > >::template with_base< U >;
                   return R::as( v, with... );
@@ -99,7 +99,7 @@ namespace tao
                std::string name;
             };
 
-            template< template< typename... > class Traits, typename Base, typename... With > using as_func_t = P< U >( * )( const basic_value< Traits, Base >&, const With&... );
+            template< template< typename... > class Traits, typename Base, typename... With > using as_func_t = P< U >( * )( const basic_value< Traits, Base >&, With&... );
 
             template< typename V, template< typename... > class Traits, typename Base, typename... With >
             static bool emplace_as( std::map< std::string, entry< as_func_t< Traits, Base, With... > > >& m )
@@ -110,7 +110,7 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Base, typename... With >
-            static P< U > as( const basic_value< Traits, Base >& v, const With&... with )
+            static P< U > as( const basic_value< Traits, Base >& v, With&... with )
             {
                static const std::map< std::string, entry< as_func_t< Traits, Base, With... > > > m = []() {
                   std::map< std::string, entry< as_func_t< Traits, Base, With... > > > t;

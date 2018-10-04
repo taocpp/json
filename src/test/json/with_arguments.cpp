@@ -37,6 +37,11 @@ namespace tao
             TEST_ASSERT( b->i == 1 );
          }
          {
+            const value v = 0;
+            const auto b = v.as_with< std::shared_ptr< type_1 > >( arg_0() );
+            TEST_ASSERT( b->i == 1 );
+         }
+         {
             const value v = from_string( "[ 1, 2, 3 ]" );
             const auto c = v.as_with< std::vector< std::shared_ptr< type_1 > > >( a );
             TEST_ASSERT( c.size() == 3 );

@@ -17,7 +17,7 @@ namespace tao
          template< typename T, template< typename... > class Traits, typename Base, typename... With >
          struct use_first_ptr_as
          {
-            static constexpr bool value = std::is_constructible< T, const basic_value< Traits, Base >&, const With&... >::value;
+            static constexpr bool value = std::is_constructible< T, const basic_value< Traits, Base >&, With&... >::value;
          };
 
          template< typename T, template< typename... > class Traits, typename Base, typename... With >

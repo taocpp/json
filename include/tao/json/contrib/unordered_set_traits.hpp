@@ -20,7 +20,7 @@ namespace tao
          : public internal::array_traits< std::unordered_set< T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base, typename... With >
-         static void to( const basic_value< Traits, Base >& v, std::unordered_set< T, Ts... >& r, const With&... with )
+         static void to( const basic_value< Traits, Base >& v, std::unordered_set< T, Ts... >& r, With&... with )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {

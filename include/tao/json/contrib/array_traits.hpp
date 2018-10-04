@@ -20,7 +20,7 @@ namespace tao
          : public internal::array_traits< std::array< T, N > >
       {
          template< template< typename... > class Traits, typename Base, typename... With >
-         static void to( const basic_value< Traits, Base >& v, std::array< T, N >& r, With&&... with )
+         static void to( const basic_value< Traits, Base >& v, std::array< T, N >& r, With&... with )
          {
             const auto& a = v.get_array();
             for( std::size_t i = 0; i < N; ++i ) {

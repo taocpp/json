@@ -74,7 +74,7 @@ namespace tao
          };
 
          template< typename T, typename V, typename... With >
-         struct has_as_impl< T, V, type_list< With... >, decltype( T::as( std::declval< const V& >(), std::declval< const With& >()... ), void() ) > : std::true_type
+         struct has_as_impl< T, V, type_list< With... >, decltype( T::as( std::declval< const V& >(), std::declval< With& >()... ), void() ) > : std::true_type
          {
          };
 
@@ -90,7 +90,7 @@ namespace tao
          };
 
          template< typename T, typename V, typename U, typename... With >
-         struct has_to_impl< T, V, U, type_list< With... >, decltype( T::to( std::declval< const V& >(), std::declval< U& >(), std::declval< const With& >()... ), void() ) > : std::true_type
+         struct has_to_impl< T, V, U, type_list< With... >, decltype( T::to( std::declval< const V& >(), std::declval< U& >(), std::declval< With& >()... ), void() ) > : std::true_type
          {
          };
 

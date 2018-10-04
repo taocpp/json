@@ -1281,13 +1281,13 @@ namespace tao
          }
 
          template< typename T, typename... With >
-         typename std::enable_if< internal::has_as< Traits< T >, basic_value, With... >::value, T >::type as_with( const With&... with ) const
+         typename std::enable_if< internal::has_as< Traits< T >, basic_value, With... >::value, T >::type as_with( With&&... with ) const
          {
             return Traits< T >::as( *this, with... );
          }
 
          template< typename T, typename... With >
-         typename std::enable_if< !internal::has_as< Traits< T >, basic_value, With... >::value && internal::has_to< Traits< T >, basic_value, T, With... >::value, T >::type as_with( const With&... with ) const
+         typename std::enable_if< !internal::has_as< Traits< T >, basic_value, With... >::value && internal::has_to< Traits< T >, basic_value, T, With... >::value, T >::type as_with( With&&... with ) const
          {
             T v;
             Traits< T >::to( *this, v, with... );
@@ -1295,7 +1295,7 @@ namespace tao
          }
 
          template< typename T, typename... With >
-         typename std::enable_if< !internal::has_as< Traits< T >, basic_value, With... >::value && !internal::has_to< Traits< T >, basic_value, T, With... >::value, T >::type as_with( const With&... with ) const = delete;
+         typename std::enable_if< !internal::has_as< Traits< T >, basic_value, With... >::value && !internal::has_to< Traits< T >, basic_value, T, With... >::value, T >::type as_with( With&... with ) const = delete;
 
          template< typename T >
          typename std::enable_if< internal::has_to< Traits< T >, basic_value, T >::value, void >::type to( T& v ) const
@@ -1319,19 +1319,19 @@ namespace tao
          }
 
          template< typename T, typename... With >
-         typename std::enable_if< internal::has_to< Traits< T >, basic_value, T, With... >::value, void >::type to_with( T& v, const With&... with ) const
+         typename std::enable_if< internal::has_to< Traits< T >, basic_value, T, With... >::value, void >::type to_with( T& v, With&... with ) const
          {
             Traits< typename std::decay< T >::type >::to( *this, v, with... );
          }
 
          template< typename T, typename... With >
-         typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T, With... >::value && internal::has_as< Traits< T >, basic_value, With... >::value, void >::type to_with( T& v, const With&... with ) const
+         typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T, With... >::value && internal::has_as< Traits< T >, basic_value, With... >::value, void >::type to_with( T& v, With&... with ) const
          {
             v = Traits< typename std::decay< T >::type >::as( *this, with... );
          }
 
          template< typename T, typename... With >
-         typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T, With... >::value && !internal::has_as< Traits< T >, basic_value, With... >::value, void >::type to_with( T& v, const With&... with ) const = delete;
+         typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T, With... >::value && !internal::has_as< Traits< T >, basic_value, With... >::value, void >::type to_with( T& v, With&... with ) const = delete;
 
          template< typename T >
          tao::optional< T > optional() const

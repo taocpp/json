@@ -21,7 +21,7 @@ namespace tao
          : public internal::object_multi_traits< std::multimap< std::string, T, Ts... > >
       {
          template< template< typename... > class Traits, typename Base, typename... With >
-         static void to( const basic_value< Traits, Base >& v, std::multimap< std::string, T, Ts... >& r, const With&... with )
+         static void to( const basic_value< Traits, Base >& v, std::multimap< std::string, T, Ts... >& r, With&... with )
          {
             const auto& o = v.get_object();
             for( const auto& i : o ) {
