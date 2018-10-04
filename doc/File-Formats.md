@@ -29,7 +29,7 @@ CBOR is supported within the data model this library, the biggest restriction be
 The following table lists the supported Minors for Major type 7.
 
 | Minor | Note |
-----------------
+|-------|------|
 | 20 | Boolean `false`. |
 | 21 | Boolean `true`. |
 | 22 | Null value. |
@@ -45,23 +45,25 @@ Note that 16 and 32-bit floating point numbers are correctly decoded, but, given
 The following table lists the supported semantic tags as encoded with Major type 6.
 
 | Tag | Note |
---------------
+|-----|------|
 | 0 | Date-time string according to RFC 3339 and Section 3.3 of RFC 4287. |
 
 Note that all other semantic tags are currently ignored.
 
 ## MsgPack
 
+MsgPack does not support open-ended Arrays or Objects, i.e. in MsgPack every Array and Object has to contain the number of elements, or members, respectively, at the beginning.
+Consequently the Events consumers that encode MsgPack will throw an exception when the `begin_array()` or `begin_object()` function without a size is called.
+
 * Timestamp support is coming soon...
-* Most extension types are simply ignored.
-* MsgPack does not support open-ended Arrays or Objects, i.e. without a leading count of elements or members, respectively, therefore the Events consumers that encode MsgPack will throw an exception when `begin_array()` or `begin_object()` is called without a size.
+* Other extension types are not supported.
 
 ## UBJSON
 
+* The No-Op value `N` is only supported as top-level padding.
 * Does not currently encode strongly typed Arrays or Objects, except:
 * Supports encoding and decoding of strongly typed Arrays of type `U` for binary data.
-* Supports decoding of all Arrays and Objects, including with size or strongly typed.
+* Supports decoding of all Arrays and Objects, including with size and strongly typed.
 * Decoding a high-precision number that does not fit into `std::int64_t`, `std::uint64_t` or `double` is an error.
-* The No-Op value `N` is only supported as top-level padding.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
