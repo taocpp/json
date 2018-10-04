@@ -122,46 +122,6 @@ namespace tao
          };
 
          template<>
-         struct get_by_enum< type::LOCAL_DATE >
-         {
-            template< typename T >
-            static local_date get( const value_union< T >& u ) noexcept
-            {
-               return u.ld;
-            }
-         };
-
-         template<>
-         struct get_by_enum< type::LOCAL_TIME >
-         {
-            template< typename T >
-            static local_time get( const value_union< T >& u ) noexcept
-            {
-               return u.lt;
-            }
-         };
-
-         template<>
-         struct get_by_enum< type::LOCAL_DATE_TIME >
-         {
-            template< typename T >
-            static local_date_time get( const value_union< T >& u ) noexcept
-            {
-               return u.ldt;
-            }
-         };
-
-         template<>
-         struct get_by_enum< type::OFFSET_DATE_TIME >
-         {
-            template< typename T >
-            static offset_date_time get( const value_union< T >& u ) noexcept
-            {
-               return u.odt;
-            }
-         };
-
-         template<>
          struct get_by_enum< type::ARRAY >
          {
             template< typename T >

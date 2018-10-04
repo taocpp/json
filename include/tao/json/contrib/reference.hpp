@@ -49,10 +49,6 @@ namespace tao
                case type::STRING_VIEW:
                case type::BINARY:
                case type::BINARY_VIEW:
-               case type::LOCAL_DATE:
-               case type::LOCAL_TIME:
-               case type::LOCAL_DATE_TIME:
-               case type::OFFSET_DATE_TIME:
                   return;
                case type::ARRAY:
                   for( auto& e : v.unsafe_get_array() ) {

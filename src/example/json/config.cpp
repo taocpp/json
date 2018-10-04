@@ -75,9 +75,7 @@ namespace config
                                          jaxn::number< false >,
                                          string,
                                          binary,
-                                         expression_list,
-                                         jaxn::local_time,
-                                         jaxn::date_sequence >::analyze_t;
+                                         expression_list >::analyze_t;
 
          template< apply_mode A,
                    rewind_mode M,
@@ -121,7 +119,7 @@ namespace config
                   return true;
 
                default:
-                  return match_number_or_date_time< A, M, Action, Control >( in, st... );
+                  return match_number< false, A, M, Action, Control >( in, st... );
             }
          }
 
@@ -183,8 +181,6 @@ namespace config
          rules::mkey >,
       parse_tree::apply_store_content::to<
          rules::identifier,
-         jaxn::local_time,
-         jaxn::date_sequence,
          jaxn::bvalue,
          jaxn::number< true >,
          jaxn::number< false >,

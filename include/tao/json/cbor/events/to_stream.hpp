@@ -11,10 +11,6 @@
 #include "../internal/major.hpp"
 
 #include "../../binary_view.hpp"
-#include "../../local_date.hpp"
-#include "../../local_date_time.hpp"
-#include "../../local_time.hpp"
-#include "../../offset_date_time.hpp"
 
 #include "../../external/string_view.hpp"
 
@@ -114,29 +110,6 @@ namespace tao
                {
                   number( internal::major::BINARY, v.size() );
                   os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
-               }
-
-               void local_date( const json::local_date /*unused*/ )
-               {
-                  throw std::runtime_error( "cbor does not support local date (without time and offset)" );  // NOLINT
-               }
-
-               void local_time( const json::local_time /*unused*/ )
-               {
-                  throw std::runtime_error( "cbor does not support local time (without date and offset)" );  // NOLINT
-               }
-
-               void local_date_time( const json::local_date_time /*unused*/ )
-               {
-                  throw std::runtime_error( "cbor does not support local date and time (without an offset)" );  // NOLINT
-               }
-
-               void offset_date_time( const json::offset_date_time odt )
-               {
-                  os.put( char( internal::major::TAG ) + 0 );
-                  std::ostringstream ts;
-                  ts << odt;  // TODO: Optimise?
-                  string( ts.str() );
                }
 
                void begin_array()

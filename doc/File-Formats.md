@@ -10,7 +10,6 @@
 
 * Decoding a number that does not fit into `std::int64_t`, `std::uint64_t` or `double` is an error.
 * When encoding, binary data must be [transformed](Events-Interface.md#included-transformers) to something compatible with JSON.
-* When encoding, date-time values must be [transformed](Events-Interface.md#included-transformers) to something compatible with JSON.
 * When encoding, non-finite floating-point values must be [transformed](Events-Interface.md#included-transformers) to something compatible with JSON.
 
 ## JAXN
@@ -21,8 +20,6 @@
 ## CBOR
 
 CBOR is supported within the data model this library, the biggest restriction being that only strings are supported as keys in objects/maps.
-
-* Date-time support is coming soon...
 
 ### Major Type 7
 

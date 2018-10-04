@@ -10,11 +10,6 @@
 
 #include "../../events/to_pretty_stream.hpp"
 
-#include "../../local_date.hpp"
-#include "../../local_date_time.hpp"
-#include "../../local_time.hpp"
-#include "../../offset_date_time.hpp"
-
 #include "../is_identifier.hpp"
 
 namespace tao
@@ -57,30 +52,6 @@ namespace tao
                   next();
                   os.put( '$' );
                   json::internal::hexdump( os, v );
-               }
-
-               void local_date( const json::local_date v )
-               {
-                  next();
-                  os << v;
-               }
-
-               void local_time( const json::local_time v )
-               {
-                  next();
-                  os << v;
-               }
-
-               void local_date_time( const json::local_date_time v )
-               {
-                  next();
-                  os << v;
-               }
-
-               void offset_date_time( const json::offset_date_time v )
-               {
-                  next();
-                  os << v;
                }
 
                void key( const tao::string_view v )

@@ -24,10 +24,6 @@ namespace tao
          STRING_VIEW,
          BINARY,
          BINARY_VIEW,
-         LOCAL_DATE,
-         LOCAL_TIME,
-         LOCAL_DATE_TIME,
-         OFFSET_DATE_TIME,
          ARRAY,
          OBJECT,
          VALUE_PTR,
@@ -76,14 +72,6 @@ namespace tao
                return "binary";
             case type::BINARY_VIEW:
                return "binary_view";
-            case type::LOCAL_DATE:
-               return "local_date";
-            case type::LOCAL_TIME:
-               return "local_time";
-            case type::LOCAL_DATE_TIME:
-               return "local_date_time";
-            case type::OFFSET_DATE_TIME:
-               return "offset_date_time";
             case type::ARRAY:
                return "array";
             case type::OBJECT:

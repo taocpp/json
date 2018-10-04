@@ -11,10 +11,6 @@
 #include <string>
 
 #include "../binary_view.hpp"
-#include "../local_date.hpp"
-#include "../local_date_time.hpp"
-#include "../local_time.hpp"
-#include "../offset_date_time.hpp"
 
 #include "../external/ryu.hpp"
 
@@ -89,26 +85,6 @@ namespace tao
                os << "binary: ";
                internal::hexdump( os, v );
                os << '\n';
-            }
-
-            void local_date( const json::local_date v )
-            {
-               os << "local_date: " << v << '\n';
-            }
-
-            void local_time( const json::local_time v )
-            {
-               os << "local_time: " << v << '\n';
-            }
-
-            void local_date_time( const json::local_date_time v )
-            {
-               os << "local_date_time: " << v << '\n';
-            }
-
-            void offset_date_time( const json::offset_date_time v )
-            {
-               os << "offset_date_time: " << v << '\n';
             }
 
             void begin_array()

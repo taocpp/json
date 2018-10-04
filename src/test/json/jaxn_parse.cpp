@@ -234,64 +234,6 @@ namespace tao
          TEST_ASSERT( custom_from_string( "$61+$62" ) == 0x6162_binary );
 
          TEST_ASSERT( custom_from_string( "$'Hello, world!'" ) == 0x48656c6c6f2c20776f726c6421_binary );
-
-         // TODO: Write real tests
-         TEST_ASSERT( custom_from_string( "01:02:03" ) == local_time{ 1, 2, 3 } );
-         TEST_ASSERT( custom_from_string( "23:59:59" ) == local_time{ 23, 59, 59 } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01" ) == local_date{ 2018, 1, 1 } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01t01:02:03z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3 } }, 0, 0 } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03.4" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 400000000 } } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.4" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 400000000 } } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456000000 } } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456000000 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456000000 } }, 0, 0 } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03.456789" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789000 } } );
-         TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03.456789Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789000 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01 01:02:03.456789+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789000 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789000 } } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789000 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789000 } }, 0, 0 } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789012" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789012 } } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789012Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789012 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789012+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789012 } }, 0, 0 } );
-
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789012345" ) == local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789012 } } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789012345Z" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789012 } }, 0, 0 } );
-         TEST_ASSERT( custom_from_string( "2018-01-01T01:02:03.456789012345+00:00" ) == offset_date_time{ local_date_time{ local_date{ 2018, 1, 1 }, local_time{ 1, 2, 3, 456789012 } }, 0, 0 } );
-
-         TEST_THROWS( custom_from_string( "01:02:60" ) );
-         TEST_THROWS( custom_from_string( "01:60:03" ) );
-         TEST_THROWS( custom_from_string( "24:02:03" ) );
-         TEST_THROWS( custom_from_string( "01:02:03." ) );
-
-         TEST_THROWS( custom_from_string( "2018-00-01" ) );
-         TEST_THROWS( custom_from_string( "2018-01-00" ) );
-         TEST_THROWS( custom_from_string( "2018-13-01" ) );
-         TEST_THROWS( custom_from_string( "2018-02-30" ) );
-
-         TEST_THROWS( custom_from_string( "1900-02-29" ) );
-         TEST_ASSERT( custom_from_string( "2000-02-29" ) == local_date{ 2000, 2, 29 } );
-         TEST_ASSERT( custom_from_string( "2016-02-29" ) == local_date{ 2016, 2, 29 } );
-         TEST_THROWS( custom_from_string( "2018-02-29" ) );
-
-         TEST_THROWS( custom_from_string( "01:02:0" ) );
-         TEST_THROWS( custom_from_string( "01:0:02" ) );
-         TEST_THROWS( custom_from_string( "0::0:02" ) );
-         TEST_THROWS( custom_from_string( "01:02:03Z" ) );
-         TEST_THROWS( custom_from_string( "01:02:03+04:30" ) );
       }
 
    }  // namespace json

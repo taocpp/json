@@ -89,11 +89,6 @@ namespace tao
          c->binary( std::move( x ) );
          c->binary( xv );
 
-         c->local_date( local_date{ "2000-01-01" } );
-         c->local_time( local_time{ "00:00:00" } );
-         c->local_date_time( local_date_time{ "2000-01-01T00:00:00" } );
-         c->offset_date_time( offset_date_time{ "2000-01-01T00:00:00Z" } );
-
          c->begin_array();
          c->begin_array( std::size_t( 0 ) );
 

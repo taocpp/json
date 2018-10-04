@@ -9,10 +9,6 @@
 #include <string>
 
 #include "../binary_view.hpp"
-#include "../local_date.hpp"
-#include "../local_date_time.hpp"
-#include "../local_time.hpp"
-#include "../offset_date_time.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -51,22 +47,6 @@ namespace tao
             }
 
             void binary( const tao::binary_view /*unused*/ ) noexcept
-            {
-            }
-
-            void local_date( const json::local_date /*unused*/ ) noexcept
-            {
-            }
-
-            void local_time( const json::local_time /*unused*/ ) noexcept
-            {
-            }
-
-            void local_date_time( const json::local_date_time /*unused*/ ) noexcept
-            {
-            }
-
-            void offset_date_time( const json::offset_date_time /*unused*/ ) noexcept
             {
             }
 

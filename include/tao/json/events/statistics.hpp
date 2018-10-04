@@ -11,10 +11,6 @@
 #include <vector>
 
 #include "../binary_view.hpp"
-#include "../local_date.hpp"
-#include "../local_date_time.hpp"
-#include "../local_time.hpp"
-#include "../offset_date_time.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -40,11 +36,6 @@ namespace tao
             std::size_t key_lengths = 0;
             std::size_t binary_count = 0;
             std::size_t binary_lengths = 0;
-
-            std::size_t local_date_count = 0;
-            std::size_t local_time_count = 0;
-            std::size_t local_date_time_count = 0;
-            std::size_t offset_date_time_count = 0;
 
             std::size_t array_count = 0;
             std::size_t array_elements = 0;
@@ -86,26 +77,6 @@ namespace tao
             {
                ++binary_count;
                binary_lengths += v.size();
-            }
-
-            void local_date( const json::local_date /*unused*/ ) noexcept
-            {
-               ++local_date_count;
-            }
-
-            void local_time( const json::local_time /*unused*/ ) noexcept
-            {
-               ++local_time_count;
-            }
-
-            void local_date_time( const json::local_date_time /*unused*/ ) noexcept
-            {
-               ++local_date_time_count;
-            }
-
-            void offset_date_time( const json::offset_date_time /*unused*/ ) noexcept
-            {
-               ++offset_date_time_count;
             }
 
             void begin_array( const std::size_t /*unused*/ = 0 ) noexcept

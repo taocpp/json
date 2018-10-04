@@ -29,11 +29,6 @@ namespace tao
          std::cout << "std::multimap< std::string, json::value >: " << sizeof( std::multimap< std::string, value > ) << std::endl;
          std::cout << "std::unordered_map< std::string, json::value >: " << sizeof( std::unordered_map< std::string, value > ) << std::endl;
          std::cout << "std::unordered_multimap< std::string, json::value >: " << sizeof( std::unordered_multimap< std::string, value > ) << std::endl;
-
-         std::cout << "local_date: " << sizeof( local_date ) << std::endl;
-         std::cout << "local_time: " << sizeof( local_time ) << std::endl;
-         std::cout << "local_date_time: " << sizeof( local_date_time ) << std::endl;
-         std::cout << "offset_date_time: " << sizeof( offset_date_time ) << std::endl;
       }
 
    }  // namespace json

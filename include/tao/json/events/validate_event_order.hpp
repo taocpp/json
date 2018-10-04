@@ -11,10 +11,6 @@
 #include <vector>
 
 #include "../binary_view.hpp"
-#include "../local_date.hpp"
-#include "../local_date_time.hpp"
-#include "../local_time.hpp"
-#include "../offset_date_time.hpp"
 
 #include "../external/byte.hpp"
 #include "../external/optional.hpp"
@@ -144,26 +140,6 @@ namespace tao
             void binary( const tao::binary_view /*unused*/ )
             {
                atom( "binary(...)" );
-            }
-
-            void local_date( const json::local_date /*unused*/ )
-            {
-               atom( "local_date(...)" );
-            }
-
-            void local_time( const json::local_time /*unused*/ )
-            {
-               atom( "local_time(...)" );
-            }
-
-            void local_date_time( const json::local_date_time /*unused*/ )
-            {
-               atom( "local_date_time(...)" );
-            }
-
-            void offset_date_time( const json::offset_date_time /*unused*/ )
-            {
-               atom( "offset_date_time(...)" );
             }
 
             void begin_array()

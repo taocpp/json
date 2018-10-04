@@ -105,26 +105,6 @@ namespace tao
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
-            void local_date( const local_date v ) noexcept
-            {
-               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
-            }
-
-            void local_time( const local_time v ) noexcept
-            {
-               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
-            }
-
-            void local_date_time( const local_date_time v ) noexcept
-            {
-               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
-            }
-
-            void offset_date_time( const offset_date_time v ) noexcept
-            {
-               m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
-            }
-
             void begin_array( const std::size_t /*unused*/ = 0 )
             {
                if( m_current.back() == nullptr ) {

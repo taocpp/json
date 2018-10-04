@@ -54,30 +54,6 @@ namespace tao
                r_.binary( std::forward< T >( v ) );
             }
 
-            template< typename T >
-            void local_date( T&& v ) noexcept( noexcept( r_.local_date( std::forward< T >( v ) ) ) )
-            {
-               r_.local_date( std::forward< T >( v ) );
-            }
-
-            template< typename T >
-            void local_time( T&& v ) noexcept( noexcept( r_.local_time( std::forward< T >( v ) ) ) )
-            {
-               r_.local_time( std::forward< T >( v ) );
-            }
-
-            template< typename T >
-            void local_date_time( T&& v ) noexcept( noexcept( r_.local_date_time( std::forward< T >( v ) ) ) )
-            {
-               r_.local_date_time( std::forward< T >( v ) );
-            }
-
-            template< typename T >
-            void offset_date_time( T&& v ) noexcept( noexcept( r_.offset_date_time( std::forward< T >( v ) ) ) )
-            {
-               r_.offset_date_time( std::forward< T >( v ) );
-            }
-
             void begin_array() noexcept( noexcept( r_.begin_array() ) )
             {
                r_.begin_array();

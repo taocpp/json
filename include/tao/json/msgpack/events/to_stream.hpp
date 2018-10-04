@@ -12,10 +12,6 @@
 #include <string>
 
 #include "../../binary_view.hpp"
-#include "../../local_date.hpp"
-#include "../../local_date_time.hpp"
-#include "../../local_time.hpp"
-#include "../../offset_date_time.hpp"
 
 #include "../../external/string_view.hpp"
 
@@ -145,26 +141,6 @@ namespace tao
                      throw std::runtime_error( "binary too long for msgpack" );  // NOLINT
                   }
                   os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
-               }
-
-               void local_date( const json::local_date /*unused*/ )
-               {
-                  // TODO: implement this
-               }
-
-               void local_time( const json::local_time /*unused*/ )
-               {
-                  // TODO: implement this
-               }
-
-               void local_date_time( const json::local_date_time /*unused*/ )
-               {
-                  // TODO: implement this
-               }
-
-               void offset_date_time( const json::offset_date_time /*unused*/ )
-               {
-                  // TODO: implement this
                }
 
                void begin_array()

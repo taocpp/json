@@ -13,10 +13,6 @@
 #include <vector>
 
 #include "../binary_view.hpp"
-#include "../local_date.hpp"
-#include "../local_date_time.hpp"
-#include "../local_time.hpp"
-#include "../offset_date_time.hpp"
 
 #include "../external/string_view.hpp"
 
@@ -127,53 +123,6 @@ namespace tao
                const auto s = v.size();
                m_digests.back()->feed( &s, sizeof( s ) );
                m_digests.back()->feed( v.data(), v.size() );
-            }
-
-            void local_date_impl( const json::local_date v )
-            {
-               m_digests.back()->feed( &v.year, sizeof( v.year ) );
-               m_digests.back()->feed( &v.month, sizeof( v.month ) );
-               m_digests.back()->feed( &v.day, sizeof( v.day ) );
-            }
-
-            void local_date( const json::local_date v )
-            {
-               m_digests.back()->feed( 'D' );
-               local_date_impl( v );
-            }
-
-            void local_time_impl( const json::local_time v )
-            {
-               m_digests.back()->feed( &v.hour, sizeof( v.hour ) );
-               m_digests.back()->feed( &v.minute, sizeof( v.minute ) );
-               m_digests.back()->feed( &v.second, sizeof( v.second ) );
-               m_digests.back()->feed( &v.nanosecond, sizeof( v.nanosecond ) );
-            }
-
-            void local_time( const json::local_time v )
-            {
-               m_digests.back()->feed( 'T' );
-               local_time_impl( v );
-            }
-
-            void local_date_time_impl( const json::local_date_time v )
-            {
-               local_date_impl( v.date );
-               local_time_impl( v.time );
-            }
-
-            void local_date_time( const json::local_date_time v )
-            {
-               m_digests.back()->feed( 'L' );
-               local_date_time_impl( v );
-            }
-
-            void offset_date_time( const json::offset_date_time v )
-            {
-               m_digests.back()->feed( 'O' );
-               local_date_time_impl( v.date_time );
-               m_digests.back()->feed( &v.offset_hour, sizeof( v.offset_hour ) );
-               m_digests.back()->feed( &v.offset_minute, sizeof( v.offset_minute ) );
             }
 
             void begin_array( const std::size_t /*unused*/ = 0 )

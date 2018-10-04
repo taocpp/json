@@ -10,10 +10,6 @@
 #include <string>
 
 #include "../../binary_view.hpp"
-#include "../../local_date.hpp"
-#include "../../local_date_time.hpp"
-#include "../../local_time.hpp"
-#include "../../offset_date_time.hpp"
 
 #include "../../external/string_view.hpp"
 
@@ -128,30 +124,6 @@ namespace tao
                   os.write( "[$U#", 4 );
                   number( std::uint64_t( v.size() ) );
                   os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
-               }
-
-               void local_date( const json::local_date /*unused*/ )
-               {
-                  // if this throws, consider using local_date_to_* transformers
-                  throw std::runtime_error( "local date invalid for UBJSON representation" );  // NOLINT
-               }
-
-               void local_time( const json::local_time /*unused*/ )
-               {
-                  // if this throws, consider using local_time_to_* transformers
-                  throw std::runtime_error( "local time invalid for UBJSON representation" );  // NOLINT
-               }
-
-               void local_date_time( const json::local_date_time /*unused*/ )
-               {
-                  // if this throws, consider using local_date_time_to_* transformers
-                  throw std::runtime_error( "local date-time invalid for UBJSON representation" );  // NOLINT
-               }
-
-               void offset_date_time( const json::offset_date_time /*unused*/ )
-               {
-                  // if this throws, consider using offset_date_time_to_* transformers
-                  throw std::runtime_error( "offset date-time invalid for UBJSON representation" );  // NOLINT
                }
 
                void begin_array()
