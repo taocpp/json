@@ -19,6 +19,38 @@ namespace tao
       {
          namespace internal
          {
+            template< typename Input >
+            major peek_first_major( Input& in )
+            {
+               const auto m = peek_major( in );
+               if( m != major::TAG ) {
+                  return m;
+               }
+               switch( auto n = peek_minor_unsafe( in ) ) {
+                  default:
+                     in.bump_in_this_line();
+                     break;
+                  case 24:
+                     consume_or_throw( in, 2 );
+                     break;
+                  case 25:
+                     consume_or_throw( in, 3 );
+                     break;
+                  case 26:
+                     consume_or_throw( in, 5 );
+                     break;
+                  case 27:
+                     consume_or_throw( in, 9 );
+                     break;
+                  case 28:
+                  case 29:
+                  case 30:
+                  case 31:
+                     throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", n, " for tag" ), in );
+               }
+               return peek_major( in );
+            }
+
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4702 )
@@ -28,10 +60,10 @@ namespace tao
             {
                const auto b = json::internal::peek_byte( in );
                switch( b ) {
-                  case std::uint8_t( internal::major::OTHER ) + 20:
-                  case std::uint8_t( internal::major::OTHER ) + 21:
+                  case std::uint8_t( major::OTHER ) + 20:
+                  case std::uint8_t( major::OTHER ) + 21:
                      in.bump_in_this_line( 1 );
-                     return bool( b - std::uint8_t( internal::major::OTHER ) - 20 );
+                     return bool( b - std::uint8_t( major::OTHER ) - 20 );
                   default:
                      throw json_pegtl::parse_error( "expected boolean", in );  // NOLINT
                }
@@ -75,7 +107,7 @@ namespace tao
          private:
             void check_major( const internal::major m, const char* e )
             {
-               const auto b = internal::peek_major( m_input );
+               const auto b = internal::peek_first_major( m_input );
                if( b != m ) {
                   throw json_pegtl::parse_error( e, m_input );  // NOLINT
                }
@@ -156,7 +188,7 @@ namespace tao
          public:
             std::int64_t number_signed()
             {
-               const auto b = internal::peek_major( m_input );
+               const auto b = internal::peek_first_major( m_input );
                switch( b ) {
                   case internal::major::UNSIGNED:
                      return number_signed_unsigned();
