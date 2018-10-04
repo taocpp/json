@@ -1407,7 +1407,7 @@ namespace tao
                   }
                   const auto i = e->index();
                   if( i >= a.size() ) {
-                     throw std::out_of_range( internal::format( "invalid JSON Pointer \"" + internal::tokens_to_string( b, std::next( e ) ) + "\", array index '", i, "' out of bound '", a.size(), '\'', json::base_message_extension( base() ) ) );  // NOLINT
+                     throw std::out_of_range( internal::format( "invalid JSON Pointer \"", internal::tokens_to_string( b, std::next( e ) ), "\", array index '", i, "' out of bound '", a.size(), '\'', json::base_message_extension( base() ) ) );  // NOLINT
                   }
                   a.insert( a.begin() + i, std::move( value ) );
                   return a.at( i );
