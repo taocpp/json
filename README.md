@@ -27,7 +27,7 @@
 
 * [Value Class](doc/Value-Class.md)
 
-  * JSON data model extended with non-finite number values, date-time values, and binary data.
+  * JSON data model extended with non-finite number values and binary data.
   * Construction of objects and arrays via `std::initializer_list`.
   * Conversion from and to arbitrary *user-defined types* via [Type Traits](doc/Type-Traits.md).
   * Built around STL containers `std::string`, `std::map` and `std::vector`.
