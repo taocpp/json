@@ -1122,6 +1122,16 @@ namespace tao
             return unsafe_find( key );
          }
 
+         basic_value* find( const pointer& k )
+         {
+            return internal::pointer_find( this, k.begin(), k.end() );
+         }
+
+         const basic_value* find( const pointer& k ) const
+         {
+            return internal::pointer_find( this, k.begin(), k.end() );
+         }
+
          basic_value& unsafe_at( const std::size_t index ) noexcept
          {
             return m_union.a[ index ];

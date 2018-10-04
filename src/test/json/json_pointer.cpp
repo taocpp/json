@@ -46,17 +46,25 @@ namespace tao
 
          // check access
          TEST_ASSERT( v.at( ""_json_pointer ) == v );
+         TEST_ASSERT( *v.find( ""_json_pointer ) == v );
 
          TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz" } ) );
+         TEST_ASSERT( *v.find( "/foo"_json_pointer ) == value::array( { "bar", "baz" } ) );
          TEST_THROWS( v.at( "/bar"_json_pointer ) );
+         TEST_ASSERT( v.find( "/bar"_json_pointer ) == nullptr );
          TEST_THROWS( v.erase( "/foo/0/baz"_json_pointer ) );
          TEST_THROWS( v.insert( "/foo/0/baz"_json_pointer, null ) );
 
          TEST_ASSERT( v.at( "/foo/0"_json_pointer ) == "bar" );
+         TEST_ASSERT( *v.find( "/foo/0"_json_pointer ) == "bar" );
          TEST_ASSERT( v.at( "/foo/1"_json_pointer ) == "baz" );
+         TEST_ASSERT( *v.find( "/foo/1"_json_pointer ) == "baz" );
          TEST_THROWS( v.at( "/foo/2"_json_pointer ) );
+         TEST_ASSERT( v.find( "/foo/2"_json_pointer ) == nullptr );
+         TEST_THROWS( v.find( "/ /2"_json_pointer ) );
 
          TEST_THROWS( v.at( "/foo/0/bar"_json_pointer ) );
+         TEST_THROWS( v.find( "/foo/0/bar"_json_pointer ) );
          TEST_THROWS( v.at( "/foo/00"_json_pointer ) );
          TEST_THROWS( v.at( "/foo/01"_json_pointer ) );
          TEST_THROWS( v.at( "/foo/0 "_json_pointer ) );

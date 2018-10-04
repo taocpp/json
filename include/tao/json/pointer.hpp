@@ -399,8 +399,7 @@ namespace tao
          template< typename T >
          T& pointer_at( T* v, const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
          {
-            auto it = begin;
-            while( it != end ) {
+            for( auto it = begin; it != end; ++it ) {
                switch( v->type() ) {
                   case type::ARRAY:
                      v = &v->at( it->index() );
@@ -411,9 +410,33 @@ namespace tao
                   default:
                      throw invalid_type( begin, std::next( it ) );  // NOLINT
                }
-               ++it;
             }
             return *v;
+         }
+
+         template< typename T >
+         T* array_find( T* v, const std::size_t i )
+         {
+            auto& a = v->unsafe_get_array();
+            return ( i < a.size() ) ? ( a.data() + i ) : nullptr;
+         }
+
+         template< typename T >
+         T* pointer_find( T* v, const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
+         {
+            for( auto it = begin; v && ( it != end ); ++it ) {
+               switch( v->type() ) {
+                  case type::ARRAY:
+                     v = array_find( v, it->index() );
+                     break;
+                  case type::OBJECT:
+                     v = v->find( it->key() );
+                     break;
+                  default:
+                     throw invalid_type( begin, std::next( it ) );  // NOLINT
+               }
+            }
+            return v;
          }
 
       }  // namespace internal
