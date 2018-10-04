@@ -373,7 +373,7 @@ namespace tao
                      case 29:
                      case 30:
                      case 31:
-                        throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for tag value" ), in );
+                        throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for tag" ), in );
                   }
                }
 
