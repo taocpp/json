@@ -4,13 +4,18 @@
 #ifndef TAO_JSON_BINDING_FACTORY_HPP
 #define TAO_JSON_BINDING_FACTORY_HPP
 
+#include <bitset>
+#include <map>
+#include <sstream>
 #include <stdexcept>
+#include <string>
 
 #include "../forward.hpp"
 
 #include "../basic_value.hpp"
 #include "../external/pegtl/internal/pegtl_string.hpp"
 #include "../internal/escape.hpp"
+#include "../internal/format.hpp"
 #include "../internal/string_t.hpp"
 
 #include "internal/type_key.hpp"
@@ -23,6 +28,22 @@ namespace tao
       {
          namespace internal
          {
+            template< typename... Ts >
+            void list_all_types( std::ostream& oss, const std::map< std::string, Ts... >& m )
+            {
+               for( const auto& i : m ) {
+                  json::internal::format_to( oss, " \"", i.first, '\"' );
+               }
+            }
+
+            template< typename... Ts >
+            void list_all_types( std::ostream& oss, const std::map< const std::type_info*, Ts... >& m )
+            {
+               for( const auto& i : m ) {
+                  json::internal::format_to( oss, ' ', *i.first );
+               }
+            }
+
             template< typename K, typename T, typename U, template< typename... > class P >
             struct factory_type
                : public type_key< K, T >
@@ -76,9 +97,9 @@ namespace tao
             template< template< typename... > class Q > using with_pointer = basic_factory< Q, U, Ts... >;
 
             template< typename F >
-            struct entry
+            struct entry1
             {
-               explicit entry( F c )
+               explicit entry1( F c )
                   : function( c )
                {
                }
@@ -102,18 +123,18 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename... With > using as_func_t = P< U >( * )( const basic_value< Traits, Base >&, With&... );
 
             template< typename V, template< typename... > class Traits, typename Base, typename... With >
-            static bool emplace_as( std::map< std::string, entry< as_func_t< Traits, Base, With... > > >& m )
+            static bool emplace_as( std::map< std::string, entry1< as_func_t< Traits, Base, With... > > >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::template key< Traits >(), entry< as_func_t< Traits, Base, With... > >( &W::template as< Traits, Base, With... > ) );
+               m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Base, With... > >( &W::template as< Traits, Base, With... > ) );
                return true;
             }
 
             template< template< typename... > class Traits, typename Base, typename... With >
             static P< U > as( const basic_value< Traits, Base >& v, With&... with )
             {
-               static const std::map< std::string, entry< as_func_t< Traits, Base, With... > > > m = []() {
-                  std::map< std::string, entry< as_func_t< Traits, Base, With... > > > t;
+               static const std::map< std::string, entry1< as_func_t< Traits, Base, With... > > > m = []() {
+                  std::map< std::string, entry1< as_func_t< Traits, Base, With... > > > t;
                   (void)json::internal::swallow{ basic_factory::emplace_as< Ts >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
@@ -121,12 +142,16 @@ namespace tao
 
                const auto& a = v.get_object();
                if( a.size() != 1 ) {
-                  throw std::runtime_error( "unexpected JSON object size for polymorphic object factory" + json::base_message_extension( v.base() ) );  // NOLINT
+                  throw std::runtime_error( json::internal::format( "polymorphic factory requires object of size one for base class ", typeid( U ), json::base_message_extension( v.base() ) ) );  // NOLINT
                }
                const auto b = a.begin();
                const auto i = m.find( b->first );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + json::internal::escape( b->first ) + json::base_message_extension( v.base() ) );  // NOLINT
+                  std::ostringstream oss;
+                  json::internal::format_to( oss, "unknown factory type \"", json::internal::escape( b->first ), "\" -- known are" );
+                  internal::list_all_types( oss, m );
+                  json::internal::format_to( oss, " for base class ", typeid( U ), json::base_message_extension( v.base() ) );
+                  throw std::runtime_error( oss.str() );  // NOLINT
                }
                return i->second.function( b->second, with... );
             }
@@ -152,7 +177,11 @@ namespace tao
 
                const auto i = m.find( &typeid( *p ) );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + TAO_JSON_PEGTL_NAMESPACE::internal::demangle( typeid( *p ).name() ) );  // NOLINT
+                  std::ostringstream oss;
+                  json::internal::format_to( oss, "unknown factory type ", typeid( *p ), " -- known are" );
+                  internal::list_all_types( oss, m );
+                  json::internal::format_to( oss, " for base class ", typeid( U ) );
+                  throw std::runtime_error( oss.str() );  // NOLINT
                }
                i->second.function( v, p );
                v = {
@@ -161,10 +190,10 @@ namespace tao
             }
 
             template< typename V, template< typename... > class Traits, typename Producer, typename F >
-            static bool emplace_consume( std::map< std::string, entry< F > >& m )
+            static bool emplace_consume( std::map< std::string, entry1< F > >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::template key< Traits >(), entry< F >( &W::template consume< Traits, Producer > ) );
+               m.emplace( W::template key< Traits >(), entry1< F >( &W::template consume< Traits, Producer > ) );
                return true;
             }
 
@@ -172,8 +201,8 @@ namespace tao
             static P< U > consume( Producer& parser )
             {
                using F = P< U > ( * )( Producer& );
-               static const std::map< std::string, entry< F > > m = []() {
-                  std::map< std::string, entry< F > > t;
+               static const std::map< std::string, entry1< F > > m = []() {
+                  std::map< std::string, entry1< F > > t;
                   (void)json::internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };
                   return t;
                }();
@@ -182,7 +211,11 @@ namespace tao
                const auto k = parser.key();
                const auto i = m.find( k );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + json::internal::escape( k ) );  // NOLINT
+                  std::ostringstream oss;
+                  json::internal::format_to( oss, "unknown factory type \"", json::internal::escape( k ), "\" -- known are" );
+                  internal::list_all_types( oss, m );
+                  json::internal::format_to( oss, " for base class ", typeid( U ) );
+                  throw std::runtime_error( oss.str() );  // NOLINT
                }
                auto r = i->second.function( parser );
                parser.end_object( s );
@@ -210,7 +243,11 @@ namespace tao
 
                const auto i = m.find( &typeid( *p ) );
                if( i == m.end() ) {
-                  throw std::runtime_error( "unknown factory type " + TAO_JSON_PEGTL_NAMESPACE::internal::demangle( typeid( *p ).name() ) );  // NOLINT
+                  std::ostringstream oss;
+                  json::internal::format_to( oss, "unknown factory type ", typeid( *p ), " -- known are" );
+                  internal::list_all_types( oss, m );
+                  json::internal::format_to( oss, " for base class ", typeid( U ) );
+                  throw std::runtime_error( oss.str() );  // NOLINT
                }
                consumer.begin_object( 1 );
                consumer.key( i->second.name );

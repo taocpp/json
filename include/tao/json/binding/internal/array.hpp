@@ -10,6 +10,7 @@
 #include "../../forward.hpp"
 
 #include "../../external/pegtl/internal/integer_sequence.hpp"
+#include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"
 
 namespace tao
@@ -45,7 +46,7 @@ namespace tao
                {
                   const auto& a = v.get_array();
                   if( a.size() != sizeof...( As ) ) {
-                     throw std::runtime_error( "binding array size mismatch" );  // NOLINT
+                     throw std::runtime_error( json::internal::format( "array size mismatch for type ", typeid( C ), " -- expected ", sizeof...( As ), " received ", a.size(), json::base_message_extension( v.base() ) ) );  // NOLINT
                   }
                   (void)json::internal::swallow{ to_element< As, Is >( a, x )... };
                }

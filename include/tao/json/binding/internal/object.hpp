@@ -6,6 +6,7 @@
 
 #include <bitset>
 #include <map>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 
@@ -35,12 +36,20 @@ namespace tao
             template< for_nothing_value N >
             struct consumer_object_size_helper;
 
+            template< typename... Ts >
+            void list_all_keys( std::ostream& oss, const std::map< std::string, Ts... >& m )
+            {
+               for( const auto& p : m ) {
+                  json::internal::format_to( oss, ' ', p.first );
+               }
+            }
+
             template< std::size_t N, typename... Ts >
-            void list_missing_bits( std::ostream& o, const std::bitset< N >& t, const std::map< std::string, Ts... >& m )
+            void list_missing_keys( std::ostream& oss, const std::bitset< N >& t, const std::map< std::string, Ts... >& m )
             {
                for( const auto& p : m ) {
                   if( !t.test( p.second.index ) ) {
-                     o << ' ' << p.first;
+                     json::internal::format_to( oss, ' ', p.first );
                   }
                }
             }
@@ -144,7 +153,11 @@ namespace tao
                         if( E == for_unknown_key::CONTINUE ) {
                            continue;
                         }
-                        throw std::runtime_error( "unknown object key " + json::internal::escape( k ) + json::base_message_extension( v.base() ) );  // NOLINT
+                        std::ostringstream oss;
+                        json::internal::format_to( oss, "unknown object key \"", json::internal::escape( k ), "\" -- known are" );
+                        list_all_keys( oss, m );
+                        json::internal::format_to( oss, " for type ", typeid( C ), json::base_message_extension( v.base() ) );
+                        throw std::runtime_error( oss.str() );  // NOLINT
                      }
                      i->second.function( p.second, x );
                      b.set( i->second.index );
@@ -153,7 +166,7 @@ namespace tao
                   if( !b.all() ) {
                      std::ostringstream oss;
                      json::internal::format_to( oss, "missing required key(s)" );
-                     list_missing_bits( oss, b, m );
+                     list_missing_keys( oss, b, m );
                      json::internal::format_to( oss, " for type ", typeid( C ), json::base_message_extension( v.base() ) );
                      throw std::runtime_error( oss.str() );  // NOLINT
                   }
@@ -212,11 +225,13 @@ namespace tao
                      if( i == m.end() ) {
                         if( E == for_unknown_key::CONTINUE ) {
                            parser.skip_value();
+                           continue;
                         }
-                        else {
-                           parser.throw_parse_error( json::internal::format( "unknown object key \"", json::internal::escape( k ), '"' ) );  // NOLINT
-                        }
-                        continue;
+                        std::ostringstream oss;
+                        json::internal::format_to( oss, "unknown object key \"", json::internal::escape( k ), "\" -- known are" );
+                        list_all_keys( oss, m );
+                        json::internal::format_to( oss, " for type ", typeid( C ) );
+                        parser.throw_parse_error( oss.str() );  // NOLINT
                      }
                      if( b.test( i->second.index ) ) {
                         parser.throw_parse_error( json::internal::format( "duplicate object key \"", json::internal::escape( k ), "\" for type ", typeid( C ) ) );
@@ -228,9 +243,9 @@ namespace tao
                   if( !b.all() ) {
                      std::ostringstream oss;
                      json::internal::format_to( oss, "missing required key(s)" );
-                     list_missing_bits( oss, b, m );
+                     list_missing_keys( oss, b, m );
                      json::internal::format_to( oss, " for type ", typeid( C ) );
-                     throw std::runtime_error( oss.str() );  // NOLINT
+                     parser.throw_parse_error( oss.str() );  // NOLINT
                   }
                }
 
