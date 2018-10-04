@@ -391,11 +391,6 @@ namespace tao
             return result;
          }
 
-         inline std::string to_string( const pointer& p )
-         {
-            return tokens_to_string( p.begin(), p.end() );
-         }
-
          inline std::runtime_error invalid_type( const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
          {
             return std::runtime_error( internal::format( "unable to resolve JSON Pointer '", tokens_to_string( begin, end ), "' -- value type is neither 'object' nor 'array'" ) );
@@ -422,6 +417,11 @@ namespace tao
          }
 
       }  // namespace internal
+
+      inline std::string to_string( const pointer& p )
+      {
+         return internal::tokens_to_string( p.begin(), p.end() );
+      }
 
       inline namespace literals
       {

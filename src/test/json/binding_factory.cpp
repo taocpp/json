@@ -221,7 +221,7 @@ namespace tao
 
       protected:
          base_2() = default;
-         ~base_2() = default;
+         virtual ~base_2() = default;
       };
 
       struct arg_dummy
@@ -264,6 +264,29 @@ namespace tao
          TEST_ASSERT( a );
       }
 
+      void unit_test_7()
+      {
+         arg_dummy d;
+
+         const auto v = from_string( "[ { \"nine\" : 1 }, { \"eight\" : 2 } ]" );
+         const auto a = v.as_with< std::vector< std::shared_ptr< base_2 > > >( d );
+         TEST_ASSERT( a.size() == 2 );
+         TEST_ASSERT( a[ 0 ] && a[ 1 ] );
+         TEST_ASSERT( std::dynamic_pointer_cast< derived_9 >( a[ 0 ] ) );
+         TEST_ASSERT( std::dynamic_pointer_cast< derived_8 >( a[ 1 ] ) );
+      }
+
+      void unit_test_8()
+      {
+         arg_dummy d;
+
+         const auto v = from_string( "{ \"foo\" : { \"nine\" : 1 }, \"bar\" : { \"eight\" : 2 } }" );
+         const auto a = v.as_with< std::map< std::string, std::shared_ptr< base_2 > > >( d );
+         TEST_ASSERT( a.size() == 2 );
+         TEST_ASSERT( std::dynamic_pointer_cast< derived_9 >( a.at( "foo" ) ) );
+         TEST_ASSERT( std::dynamic_pointer_cast< derived_8 >( a.at( "bar" ) ) );
+      }
+
       void unit_test()
       {
          unit_test_1();
@@ -272,6 +295,8 @@ namespace tao
          unit_test_4();
          unit_test_5();
          unit_test_6();
+         unit_test_7();
+         unit_test_8();
       }
 
    }  // namespace json
