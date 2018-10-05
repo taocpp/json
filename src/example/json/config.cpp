@@ -18,15 +18,14 @@ namespace config
    {
       using rws = plus< jaxn::ws >;
 
-      struct value;
       struct identifier : plus< ranges< 'a', 'z', 'A', 'Z', '0', '9', '-', '-', '_', '_', '$' > > {};
-
       struct name_separator : pad< one< ':', '=' >, jaxn::ws > {};
+      struct value;
 
-      struct rkey;
       struct function_param : if_must< identifier, name_separator, value > {};
       struct function : seq< identifier, rws, list< function_param, jaxn::value_separator > > {};
-      struct expression : if_must< string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
+
+      struct expression;
 
       struct string_fragment : sor< expression, jaxn::string_fragment > {};
       struct string : list_must< string_fragment, jaxn::value_concat > {};
@@ -34,13 +33,13 @@ namespace config
       struct binary_fragment : sor< expression, jaxn::bvalue > {};
       struct binary : list_must< binary_fragment, jaxn::value_concat > {};
 
-      struct array_element; // TODO: rename to element
-      struct array_content : opt< list_tail< array_element, jaxn::element_separator > > {};
+      struct element;
+      struct array_content : opt< list_tail< element, jaxn::element_separator > > {};
       struct array_value : seq< jaxn::begin_array, array_content, must< jaxn::end_array > >
       {
          using begin = jaxn::begin_array;
          using end = jaxn::end_array;
-         using element = array_element;
+         using element = rules::element;
          using content = array_content;
       };
       struct array_fragment : sor< expression, array_value > {};
@@ -63,7 +62,9 @@ namespace config
       struct object : list_must< object_fragment, jaxn::value_concat > {};
 
       struct rkey_part : sor< key, identifier, expression > {};
-      struct rkey : seq< star< one< '.' > >, list< mkey_part, one< '.' > > > {};
+      struct rkey : list< rkey_part, one< '.' > > {};
+
+      struct expression : if_must< tao::json_pegtl::string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
       struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary, object, array > > > > > {};
 
       struct sor_value : jaxn::sor_value
@@ -73,11 +74,11 @@ namespace config
                                          jaxn::null,
                                          jaxn::true_,
                                          jaxn::false_,
-                                         jaxn::number< true >,
-                                         jaxn::number< false >,
                                          string,
+                                         expression_list,
                                          binary,
-                                         expression_list >::analyze_t;
+                                         jaxn::number< true >,
+                                         jaxn::number< false > >::analyze_t;
 
          template< apply_mode A,
                    rewind_mode M,
@@ -142,7 +143,7 @@ namespace config
       };
 
       struct value : jaxn::padr< sor_value > {};
-      struct array_element : value {};
+      struct element : value {};
 
       struct kw_include : TAO_JSON_PEGTL_STRING( "include" ) {};
       struct kw_delete : TAO_JSON_PEGTL_STRING( "delete" ) {};
@@ -172,7 +173,7 @@ namespace config
          rules::expression,
          rules::rkey,
          rules::binary,
-         rules::array_element,
+         rules::element,
          jaxn::infinity< true >,
          jaxn::infinity< false >,
          jaxn::null,
@@ -204,6 +205,7 @@ namespace config
             std::cout << s << n.name() << " at " << n.begin() << std::endl;
          }
       }
+
       // print all child nodes
       if( !n.children.empty() ) {
          const auto s2 = s + "  ";
