@@ -1,23 +1,26 @@
 # File Formats
 
-The following properties and limitations are a consequence of the internal data model and apply to all data formats.
-
-Numbers are stored and handled as `std::int64_t`, `std::uint64_t` or `double`, and most (all?) parsers will throw an error when encountering a number that will fit any of these types.
-
-For binary formats, floating-point values are always written as 64-bit `double`.
-Decoding 16- and 32bit floating-point values, where defined, is of course supported.
-
-All string values, and, for text-based formats, the encoded representation, have to be valid UTF-8 (however the parsers for the binary formats have an option to trust that strings are valid UTF-8 which bypasses UTF-8 validation).
-
-The Value class uses a `std::map` for Objects, wherefore multiple Object members with the same key are not supported.
-The Events Interface processes keys individually and does not have this limitation.
-Consequently parsing any data format into a Value will throw an exception when the same key is encountered the second time for the same Object, whereas duplicate keys are not an issue when directly using one data format's parser as Events Producer with another format's Events Consumer.
-
+* [General](#general)
 * [JSON](#json)
 * [JAXN](#jaxn)
 * [CBOR](#cbor)
 * [MsgPack](#msgpack)
 * [UBJSON](#ubjson)
+
+## General
+
+The following properties and limitations are a consequence of the internal data model and apply to all data formats.
+
+Numbers are stored and handled as `std::int64_t`, `std::uint64_t` or `double`, and most (all?) parsers will throw an exception when encountering a number that exceeds the combined range of these types.
+
+For binary formats, floating-point values are always written as 64-bit `double`.
+Decoding 16- and 32bit floating-point values, where defined, is of course supported.
+
+All string values, and, for text-based formats, the entire Value representation, have to be valid UTF-8.
+The binary format parsers can optionally trust the input which disables UTF-8 validation of strings.
+
+The Value Class uses a `std::map` for Objects and does not support multiple occurrences of the same key.
+The Events Interface processes keys individually and does not have this limitation.
 
 ## JSON
 
@@ -33,6 +36,9 @@ CBOR allows arbitrary Values as keys in Objects, the data model of this library 
 The CBOR parsers throw an exception whey they encounter an Object key that is not a string.
 
 Semantic tags are currently not supported, the CBOR parsers ignore and skip them.
+
+The CBOR Parts Parser returns strings as `std::string`, rather than `tao::string_view`, in order to support multi-part indefinite length strings.
+An alternative parser function `string_view()` only works for strings with a single top-level part and returns a `tao::string_view`.
 
 ## MsgPack
 

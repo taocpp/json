@@ -44,6 +44,7 @@
   * [Convenience Functions](Events-Interface.md#convenience-functions-1)
   * [Included Transformers](Events-Interface.md#included-transformers)
 * [File Formats](File-Formats.md)
+  * [General](File-Formats.md#general)
   * [JSON](File-Formats.md#json)
   * [JAXN](File-Formats.md#jaxn)
   * [CBOR](File-Formats.md#cbor)
