@@ -1,5 +1,18 @@
 # File Formats
 
+The following properties and limitations are a consequence of the internal data model and apply to all data formats.
+
+Numbers are stored and handled as `std::int64_t`, `std::uint64_t` or `double`, and most (all?) parsers will throw an error when encountering a number that will fit any of these types.
+
+For binary formats, floating-point values are always written as 64-bit `double`.
+Decoding 16- and 32bit floating-point values, where defined, is of course supported.
+
+All string values, and, for text-based formats, the encoded representation, have to be valid UTF-8 (however the parsers for the binary formats have an option to trust that strings are valid UTF-8 which bypasses UTF-8 validation).
+
+The Value class uses a `std::map` for Objects, wherefore multiple Object members with the same key are not supported.
+The Events Interface processes keys individually and does not have this limitation.
+Consequently parsing any data format into a Value will throw an exception when the same key is encountered the second time for the same Object, whereas duplicate keys are not an issue when directly using one data format's parser as Events Producer with another format's Events Consumer.
+
 * [JSON](#json)
 * [JAXN](#jaxn)
 * [CBOR](#cbor)
@@ -8,51 +21,31 @@
 
 ## JSON
 
-* Decoding a number that does not fit into `std::int64_t`, `std::uint64_t` or `double` is an error.
-* When encoding, binary data must be [transformed](Events-Interface.md#included-transformers) to something compatible with JSON.
-* When encoding, non-finite floating-point values must be [transformed](Events-Interface.md#included-transformers) to something compatible with JSON.
+When serialising to JSON, Values that go beyond the JSON data model, i.e. binary data and non-finite floating point values, must be [transformed](Events-Interface.md#included-transformers) to something compatible with JSON.
 
 ## JAXN
 
-* This is work-in-progress?
-* Decoding a number that does not fit into `std::int64_t`, `std::uint64_t` or `double`.
+* Work-in-progress...
 
 ## CBOR
 
-CBOR is supported within the data model this library.
-Only strings are supported as keys in objects/maps.
+CBOR allows arbitrary Values as keys in Objects, the data model of this library only supports strings.
+The CBOR parsers throw an exception whey they encounter an Object key that is not a string.
 
-Semantic tags are currently not supported.
-
-### Major Type 7
-
-The following table lists the supported Minors for Major type 7.
-
-| Minor | Note |
-|-------|------|
-| 20 | Boolean `false`. |
-| 21 | Boolean `true`. |
-| 22 | Null value. |
-| 25 | IEEE 754 half-precision float in following 16 bits. |
-| 26 | IEEE 754 single-precision float in following 32 bits. |
-| 27 | IEEE 754 double-precision float in following 64 bits. |
-| 31 | Break code for indefinite-length containers. |
-
-Note that 16 and 32-bit floating point numbers are correctly decoded, but, given the internal representation that exclusively uses `double`, are never encoded.
+Semantic tags are currently not supported, the CBOR parsers ignore and skip them.
 
 ## MsgPack
 
-MsgPack does not support open-ended Arrays or Objects, i.e. in MsgPack every Array and Object has to contain the number of elements, or members, respectively, at the beginning.
-The Events Consumers that encode MsgPack will throw an exception when the `begin_array()` or `begin_object()` functions are called without a size.
+MsgPack only has Arrays and Objects that contain a count of the number of sub-values at the beginning.
+The Events Consumers that encode MsgPack will throw an exception when either of the `begin_array()` or `begin_object()` functions is called without a size.
 
-Extension types are currently not supported.
+Extension types are currently not supported, the MsgPack parsers throw an exception when they encounter an extension type.
 
 ## UBJSON
 
 * The No-Op value `N` is only supported as top-level padding.
 * Does not currently encode strongly typed Arrays or Objects, except:
-* Supports encoding and decoding of strongly typed Arrays of type `U` for binary data.
+* Supports encoding and decoding of strongly typed Arrays of type `U` for binary data, and:
 * Supports decoding of all Arrays and Objects, including with size and strongly typed.
-* Decoding a high-precision number that does not fit into `std::int64_t`, `std::uint64_t` or `double` is an error.
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
