@@ -6,12 +6,14 @@
 
 #include <cassert>
 #include <memory>
+#include <tuple>
 #include <type_traits>
 #include <typeinfo>
 #include <utility>
 #include <vector>
 
 #include "../config.hpp"
+#include "../memory_input.hpp"
 #include "../normal.hpp"
 #include "../nothing.hpp"
 #include "../parse.hpp"
@@ -93,6 +95,13 @@ namespace tao
                return std::string( m_begin.data, m_end.data );
             }
 
+            template< tracking_mode P = tracking_mode::IMMEDIATE, typename Eol = eol::lf_crlf >
+            memory_input< P, Eol > as_memory_input() const
+            {
+               assert( has_content() );
+               return { m_begin.data, m_end.data, source, m_begin.byte, m_begin.line, m_begin.byte_in_line };
+            }
+
             template< typename... States >
             void remove_content( States&&... /*unused*/ ) noexcept
             {
@@ -166,24 +175,17 @@ namespace tao
                }
             };
 
-            template< typename Node, typename Selector, typename = void >
-            struct transform
+            template< typename Selector, typename... States >
+            void transform( States&&... /*unused*/ ) noexcept
             {
-               template< typename... States >
-               static void call( std::unique_ptr< Node >& /*unused*/, States&&... /*unused*/ ) noexcept
-               {
-               }
-            };
+            }
 
-            template< typename Node, typename Selector >
-            struct transform< Node, Selector, decltype( Selector::transform( std::declval< std::unique_ptr< Node >& >() ), void() ) >
+            template< typename Selector, typename Node, typename... States >
+            auto transform( std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( Selector::transform( n, st... ) ) )
+               -> decltype( Selector::transform( n, st... ), void() )
             {
-               template< typename... States >
-               static void call( std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( Selector::transform( n, st... ) ) )
-               {
-                  Selector::transform( n, st... );
-               }
-            };
+               Selector::transform( n, st... );
+            }
 
             template< unsigned Level, typename Analyse, template< typename... > class Selector >
             struct is_leaf
@@ -262,7 +264,7 @@ namespace tao
                static void start( const Input& in, States&&... st )
                {
                   Control< Rule >::start( in, st... );
-                  auto& state = *static_cast< internal::state< Node >* >( in.internal_state );
+                  auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
                   state.emplace_back();
                }
 
@@ -270,7 +272,7 @@ namespace tao
                static void success( const Input& in, States&&... st )
                {
                   Control< Rule >::success( in, st... );
-                  auto& state = *static_cast< internal::state< Node >* >( in.internal_state );
+                  auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
                   auto n = std::move( state.back() );
                   state.pop_back();
                   for( auto& c : n->children ) {
@@ -282,7 +284,7 @@ namespace tao
                static void failure( const Input& in, States&&... st ) noexcept( noexcept( Control< Rule >::failure( in, st... ) ) )
                {
                   Control< Rule >::failure( in, st... );
-                  auto& state = *static_cast< internal::state< Node >* >( in.internal_state );
+                  auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
                   state.pop_back();
                }
             };
@@ -296,7 +298,7 @@ namespace tao
                static void start( const Input& in, States&&... st )
                {
                   Control< Rule >::start( in, st... );
-                  auto& state = *static_cast< internal::state< Node >* >( in.internal_state );
+                  auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
                   state.emplace_back();
                   state.back()->template start< Rule >( in, st... );
                }
@@ -305,11 +307,11 @@ namespace tao
                static void success( const Input& in, States&&... st )
                {
                   Control< Rule >::success( in, st... );
-                  auto& state = *static_cast< internal::state< Node >* >( in.internal_state );
+                  auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
                   auto n = std::move( state.back() );
                   state.pop_back();
                   n->template success< Rule >( in, st... );
-                  transform< Node, Selector< Rule > >::call( n, st... );
+                  transform< Selector< Rule > >( n, st... );
                   if( n ) {
                      state.back()->emplace_back( std::move( n ), st... );
                   }
@@ -319,7 +321,7 @@ namespace tao
                static void failure( const Input& in, States&&... st ) noexcept( noexcept( Control< Rule >::failure( in, st... ) ) && noexcept( std::declval< node& >().template failure< Rule >( in, st... ) ) )
                {
                   Control< Rule >::failure( in, st... );
-                  auto& state = *static_cast< internal::state< Node >* >( in.internal_state );
+                  auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
                   state.back()->template failure< Rule >( in, st... );
                   state.pop_back();
                }
@@ -337,13 +339,7 @@ namespace tao
 
          }  // namespace internal
 
-         struct store_content : std::true_type
-         {
-            template< typename Node, typename... States >
-            static void transform( std::unique_ptr< Node >& /*unused*/, States&&... /*unused*/ ) noexcept
-            {
-            }
-         };
+         using store_content = std::true_type;
 
          // some nodes don't need to store their content
          struct remove_content : std::true_type
@@ -432,9 +428,7 @@ namespace tao
          std::unique_ptr< Node > parse( Input&& in, States&&... st )
          {
             internal::state< Node > state;
-            assert( in.internal_state == nullptr );
-            in.internal_state = &state;
-            if( !TAO_JSON_PEGTL_NAMESPACE::parse< Rule, Action, internal::make_control< Node, Selector, Control >::template type >( in, st... ) ) {
+            if( !TAO_JSON_PEGTL_NAMESPACE::parse< Rule, Action, internal::make_control< Node, Selector, Control >::template type >( in, st..., state ) ) {
                return nullptr;
             }
             assert( state.stack.size() == 1 );

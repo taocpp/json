@@ -33,17 +33,17 @@ namespace tao
 #define TAO_JSON_PEGTL_INTERNAL_UNWRAP( ... ) __VA_ARGS__
 
 #define TAO_JSON_PEGTL_THROW_INPUT_ERROR( MESSAGE )                                          \
-   do {                                                                                      \
-      const int errorno = errno;                                                             \
-      std::ostringstream oss;                                                                \
+   do {                                                                                 \
+      const int errorno = errno;                                                        \
+      std::ostringstream oss;                                                           \
       oss << "pegtl: " << TAO_JSON_PEGTL_INTERNAL_UNWRAP( MESSAGE ) << " errno " << errorno; \
       throw tao::TAO_JSON_PEGTL_NAMESPACE::input_error( oss.str(), errorno );                \
    } while( false )
 
 #define TAO_JSON_PEGTL_THROW_INPUT_WIN32_ERROR( MESSAGE )                                             \
-   do {                                                                                               \
-      const int errorno = GetLastError();                                                             \
-      std::ostringstream oss;                                                                         \
+   do {                                                                                          \
+      const int errorno = GetLastError();                                                        \
+      std::ostringstream oss;                                                                    \
       oss << "pegtl: " << TAO_JSON_PEGTL_INTERNAL_UNWRAP( MESSAGE ) << " GetLastError() " << errorno; \
       throw tao::TAO_JSON_PEGTL_NAMESPACE::input_error( oss.str(), errorno );                         \
    } while( false )
