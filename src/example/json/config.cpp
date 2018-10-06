@@ -173,7 +173,7 @@ namespace config
          rules::object,
          rules::function,
          rules::function_param,
-         rules::expression,
+         rules::expression_list,
          rules::rkey,
          rules::binary,
          rules::mkey,
