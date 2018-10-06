@@ -3,15 +3,20 @@
 
 #include <tao/json/external/pegtl.hpp>
 #include <tao/json/external/pegtl/contrib/parse_tree.hpp>
+#include <tao/json/jaxn/from_input.hpp>
 #include <tao/json/jaxn/internal/grammar.hpp>
+#include <tao/json/stream.hpp>
+#include <tao/json/value.hpp>
 
+#include <iomanip>
 #include <iostream>
 
-using namespace tao::json_pegtl;  // NOLINT
+using namespace tao;         // NOLINT
+using namespace json_pegtl;  // NOLINT
 
 namespace config
 {
-   namespace jaxn = tao::json::jaxn::internal::rules;
+   namespace jaxn = json::jaxn::internal::rules;
 
    // clang-format off
    namespace rules
@@ -27,7 +32,7 @@ namespace config
 
       struct expression;
 
-      struct string_fragment : sor< expression, jaxn::string_fragment > {};
+      struct string_fragment : sor< jaxn::string_fragment, expression > {};
       struct string : list_must< string_fragment, jaxn::value_concat > {};
 
       struct binary_fragment : sor< expression, jaxn::bvalue > {};
@@ -45,9 +50,7 @@ namespace config
       struct array_fragment : sor< expression, array_value > {};
       struct array : list_must< array_fragment, jaxn::value_concat > {};
 
-      struct key : string {};
-
-      struct mkey_part : sor< key, identifier > {};
+      struct mkey_part : sor< identifier, jaxn::string > {};
       struct mkey : list< mkey_part, one< '.' > > {};
       struct member : if_must< mkey, name_separator, value > {};
       struct object_content : star< member, opt< jaxn::value_separator > > {};
@@ -61,10 +64,10 @@ namespace config
       struct object_fragment : sor< expression, object_value > {};
       struct object : list_must< object_fragment, jaxn::value_concat > {};
 
-      struct rkey_part : sor< key, identifier, expression > {};
+      struct rkey_part : sor< string, identifier > {};
       struct rkey : list< rkey_part, one< '.' > > {};
 
-      struct expression : if_must< tao::json_pegtl::string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
+      struct expression : if_must< json_pegtl::string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
       struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary, object, array > > > > > {};
 
       struct sor_value : jaxn::sor_value
@@ -173,6 +176,7 @@ namespace config
          rules::expression,
          rules::rkey,
          rules::binary,
+         rules::mkey,
          rules::element,
          jaxn::infinity< true >,
          jaxn::infinity< false >,
@@ -180,8 +184,6 @@ namespace config
          jaxn::true_,
          jaxn::false_,
          jaxn::nan >,
-      parse_tree::apply_fold_one::to<
-         rules::mkey >,
       parse_tree::apply_store_content::to<
          rules::identifier,
          jaxn::bvalue,
@@ -189,9 +191,10 @@ namespace config
          jaxn::number< false >,
          jaxn::hexnum< true >,
          jaxn::hexnum< false >,
+         jaxn::string,
          jaxn::string_fragment > >;
 
-   void print_node( const parse_tree::node& n, const std::string& s = "" )
+   void print( const parse_tree::node& n, const std::string& s = "" )
    {
       // detect the root node:
       if( n.is_root() ) {
@@ -209,10 +212,55 @@ namespace config
       // print all child nodes
       if( !n.children.empty() ) {
          const auto s2 = s + "  ";
-         for( auto& up : n.children ) {
-            print_node( *up, s2 );
+         for( const auto& up : n.children ) {
+            print( *up, s2 );
          }
       }
+   }
+
+   using node_map = std::map< json::pointer, std::shared_ptr< parse_tree::node > >;
+
+   json::pointer key( const parse_tree::node& n )
+   {
+      json::pointer result;
+      for( const auto& p : n.children ) {
+         if( p->is< config::rules::identifier >() ) {
+            result.push_back( p->content() );
+         }
+         else if( p->is< jaxn::string >() ) {
+            result.push_back( json::jaxn::from_input( p->as_memory_input() ).get_string() );
+         }
+         else {
+            throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+         }
+      }
+      return result;
+   }
+
+   void add( node_map& m, parse_tree::node& n )
+   {
+      assert( n.children.size() == 2 );
+      m.emplace( key( *n.children.front() ), std::move( n.children.back() ) );
+   }
+
+   node_map process( parse_tree::node& n )
+   {
+      node_map result;
+      for( auto& e : n.children ) {
+         if( e->is< config::rules::member >() ) {
+            add( result, *e );
+         }
+         else if( e->is< config::rules::delete_keys >() ) {
+            // TODO: Implement me!
+         }
+         else if( e->is< config::rules::include_file >() ) {
+            // TODO: Implement me!
+         }
+         else {
+            throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+         }
+      }
+      return result;
    }
 
 }  // namespace config
@@ -221,8 +269,20 @@ int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       file_input<> in( argv[ i ] );
-      const auto root = parse_tree::parse< config::rules::grammar, config::selector >( in );
-      config::print_node( *root );
+      try {
+         const auto root = parse_tree::parse< config::rules::grammar, config::selector >( in );
+         config::print( *root );
+         const auto result = config::process( *root );
+         for( const auto& e : result ) {
+            std::cout << '"' << to_string( e.first ) << '"' << std::endl;
+         }
+      }
+      catch( const parse_error& e ) {
+         const auto p = e.positions.front();
+         std::cerr << e.what() << std::endl
+                   << in.line_as_string( p ) << std::endl
+                   << std::string( p.byte_in_line, ' ' ) << '^' << std::endl;
+      }
    }
    return 0;
 }
