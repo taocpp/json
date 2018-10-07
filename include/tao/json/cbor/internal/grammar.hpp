@@ -334,26 +334,10 @@ namespace tao
                   }
                }
 
-               // template< typename Input, typename Consumer >
-               // static bool match_date_time_string( Input& in, Consumer& consumer )
-               // {
-               // }
-
-               // template< typename Input, typename Consumer >
-               // static bool match_date_time_number( Input& in, Consumer& consumer )
-               // {
-               // }
-
                template< typename Input, typename Consumer >
                static void parse_tag_unsafe( Input& in, Consumer& /*unused*/ )
                {
                   switch( const auto m = peek_minor_unsafe( in ) ) {
-                     case 0:
-                        in.bump_in_this_line();
-                        return;  // TODO: match_date_time_string( in, consumer );
-                     case 1:
-                        in.bump_in_this_line();
-                        return;  // TODO: match_date_time_number( in, consumer );
                      default:
                         in.bump_in_this_line();
                         return;
