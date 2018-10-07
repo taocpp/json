@@ -63,8 +63,7 @@ namespace tao
 
       template<>
       struct traits< std::shared_ptr< base_1 > >
-         : binding::factory< base_1,
-                             TAO_JSON_FACTORY_BIND( "one", derived_1 ),
+         : binding::factory< TAO_JSON_FACTORY_BIND( "one", derived_1 ),
                              TAO_JSON_FACTORY_BIND1( derived_2 ) >
       {
       };
@@ -249,8 +248,7 @@ namespace tao
 
       template<>
       struct traits< std::shared_ptr< base_2 > >
-         : binding::factory< base_2,
-                             TAO_JSON_FACTORY_BIND( "eight", derived_8 ),
+         : binding::factory< TAO_JSON_FACTORY_BIND( "eight", derived_8 ),
                              TAO_JSON_FACTORY_BIND( "nine", derived_9 ) >
       {
       };

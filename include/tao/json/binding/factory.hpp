@@ -91,10 +91,10 @@ namespace tao
 
          }  // namespace internal
 
-         template< template< typename... > class P, typename U, typename... Ts >
+         template< template< typename... > class P, typename... Ts >
          struct basic_factory
          {
-            template< template< typename... > class Q > using with_pointer = basic_factory< Q, U, Ts... >;
+            template< template< typename... > class Q > using with_pointer = basic_factory< Q, Ts... >;
 
             template< typename F >
             struct entry1
@@ -120,21 +120,21 @@ namespace tao
                std::string name;
             };
 
-            template< template< typename... > class Traits, typename Base, typename... With > using as_func_t = P< U >( * )( const basic_value< Traits, Base >&, With&... );
+            template< template< typename... > class Traits, typename Base, typename U, typename... With > using as_func_t = P< U >( * )( const basic_value< Traits, Base >&, With&... );
 
-            template< typename V, template< typename... > class Traits, typename Base, typename... With >
-            static bool emplace_as( std::map< std::string, entry1< as_func_t< Traits, Base, With... > > >& m )
+            template< typename V, template< typename... > class Traits, typename Base, typename U, typename... With >
+            static bool emplace_as( std::map< std::string, entry1< as_func_t< Traits, Base, U, With... > > >& m )
             {
                using W = typename V::template bind< U, P >;
-               m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Base, With... > >( &W::template as< Traits, Base, With... > ) );
+               m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Base, U, With... > >( &W::template as< Traits, Base, With... > ) );
                return true;
             }
 
-            template< template< typename... > class Traits, typename Base, typename... With >
-            static P< U > as( const basic_value< Traits, Base >& v, With&... with )
+            template< template< typename... > class Traits, typename Base, typename U, typename... With >
+            static void to( const basic_value< Traits, Base >& v, P< U >& r, With&... with )
             {
-               static const std::map< std::string, entry1< as_func_t< Traits, Base, With... > > > m = []() {
-                  std::map< std::string, entry1< as_func_t< Traits, Base, With... > > > t;
+               static const std::map< std::string, entry1< as_func_t< Traits, Base, U, With... > > > m = []() {
+                  std::map< std::string, entry1< as_func_t< Traits, Base, U, With... > > > t;
                   (void)json::internal::swallow{ basic_factory::emplace_as< Ts >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
@@ -153,10 +153,10 @@ namespace tao
                   json::internal::format_to( oss, " for base class ", typeid( U ), json::base_message_extension( v.base() ) );
                   throw std::runtime_error( oss.str() );  // NOLINT
                }
-               return i->second.function( b->second, with... );
+               r = i->second.function( b->second, with... );
             }
 
-            template< typename V, template< typename... > class Traits, typename Base, typename F >
+            template< typename V, template< typename... > class Traits, typename Base, typename U, typename F >
             static bool emplace_assign( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
             {
                using W = typename V::template bind< U, P >;
@@ -164,13 +164,13 @@ namespace tao
                return true;
             }
 
-            template< template< typename... > class Traits, typename Base >
+            template< template< typename... > class Traits, typename Base, typename U >
             static void assign( basic_value< Traits, Base >& v, const P< U >& p )
             {
                using F = void ( * )( basic_value< Traits, Base >&, const P< U >& );
                static const std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > m = []() {
                   std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > t;
-                  (void)json::internal::swallow{ emplace_assign< Ts, Traits, Base >( t )... };
+                  (void)json::internal::swallow{ emplace_assign< Ts, Traits, Base, U >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
@@ -189,7 +189,7 @@ namespace tao
                };
             }
 
-            template< typename V, template< typename... > class Traits, typename Producer, typename F >
+            template< typename V, template< typename... > class Traits, typename U, typename Producer, typename F >
             static bool emplace_consume( std::map< std::string, entry1< F > >& m )
             {
                using W = typename V::template bind< U, P >;
@@ -197,13 +197,13 @@ namespace tao
                return true;
             }
 
-            template< template< typename... > class Traits, typename Producer >
-            static P< U > consume( Producer& parser )
+            template< template< typename... > class Traits, typename U, typename Producer >
+            static void consume( Producer& parser, P< U >& r )
             {
                using F = P< U > ( * )( Producer& );
                static const std::map< std::string, entry1< F > > m = []() {
                   std::map< std::string, entry1< F > > t;
-                  (void)json::internal::swallow{ emplace_consume< Ts, Traits, Producer >( t )... };
+                  (void)json::internal::swallow{ emplace_consume< Ts, Traits, U, Producer >( t )... };
                   return t;
                }();
 
@@ -217,12 +217,11 @@ namespace tao
                   json::internal::format_to( oss, " for base class ", typeid( U ) );
                   throw std::runtime_error( oss.str() );  // NOLINT
                }
-               auto r = i->second.function( parser );
+               r = i->second.function( parser );
                parser.end_object( s );
-               return r;
             }
 
-            template< typename V, template< typename... > class Traits, typename Consumer, typename F >
+            template< typename V, template< typename... > class Traits, typename U, typename Consumer, typename F >
             static bool emplace_produce( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
             {
                using W = typename V::template bind< U, P >;
@@ -230,13 +229,13 @@ namespace tao
                return true;
             }
 
-            template< template< typename... > class Traits, typename Consumer >
+            template< template< typename... > class Traits, typename U, typename Consumer >
             static void produce( Consumer& consumer, const P< U >& p )
             {
                using F = void ( * )( Consumer&, const P< U >& );
                static const std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > m = []() {
                   std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > t;
-                  (void)json::internal::swallow{ emplace_produce< Ts, Traits, Consumer >( t )... };
+                  (void)json::internal::swallow{ emplace_produce< Ts, Traits, U, Consumer >( t )... };
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
@@ -257,7 +256,7 @@ namespace tao
             }
          };
 
-         template< typename U, typename... Ts > using factory = basic_factory< std::shared_ptr, U, Ts... >;
+         template< typename... Ts > using factory = basic_factory< std::shared_ptr, Ts... >;
 
       }  // namespace binding
 
