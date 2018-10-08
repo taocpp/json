@@ -34,10 +34,7 @@ namespace tao
 
          struct event_data
          {
-            event_data()  // NOLINT
-               : t( event_type::NULL_ )
-            {
-            }
+            event_data() = default;
 
             event_data( const event_type in_t )  // NOLINT
                : t( in_t )
@@ -50,7 +47,7 @@ namespace tao
             {
             }
 
-            event_type t;
+            event_type t{ event_type::NULL_ };
 
             bool b = false;
             std::string s;
