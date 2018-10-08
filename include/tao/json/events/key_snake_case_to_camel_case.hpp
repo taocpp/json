@@ -6,8 +6,7 @@
 
 #include <cctype>
 #include <string>
-
-#include "../external/string_view.hpp"
+#include <string_view>
 
 namespace tao
 {
@@ -21,7 +20,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                std::string r;
                r.reserve( v.size() );

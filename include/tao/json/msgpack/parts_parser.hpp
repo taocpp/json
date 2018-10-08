@@ -4,8 +4,10 @@
 #ifndef TAO_JSON_MSGPACK_PARTS_PARSER_HPP
 #define TAO_JSON_MSGPACK_PARTS_PARSER_HPP
 
+#include <cstdint>
+#include <optional>
+
 #include "../events/discard.hpp"
-#include "../external/optional.hpp"
 #include "../external/pegtl/string_input.hpp"
 #include "../utf8.hpp"
 
@@ -198,7 +200,7 @@ namespace tao
                return internal::read_boolean( m_input );
             }
 
-            tao::string_view string()
+            std::string_view string()
             {
                return internal::read_string< V >( m_input );
             }
@@ -208,7 +210,7 @@ namespace tao
                return internal::read_binary( m_input );
             }
 
-            tao::string_view key()
+            std::string_view key()
             {
                return internal::read_string< V >( m_input );
             }

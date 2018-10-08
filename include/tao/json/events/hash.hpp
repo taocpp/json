@@ -9,12 +9,11 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
 #include "../binary_view.hpp"
-
-#include "../external/string_view.hpp"
 
 #include "../internal/sha256.hpp"
 
@@ -109,7 +108,7 @@ namespace tao
                m_digests.back()->feed( &v, sizeof( v ) );
             }
 
-            void string( const tao::string_view v )
+            void string( const std::string_view v )
             {
                m_digests.back()->feed( 's' );
                const auto s = v.size();
@@ -146,7 +145,7 @@ namespace tao
                push();
             }
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                m_digests.back()->feed( v.data(), v.size() );
                m_keys.emplace_back( m_digests.back()->get() );

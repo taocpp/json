@@ -54,7 +54,7 @@ namespace tao
                   json::internal::hexdump( os, v );
                }
 
-               void key( const tao::string_view v )
+               void key( const std::string_view v )
                {
                   if( jaxn::is_identifier( v ) ) {
                      next();

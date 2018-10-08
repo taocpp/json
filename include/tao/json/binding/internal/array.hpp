@@ -4,12 +4,12 @@
 #ifndef TAO_JSON_BINDING_INTERNAL_ARRAY_HPP
 #define TAO_JSON_BINDING_INTERNAL_ARRAY_HPP
 
+#include <utility>
 #include <vector>
 
 #include "../../basic_value.hpp"
 #include "../../forward.hpp"
 
-#include "../../external/pegtl/internal/integer_sequence.hpp"
 #include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"
 
@@ -21,7 +21,7 @@ namespace tao
       {
          namespace internal
          {
-            template< typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
+            template< typename T, typename L = std::make_index_sequence< T::size > >
             struct array;
 
 #if defined( __GNUC__ ) && ( __GNUC__ >= 7 )
@@ -30,7 +30,7 @@ namespace tao
 #endif
 
             template< typename... As, std::size_t... Is >
-            struct array< json::internal::type_list< As... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+            struct array< json::internal::type_list< As... >, std::index_sequence< Is... > >
             {
                using elements = json::internal::type_list< As... >;
 

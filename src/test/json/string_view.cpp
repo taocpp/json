@@ -3,7 +3,6 @@
 
 #include "test.hpp"
 
-#include <tao/json/external/string_view.hpp>
 #include <tao/json/value.hpp>
 
 #include <sstream>
@@ -16,7 +15,7 @@ namespace tao
       {
          const char* p = "Hello, world!";
          const std::string s = p;
-         const tao::string_view sv = p;
+         const std::string_view sv = p;
 
          TEST_ASSERT( s == p );
          TEST_ASSERT( p == s );
@@ -40,17 +39,17 @@ namespace tao
          TEST_ASSERT( vsv.type() == type::STRING );
 
          TEST_ASSERT( vp.as< const char* >() == s );
-         TEST_ASSERT( vp.as< tao::string_view >() == s );
+         TEST_ASSERT( vp.as< std::string_view >() == s );
          TEST_ASSERT( vp.as< std::string >() == s );
          TEST_ASSERT( vp.as< const std::string& >() == s );
 
          TEST_ASSERT( vs.as< const char* >() == s );
-         TEST_ASSERT( vs.as< tao::string_view >() == s );
+         TEST_ASSERT( vs.as< std::string_view >() == s );
          TEST_ASSERT( vs.as< std::string >() == s );
          TEST_ASSERT( vs.as< const std::string& >() == s );
 
          TEST_ASSERT( vsv.as< const char* >() == s );
-         TEST_ASSERT( vsv.as< tao::string_view >() == s );
+         TEST_ASSERT( vsv.as< std::string_view >() == s );
          TEST_ASSERT( vsv.as< std::string >() == s );
          TEST_ASSERT( vsv.as< const std::string& >() == s );
 
@@ -60,7 +59,7 @@ namespace tao
 
          TEST_ASSERT( v.type() == type::STRING_VIEW );
 
-         TEST_ASSERT( v.as< tao::string_view >() == s );
+         TEST_ASSERT( v.as< std::string_view >() == s );
          TEST_ASSERT( v.as< std::string >() == s );
 
          std::ostringstream oss;

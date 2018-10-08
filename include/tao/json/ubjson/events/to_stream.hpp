@@ -8,10 +8,9 @@
 #include <cstdint>
 #include <ostream>
 #include <string>
+#include <string_view>
 
 #include "../../binary_view.hpp"
-
-#include "../../external/string_view.hpp"
 
 #include "../../internal/endian.hpp"
 
@@ -105,7 +104,7 @@ namespace tao
                   os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 
-               void string( const tao::string_view v )
+               void string( const std::string_view v )
                {
                   if( ( v.size() == 1 ) && ( ( v[ 0 ] & 0x80 ) == 0 ) ) {
                      os.put( 'C' );
@@ -161,7 +160,7 @@ namespace tao
                   number( std::uint64_t( size ) );
                }
 
-               void key( const tao::string_view v )
+               void key( const std::string_view v )
                {
                   number( std::uint64_t( v.size() ) );
                   os.write( v.data(), v.size() );

@@ -15,8 +15,6 @@
 
 #include "internal/identity.hpp"
 
-#include "external/byte.hpp"
-
 namespace tao
 {
    // modelled after C++17's basic_string_view
@@ -439,7 +437,7 @@ namespace tao
       return x.compare( y ) >= 0;
    }
 
-   using binary_view = basic_binary_view< tao::byte >;
+   using binary_view = basic_binary_view< std::byte >;
 
 }  // namespace tao
 

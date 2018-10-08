@@ -6,15 +6,13 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "../binary_view.hpp"
-
-#include "../external/byte.hpp"
-#include "../external/optional.hpp"
-#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -132,7 +130,7 @@ namespace tao
                atom( "number(double)" );
             }
 
-            void string( const tao::string_view /*unused*/ )
+            void string( const std::string_view /*unused*/ )
             {
                atom( "string(...)" );
             }
@@ -306,7 +304,7 @@ namespace tao
                state = EXPECT_SIZED_OBJECT_KEY_OR_END;
             }
 
-            void key( const tao::string_view /*unused*/ )
+            void key( const std::string_view /*unused*/ )
             {
                switch( state ) {
                   case EXPECT_TOP_LEVEL_VALUE:

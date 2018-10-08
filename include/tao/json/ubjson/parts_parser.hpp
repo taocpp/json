@@ -4,8 +4,10 @@
 #ifndef TAO_JSON_UBJSON_PARTS_PARSER_HPP
 #define TAO_JSON_UBJSON_PARTS_PARSER_HPP
 
+#include <cstdint>
+#include <optional>
+
 #include "../events/discard.hpp"
-#include "../external/optional.hpp"
 #include "../external/pegtl/string_input.hpp"
 #include "../utf8.hpp"
 
@@ -151,9 +153,9 @@ namespace tao
                m_input.bump_in_this_line();
             }
 
-            tao::string_view string()
+            std::string_view string()
             {
-               return internal::read_string_or_char< V, tao::string_view >( m_input );
+               return internal::read_string_or_char< V, std::string_view >( m_input );
             }
 
             tao::binary_view binary()
@@ -166,7 +168,7 @@ namespace tao
                return json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( m_input, size );
             }
 
-            tao::string_view key()
+            std::string_view key()
             {
                return string();
             }
@@ -196,7 +198,7 @@ namespace tao
                }
 
                std::size_t i = 0;
-               tao::optional< std::size_t > size;
+               std::optional< std::size_t > size;
             };
 
             template< internal::marker Begin, internal::marker End >

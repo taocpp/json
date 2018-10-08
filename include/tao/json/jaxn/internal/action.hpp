@@ -4,8 +4,9 @@
 #ifndef TAO_JSON_JAXN_INTERNAL_ACTION_HPP
 #define TAO_JSON_JAXN_INTERNAL_ACTION_HPP
 
+#include <string_view>
+
 #include "../../external/pegtl/nothing.hpp"
-#include "../../external/string_view.hpp"
 
 #include "errors.hpp"
 #include "grammar.hpp"
@@ -62,7 +63,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static void apply( const Input& in, Consumer& consumer )
                {
-                  consumer.key( tao::string_view( in.begin(), in.size() ) );
+                  consumer.key( std::string_view( in.begin(), in.size() ) );
                }
             };
 

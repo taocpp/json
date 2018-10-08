@@ -4,12 +4,12 @@
 #ifndef TAO_JSON_MSGPACK_INTERNAL_GRAMMAR_HPP
 #define TAO_JSON_MSGPACK_INTERNAL_GRAMMAR_HPP
 
+#include <cstddef>
 #include <cstdint>
+#include <string_view>
 
 #include "../../binary_view.hpp"
-#include "../../external/byte.hpp"
 #include "../../external/pegtl.hpp"
-#include "../../external/string_view.hpp"
 #include "../../internal/format.hpp"
 #include "../../internal/parse_util.hpp"
 #include "../../utf8.hpp"
@@ -25,20 +25,20 @@ namespace tao
          namespace internal
          {
             template< utf8_mode U, typename Input >
-            tao::string_view read_string( Input& in )
+            std::string_view read_string( Input& in )
             {
                const auto b = json::internal::peek_byte( in );
                if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
                   in.bump_in_this_line();
-                  return json::internal::read_string< U, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) );
+                  return json::internal::read_string< U, std::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) );
                }
                switch( format( b ) ) {
                   case format::STR8:
-                     return json::internal::read_string< U, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) );
+                     return json::internal::read_string< U, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) );
                   case format::STR16:
-                     return json::internal::read_string< U, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );
+                     return json::internal::read_string< U, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );
                   case format::STR32:
-                     return json::internal::read_string< U, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
+                     return json::internal::read_string< U, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
                   default:
                      throw json_pegtl::parse_error( "unexpected key type", in );
                }
@@ -91,7 +91,7 @@ namespace tao
                   }
                   if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
                      in.bump_in_this_line();
-                     consumer.string( json::internal::read_string< V, tao::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) ) );
+                     consumer.string( json::internal::read_string< V, std::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) ) );
                      return;
                   }
                   switch( format( b ) ) {
@@ -173,13 +173,13 @@ namespace tao
                         discard( in, 18 );
                         return;
                      case format::STR8:
-                        consumer.string( json::internal::read_string< V, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) ) );
+                        consumer.string( json::internal::read_string< V, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) ) );
                         return;
                      case format::STR16:
-                        consumer.string( json::internal::read_string< V, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) ) );
+                        consumer.string( json::internal::read_string< V, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) ) );
                         return;
                      case format::STR32:
-                        consumer.string( json::internal::read_string< V, tao::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
+                        consumer.string( json::internal::read_string< V, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
                         return;
                      case format::ARRAY16:
                         parse_array( in, consumer, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );

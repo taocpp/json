@@ -11,6 +11,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -18,7 +19,6 @@
 
 #include "../external/jeaiii.hpp"
 #include "../external/ryu.hpp"
-#include "../external/string_view.hpp"
 
 #include "../internal/escape.hpp"
 
@@ -126,7 +126,7 @@ namespace tao
                ryu::d2s_stream( os, v );
             }
 
-            void string( const tao::string_view v )
+            void string( const std::string_view v )
             {
                next();
                os.put( '"' );
@@ -170,7 +170,7 @@ namespace tao
                first = true;
             }
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                string( v );
                os.write( ": ", 2 );

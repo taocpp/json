@@ -95,7 +95,7 @@ namespace tao
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
 
-            void string( const tao::string_view v ) noexcept
+            void string( const std::string_view v ) noexcept
             {
                m_match = m_match && ( m_current.back() != nullptr ) && ( current() == v );
             }
@@ -188,7 +188,7 @@ namespace tao
                }
             }
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                key( std::string( v.data(), v.size() ) );
             }

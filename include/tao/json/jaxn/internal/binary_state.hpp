@@ -4,10 +4,9 @@
 #ifndef TAO_JSON_JAXN_INTERNAL_BINARY_STATE_HPP
 #define TAO_JSON_JAXN_INTERNAL_BINARY_STATE_HPP
 
+#include <cstddef>
 #include <utility>
 #include <vector>
-
-#include "../../external/byte.hpp"
 
 namespace tao
 {
@@ -35,7 +34,7 @@ namespace tao
                   consumer.binary( std::move( value ) );
                }
 
-               std::vector< tao::byte > value;
+               std::vector< std::byte > value;
             };
 
          }  // namespace internal

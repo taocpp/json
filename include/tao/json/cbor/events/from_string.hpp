@@ -4,9 +4,11 @@
 #ifndef TAO_JSON_CBOR_EVENTS_FROM_STRING_HPP
 #define TAO_JSON_CBOR_EVENTS_FROM_STRING_HPP
 
+#include <string>
+#include <string_view>
+
 #include "../../external/pegtl/memory_input.hpp"
 #include "../../external/pegtl/parse.hpp"
-#include "../../external/string_view.hpp"
 
 #include "../internal/grammar.hpp"
 
@@ -32,7 +34,7 @@ namespace tao
             }
 
             template< typename Consumer, typename... Ts >
-            void from_string( Consumer& consumer, const tao::string_view data, Ts&&... ts )
+            void from_string( Consumer& consumer, const std::string_view data, Ts&&... ts )
             {
                events::from_string( consumer, data.data(), data.size(), std::forward< Ts >( ts )... );
             }

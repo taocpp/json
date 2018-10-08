@@ -76,23 +76,23 @@ namespace tao
          }
 
          template< typename T, typename U = T, template< typename... > class Traits, typename Base >
-         tao::optional< T > optional( const basic_value< Traits, Base >& v )
+         std::optional< T > optional( const basic_value< Traits, Base >& v )
          {
             if( v ) {
-               return tao::optional< T >( tao::in_place, get::as< U >( v ) );
+               return std::optional< T >( std::in_place, get::as< U >( v ) );
             }
-            return tao::nullopt;
+            return std::nullopt;
          }
 
          template< typename T, typename U = T, template< typename... > class Traits, typename Base, typename K, typename... Ks >
-         tao::optional< T > optional( const basic_value< Traits, Base >& v, const K& key, const Ks&... ks )
+         std::optional< T > optional( const basic_value< Traits, Base >& v, const K& key, const Ks&... ks )
          {
             if( v ) {
                if( const auto* p = internal::find( v, key ) ) {
                   return get::optional< T, U >( *p, ks... );
                }
             }
-            return tao::nullopt;
+            return std::nullopt;
          }
 
          template< typename T, typename U = T, template< typename... > class Traits, typename Base >

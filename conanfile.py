@@ -4,7 +4,7 @@ from conans import ConanFile, CMake
 
 class JSONConan(ConanFile):
     name = "json"
-    description = "C++11 header-only JSON library "
+    description = "C++17 header-only JSON library "
     homepage = "https://github.com/taocpp/json"
     url = homepage
     license = "MIT"

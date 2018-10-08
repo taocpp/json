@@ -8,11 +8,10 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "../binary_view.hpp"
-
-#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -67,7 +66,7 @@ namespace tao
                ++double_count;
             }
 
-            void string( const tao::string_view v ) noexcept
+            void string( const std::string_view v ) noexcept
             {
                ++string_count;
                string_lengths += v.size();
@@ -98,7 +97,7 @@ namespace tao
                ++object_count;
             }
 
-            void key( const tao::string_view v ) noexcept
+            void key( const std::string_view v ) noexcept
             {
                ++key_count;
                key_lengths += v.size();

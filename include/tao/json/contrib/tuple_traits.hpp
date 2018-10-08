@@ -5,10 +5,9 @@
 #define TAO_JSON_CONTRIB_TUPLE_TRAITS_HPP
 
 #include <tuple>
+#include <utility>
 
 #include "../binding.hpp"
-
-#include "../external/pegtl/internal/integer_sequence.hpp"
 
 namespace tao
 {
@@ -20,7 +19,7 @@ namespace tao
          struct tuple_traits;
 
          template< typename Tuple, std::size_t... Is >
-         struct tuple_traits< Tuple, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+         struct tuple_traits< Tuple, std::index_sequence< Is... > >
          {
             template< std::size_t I >
             struct cf_i
@@ -60,7 +59,7 @@ namespace tao
 
       template< typename... Ts >
       struct tuple_traits
-         : public internal::tuple_traits< std::tuple< Ts... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence_for< Ts... > >::type
+         : public internal::tuple_traits< std::tuple< Ts... >, std::index_sequence_for< Ts... > >::type
       {
       };
 

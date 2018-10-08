@@ -9,6 +9,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include "../for_nothing_value.hpp"
 #include "../for_unknown_key.hpp"
@@ -17,7 +18,6 @@
 #include "../../forward.hpp"
 
 #include "../../basic_value.hpp"
-#include "../../external/pegtl/internal/integer_sequence.hpp"
 #include "../../internal/escape.hpp"
 #include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"
@@ -30,7 +30,7 @@ namespace tao
       {
          namespace internal
          {
-            template< for_unknown_key E, for_nothing_value N, typename T, typename L = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< T::size > >
+            template< for_unknown_key E, for_nothing_value N, typename T, typename L = std::make_index_sequence< T::size > >
             struct basic_object;
 
             template< for_nothing_value N >
@@ -87,7 +87,7 @@ namespace tao
             };
 
             template< for_unknown_key E, for_nothing_value N, typename... As, std::size_t... Is >
-            struct basic_object< E, N, json::internal::type_list< As... >, TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+            struct basic_object< E, N, json::internal::type_list< As... >, std::index_sequence< Is... > >
             {
                using members = json::internal::type_list< As... >;
 

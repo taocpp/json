@@ -4,8 +4,9 @@
 #ifndef TAO_JSON_EVENTS_FROM_STRING_HPP
 #define TAO_JSON_EVENTS_FROM_STRING_HPP
 
+#include <string_view>
+
 #include "../external/pegtl/parse.hpp"
-#include "../external/string_view.hpp"
 
 #include "../internal/action.hpp"
 #include "../internal/control.hpp"
@@ -33,7 +34,7 @@ namespace tao
          }
 
          template< typename Consumer, typename... Ts >
-         void from_string( Consumer& consumer, const tao::string_view data, Ts&&... ts )
+         void from_string( Consumer& consumer, const std::string_view data, Ts&&... ts )
          {
             events::from_string( consumer, data.data(), data.size(), std::forward< Ts >( ts )... );
          }

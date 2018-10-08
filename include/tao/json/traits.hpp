@@ -4,12 +4,15 @@
 #ifndef TAO_JSON_TRAITS_HPP
 #define TAO_JSON_TRAITS_HPP
 
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 
 #include <algorithm>
 #include <map>
+#include <optional>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "binary_view.hpp"
@@ -19,10 +22,6 @@
 
 #include "events/from_value.hpp"
 #include "events/produce.hpp"
-
-#include "external/byte.hpp"
-#include "external/optional.hpp"
-#include "external/string_view.hpp"
 
 #include "internal/format.hpp"
 #include "internal/identity.hpp"
@@ -357,10 +356,10 @@ namespace tao
       };
 
       template<>
-      struct traits< tao::string_view >
+      struct traits< std::string_view >
       {
          template< template< typename... > class Traits, typename Base >
-         static tao::string_view as( const basic_value< Traits, Base >& v )
+         static std::string_view as( const basic_value< Traits, Base >& v )
          {
             switch( v.type() ) {
                case type::STRING:
@@ -368,24 +367,24 @@ namespace tao
                case type::STRING_VIEW:
                   return v.unsafe_get_string_view();
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::string_view", json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string_view", json::base_message_extension( v.base() ) ) );  // NOLINT
             }
          }
 
          template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const tao::string_view sv )
+         static void assign( basic_value< Traits, Base >& v, const std::string_view sv )
          {
             v.unsafe_emplace_string( sv.data(), sv.size() );
          }
 
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::string_view sv )
+         static void produce( Consumer& c, const std::string_view sv )
          {
             c.string( sv );
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const tao::string_view rhs ) noexcept
+         static bool equal( const basic_value< Traits, Base >& lhs, const std::string_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -399,7 +398,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const tao::string_view rhs ) noexcept
+         static bool less_than( const basic_value< Traits, Base >& lhs, const std::string_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -413,7 +412,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const tao::string_view rhs ) noexcept
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::string_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -496,55 +495,55 @@ namespace tao
       };
 
       template<>
-      struct traits< std::vector< tao::byte > >
+      struct traits< std::vector< std::byte > >
       {
          template< template< typename... > class Traits, typename Base >
-         static std::vector< tao::byte > as( const basic_value< Traits, Base >& v )
+         static std::vector< std::byte > as( const basic_value< Traits, Base >& v )
          {
             switch( v.type() ) {
                case type::BINARY:
                   return v.unsafe_get_binary();
                case type::BINARY_VIEW: {
                   const auto xv = v.unsafe_get_binary_view();
-                  return std::vector< tao::byte >( xv.begin(), xv.end() );
+                  return std::vector< std::byte >( xv.begin(), xv.end() );
                }
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::vector< tao::byte >", json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::vector< std::byte >", json::base_message_extension( v.base() ) ) );  // NOLINT
             }
          }
 
          template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::vector< tao::byte >& x )
+         static void assign( basic_value< Traits, Base >& v, const std::vector< std::byte >& x )
          {
             v.unsafe_assign_binary( x );
          }
 
          template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, std::vector< tao::byte >&& x ) noexcept
+         static void assign( basic_value< Traits, Base >& v, std::vector< std::byte >&& x ) noexcept
          {
             v.unsafe_assign_binary( std::move( x ) );
          }
 
          template< template< typename... > class, typename Producer >
-         static std::vector< tao::byte > consume( Producer& parser )
+         static std::vector< std::byte > consume( Producer& parser )
          {
             return parser.binary();
          }
 
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const std::vector< tao::byte >& x )
+         static void produce( Consumer& c, const std::vector< std::byte >& x )
          {
             c.binary( x );
          }
 
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, std::vector< tao::byte >&& x )
+         static void produce( Consumer& c, std::vector< std::byte >&& x )
          {
             c.binary( std::move( x ) );
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const std::vector< tao::byte >& rhs ) noexcept
+         static bool equal( const basic_value< Traits, Base >& lhs, const std::vector< std::byte >& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -558,7 +557,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const std::vector< tao::byte >& rhs ) noexcept
+         static bool less_than( const basic_value< Traits, Base >& lhs, const std::vector< std::byte >& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -572,7 +571,7 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::vector< tao::byte >& rhs ) noexcept
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::vector< std::byte >& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -658,10 +657,10 @@ namespace tao
       };
 
       template<>
-      struct traits< const std::vector< tao::byte >& >
+      struct traits< const std::vector< std::byte >& >
       {
          template< template< typename... > class Traits, typename Base >
-         static const std::vector< tao::byte >& as( const basic_value< Traits, Base >& v )
+         static const std::vector< std::byte >& as( const basic_value< Traits, Base >& v )
          {
             return v.get_binary();
          }
@@ -778,28 +777,28 @@ namespace tao
       };
 
       template< typename T >
-      struct traits< tao::optional< T > >
+      struct traits< std::optional< T > >
       {
          template< template< typename... > class Traits >
          using default_key = typename Traits< T >::template default_key< Traits >;
 
          template< template< typename... > class Traits >
-         static bool is_nothing( const tao::optional< T >& o )
+         static bool is_nothing( const std::optional< T >& o )
          {
             return ( !bool( o ) ) || internal::is_nothing< Traits >( *o );  // TODO: Only query o?
          }
 
          template< template< typename... > class Traits, typename Base >
-         static tao::optional< T > as( const basic_value< Traits, Base >& v )
+         static std::optional< T > as( const basic_value< Traits, Base >& v )
          {
             if( v == null ) {
-               return tao::nullopt;
+               return std::nullopt;
             }
             return v.template as< T >();
          }
 
          template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const tao::optional< T >& o )
+         static void assign( basic_value< Traits, Base >& v, const std::optional< T >& o )
          {
             if( o ) {
                v = *o;
@@ -810,16 +809,16 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Producer >
-         static tao::optional< T > consume( Producer& parser )
+         static std::optional< T > consume( Producer& parser )
          {
             if( parser.null() ) {
-               return tao::nullopt;
+               return std::nullopt;
             }
             return json::consume< T, Traits >( parser );
          }
 
          template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const tao::optional< T >& o )
+         static void produce( Consumer& c, const std::optional< T >& o )
          {
             if( o ) {
                json::events::produce< Traits >( c, *o );
@@ -830,19 +829,19 @@ namespace tao
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
+         static bool equal( const basic_value< Traits, Base >& lhs, const std::optional< T >& rhs ) noexcept
          {
             return rhs ? ( lhs == *rhs ) : ( lhs == null );
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
+         static bool less_than( const basic_value< Traits, Base >& lhs, const std::optional< T >& rhs ) noexcept
          {
             return rhs ? ( lhs < *rhs ) : ( lhs < null );
          }
 
          template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const tao::optional< T >& rhs ) noexcept
+         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::optional< T >& rhs ) noexcept
          {
             return rhs ? ( lhs > *rhs ) : ( lhs > null );
          }

@@ -4,9 +4,8 @@
 #ifndef TAO_JSON_BINARY_HPP
 #define TAO_JSON_BINARY_HPP
 
+#include <cstddef>
 #include <vector>
-
-#include "external/byte.hpp"
 
 namespace tao
 {
@@ -86,9 +85,9 @@ namespace tao
       inline namespace literals
       {
          template< char... Cs >
-         std::vector< tao::byte > operator"" _binary()
+         std::vector< std::byte > operator"" _binary()
          {
-            return internal::unhex< std::vector< tao::byte >, Cs... >();
+            return internal::unhex< std::vector< std::byte >, Cs... >();
          }
 
       }  // namespace literals

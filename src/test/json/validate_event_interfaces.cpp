@@ -64,8 +64,8 @@ namespace tao
 
          std::string s;
          std::string k;
-         tao::string_view sv;
-         std::vector< tao::byte > x;
+         std::string_view sv;
+         std::vector< std::byte > x;
          tao::binary_view xv;
 
          // each consumer *must* accept the following events (type-wise, not actual order/values)

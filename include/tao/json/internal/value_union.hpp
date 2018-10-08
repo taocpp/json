@@ -4,16 +4,15 @@
 #ifndef TAO_JSON_INTERNAL_VALUE_UNION_HPP
 #define TAO_JSON_INTERNAL_VALUE_UNION_HPP
 
+#include <cstddef>
 #include <cstdint>
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "../binary_view.hpp"
 #include "../forward.hpp"
-
-#include "../external/byte.hpp"
-#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -51,9 +50,9 @@ namespace tao
             double d;
 
             std::string s;
-            tao::string_view sv;
+            std::string_view sv;
 
-            std::vector< tao::byte > x;
+            std::vector< std::byte > x;
             tao::binary_view xv;
 
             std::vector< T > a;

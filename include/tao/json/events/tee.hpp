@@ -13,8 +13,6 @@
 
 #include "discard.hpp"
 
-#include "../external/pegtl/internal/integer_sequence.hpp"
-
 namespace tao
 {
    namespace json
@@ -40,7 +38,7 @@ namespace tao
          struct events_apply;
 
          template<>
-         struct events_apply< TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence<> >
+         struct events_apply< std::index_sequence<> >
          {
             template< typename... Ts >
             static void null( std::tuple< Ts... >& /*unused*/ )
@@ -68,7 +66,7 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void string( std::tuple< Ts... >& /*unused*/, const tao::string_view /*unused*/ )
+            static void string( std::tuple< Ts... >& /*unused*/, const std::string_view /*unused*/ )
             {
             }
 
@@ -113,7 +111,7 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void key( std::tuple< Ts... >& /*unused*/, const tao::string_view /*unused*/ )
+            static void key( std::tuple< Ts... >& /*unused*/, const std::string_view /*unused*/ )
             {
             }
 
@@ -134,7 +132,7 @@ namespace tao
          };
 
          template< std::size_t... Is >
-         struct events_apply< TAO_JSON_PEGTL_NAMESPACE::internal::index_sequence< Is... > >
+         struct events_apply< std::index_sequence< Is... > >
          {
             using sink = bool[];
 
@@ -169,7 +167,7 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void string( std::tuple< Ts... >& t, const tao::string_view v )
+            static void string( std::tuple< Ts... >& t, const std::string_view v )
             {
                (void)sink{ ( std::get< Is >( t ).string( v ), true )... };
             }
@@ -223,7 +221,7 @@ namespace tao
             }
 
             template< typename... Ts >
-            static void key( std::tuple< Ts... >& t, const tao::string_view v )
+            static void key( std::tuple< Ts... >& t, const std::string_view v )
             {
                (void)sink{ ( std::get< Is >( t ).key( v ), true )... };
             }
@@ -259,8 +257,8 @@ namespace tao
          private:
             static constexpr std::size_t S = sizeof...( Ts );
 
-            using I = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S >;
-            using H = TAO_JSON_PEGTL_NAMESPACE::internal::make_index_sequence< S - 1 >;
+            using I = std::make_index_sequence< S >;
+            using H = std::make_index_sequence< S - 1 >;
 
             std::tuple< Ts... > ts;
 
@@ -296,7 +294,7 @@ namespace tao
                internal::events_apply< I >::number( ts, v );
             }
 
-            void string( const tao::string_view v )
+            void string( const std::string_view v )
             {
                internal::events_apply< I >::string( ts, v );
             }
@@ -317,7 +315,7 @@ namespace tao
                internal::events_apply< I >::binary( ts, v );
             }
 
-            void binary( std::vector< tao::byte >&& v )
+            void binary( std::vector< std::byte >&& v )
             {
                internal::events_apply< H >::binary( ts, v );
                std::get< S - 1 >( ts ).binary( std::move( v ) );
@@ -358,7 +356,7 @@ namespace tao
                internal::events_apply< I >::begin_object( ts, size );
             }
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                internal::events_apply< I >::key( ts, v );
             }

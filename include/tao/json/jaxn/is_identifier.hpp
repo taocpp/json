@@ -5,8 +5,7 @@
 #define TAO_JSON_JAXN_IS_IDENTIFIER_HPP
 
 #include <cctype>
-
-#include "../external/string_view.hpp"
+#include <string_view>
 
 namespace tao
 {
@@ -14,7 +13,7 @@ namespace tao
    {
       namespace jaxn
       {
-         inline bool is_identifier( const tao::string_view v ) noexcept
+         inline bool is_identifier( const std::string_view v ) noexcept
          {
             if( v.empty() || std::isdigit( v[ 0 ] ) ) {  // NOLINT
                return false;

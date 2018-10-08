@@ -5,18 +5,17 @@
 #define TAO_JSON_BASIC_VALUE_HPP
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
 #include "events/virtual_base.hpp"
-
-#include "external/byte.hpp"
-#include "external/optional.hpp"
-#include "external/string_view.hpp"
 
 #include "internal/escape.hpp"
 #include "internal/format.hpp"
@@ -318,12 +317,12 @@ namespace tao
             return m_union.s;
          }
 
-         tao::string_view unsafe_get_string_view() const noexcept
+         std::string_view unsafe_get_string_view() const noexcept
          {
             return m_union.sv;
          }
 
-         tao::string_view unsafe_get_string_type() const noexcept
+         std::string_view unsafe_get_string_type() const noexcept
          {
             return ( m_type == json::type::STRING ) ? m_union.s : m_union.sv;
          }
@@ -426,13 +425,13 @@ namespace tao
             return unsafe_get_string();
          }
 
-         tao::string_view get_string_view() const
+         std::string_view get_string_view() const
          {
             validate_json_type( json::type::STRING_VIEW );
             return unsafe_get_string_view();
          }
 
-         tao::string_view get_string_type() const noexcept
+         std::string_view get_string_type() const noexcept
          {
             return ( m_type == json::type::STRING_VIEW ) ? m_union.sv : get_string();
          }
@@ -511,7 +510,7 @@ namespace tao
          }
 
       private:
-         void throw_duplicate_key_exception( const tao::string_view k ) const
+         void throw_duplicate_key_exception( const std::string_view k ) const
          {
             throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( k ), '"', json::base_message_extension( base() ) ) );  // NOLINT
          }
@@ -521,7 +520,7 @@ namespace tao
             throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::base_message_extension( base() ) ) );  // NOLINT
          }
 
-         void throw_key_not_found_exception( const tao::string_view k ) const
+         void throw_key_not_found_exception( const std::string_view k ) const
          {
             throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::base_message_extension( base() ) ) );  // NOLINT
          }
@@ -573,7 +572,7 @@ namespace tao
             unsafe_emplace_string( std::move( s ) );
          }
 
-         void unsafe_assign_string_view( const tao::string_view sv ) noexcept
+         void unsafe_assign_string_view( const std::string_view sv ) noexcept
          {
             m_union.sv = sv;
             m_type = json::type::STRING_VIEW;
@@ -774,7 +773,7 @@ namespace tao
             unsafe_assign_string( std::move( s ) );
          }
 
-         void assign_string_view( const tao::string_view sv ) noexcept
+         void assign_string_view( const std::string_view sv ) noexcept
          {
             unsafe_discard();
             unsafe_assign_string_view( sv );
@@ -1218,21 +1217,21 @@ namespace tao
          typename std::enable_if< !internal::has_to< Traits< T >, basic_value, T, With... >::value && !internal::has_as< Traits< T >, basic_value, With... >::value, void >::type to_with( T& v, With&&... with ) const = delete;
 
          template< typename T >
-         tao::optional< T > optional() const
+         std::optional< T > optional() const
          {
             if( is_null() ) {
-               return tao::nullopt;
+               return std::nullopt;
             }
             return as< T >();
          }
 
          template< typename T, typename K >
-         tao::optional< T > optional( const K& key ) const
+         std::optional< T > optional( const K& key ) const
          {
             if( const auto* p = find( key ) ) {
                return p->template as< T >();
             }
-            return tao::nullopt;
+            return std::nullopt;
          }
 
          void erase( const std::size_t index )
@@ -1335,7 +1334,7 @@ namespace tao
                   return;
 
                case json::type::STRING_VIEW:
-                  m_union.sv.~string_view();
+                  m_union.sv.~basic_string_view();
                   return;
 
                case json::type::BINARY:
@@ -1446,7 +1445,7 @@ namespace tao
                   return;
 
                case json::type::STRING_VIEW:
-                  new( &m_union.sv ) tao::string_view( r.m_union.sv );
+                  new( &m_union.sv ) std::string_view( r.m_union.sv );
 #ifndef NDEBUG
                   r.m_type = json::type::DISCARDED;
 #endif
@@ -1536,7 +1535,7 @@ namespace tao
                   return;
 
                case json::type::STRING_VIEW:
-                  new( &m_union.sv ) tao::string_view( r.m_union.sv );
+                  new( &m_union.sv ) std::string_view( r.m_union.sv );
                   return;
 
                case json::type::BINARY:

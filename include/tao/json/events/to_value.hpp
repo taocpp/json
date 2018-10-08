@@ -7,11 +7,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
-
-#include "../external/byte.hpp"
-#include "../external/string_view.hpp"
 
 #include "../binary_view.hpp"
 #include "../value.hpp"
@@ -59,7 +57,7 @@ namespace tao
                value.unsafe_assign_double( v );
             }
 
-            void string( const tao::string_view v )
+            void string( const std::string_view v )
             {
                value.unsafe_emplace_string( v.data(), v.size() );
             }
@@ -79,7 +77,7 @@ namespace tao
                value.unsafe_emplace_binary( v.begin(), v.end() );
             }
 
-            void binary( std::vector< tao::byte >&& v )
+            void binary( std::vector< std::byte >&& v )
             {
                value.unsafe_assign_binary( std::move( v ) );
             }
@@ -112,7 +110,7 @@ namespace tao
                stack_.push_back( empty_object );
             }
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                keys_.emplace_back( v.data(), v.size() );
             }

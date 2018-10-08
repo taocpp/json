@@ -4,8 +4,10 @@
 #ifndef TAO_JSON_INTERNAL_STRING_T_HPP
 #define TAO_JSON_INTERNAL_STRING_T_HPP
 
+#include <string>
+#include <string_view>
+
 #include "../external/pegtl/internal/pegtl_string.hpp"
-#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -23,10 +25,10 @@ namespace tao
                return std::string( s, sizeof...( Cs ) );
             }
 
-            static tao::string_view as_string_view() noexcept
+            static std::string_view as_string_view() noexcept
             {
                static const char s[] = { Cs..., 0 };
-               return tao::string_view( s, sizeof...( Cs ) );
+               return std::string_view( s, sizeof...( Cs ) );
             }
          };
 

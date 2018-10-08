@@ -23,8 +23,8 @@ namespace tao
       {
          int i = 8000;
          std::string s;
-         tao::optional< bool > b;
-         tao::optional< double > d;
+         std::optional< bool > b;
+         std::optional< double > d;
          type_0 z;
       };
 

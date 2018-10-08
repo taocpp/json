@@ -4,7 +4,8 @@
 #ifndef TAO_JSON_JAXN_INTERNAL_BUNESCAPE_ACTION_HPP
 #define TAO_JSON_JAXN_INTERNAL_BUNESCAPE_ACTION_HPP
 
-#include "../../external/byte.hpp"
+#include <cstddef>
+
 #include "../../external/pegtl/contrib/unescape.hpp"
 #include "../../external/pegtl/nothing.hpp"
 
@@ -31,47 +32,47 @@ namespace tao
                {
                   switch( *in.begin() ) {
                      case '"':
-                        st.value.push_back( tao::byte( '"' ) );
+                        st.value.push_back( std::byte( '"' ) );
                         break;
 
                      case '\'':
-                        st.value.push_back( tao::byte( '\'' ) );
+                        st.value.push_back( std::byte( '\'' ) );
                         break;
 
                      case '\\':
-                        st.value.push_back( tao::byte( '\\' ) );
+                        st.value.push_back( std::byte( '\\' ) );
                         break;
 
                      case '/':
-                        st.value.push_back( tao::byte( '/' ) );
+                        st.value.push_back( std::byte( '/' ) );
                         break;
 
                      case 'b':
-                        st.value.push_back( tao::byte( '\b' ) );
+                        st.value.push_back( std::byte( '\b' ) );
                         break;
 
                      case 'f':
-                        st.value.push_back( tao::byte( '\f' ) );
+                        st.value.push_back( std::byte( '\f' ) );
                         break;
 
                      case 'n':
-                        st.value.push_back( tao::byte( '\n' ) );
+                        st.value.push_back( std::byte( '\n' ) );
                         break;
 
                      case 'r':
-                        st.value.push_back( tao::byte( '\r' ) );
+                        st.value.push_back( std::byte( '\r' ) );
                         break;
 
                      case 't':
-                        st.value.push_back( tao::byte( '\t' ) );
+                        st.value.push_back( std::byte( '\t' ) );
                         break;
 
                      case 'v':
-                        st.value.push_back( tao::byte( '\v' ) );
+                        st.value.push_back( std::byte( '\v' ) );
                         break;
 
                      case '0':
-                        st.value.push_back( tao::byte( '\0' ) );
+                        st.value.push_back( std::byte( '\0' ) );
                         break;
 
                      default:
@@ -87,7 +88,7 @@ namespace tao
                static void apply( const Input& in, State& st )
                {
                   assert( !in.empty() );  // First character MUST be present, usually 'x'.
-                  st.value.push_back( static_cast< tao::byte >( json_pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
+                  st.value.push_back( static_cast< std::byte >( json_pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
                }
             };
 
@@ -97,7 +98,7 @@ namespace tao
                template< typename Input, typename State >
                static void apply( const Input& in, State& st )
                {
-                  const auto begin = static_cast< const tao::byte* >( static_cast< const void* >( in.begin() ) );
+                  const auto begin = static_cast< const std::byte* >( static_cast< const void* >( in.begin() ) );
                   const auto end = begin + in.size();
                   st.value.insert( st.value.end(), begin, end );
                }
@@ -109,7 +110,7 @@ namespace tao
                template< typename Input, typename State >
                static void apply( const Input& in, State& st )
                {
-                  st.value.push_back( static_cast< tao::byte >( json_pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
+                  st.value.push_back( static_cast< std::byte >( json_pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
                }
             };
 

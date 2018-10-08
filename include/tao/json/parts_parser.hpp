@@ -214,7 +214,7 @@ namespace tao
             return std::move( s.unescaped );
          }
 
-         std::vector< tao::byte > binary()
+         std::vector< std::byte > binary()
          {
             throw std::runtime_error( "json format does not support binary" );  // NOLINT
          }

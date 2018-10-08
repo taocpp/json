@@ -52,7 +52,7 @@ namespace tao
 
             bool b = false;
             std::string s;
-            std::vector< tao::byte > x;
+            std::vector< std::byte > x;
             std::int64_t i = 0;
             std::uint64_t u = 0;
             double d = 0.0;
@@ -145,7 +145,7 @@ namespace tao
                m_o.number( d );
             }
 
-            void string( const tao::string_view s )
+            void string( const std::string_view s )
             {
                TEST_ASSERT( m_e[ m_i ].t == event_type::STRING );
                TEST_ASSERT( m_e[ m_i ].s == s );
@@ -153,7 +153,7 @@ namespace tao
                m_o.string( s );
             }
 
-            void binary( const std::vector< tao::byte >& x )
+            void binary( const std::vector< std::byte >& x )
             {
                TEST_ASSERT( m_e[ m_i ].t == event_type::BINARY );
                TEST_ASSERT( m_e[ m_i ].x == x );
@@ -161,7 +161,7 @@ namespace tao
                m_o.binary( x );
             }
 
-            void key( const tao::string_view s )
+            void key( const std::string_view s )
             {
                TEST_ASSERT( m_e[ m_i ].t == event_type::KEY );
                TEST_ASSERT( m_e[ m_i ].s == s );

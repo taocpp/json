@@ -5,51 +5,6 @@ dist: trusty
 matrix:
   include:
     - compiler: gcc
-      env:
-        - CXX=g++-4.8
-
-    - compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.9']
-      env:
-        - CXX=g++-4.9
-
-    - compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5']
-      env:
-        - CXX=g++-5
-
-    - compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5']
-      env:
-        - CXX=g++-5
-        - CXXSTD=-std=c++14
-
-    - compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-6']
-      env:
-        - CXX=g++-6
-
-    - compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-7']
-      env:
-        - CXX=g++-7
-
-    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -65,53 +20,16 @@ matrix:
           packages: ['g++-8']
       env:
         - CXX=g++-8
-
-    - compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
-      env:
-        - CXX=g++-8
         - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['clang-3.5', 'g++-4.9']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+          packages: ['clang-4.0']
       env:
-        - CXX=clang++-3.5
-
-    - compiler: clang
-      addons:
-        apt:
-          packages: ['clang-3.6']
-      env:
-        - CXX=clang++-3.6
-
-    - dist: precise
-      compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-          packages: ['clang-3.7']
-      env:
-        - CXX=clang++-3.7
-
-    - compiler: clang
-      addons:
-        apt:
-          packages: ['clang-3.8']
-      env:
-        - CXX=clang++-3.8
-
-    - compiler: clang
-      addons:
-        apt:
-          packages: ['clang-3.9']
-      env:
-        - CXX=clang++-3.9
+        - CXX=clang++-4.0
+        - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:
@@ -120,14 +38,7 @@ matrix:
           packages: ['clang-4.0']
       env:
         - CXX=clang++-4.0
-
-    - compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-          packages: ['clang-4.0']
-      env:
-        - CXX=clang++-4.0
+        - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:
@@ -136,15 +47,7 @@ matrix:
           packages: ['clang-5.0']
       env:
         - CXX=clang++-5.0
-
-    - compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0']
-      env:
-        - CXX=clang++-5.0
-        - CXXSTD=-std=c++14
+        - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:
@@ -153,6 +56,7 @@ matrix:
           packages: ['clang-6.0']
       env:
         - CXX=clang++-6.0
+        - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:

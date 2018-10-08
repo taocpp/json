@@ -6,10 +6,10 @@
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "../external/pegtl.hpp"
-#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -23,7 +23,7 @@ namespace tao
          {
             using Consumer::Consumer;
 
-            void validate_key( const tao::string_view v )
+            void validate_key( const std::string_view v )
             {
                json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > in( v.data(), v.size(), "validate_key" );
                if( !json_pegtl::parse< Rule >( in ) ) {
@@ -31,7 +31,7 @@ namespace tao
                }
             }
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                validate_key( v );
                Consumer::key( v );

@@ -7,12 +7,11 @@
 #include <cstdint>
 #include <ostream>
 #include <string>
+#include <string_view>
 
 #include "../internal/major.hpp"
 
 #include "../../binary_view.hpp"
-
-#include "../../external/string_view.hpp"
 
 #include "../../internal/endian.hpp"
 
@@ -100,7 +99,7 @@ namespace tao
                   os.write( static_cast< const char* >( static_cast< const void* >( &n ) ), sizeof( n ) );
                }
 
-               void string( const tao::string_view v )
+               void string( const std::string_view v )
                {
                   number( internal::major::STRING, v.size() );
                   os.write( v.data(), v.size() );
@@ -145,7 +144,7 @@ namespace tao
                   number( internal::major::OBJECT, size );
                }
 
-               void key( const tao::string_view v )
+               void key( const std::string_view v )
                {
                   string( v );
                }

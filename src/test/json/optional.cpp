@@ -32,25 +32,25 @@ namespace tao
       void unit_test()
       {
          {
-            const tao::optional< std::string > f;
+            const std::optional< std::string > f;
             value v = f;
             TEST_ASSERT( v == f );
             TEST_ASSERT( v.is_null() );
-            const auto g = v.as< tao::optional< std::string > >();
+            const auto g = v.as< std::optional< std::string > >();
             TEST_ASSERT( g == f );
          }
          {
-            const tao::optional< std::string > f( "hallo" );
+            const std::optional< std::string > f( "hallo" );
             value v = f;
             TEST_ASSERT( v == f );
             TEST_ASSERT( v.is_string() );
             TEST_ASSERT( v == "hallo" );
             TEST_ASSERT( v.get_string() == "hallo" );
-            const auto g = v.as< tao::optional< std::string > >();
+            const auto g = v.as< std::optional< std::string > >();
             TEST_ASSERT( *g == *f );
          }
          {
-            const tao::optional< int > i;
+            const std::optional< int > i;
             const value v = null;
             TEST_ASSERT( i == v );
          }
@@ -63,7 +63,7 @@ namespace tao
             TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
          }
          {
-            const tao::optional< type_1 > a = type_1();
+            const std::optional< type_1 > a = type_1();
             const value v = { a };
             TEST_ASSERT( v.is_object() );
             TEST_ASSERT( v.unsafe_get_object().size() == 1 );
@@ -71,7 +71,7 @@ namespace tao
             TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
          }
          {
-            const tao::optional< tao::optional< type_1 > > a = tao::optional< type_1 >( type_1() );
+            const std::optional< std::optional< type_1 > > a = std::optional< type_1 >( type_1() );
             const value v = { a };
             TEST_ASSERT( v.is_object() );
             TEST_ASSERT( v.unsafe_get_object().size() == 1 );

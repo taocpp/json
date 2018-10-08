@@ -7,10 +7,9 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <string_view>
 
 #include "../binary_view.hpp"
-
-#include "../external/string_view.hpp"
 
 namespace tao
 {
@@ -42,7 +41,7 @@ namespace tao
             {
             }
 
-            void string( const tao::string_view /*unused*/ ) noexcept
+            void string( const std::string_view /*unused*/ ) noexcept
             {
             }
 
@@ -66,7 +65,7 @@ namespace tao
             {
             }
 
-            void key( const tao::string_view /*unused*/ ) noexcept
+            void key( const std::string_view /*unused*/ ) noexcept
             {
             }
 

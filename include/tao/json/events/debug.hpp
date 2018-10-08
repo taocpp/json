@@ -73,7 +73,7 @@ namespace tao
                os << '\n';
             }
 
-            void string( const tao::string_view v )
+            void string( const std::string_view v )
             {
                os << "string: \"";
                internal::escape( os, v );
@@ -122,7 +122,7 @@ namespace tao
                os << "begin object " << size << '\n';
             }
 
-            void key( const tao::string_view v )
+            void key( const std::string_view v )
             {
                os << "key: \"";
                internal::escape( os, v );

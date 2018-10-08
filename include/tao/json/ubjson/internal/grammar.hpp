@@ -5,9 +5,9 @@
 #define TAO_JSON_UBJSON_INTERNAL_GRAMMAR_HPP
 
 #include <cstdint>
+#include <string_view>
 
 #include "../../binary_view.hpp"
-#include "../../external/string_view.hpp"
 #include "../../internal/action.hpp"
 #include "../../internal/control.hpp"
 #include "../../internal/endian.hpp"
@@ -230,10 +230,10 @@ namespace tao
                         parse_high_precision( in, consumer );
                         break;
                      case marker::CHAR:
-                        consumer.string( read_char< tao::string_view >( in ) );
+                        consumer.string( read_char< std::string_view >( in ) );
                         break;
                      case marker::STRING:
-                        consumer.string( read_string< L, V, tao::string_view >( in ) );
+                        consumer.string( read_string< L, V, std::string_view >( in ) );
                         break;
                      case marker::BEGIN_ARRAY:
                         parse_array( in, consumer );
@@ -324,7 +324,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static void parse_key( Input& in, Consumer& consumer )
                {
-                  consumer.key( read_string< L, V, tao::string_view >( in ) );
+                  consumer.key( read_string< L, V, std::string_view >( in ) );
                }
 
                template< typename Input, typename Consumer >

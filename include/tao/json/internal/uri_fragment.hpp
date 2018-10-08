@@ -4,10 +4,10 @@
 #ifndef TAO_JSON_INTERNAL_URI_FRAGMENT_HPP
 #define TAO_JSON_INTERNAL_URI_FRAGMENT_HPP
 
-#include "../external/string_view.hpp"
-#include "../pointer.hpp"
-
 #include <stdexcept>
+#include <string_view>
+
+#include "../pointer.hpp"
 
 namespace tao
 {
@@ -77,7 +77,7 @@ namespace tao
             throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );  // NOLINT
          }
 
-         inline pointer uri_fragment_to_pointer( const tao::string_view v )
+         inline pointer uri_fragment_to_pointer( const std::string_view v )
          {
             pointer result;
             if( v.empty() || v[ 0 ] != '#' ) {

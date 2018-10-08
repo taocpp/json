@@ -5,17 +5,18 @@
 #define TAO_JSON_CBOR_INTERNAL_GRAMMAR_HPP
 
 #include <cmath>
+#include <cstddef>
 #include <cstdint>
 #include <cstdlib>
 #include <sstream>
+#include <string>
+#include <string_view>
 #include <utility>
 
 #include "major.hpp"
 
 #include "../../binary_view.hpp"
-#include "../../external/byte.hpp"
 #include "../../external/pegtl.hpp"
-#include "../../external/string_view.hpp"
 #include "../../forward.hpp"
 #include "../../internal/endian.hpp"
 #include "../../internal/format.hpp"
@@ -221,7 +222,7 @@ namespace tao
                static void parse_string_unsafe( Input& in, Consumer& consumer )
                {
                   if( peek_minor_unsafe( in ) != minor_mask ) {
-                     consumer.string( read_string_1< V, tao::string_view >( in ) );
+                     consumer.string( read_string_1< V, std::string_view >( in ) );
                   }
                   else {
                      consumer.string( read_string_n< V, std::string >( in, major::STRING ) );
@@ -235,7 +236,7 @@ namespace tao
                      consumer.binary( read_string_1< utf8_mode::TRUST, tao::binary_view >( in ) );
                   }
                   else {
-                     consumer.binary( read_string_n< utf8_mode::TRUST, std::vector< tao::byte > >( in, major::BINARY ) );
+                     consumer.binary( read_string_n< utf8_mode::TRUST, std::vector< std::byte > >( in, major::BINARY ) );
                   }
                }
 
@@ -243,7 +244,7 @@ namespace tao
                static void parse_key_unsafe( Input& in, Consumer& consumer )
                {
                   if( peek_minor_unsafe( in ) != minor_mask ) {
-                     consumer.key( read_string_1< V, tao::string_view >( in ) );
+                     consumer.key( read_string_1< V, std::string_view >( in ) );
                   }
                   else {
                      consumer.key( read_string_n< V, std::string >( in, major::STRING ) );

@@ -6,8 +6,8 @@
 
 #include <ostream>
 #include <sstream>
-
-#include "../external/string_view.hpp"
+#include <string>
+#include <string_view>
 
 namespace tao
 {
@@ -15,7 +15,7 @@ namespace tao
    {
       namespace internal
       {
-         inline void escape( std::ostream& os, const tao::string_view s )
+         inline void escape( std::ostream& os, const std::string_view s )
          {
             static const char* h = "0123456789abcdef";
 
@@ -69,7 +69,7 @@ namespace tao
             os.write( l, p - l );
          }
 
-         inline std::string escape( const tao::string_view s )
+         inline std::string escape( const std::string_view s )
          {
             std::ostringstream o;
             escape( o, s );

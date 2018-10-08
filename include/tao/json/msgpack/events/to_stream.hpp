@@ -10,10 +10,9 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 
 #include "../../binary_view.hpp"
-
-#include "../../external/string_view.hpp"
 
 #include "../../internal/endian.hpp"
 
@@ -106,7 +105,7 @@ namespace tao
                   os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
                }
 
-               void string( const tao::string_view v )
+               void string( const std::string_view v )
                {
                   if( v.size() <= 31 ) {
                      os.put( char( v.size() + 0xa0 ) );
@@ -198,7 +197,7 @@ namespace tao
                   }
                }
 
-               void key( const tao::string_view v )
+               void key( const std::string_view v )
                {
                   string( v );
                }

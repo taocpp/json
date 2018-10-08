@@ -4,8 +4,10 @@
 #ifndef TAO_JSON_CBOR_PARTS_PARSER_HPP
 #define TAO_JSON_CBOR_PARTS_PARSER_HPP
 
+#include <cstdint>
+#include <optional>
+
 #include "../events/discard.hpp"
-#include "../external/optional.hpp"
 #include "../external/pegtl/string_input.hpp"
 #include "../utf8.hpp"
 
@@ -131,7 +133,7 @@ namespace tao
 
             std::string binary()
             {
-               return string_impl< utf8_mode::TRUST, std::vector< tao::byte > >( internal::major::BINARY, "expected binary" );
+               return string_impl< utf8_mode::TRUST, std::vector< std::byte > >( internal::major::BINARY, "expected binary" );
             }
 
             std::string key()
@@ -139,13 +141,13 @@ namespace tao
                return string();
             }
 
-            tao::string_view string_view()
+            std::string_view string_view()
             {
                const auto b = json::internal::peek_byte( m_input );
                if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected definitive string", m_input );  // NOLINT
                }
-               return internal::read_string_1< V, tao::string_view >( m_input );
+               return internal::read_string_1< V, std::string_view >( m_input );
             }
 
             tao::binary_view binary_view()
@@ -157,7 +159,7 @@ namespace tao
                return internal::read_string_1< utf8_mode::TRUST, tao::binary_view >( m_input );
             }
 
-            tao::string_view key_view()
+            std::string_view key_view()
             {
                return string_view();
             }
@@ -235,7 +237,7 @@ namespace tao
                }
 
                std::size_t i = 0;
-               tao::optional< std::size_t > size;
+               std::optional< std::size_t > size;
             };
 
             state_t begin_container()

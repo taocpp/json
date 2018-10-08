@@ -62,7 +62,7 @@ namespace tao
                   if( const auto* ref = v.find( "$ref" ) ) {
                      ref = &ref->skip_value_ptr();
                      if( ref->is_string_type() ) {
-                        const tao::string_view s = ref->unsafe_get_string_type();
+                        const std::string_view s = ref->unsafe_get_string_type();
                         if( !s.empty() && s[ 0 ] == '#' ) {
                            const pointer ptr = internal::uri_fragment_to_pointer( s );
                            const auto* p = &r;

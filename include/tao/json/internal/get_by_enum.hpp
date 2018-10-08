@@ -89,7 +89,7 @@ namespace tao
          struct get_by_enum< type::STRING_VIEW >
          {
             template< typename T >
-            static tao::string_view get( const value_union< T >& u ) noexcept
+            static std::string_view get( const value_union< T >& u ) noexcept
             {
                return u.sv;
             }
@@ -99,13 +99,13 @@ namespace tao
          struct get_by_enum< type::BINARY >
          {
             template< typename T >
-            static std::vector< tao::byte >& get( value_union< T >& u ) noexcept
+            static std::vector< std::byte >& get( value_union< T >& u ) noexcept
             {
                return u.x;
             }
 
             template< typename T >
-            static const std::vector< tao::byte >& get( const value_union< T >& u ) noexcept
+            static const std::vector< std::byte >& get( const value_union< T >& u ) noexcept
             {
                return u.x;
             }

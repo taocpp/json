@@ -135,19 +135,19 @@ namespace tao
          struct element_s< json_pegtl::string< Cs... > >
          {
             template< typename C >
-            static tao::string_view read( const C& /*unused*/ )
+            static std::string_view read( const C& /*unused*/ )
             {
                static const char s[] = { Cs..., 0 };
-               return tao::string_view( s, sizeof...( Cs ) );
+               return std::string_view( s, sizeof...( Cs ) );
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
             static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
                static const char s[] = { Cs..., 0 };
-               const auto sv = v.template as< tao::string_view >();
-               if( sv != tao::string_view( s, sizeof...( Cs ) ) ) {
-                  throw std::runtime_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sv ), "\" parsed \"", json::internal::escape( tao::string_view( s, sizeof...( Cs ) ) ), '"', json::base_message_extension( v.base() ) ) );  // NOLINT
+               const auto sv = v.template as< std::string_view >();
+               if( sv != std::string_view( s, sizeof...( Cs ) ) ) {
+                  throw std::runtime_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sv ), "\" parsed \"", json::internal::escape( std::string_view( s, sizeof...( Cs ) ) ), '"', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
@@ -155,7 +155,7 @@ namespace tao
             static void produce( Consumer& consumer, const T& /*unused*/ )
             {
                static const char s[] = { Cs..., 0 };
-               consumer.string( tao::string_view( s, sizeof...( Cs ) ) );
+               consumer.string( std::string_view( s, sizeof...( Cs ) ) );
             }
 
             template< template< typename... > class Traits = traits, typename Producer, typename T >
