@@ -34,7 +34,7 @@ namespace tao
 
             void push()
             {
-               m_digests.push_back( std::unique_ptr< internal::sha256 >( new internal::sha256 ) );  // NOLINT
+               m_digests.push_back( std::make_unique< internal::sha256 >() );  // NOLINT
             }
 
          public:

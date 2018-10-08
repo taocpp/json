@@ -544,7 +544,7 @@ namespace tao
                      throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be of type 'string'" );  // NOLINT
                   }
                   try {
-                     m_pattern = std::unique_ptr< std::regex >( new std::regex( p->unsafe_get_string() ) );  // NOLINT
+                     m_pattern = std::make_unique< std::regex >( p->unsafe_get_string() );
                   }
                   catch( const std::regex_error& e ) {
                      throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be a regular expression: " + std::string( e.what() ) );  // NOLINT
@@ -1310,7 +1310,7 @@ namespace tao
                   const auto& a = m_node->m_value->unsafe_at( "enum" ).unsafe_get_array();
                   m_enum.reserve( a.size() );
                   for( const auto& e : a ) {
-                     m_enum.emplace_back( new events_compare< Traits, Base >() );
+                     m_enum.emplace_back( std::make_unique< events_compare< Traits, Base > >() );
                      m_enum.back()->push( &e );
                   }
                }
@@ -1522,7 +1522,7 @@ namespace tao
                      m_hash->begin_array();
                   }
                   else if( m_count.empty() && ( ( m_node->m_flags & HAS_UNIQUE_ITEMS ) != 0 ) ) {
-                     m_hash = std::unique_ptr< events::hash >( new events::hash );  // NOLINT
+                     m_hash = std::make_unique< events::hash >();
                   }
                }
                if( m_match && m_count.empty() ) {
@@ -1773,7 +1773,7 @@ namespace tao
 
             void make_node( const basic_value< Traits, Base >* p )
             {
-               m_nodes.emplace( p, std::unique_ptr< schema_node< Traits, Base > >( new schema_node< Traits, Base >( this, *p ) ) );
+               m_nodes.emplace( p, std::make_unique< schema_node< Traits, Base > >( this, *p ) );
             }
 
          public:
@@ -1806,7 +1806,7 @@ namespace tao
                if( it == m_nodes.end() ) {
                   throw std::logic_error( "invalid node ptr, no schema registered" );  // NOLINT
                }
-               return std::unique_ptr< schema_consumer< Traits, Base > >( new schema_consumer< Traits, Base >( this->shared_from_this(), *it->second ) );
+               return std::make_unique< schema_consumer< Traits, Base > >( this->shared_from_this(), *it->second );
             }
 
             std::unique_ptr< schema_consumer< Traits, Base > > consumer() const
