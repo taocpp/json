@@ -21,9 +21,9 @@ namespace tao
          struct element;
 
          template< typename C, typename T, T C::*P >
-         struct element< T C::*, P, typename std::enable_if< std::is_member_object_pointer< T C::* >::value >::type >
+         struct element< T C::*, P, std::enable_if_t< std::is_member_object_pointer< T C::* >::value > >
          {
-            using internal_t = typename std::decay< decltype( std::declval< C >().*P ) >::type;
+            using internal_t = std::decay_t< decltype( std::declval< C >().*P ) >;
 
             static auto read( const C& v )
             {
@@ -61,9 +61,9 @@ namespace tao
 #endif
 
          template< typename C, typename T, T C::*P >
-         struct element< T C::*, P, typename std::enable_if< std::is_member_function_pointer< T C::* >::value >::type >
+         struct element< T C::*, P, std::enable_if_t< std::is_member_function_pointer< T C::* >::value > >
          {
-            using internal_t = typename std::decay< decltype( ( std::declval< const C >().*P )() ) >::type;
+            using internal_t = std::decay_t< decltype( ( std::declval< const C >().*P )() ) >;
 
             static auto read( const C& v )
             {
@@ -149,7 +149,7 @@ namespace tao
             template< template< typename... > class Traits, typename Base >
             static void to( const basic_value< Traits, Base >& v, A& x )
             {
-               CP( x, v.template as< typename std::decay< R >::type >() );
+               CP( x, v.template as< std::decay_t< R > >() );
             }
 
             template< template< typename... > class Traits = traits, typename Producer >

@@ -18,7 +18,7 @@ namespace tao
          template< template< typename... > class Traits = traits, typename Consumer, typename T >
          void produce( Consumer& c, T&& t )
          {
-            Traits< typename std::decay< T >::type >::template produce< Traits >( c, std::forward< T >( t ) );
+            Traits< std::decay_t< T > >::template produce< Traits >( c, std::forward< T >( t ) );
          }
 
       }  // namespace events

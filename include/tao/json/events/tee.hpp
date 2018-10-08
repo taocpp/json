@@ -32,7 +32,7 @@ namespace tao
          };
 
          template< typename T >
-         using decay_and_strip_t = typename strip_reference_wrapper< typename std::decay< T >::type >::type;
+         using decay_and_strip_t = typename strip_reference_wrapper< std::decay_t< T > >::type;
 
          template< typename >
          struct events_apply;
