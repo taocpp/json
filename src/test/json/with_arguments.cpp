@@ -13,9 +13,6 @@ namespace tao
    {
       struct arg_0
       {
-         arg_0()
-         {
-         }
       };
 
       struct type_1
