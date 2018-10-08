@@ -25,7 +25,7 @@ namespace tao
          {
             using internal_t = typename std::decay< decltype( std::declval< C >().*P ) >::type;
 
-            static auto read( const C& v ) -> decltype( v.*P )
+            static auto read( const C& v )
             {
                return v.*P;
             }
@@ -65,7 +65,7 @@ namespace tao
          {
             using internal_t = typename std::decay< decltype( ( std::declval< const C >().*P )() ) >::type;
 
-            static auto read( const C& v ) -> decltype( ( v.*P )() )
+            static auto read( const C& v )
             {
                return ( v.*P )();
             }
@@ -84,7 +84,7 @@ namespace tao
          template< typename C, typename T, T ( *P )( const C& ) >
          struct element< T ( * )( const C& ), P >
          {
-            static auto read( const C& v ) -> decltype( P( v ) )
+            static auto read( const C& v )
             {
                return P( v );
             }
@@ -102,7 +102,7 @@ namespace tao
          template< typename A, typename CR, CR ( *CP )( const A& ), typename R, R ( *P )( A& ) >
          struct element2< CR ( * )( const A& ), CP, R ( * )( A& ), P >
          {
-            static auto read( const A& v ) -> decltype( CP( v ) )
+            static auto read( const A& v )
             {
                return CP( v );
             }
@@ -135,7 +135,7 @@ namespace tao
          template< typename A, typename CR, CR ( *CP )( const A& ), typename R, void ( *P )( A&, R&& ) >
          struct element2< CR ( * )( const A& ), CP, void ( * )( A&, R&& ), P >
          {
-            static auto read( const A& v ) -> decltype( CP( v ) )
+            static auto read( const A& v )
             {
                return CP( v );
             }

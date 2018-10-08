@@ -377,7 +377,7 @@ namespace tao
                json_pegtl::parse< json_pegtl::must< internal::data< L, V > > >( m_input, consumer );
             }
 
-            auto mark() -> decltype( std::declval< Input >().template mark< json_pegtl::rewind_mode::REQUIRED >() )
+            auto mark()
             {
                return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
             }

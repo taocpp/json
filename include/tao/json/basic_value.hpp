@@ -629,7 +629,7 @@ namespace tao
          }
 
          template< typename... Ts >
-         auto unsafe_emplace_back( Ts&&... ts ) -> decltype( std::declval< array_t >().emplace_back( std::forward< Ts >( ts )... ) )
+         auto unsafe_emplace_back( Ts&&... ts )
          {
             return m_union.a.emplace_back( std::forward< Ts >( ts )... );
          }

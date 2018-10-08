@@ -46,7 +46,7 @@ namespace tao
             template< typename Input >
             tao::binary_view read_binary( Input& in )
             {
-               switch( peek_format( in ) ){
+               switch( peek_format( in ) ) {
                   case format::BIN8:
                      return json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) );
                   case format::BIN16:
@@ -295,7 +295,7 @@ namespace tao
                json_pegtl::parse< json_pegtl::must< internal::data< V > > >( m_input, consumer );
             }
 
-            auto mark() -> decltype( std::declval< Input >().template mark< json_pegtl::rewind_mode::REQUIRED >() )
+            auto mark()
             {
                return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
             }
