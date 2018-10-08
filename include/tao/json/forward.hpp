@@ -21,8 +21,6 @@ namespace tao
 
       namespace internal
       {
-         using swallow = bool[];
-
          struct empty_base
          {
          };

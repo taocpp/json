@@ -123,11 +123,10 @@ namespace tao
             template< template< typename... > class Traits, typename Base, typename U, typename... With > using as_func_t = P< U >( * )( const basic_value< Traits, Base >&, With&... );
 
             template< typename V, template< typename... > class Traits, typename Base, typename U, typename... With >
-            static bool emplace_as( std::map< std::string, entry1< as_func_t< Traits, Base, U, With... > > >& m )
+            static void emplace_as( std::map< std::string, entry1< as_func_t< Traits, Base, U, With... > > >& m )
             {
                using W = typename V::template bind< U, P >;
                m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Base, U, With... > >( &W::template as< Traits, Base, With... > ) );
-               return true;
             }
 
             template< template< typename... > class Traits, typename Base, typename U, typename... With >
@@ -135,7 +134,7 @@ namespace tao
             {
                static const std::map< std::string, entry1< as_func_t< Traits, Base, U, With... > > > m = []() {
                   std::map< std::string, entry1< as_func_t< Traits, Base, U, With... > > > t;
-                  (void)json::internal::swallow{ basic_factory::emplace_as< Ts >( t )... };
+                  ( basic_factory::emplace_as< Ts >( t ), ... );
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
@@ -157,11 +156,10 @@ namespace tao
             }
 
             template< typename V, template< typename... > class Traits, typename Base, typename U, typename F >
-            static bool emplace_assign( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
+            static void emplace_assign( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
             {
                using W = typename V::template bind< U, P >;
                m.emplace( W::type(), entry2< F >( &W::template assign< Traits, Base >, W::template key< Traits >() ) );
-               return true;
             }
 
             template< template< typename... > class Traits, typename Base, typename U >
@@ -170,7 +168,7 @@ namespace tao
                using F = void ( * )( basic_value< Traits, Base >&, const P< U >& );
                static const std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > m = []() {
                   std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > t;
-                  (void)json::internal::swallow{ emplace_assign< Ts, Traits, Base, U >( t )... };
+                  ( emplace_assign< Ts, Traits, Base, U >( t ), ... );
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();
@@ -190,11 +188,10 @@ namespace tao
             }
 
             template< typename V, template< typename... > class Traits, typename U, typename Producer, typename F >
-            static bool emplace_consume( std::map< std::string, entry1< F > >& m )
+            static void emplace_consume( std::map< std::string, entry1< F > >& m )
             {
                using W = typename V::template bind< U, P >;
                m.emplace( W::template key< Traits >(), entry1< F >( &W::template consume< Traits, Producer > ) );
-               return true;
             }
 
             template< template< typename... > class Traits, typename U, typename Producer >
@@ -203,7 +200,7 @@ namespace tao
                using F = P< U > ( * )( Producer& );
                static const std::map< std::string, entry1< F > > m = []() {
                   std::map< std::string, entry1< F > > t;
-                  (void)json::internal::swallow{ emplace_consume< Ts, Traits, U, Producer >( t )... };
+                  ( emplace_consume< Ts, Traits, U, Producer >( t ), ... );
                   return t;
                }();
 
@@ -235,7 +232,7 @@ namespace tao
                using F = void ( * )( Consumer&, const P< U >& );
                static const std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > m = []() {
                   std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > t;
-                  (void)json::internal::swallow{ emplace_produce< Ts, Traits, U, Consumer >( t )... };
+                  ( emplace_produce< Ts, Traits, U, Consumer >( t ), ... );
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();

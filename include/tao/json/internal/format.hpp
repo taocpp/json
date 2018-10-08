@@ -52,7 +52,7 @@ namespace tao
          template< typename... Ts >
          void format_to( std::ostream& oss, const Ts&... ts )
          {
-            (void)swallow{ ( internal::to_stream( oss, ts ), true )... };
+            ( internal::to_stream( oss, ts ), ... );
          }
 
          template< typename... Ts >

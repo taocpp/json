@@ -33,9 +33,6 @@ namespace tao
             template< for_unknown_key E, for_nothing_value N, typename T, typename L = std::make_index_sequence< T::size > >
             struct basic_object;
 
-            template< for_nothing_value N >
-            struct consumer_object_size_helper;
-
             template< typename... Ts >
             void list_all_keys( std::ostream& oss, const std::map< std::string, Ts... >& m )
             {
@@ -53,38 +50,6 @@ namespace tao
                   }
                }
             }
-
-            template<>
-            struct consumer_object_size_helper< for_nothing_value::ENCODE >
-            {
-               template< typename Consumer >
-               static void begin( Consumer& consumer, const std::size_t n )
-               {
-                  consumer.begin_object( n );
-               }
-
-               template< typename Consumer >
-               static void end( Consumer& consumer, const std::size_t n )
-               {
-                  consumer.end_object( n );
-               }
-            };
-
-            template<>
-            struct consumer_object_size_helper< for_nothing_value::SUPPRESS >
-            {
-               template< typename Consumer >
-               static void begin( Consumer& consumer, const std::size_t /*unused*/ )
-               {
-                  consumer.begin_object();
-               }
-
-               template< typename Consumer >
-               static void end( Consumer& consumer, const std::size_t /*unused*/ )
-               {
-                  consumer.end_object();
-               }
-            };
 
             template< for_unknown_key E, for_nothing_value N, typename... As, std::size_t... Is >
             struct basic_object< E, N, json::internal::type_list< As... >, std::index_sequence< Is... > >
@@ -105,10 +70,9 @@ namespace tao
                };
 
                template< typename A, std::size_t I >
-               static bool set_optional_bit( std::bitset< sizeof...( As ) >& t )
+               static void set_optional_bit( std::bitset< sizeof...( As ) >& t )
                {
                   t.set( I, A::kind == member_kind::OPTIONAL_MEMBER );
-                  return true;
                }
 
                template< typename A, typename C, template< typename... > class Traits, typename Base >
@@ -118,29 +82,24 @@ namespace tao
                }
 
                template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename Base, typename F >
-               static bool emplace_to( std::map< std::string, entry< F > >& m )
+               static void emplace_to( std::map< std::string, entry< F > >& m )
                {
                   m.emplace( A::template key< Traits >(), entry< F >( &basic_object::to_wrapper< A, C, Traits, Base >, I ) );
-                  return true;
                }
 
-#ifdef _MSC_VER
-#pragma warning( push )
-#pragma warning( disable : 4127 )
-#endif
                template< template< typename... > class Traits, typename Base, typename C >
                static void to( const basic_value< Traits, Base >& v, C& x )
                {
                   using F = void ( * )( const basic_value< Traits, Base >&, C& );
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     (void)json::internal::swallow{ emplace_to< As, Is, C, Traits, Base >( t )... };
+                     ( emplace_to< As, Is, C, Traits, Base >( t ), ... );
                      assert( t.size() == sizeof...( As ) );
                      return t;
                   }();
                   static const std::bitset< sizeof...( As ) > o = []() {
                      std::bitset< sizeof...( As ) > t;
-                     (void)json::internal::swallow{ set_optional_bit< As, Is >( t )... };
+                     ( set_optional_bit< As, Is >( t ), ... );
                      return t;
                   }();
 
@@ -150,7 +109,7 @@ namespace tao
                      const auto& k = p.first;
                      const auto i = m.find( k );
                      if( i == m.end() ) {
-                        if( E == for_unknown_key::CONTINUE ) {
+                        if constexpr( E == for_unknown_key::CONTINUE ) {
                            continue;
                         }
                         std::ostringstream oss;
@@ -173,19 +132,18 @@ namespace tao
                }
 
                template< typename A, template< typename... > class Traits, typename Base, typename C >
-               static bool assign_member( basic_value< Traits, Base >& v, const C& x )
+               static void assign_member( basic_value< Traits, Base >& v, const C& x )
                {
                   if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      v.unsafe_emplace( A::template key< Traits >(), A::read( x ) );
                   }
-                  return true;
                }
 
                template< template< typename... > class Traits, typename Base, typename C >
                static void assign( basic_value< Traits, Base >& v, const C& x )
                {
                   v.unsafe_emplace_object();
-                  (void)json::internal::swallow{ assign_member< As >( v, x )... };
+                  ( assign_member< As >( v, x ), ... );
                }
 
                template< typename A, typename C, template< typename... > class Traits, typename Producer >
@@ -195,10 +153,9 @@ namespace tao
                }
 
                template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename Producer, typename F >
-               static bool emplace_consume( std::map< std::string, entry< F > >& m )
+               static void emplace_consume( std::map< std::string, entry< F > >& m )
                {
                   m.emplace( A::template key< Traits >(), entry< F >( &basic_object::consume_wrapper< A, C, Traits, Producer >, I ) );
-                  return true;
                }
 
                template< template< typename... > class Traits = traits, typename Producer, typename C >
@@ -207,13 +164,13 @@ namespace tao
                   using F = void ( * )( Producer&, C& );
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     (void)json::internal::swallow{ emplace_consume< As, Is, C, Traits, Producer >( t )... };
+                     ( emplace_consume< As, Is, C, Traits, Producer >( t ), ... );
                      assert( t.size() == sizeof...( As ) );
                      return t;
                   }();
                   static const std::bitset< sizeof...( As ) > o = []() {
                      std::bitset< sizeof...( As ) > t;
-                     (void)json::internal::swallow{ set_optional_bit< As, Is >( t )... };
+                     ( set_optional_bit< As, Is >( t ), ... );
                      return t;
                   }();
 
@@ -223,7 +180,7 @@ namespace tao
                      const auto k = parser.key();
                      const auto i = m.find( k );
                      if( i == m.end() ) {
-                        if( E == for_unknown_key::CONTINUE ) {
+                        if constexpr( E == for_unknown_key::CONTINUE ) {
                            parser.skip_value();
                            continue;
                         }
@@ -250,25 +207,31 @@ namespace tao
                }
 
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
-               static bool produce_member( Consumer& consumer, const C& x )
+               static void produce_member( Consumer& consumer, const C& x )
                {
                   if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      A::template produce_key< Traits >( consumer );
                      A::template produce< Traits >( consumer, x );
                      consumer.member();
                   }
-                  return true;
                }
-#ifdef _MSC_VER
-#pragma warning( pop )
-#endif
 
                template< template< typename... > class Traits = traits, typename Consumer, typename C >
                static void produce( Consumer& consumer, const C& x )
                {
-                  consumer_object_size_helper< N >::begin( consumer, sizeof...( As ) );
-                  (void)json::internal::swallow{ produce_member< As, Traits >( consumer, x )... };
-                  consumer_object_size_helper< N >::end( consumer, sizeof...( As ) );
+                  if constexpr( N == for_nothing_value::ENCODE ) {
+                     consumer.begin_object( sizeof...( As ) );
+                  }
+                  else {
+                     consumer.begin_object();
+                  }
+                  ( produce_member< As, Traits >( consumer, x ), ... );
+                  if constexpr( N == for_nothing_value::ENCODE ) {
+                     consumer.end_object( sizeof...( As ) );
+                  }
+                  else {
+                     consumer.end_object();
+                  }
                }
 
                template< typename A, template< typename... > class Traits, typename Base, typename C >
@@ -277,7 +240,7 @@ namespace tao
                   if( !A::template is_nothing< Traits >( x ) ) {
                      return a.at( A::template key< Traits >() ) == A::read( x );
                   }
-                  if( N == for_nothing_value::ENCODE ) {
+                  if constexpr( N == for_nothing_value::ENCODE ) {
                      return a.at( A::template key< Traits >() ).is_null();
                   }
                   const auto i = a.find( A::template key< Traits >() );
@@ -290,8 +253,7 @@ namespace tao
                   const auto& p = lhs.skip_value_ptr();
                   if( bool result = p.is_object() && ( p.unsafe_get_object().size() == sizeof...( As ) ) ) {
                      const auto& a = p.get_object();
-                     (void)json::internal::swallow{ result = result && equal_member< As >( a, rhs )... };
-                     return result;
+                     return ( result && ... && equal_member< As >( a, rhs ) );
                   }
                   return false;
                }

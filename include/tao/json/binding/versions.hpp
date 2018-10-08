@@ -99,8 +99,7 @@ namespace tao
             static void to( const basic_value< Traits, Base >& v, C& x )
             {
                const std::exception_ptr e = first_to( v, x );
-               bool ok = ( e == std::exception_ptr() );
-               (void)json::internal::swallow{ ( ok = ok || later_to< Vs >( v, x ) )... };
+               const bool ok = ( ( e == std::exception_ptr() ) || ... || later_to< Vs >( v, x ) );
                throw_on_error( ok, e );
             }
 
@@ -135,8 +134,7 @@ namespace tao
             static void consume( Producer& parser, C& x )
             {
                const std::exception_ptr e = first_consume< Traits >( parser, x );
-               bool ok = ( e == std::exception_ptr() );
-               (void)json::internal::swallow{ ( ok = ok || later_consume< Vs, Traits >( parser, x ) )... };
+               const bool ok = ( ( e == std::exception_ptr() ) || ... || later_consume< Vs, Traits >( parser, x ) );
                throw_on_error( ok, e );
             }
          };
