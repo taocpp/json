@@ -6,6 +6,8 @@
 
 #include <tao/json.hpp>
 
+#include "test.hpp"
+
 namespace tao
 {
    namespace json
@@ -21,7 +23,7 @@ namespace tao
             DOUBLE,
             STRING,  // TODO: Differentiate string from string_view...
             BINARY,  // TODO: Differentiate binary from binary_view...
-            KEY,  // TODO: Differentiate string from string_view...
+            KEY,     // TODO: Differentiate string from string_view...
             BEGIN_ARRAY,
             ELEMENT,
             END_ARRAY,
@@ -32,10 +34,7 @@ namespace tao
 
          struct event_data
          {
-            event_data()  // NOLINT
-               : t( event_type::NULL_ )
-            {
-            }
+            event_data() = default;
 
             event_data( const event_type in_t )  // NOLINT
                : t( in_t )
@@ -48,7 +47,7 @@ namespace tao
             {
             }
 
-            event_type t;
+            event_type t{ event_type::NULL_ };
 
             bool b = false;
             std::string s;

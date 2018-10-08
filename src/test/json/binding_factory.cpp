@@ -77,10 +77,7 @@ namespace tao
       void unit_test_1()
       {
          const value v = {
-            { "one", {
-                  { "s", "foo" }
-               }
-            }
+            { "one", { { "s", "foo" } } }
          };
          const auto a = v.as< std::shared_ptr< base_1 > >();
          TEST_ASSERT( a );
@@ -102,10 +99,7 @@ namespace tao
       void unit_test_2()
       {
          const value v = {
-            { "one", {
-                  { "s", "foo" }
-               }
-            }
+            { "one", { { "s", "foo" } } }
          };
          const auto a = v.as< std::unique_ptr< base_1 > >();
          TEST_ASSERT( a );
@@ -127,11 +121,7 @@ namespace tao
       void unit_test_3()
       {
          const value v = {
-            { "two", {
-                  { "i", 42 },
-                  { "j", 23 }
-               }
-            }
+            { "two", { { "i", 42 }, { "j", 23 } } }
          };
          const auto a = v.as< std::shared_ptr< base_1 > >();
          TEST_ASSERT( a );
@@ -155,11 +145,7 @@ namespace tao
       void unit_test_4()
       {
          const value v = {
-            { "two", {
-                  { "i", 42 },
-                  { "j", 23 }
-               }
-            }
+            { "two", { { "i", 42 }, { "j", 23 } } }
          };
          const auto a = v.as< std::unique_ptr< base_1 > >();
          TEST_ASSERT( a );
@@ -185,22 +171,16 @@ namespace tao
          const value z = empty_object;
          TEST_THROWS( z.as< std::unique_ptr< base_1 > >() );
          const value v = {
-            { "one", {
-                  { "s", "foo" }
-               }
-            },
-            { "two", {
-                  { "i", 42 },
-                  { "j", 23 }
-               },
+            { "one", { { "s", "foo" } } },
+            {
+               "two",
+               { { "i", 42 },
+                 { "j", 23 } },
             }
          };
          TEST_THROWS( v.as< std::unique_ptr< base_1 > >() );
          const value w = {
-            { "1", {
-                  { "s", "foo" }
-               }
-            }
+            { "1", { { "s", "foo" } } }
          };
          TEST_THROWS( w.as< std::unique_ptr< base_1 > >() );
          TEST_THROWS( value( std::shared_ptr< base_1 >( new derived_3 ) ) );
@@ -225,9 +205,6 @@ namespace tao
 
       struct arg_dummy
       {
-         arg_dummy()
-         {
-         }
       };
 
       struct derived_8

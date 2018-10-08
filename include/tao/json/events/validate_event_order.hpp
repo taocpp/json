@@ -4,6 +4,7 @@
 #ifndef TAO_JSON_EVENTS_VALIDATE_EVENT_ORDER_HPP
 #define TAO_JSON_EVENTS_VALIDATE_EVENT_ORDER_HPP
 
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <optional>
