@@ -8,6 +8,7 @@
 
 Pre-1.0.0 milestones in rough reverse chronological order.
 
+* Change library to require and use C++17.
 * Direct parsing to arbitrary types.
 * Binding facilities and polymorphic factory.
 * Optional custom Base class for Values.
