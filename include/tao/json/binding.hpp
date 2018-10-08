@@ -7,7 +7,7 @@
 #include "binding/constant.hpp"
 #include "binding/element.hpp"
 #include "binding/factory.hpp"
-#include "binding/for_nothing_value.hpp"
+#include "binding/for_empty_value.hpp"
 #include "binding/for_unknown_key.hpp"
 #include "binding/inherit.hpp"
 #include "binding/member.hpp"
@@ -37,11 +37,11 @@ namespace tao
          template< typename... As >
          using array = typename internal::make_array< As... >::type;
 
-         template< for_unknown_key E, for_nothing_value N, typename... As >
+         template< for_unknown_key E, for_empty_value N, typename... As >
          using basic_object = internal::basic_object< E, N, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
 
          template< typename... As >
-         using object = basic_object< for_unknown_key::THROW, for_nothing_value::ENCODE, As... >;
+         using object = basic_object< for_unknown_key::THROW, for_empty_value::ENCODE, As... >;
 
       }  // namespace binding
 

@@ -84,7 +84,7 @@ namespace tao
          TEST_ASSERT( a.z.second == 6 );
          value w = v;
          w[ "s" ] = "";
-         w[ "d" ] = null;  // Must compare equal without this entry when using for_nothing_value::SUPPRESS.
+         w[ "d" ] = null;  // Must compare equal without this entry when using for_empty_value::SUPPRESS.
          TEST_ASSERT( a == w );
          TEST_ASSERT( w == a );
          TEST_ASSERT( !( a != w ) );
@@ -162,7 +162,7 @@ namespace tao
       // TODO: Test consume...
       // TODO: Test additional keys in input.
       // TODO: Test with different for_unknown_key.
-      // TODO: Test with different for_nothing_value (incl. consistency of size to consumer).
+      // TODO: Test with different for_empty_value (incl. consistency of size to consumer).
       // TODO: Test with binding::member_x constants.
 
       void unit_test()
