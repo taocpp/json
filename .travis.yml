@@ -11,7 +11,6 @@ matrix:
           packages: ['g++-7']
       env:
         - CXX=g++-7
-        - CXXSTD=-std=c++17
 
     - compiler: gcc
       addons:
@@ -20,72 +19,43 @@ matrix:
           packages: ['g++-8']
       env:
         - CXX=g++-8
-        - CXXSTD=-std=c++17
-
-    - compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-          packages: ['clang-4.0']
-      env:
-        - CXX=clang++-4.0
-        - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0']
+          packages: ['clang-5.0', 'g++-7']
       env:
         - CXX=clang++-5.0
-        - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0']
+          packages: ['clang-6.0', 'g++-7']
       env:
         - CXX=clang++-6.0
-        - CXXSTD=-std=c++17
 
     - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0']
+          packages: ['clang-6.0', 'g++-7']
       env:
         - CXX=clang++-6.0
         - CPPFLAGS=-fms-extensions
-        - CXXSTD=-std=c++17
-
-    - os: osx
-      osx_image: xcode6.4
-      compiler: clang
-      env:
-        - CXX=clang++
-        - CXXSTD=-std=c++17
-
-    - os: osx
-      osx_image: xcode7.3
-      compiler: clang
-      env:
-        - CXX=clang++
-        - CXXSTD=-std=c++17
-
-    - os: osx
-      osx_image: xcode8.3
-      compiler: clang
-      env:
-        - CXX=clang++
-        - CXXSTD=-std=c++17
 
     - os: osx
       osx_image: xcode9.4
       compiler: clang
       env:
         - CXX=clang++
-        - CXXSTD=-std=c++17
+
+    - os: osx
+      osx_image: xcode10
+      compiler: clang
+      env:
+        - CXX=clang++
 
     - compiler: gcc
       addons:
@@ -94,7 +64,6 @@ matrix:
           packages: ['g++-7']
       env:
         - CXX=g++-7
-        - CXXSTD=-std=c++17
         - CXXFLAGS="-O0 --coverage"
       before_script:
         - pip install --user cpp-coveralls
@@ -109,7 +78,6 @@ matrix:
           packages: ['g++-8']
       env:
         - CXX=g++-8
-        - CXXSTD=-std=c++17
         - CPPFLAGS="-fsanitize=undefined -fuse-ld=gold"
 
     - compiler: gcc
@@ -120,17 +88,15 @@ matrix:
           packages: ['g++-8']
       env:
         - CXX=g++-8
-        - CXXSTD=-std=c++17
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
 
     - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0']
+          packages: ['clang-6.0', 'g++-7']
       env:
         - CXX=clang++-6.0
-        - CXXSTD=-std=c++17
         - CPPFLAGS=-fsanitize=undefined
 
     - compiler: clang
@@ -138,17 +104,16 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0']
+          packages: ['clang-6.0', 'g++-7']
       env:
         - CXX=clang++-6.0
-        - CXXSTD=-std=c++17
         - CPPFLAGS=-fsanitize=address
 
     - compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
-          packages: ['clang-6.0', 'clang-tidy-6.0']
+          packages: ['clang-6.0', 'clang-tidy-6.0', 'g++-7']
       env:
         - CXX=clang++-6.0
         - CLANG_TIDY=clang-tidy-6.0
@@ -171,10 +136,9 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-7']
+          packages: ['g++-8']
       env:
-        - CXX=g++-7
-        - CXXSTD=-std=c++17
+        - CXX=g++-8
       script:
         - mkdir build
         - cd build
