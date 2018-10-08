@@ -94,7 +94,7 @@ namespace tao
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
                      ( emplace_to< As, Is, C, Traits, Base >( t ), ... );
-                     assert( t.size() == sizeof...( As ) );
+                     assert( t.size() == sizeof...( As ) );  // TODO: Check for duplicate keys at compile time?
                      return t;
                   }();
                   static const std::bitset< sizeof...( As ) > o = []() {
@@ -165,7 +165,7 @@ namespace tao
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
                      ( emplace_consume< As, Is, C, Traits, Producer >( t ), ... );
-                     assert( t.size() == sizeof...( As ) );
+                     assert( t.size() == sizeof...( As ) );  // TODO: Check for duplicate keys at compile time?
                      return t;
                   }();
                   static const std::bitset< sizeof...( As ) > o = []() {
@@ -206,6 +206,15 @@ namespace tao
                   }
                }
 
+               template< template< typename... > class Traits, typename C >
+               static std::size_t produce_size( const C& x )
+               {
+                  if constexpr( N == for_nothing_value::ENCODE ) {
+                     return sizeof...( As );
+                  }
+                  return ( std::size_t( !As::template is_nothing< Traits >( x ) ) + ... );
+               }
+
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
                static void produce_member( Consumer& consumer, const C& x )
                {
@@ -219,19 +228,10 @@ namespace tao
                template< template< typename... > class Traits = traits, typename Consumer, typename C >
                static void produce( Consumer& consumer, const C& x )
                {
-                  if constexpr( N == for_nothing_value::ENCODE ) {
-                     consumer.begin_object( sizeof...( As ) );
-                  }
-                  else {
-                     consumer.begin_object();
-                  }
+                  const auto size = produce_size< Traits >( x );
+                  consumer.begin_object( size );
                   ( produce_member< As, Traits >( consumer, x ), ... );
-                  if constexpr( N == for_nothing_value::ENCODE ) {
-                     consumer.end_object( sizeof...( As ) );
-                  }
-                  else {
-                     consumer.end_object();
-                  }
+                  consumer.end_object( size );
                }
 
                template< typename A, template< typename... > class Traits, typename Base, typename C >
