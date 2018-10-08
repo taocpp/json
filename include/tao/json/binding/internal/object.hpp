@@ -11,7 +11,7 @@
 #include <string>
 #include <utility>
 
-#include "../for_empty_value.hpp"
+#include "../for_nothing_value.hpp"
 #include "../for_unknown_key.hpp"
 #include "../member_kind.hpp"
 
@@ -30,10 +30,10 @@ namespace tao
       {
          namespace internal
          {
-            template< for_unknown_key E, for_empty_value N, typename T, typename L = std::make_index_sequence< T::size > >
+            template< for_unknown_key E, for_nothing_value N, typename T, typename L = std::make_index_sequence< T::size > >
             struct basic_object;
 
-            template< for_empty_value N >
+            template< for_nothing_value N >
             struct consumer_object_size_helper;
 
             template< typename... Ts >
@@ -55,7 +55,7 @@ namespace tao
             }
 
             template<>
-            struct consumer_object_size_helper< for_empty_value::ENCODE >
+            struct consumer_object_size_helper< for_nothing_value::ENCODE >
             {
                template< typename Consumer >
                static void begin( Consumer& consumer, const std::size_t n )
@@ -71,7 +71,7 @@ namespace tao
             };
 
             template<>
-            struct consumer_object_size_helper< for_empty_value::SUPPRESS >
+            struct consumer_object_size_helper< for_nothing_value::SUPPRESS >
             {
                template< typename Consumer >
                static void begin( Consumer& consumer, const std::size_t /*unused*/ )
@@ -86,7 +86,7 @@ namespace tao
                }
             };
 
-            template< for_unknown_key E, for_empty_value N, typename... As, std::size_t... Is >
+            template< for_unknown_key E, for_nothing_value N, typename... As, std::size_t... Is >
             struct basic_object< E, N, json::internal::type_list< As... >, std::index_sequence< Is... > >
             {
                using members = json::internal::type_list< As... >;
@@ -175,7 +175,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Base, typename C >
                static bool assign_member( basic_value< Traits, Base >& v, const C& x )
                {
-                  if( ( N == for_empty_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
+                  if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      v.unsafe_emplace( A::template key< Traits >(), A::read( x ) );
                   }
                   return true;
@@ -252,7 +252,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
                static bool produce_member( Consumer& consumer, const C& x )
                {
-                  if( ( N == for_empty_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
+                  if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      A::template produce_key< Traits >( consumer );
                      A::template produce< Traits >( consumer, x );
                      consumer.member();
@@ -277,7 +277,7 @@ namespace tao
                   if( !A::template is_nothing< Traits >( x ) ) {
                      return a.at( A::template key< Traits >() ) == A::read( x );
                   }
-                  if( N == for_empty_value::ENCODE ) {
+                  if( N == for_nothing_value::ENCODE ) {
                      return a.at( A::template key< Traits >() ).is_null();
                   }
                   const auto i = a.find( A::template key< Traits >() );

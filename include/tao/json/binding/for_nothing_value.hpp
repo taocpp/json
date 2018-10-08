@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_BINDING_FOR_EMPTY_VALUE_HPP
-#define TAO_JSON_BINDING_FOR_EMPTY_VALUE_HPP
+#ifndef TAO_JSON_BINDING_FOR_NOTHING_VALUE_HPP
+#define TAO_JSON_BINDING_FOR_NOTHING_VALUE_HPP
 
 namespace tao
 {
@@ -10,7 +10,7 @@ namespace tao
    {
       namespace binding
       {
-         enum class for_empty_value : bool
+         enum class for_nothing_value : bool
          {
             ENCODE,
             SUPPRESS
