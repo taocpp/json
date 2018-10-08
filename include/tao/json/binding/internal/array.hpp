@@ -80,7 +80,7 @@ namespace tao
                static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
                {
                   const auto& p = lhs.skip_value_ptr();
-                  if( bool result = p.is_array() && ( p.unsafe_get_array().size() == sizeof...( As ) ) ) {
+                  if( p.is_array() && ( p.unsafe_get_array().size() == sizeof...( As ) ) ) {
                      const auto& a = p.unsafe_get_array();
                      return ( ( a[ Is ] == As::read( rhs ) ) && ... );
                   }

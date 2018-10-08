@@ -251,7 +251,7 @@ namespace tao
                static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
                {
                   const auto& p = lhs.skip_value_ptr();
-                  if( bool result = p.is_object() && ( p.unsafe_get_object().size() == sizeof...( As ) ) ) {
+                  if( p.is_object() && ( p.unsafe_get_object().size() == sizeof...( As ) ) ) {
                      const auto& a = p.unsafe_get_object();
                      return ( equal_member< As >( a, rhs ) && ... );
                   }
