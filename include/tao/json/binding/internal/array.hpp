@@ -29,12 +29,6 @@ namespace tao
             {
                using elements = json::internal::type_list< As... >;
 
-               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename C >
-               static void to_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
-               {
-                  A::to( a.at( I ), x );
-               }
-
                template< template< typename... > class Traits, typename Base, typename C >
                static void to( const basic_value< Traits, Base >& v, C& x )
                {
@@ -42,20 +36,14 @@ namespace tao
                   if( a.size() != sizeof...( As ) ) {
                      throw std::runtime_error( json::internal::format( "array size mismatch for type ", typeid( C ), " -- expected ", sizeof...( As ), " received ", a.size(), json::base_message_extension( v.base() ) ) );  // NOLINT
                   }
-                  ( to_element< As, Is >( a, x ), ... );
-               }
-
-               template< typename A, template< typename... > class Traits, typename Base, typename C >
-               static void assign_element( basic_value< Traits, Base >& v, const C& x )
-               {
-                  v.unsafe_emplace_back( A::read( x ) );
+                  ( As::to( a.at( Is ), x ), ... );
                }
 
                template< template< typename... > class Traits, typename Base, typename C >
                static void assign( basic_value< Traits, Base >& v, const C& x )
                {
                   v.unsafe_emplace_array();
-                  ( assign_element< As >( v, x ), ... );
+                  ( v.unsafe_emplace_back( As::read( x ) ), ... );
                }
 
                template< typename A, template< typename... > class Traits = traits, typename Producer, typename C, typename State >
@@ -88,19 +76,13 @@ namespace tao
                   consumer.end_array( sizeof...( As ) );
                }
 
-               template< typename A, std::size_t I, template< typename... > class Traits, typename Base, typename C >
-               static bool equal_element( const std::vector< basic_value< Traits, Base > >& a, C& x )
-               {
-                  return a[ I ] == A::read( x );
-               }
-
                template< template< typename... > class Traits, typename Base, typename C >
                static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
                {
                   const auto& p = lhs.skip_value_ptr();
                   if( bool result = p.is_array() && ( p.unsafe_get_array().size() == sizeof...( As ) ) ) {
                      const auto& a = p.unsafe_get_array();
-                     return ( equal_element< As, Is >( a, rhs ) && ... );
+                     return ( ( a[ Is ] == As::read( rhs ) ) && ... );
                   }
                   return false;
                }
