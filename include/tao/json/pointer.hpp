@@ -185,7 +185,7 @@ namespace tao
          {
             static void apply0( std::vector< token >& v, std::string& t )
             {
-               v.push_back( token( std::move( t ) ) );
+               v.emplace_back( std::move( t ) );
                t.clear();
             }
          };
