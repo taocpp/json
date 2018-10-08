@@ -6,6 +6,8 @@
 
 #include <tao/json.hpp>
 
+#include "test.hpp"
+
 namespace tao
 {
    namespace json
@@ -21,7 +23,7 @@ namespace tao
             DOUBLE,
             STRING,  // TODO: Differentiate string from string_view...
             BINARY,  // TODO: Differentiate binary from binary_view...
-            KEY,  // TODO: Differentiate string from string_view...
+            KEY,     // TODO: Differentiate string from string_view...
             BEGIN_ARRAY,
             ELEMENT,
             END_ARRAY,
