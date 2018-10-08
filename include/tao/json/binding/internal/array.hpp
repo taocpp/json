@@ -104,8 +104,8 @@ namespace tao
                {
                   const auto& p = lhs.skip_value_ptr();
                   if( bool result = p.is_array() && ( p.unsafe_get_array().size() == sizeof...( As ) ) ) {
-                     const auto& a = p.get_array();
-                     return ( result && ... && equal_element< As, Is >( a, rhs ) );
+                     const auto& a = p.unsafe_get_array();
+                     return ( equal_element< As, Is >( a, rhs ) && ... );
                   }
                   return false;
                }
