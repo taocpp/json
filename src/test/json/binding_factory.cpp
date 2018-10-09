@@ -105,7 +105,7 @@ namespace tao
          TEST_ASSERT( a );
          const auto* b = dynamic_cast< derived_1* >( a.get() );
          TEST_ASSERT( b );
-         TEST_ASSERT( b->s == "foo" );
+         TEST_ASSERT( b->s == "foo" );  // NOLINT
          const value w = a;
          TEST_ASSERT( w == v );
          const value x = produce::to_value( a );
