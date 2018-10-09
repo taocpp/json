@@ -8,6 +8,7 @@
 #include <stdexcept>
 
 #include "../forward.hpp"
+#include "../internal/format.hpp"
 #include "../internal/type_traits.hpp"
 
 namespace tao
@@ -29,6 +30,7 @@ namespace tao
          struct versions< V, Vs... >
             : public V
          {
+            template< typename C >
             static void throw_on_error( const bool ok, const std::exception_ptr& e )
             {
                if( !ok ) {
@@ -36,7 +38,7 @@ namespace tao
                      std::rethrow_exception( e );  // TODO: Did I miss a way to avoid the throw?
                   }
                   catch( ... ) {
-                     std::throw_with_nested( std::runtime_error( "all versions parse failed -- see nested for first error" ) );
+                     std::throw_with_nested( std::runtime_error( json::internal::format( "all versions failed for type ", typeid( C ), " -- see nested for first error" ) ) );
                   }
                }
             }
@@ -100,7 +102,7 @@ namespace tao
             {
                const std::exception_ptr e = first_to( v, x );
                const bool ok = ( ( e == std::exception_ptr() ) || ... || later_to< Vs >( v, x ) );
-               throw_on_error( ok, e );
+               throw_on_error< C >( ok, e );
             }
 
             template< template< typename... > class Traits, typename Producer, typename C >
@@ -135,7 +137,7 @@ namespace tao
             {
                const std::exception_ptr e = first_consume< Traits >( parser, x );
                const bool ok = ( ( e == std::exception_ptr() ) || ... || later_consume< Vs, Traits >( parser, x ) );
-               throw_on_error( ok, e );
+               throw_on_error< C >( ok, e );
             }
          };
 
