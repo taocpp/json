@@ -61,7 +61,7 @@ namespace tao
          template< typename Rule >
          bool parse( const std::string_view v )  // NOLINT
          {
-            json_pegtl::memory_input<> in( v.data(), v.size(), "" );
+            json_pegtl::memory_input in( v.data(), v.size(), "" );
             return json_pegtl::parse< json_pegtl::seq< Rule, json_pegtl::eof > >( in );
          }
 
