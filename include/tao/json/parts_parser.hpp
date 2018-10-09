@@ -143,12 +143,12 @@ namespace tao
 
             void number( const std::int64_t i )
             {
-               converted = i;
+               converted = double( i );
             }
 
             void number( const std::uint64_t u )
             {
-               converted = u;
+               converted = double( u );
             }
 
             double converted = 0.0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
