@@ -180,6 +180,8 @@ namespace config
          rules::element,
          jaxn::infinity< true >,
          jaxn::infinity< false >,
+         jaxn::zero< true >,
+         jaxn::zero< false >,
          jaxn::null,
          jaxn::true_,
          jaxn::false_,
@@ -218,40 +220,82 @@ namespace config
       }
    }
 
-   using node_map = std::map< json::pointer, std::shared_ptr< parse_tree::node > >;
-
-   json::pointer key( const parse_tree::node& n )
+   void append_key( json::pointer& k, const parse_tree::node& n )
    {
-      json::pointer result;
+      assert( n.is< config::rules::mkey >() );
       for( const auto& p : n.children ) {
          if( p->is< config::rules::identifier >() ) {
-            result.push_back( p->content() );
+            k.push_back( p->content() );
          }
          else if( p->is< jaxn::string >() ) {
-            result.push_back( json::jaxn::from_input( p->as_memory_input() ).get_string() );
+            k.push_back( json::jaxn::from_input( p->as_memory_input() ).get_string() );
          }
          else {
             throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
          }
       }
-      return result;
    }
 
-   void add( node_map& m, parse_tree::node& n )
+   using nodes = std::map< json::pointer, std::shared_ptr< parse_tree::node > >;
+
+   void remove_prefix( nodes& ns, json::pointer prefix )
    {
-      assert( n.children.size() == 2 );
-      m.emplace( key( *n.children.front() ), std::move( n.children.back() ) );
+      auto it = ns.begin();
+      while( it != ns.end() ) {
+         if( prefix.is_prefix_of( it->first ) ) {
+            it = ns.erase( it );
+         }
+         else {
+            ++it;
+         }
+      }
    }
 
-   node_map process( parse_tree::node& n )
+   void add_element( nodes& ns, std::unique_ptr< parse_tree::node > n, json::pointer prefix );
+
+   void add_member( nodes& ns, parse_tree::node& n, const json::pointer& prefix )
    {
-      node_map result;
+      auto& c = n.children;
+      assert( c.size() == 2 );
+      auto k = prefix;
+      append_key( k, *c.front() );
+      add_element( ns, std::move( c.back() ), k );
+   }
+
+   void add_element( nodes& ns, std::unique_ptr< parse_tree::node > n, json::pointer k )
+   {
+      remove_prefix( ns, k );
+      if( n->is< config::rules::object >() ) {
+         for( auto& e : n->children ) {
+            assert( e->is< config::rules::member >() );
+            add_member( ns, *e, k );
+         }
+         n->children.clear();
+      }
+      else if( n->is< config::rules::array >() ) {
+         std::size_t i = 0;
+         for( auto& e : n->children ) {
+            assert( e->is< config::rules::element >() );
+            assert( e->children.size() == 1 );
+            add_element( ns, std::move( e->children.front() ), k + i++ );
+         }
+         n->children.clear();
+      }
+      ns.emplace( std::move( k ), std::move( n ) );
+   }
+
+   nodes process( parse_tree::node& n )
+   {
+      nodes result;
       for( auto& e : n.children ) {
          if( e->is< config::rules::member >() ) {
-            add( result, *e );
+            add_member( result, *e, {} );
          }
          else if( e->is< config::rules::delete_keys >() ) {
-            // TODO: Implement me!
+            json::pointer k;
+            assert( e->children.size() == 1 );
+            append_key( k, *e->children.front() );
+            remove_prefix( result, k );
          }
          else if( e->is< config::rules::include_file >() ) {
             // TODO: Implement me!
@@ -268,13 +312,13 @@ namespace config
 int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
-      file_input<> in( argv[ i ] );
+      file_input in( argv[ i ] );
       try {
          const auto root = parse_tree::parse< config::rules::grammar, config::selector >( in );
          config::print( *root );
          const auto result = config::process( *root );
          for( const auto& e : result ) {
-            std::cout << '"' << to_string( e.first ) << '"' << std::endl;
+            std::cout << '"' << to_string( e.first ) << "\": " << e.second->name() << " @ " << e.second->begin() << std::endl;
          }
       }
       catch( const parse_error& e ) {
