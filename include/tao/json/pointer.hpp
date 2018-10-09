@@ -298,6 +298,11 @@ namespace tao
             m_tokens.emplace_back( i );
          }
 
+         void push_back( const token& t )
+         {
+            m_tokens.emplace_back( t );
+         }
+
          friend bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
          {
             return lhs.m_tokens == rhs.m_tokens;
