@@ -64,11 +64,18 @@ namespace config
       struct object_fragment : sor< expression, object_value > {};
       struct object : list_must< object_fragment, jaxn::value_concat > {};
 
-      struct rkey_part : sor< string, identifier > {};
-      struct rkey : list< rkey_part, one< '.' > > {};
+      struct ekey_part : sor< string, identifier > {};
+      struct ekey : list< ekey_part, one< '.' > > {};
 
-      struct expression : if_must< json_pegtl::string< '$', '(' >, sor< function, rkey >, one< ')' > > {};
+      struct expression : if_must< json_pegtl::string< '$', '(' >, sor< function, ekey >, one< ')' > > {};
       struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary, object, array > > > > > {};
+
+      struct reference;
+      struct rkey_part : sor< identifier, reference, jaxn::string > {};
+      struct rkey : list< rkey_part, one< '.' > > {};
+      struct rbegin : one< '(' > {};
+      struct rend : one< ')' > {};
+      struct reference : if_must< one< '@' >, rbegin, rkey, rend > {};
 
       struct sor_value : jaxn::sor_value
       {
@@ -77,6 +84,7 @@ namespace config
                                          jaxn::null,
                                          jaxn::true_,
                                          jaxn::false_,
+                                         reference,
                                          string,
                                          expression_list,
                                          binary,
@@ -97,6 +105,7 @@ namespace config
                case 'n': return Control< jaxn::null >::template match< A, M, Action, Control >( in, st... );
                case 't': return Control< jaxn::true_ >::template match< A, M, Action, Control >( in, st... );
                case 'f': return Control< jaxn::false_ >::template match< A, M, Action, Control >( in, st... );
+               case '@': return Control< reference >::template match< A, M, Action, Control >( in, st... );
 
                case '"':
                case '\'':
@@ -165,36 +174,37 @@ namespace config
    using selector = parse_tree::selector<
       Rule,
       parse_tree::apply_remove_content::to<
-         rules::include_file,
-         rules::delete_keys,
-         rules::member,
-         rules::string,
-         rules::array,
-         rules::object,
-         rules::function,
-         rules::function_param,
-         rules::expression_list,
-         rules::rkey,
-         rules::binary,
-         rules::mkey,
-         rules::element,
-         jaxn::infinity< true >,
+         jaxn::false_,
          jaxn::infinity< false >,
-         jaxn::zero< true >,
-         jaxn::zero< false >,
+         jaxn::infinity< true >,
+         jaxn::nan,
          jaxn::null,
          jaxn::true_,
-         jaxn::false_,
-         jaxn::nan >,
+         jaxn::zero< false >,
+         jaxn::zero< true >,
+         rules::array,
+         rules::binary,
+         rules::delete_keys,
+         rules::ekey,
+         rules::element,
+         rules::expression_list,
+         rules::function,
+         rules::function_param,
+         rules::include_file,
+         rules::member,
+         rules::mkey,
+         rules::object,
+         rules::reference >,
       parse_tree::apply_store_content::to<
-         rules::identifier,
          jaxn::bvalue,
-         jaxn::number< true >,
-         jaxn::number< false >,
-         jaxn::hexnum< true >,
          jaxn::hexnum< false >,
+         jaxn::hexnum< true >,
+         jaxn::number< false >,
+         jaxn::number< true >,
          jaxn::string,
-         jaxn::string_fragment > >;
+         jaxn::string_fragment,
+         rules::identifier,
+         rules::string > >;
 
    void print( const parse_tree::node& n, const std::string& s = "" )
    {
@@ -251,6 +261,38 @@ namespace config
       }
    }
 
+   std::string get_string( const parse_tree::node& n )
+   {
+      assert( n.is< config::rules::string >() );
+      return json::jaxn::from_input( n.as_memory_input() ).get_string();
+   }
+
+   json::pointer resolve_key( const nodes& ns, const parse_tree::node& n )
+   {
+      json::pointer result;
+      assert( n.is< config::rules::reference >() );
+      for( const auto& p : n.children ) {
+         if( p->is< config::rules::identifier >() ) {
+            result.push_back( p->content() );
+         }
+         else if( p->is< jaxn::string >() ) {
+            result.push_back( json::jaxn::from_input( p->as_memory_input() ).get_string() );
+         }
+         else if( p->is< config::rules::reference >() ) {
+            const auto v = resolve_key( ns, *p );
+            const auto it = ns.find( v );
+            if( it == ns.end() ) {
+               throw std::runtime_error( "can't resolve rkey" );  // NOLINT, LCOV_EXCL_LINE
+            }
+            result.push_back( get_string( *it->second ) );
+         }
+         else {
+            throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+         }
+      }
+      return result;
+   }
+
    void add_element( nodes& ns, std::unique_ptr< parse_tree::node > n, json::pointer prefix );
 
    void add_member( nodes& ns, parse_tree::node& n, const json::pointer& prefix )
@@ -259,7 +301,7 @@ namespace config
       assert( c.size() == 2 );
       auto k = prefix;
       append_key( k, *c.front() );
-      add_element( ns, std::move( c.back() ), k );
+      add_element( ns, std::move( c.back() ), std::move( k ) );
    }
 
    void add_element( nodes& ns, std::unique_ptr< parse_tree::node > n, json::pointer k )
@@ -271,6 +313,7 @@ namespace config
             add_member( ns, *e, k );
          }
          n->children.clear();
+         ns.emplace( std::move( k ), std::move( n ) );
       }
       else if( n->is< config::rules::array >() ) {
          std::size_t i = 0;
@@ -280,8 +323,29 @@ namespace config
             add_element( ns, std::move( e->children.front() ), k + i++ );
          }
          n->children.clear();
+         ns.emplace( std::move( k ), std::move( n ) );
       }
-      ns.emplace( std::move( k ), std::move( n ) );
+      else if( n->is< config::rules::reference >() ) {
+         const auto v = resolve_key( ns, *n );
+         assert( !v.is_prefix_of( k ) );  // TODO: better error message
+         assert( !k.is_prefix_of( v ) );  // TODO: better error message
+         nodes n2;
+         for( auto& e : ns ) {
+            if( v.is_prefix_of( e.first ) ) {
+               auto p2 = k;
+               auto it = e.first.begin() + v.size();
+               while( it != e.first.end() ) {
+                  p2.push_back( *it++ );
+               }
+               n2.emplace( std::move( p2 ), e.second );
+            }
+         }
+         assert( !n2.empty() );  // TODO: better error message (nothing to copy found)
+         ns.insert( std::make_move_iterator( n2.begin() ), std::make_move_iterator( n2.end() ) );
+      }
+      else {
+         ns.emplace( std::move( k ), std::move( n ) );
+      }
    }
 
    nodes process( parse_tree::node& n )
