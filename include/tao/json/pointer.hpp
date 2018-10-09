@@ -4,6 +4,7 @@
 #ifndef TAO_JSON_POINTER_HPP
 #define TAO_JSON_POINTER_HPP
 
+#include <algorithm>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
@@ -305,6 +306,14 @@ namespace tao
          friend bool operator<( const pointer& lhs, const pointer& rhs ) noexcept
          {
             return lhs.m_tokens < rhs.m_tokens;
+         }
+
+         bool is_prefix_of( const pointer& other ) const noexcept
+         {
+            if( other.size() >= size() ) {
+               return std::equal( begin(), end(), other.begin() );
+            }
+            return false;
          }
       };
 
