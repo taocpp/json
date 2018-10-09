@@ -7,6 +7,7 @@
 * [Produce JSON Events from (custom) type](#produce-events-from-type)
 * [Consume a (custom) type from a parser](#consume-type-from-parser)
 * [Default Key for Objects](#default-key-for-objects)
+* [Batteries Included[(#batteries-included)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
 
@@ -359,12 +360,13 @@ Further uses of the default key are for object bindings and the polymorphic obje
 
 The default Traits supplied with the library do not define a default key for any type.
 
-## Included Traits
+## Batteries Included
 
-See [Default Traits](Batteries-Included.md#default-traits) and [Additional Traits](Batteries-Included.md#additional-traits) for a list of all available Traits classes and Traits specialisations.
+* [Default Traits](Batteries-Included.md#default-traits)
+* [Additional Traits](Batteries-Included.md#additional-traits)
 
-The Type Traits correctly work with nested types.
-Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported (when including the contrib traits), so is for example the following type:
+The Type Traits correctly work with nested/composed types.
+Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported (when including the additional Traits), so is for example the following type:
 
 ```c++
 std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >
