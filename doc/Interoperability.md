@@ -1,4 +1,4 @@
-# File Formats
+# Interoperability
 
 * [General Notes](#general-notes)
 * [Specific Notes](#specific-notes)
@@ -11,7 +11,7 @@
 
 ## General Notes
 
-The following properties and limitations are a consequence of the internal data model and apply to all data formats.
+The following properties and limitations are a consequence of the internal data model and apply to the internal representation as well as all data formats.
 
 Numbers are stored and handled as `std::int64_t`, `std::uint64_t` or `double`, and most (all?) parsers will throw an exception when encountering a number that exceeds the combined range of these types.
 
@@ -26,7 +26,7 @@ The Events Interface processes keys individually and does not have this limitati
 
 ## Specific Notes
 
-The following properties and limitations are specific to particular file formats.
+The following properties and limitations are specific to the interaction with particular file formats.
 
 ### JSON
 
