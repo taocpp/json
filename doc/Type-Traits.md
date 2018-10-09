@@ -1,15 +1,13 @@
 # Type Traits
 
 * [Overview](#overview)
-* [Binding Traits Facilities](#binding-traits-facilities)
 * [Create JSON Value from (custom) type](#create-value-from-type)
 * [Convert JSON Value into (custom) type](#convert-value-into-type)
 * [Compare JSON Value to (custom) type](#compare-value-with-type)
 * [Produce JSON Events from (custom) type](#produce-events-from-type)
 * [Consume a (custom) type from a parser](#consume-type-from-parser)
-* [Default Traits Specialisations](#default-traits-specialisations)
-* [Contrib Traits Specialisations](#contrib-traits-specialisations)
 * [Default Key for Objects](#default-key-for-objects)
+* [Batteries Included[(#batteries-included)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
 
@@ -17,10 +15,10 @@ For brevity we will often write "the traits" instead of "the (corresponding/appr
 
 The class template passed as `Traits` template parameter, most prominently to `tao::json::basic_value<>`, controls the interaction between the JSON library and other C++ types.
 
-The library includes the Type Traits class template `tao::json::traits<>` with [many specialisations](#default-traits) that is used throughout the library as default.
-A custom Type Traits class can be used to change the behaviour of the default traits, and/or to add support for new types.
+The library includes the Type Traits class template `tao::json::traits<>` with [many specialisations](Batteries-Included.md#default-traits) that is used throughout the library as default.
+A custom Traits class (more precisely: class template) can be used to change the behaviour of the default Traits, and/or to add support for new types.
 
-* In the first case it is necessary to create a new traits class template.
+* In the first case it is necessary to create a new Traits class template.
 * In the second case it is also possible to (partially) specialise `tao::json::traits<>` for the new types.
 
 As is common, for any type `T`, the Type Traits class template instantiated with `T` as template argument is used as Type Traits class for `T`.
@@ -38,7 +36,7 @@ struct my_type
 };
 ```
 
-While we could simply specialise `tao::json::traits<>` for `my_type`, we will prefer to define a new Type Traits class, an approach that also works when redefining traits for types that the default Type Traits already cover.
+While we could simply specialise `tao::json::traits<>` for `my_type`, we will prefer to define a new Type Traits class, an approach that also works when redefining Traits for types that the default Type Traits already cover.
 
 ```c++
 template< typename T >
@@ -68,54 +66,7 @@ using my_value = tao::json::basic_value< my_traits >;
 
 Note that all Type Traits functions are `static` member functions, and that, depending on the use cases, it is not necessary for a traits specialisation to implement *all* traits functions.
 
-For the common use case of implementing Type Traits for a custom struct or class that uses an Array or an Object for its data members the [Binding Facilities](#binding-traits-facilities) can be used to *automatically* create the Type Traits functions without writing any actual code.
-
-## Binding Traits Facilities
-
-The Binding Facilities allow the automatic generation of Type Traits functions for a type from a list of the type's data members.
-
-It requires that Type Traits specialisations for all of the data member types exist, too, either manually implemented, inherited from the [default Type Traits](#default-traits), or again generated with the Binding Facilities.
-
-There are two kinds of Binding, one that uses an Array for the class or struct members, and one that uses an Object.
-
-The Array is more efficient, the Object is more flexible as it allows for optional members, and possible forward and/or backward compatibility with future extensions.
-Given that members are named rather than accessed by index, Objects are also easier to comprehend and debug.
-
-To use an Object it is necessary to derive `my_traits< my_type >` from `tao::json::binding::object`, and to supply a list of member variable pointers with their name.
-It is not technically necessary for the name to match the name of the data member, any string can be used for the key in the Object.
-
-Two macros are used to simplify the binding of the individual member variables.
-When directly parsing an external representation like JSON into a `my_type` with `tao::json::consume()`, or converting a Value into a `my_type` with `tao::json::value::as()` or `tao::json::value::to()`, an exception will be thrown when a required member is missing.
-
-```c++
-template<>
-struct my_traits< my_type >
-   : tao::json::binding::object< TAO_JSON_BIND_REQUIRED( "title", &my_type::title ),
-                                 TAO_JSON_BIND_OPTIONAL( "values", &my_type::values ) >
-{
-};
-```
-
-To use an Array it is necessary to derive `my_traits< my_type >` from `tao::json::binding::array`, and again supply a list of pointers to member variables.
-Here neither a name can be given, nor is there a choice between optional and required values - everything is required, converting from an Array expects exactly the correct number of Array elements.
-
-
-```c++
-template<>
-struct my_traits< my_type >
-   : tao::json::binding::array< TAO_JSON_BIND_ELEMENT( &my_type::title ),
-                                TAO_JSON_BIND_ELEMENT( &my_type::values ) >
-{
-};
-```
-
-As usual it is possible to override some of the functions inherited from `tao::json::binding::object` or `tao::json::binding::array` by defining them in `my_traits< my_type >`.
-
-Regardless of the choice of Array or Object, all of the Type Traits functions (current limitation: except for `less_than()` and `greater_than()`) are automatically generated for the Type Traits of `my_type` :smile:
-
-The examples given below of how to use the individual Type Traits functions all work without manually implementing the underlying functions of the Type Traits specialisation.
-
-The binding facilities also support [some more advanced options](Advanced-Use-Cases.md#advanced-binding-options), a [polymorphic object factory](Advanced-Use-Cases.md#polymorphic-object-factory), and [multiple bindings for the same data type](Advanced-Use-Cases.md#disjunction-of-single-type-traits) for multi-version support.
+**For many common use cases it is not necessary to manually implement the Traits functions, instead the [Binding Traits](Binding-Traits.md) can be used to generate them automatically.**
 
 ## Create Value from Type
 
@@ -391,61 +342,6 @@ my_type mt;
 tao::json::consume< Traits>( pp, mt );
 ```
 
-## Default Traits Specialisations
-
-The included Type Traits contain (partial) specialisations for the following types.
-
-| Specialised for | Remarks |
-| -------------- | -------- |
-| `null_t` | |
-| `bool` | |
-| *signed integers* | |
-| *unsigned integers* | |
-| `double`, `float` | |
-| `empty_binary_t` | |
-| `empty_array_t` | |
-| `empty_object_t` | |
-| `std::string` | |
-| `tao::string_view` | |
-| `const char*` | |
-| `const std::string&` | |
-| `std::vector< tao::byte >` | |
-| `tao::binary_view` | |
-| `const std::vector< tao::byte >&` | |
-| `std::vector< basic_value< Traits, Base > >` | Corresponds to JSON Array. |
-| `basic_value< Traits, Base >*` | Creates Value Pointer; must not be `nullptr`. |
-| `const basic_value< Traits, Base >*` | Creates Value Pointer; must not be `nullptr`. |
-| `std::map< std::string, basic_value< Traits, Base > >` | Corresponds to JSON Object. |
-| `tao::optional< T >` | Empty optional corresponds to JSON Null. |
-
-## Contrib Traits Specialisations
-
-The following additional specialisations are part of various additional traits classes.
-These classes are defined in various headers in `tao/json/contrib`.
-It is also possible to include `tao/json/contrib/traits.hpp` which adds appropriate specialisations to the default traits `tao::json::traits<>`.
-
-| Implementation for | Header |
-| -------------- | -------- |
-| `std::pair< U, V >` | `tao/json/contrib/pair_traits.hpp` |
-| `std::tuple< Ts... >` | `tao/json/contrib/tuple_traits.hpp` |
-| `std::array< T, N >` | `tao/json/contrib/array_traits.hpp` |
-| `std::deque< T >` | `tao/json/contrib/deque_traits.hpp` |
-| `std::list< T >` | `tao/json/contrib/list_traits.hpp` |
-| `std::set< T >` | `tao/json/contrib/set_traits.hpp` |
-| `std::unordered_set< T >` | `tao/json/contrib/unordered_set_traits.hpp` |
-| `std::vector< T >` | `tao/json/contrib/vector_traits.hpp` |
-| `std::map< std::string, T >` | `tao/json/contrib/map_traits.hpp` |
-| `std::unordered_map< std::string, T >` | `tao/json/contrib/unordered_map_traits.hpp` |
-| `std::shared_ptr< T >` | `tao/json/contrib/shared_ptr_traits.hpp` |
-| `std::unique_ptr< T >` | `tao/json/contrib/unique_ptr_traits.hpp` |
-
-The Type Traits correctly work with nested types.
-Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported (when including the contrib traits), so is for example the following type:
-
-```c++
-std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >
-```
-
 ## Default Key for Objects
 
 The use of default keys is [shown in the section on creating Values](Value-Class.md#creating-values).
@@ -463,5 +359,17 @@ struct my_traits< my_type >
 Further uses of the default key are for object bindings and the polymorphic object factory (TODO: Links).
 
 The default Traits supplied with the library do not define a default key for any type.
+
+## Batteries Included
+
+* [Default Traits](Batteries-Included.md#default-traits)
+* [Additional Traits](Batteries-Included.md#additional-traits)
+
+The Type Traits correctly work with nested/composed types.
+Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported (when including the additional Traits), so is for example the following type:
+
+```c++
+std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >
+```
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

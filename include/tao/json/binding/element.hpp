@@ -162,6 +162,4 @@ namespace tao
 
 }  // namespace tao
 
-#define TAO_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< decltype( __VA_ARGS__ ), __VA_ARGS__ >
-
 #endif

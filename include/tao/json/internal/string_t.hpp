@@ -38,4 +38,6 @@ namespace tao
 
 }  // namespace tao
 
+#define TAO_JSON_STRING_T( VaLue ) TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, VaLue )
+
 #endif

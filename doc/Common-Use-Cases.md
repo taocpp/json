@@ -10,12 +10,15 @@
 
 ## Include the right header
 
-The convenience include `<tao/json.hpp>` will include the whole library.
-If you need to improve compile time, you can choose to directly use only some of the individual headers that it includes.
+The convenience include `<tao/json.hpp>` will include the entire core library.
+Additionally, it might be useful to include `<tao/json/contrib/traits.hpp>` to add some commonly used Traits specialisations, mostly for containers and smart pointers.
 
 ```c++
 #include <tao/json.hpp>
+#include <tao/json/contrib/traits.hpp>
 ```
+
+(To improve compile times, you can choose to directly use only some of the individual headers that it includes.)
 
 ## Read any JSON file
 

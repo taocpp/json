@@ -37,10 +37,4 @@ namespace tao
 
 }  // namespace tao
 
-#define TAO_JSON_BIND_REQUIRED( KeY, ... ) tao::json::binding::member< tao::json::binding::member_kind::REQUIRED_MEMBER, TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
-#define TAO_JSON_BIND_OPTIONAL( KeY, ... ) tao::json::binding::member< tao::json::binding::member_kind::OPTIONAL_MEMBER, TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, KeY ), decltype( __VA_ARGS__ ), __VA_ARGS__ >
-
-#define TAO_JSON_BIND_REQUIRED1( ... ) tao::json::binding::member< tao::json::binding::member_kind::REQUIRED_MEMBER, tao::json::binding::internal::use_default_key, decltype( __VA_ARGS__ ), __VA_ARGS__ >
-#define TAO_JSON_BIND_OPTIONAL1( ... ) tao::json::binding::member< tao::json::binding::member_kind::OPTIONAL_MEMBER, tao::json::binding::internal::use_default_key, decltype( __VA_ARGS__ ), __VA_ARGS__ >
-
 #endif

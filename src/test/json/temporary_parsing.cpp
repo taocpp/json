@@ -79,7 +79,7 @@ namespace tao
 
       template<>
       struct my_traits< std::unique_ptr< base_class > >
-         : my_traits< std::shared_ptr< base_class > >::template with_pointer< std::unique_ptr >
+         : my_traits< std::shared_ptr< base_class > >
       {
       };
 
