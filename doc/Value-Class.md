@@ -134,11 +134,11 @@ Can be tested for with the member function `tao::json::value::is_object()`.
 
 ### Value Pointers
 
-See the [section on instance sharing with Value Pointers](Advanced-Use-Cases.md#instance-sharing-with-value-pointers) on the [advanced use cases page](Advanced-Use-Cases.md).
+See the [section on instance sharing with Value Pointers](More-Performance.md#value-pointers) on the [More Performance](More -Performance.md).
 
 ### Opaque Pointers
 
-See the [section on instance sharing with Opaque Pointers](Advanced-Use-Cases.md#instance-sharing-with-opaque-pointers) on the [advanced use cases page](Advanced-Use-Cases.md).
+See the [section on instance sharing with Opaque Pointers](More-Performance.md#opaque-pointers) on the [More Performance](More -Performance.md).
 
 ## Creating Values
 
@@ -180,7 +180,7 @@ const type_with_default_key t;
 const tao::json::value v( {
    { "foo", 42 },
    { "bar", true },
-   t  // Shortcut for: { tao::json::traits< type_with_default_key >::default_key::as_string(), t }
+   t  // Shortcut for: { tao::json::traits< type_with_default_key >::default_key< traits >::as_string(), t }
 } );
 ```
 
@@ -484,7 +484,7 @@ When called with a [JSON Pointer](Extended-Use-Cases#json-pointer), the contents
 Similarly `tao::json::value::operator[]` indexes Arrays and Objects via `std::vector::operator[]` and `std::map::operator[]`, respectively.
 For Objects, it keeps the semantics of the underlying `std::map` and inserts a default-constructed Value when the key string is not found.
 
-The `tao::json::value::erase()` function erases a sub-value of an Array or Object via `std::vector::erase()` and `std::map::erase(), respectively.
+The `tao::json::value::erase()` function erases a sub-value of an Array or Object via `std::vector::erase()` and `std::map::erase()`, respectively.
 
 The `tao::json::value::find()` function can only be called with a `std::size_t` or a `std::string` for Arrays and Objects, respectively.
 It returns a plain pointer to the sub-value, or `nullptr` when no matching entry was found.
