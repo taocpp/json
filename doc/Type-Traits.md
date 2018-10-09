@@ -6,8 +6,6 @@
 * [Compare JSON Value to (custom) type](#compare-value-with-type)
 * [Produce JSON Events from (custom) type](#produce-events-from-type)
 * [Consume a (custom) type from a parser](#consume-type-from-parser)
-* [Default Traits Specialisations](#default-traits-specialisations)
-* [Contrib Traits Specialisations](#contrib-traits-specialisations)
 * [Default Key for Objects](#default-key-for-objects)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
@@ -16,7 +14,7 @@ For brevity we will often write "the traits" instead of "the (corresponding/appr
 
 The class template passed as `Traits` template parameter, most prominently to `tao::json::basic_value<>`, controls the interaction between the JSON library and other C++ types.
 
-The library includes the Type Traits class template `tao::json::traits<>` with [many specialisations](#default-traits) that is used throughout the library as default.
+The library includes the Type Traits class template `tao::json::traits<>` with [many specialisations](Batteries-Included.md#default-traits) that is used throughout the library as default.
 A custom Traits class (more precisely: class template) can be used to change the behaviour of the default Traits, and/or to add support for new types.
 
 * In the first case it is necessary to create a new Traits class template.
@@ -343,61 +341,6 @@ my_type mt;
 tao::json::consume< Traits>( pp, mt );
 ```
 
-## Default Traits Specialisations
-
-The included Type Traits contain (partial) specialisations for the following types.
-
-| Specialised for | Remarks |
-| -------------- | -------- |
-| `null_t` | |
-| `bool` | |
-| *signed integers* | |
-| *unsigned integers* | |
-| `double`, `float` | |
-| `empty_binary_t` | |
-| `empty_array_t` | |
-| `empty_object_t` | |
-| `std::string` | |
-| `tao::string_view` | |
-| `const char*` | |
-| `const std::string&` | |
-| `std::vector< tao::byte >` | |
-| `tao::binary_view` | |
-| `const std::vector< tao::byte >&` | |
-| `std::vector< basic_value< Traits, Base > >` | Corresponds to JSON Array. |
-| `basic_value< Traits, Base >*` | Creates Value Pointer; must not be `nullptr`. |
-| `const basic_value< Traits, Base >*` | Creates Value Pointer; must not be `nullptr`. |
-| `std::map< std::string, basic_value< Traits, Base > >` | Corresponds to JSON Object. |
-| `tao::optional< T >` | Empty optional corresponds to JSON Null. |
-
-## Contrib Traits Specialisations
-
-The following additional specialisations are part of various additional traits classes.
-These classes are defined in various headers in `tao/json/contrib`.
-It is also possible to include `tao/json/contrib/traits.hpp` which adds appropriate specialisations to the default traits `tao::json::traits<>`.
-
-| Implementation for | Header |
-| -------------- | -------- |
-| `std::pair< U, V >` | `tao/json/contrib/pair_traits.hpp` |
-| `std::tuple< Ts... >` | `tao/json/contrib/tuple_traits.hpp` |
-| `std::array< T, N >` | `tao/json/contrib/array_traits.hpp` |
-| `std::deque< T >` | `tao/json/contrib/deque_traits.hpp` |
-| `std::list< T >` | `tao/json/contrib/list_traits.hpp` |
-| `std::set< T >` | `tao/json/contrib/set_traits.hpp` |
-| `std::unordered_set< T >` | `tao/json/contrib/unordered_set_traits.hpp` |
-| `std::vector< T >` | `tao/json/contrib/vector_traits.hpp` |
-| `std::map< std::string, T >` | `tao/json/contrib/map_traits.hpp` |
-| `std::unordered_map< std::string, T >` | `tao/json/contrib/unordered_map_traits.hpp` |
-| `std::shared_ptr< T >` | `tao/json/contrib/shared_ptr_traits.hpp` |
-| `std::unique_ptr< T >` | `tao/json/contrib/unique_ptr_traits.hpp` |
-
-The Type Traits correctly work with nested types.
-Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported (when including the contrib traits), so is for example the following type:
-
-```c++
-std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >
-```
-
 ## Default Key for Objects
 
 The use of default keys is [shown in the section on creating Values](Value-Class.md#creating-values).
@@ -415,5 +358,16 @@ struct my_traits< my_type >
 Further uses of the default key are for object bindings and the polymorphic object factory (TODO: Links).
 
 The default Traits supplied with the library do not define a default key for any type.
+
+## Included Traits
+
+See [Default Traits](Batteries-Included.md#default-traits) and [Additional Traits](Batteries-Included.md#additional-traits) for a list of all available Traits classes and Traits specialisations.
+
+The Type Traits correctly work with nested types.
+Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`, and `std::map` with `std::string` as `key_type` are supported (when including the contrib traits), so is for example the following type:
+
+```c++
+std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >
+```
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

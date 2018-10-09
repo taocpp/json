@@ -1,14 +1,16 @@
 # Scratchpad
 
-* [JSON Pointer](#json-pointer)
-* [JSON Patch](#json-patch)
-
 ## JSON Pointer
 
 * TODO
 
-## JSON Patch
+###### `<tao/json/contrib/get.hpp>`
 
-* TODO
+###### `<tao/json/contrib/patch.hpp>`
+
+###### `<tao/json/contrib/refefence.hpp>`
+
+###### `<tao/json/contrib/schema.hpp>`
+
 
 Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey

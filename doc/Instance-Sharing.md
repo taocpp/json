@@ -1,4 +1,4 @@
-# More Performance
+# Instance Sharing
 
 In order to speed up the creation of Values there are multiple possibilities of preventing the copying and building of data and data structures.
 

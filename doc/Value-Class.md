@@ -134,11 +134,11 @@ Can be tested for with the member function `tao::json::value::is_object()`.
 
 ### Value Pointers
 
-See the [section on instance sharing with Value Pointers](More-Performance.md#value-pointers) on the [More Performance](More -Performance.md).
+See the [section on instance sharing with Value Pointers](Instance-Sharing.md#value-pointers) on the [More Performance](More -Performance.md).
 
 ### Opaque Pointers
 
-See the [section on instance sharing with Opaque Pointers](More-Performance.md#opaque-pointers) on the [More Performance](More -Performance.md).
+See the [section on instance sharing with Opaque Pointers](Instance-Sharing.md#opaque-pointers) on the [More Performance](More -Performance.md).
 
 ## Creating Values
 
@@ -147,7 +147,7 @@ It also has copy and move constructors (and copy and move assignment operators, 
 
 There are also two **non**-explicit constructors, one that takes an argument of any type and uses [the Type Traits](Type-Traits.md) for the details of how to create the Value, and one that takes an initialiser-list to create an Object.
 
-The first allows creating (or assigning to) a Value from [a list of types](Type-Traits.md#default-traits-specialisations) [that can be extended](Type-Traits.md).
+The first allows creating (or assigning to) a Value from [a list of types](Batteries-Included.md#default-traits) [that can be extended](Type-Traits.md) [like here](Batteries-Included.md#additional-traits).
 
 ```c++
 const tao::json::value v1 = true;
@@ -357,7 +357,7 @@ v.to( i );  // Sets i to 3.
 
 Note that the [default Type Traits](Type-Traits.md) do **not** perform range checking when converting between different arithmetic types!
 
-As usual, the conversion works with [all types and nested types that are supported by the Type Traits](Type-Traits.md#default-traits-specialisations), for example shared pointers and vectors.
+As usual, the conversion works with [all types and nested types that are supported by the default Traits](Batteries-Included.md#default-traits) and the [additional Traits](Batteries-Included.md#additional-traits), for example shared pointers and vectors.
 
 ```c++
 const tao::json::value v = tao::json::value::array( { 1, 2, tao::json::null, 4 } );
