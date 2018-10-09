@@ -159,18 +159,39 @@ namespace tao
          TEST_ASSERT( a.j == 6 );
       }
 
+      struct type_5
+      {
+      };
+
+      template<>
+      struct traits< type_5 >
+         : public binding::object< TAO_JSON_BIND_REQUIRED_BOOL( "bool", true ),
+                                   TAO_JSON_BIND_REQUIRED_SIGNED( "signed", -4 ),
+                                   TAO_JSON_BIND_REQUIRED_UNSIGNED( "unsigned", 32 ),
+                                   TAO_JSON_BIND_REQUIRED_STRING( "string", "servus" ) >
+      {
+      };
+
+      void unit_test_5()
+      {
+         const value v = from_string( "{ \"bool\" : true, \"signed\" : -4, \"unsigned\" : 32, \"string\" : \"servus\" }" );
+         const auto a = v.as< type_5 >();
+         const value w = a;
+         TEST_ASSERT( v == w );
+      }
+
       // TODO: Test consume...
       // TODO: Test additional keys in input.
       // TODO: Test with different for_unknown_key.
       // TODO: Test with different for_nothing_value (incl. consistency of size to consumer).
-      // TODO: Test with binding::member_x constants.
 
       void unit_test()
       {
          unit_test_1();
          unit_test_2();
          unit_test_3();
-         unit_test_4();  // TODO: Fix the type mismatch in the functions for the maps used in binding::object (as opposed to binding::array where they are called directly).
+         unit_test_4();
+         unit_test_5();
       }
 
    }  // namespace json

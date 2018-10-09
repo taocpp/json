@@ -11,6 +11,7 @@
 #include "../external/pegtl/internal/pegtl_string.hpp"
 #include "../internal/escape.hpp"
 #include "../internal/format.hpp"
+#include "../internal/string_t.hpp"
 
 #include "element.hpp"
 #include "member_kind.hpp"
@@ -125,46 +126,43 @@ namespace tao
             }
          };
 
-         template< char... Cs >
-         using string = json_pegtl::string< Cs... >;
-
          template< typename S >
          struct element_s;
 
          template< char... Cs >
-         struct element_s< json_pegtl::string< Cs... > >
+         struct element_s< json::internal::string_t< Cs... > >
          {
+            using string = json::internal::string_t< Cs... >;
+
             template< typename C >
             static std::string_view read( const C& /*unused*/ )
             {
-               static const char s[] = { Cs..., 0 };
-               return std::string_view( s, sizeof...( Cs ) );
+               return string::as_string_view();
             }
 
             template< template< typename... > class Traits, typename Base, typename C >
             static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
             {
-               static const char s[] = { Cs..., 0 };
+               const auto sc = string::as_string_view();
                const auto sv = v.template as< std::string_view >();
-               if( sv != std::string_view( s, sizeof...( Cs ) ) ) {
-                  throw std::runtime_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sv ), "\" parsed \"", json::internal::escape( std::string_view( s, sizeof...( Cs ) ) ), '"', json::base_message_extension( v.base() ) ) );  // NOLINT
+               if( sv != sc ) {
+                  throw std::runtime_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sc ), "\" parsed \"", json::internal::escape( sv ), '"', json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
 
             template< template< typename... > class Traits = traits, typename Consumer, typename T >
             static void produce( Consumer& consumer, const T& /*unused*/ )
             {
-               static const char s[] = { Cs..., 0 };
-               consumer.string( std::string_view( s, sizeof...( Cs ) ) );
+               consumer.string( string::as_string_view() );
             }
 
             template< template< typename... > class Traits = traits, typename Producer, typename T >
             static void consume( Producer& parser, T& /*unused*/ )
             {
-               static const char s[] = { Cs..., 0 };
-               const auto t = parser.string();
-               if( t != s ) {
-                  parser.throw_parse_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( s ), "\" parsed \"", json::internal::escape( t ), '"' ) );
+               const auto sc = string::as_string_view();
+               const auto ss = parser.string();
+               if( ss != sc ) {
+                  parser.throw_parse_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sc ), "\" parsed \"", json::internal::escape( ss ), '"' ) );
                }
             }
          };
@@ -175,6 +173,12 @@ namespace tao
               public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
+
+            template< template< typename... > class Traits, typename T >
+            static bool is_nothing( const T& /*unused*/ )
+            {
+               return false;
+            }
          };
 
          template< member_kind R, typename K, std::int64_t V >
@@ -183,6 +187,12 @@ namespace tao
               public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
+
+            template< template< typename... > class Traits, typename T >
+            static bool is_nothing( const T& /*unused*/ )
+            {
+               return false;
+            }
          };
 
          template< member_kind R, typename K, std::uint64_t V >
@@ -191,6 +201,12 @@ namespace tao
               public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
+
+            template< template< typename... > class Traits, typename T >
+            static bool is_nothing( const T& /*unused*/ )
+            {
+               return false;
+            }
          };
 
          template< member_kind R, typename K, typename S >
@@ -199,6 +215,12 @@ namespace tao
               public internal::type_key< K, void >
          {
             static constexpr member_kind kind = R;
+
+            template< template< typename... > class Traits, typename T >
+            static bool is_nothing( const T& /*unused*/ )
+            {
+               return false;
+            }
          };
 
       }  // namespace binding

@@ -1,7 +1,6 @@
 # Type Traits
 
 * [Overview](#overview)
-* [Binding Traits Facilities](#binding-traits-facilities)
 * [Create JSON Value from (custom) type](#create-value-from-type)
 * [Convert JSON Value into (custom) type](#convert-value-into-type)
 * [Compare JSON Value to (custom) type](#compare-value-with-type)
@@ -18,9 +17,9 @@ For brevity we will often write "the traits" instead of "the (corresponding/appr
 The class template passed as `Traits` template parameter, most prominently to `tao::json::basic_value<>`, controls the interaction between the JSON library and other C++ types.
 
 The library includes the Type Traits class template `tao::json::traits<>` with [many specialisations](#default-traits) that is used throughout the library as default.
-A custom Type Traits class can be used to change the behaviour of the default traits, and/or to add support for new types.
+A custom Traits class (more precisely: class template) can be used to change the behaviour of the default Traits, and/or to add support for new types.
 
-* In the first case it is necessary to create a new traits class template.
+* In the first case it is necessary to create a new Traits class template.
 * In the second case it is also possible to (partially) specialise `tao::json::traits<>` for the new types.
 
 As is common, for any type `T`, the Type Traits class template instantiated with `T` as template argument is used as Type Traits class for `T`.
@@ -38,7 +37,7 @@ struct my_type
 };
 ```
 
-While we could simply specialise `tao::json::traits<>` for `my_type`, we will prefer to define a new Type Traits class, an approach that also works when redefining traits for types that the default Type Traits already cover.
+While we could simply specialise `tao::json::traits<>` for `my_type`, we will prefer to define a new Type Traits class, an approach that also works when redefining Traits for types that the default Type Traits already cover.
 
 ```c++
 template< typename T >
@@ -68,54 +67,7 @@ using my_value = tao::json::basic_value< my_traits >;
 
 Note that all Type Traits functions are `static` member functions, and that, depending on the use cases, it is not necessary for a traits specialisation to implement *all* traits functions.
 
-For the common use case of implementing Type Traits for a custom struct or class that uses an Array or an Object for its data members the [Binding Facilities](#binding-traits-facilities) can be used to *automatically* create the Type Traits functions without writing any actual code.
-
-## Binding Traits Facilities
-
-The Binding Facilities allow the automatic generation of Type Traits functions for a type from a list of the type's data members.
-
-It requires that Type Traits specialisations for all of the data member types exist, too, either manually implemented, inherited from the [default Type Traits](#default-traits), or again generated with the Binding Facilities.
-
-There are two kinds of Binding, one that uses an Array for the class or struct members, and one that uses an Object.
-
-The Array is more efficient, the Object is more flexible as it allows for optional members, and possible forward and/or backward compatibility with future extensions.
-Given that members are named rather than accessed by index, Objects are also easier to comprehend and debug.
-
-To use an Object it is necessary to derive `my_traits< my_type >` from `tao::json::binding::object`, and to supply a list of member variable pointers with their name.
-It is not technically necessary for the name to match the name of the data member, any string can be used for the key in the Object.
-
-Two macros are used to simplify the binding of the individual member variables.
-When directly parsing an external representation like JSON into a `my_type` with `tao::json::consume()`, or converting a Value into a `my_type` with `tao::json::value::as()` or `tao::json::value::to()`, an exception will be thrown when a required member is missing.
-
-```c++
-template<>
-struct my_traits< my_type >
-   : tao::json::binding::object< TAO_JSON_BIND_REQUIRED( "title", &my_type::title ),
-                                 TAO_JSON_BIND_OPTIONAL( "values", &my_type::values ) >
-{
-};
-```
-
-To use an Array it is necessary to derive `my_traits< my_type >` from `tao::json::binding::array`, and again supply a list of pointers to member variables.
-Here neither a name can be given, nor is there a choice between optional and required values - everything is required, converting from an Array expects exactly the correct number of Array elements.
-
-
-```c++
-template<>
-struct my_traits< my_type >
-   : tao::json::binding::array< TAO_JSON_BIND_ELEMENT( &my_type::title ),
-                                TAO_JSON_BIND_ELEMENT( &my_type::values ) >
-{
-};
-```
-
-As usual it is possible to override some of the functions inherited from `tao::json::binding::object` or `tao::json::binding::array` by defining them in `my_traits< my_type >`.
-
-Regardless of the choice of Array or Object, all of the Type Traits functions (current limitation: except for `less_than()` and `greater_than()`) are automatically generated for the Type Traits of `my_type` :smile:
-
-The examples given below of how to use the individual Type Traits functions all work without manually implementing the underlying functions of the Type Traits specialisation.
-
-The binding facilities also support [some more advanced options](Advanced-Use-Cases.md#advanced-binding-options), a [polymorphic object factory](Advanced-Use-Cases.md#polymorphic-object-factory), and [multiple bindings for the same data type](Advanced-Use-Cases.md#disjunction-of-single-type-traits) for multi-version support.
+**For many common use cases it is not necessary to manually implement the Traits functions, instead the [Binding Traits](Binding-Traits.md) can be used to generate them automatically.**
 
 ## Create Value from Type
 

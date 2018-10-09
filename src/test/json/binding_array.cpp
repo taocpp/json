@@ -46,10 +46,10 @@ namespace tao
       template<>
       struct traits< type_4 >
          : binding::array< TAO_JSON_BIND_ELEMENT( &type_4::i ),
-                           binding::element_b< true >,
-                           binding::element_u< 90 >,
-                           binding::element_i< -5 >,
-                           binding::element_s< json_pegtl::string< 'a', 'b', 'c' > > >
+                           TAO_JSON_BIND_ELEMENT_BOOL( true ),
+                           TAO_JSON_BIND_ELEMENT_UNSIGNED( 90 ),
+                           TAO_JSON_BIND_ELEMENT_SIGNED( -5 ),
+                           TAO_JSON_BIND_ELEMENT_STRING( "abc" ) >
       {
       };
 

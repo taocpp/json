@@ -1,4 +1,4 @@
-# Extended Use Cases
+# Scratchpad
 
 * [JSON Pointer](#json-pointer)
 * [JSON Patch](#json-patch)
