@@ -21,7 +21,7 @@ namespace tao
          struct element;
 
          template< typename C, typename T, T C::*P >
-         struct element< T C::*, P, std::enable_if_t< std::is_member_object_pointer< T C::* >::value > >
+         struct element< T C::*, P, std::enable_if_t< std::is_member_object_pointer_v< T C::* > > >
          {
             using internal_t = std::decay_t< decltype( std::declval< C >().*P ) >;
 
@@ -56,7 +56,7 @@ namespace tao
          };
 
          template< typename C, typename T, T C::*P >
-         struct element< T C::*, P, std::enable_if_t< std::is_member_function_pointer< T C::* >::value > >
+         struct element< T C::*, P, std::enable_if_t< std::is_member_function_pointer_v< T C::* > > >
          {
             using internal_t = std::decay_t< decltype( ( std::declval< const C >().*P )() ) >;
 

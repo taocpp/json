@@ -50,9 +50,9 @@ namespace tao
          : private Base
       {
       public:
-         static_assert( std::is_nothrow_default_constructible< Base >::value, "Base must be nothrow default constructible" );
-         static_assert( std::is_nothrow_move_constructible< Base >::value, "Base must be nothrow move constructible" );
-         static_assert( std::is_nothrow_move_assignable< Base >::value, "Base must be nothrow move assignable" );
+         static_assert( std::is_nothrow_default_constructible_v< Base >, "Base must be nothrow default constructible" );
+         static_assert( std::is_nothrow_move_constructible_v< Base >, "Base must be nothrow move constructible" );
+         static_assert( std::is_nothrow_move_assignable_v< Base >, "Base must be nothrow move assignable" );
 
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;

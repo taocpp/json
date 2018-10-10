@@ -22,19 +22,19 @@ namespace tao
          struct unique_ptr_traits
          {
             template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >
+            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, Base, With... >, std::unique_ptr< U > >
             {
                return std::unique_ptr< U >( new T( v, with... ) );
             }
 
             template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, Base, With... >::value || use_fourth_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >
+            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, Base, With... > || use_fourth_ptr_as< T, Traits, Base, With... >, std::unique_ptr< U > >
             {
                return std::unique_ptr< U >( new T( Traits< T >::as( v, with... ) ) );
             }
 
             template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, Base, With... >::value, std::unique_ptr< U > >
+            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, Base, With... >, std::unique_ptr< U > >
             {
                std::unique_ptr< U > t( new T() );
                Traits< T >::to( v, static_cast< T& >( *t ), with... );
@@ -42,13 +42,13 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename Producer >
-            static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer >::value || use_third_ptr_consume< T, Traits, Producer >::value, std::unique_ptr< U > >
+            static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer > || use_third_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
             {
                return Traits< T >::template consume< Traits >( parser );
             }
 
             template< template< typename... > class Traits, typename Producer >
-            static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >::value, std::unique_ptr< U > >
+            static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
             {
                std::unique_ptr< U > t( new T() );
                Traits< T >::template consume< Traits >( parser, static_cast< T& >( *t ) );

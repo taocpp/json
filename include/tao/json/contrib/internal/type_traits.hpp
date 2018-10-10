@@ -15,46 +15,25 @@ namespace tao
       namespace internal
       {
          template< typename T, template< typename... > class Traits, typename Base, typename... With >
-         struct use_first_ptr_as
-         {
-            static constexpr bool value = std::is_constructible< T, const basic_value< Traits, Base >&, With&... >::value;
-         };
+         inline constexpr bool use_first_ptr_as = std::is_constructible_v< T, const basic_value< Traits, Base >&, With&... >;
 
          template< typename T, template< typename... > class Traits, typename Base, typename... With >
-         struct use_second_ptr_as
-         {
-            static constexpr bool value = !use_first_ptr_as< T, Traits, Base, With... >::value && std::is_move_constructible< T >::value && has_as< Traits< T >, basic_value< Traits, Base >, With... >::value;
-         };
+         inline constexpr bool use_second_ptr_as = !use_first_ptr_as< T, Traits, Base, With... > && std::is_move_constructible_v< T > && has_as< Traits< T >, basic_value< Traits, Base >, With... >::value;
 
          template< typename T, template< typename... > class Traits, typename Base, typename... With >
-         struct use_third_ptr_as
-         {
-            static constexpr bool value = !use_first_ptr_as< T, Traits, Base, With... >::value && !use_second_ptr_as< T, Traits, Base, With... >::value && std::is_default_constructible< T >::value && has_to< Traits< T >, basic_value< Traits, Base >, T, With... >::value;
-         };
+         inline constexpr bool use_third_ptr_as = !use_first_ptr_as< T, Traits, Base, With... > && !use_second_ptr_as< T, Traits, Base, With... > && std::is_default_constructible_v< T > && has_to< Traits< T >, basic_value< Traits, Base >, T, With... >::value;
 
          template< typename T, template< typename... > class Traits, typename Base, typename... With >
-         struct use_fourth_ptr_as
-         {
-            static constexpr bool value = !use_first_ptr_as< T, Traits, Base, With... >::value && !use_third_ptr_as< T, Traits, Base, With... >::value && std::is_copy_constructible< T >::value && has_as< Traits< T >, basic_value< Traits, Base >, With... >::value;
-         };
+         inline constexpr bool use_fourth_ptr_as = !use_first_ptr_as< T, Traits, Base, With... > && !use_third_ptr_as< T, Traits, Base, With... > && std::is_copy_constructible_v< T > && has_as< Traits< T >, basic_value< Traits, Base >, With... >::value;
 
          template< typename T, template< typename... > class Traits, class Producer >
-         struct use_first_ptr_consume
-         {
-            static constexpr bool value = std::is_move_constructible< T >::value && has_consume_one< Traits, Producer, T >::value;
-         };
+         inline constexpr bool use_first_ptr_consume = std::is_move_constructible_v< T >&& has_consume_one< Traits, Producer, T >::value;
 
          template< typename T, template< typename... > class Traits, class Producer >
-         struct use_second_ptr_consume
-         {
-            static constexpr bool value = !use_first_ptr_consume< T, Traits, Producer >::value && std::is_default_constructible< T >::value && has_consume_two< Traits, Producer, T >::value;
-         };
+         inline constexpr bool use_second_ptr_consume = !use_first_ptr_consume< T, Traits, Producer > && std::is_default_constructible_v< T > && has_consume_two< Traits, Producer, T >::value;
 
          template< typename T, template< typename... > class Traits, class Producer >
-         struct use_third_ptr_consume
-         {
-            static constexpr bool value = !use_second_ptr_consume< T, Traits, Producer >::value && std::is_copy_constructible< T >::value && has_consume_one< Traits, Producer, T >::value;
-         };
+         inline constexpr bool use_third_ptr_consume = !use_second_ptr_consume< T, Traits, Producer > && std::is_copy_constructible_v< T > && has_consume_one< Traits, Producer, T >::value;
 
       }  // namespace internal
 
