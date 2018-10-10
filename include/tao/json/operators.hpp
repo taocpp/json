@@ -523,32 +523,6 @@ namespace tao
          return !( lhs < rhs );
       }
 
-      template< template< typename... > class Traits, typename Base >
-      basic_value< Traits, Base >& operator+=( basic_value< Traits, Base >& v, std::initializer_list< internal::pair< Traits, Base > >&& l )
-      {
-         v.insert( std::move( l ) );
-         return v;
-      }
-
-      template< template< typename... > class Traits, typename Base >
-      basic_value< Traits, Base >& operator+=( basic_value< Traits, Base >& v, const std::initializer_list< internal::pair< Traits, Base > >& l )
-      {
-         v.insert( l );
-         return v;
-      }
-
-      template< template< typename... > class Traits, typename Base >
-      basic_value< Traits, Base >& operator-=( basic_value< Traits, Base >& v, std::initializer_list< std::string > l )
-      {
-         auto& o = v.get_object();
-         for( const auto& k : l ) {
-            if( o.erase( k ) == 0 ) {
-               throw std::runtime_error( internal::format( "json object key '", internal::escape( k ), "'", json::base_message_extension( v.base() ) ) );  // NOLINT
-            }
-         }
-         return v;
-      }
-
    }  // namespace json
 
 }  // namespace tao
