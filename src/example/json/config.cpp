@@ -27,9 +27,6 @@ namespace config
       struct name_separator : pad< one< ':', '=' >, jaxn::ws > {};
       struct value;
 
-      struct function_param : if_must< identifier, name_separator, value > {};
-      struct function : seq< identifier, rws, list< function_param, jaxn::value_separator > > {};
-
       struct expression;
 
       struct string_fragment : sor< jaxn::string_fragment, expression > {};
@@ -66,6 +63,10 @@ namespace config
 
       struct ekey_part : sor< string, identifier > {};
       struct ekey : list< ekey_part, one< '.' > > {};
+
+      struct function_param : if_must< identifier, name_separator, value > {};
+      struct argument_separator : sor< jaxn::value_separator, star< jaxn::ws > > {};
+      struct function : seq< identifier, rws, opt< string >, star< argument_separator, function_param > > {};
 
       struct expression : if_must< json_pegtl::string< '$', '(' >, sor< function, ekey >, one< ')' > > {};
       struct expression_list : seq< expression, star< jaxn::value_concat, sor< expression, must< sor< string, binary, object, array > > > > > {};
