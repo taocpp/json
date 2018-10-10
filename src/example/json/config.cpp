@@ -165,7 +165,7 @@ namespace config
 
       struct statement : sor< include_file, delete_keys, member > {};
 
-      struct grammar : until< eof, sor< jaxn::ws, must< rules::statement > > > {};
+      struct grammar : sor< seq< object_value, star< jaxn::ws >, eof >, until< eof, sor< jaxn::ws, must< rules::statement > > > > {};
       // clang-format on
 
    }  // namespace rules
