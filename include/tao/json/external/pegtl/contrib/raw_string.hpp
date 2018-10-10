@@ -16,7 +16,6 @@
 #include "../internal/eol.hpp"
 #include "../internal/must.hpp"
 #include "../internal/not_at.hpp"
-#include "../internal/rule_conjunction.hpp"
 #include "../internal/seq.hpp"
 #include "../internal/skip_control.hpp"
 #include "../internal/star.hpp"
@@ -63,9 +62,7 @@ namespace tao
          };
 
          template< char Open, char Marker >
-         struct skip_control< raw_string_open< Open, Marker > > : std::true_type
-         {
-         };
+         inline constexpr bool skip_control< raw_string_open< Open, Marker > > = true;
 
          template< char Marker, char Close >
          struct at_raw_string_close
@@ -99,9 +96,7 @@ namespace tao
          };
 
          template< char Marker, char Close >
-         struct skip_control< at_raw_string_close< Marker, Close > > : std::true_type
-         {
-         };
+         inline constexpr bool skip_control< at_raw_string_close< Marker, Close > > = true;
 
          template< typename Cond, typename... Rules >
          struct raw_string_until;
@@ -148,7 +143,7 @@ namespace tao
                using m_t = decltype( m );
 
                while( !Control< Cond >::template match< A, rewind_mode::REQUIRED, Action, Control >( in, marker_size, st... ) ) {
-                  if( in.empty() || ( !rule_conjunction< Rules... >::template match< A, m_t::next_rewind_mode, Action, Control >( in, st... ) ) ) {
+                  if( in.empty() || !( Control< Rules >::template match< A, m_t::next_rewind_mode, Action, Control >( in, st... ) && ... ) ) {
                      return false;
                   }
                }
@@ -157,9 +152,7 @@ namespace tao
          };
 
          template< typename Cond, typename... Rules >
-         struct skip_control< raw_string_until< Cond, Rules... > > : std::true_type
-         {
-         };
+         inline constexpr bool skip_control< raw_string_until< Cond, Rules... > > = true;
 
       }  // namespace internal
 

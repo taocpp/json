@@ -47,7 +47,7 @@ namespace tao
             template< typename I, typename Input >
             I convert_negative( const Input& in, std::size_t index )
             {
-               using U = typename std::make_unsigned< I >::type;
+               using U = std::make_unsigned_t< I >;
                static constexpr U limit = static_cast< U >( std::numeric_limits< I >::max() ) + 1;
                return static_cast< I >( ~actual_convert< U, limit >( in, index ) ) + 1;
             }
@@ -63,12 +63,12 @@ namespace tao
          {
             // Assumes that 'in' contains a non-empty sequence of ASCII digits.
 
-            template< typename Input, typename State, typename... States >
-            static void apply( const Input& in, State& st, States&&... /*unused*/ )
+            template< typename Input, typename State >
+            static void apply( const Input& in, State& st )
             {
-               using T = typename std::decay< decltype( st.converted ) >::type;
-               static_assert( std::is_integral< T >::value, "need integral type" );
-               static_assert( std::is_unsigned< T >::value, "need unsigned type" );
+               using T = std::decay_t< decltype( st.converted ) >;
+               static_assert( std::is_integral_v< T >, "need integral type" );
+               static_assert( std::is_unsigned_v< T >, "need unsigned type" );
                st.converted = internal::convert_positive< T >( in, 0 );
             }
          };
@@ -83,12 +83,12 @@ namespace tao
             // Assumes that 'in' contains a non-empty sequence of ASCII digits,
             // with optional leading sign; with sign, in.size() must be >= 2.
 
-            template< typename Input, typename State, typename... States >
-            static void apply( const Input& in, State& st, States&&... /*unused*/ )
+            template< typename Input, typename State >
+            static void apply( const Input& in, State& st )
             {
-               using T = typename std::decay< decltype( st.converted ) >::type;
-               static_assert( std::is_integral< T >::value, "need integral type" );
-               static_assert( std::is_signed< T >::value, "need signed type" );
+               using T = std::decay_t< decltype( st.converted ) >;
+               static_assert( std::is_integral_v< T >, "need integral type" );
+               static_assert( std::is_signed_v< T >, "need signed type" );
                const auto c = in.peek_char();
                if( c == '-' ) {
                   st.converted = internal::convert_negative< T >( in, 1 );
