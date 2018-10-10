@@ -39,7 +39,7 @@ namespace config
       struct binary : list_must< binary_fragment, jaxn::value_concat > {};
 
       struct element;
-      struct array_content : opt< list_tail< element, jaxn::element_separator > > {};
+      struct array_content : opt< list_tail< element, opt< jaxn::element_separator > > > {};
       struct array_value : seq< jaxn::begin_array, array_content, must< jaxn::end_array > >
       {
          using begin = jaxn::begin_array;
