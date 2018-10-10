@@ -38,7 +38,6 @@ set(testsources
   literal.cpp
   msgpack.cpp
   object_construction.cpp
-  object_operators.cpp
   opaque_pointer.cpp
   optional.cpp
   self_contained.cpp
