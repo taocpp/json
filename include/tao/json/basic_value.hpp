@@ -132,6 +132,8 @@ namespace tao
 #endif
          }
 
+         basic_value( std::nullopt_t ) = delete;
+
          static basic_value array( std::initializer_list< internal::single< Traits, Base > >&& l )
          {
             basic_value v;

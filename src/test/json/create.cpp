@@ -566,6 +566,9 @@ namespace tao
             TEST_ASSERT( v2.at( "baz" ).is_signed() );
             TEST_ASSERT( v2.at( "baz" ).unsafe_get_signed() == 42 );
          }
+
+         std::optional< value > ov = std::nullopt;
+         ov = std::nullopt;
       }
 
    }  // namespace json
