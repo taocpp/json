@@ -74,7 +74,7 @@ namespace tao
             seize( std::move( r ) );
          }
 
-         template< typename T, typename = std::enable_if_t< !std::is_convertible_v< T&&, const basic_value& > > >
+         template< typename T, typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
          basic_value( T&& v )  // NOLINT
             noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          {
@@ -131,8 +131,6 @@ namespace tao
             static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
 #endif
          }
-
-         basic_value( std::nullopt_t ) = delete;
 
          static basic_value array( std::initializer_list< internal::single< Traits, Base > >&& l )
          {
