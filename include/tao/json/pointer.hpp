@@ -429,7 +429,7 @@ namespace tao
          }
 
          template< typename T >
-         T* array_find( T* v, const std::size_t i )
+         T* unsafe_find( T* v, const std::size_t i )
          {
             auto& a = v->unsafe_get_array();
             return ( i < a.size() ) ? ( a.data() + i ) : nullptr;
@@ -441,10 +441,10 @@ namespace tao
             for( auto it = begin; v && ( it != end ); ++it ) {
                switch( v->type() ) {
                   case type::ARRAY:
-                     v = array_find( v, it->index() );
+                     v = unsafe_find( v, it->index() );
                      break;
                   case type::OBJECT:
-                     v = v->find( it->key() );
+                     v = v->unsafe_find( it->key() );
                      break;
                   default:
                      throw invalid_type( begin, std::next( it ) );  // NOLINT
