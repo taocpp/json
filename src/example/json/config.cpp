@@ -249,7 +249,7 @@ namespace config
 
    using nodes = std::map< json::pointer, std::shared_ptr< parse_tree::node > >;
 
-   void remove_prefix( nodes& ns, json::pointer prefix )
+   void remove_prefix( nodes& ns, const json::pointer& prefix )
    {
       auto it = ns.begin();
       while( it != ns.end() ) {
@@ -305,35 +305,35 @@ namespace config
       add_element( ns, std::move( c.back() ), std::move( k ) );
    }
 
-   void add_element( nodes& ns, std::unique_ptr< parse_tree::node > n, json::pointer k )
+   void add_element( nodes& ns, std::unique_ptr< parse_tree::node > n, json::pointer prefix )
    {
-      remove_prefix( ns, k );
+      remove_prefix( ns, prefix );
       if( n->is< config::rules::object >() ) {
          for( auto& e : n->children ) {
             assert( e->is< config::rules::member >() );
-            add_member( ns, *e, k );
+            add_member( ns, *e, prefix );
          }
          n->children.clear();
-         ns.emplace( std::move( k ), std::move( n ) );
+         ns.emplace( std::move( prefix ), std::move( n ) );
       }
       else if( n->is< config::rules::array >() ) {
          std::size_t i = 0;
          for( auto& e : n->children ) {
             assert( e->is< config::rules::element >() );
             assert( e->children.size() == 1 );
-            add_element( ns, std::move( e->children.front() ), k + i++ );
+            add_element( ns, std::move( e->children.front() ), prefix + i++ );
          }
          n->children.clear();
-         ns.emplace( std::move( k ), std::move( n ) );
+         ns.emplace( std::move( prefix ), std::move( n ) );
       }
       else if( n->is< config::rules::reference >() ) {
          const auto v = resolve_key( ns, *n );
-         assert( !v.is_prefix_of( k ) );  // TODO: better error message
-         assert( !k.is_prefix_of( v ) );  // TODO: better error message
+         assert( !v.is_prefix_of( prefix ) );  // TODO: better error message
+         assert( !prefix.is_prefix_of( v ) );  // TODO: better error message
          nodes n2;
          for( auto& e : ns ) {
             if( v.is_prefix_of( e.first ) ) {
-               auto p2 = k;
+               auto p2 = prefix;
                auto it = e.first.begin() + v.size();
                while( it != e.first.end() ) {
                   p2.push_back( *it++ );
@@ -345,7 +345,7 @@ namespace config
          ns.insert( std::make_move_iterator( n2.begin() ), std::make_move_iterator( n2.end() ) );
       }
       else {
-         ns.emplace( std::move( k ), std::move( n ) );
+         ns.emplace( std::move( prefix ), std::move( n ) );
       }
    }
 

@@ -95,6 +95,7 @@ namespace tao
                   case 9:
                   case 11:
                      return false;
+                  default:;
                }
             }
 

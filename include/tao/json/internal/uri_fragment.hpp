@@ -72,9 +72,10 @@ namespace tao
                case 'd': case 'D': return 13;
                case 'e': case 'E': return 14;
                case 'f': case 'F': return 15;
+               default:
+                  throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );  // NOLINT
             }
             // clang-format on
-            throw std::invalid_argument( "invalid URI Fragment escape sequence, '%' must be followed by two hexadecimal digits" );  // NOLINT
          }
 
          inline pointer uri_fragment_to_pointer( const std::string_view v )
