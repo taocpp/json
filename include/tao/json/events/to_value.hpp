@@ -84,7 +84,7 @@ namespace tao
 
             void begin_array()
             {
-               stack_.push_back( empty_array );
+               stack_.emplace_back( empty_array );
             }
 
             void begin_array( const std::size_t size )
@@ -107,7 +107,7 @@ namespace tao
 
             void begin_object( const std::size_t /*unused*/ = 0 )
             {
-               stack_.push_back( empty_object );
+               stack_.emplace_back( empty_object );
             }
 
             void key( const std::string_view v )
