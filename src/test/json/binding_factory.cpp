@@ -151,8 +151,8 @@ namespace tao
          TEST_ASSERT( a );
          const auto* b = dynamic_cast< derived_2* >( a.get() );
          TEST_ASSERT( b );
-         TEST_ASSERT( b->i == 42 );
-         TEST_ASSERT( b->j == 23 );
+         TEST_ASSERT( b && ( b->i == 42 ) );
+         TEST_ASSERT( b && ( b->j == 23 ) );
          const value w = a;
          TEST_ASSERT( w == v );
          const value x = produce::to_value( a );
@@ -162,8 +162,8 @@ namespace tao
          TEST_ASSERT( c );
          const auto* d = dynamic_cast< derived_2* >( c.get() );
          TEST_ASSERT( d );
-         TEST_ASSERT( d->i == 42 );
-         TEST_ASSERT( d->j == 23 );
+         TEST_ASSERT( d && ( d->i == 42 ) );
+         TEST_ASSERT( d && ( d->j == 23 ) );
       }
 
       void unit_test_5()
