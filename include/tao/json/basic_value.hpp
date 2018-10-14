@@ -676,9 +676,13 @@ namespace tao
          }
 
          template< typename... Ts >
-         std::pair< typename object_t::iterator, bool > unsafe_emplace( Ts&&... ts )
+         auto unsafe_emplace( Ts&&... ts )
          {
-            return m_union.o.emplace( std::forward< Ts >( ts )... );
+            auto r = m_union.o.emplace( std::forward< Ts >( ts )... );
+            if( !r.second ) {
+               throw_duplicate_key_exception( r.first->first );
+            }
+            return r;
          }
 
          std::pair< typename object_t::iterator, bool > unsafe_insert( typename object_t::value_type&& t )
@@ -725,10 +729,7 @@ namespace tao
          {
             unsafe_emplace_object();
             for( auto& e : l ) {
-               const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
-               if( !r.second ) {
-                  throw_duplicate_key_exception( r.first->first );
-               }
+               unsafe_emplace( std::move( e.key ), std::move( e.value ) );
             }
          }
 
@@ -736,10 +737,7 @@ namespace tao
          {
             unsafe_emplace_object();
             for( const auto& e : l ) {
-               const auto r = unsafe_emplace( e.key, e.value );
-               if( !r.second ) {
-                  throw_duplicate_key_exception( r.first->first );
-               }
+               unsafe_emplace( e.key, e.value );
             }
          }
 
@@ -954,10 +952,7 @@ namespace tao
          {
             prepare_object();
             for( auto& e : l ) {
-               const auto r = unsafe_emplace( std::move( e.key ), std::move( e.value ) );
-               if( !r.second ) {
-                  throw_duplicate_key_exception( r.first->first );
-               }
+               unsafe_emplace( std::move( e.key ), std::move( e.value ) );
             }
          }
 
@@ -965,10 +960,7 @@ namespace tao
          {
             prepare_object();
             for( const auto& e : l ) {
-               const auto r = unsafe_emplace( e.key, e.value );
-               if( !r.second ) {
-                  throw_duplicate_key_exception( r.first->first );
-               }
+               unsafe_emplace( e.key, e.value );
             }
          }
 
