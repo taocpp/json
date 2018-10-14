@@ -66,7 +66,7 @@ namespace tao
          }
 
          template< typename T,
-                   typename = std::enable_if_t< Traits< void >::enable_implicit_constructor >,
+                   typename = std::enable_if_t< Traits< void >::enable_implicit_constructor, T >,
                    typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
          basic_value( T&& v )  // NOLINT
             noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
@@ -91,7 +91,7 @@ namespace tao
          }
 
          template< typename T,
-                   typename = std::enable_if_t< !Traits< void >::enable_implicit_constructor >,
+                   typename = std::enable_if_t< !Traits< void >::enable_implicit_constructor, T >,
                    typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ),
                    int = 0 >
          explicit basic_value( T&& v ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
