@@ -11,6 +11,8 @@
 #include "../forward.hpp"
 #include "../type.hpp"
 
+#include "format.hpp"
+
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4702 )
@@ -36,7 +38,7 @@ namespace tao
                   case type::DOUBLE:
                      return static_cast< T >( v.unsafe_get_double() );
                   default:
-                     throw std::logic_error( std::string( "invalid json type '" ) + to_string( v.type() ) + "' for conversion to number" + json::base_message_extension( v.base() ) );  // NOLINT
+                     throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to number", json::base_message_extension( v.base() ) ) );  // NOLINT
                }
             }
          };

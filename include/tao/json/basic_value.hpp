@@ -1387,7 +1387,7 @@ namespace tao
          void validate_json_type( const json::type t ) const
          {
             if( m_type != t ) {
-               throw std::logic_error( std::string( "invalid json type '" ) + to_string( m_type ) + "', expected '" + to_string( t ) + '\'' + json::base_message_extension( base() ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", m_type, "', expected '", t, '\'', json::base_message_extension( base() ) ) );  // NOLINT
             }
          }
 

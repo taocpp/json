@@ -30,7 +30,7 @@ namespace tao
          OPAQUE_PTR
       };
 
-      inline bool needs_discard( const type t )
+      constexpr bool needs_discard( const type t )
       {
          switch( t ) {
             case type::STRING:
@@ -45,7 +45,7 @@ namespace tao
          }
       }
 
-      inline const char* to_string( const type t )
+      constexpr std::string_view to_string( const type t )
       {
          switch( t ) {
             case type::UNINITIALIZED:
