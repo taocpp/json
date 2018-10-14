@@ -40,7 +40,6 @@ namespace tao
                }
             };
 
-
             template< typename V >
             struct type_key< use_default_key, V >
             {

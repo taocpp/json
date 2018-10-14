@@ -24,7 +24,6 @@ namespace tao
       {
       };
 
-
       template<>
       struct traits< type_1 >
          : binding::versions< version_b,

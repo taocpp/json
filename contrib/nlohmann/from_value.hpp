@@ -61,7 +61,7 @@ namespace tao
             throw std::logic_error( "invalid value for type()" );  // LCOV_EXCL_LINE
          }
 
-      }  // nlohmann
+      }  // namespace nlohmann
 
    }  // namespace json
 

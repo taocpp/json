@@ -11,7 +11,7 @@ namespace tao
 {
    namespace json
    {
-      using type_1 = std::pair< int, std::string >;  // traits< std::pair< ... > > is implemented with binding::array and binding::element.
+      using type_1 = std::pair< int, std::string >;         // traits< std::pair< ... > > is implemented with binding::array and binding::element.
       using type_2 = std::tuple< int, std::string, bool >;  // traits< std::tuple< ... > > is implemented with binding::array and binding::element2.
 
       class type_3

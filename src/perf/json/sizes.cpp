@@ -5,7 +5,7 @@
 
 #include <tao/json.hpp>
 
-#define PRINT_SIZE( ... )                       \
+#define PRINT_SIZE( ... ) \
    std::cout << #__VA_ARGS__ << " size " << sizeof( __VA_ARGS__ ) << " align " << alignof( __VA_ARGS__ ) << std::endl;
 
 int main( int /*unused*/, char** /*unused*/ )

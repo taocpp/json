@@ -108,7 +108,7 @@ namespace tao
             }
          };
 
-      }  // nlohmann
+      }  // namespace nlohmann
 
    }  // namespace json
 

@@ -118,7 +118,8 @@ namespace tao
                std::string name;
             };
 
-            template< template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic, typename... With > using as_func_t = Pointer< Polymorphic >( * )( const basic_value< Traits, Base >&, With&... );
+            template< template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic, typename... With >
+            using as_func_t = Pointer< Polymorphic > ( * )( const basic_value< Traits, Base >&, With&... );
 
             template< typename V, template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic, typename... With >
             static void emplace_as( std::map< std::string, entry1< as_func_t< Traits, Base, Pointer, Polymorphic, With... > > >& m )

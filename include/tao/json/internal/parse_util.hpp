@@ -17,7 +17,7 @@ namespace tao
       namespace internal
       {
          template< typename Input >
-         void throw_on_empty( Input& in  )
+         void throw_on_empty( Input& in )
          {
             if( in.empty() ) {
                throw json_pegtl::parse_error( format( "unexpected end of input" ), in );
