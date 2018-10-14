@@ -20,8 +20,8 @@ namespace tao
    {
       namespace ubjson
       {
-         template< template< typename... > class... Transformers, template< typename... > class Traits, typename Base >
-         std::string to_string( const basic_value< Traits, Base >& v )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         std::string to_string( const basic_value< Traits >& v )
          {
             json::events::transformer< events::to_string, Transformers..., json::events::non_finite_to_null > consumer;
             json::events::from_value( consumer, v );

@@ -17,8 +17,8 @@ namespace tao
       // of VALUE_PTR or OPAQUE_PTR nodes, STRING_VIEW or BINARY_VIEW,
       // returns true is no such nodes were found.
 
-      template< template< typename... > class Traits, typename Base >
-      bool is_self_contained( const basic_value< Traits, Base >& v ) noexcept
+      template< template< typename... > class Traits >
+      bool is_self_contained( const basic_value< Traits >& v ) noexcept
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
@@ -80,8 +80,8 @@ namespace tao
       // replaces STRING_VIEW and BINARY_VIEW with STRING
       // and BINARY, respectively, with a copy of the data.
 
-      template< template< typename... > class Traits, typename Base >
-      void make_self_contained( basic_value< Traits, Base >& v )
+      template< template< typename... > class Traits >
+      void make_self_contained( basic_value< Traits >& v )
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
@@ -133,8 +133,8 @@ namespace tao
 
             case type::OPAQUE_PTR: {
                const auto& q = v.unsafe_get_opaque_ptr();
-               events::to_basic_value< Traits, Base > consumer;
-               events::virtual_ref< events::to_basic_value< Traits, Base > > ref( consumer );
+               events::to_basic_value< Traits > consumer;
+               events::virtual_ref< events::to_basic_value< Traits > > ref( consumer );
                q.producer( ref, q.data );
                consumer.value.base() = std::move( v.base() );
                v = std::move( consumer.value );
@@ -144,10 +144,10 @@ namespace tao
          throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
       }
 
-      template< template< typename... > class Traits, typename Base >
-      basic_value< Traits, Base > self_contained_copy( const basic_value< Traits, Base >& v )
+      template< template< typename... > class Traits >
+      basic_value< Traits > self_contained_copy( const basic_value< Traits >& v )
       {
-         basic_value< Traits, Base > r = &v;
+         basic_value< Traits > r = &v;
          make_self_contained( r );
          return r;
       }

@@ -18,18 +18,12 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers, typename... Ts >
-         basic_value< Traits, Base > basic_from_input( Ts&&... ts )
-         {
-            json::events::transformer< json::events::to_basic_value< Traits, Base >, Transformers... > consumer;
-            events::from_input( consumer, std::forward< Ts >( ts )... );
-            return std::move( consumer.value );
-         }
-
          template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
          basic_value< Traits > basic_from_input( Ts&&... ts )
          {
-            return basic_from_input< Traits, json::internal::empty_base, Transformers... >( std::forward< Ts >( ts )... );
+            json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
+            events::from_input( consumer, std::forward< Ts >( ts )... );
+            return std::move( consumer.value );
          }
 
          template< template< typename... > class... Transformers, typename... Ts >

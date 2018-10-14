@@ -35,24 +35,15 @@ namespace tao
 {
    namespace json
    {
-      namespace internal
-      {
-         // required work-around for GCC 6
-         inline void rethrow()
-         {
-            throw;
-         }
-
-      }  // namespace internal
-
-      template< template< typename... > class Traits, typename Base >
+      template< template< typename... > class Traits >
       class basic_value  // NOLINT
-         : private Base
+         : public Traits< void >::template base< basic_value< Traits > >
       {
       public:
-         static_assert( std::is_nothrow_default_constructible_v< Base >, "Base must be nothrow default constructible" );
-         static_assert( std::is_nothrow_move_constructible_v< Base >, "Base must be nothrow move constructible" );
-         static_assert( std::is_nothrow_move_assignable_v< Base >, "Base must be nothrow move assignable" );
+         using base_t = typename Traits< void >::template base< basic_value< Traits > >;
+         static_assert( std::is_nothrow_default_constructible_v< base_t > );
+         static_assert( std::is_nothrow_move_constructible_v< base_t > );
+         static_assert( std::is_nothrow_move_assignable_v< base_t > );
 
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
@@ -60,7 +51,7 @@ namespace tao
          basic_value() noexcept = default;
 
          basic_value( const basic_value& r )
-            : Base( static_cast< const Base& >( r ) ),
+            : base_t( static_cast< const base_t& >( r ) ),
               m_type( json::type::DESTROYED )
          {
             embed( r );
@@ -68,7 +59,7 @@ namespace tao
          }
 
          basic_value( basic_value&& r ) noexcept
-            : Base( static_cast< Base&& >( r ) ),
+            : base_t( static_cast< base_t&& >( r ) ),
               m_type( r.m_type )
          {
             seize( std::move( r ) );
@@ -78,20 +69,26 @@ namespace tao
          basic_value( T&& v )  // NOLINT
             noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          {
-            try {
+            if constexpr( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) ) {
                using D = std::decay_t< T >;
                Traits< D >::assign( *this, std::forward< T >( v ) );
             }
-            catch( ... ) {
-               unsafe_discard();
+            else {
+               try {
+                  using D = std::decay_t< T >;
+                  Traits< D >::assign( *this, std::forward< T >( v ) );
+               }
+               catch( ... ) {
+                  unsafe_discard();
 #ifndef NDEBUG
-               static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
+                  static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
 #endif
-               internal::rethrow();
+                  throw;
+               }
             }
          }
 
-         basic_value( std::initializer_list< internal::pair< Traits, Base > >&& l )
+         basic_value( std::initializer_list< internal::pair< Traits > >&& l )
          {
             try {
                unsafe_assign( std::move( l ) );
@@ -105,7 +102,7 @@ namespace tao
             }
          }
 
-         basic_value( const std::initializer_list< internal::pair< Traits, Base > >& l )
+         basic_value( const std::initializer_list< internal::pair< Traits > >& l )
          {
             try {
                unsafe_assign( l );
@@ -119,8 +116,8 @@ namespace tao
             }
          }
 
-         basic_value( std::initializer_list< internal::pair< Traits, Base > >& l )
-            : basic_value( static_cast< const std::initializer_list< internal::pair< Traits, Base > >& >( l ) )
+         basic_value( std::initializer_list< internal::pair< Traits > >& l )
+            : basic_value( static_cast< const std::initializer_list< internal::pair< Traits > >& >( l ) )
          {
          }
 
@@ -132,28 +129,28 @@ namespace tao
 #endif
          }
 
-         static basic_value array( std::initializer_list< internal::single< Traits, Base > >&& l )
+         static basic_value array( std::initializer_list< internal::single< Traits > >&& l )
          {
             basic_value v;
             v.append( std::move( l ) );
             return v;
          }
 
-         static basic_value array( const std::initializer_list< internal::single< Traits, Base > >& l )
+         static basic_value array( const std::initializer_list< internal::single< Traits > >& l )
          {
             basic_value v;
             v.append( l );
             return v;
          }
 
-         static basic_value object( std::initializer_list< internal::pair< Traits, Base > >&& l )
+         static basic_value object( std::initializer_list< internal::pair< Traits > >&& l )
          {
             basic_value v;
             v.insert( std::move( l ) );
             return v;
          }
 
-         static basic_value object( const std::initializer_list< internal::pair< Traits, Base > >& l )
+         static basic_value object( const std::initializer_list< internal::pair< Traits > >& l )
          {
             basic_value v;
             v.insert( l );
@@ -165,7 +162,7 @@ namespace tao
             unsafe_discard();
             m_type = v.m_type;
             seize( std::move( v ) );
-            Base::operator=( static_cast< Base&& >( v ) );
+            base_t::operator=( static_cast< base_t&& >( v ) );
             return *this;
          }
 
@@ -176,14 +173,14 @@ namespace tao
             ( *this ) = ( std::move( t ) );
          }
 
-         Base& base() noexcept
+         base_t& base() noexcept
          {
-            return static_cast< Base& >( *this );
+            return static_cast< base_t& >( *this );
          }
 
-         const Base& base() const noexcept
+         const base_t& base() const noexcept
          {
-            return static_cast< const Base& >( *this );
+            return static_cast< const base_t& >( *this );
          }
 
          json::type type() const noexcept
@@ -697,7 +694,7 @@ namespace tao
             Traits< D >::assign( *this, std::forward< T >( v ) );
          }
 
-         void unsafe_assign( std::initializer_list< internal::pair< Traits, Base > >&& l )
+         void unsafe_assign( std::initializer_list< internal::pair< Traits > >&& l )
          {
             unsafe_emplace_object();
             for( auto& e : l ) {
@@ -708,7 +705,7 @@ namespace tao
             }
          }
 
-         void unsafe_assign( const std::initializer_list< internal::pair< Traits, Base > >& l )
+         void unsafe_assign( const std::initializer_list< internal::pair< Traits > >& l )
          {
             unsafe_emplace_object();
             for( const auto& e : l ) {
@@ -719,9 +716,9 @@ namespace tao
             }
          }
 
-         void unsafe_assign( std::initializer_list< internal::pair< Traits, Base > >& l )
+         void unsafe_assign( std::initializer_list< internal::pair< Traits > >& l )
          {
-            unsafe_assign( static_cast< const std::initializer_list< internal::pair< Traits, Base > >& >( l ) );
+            unsafe_assign( static_cast< const std::initializer_list< internal::pair< Traits > >& >( l ) );
          }
 
          void assign_null() noexcept
@@ -855,7 +852,7 @@ namespace tao
             unsafe_emplace_back( std::forward< Ts >( ts )... );
          }
 
-         void append( std::initializer_list< internal::single< Traits, Base > >&& l )
+         void append( std::initializer_list< internal::single< Traits > >&& l )
          {
             prepare_array();
             auto& v = unsafe_get_array();
@@ -865,7 +862,7 @@ namespace tao
             }
          }
 
-         void append( const std::initializer_list< internal::single< Traits, Base > >& l )
+         void append( const std::initializer_list< internal::single< Traits > >& l )
          {
             prepare_array();
             auto& v = unsafe_get_array();
@@ -926,7 +923,7 @@ namespace tao
             return unsafe_insert( t );
          }
 
-         void insert( std::initializer_list< internal::pair< Traits, Base > >&& l )
+         void insert( std::initializer_list< internal::pair< Traits > >&& l )
          {
             prepare_object();
             for( auto& e : l ) {
@@ -937,7 +934,7 @@ namespace tao
             }
          }
 
-         void insert( const std::initializer_list< internal::pair< Traits, Base > >& l )
+         void insert( const std::initializer_list< internal::pair< Traits > >& l )
          {
             prepare_object();
             for( const auto& e : l ) {

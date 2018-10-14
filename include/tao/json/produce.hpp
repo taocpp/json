@@ -23,10 +23,10 @@ namespace tao
    {
       namespace produce
       {
-         template< template< typename... > class Traits = traits, typename Base = internal::empty_base, typename T >
-         basic_value< Traits, Base > to_value( T&& t )
+         template< template< typename... > class Traits = traits, typename T >
+         basic_value< Traits > to_value( T&& t )
          {
-            events::to_basic_value< Traits, Base > consumer;
+            events::to_basic_value< Traits > consumer;
             events::produce< Traits >( consumer, std::forward< T >( t ) );
             return std::move( consumer.value );
          }

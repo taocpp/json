@@ -54,8 +54,8 @@ namespace tao
          {
          };
 
-         template< template< typename... > class Traits, typename Base >
-         struct is_basic_value< basic_value< Traits, Base > >
+         template< template< typename... > class Traits >
+         struct is_basic_value< basic_value< Traits > >
             : public std::true_type
          {
          };

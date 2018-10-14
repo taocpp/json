@@ -33,8 +33,8 @@ namespace tao
                return V;
             }
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            template< template< typename... > class Traits, typename C >
+            static void to( const basic_value< Traits >& v, C& /*unused*/ )
             {
                const auto t = v.template as< bool >();
                if( t != V ) {
@@ -67,8 +67,8 @@ namespace tao
                return V;
             }
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            template< template< typename... > class Traits, typename C >
+            static void to( const basic_value< Traits >& v, C& /*unused*/ )
             {
                const auto t = v.template as< std::int64_t >();
                if( t != V ) {
@@ -101,8 +101,8 @@ namespace tao
                return V;
             }
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            template< template< typename... > class Traits, typename C >
+            static void to( const basic_value< Traits >& v, C& /*unused*/ )
             {
                const auto t = v.template as< std::uint64_t >();
                if( t != V ) {
@@ -140,8 +140,8 @@ namespace tao
                return string::as_string_view();
             }
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void to( const basic_value< Traits, Base >& v, C& /*unused*/ )
+            template< template< typename... > class Traits, typename C >
+            static void to( const basic_value< Traits >& v, C& /*unused*/ )
             {
                const auto sc = string::as_string_view();
                const auto sv = v.template as< std::string_view >();

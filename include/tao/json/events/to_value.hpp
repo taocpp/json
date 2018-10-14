@@ -22,15 +22,15 @@ namespace tao
       {
          // Events consumer to build a JSON Value.
 
-         template< template< typename... > class Traits, typename Base = internal::empty_base >
+         template< template< typename... > class Traits >
          class to_basic_value
          {
          private:
-            std::vector< basic_value< Traits, Base > > stack_;
+            std::vector< basic_value< Traits > > stack_;
             std::vector< std::string > keys_;
 
          public:
-            basic_value< Traits, Base > value;
+            basic_value< Traits > value;
 
             void null()
             {

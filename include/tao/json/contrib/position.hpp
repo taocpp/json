@@ -86,27 +86,39 @@ namespace tao
             }
          };
 
+         template< template< typename... > class Traits >
+         struct position_base
+            : Traits< void >
+         {
+            template< typename >
+            using base = position;
+         };
+
+         template< template< typename... > class Traits >
+         struct position_traits
+         {
+            template< typename T >
+            struct type
+               : std::conditional_t< std::is_same_v< T, void >, position_base< Traits >, Traits< T > >
+            {
+            };
+         };
+
       }  // namespace internal
 
-      template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >
-      basic_value< Traits, position > basic_parse_file_with_position( const std::string& filename )
+      template< template< typename... > class Traits, template< typename... > class... Transformers >
+      auto basic_parse_file_with_position( const std::string& filename )
       {
-         events::transformer< events::to_basic_value< Traits, Base >, Transformers... > consumer;
+         events::transformer< events::to_basic_value< internal::position_traits< Traits >::template type >, Transformers... > consumer;
          json_pegtl::file_input< json_pegtl::tracking_mode::IMMEDIATE > in( filename );
          json_pegtl::parse< internal::grammar, internal::position_action, internal::control >( in, consumer );
          return std::move( consumer.value );
       }
 
-      template< template< typename... > class Traits, template< typename... > class... Transformers >
-      basic_value< Traits, position > basic_parse_file_with_position( const std::string& filename )
-      {
-         return basic_parse_file_with_position< Traits, position, Transformers... >( filename );
-      }
-
       template< template< typename... > class... Transformers >
-      basic_value< traits, position > parse_file_with_position( const std::string& filename )
+      auto parse_file_with_position( const std::string& filename )
       {
-         return basic_parse_file_with_position< traits, position, Transformers... >( filename );
+         return basic_parse_file_with_position< traits, Transformers... >( filename );
       }
 
    }  // namespace json

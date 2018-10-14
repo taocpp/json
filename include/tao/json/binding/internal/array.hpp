@@ -29,8 +29,8 @@ namespace tao
             {
                using elements = json::internal::type_list< As... >;
 
-               template< template< typename... > class Traits, typename Base, typename C >
-               static void to( const basic_value< Traits, Base >& v, C& x )
+               template< template< typename... > class Traits, typename C >
+               static void to( const basic_value< Traits >& v, C& x )
                {
                   const auto& a = v.get_array();
                   if( a.size() != sizeof...( As ) ) {
@@ -39,8 +39,8 @@ namespace tao
                   ( As::to( a.at( Is ), x ), ... );
                }
 
-               template< template< typename... > class Traits, typename Base, typename C >
-               static void assign( basic_value< Traits, Base >& v, const C& x )
+               template< template< typename... > class Traits, typename C >
+               static void assign( basic_value< Traits >& v, const C& x )
                {
                   v.unsafe_emplace_array();
                   ( v.unsafe_emplace_back( As::read( x ) ), ... );
@@ -76,8 +76,8 @@ namespace tao
                   consumer.end_array( sizeof...( As ) );
                }
 
-               template< template< typename... > class Traits, typename Base, typename C >
-               static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
+               template< template< typename... > class Traits, typename C >
+               static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
                {
                   const auto& p = lhs.skip_value_ptr();
                   if( p.is_array() && ( p.unsafe_get_array().size() == sizeof...( As ) ) ) {

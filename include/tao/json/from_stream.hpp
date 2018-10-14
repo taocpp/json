@@ -16,24 +16,12 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >
-      basic_value< Traits, Base > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
-      {
-         events::transformer< events::to_basic_value< Traits, Base >, Transformers... > consumer;
-         events::from_stream( consumer, stream, source, maximum_buffer_size );
-         return std::move( consumer.value );
-      }
-
       template< template< typename... > class Traits, template< typename... > class... Transformers >
       basic_value< Traits > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
       {
-         return basic_from_stream< Traits, internal::empty_base, Transformers... >( stream, source, maximum_buffer_size );
-      }
-
-      template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers >
-      basic_value< Traits, Base > basic_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
-      {
-         return basic_from_stream< Traits, Base, Transformers... >( stream, source.c_str(), maximum_buffer_size );
+         events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
+         events::from_stream( consumer, stream, source, maximum_buffer_size );
+         return std::move( consumer.value );
       }
 
       template< template< typename... > class Traits, template< typename... > class... Transformers >

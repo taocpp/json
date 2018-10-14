@@ -17,8 +17,8 @@ namespace tao
 
       struct type_1
       {
-         template< template< typename... > class Traits, typename Base >
-         type_1( const basic_value< Traits, Base >& /*unused*/, const arg_0& /*unused*/ )
+         template< template< typename... > class Traits >
+         type_1( const basic_value< Traits >& /*unused*/, const arg_0& /*unused*/ )
          {
          }
 

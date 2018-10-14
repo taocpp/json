@@ -75,25 +75,25 @@ namespace tao
                   t.set( I, A::kind == member_kind::OPTIONAL );
                }
 
-               template< typename A, typename C, template< typename... > class Traits, typename Base >
-               static void to_wrapper( const basic_value< Traits, Base >& v, C& x )
+               template< typename A, typename C, template< typename... > class Traits >
+               static void to_wrapper( const basic_value< Traits >& v, C& x )
                {
-                  A::template to< Traits, Base >( v, x );
+                  A::template to< Traits >( v, x );
                }
 
-               template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename Base, typename F >
+               template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename F >
                static void emplace_to( std::map< std::string, entry< F > >& m )
                {
-                  m.emplace( A::template key< Traits >(), entry< F >( &basic_object::to_wrapper< A, C, Traits, Base >, I ) );
+                  m.emplace( A::template key< Traits >(), entry< F >( &basic_object::to_wrapper< A, C, Traits >, I ) );
                }
 
-               template< template< typename... > class Traits, typename Base, typename C >
-               static void to( const basic_value< Traits, Base >& v, C& x )
+               template< template< typename... > class Traits, typename C >
+               static void to( const basic_value< Traits >& v, C& x )
                {
-                  using F = void ( * )( const basic_value< Traits, Base >&, C& );
+                  using F = void ( * )( const basic_value< Traits >&, C& );
                   static const std::map< std::string, entry< F > > m = []() {
                      std::map< std::string, entry< F > > t;
-                     ( emplace_to< As, Is, C, Traits, Base >( t ), ... );
+                     ( emplace_to< As, Is, C, Traits >( t ), ... );
                      assert( t.size() == sizeof...( As ) );  // TODO: Check for duplicate keys at compile time?
                      return t;
                   }();
@@ -131,16 +131,16 @@ namespace tao
                   }
                }
 
-               template< typename A, template< typename... > class Traits, typename Base, typename C >
-               static void assign_member( basic_value< Traits, Base >& v, const C& x )
+               template< typename A, template< typename... > class Traits, typename C >
+               static void assign_member( basic_value< Traits >& v, const C& x )
                {
                   if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      v.unsafe_emplace( A::template key< Traits >(), A::read( x ) );
                   }
                }
 
-               template< template< typename... > class Traits, typename Base, typename C >
-               static void assign( basic_value< Traits, Base >& v, const C& x )
+               template< template< typename... > class Traits, typename C >
+               static void assign( basic_value< Traits >& v, const C& x )
                {
                   v.unsafe_emplace_object();
                   ( assign_member< As >( v, x ), ... );
@@ -234,8 +234,8 @@ namespace tao
                   consumer.end_object( size );
                }
 
-               template< typename A, template< typename... > class Traits, typename Base, typename C >
-               static bool equal_member( const std::map< std::string, basic_value< Traits, Base > >& a, C& x )
+               template< typename A, template< typename... > class Traits, typename C >
+               static bool equal_member( const std::map< std::string, basic_value< Traits > >& a, C& x )
                {
                   if( !A::template is_nothing< Traits >( x ) ) {
                      return a.at( A::template key< Traits >() ) == A::read( x );
@@ -247,8 +247,8 @@ namespace tao
                   return ( i == a.end() ) || i->second.is_null();
                }
 
-               template< template< typename... > class Traits, typename Base, typename C >
-               static bool equal( const basic_value< Traits, Base >& lhs, const C& rhs ) noexcept
+               template< template< typename... > class Traits, typename C >
+               static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
                {
                   const auto& p = lhs.skip_value_ptr();
                   if( p.is_object() && ( p.unsafe_get_object().size() == sizeof...( As ) ) ) {

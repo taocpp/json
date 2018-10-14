@@ -14,14 +14,14 @@ namespace tao
       {
          namespace internal
          {
-            template< template< typename... > class Traits, typename Base >
-            const basic_value< Traits, Base >* find( const basic_value< Traits, Base >& v, const std::string& key )
+            template< template< typename... > class Traits >
+            const basic_value< Traits >* find( const basic_value< Traits >& v, const std::string& key )
             {
                return v.skip_value_ptr().find( key );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            const basic_value< Traits, Base >* find( const basic_value< Traits, Base >& v, const std::size_t index )
+            template< template< typename... > class Traits >
+            const basic_value< Traits >* find( const basic_value< Traits >& v, const std::size_t index )
             {
                const auto& a = v.skip_value_ptr().get_array();
                return ( index < a.size() ) ? ( a.data() + index ) : nullptr;
@@ -29,54 +29,54 @@ namespace tao
 
          }  // namespace internal
 
-         template< template< typename... > class Traits, typename Base, typename K >
-         basic_value< Traits, Base > value( const basic_value< Traits, Base >& v, const K& key )
+         template< template< typename... > class Traits, typename K >
+         basic_value< Traits > value( const basic_value< Traits >& v, const K& key )
          {
             if( v ) {
                if( const auto* p = internal::find( v, key ) ) {
-                  return basic_value< Traits, Base >( p );  // Returns a Value with tao::json::type::VALUE_PTR that is invalidated when v is destroyed!
+                  return basic_value< Traits >( p );  // Returns a Value with tao::json::type::VALUE_PTR that is invalidated when v is destroyed!
                }
             }
-            return basic_value< Traits, Base >();
+            return basic_value< Traits >();
          }
 
-         template< template< typename... > class Traits, typename Base, typename K, typename... Ks >
-         basic_value< Traits, Base > value( const basic_value< Traits, Base >& v, const K& key, const Ks&... ks )
+         template< template< typename... > class Traits, typename K, typename... Ks >
+         basic_value< Traits > value( const basic_value< Traits >& v, const K& key, const Ks&... ks )
          {
             if( v ) {
                if( const auto* p = internal::find( v, key ) ) {
                   return get::value( *p, ks... );
                }
             }
-            return basic_value< Traits, Base >();
+            return basic_value< Traits >();
          }
 
-         template< typename T, typename U = T, template< typename... > class Traits, typename Base >
-         T as( const basic_value< Traits, Base >& v )
+         template< typename T, typename U = T, template< typename... > class Traits >
+         T as( const basic_value< Traits >& v )
          {
             return v.skip_value_ptr().template as< U >();
          }
 
-         template< typename T, typename U = T, template< typename... > class Traits, typename Base, typename K, typename... Ks >
-         T as( const basic_value< Traits, Base >& v, const K& key, Ks&&... ks )
+         template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
+         T as( const basic_value< Traits >& v, const K& key, Ks&&... ks )
          {
             return get::as< T, U >( v.skip_value_ptr().at( key ), ks... );
          }
 
-         template< typename T, template< typename... > class Traits, typename Base >
-         void to( const basic_value< Traits, Base >& v, T& t )
+         template< typename T, template< typename... > class Traits >
+         void to( const basic_value< Traits >& v, T& t )
          {
             v.skip_value_ptr().to( t );
          }
 
-         template< typename T, template< typename... > class Traits, typename Base, typename K, typename... Ks >
-         void to( const basic_value< Traits, Base >& v, T& t, const K& key, Ks&&... ks )
+         template< typename T, template< typename... > class Traits, typename K, typename... Ks >
+         void to( const basic_value< Traits >& v, T& t, const K& key, Ks&&... ks )
          {
             get::to( v.skip_value_ptr().at( key ), t, ks... );
          }
 
-         template< typename T, typename U = T, template< typename... > class Traits, typename Base >
-         std::optional< T > optional( const basic_value< Traits, Base >& v )
+         template< typename T, typename U = T, template< typename... > class Traits >
+         std::optional< T > optional( const basic_value< Traits >& v )
          {
             if( v ) {
                return std::optional< T >( std::in_place, get::as< U >( v ) );
@@ -84,8 +84,8 @@ namespace tao
             return std::nullopt;
          }
 
-         template< typename T, typename U = T, template< typename... > class Traits, typename Base, typename K, typename... Ks >
-         std::optional< T > optional( const basic_value< Traits, Base >& v, const K& key, const Ks&... ks )
+         template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
+         std::optional< T > optional( const basic_value< Traits >& v, const K& key, const Ks&... ks )
          {
             if( v ) {
                if( const auto* p = internal::find( v, key ) ) {
@@ -95,8 +95,8 @@ namespace tao
             return std::nullopt;
          }
 
-         template< typename T, typename U = T, template< typename... > class Traits, typename Base >
-         T defaulted( const T& t, const basic_value< Traits, Base >& v )
+         template< typename T, typename U = T, template< typename... > class Traits >
+         T defaulted( const T& t, const basic_value< Traits >& v )
          {
             if( v ) {
                return get::as< T, U >( v );
@@ -104,8 +104,8 @@ namespace tao
             return t;
          }
 
-         template< typename T, typename U = T, template< typename... > class Traits, typename Base, typename K, typename... Ks >
-         T defaulted( const T& t, const basic_value< Traits, Base >& v, const K& key, const Ks&... ks )
+         template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
+         T defaulted( const T& t, const basic_value< Traits >& v, const K& key, const Ks&... ks )
          {
             if( v ) {
                if( const auto* p = internal::find( v, key ) ) {

@@ -16,11 +16,11 @@ namespace tao
    {
       namespace internal
       {
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          struct pair
          {
             mutable std::string key;
-            mutable basic_value< Traits, Base > value;
+            mutable basic_value< Traits > value;
 
             template< typename U >
             pair( U&& v )  // NOLINT
@@ -30,13 +30,13 @@ namespace tao
             }
 
             template< typename U >
-            pair( U&& k, basic_value< Traits, Base >&& v )
+            pair( U&& k, basic_value< Traits >&& v )
                : key( std::forward< U >( k ) ), value( std::move( v ) )
             {
             }
 
             template< typename U >
-            pair( U&& k, const basic_value< Traits, Base >& v )
+            pair( U&& k, const basic_value< Traits >& v )
                : key( std::forward< U >( k ) ), value( v )
             {
             }

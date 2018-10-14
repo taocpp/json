@@ -22,20 +22,20 @@ namespace tao
          template< typename T, typename U >
          struct shared_ptr_traits
          {
-            template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, Base, With... >, std::shared_ptr< U > >
+            template< template< typename... > class Traits, typename... With >
+            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
             {
                return std::make_shared< T >( v, with... );
             }
 
-            template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, Base, With... > || use_fourth_ptr_as< T, Traits, Base, With... >, std::shared_ptr< U > >
+            template< template< typename... > class Traits, typename... With >
+            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
             {
                return std::make_shared< T >( Traits< T >::as( v, with... ) );
             }
 
-            template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, Base, With... >, std::shared_ptr< U > >
+            template< template< typename... > class Traits, typename... With >
+            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
             {
                auto t = std::make_shared< T >();
                Traits< T >::to( v, *t, with... );
@@ -63,8 +63,8 @@ namespace tao
       struct shared_ptr_traits
          : public internal::shared_ptr_traits< T, U >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::shared_ptr< U >& o )
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const std::shared_ptr< U >& o )
          {
             assert( o );
             v = static_cast< const T& >( *o );

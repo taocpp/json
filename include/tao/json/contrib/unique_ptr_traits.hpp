@@ -21,20 +21,20 @@ namespace tao
          template< typename T, typename U >
          struct unique_ptr_traits
          {
-            template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, Base, With... >, std::unique_ptr< U > >
+            template< template< typename... > class Traits, typename... With >
+            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
             {
                return std::unique_ptr< U >( new T( v, with... ) );
             }
 
-            template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, Base, With... > || use_fourth_ptr_as< T, Traits, Base, With... >, std::unique_ptr< U > >
+            template< template< typename... > class Traits, typename... With >
+            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
             {
                return std::unique_ptr< U >( new T( Traits< T >::as( v, with... ) ) );
             }
 
-            template< template< typename... > class Traits, typename Base, typename... With >
-            static auto as( const basic_value< Traits, Base >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, Base, With... >, std::unique_ptr< U > >
+            template< template< typename... > class Traits, typename... With >
+            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
             {
                std::unique_ptr< U > t( new T() );
                Traits< T >::to( v, static_cast< T& >( *t ), with... );
@@ -62,8 +62,8 @@ namespace tao
       struct unique_ptr_traits
          : public internal::unique_ptr_traits< T, U >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::unique_ptr< U >& o )
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const std::unique_ptr< U >& o )
          {
             assert( o );
             v = static_cast< const T& >( *o );

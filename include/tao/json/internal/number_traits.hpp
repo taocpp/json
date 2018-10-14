@@ -25,8 +25,8 @@ namespace tao
          template< typename T >
          struct number_trait
          {
-            template< template< typename... > class Traits, typename Base >
-            static T as( const basic_value< Traits, Base >& v )
+            template< template< typename... > class Traits >
+            static T as( const basic_value< Traits >& v )
             {
                switch( v.type() ) {
                   case type::SIGNED:
@@ -57,14 +57,14 @@ namespace tao
                c.number( std::int64_t( i ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T i ) noexcept
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T i ) noexcept
             {
                v.unsafe_assign_signed( i );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -79,8 +79,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -95,8 +95,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -128,14 +128,14 @@ namespace tao
                c.number( std::uint64_t( i ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T i ) noexcept
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T i ) noexcept
             {
                v.unsafe_assign_unsigned( i );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -152,8 +152,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -170,8 +170,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -205,14 +205,14 @@ namespace tao
                c.number( double( f ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T f ) noexcept
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T f ) noexcept
             {
                v.unsafe_assign_double( f );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -227,8 +227,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {
@@ -243,8 +243,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                switch( p.type() ) {

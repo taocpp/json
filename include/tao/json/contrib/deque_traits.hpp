@@ -19,8 +19,8 @@ namespace tao
       struct deque_traits
          : public internal::array_traits< std::deque< T, Ts... > >
       {
-         template< template< typename... > class Traits, typename Base, typename... With >
-         static void to( const basic_value< Traits, Base >& v, std::deque< T, Ts... >& r, With&... with )
+         template< template< typename... > class Traits, typename... With >
+         static void to( const basic_value< Traits >& v, std::deque< T, Ts... >& r, With&... with )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {

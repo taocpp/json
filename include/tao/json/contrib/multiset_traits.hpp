@@ -19,8 +19,8 @@ namespace tao
       struct multiset_traits
          : public internal::array_traits< std::multiset< T, Ts... > >
       {
-         template< template< typename... > class Traits, typename Base, typename... With >
-         static void to( const basic_value< Traits, Base >& v, std::multiset< T, Ts... >& r, With&... with )
+         template< template< typename... > class Traits, typename... With >
+         static void to( const basic_value< Traits >& v, std::multiset< T, Ts... >& r, With&... with )
          {
             const auto& a = v.get_array();
             for( const auto& i : a ) {

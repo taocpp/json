@@ -182,29 +182,29 @@ namespace tao
             double d;
          };
 
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          class schema_container;
 
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          struct schema_node
          {
-            const schema_container< Traits, Base >* m_container;
-            const basic_value< Traits, Base >* m_value;
-            const basic_value< Traits, Base >* m_all_of = nullptr;
-            const basic_value< Traits, Base >* m_any_of = nullptr;
-            const basic_value< Traits, Base >* m_one_of = nullptr;
-            const basic_value< Traits, Base >* m_not = nullptr;
-            const basic_value< Traits, Base >* m_items = nullptr;
-            const basic_value< Traits, Base >* m_additional_items = nullptr;
-            const basic_value< Traits, Base >* m_properties = nullptr;
-            const basic_value< Traits, Base >* m_additional_properties = nullptr;
+            const schema_container< Traits >* m_container;
+            const basic_value< Traits >* m_value;
+            const basic_value< Traits >* m_all_of = nullptr;
+            const basic_value< Traits >* m_any_of = nullptr;
+            const basic_value< Traits >* m_one_of = nullptr;
+            const basic_value< Traits >* m_not = nullptr;
+            const basic_value< Traits >* m_items = nullptr;
+            const basic_value< Traits >* m_additional_items = nullptr;
+            const basic_value< Traits >* m_properties = nullptr;
+            const basic_value< Traits >* m_additional_properties = nullptr;
 
             std::map< std::string, std::set< std::string > > m_property_dependencies;
-            std::map< std::string, const basic_value< Traits, Base >* > m_schema_dependencies;
+            std::map< std::string, const basic_value< Traits >* > m_schema_dependencies;
 
-            std::vector< std::pair< std::regex, const basic_value< Traits, Base >* > > m_pattern_properties;
+            std::vector< std::pair< std::regex, const basic_value< Traits >* > > m_pattern_properties;
 
-            std::set< const basic_value< Traits, Base >* > m_referenced_pointers;
+            std::set< const basic_value< Traits >* > m_referenced_pointers;
 
             // number
             schema_limit m_multiple_of;
@@ -278,7 +278,7 @@ namespace tao
                throw std::runtime_error( "invalid JSON Schema: invalid primitive type '" + v + '\'' );  // NOLINT
             }
 
-            const basic_value< Traits, Base >* find( const char* s ) const
+            const basic_value< Traits >* find( const char* s ) const
             {
                const auto* p = m_value->unsafe_find( s );
                if( p != nullptr ) {
@@ -287,7 +287,7 @@ namespace tao
                return p;
             }
 
-            schema_node( const schema_container< Traits, Base >* c, const basic_value< Traits, Base >& v )  // NOLINT
+            schema_node( const schema_container< Traits >* c, const basic_value< Traits >& v )  // NOLINT
                : m_container( c ),
                  m_value( &v )
             {
@@ -797,20 +797,20 @@ namespace tao
             void operator=( const schema_node& ) = delete;
             void operator=( schema_node&& ) = delete;
 
-            const std::set< const basic_value< Traits, Base >* >& referenced_pointers() const noexcept
+            const std::set< const basic_value< Traits >* >& referenced_pointers() const noexcept
             {
                return m_referenced_pointers;
             }
          };
 
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          class schema_consumer
          {
          private:
-            const std::shared_ptr< const schema_container< Traits, Base > > m_container;
-            const schema_node< Traits, Base >* const m_node;
+            const std::shared_ptr< const schema_container< Traits > > m_container;
+            const schema_node< Traits >* const m_node;
 
-            std::vector< std::unique_ptr< events_compare< Traits, Base > > > m_enum;
+            std::vector< std::unique_ptr< events_compare< Traits > > > m_enum;
             std::unique_ptr< events::hash > m_hash;
             std::set< std::string > m_unique;
             std::set< std::string > m_keys;
@@ -843,7 +843,7 @@ namespace tao
             {
                assert( m_match );
                if( m_node->m_flags & HAS_ENUM ) {
-                  m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [&]( const std::unique_ptr< events_compare< Traits, Base > >& p ) { return f( *p ); } ), m_enum.end() );
+                  m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [&]( const std::unique_ptr< events_compare< Traits > >& p ) { return f( *p ); } ), m_enum.end() );
                   if( m_enum.empty() ) {
                      m_match = false;
                   }
@@ -1303,7 +1303,7 @@ namespace tao
             }
 
          public:
-            schema_consumer( const std::shared_ptr< const schema_container< Traits, Base > >& c, const schema_node< Traits, Base >& n )
+            schema_consumer( const std::shared_ptr< const schema_container< Traits > >& c, const schema_node< Traits >& n )
                : m_container( c ),
                  m_node( &n )
             {
@@ -1311,7 +1311,7 @@ namespace tao
                   const auto& a = m_node->m_value->unsafe_at( "enum" ).unsafe_get_array();
                   m_enum.reserve( a.size() );
                   for( const auto& e : a ) {
-                     m_enum.emplace_back( std::make_unique< events_compare< Traits, Base > >() );
+                     m_enum.emplace_back( std::make_unique< events_compare< Traits > >() );
                      m_enum.back()->push( &e );
                   }
                }
@@ -1400,7 +1400,7 @@ namespace tao
                   validate_type( NULL_ );
                }
                if( m_match ) {
-                  validate_enum( []( events_compare< Traits, Base >& c ) { c.null(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.null(); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.null(); return ! c.match(); } );
@@ -1416,7 +1416,7 @@ namespace tao
                   validate_type( BOOLEAN );
                }
                if( m_match ) {
-                  validate_enum( [=]( events_compare< Traits, Base >& c ) { c.boolean( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.boolean( v ); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.boolean( v ); return ! c.match(); } );
@@ -1432,7 +1432,7 @@ namespace tao
                   validate_type( INTEGER | NUMBER );
                }
                if( m_match ) {
-                  validate_enum( [=]( events_compare< Traits, Base >& c ) { c.number( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
@@ -1451,7 +1451,7 @@ namespace tao
                   validate_type( INTEGER | NUMBER );
                }
                if( m_match ) {
-                  validate_enum( [=]( events_compare< Traits, Base >& c ) { c.number( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
@@ -1470,7 +1470,7 @@ namespace tao
                   validate_type( NUMBER );
                }
                if( m_match ) {
-                  validate_enum( [=]( events_compare< Traits, Base >& c ) { c.number( v ); return ! c.match(); } );
+                  validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
@@ -1489,7 +1489,7 @@ namespace tao
                   validate_type( STRING );
                }
                if( m_match ) {
-                  validate_enum( [&]( events_compare< Traits, Base >& c ) { c.string( v ); return ! c.match(); } );
+                  validate_enum( [&]( events_compare< Traits >& c ) { c.string( v ); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( [&]( schema_consumer& c ) { c.string( v ); return ! c.match(); } );
@@ -1513,7 +1513,7 @@ namespace tao
                   validate_type( ARRAY );
                }
                if( m_match ) {
-                  validate_enum( []( events_compare< Traits, Base >& c ) { c.begin_array(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.begin_array(); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.begin_array(); return ! c.match(); } );
@@ -1552,7 +1552,7 @@ namespace tao
             void element()
             {
                if( m_match ) {
-                  validate_enum( []( events_compare< Traits, Base >& c ) { c.element(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.element(); return ! c.match(); } );
                }
                if( m_match && m_item ) {
                   if( m_count.size() == 1 ) {
@@ -1602,7 +1602,7 @@ namespace tao
             void end_array( const std::size_t /*unused*/ = 0 )
             {
                if( m_match ) {
-                  validate_enum( []( events_compare< Traits, Base >& c ) { c.end_array(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.end_array(); return ! c.match(); } );
                }
                if( m_match && m_item && ( m_count.size() == 1 ) ) {
                   if( !m_item->finalize() ) {
@@ -1639,7 +1639,7 @@ namespace tao
                   validate_type( OBJECT );
                }
                if( m_match ) {
-                  validate_enum( []( events_compare< Traits, Base >& c ) { c.begin_object(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.begin_object(); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.begin_object(); return ! c.match(); } );
@@ -1653,7 +1653,7 @@ namespace tao
             void key( const std::string& v )
             {
                if( m_match ) {
-                  validate_enum( [&]( events_compare< Traits, Base >& c ) { c.key( v ); return ! c.match(); } );
+                  validate_enum( [&]( events_compare< Traits >& c ) { c.key( v ); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( [&]( schema_consumer& c ) { c.key( v ); return ! c.match(); } );
@@ -1709,7 +1709,7 @@ namespace tao
             void member()
             {
                if( m_match ) {
-                  validate_enum( []( events_compare< Traits, Base >& c ) { c.member(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.member(); return ! c.match(); } );
                }
                if( m_match && !m_properties.empty() && ( m_count.size() == 1 ) ) {
                   for( auto& e : m_properties ) {
@@ -1732,7 +1732,7 @@ namespace tao
             void end_object( const std::size_t /*unused*/ = 0 )
             {
                if( m_match ) {
-                  validate_enum( []( events_compare< Traits, Base >& c ) { c.end_object(); return ! c.match(); } );
+                  validate_enum( []( events_compare< Traits >& c ) { c.end_object(); return ! c.match(); } );
                }
                if( m_match ) {
                   validate_collections( []( schema_consumer& c ) { c.end_object(); return ! c.match(); } );
@@ -1762,29 +1762,29 @@ namespace tao
             }
          };
 
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          class schema_container
-            : public std::enable_shared_from_this< schema_container< Traits, Base > >
+            : public std::enable_shared_from_this< schema_container< Traits > >
          {
          private:
-            basic_value< Traits, Base > m_value;
+            basic_value< Traits > m_value;
 
-            using nodes_t = std::map< const basic_value< Traits, Base >*, std::unique_ptr< schema_node< Traits, Base > > >;
+            using nodes_t = std::map< const basic_value< Traits >*, std::unique_ptr< schema_node< Traits > > >;
             nodes_t m_nodes;
 
-            void make_node( const basic_value< Traits, Base >* p )
+            void make_node( const basic_value< Traits >* p )
             {
-               m_nodes.emplace( p, std::make_unique< schema_node< Traits, Base > >( this, *p ) );
+               m_nodes.emplace( p, std::make_unique< schema_node< Traits > >( this, *p ) );
             }
 
          public:
-            explicit schema_container( const basic_value< Traits, Base >& v )
+            explicit schema_container( const basic_value< Traits >& v )
                : m_value( v.skip_value_ptr() )
             {
                resolve_references( m_value );
                make_node( &m_value );
                while( true ) {
-                  std::set< const basic_value< Traits, Base >* > required;
+                  std::set< const basic_value< Traits >* > required;
                   for( const auto& e : m_nodes ) {
                      auto s = e.second->referenced_pointers();
                      required.insert( s.begin(), s.end() );
@@ -1801,16 +1801,16 @@ namespace tao
                }
             }
 
-            std::unique_ptr< schema_consumer< Traits, Base > > consumer( const basic_value< Traits, Base >* p ) const
+            std::unique_ptr< schema_consumer< Traits > > consumer( const basic_value< Traits >* p ) const
             {
                const auto it = m_nodes.find( p );
                if( it == m_nodes.end() ) {
                   throw std::logic_error( "invalid node ptr, no schema registered" );  // NOLINT
                }
-               return std::make_unique< schema_consumer< Traits, Base > >( this->shared_from_this(), *it->second );
+               return std::make_unique< schema_consumer< Traits > >( this->shared_from_this(), *it->second );
             }
 
-            std::unique_ptr< schema_consumer< Traits, Base > > consumer() const
+            std::unique_ptr< schema_consumer< Traits > > consumer() const
             {
                return consumer( &m_value );
             }
@@ -1818,24 +1818,24 @@ namespace tao
 
       }  // namespace internal
 
-      template< template< typename... > class Traits, typename Base = internal::empty_base >
+      template< template< typename... > class Traits >
       class basic_schema
       {
       private:
-         const std::shared_ptr< const internal::schema_container< Traits, Base > > m_container;
+         const std::shared_ptr< const internal::schema_container< Traits > > m_container;
 
       public:
-         explicit basic_schema( const basic_value< Traits, Base >& v )
-            : m_container( std::make_shared< internal::schema_container< Traits, Base > >( v ) )
+         explicit basic_schema( const basic_value< Traits >& v )
+            : m_container( std::make_shared< internal::schema_container< Traits > >( v ) )
          {
          }
 
-         std::unique_ptr< internal::schema_consumer< Traits, Base > > consumer() const
+         std::unique_ptr< internal::schema_consumer< Traits > > consumer() const
          {
             return m_container->consumer();
          }
 
-         bool validate( const basic_value< Traits, Base >& v ) const
+         bool validate( const basic_value< Traits >& v ) const
          {
             // TODO: Value validation should be implemented independently,
             // as it could be more efficient than Events validation!
@@ -1847,10 +1847,10 @@ namespace tao
 
       using schema = basic_schema< traits >;
 
-      template< template< typename... > class Traits, typename Base >
-      basic_schema< Traits, Base > make_schema( const basic_value< Traits, Base >& v )
+      template< template< typename... > class Traits >
+      basic_schema< Traits > make_schema( const basic_value< Traits >& v )
       {
-         return basic_schema< Traits, Base >( v );
+         return basic_schema< Traits >( v );
       }
 
    }  // namespace json

@@ -15,18 +15,12 @@ namespace tao
 {
    namespace json
    {
-      template< template< typename... > class Traits, typename Base, template< typename... > class... Transformers, typename... Ts >
-      basic_value< Traits, Base > basic_from_string( Ts&&... ts )
-      {
-         events::transformer< events::to_basic_value< Traits, Base >, Transformers... > consumer;
-         events::from_string( consumer, std::forward< Ts >( ts )... );
-         return std::move( consumer.value );
-      }
-
       template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
       basic_value< Traits > basic_from_string( Ts&&... ts )
       {
-         return basic_from_string< Traits, internal::empty_base, Transformers... >( std::forward< Ts >( ts )... );
+         events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
+         events::from_string( consumer, std::forward< Ts >( ts )... );
+         return std::move( consumer.value );
       }
 
       template< template< typename... > class... Transformers, typename... Ts >

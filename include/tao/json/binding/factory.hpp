@@ -53,15 +53,15 @@ namespace tao
                   return &typeid( T );
                }
 
-               template< template< typename... > class Traits, typename Base, typename... With >
-               static Pointer< Polymorphic > as( const basic_value< Traits, Base >& v, With&... with )
+               template< template< typename... > class Traits, typename... With >
+               static Pointer< Polymorphic > as( const basic_value< Traits >& v, With&... with )
                {
                   using R = typename Traits< Pointer< T > >::template with_base< Polymorphic >;
                   return R::as( v, with... );
                }
 
-               template< template< typename... > class Traits, typename Base >
-               static void assign( basic_value< Traits, Base >& v, const Pointer< Polymorphic >& p )
+               template< template< typename... > class Traits >
+               static void assign( basic_value< Traits >& v, const Pointer< Polymorphic >& p )
                {
                   using R = typename Traits< Pointer< T > >::template with_base< Polymorphic >;
                   R::assign( v, p );
@@ -118,21 +118,21 @@ namespace tao
                std::string name;
             };
 
-            template< template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic, typename... With >
-            using as_func_t = Pointer< Polymorphic > ( * )( const basic_value< Traits, Base >&, With&... );
+            template< template< typename... > class Traits, template< typename... > class Pointer, typename Polymorphic, typename... With >
+            using as_func_t = Pointer< Polymorphic > ( * )( const basic_value< Traits >&, With&... );
 
-            template< typename V, template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic, typename... With >
-            static void emplace_as( std::map< std::string, entry1< as_func_t< Traits, Base, Pointer, Polymorphic, With... > > >& m )
+            template< typename V, template< typename... > class Traits, template< typename... > class Pointer, typename Polymorphic, typename... With >
+            static void emplace_as( std::map< std::string, entry1< as_func_t< Traits, Pointer, Polymorphic, With... > > >& m )
             {
                using W = typename V::template bind< Polymorphic, Pointer >;
-               m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Base, Pointer, Polymorphic, With... > >( &W::template as< Traits, Base, With... > ) );
+               m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Pointer, Polymorphic, With... > >( &W::template as< Traits, With... > ) );
             }
 
-            template< template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic, typename... With >
-            static void to( const basic_value< Traits, Base >& v, Pointer< Polymorphic >& r, With&... with )
+            template< template< typename... > class Traits, template< typename... > class Pointer, typename Polymorphic, typename... With >
+            static void to( const basic_value< Traits >& v, Pointer< Polymorphic >& r, With&... with )
             {
-               static const std::map< std::string, entry1< as_func_t< Traits, Base, Pointer, Polymorphic, With... > > > m = []() {
-                  std::map< std::string, entry1< as_func_t< Traits, Base, Pointer, Polymorphic, With... > > > t;
+               static const std::map< std::string, entry1< as_func_t< Traits, Pointer, Polymorphic, With... > > > m = []() {
+                  std::map< std::string, entry1< as_func_t< Traits, Pointer, Polymorphic, With... > > > t;
                   ( emplace_as< Ts >( t ), ... );
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
@@ -154,20 +154,20 @@ namespace tao
                r = i->second.function( b->second, with... );
             }
 
-            template< typename V, template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic, typename F >
+            template< typename V, template< typename... > class Traits, template< typename... > class Pointer, typename Polymorphic, typename F >
             static void emplace_assign( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
             {
                using W = typename V::template bind< Polymorphic, Pointer >;
-               m.emplace( W::type(), entry2< F >( &W::template assign< Traits, Base >, W::template key< Traits >() ) );
+               m.emplace( W::type(), entry2< F >( &W::template assign< Traits >, W::template key< Traits >() ) );
             }
 
-            template< template< typename... > class Traits, typename Base, template< typename... > class Pointer, typename Polymorphic >
-            static void assign( basic_value< Traits, Base >& v, const Pointer< Polymorphic >& p )
+            template< template< typename... > class Traits, template< typename... > class Pointer, typename Polymorphic >
+            static void assign( basic_value< Traits >& v, const Pointer< Polymorphic >& p )
             {
-               using F = void ( * )( basic_value< Traits, Base >&, const Pointer< Polymorphic >& );
+               using F = void ( * )( basic_value< Traits >&, const Pointer< Polymorphic >& );
                static const std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > m = []() {
                   std::map< const std::type_info*, entry2< F >, json::internal::type_info_less > t;
-                  ( emplace_assign< Ts, Traits, Base, Pointer, Polymorphic >( t ), ... );
+                  ( emplace_assign< Ts, Traits, Pointer, Polymorphic >( t ), ... );
                   assert( t.size() == sizeof...( Ts ) );
                   return t;
                }();

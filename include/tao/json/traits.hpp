@@ -46,18 +46,30 @@ namespace tao
    {
       // NOTE: traits< ... >::assign() is always called with needs_discard(v) == false
 
+      struct empty_base
+      {
+      };
+
+      // Traits< void > is special and configures the basic_value class template
+      template<>
+      struct traits< void >
+      {
+         template< typename >
+         using base = empty_base;
+      };
+
       template<>
       struct traits< null_t >
       {
-         template< template< typename... > class Traits, typename Base >
-         static null_t as( const basic_value< Traits, Base >& v ) noexcept
+         template< template< typename... > class Traits >
+         static null_t as( const basic_value< Traits >& v ) noexcept
          {
             v.validate_json_type( type::NULL_ );
             return tao::json::null;
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, null_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, null_t /*unused*/ ) noexcept
          {
             v.unsafe_assign_null();
          }
@@ -68,20 +80,20 @@ namespace tao
             c.null();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, null_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
          {
             return lhs.skip_value_ptr().is_null();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, null_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
          {
             return lhs.skip_value_ptr().type() < type::NULL_;
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, null_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
          {
             return lhs.skip_value_ptr().type() > type::NULL_;
          }
@@ -90,14 +102,14 @@ namespace tao
       template<>
       struct traits< bool >
       {
-         template< template< typename... > class Traits, typename Base >
-         static bool as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static bool as( const basic_value< Traits >& v )
          {
             return v.get_boolean();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const bool b ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const bool b ) noexcept
          {
             v.unsafe_assign_boolean( b );
          }
@@ -114,22 +126,22 @@ namespace tao
             c.boolean( b );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const bool rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const bool rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             return p.is_boolean() && ( p.unsafe_get_boolean() == rhs );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const bool rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             return ( p.type() < type::BOOLEAN ) || ( p.is_boolean() && ( p.unsafe_get_boolean() < rhs ) );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const bool rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             return ( p.type() > type::BOOLEAN ) || ( p.is_boolean() && ( p.unsafe_get_boolean() > rhs ) );
@@ -156,14 +168,14 @@ namespace tao
       template<>
       struct traits< empty_binary_t >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, empty_binary_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, empty_binary_t /*unused*/ ) noexcept
          {
             v.unsafe_emplace_binary();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, empty_binary_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -176,8 +188,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, empty_binary_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -189,8 +201,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, empty_binary_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -207,27 +219,27 @@ namespace tao
       template<>
       struct traits< empty_array_t >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, empty_array_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, empty_array_t /*unused*/ ) noexcept
          {
             v.unsafe_emplace_array();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, empty_array_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             return p.is_array() && p.unsafe_get_array().empty();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, empty_array_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
          {
             return lhs.skip_value_ptr().type() < type::ARRAY;
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, empty_array_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             return ( p.type() > type::ARRAY ) || ( p.is_array() && !p.unsafe_get_array().empty() );
@@ -237,27 +249,27 @@ namespace tao
       template<>
       struct traits< empty_object_t >
       {
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, empty_object_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, empty_object_t /*unused*/ ) noexcept
          {
             v.unsafe_emplace_object();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, empty_object_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             return p.is_object() && p.unsafe_get_object().empty();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, empty_object_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
          {
             return lhs.skip_value_ptr().type() < type::OBJECT;
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, empty_object_t /*unused*/ ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             return ( p.type() > type::OBJECT ) || ( p.is_object() && !p.unsafe_get_object().empty() );
@@ -267,8 +279,8 @@ namespace tao
       template<>
       struct traits< std::string >
       {
-         template< template< typename... > class Traits, typename Base >
-         static std::string as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static std::string as( const basic_value< Traits >& v )
          {
             switch( v.type() ) {
                case type::STRING:
@@ -282,14 +294,14 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::string& s )
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const std::string& s )
          {
             v.unsafe_assign_string( s );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, std::string&& s ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, std::string&& s ) noexcept
          {
             v.unsafe_assign_string( std::move( s ) );
          }
@@ -312,8 +324,8 @@ namespace tao
             c.string( std::move( s ) );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const std::string& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -326,8 +338,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const std::string& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -340,8 +352,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::string& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -358,8 +370,8 @@ namespace tao
       template<>
       struct traits< std::string_view >
       {
-         template< template< typename... > class Traits, typename Base >
-         static std::string_view as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static std::string_view as( const basic_value< Traits >& v )
          {
             switch( v.type() ) {
                case type::STRING:
@@ -371,8 +383,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::string_view sv )
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const std::string_view sv )
          {
             v.unsafe_emplace_string( sv.data(), sv.size() );
          }
@@ -383,8 +395,8 @@ namespace tao
             c.string( sv );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const std::string_view rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -397,8 +409,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const std::string_view rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -411,8 +423,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::string_view rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -429,20 +441,20 @@ namespace tao
       template<>
       struct traits< const char* >
       {
-         template< template< typename... > class Traits, typename Base >
-         static const char* as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static const char* as( const basic_value< Traits >& v )
          {
             return v.get_string().c_str();  // String views might not be '\0'-terminated.
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const char* s )
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const char* s )
          {
             v.unsafe_emplace_string( s );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const char* rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const char* rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -455,8 +467,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const char* rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -469,8 +481,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const char* rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -487,8 +499,8 @@ namespace tao
       template<>
       struct traits< const std::string& >
       {
-         template< template< typename... > class Traits, typename Base >
-         static const std::string& as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static const std::string& as( const basic_value< Traits >& v )
          {
             return v.get_string();
          }
@@ -497,8 +509,8 @@ namespace tao
       template<>
       struct traits< std::vector< std::byte > >
       {
-         template< template< typename... > class Traits, typename Base >
-         static std::vector< std::byte > as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static std::vector< std::byte > as( const basic_value< Traits >& v )
          {
             switch( v.type() ) {
                case type::BINARY:
@@ -512,14 +524,14 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::vector< std::byte >& x )
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const std::vector< std::byte >& x )
          {
             v.unsafe_assign_binary( x );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, std::vector< std::byte >&& x ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, std::vector< std::byte >&& x ) noexcept
          {
             v.unsafe_assign_binary( std::move( x ) );
          }
@@ -542,8 +554,8 @@ namespace tao
             c.binary( std::move( x ) );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const std::vector< std::byte >& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -556,8 +568,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const std::vector< std::byte >& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -570,8 +582,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::vector< std::byte >& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -588,8 +600,8 @@ namespace tao
       template<>
       struct traits< tao::binary_view >
       {
-         template< template< typename... > class Traits, typename Base >
-         static tao::binary_view as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static tao::binary_view as( const basic_value< Traits >& v )
          {
             switch( v.type() ) {
                case type::BINARY:
@@ -601,8 +613,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const tao::binary_view xv ) noexcept
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const tao::binary_view xv ) noexcept
          {
             v.unsafe_emplace_binary( xv.begin(), xv.end() );
          }
@@ -613,8 +625,8 @@ namespace tao
             c.binary( xv );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const tao::binary_view rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -627,8 +639,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const tao::binary_view rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -641,8 +653,8 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const tao::binary_view rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
          {
             const auto& p = lhs.skip_value_ptr();
             switch( p.type() ) {
@@ -659,28 +671,28 @@ namespace tao
       template<>
       struct traits< const std::vector< std::byte >& >
       {
-         template< template< typename... > class Traits, typename Base >
-         static const std::vector< std::byte >& as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static const std::vector< std::byte >& as( const basic_value< Traits >& v )
          {
             return v.get_binary();
          }
       };
 
-      template< template< typename... > class Traits, typename Base >
-      struct traits< std::vector< basic_value< Traits, Base > > >
+      template< template< typename... > class Traits >
+      struct traits< std::vector< basic_value< Traits > > >
       {
-         static void assign( basic_value< Traits, Base >& v, const std::vector< basic_value< Traits, Base > >& a )
+         static void assign( basic_value< Traits >& v, const std::vector< basic_value< Traits > >& a )
          {
             v.unsafe_assign_array( a );
          }
 
-         static void assign( basic_value< Traits, Base >& v, std::vector< basic_value< Traits, Base > >&& a ) noexcept
+         static void assign( basic_value< Traits >& v, std::vector< basic_value< Traits > >&& a ) noexcept
          {
             v.unsafe_assign_array( std::move( a ) );
          }
 
          template< template< typename... > class, typename Consumer >
-         static void produce( Consumer& c, const std::vector< basic_value< Traits, Base > >& a )
+         static void produce( Consumer& c, const std::vector< basic_value< Traits > >& a )
          {
             c.begin_array( a.size() );
             for( const auto& i : a ) {
@@ -691,7 +703,7 @@ namespace tao
          }
 
          template< template< typename... > class, typename Consumer >
-         static void produce( Consumer& c, std::vector< basic_value< Traits, Base > >&& a )
+         static void produce( Consumer& c, std::vector< basic_value< Traits > >&& a )
          {
             c.begin_array( a.size() );
             for( auto&& i : a ) {
@@ -702,21 +714,21 @@ namespace tao
          }
       };
 
-      template< template< typename... > class Traits, typename Base >
-      struct traits< std::map< std::string, basic_value< Traits, Base > > >
+      template< template< typename... > class Traits >
+      struct traits< std::map< std::string, basic_value< Traits > > >
       {
-         static void assign( basic_value< Traits, Base >& v, const std::map< std::string, basic_value< Traits, Base > >& o )
+         static void assign( basic_value< Traits >& v, const std::map< std::string, basic_value< Traits > >& o )
          {
             v.unsafe_assign_object( std::move( o ) );
          }
 
-         static void assign( basic_value< Traits, Base >& v, std::map< std::string, basic_value< Traits, Base > >&& o ) noexcept
+         static void assign( basic_value< Traits >& v, std::map< std::string, basic_value< Traits > >&& o ) noexcept
          {
             v.unsafe_assign_object( std::move( o ) );
          }
 
          template< template< typename... > class, typename Consumer >
-         static void produce( Consumer& c, const std::map< std::string, basic_value< Traits, Base > >& o )
+         static void produce( Consumer& c, const std::map< std::string, basic_value< Traits > >& o )
          {
             c.begin_array( o.size() );
             for( const auto& i : o ) {
@@ -728,7 +740,7 @@ namespace tao
          }
 
          template< template< typename... > class, typename Consumer >
-         static void produce( Consumer& c, std::map< std::string, basic_value< Traits, Base > >&& o )
+         static void produce( Consumer& c, std::map< std::string, basic_value< Traits > >&& o )
          {
             c.begin_array( o.size() );
             for( auto&& i : o ) {
@@ -740,39 +752,39 @@ namespace tao
          }
       };
 
-      template< template< typename... > class Traits, typename Base >
-      struct traits< const basic_value< Traits, Base >* >
+      template< template< typename... > class Traits >
+      struct traits< const basic_value< Traits >* >
       {
-         static void assign( basic_value< Traits, Base >& v, const basic_value< Traits, Base >* p ) noexcept
+         static void assign( basic_value< Traits >& v, const basic_value< Traits >* p ) noexcept
          {
             v.unsafe_assign_value_ptr( p );
          }
 
-         template< template< typename... > class TraitsL, typename BaseL >
-         static bool equal( const basic_value< TraitsL, BaseL >& lhs, const basic_value< Traits, Base >* rhs ) noexcept
+         template< template< typename... > class TraitsLL >
+         static bool equal( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
          {
             assert( rhs );
             return lhs == *rhs;
          }
 
-         template< template< typename... > class TraitsL, typename BaseL >
-         static bool less_than( const basic_value< TraitsL, BaseL >& lhs, const basic_value< Traits, Base >* rhs ) noexcept
+         template< template< typename... > class TraitsLL >
+         static bool less_than( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
          {
             assert( rhs );
             return lhs < *rhs;
          }
 
-         template< template< typename... > class TraitsL, typename BaseL >
-         static bool greater_than( const basic_value< TraitsL, BaseL >& lhs, const basic_value< Traits, Base >* rhs ) noexcept
+         template< template< typename... > class TraitsLL >
+         static bool greater_than( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
          {
             assert( rhs );
             return lhs > *rhs;
          }
       };
 
-      template< template< typename... > class Traits, typename Base >
-      struct traits< basic_value< Traits, Base >* >
-         : public traits< const basic_value< Traits, Base >* >
+      template< template< typename... > class Traits >
+      struct traits< basic_value< Traits >* >
+         : public traits< const basic_value< Traits >* >
       {
       };
 
@@ -788,8 +800,8 @@ namespace tao
             return ( !bool( o ) ) || internal::is_nothing< Traits >( *o );  // TODO: Only query o?
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static std::optional< T > as( const basic_value< Traits, Base >& v )
+         template< template< typename... > class Traits >
+         static std::optional< T > as( const basic_value< Traits >& v )
          {
             if( v == null ) {
                return std::nullopt;
@@ -797,8 +809,8 @@ namespace tao
             return v.template as< T >();
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static void assign( basic_value< Traits, Base >& v, const std::optional< T >& o )
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, const std::optional< T >& o )
          {
             if( o ) {
                v = *o;
@@ -828,20 +840,20 @@ namespace tao
             }
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool equal( const basic_value< Traits, Base >& lhs, const std::optional< T >& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
          {
             return rhs ? ( lhs == *rhs ) : ( lhs == null );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool less_than( const basic_value< Traits, Base >& lhs, const std::optional< T >& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
          {
             return rhs ? ( lhs < *rhs ) : ( lhs < null );
          }
 
-         template< template< typename... > class Traits, typename Base >
-         static bool greater_than( const basic_value< Traits, Base >& lhs, const std::optional< T >& rhs ) noexcept
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
          {
             return rhs ? ( lhs > *rhs ) : ( lhs > null );
          }

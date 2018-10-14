@@ -171,7 +171,7 @@ namespace tao
          check_consumer< ubjson::events::to_stream >();
          check_consumer< ubjson::events::to_string >();
 
-         check_consumer< internal::schema_consumer< traits, internal::empty_base > >();
+         check_consumer< internal::schema_consumer< traits > >();
       }
 
    }  // namespace json

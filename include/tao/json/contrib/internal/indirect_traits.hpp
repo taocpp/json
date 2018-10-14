@@ -35,8 +35,8 @@ namespace tao
                return internal::is_nothing< Traits >( add_const( *o ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o )
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T& o )
             {
                assert( o );
                v = add_const( *o );
@@ -49,20 +49,20 @@ namespace tao
                json::events::produce< Traits >( c, add_const( *o ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
             {
                return rhs ? ( lhs == *rhs ) : ( lhs == null );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
             {
                return rhs ? ( lhs < *rhs ) : ( lhs < null );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
             {
                return rhs ? ( lhs > *rhs ) : ( lhs > null );
             }

@@ -16,10 +16,10 @@ namespace tao
    {
       namespace internal
       {
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          struct single
          {
-            mutable basic_value< Traits, Base > value;
+            mutable basic_value< Traits > value;
 
             template< typename U >
             single( U&& v )  // NOLINT
@@ -27,17 +27,17 @@ namespace tao
             {
             }
 
-            single( std::initializer_list< pair< Traits, Base > >&& l )
+            single( std::initializer_list< pair< Traits > >&& l )
                : value( std::move( l ) )
             {
             }
 
-            single( const std::initializer_list< pair< Traits, Base > >& l )
+            single( const std::initializer_list< pair< Traits > >& l )
                : value( l )
             {
             }
 
-            single( std::initializer_list< pair< Traits, Base > >& l )
+            single( std::initializer_list< pair< Traits > >& l )
                : value( l )
             {
             }

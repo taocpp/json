@@ -43,8 +43,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> std::enable_if_t< json::internal::has_to< V, basic_value< Traits, Base >, C >::value, std::exception_ptr >
+            template< template< typename... > class Traits, typename C >
+            static auto first_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< json::internal::has_to< V, basic_value< Traits >, C >::value, std::exception_ptr >
             {
                try {
                   V::to( v, x );
@@ -55,8 +55,8 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< V, basic_value< Traits, Base >, C >::value && json::internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr >
+            template< template< typename... > class Traits, typename C >
+            static auto first_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< V, basic_value< Traits >, C >::value && json::internal::has_as< V, basic_value< Traits > >::value, std::exception_ptr >
             {
                try {
                   x = V::as( v );
@@ -67,11 +67,11 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static auto first_to( const basic_value< Traits, Base >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< V, basic_value< Traits, Base >, C >::value && !json::internal::has_as< V, basic_value< Traits, Base > >::value, std::exception_ptr > = delete;
+            template< template< typename... > class Traits, typename C >
+            static auto first_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< V, basic_value< Traits >, C >::value && !json::internal::has_as< V, basic_value< Traits > >::value, std::exception_ptr > = delete;
 
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> std::enable_if_t< json::internal::has_to< A, basic_value< Traits, Base >, C >::value, bool >
+            template< typename A, template< typename... > class Traits, typename C >
+            static auto later_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< json::internal::has_to< A, basic_value< Traits >, C >::value, bool >
             {
                try {
                   A::to( v, x );
@@ -82,8 +82,8 @@ namespace tao
                }
             }
 
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< A, basic_value< Traits, Base >, C >::value && json::internal::has_as< A, basic_value< Traits, Base > >::value, bool >
+            template< typename A, template< typename... > class Traits, typename C >
+            static auto later_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< A, basic_value< Traits >, C >::value && json::internal::has_as< A, basic_value< Traits > >::value, bool >
             {
                try {
                   x = A::as( v );
@@ -94,11 +94,11 @@ namespace tao
                }
             }
 
-            template< typename A, template< typename... > class Traits, typename Base, typename C >
-            static auto later_to( const basic_value< Traits, Base >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< A, basic_value< Traits, Base >, C >::value && !json::internal::has_as< A, basic_value< Traits, Base > >::value, bool > = delete;
+            template< typename A, template< typename... > class Traits, typename C >
+            static auto later_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< A, basic_value< Traits >, C >::value && !json::internal::has_as< A, basic_value< Traits > >::value, bool > = delete;
 
-            template< template< typename... > class Traits, typename Base, typename C >
-            static void to( const basic_value< Traits, Base >& v, C& x )
+            template< template< typename... > class Traits, typename C >
+            static void to( const basic_value< Traits >& v, C& x )
             {
                const std::exception_ptr e = first_to( v, x );
                const bool ok = ( ( e == std::exception_ptr() ) || ... || later_to< Vs >( v, x ) );

@@ -26,8 +26,8 @@ namespace tao
                return o.empty();
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o ) = delete;
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T& o ) = delete;
 
             template< template< typename... > class Traits, typename Consumer >
             static void produce( Consumer& c, const T& o )
@@ -40,22 +40,22 @@ namespace tao
                c.end_array( o.size() );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool equal( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                return p.is_array() && ( p.unsafe_get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), p.unsafe_get_array().begin() );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool less_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                return p.is_array() ? std::lexicographical_compare( p.unsafe_get_array().begin(), p.unsafe_get_array().end(), rhs.begin(), rhs.end() ) : ( p.type() < type::ARRAY );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static bool greater_than( const basic_value< Traits, Base >& lhs, const T& rhs ) noexcept
+            template< template< typename... > class Traits >
+            static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
             {
                const auto& p = lhs.skip_value_ptr();
                return p.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p.unsafe_get_array().begin(), p.unsafe_get_array().end() ) : ( p.type() > type::ARRAY );
@@ -66,8 +66,8 @@ namespace tao
          struct array_traits
             : public array_multi_traits< T >
          {
-            template< template< typename... > class Traits, typename Base >
-            static void assign( basic_value< Traits, Base >& v, const T& o )
+            template< template< typename... > class Traits >
+            static void assign( basic_value< Traits >& v, const T& o )
             {
                v.unsafe_emplace_array();
                v.unsafe_get_array().reserve( o.size() );

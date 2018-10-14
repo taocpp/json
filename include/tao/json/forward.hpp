@@ -21,14 +21,10 @@ namespace tao
 
       namespace internal
       {
-         struct empty_base
-         {
-         };
-
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          struct single;
 
-         template< template< typename... > class Traits, typename Base >
+         template< template< typename... > class Traits >
          struct pair;
 
       }  // namespace internal
@@ -38,7 +34,7 @@ namespace tao
       {
       };
 
-      template< template< typename... > class Traits, typename Base = internal::empty_base >
+      template< template< typename... > class Traits >
       class basic_value;
 
       using producer_t = void ( * )( events::virtual_base&, const void* );

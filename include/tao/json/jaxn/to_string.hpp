@@ -16,16 +16,16 @@ namespace tao
    {
       namespace jaxn
       {
-         template< template< typename... > class... Transformers, template< typename... > class Traits, typename Base >
-         std::string to_string( const basic_value< Traits, Base >& v )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         std::string to_string( const basic_value< Traits >& v )
          {
             std::ostringstream o;
             to_stream< Transformers... >( o, v );
             return o.str();
          }
 
-         template< template< typename... > class... Transformers, template< typename... > class Traits, typename Base >
-         std::string to_string( const basic_value< Traits, Base >& v, const unsigned indent )
+         template< template< typename... > class... Transformers, template< typename... > class Traits >
+         std::string to_string( const basic_value< Traits >& v, const unsigned indent )
          {
             std::ostringstream o;
             to_stream< Transformers... >( o, v, indent );

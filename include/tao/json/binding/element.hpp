@@ -36,8 +36,8 @@ namespace tao
                v.*P = std::forward< W >( w );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void to( const basic_value< Traits, Base >& v, C& x )
+            template< template< typename... > class Traits >
+            static void to( const basic_value< Traits >& v, C& x )
             {
                v.to( x.*P );
             }
@@ -104,8 +104,8 @@ namespace tao
                P( v ) = std::forward< W >( w );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void to( const basic_value< Traits, Base >& v, A& x )
+            template< template< typename... > class Traits >
+            static void to( const basic_value< Traits >& v, A& x )
             {
                v.to( P( x ) );
             }
@@ -137,8 +137,8 @@ namespace tao
                CP( v, std::forward< W >( w ) );
             }
 
-            template< template< typename... > class Traits, typename Base >
-            static void to( const basic_value< Traits, Base >& v, A& x )
+            template< template< typename... > class Traits >
+            static void to( const basic_value< Traits >& v, A& x )
             {
                CP( x, v.template as< std::decay_t< R > >() );
             }
