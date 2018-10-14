@@ -33,7 +33,7 @@
 
 #define TAO_JSON_DEFAULT_KEY( x )                   \
    template< template< typename... > class Traits > \
-   using default_key = TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, x )
+   using default_key = TAO_JSON_STRING_T( x )
 
 #ifdef _MSC_VER
 #pragma warning( push )

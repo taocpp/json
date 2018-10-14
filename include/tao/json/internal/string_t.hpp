@@ -19,16 +19,16 @@ namespace tao
          struct string_t
             : public json_pegtl::string< Cs... >
          {
-            static std::string as_string()
+            static constexpr const char value[] = { Cs..., 0 };
+
+            static constexpr std::string_view as_string_view() noexcept
             {
-               static const char s[] = { Cs..., 0 };
-               return std::string( s, sizeof...( Cs ) );
+               return std::string_view( value, sizeof...( Cs ) );
             }
 
-            static std::string_view as_string_view() noexcept
+            static std::string as_string()
             {
-               static const char s[] = { Cs..., 0 };
-               return std::string_view( s, sizeof...( Cs ) );
+               return std::string( value, sizeof...( Cs ) );
             }
          };
 
