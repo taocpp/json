@@ -17,8 +17,8 @@ Pre-1.0.0 milestones in rough reverse chronological order.
 * JSON Pointer and JSON Patch support.
 * Support for CBOR, UBJSON and MsgPack.
 * Support for Value Pointer in Values.
-* Type Traits for interoperation with C++ types.
 * Events Interface for modularity and Transformers.
+* Type Traits for interoperation with C++ types.
 * 100% conformance score in [Native JSON Benchmark](https://github.com/miloyip/nativejson-benchmark).
 * Inclusion of double-conversion library.
 * Value Class with parsing and (pretty) printing.
