@@ -59,7 +59,7 @@ namespace tao
 
             void string( const std::string_view v )
             {
-               value.unsafe_emplace_string( v.data(), v.size() );
+               value.unsafe_emplace_string( v );
             }
 
             void string( const char* v )
@@ -112,7 +112,7 @@ namespace tao
 
             void key( const std::string_view v )
             {
-               keys_.emplace_back( v.data(), v.size() );
+               keys_.emplace_back( v );
             }
 
             void key( const char* v )
