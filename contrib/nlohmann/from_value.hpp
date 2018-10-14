@@ -43,7 +43,7 @@ namespace tao
                case Value::value_t::array:
                   consumer.begin_array();
                   for( const auto& e : v ) {
-                     tao::json::nlohmann::from_value( e, consumer );
+                     tao::json::nlohmann::from_value( consumer, e );
                      consumer.element();
                   }
                   consumer.end_array();
@@ -52,7 +52,7 @@ namespace tao
                   consumer.begin_object();
                   for( typename Value::const_iterator it = v.begin(); it != v.end(); ++it ) {
                      consumer.key( it.key() );
-                     tao::json::nlohmann::from_value( it.value(), consumer );
+                     tao::json::nlohmann::from_value( consumer, it.value() );
                      consumer.member();
                   }
                   consumer.end_object();
