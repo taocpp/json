@@ -54,6 +54,8 @@ namespace tao
       template<>
       struct traits< void >
       {
+         static constexpr const bool enable_implicit_conversions = true;
+
          template< typename >
          using base = empty_base;
       };

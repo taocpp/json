@@ -65,9 +65,36 @@ namespace tao
             seize( std::move( r ) );
          }
 
-         template< typename T, typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
+         template< typename T,
+                   typename = std::enable_if_t< Traits< void >::enable_implicit_conversions >,
+                   typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
          basic_value( T&& v )  // NOLINT
             noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+         {
+            if constexpr( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) ) {
+               using D = std::decay_t< T >;
+               Traits< D >::assign( *this, std::forward< T >( v ) );
+            }
+            else {
+               try {
+                  using D = std::decay_t< T >;
+                  Traits< D >::assign( *this, std::forward< T >( v ) );
+               }
+               catch( ... ) {
+                  unsafe_discard();
+#ifndef NDEBUG
+                  static_cast< volatile json::type& >( m_type ) = json::type::DESTROYED;
+#endif
+                  throw;
+               }
+            }
+         }
+
+         template< typename T,
+                   typename = std::enable_if_t< !Traits< void >::enable_implicit_conversions >,
+                   typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ),
+                   int = 0 >
+         explicit basic_value( T&& v ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          {
             if constexpr( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) ) {
                using D = std::decay_t< T >;
