@@ -16,10 +16,12 @@ namespace tao
    {
       struct position
       {
-         std::size_t line = 0;
-         std::size_t byte_in_line = 0;
-         std::string source;
+      private:
+         std::size_t m_line = 0;
+         std::size_t m_byte_in_line = 0;
+         std::string m_source;
 
+      public:
          position() noexcept  // NOLINT
          {
          }
@@ -27,9 +29,9 @@ namespace tao
          position( const position& ) = default;
 
          position( position&& p ) noexcept
-            : line( p.line ),
-              byte_in_line( p.byte_in_line ),
-              source( std::move( p.source ) )
+            : m_line( p.m_line ),
+              m_byte_in_line( p.m_byte_in_line ),
+              m_source( std::move( p.m_source ) )
          {
          }
 
@@ -39,16 +41,39 @@ namespace tao
 
          position& operator=( position&& p ) noexcept
          {
-            line = p.line;
-            byte_in_line = p.byte_in_line;
-            source = std::move( p.source );
+            m_line = p.m_line;
+            m_byte_in_line = p.m_byte_in_line;
+            m_source = std::move( p.m_source );
             return *this;
+         }
+
+         const std::string& source() const noexcept
+         {
+            return m_source;
+         }
+
+         std::size_t line() const noexcept
+         {
+            return m_line;
+         }
+
+         std::size_t byte_in_line() const noexcept
+         {
+            return m_byte_in_line;
+         }
+
+         template< typename T >
+         void set_position( const T& p )
+         {
+            m_line = p.line;
+            m_byte_in_line = p.byte_in_line;
+            m_source = p.source;
          }
       };
 
       inline std::ostream& operator<<( std::ostream& o, const position& p )
       {
-         o << p.source << ':' << p.line << ':' << p.byte_in_line;
+         o << p.source() << ':' << p.line() << ':' << p.byte_in_line();
          return o;
       }
 
@@ -79,10 +104,7 @@ namespace tao
             template< typename Input, typename Consumer >
             static void apply( const Input& in, Consumer& consumer )
             {
-               const auto p = in.position();
-               consumer.value.base().line = p.line;
-               consumer.value.base().byte_in_line = p.byte_in_line;
-               consumer.value.base().source = p.source;
+               consumer.value.set_position( in.position() );
             }
          };
 
