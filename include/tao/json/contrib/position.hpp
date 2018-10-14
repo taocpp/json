@@ -99,6 +99,28 @@ namespace tao
          };
 
          template<>
+         struct position_action< rules::object::begin >
+         {
+            template< typename Input, typename Consumer >
+            static void apply( const Input& in, Consumer& consumer )
+            {
+               action< rules::object::begin >::apply0( consumer );
+               consumer.stack_.back().set_position( in.position() );
+            }
+         };
+
+         template<>
+         struct position_action< rules::array::begin >
+         {
+            template< typename Input, typename Consumer >
+            static void apply( const Input& in, Consumer& consumer )
+            {
+               action< rules::array::begin >::apply0( consumer );
+               consumer.stack_.back().set_position( in.position() );
+            }
+         };
+
+         template<>
          struct position_action< rules::sor_value >
          {
             template< typename Input, typename Consumer >
