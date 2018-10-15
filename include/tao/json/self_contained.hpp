@@ -147,7 +147,7 @@ namespace tao
       template< template< typename... > class Traits >
       basic_value< Traits > self_contained_copy( const basic_value< Traits >& v )
       {
-         basic_value< Traits > r = &v;
+         basic_value< Traits > r( &v );
          make_self_contained( r );
          return r;
       }
