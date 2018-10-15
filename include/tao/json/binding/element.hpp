@@ -17,11 +17,11 @@ namespace tao
    {
       namespace binding
       {
-         template< typename T, T, typename = void >
+         template< auto T, typename = void >
          struct element;
 
          template< typename C, typename T, T C::*P >
-         struct element< T C::*, P, std::enable_if_t< std::is_member_object_pointer_v< T C::* > > >
+         struct element< P, std::enable_if_t< std::is_member_object_pointer_v< T C::* > > >
          {
             using internal_t = std::decay_t< decltype( std::declval< C >().*P ) >;
 
@@ -56,7 +56,7 @@ namespace tao
          };
 
          template< typename C, typename T, T C::*P >
-         struct element< T C::*, P, std::enable_if_t< std::is_member_function_pointer_v< T C::* > > >
+         struct element< P, std::enable_if_t< std::is_member_function_pointer_v< T C::* > > >
          {
             using internal_t = std::decay_t< decltype( ( std::declval< const C >().*P )() ) >;
 
@@ -73,7 +73,7 @@ namespace tao
          };
 
          template< typename C, typename T, T ( *P )( const C& ) >
-         struct element< T ( * )( const C& ), P >
+         struct element< P >
          {
             static auto read( const C& v )
             {

@@ -17,17 +17,17 @@ namespace tao
    {
       namespace binding
       {
-         template< member_kind R, typename K, typename T, T P >
+         template< member_kind R, typename K, auto P >
          struct member
-            : public element< T, P >,
-              public internal::type_key< K, typename element< T, P >::internal_t >
+            : public element< P >,
+              public internal::type_key< K, typename element< P >::internal_t >
          {
             static constexpr member_kind kind = R;
 
             template< template< typename... > class Traits, typename C >
             static bool is_nothing( const C& x )
             {
-               return json::internal::is_nothing< Traits >( element< T, P >::read( x ) );
+               return json::internal::is_nothing< Traits >( element< P >::read( x ) );
             }
          };
 
