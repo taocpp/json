@@ -10,8 +10,8 @@
 
 #include "escape.hpp"
 
-#include "../base_message_extension.hpp"
 #include "../forward.hpp"
+#include "../message_extension.hpp"
 #include "../type.hpp"
 
 #include "../external/pegtl/internal/demangle.hpp"

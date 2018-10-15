@@ -140,7 +140,7 @@ namespace tao
 
                const auto& a = v.get_object();
                if( a.size() != 1 ) {
-                  throw std::runtime_error( json::internal::format( "polymorphic factory requires object of size one for base class ", typeid( Base ), json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::runtime_error( json::internal::format( "polymorphic factory requires object of size one for base class ", typeid( Base ), json::message_extension( v ) ) );  // NOLINT
                }
                const auto b = a.begin();
                const auto i = m.find( b->first );
@@ -148,7 +148,7 @@ namespace tao
                   std::ostringstream oss;
                   json::internal::format_to( oss, "unknown factory type \"", json::internal::escape( b->first ), "\" -- known are" );
                   internal::list_all_types( oss, m );
-                  json::internal::format_to( oss, " for base class ", typeid( Base ), json::base_message_extension( v.base() ) );
+                  json::internal::format_to( oss, " for base class ", typeid( Base ), json::message_extension( v ) );
                   throw std::runtime_error( oss.str() );  // NOLINT
                }
                r = i->second.function( b->second, with... );

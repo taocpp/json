@@ -136,7 +136,7 @@ namespace tao
                events::to_basic_value< Traits > consumer;
                events::virtual_ref< events::to_basic_value< Traits > > ref( consumer );
                q.producer( ref, q.data );
-               consumer.value.base() = std::move( v.base() );
+               consumer.value.public_base() = std::move( v.public_base() );
                v = std::move( consumer.value );
                return;
             }

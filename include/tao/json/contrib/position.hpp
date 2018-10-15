@@ -4,9 +4,9 @@
 #ifndef TAO_JSON_CONTRIB_POSITION_HPP
 #define TAO_JSON_CONTRIB_POSITION_HPP
 
-#include "../base_message_extension.hpp"
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
+#include "../message_extension.hpp"
 #include "../parse_file.hpp"
 #include "../value.hpp"
 
@@ -44,26 +44,12 @@ namespace tao
             m_byte_in_line = p.byte_in_line;
             m_source = p.source;
          }
+
+         void append_message_extension( std::ostream& os ) const
+         {
+            os << '[' << m_source << ':' << m_line << ':' << m_byte_in_line << ']';
+         }
       };
-
-      inline std::ostream& operator<<( std::ostream& o, const position& p )
-      {
-         o << p.source() << ':' << p.line() << ':' << p.byte_in_line();
-         return o;
-      }
-
-      inline std::string to_string( const position& p )
-      {
-         std::ostringstream o;
-         o << p;
-         return o.str();
-      }
-
-      template<>
-      inline std::string base_message_extension< position >( const position& p )
-      {
-         return " [" + to_string( p ) + ']';
-      }
 
       namespace internal
       {
@@ -110,7 +96,7 @@ namespace tao
             : Traits< void >
          {
             template< typename >
-            using base = position;
+            using public_base = position;
          };
 
       }  // namespace internal

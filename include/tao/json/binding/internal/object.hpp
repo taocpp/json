@@ -115,7 +115,7 @@ namespace tao
                         std::ostringstream oss;
                         json::internal::format_to( oss, "unknown object key \"", json::internal::escape( k ), "\" -- known are" );
                         list_all_keys( oss, m );
-                        json::internal::format_to( oss, " for type ", typeid( C ), json::base_message_extension( v.base() ) );
+                        json::internal::format_to( oss, " for type ", typeid( C ), json::message_extension( v ) );
                         throw std::runtime_error( oss.str() );  // NOLINT
                      }
                      i->second.function( p.second, x );
@@ -126,7 +126,7 @@ namespace tao
                      std::ostringstream oss;
                      json::internal::format_to( oss, "missing required key(s)" );
                      list_missing_keys( oss, b, m );
-                     json::internal::format_to( oss, " for type ", typeid( C ), json::base_message_extension( v.base() ) );
+                     json::internal::format_to( oss, " for type ", typeid( C ), json::message_extension( v ) );
                      throw std::runtime_error( oss.str() );  // NOLINT
                   }
                }

@@ -46,9 +46,13 @@ namespace tao
    {
       // NOTE: traits< ... >::assign() is always called with needs_discard(v) == false
 
-      struct empty_base
+      namespace internal
       {
-      };
+         struct empty_base
+         {
+         };
+
+      }  // namespace internal
 
       // Traits< void > is special and configures the basic_value class template
       template<>
@@ -57,7 +61,7 @@ namespace tao
          static constexpr const bool enable_implicit_constructor = true;
 
          template< typename >
-         using base = empty_base;
+         using public_base = internal::empty_base;
       };
 
       template<>
@@ -353,7 +357,7 @@ namespace tao
                   return std::string( sv.data(), sv.size() );
                }
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string", json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string", json::message_extension( v ) ) );  // NOLINT
             }
          }
 
@@ -442,7 +446,7 @@ namespace tao
                case type::STRING_VIEW:
                   return v.unsafe_get_string_view();
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string_view", json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string_view", json::message_extension( v ) ) );  // NOLINT
             }
          }
 
@@ -583,7 +587,7 @@ namespace tao
                   return std::vector< std::byte >( xv.begin(), xv.end() );
                }
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::vector< std::byte >", json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::vector< std::byte >", json::message_extension( v ) ) );  // NOLINT
             }
          }
 
@@ -672,7 +676,7 @@ namespace tao
                case type::BINARY_VIEW:
                   return v.unsafe_get_binary_view();
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::binary_view", json::base_message_extension( v.base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::binary_view", json::message_extension( v ) ) );  // NOLINT
             }
          }
 

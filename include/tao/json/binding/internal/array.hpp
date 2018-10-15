@@ -34,7 +34,7 @@ namespace tao
                {
                   const auto& a = v.get_array();
                   if( a.size() != sizeof...( As ) ) {
-                     throw std::runtime_error( json::internal::format( "array size mismatch for type ", typeid( C ), " -- expected ", sizeof...( As ), " received ", a.size(), json::base_message_extension( v.base() ) ) );  // NOLINT
+                     throw std::runtime_error( json::internal::format( "array size mismatch for type ", typeid( C ), " -- expected ", sizeof...( As ), " received ", a.size(), json::message_extension( v ) ) );  // NOLINT
                   }
                   ( As::to( a.at( Is ), x ), ... );
                }

@@ -26,8 +26,8 @@
 #include "internal/type_traits.hpp"
 #include "internal/value_union.hpp"
 
-#include "base_message_extension.hpp"
 #include "binary_view.hpp"
+#include "message_extension.hpp"
 #include "pointer.hpp"
 #include "type.hpp"
 
@@ -37,13 +37,13 @@ namespace tao
    {
       template< template< typename... > class Traits >
       class basic_value  // NOLINT
-         : public Traits< void >::template base< basic_value< Traits > >
+         : public Traits< void >::template public_base< basic_value< Traits > >
       {
       public:
-         using base_t = typename Traits< void >::template base< basic_value< Traits > >;
-         static_assert( std::is_nothrow_default_constructible_v< base_t > );
-         static_assert( std::is_nothrow_move_constructible_v< base_t > );
-         static_assert( std::is_nothrow_move_assignable_v< base_t > );
+         using public_base_t = typename Traits< void >::template public_base< basic_value< Traits > >;
+         static_assert( std::is_nothrow_default_constructible_v< public_base_t > );
+         static_assert( std::is_nothrow_move_constructible_v< public_base_t > );
+         static_assert( std::is_nothrow_move_assignable_v< public_base_t > );
 
          using array_t = std::vector< basic_value >;
          using object_t = std::map< std::string, basic_value >;
@@ -51,7 +51,7 @@ namespace tao
          basic_value() noexcept = default;
 
          basic_value( const basic_value& r )
-            : base_t( static_cast< const base_t& >( r ) ),
+            : public_base_t( static_cast< const public_base_t& >( r ) ),
               m_type( json::type::DESTROYED )
          {
             embed( r );
@@ -59,7 +59,7 @@ namespace tao
          }
 
          basic_value( basic_value&& r ) noexcept
-            : base_t( static_cast< base_t&& >( r ) ),
+            : public_base_t( static_cast< public_base_t&& >( r ) ),
               m_type( r.m_type )
          {
             seize( std::move( r ) );
@@ -189,7 +189,7 @@ namespace tao
             unsafe_discard();
             m_type = v.m_type;
             seize( std::move( v ) );
-            base_t::operator=( static_cast< base_t&& >( v ) );
+            public_base_t::operator=( static_cast< public_base_t&& >( v ) );
             return *this;
          }
 
@@ -200,14 +200,14 @@ namespace tao
             ( *this ) = ( std::move( t ) );
          }
 
-         base_t& base() noexcept
+         public_base_t& public_base() noexcept
          {
-            return static_cast< base_t& >( *this );
+            return static_cast< public_base_t& >( *this );
          }
 
-         const base_t& base() const noexcept
+         const public_base_t& public_base() const noexcept
          {
-            return static_cast< const base_t& >( *this );
+            return static_cast< const public_base_t& >( *this );
          }
 
          json::type type() const noexcept
@@ -536,17 +536,17 @@ namespace tao
       private:
          void throw_duplicate_key_exception( const std::string_view k ) const
          {
-            throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( k ), '"', json::base_message_extension( base() ) ) );  // NOLINT
+            throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( k ), '"', json::message_extension( *this ) ) );  // NOLINT
          }
 
          void throw_index_out_of_bound_exception( const std::size_t i ) const
          {
-            throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::base_message_extension( base() ) ) );  // NOLINT
+            throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::message_extension( *this ) ) );  // NOLINT
          }
 
          void throw_key_not_found_exception( const std::string_view k ) const
          {
-            throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::base_message_extension( base() ) ) );  // NOLINT
+            throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::message_extension( *this ) ) );  // NOLINT
          }
 
       public:
@@ -854,7 +854,7 @@ namespace tao
                case json::type::ARRAY:
                   break;
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_array()", json::base_message_extension( base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_array()", json::message_extension( *this ) ) );  // NOLINT
             }
          }
 
@@ -925,7 +925,7 @@ namespace tao
                case json::type::OBJECT:
                   break;
                default:
-                  throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_object()", json::base_message_extension( base() ) ) );  // NOLINT
+                  throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_object()", json::message_extension( *this ) ) );  // NOLINT
             }
          }
 
@@ -1271,7 +1271,7 @@ namespace tao
          void erase( const pointer& k )
          {
             if( !k ) {
-               throw std::runtime_error( "invalid root JSON Pointer for erase" + json::base_message_extension( base() ) );  // NOLINT
+               throw std::runtime_error( internal::format( "invalid root JSON Pointer for erase", json::message_extension( *this ) ) );  // NOLINT
             }
             const auto b = k.begin();
             const auto e = std::prev( k.end() );
@@ -1306,7 +1306,7 @@ namespace tao
                   }
                   const auto i = e->index();
                   if( i >= a.size() ) {
-                     throw std::out_of_range( internal::format( "invalid JSON Pointer \"", internal::tokens_to_string( b, std::next( e ) ), "\", array index '", i, "' out of bound '", a.size(), '\'', json::base_message_extension( base() ) ) );  // NOLINT
+                     throw std::out_of_range( internal::format( "invalid JSON Pointer \"", internal::tokens_to_string( b, std::next( e ) ), "\", array index '", i, "' out of bound '", a.size(), '\'', json::message_extension( *this ) ) );  // NOLINT
                   }
                   a.insert( a.begin() + i, std::move( value ) );
                   return a.at( i );
@@ -1387,7 +1387,7 @@ namespace tao
          void validate_json_type( const json::type t ) const
          {
             if( m_type != t ) {
-               throw std::logic_error( internal::format( "invalid json type '", m_type, "', expected '", t, '\'', json::base_message_extension( base() ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", m_type, "', expected '", t, '\'', json::message_extension( *this ) ) );  // NOLINT
             }
          }
 

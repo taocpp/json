@@ -7,8 +7,8 @@
 #include <cstdint>
 #include <stdexcept>
 
-#include "../base_message_extension.hpp"
 #include "../forward.hpp"
+#include "../message_extension.hpp"
 #include "../type.hpp"
 
 #include "format.hpp"
@@ -38,7 +38,7 @@ namespace tao
                   case type::DOUBLE:
                      return static_cast< T >( v.unsafe_get_double() );
                   default:
-                     throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to number", json::base_message_extension( v.base() ) ) );  // NOLINT
+                     throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to number", json::message_extension( v ) ) );  // NOLINT
                }
             }
          };
