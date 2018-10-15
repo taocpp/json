@@ -22,6 +22,31 @@ namespace tao
          std::string m_source;
 
       public:
+         position() noexcept  // NOLINT
+         {
+         }
+
+         position( const position& ) = default;
+
+         position( position&& p ) noexcept
+         {
+            m_line = p.m_line;
+            m_byte_in_line = p.m_byte_in_line;
+            m_source = std::move( p.m_source );
+         }
+
+         ~position() = default;
+
+         position& operator=( const position& ) = default;
+
+         position& operator=( position&& p ) noexcept
+         {
+            m_line = p.m_line;
+            m_byte_in_line = p.m_byte_in_line;
+            m_source = std::move( p.m_source );
+            return *this;
+         }
+
          const std::string& source() const noexcept
          {
             return m_source;
