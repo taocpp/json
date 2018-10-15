@@ -134,6 +134,19 @@ namespace tao
             return false;
          }
 
+         template< template< typename... > class Traits, typename T, std::size_t = 0 >
+         struct enable_implicit_constructor : std::bool_constant< Traits< void >::enable_implicit_constructor >
+         {
+         };
+
+         template< template< typename... > class Traits, typename T >
+         struct enable_implicit_constructor< Traits, T, sizeof( decltype( Traits< T >::enable_implicit_constructor ) ) > : std::bool_constant< Traits< void >::enable_implicit_constructor || Traits< T >::enable_implicit_constructor >
+         {
+         };
+
+         template< template< typename... > class Traits, typename T >
+         inline constexpr bool enable_implicit_constructor_v = enable_implicit_constructor< Traits, T >::value;
+
       }  // namespace internal
 
    }  // namespace json

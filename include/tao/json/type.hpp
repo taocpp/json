@@ -91,6 +91,13 @@ namespace tao
          }
       };
 
+      struct empty_string_t
+      {
+         constexpr explicit empty_string_t( int /*unused*/ )
+         {
+         }
+      };
+
       struct empty_binary_t
       {
          constexpr explicit empty_binary_t( int /*unused*/ )
@@ -113,6 +120,7 @@ namespace tao
       };
 
       constexpr null_t null{ 0 };                  // NOLINT
+      constexpr empty_string_t empty_string{ 0 };  // NOLINT
       constexpr empty_binary_t empty_binary{ 0 };  // NOLINT
       constexpr empty_array_t empty_array{ 0 };    // NOLINT
       constexpr empty_object_t empty_object{ 0 };  // NOLINT

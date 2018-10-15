@@ -63,6 +63,8 @@ namespace tao
       template<>
       struct traits< null_t >
       {
+         static constexpr const bool enable_implicit_constructor = true;
+
          template< template< typename... > class Traits >
          static null_t as( const basic_value< Traits >& v ) noexcept
          {
@@ -168,8 +170,63 @@ namespace tao
       // clang-format on
 
       template<>
+      struct traits< empty_string_t >
+      {
+         static constexpr const bool enable_implicit_constructor = true;
+
+         template< template< typename... > class Traits >
+         static void assign( basic_value< Traits >& v, empty_string_t /*unused*/ ) noexcept
+         {
+            v.unsafe_emplace_string();
+         }
+
+         template< template< typename... > class Traits >
+         static bool equal( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
+         {
+            const auto& p = lhs.skip_value_ptr();
+            switch( p.type() ) {
+               case type::STRING:
+                  return p.unsafe_get_string().empty();
+               case type::STRING_VIEW:
+                  return p.unsafe_get_string_view().empty();
+               default:
+                  return false;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool less_than( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
+         {
+            const auto& p = lhs.skip_value_ptr();
+            switch( p.type() ) {
+               case type::STRING:
+               case type::STRING_VIEW:
+                  return false;
+               default:
+                  return p.type() < type::STRING;
+            }
+         }
+
+         template< template< typename... > class Traits >
+         static bool greater_than( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
+         {
+            const auto& p = lhs.skip_value_ptr();
+            switch( p.type() ) {
+               case type::STRING:
+                  return !p.unsafe_get_string().empty();
+               case type::STRING_VIEW:
+                  return !p.unsafe_get_string_view().empty();
+               default:
+                  return p.type() > type::STRING;
+            }
+         }
+      };
+
+      template<>
       struct traits< empty_binary_t >
       {
+         static constexpr const bool enable_implicit_constructor = true;
+
          template< template< typename... > class Traits >
          static void assign( basic_value< Traits >& v, empty_binary_t /*unused*/ ) noexcept
          {
@@ -221,6 +278,8 @@ namespace tao
       template<>
       struct traits< empty_array_t >
       {
+         static constexpr const bool enable_implicit_constructor = true;
+
          template< template< typename... > class Traits >
          static void assign( basic_value< Traits >& v, empty_array_t /*unused*/ ) noexcept
          {
@@ -251,6 +310,8 @@ namespace tao
       template<>
       struct traits< empty_object_t >
       {
+         static constexpr const bool enable_implicit_constructor = true;
+
          template< template< typename... > class Traits >
          static void assign( basic_value< Traits >& v, empty_object_t /*unused*/ ) noexcept
          {
