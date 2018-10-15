@@ -153,7 +153,7 @@ namespace tao
       template< template< typename... > class Traits, template< typename... > class... Transformers >
       auto basic_parse_file_with_position( const std::string& filename )
       {
-         events::transformer< events::to_basic_value< internal::position_traits< Traits >::template type >, Transformers... > consumer;
+         events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
          json_pegtl::file_input< json_pegtl::tracking_mode::IMMEDIATE > in( filename );
          json_pegtl::parse< internal::grammar, internal::position_action, internal::control >( in, consumer );
          return std::move( consumer.value );
@@ -162,7 +162,7 @@ namespace tao
       template< template< typename... > class... Transformers >
       auto parse_file_with_position( const std::string& filename )
       {
-         return basic_parse_file_with_position< traits, Transformers... >( filename );
+         return basic_parse_file_with_position< internal::position_traits< traits >::template type, Transformers... >( filename );
       }
 
    }  // namespace json
