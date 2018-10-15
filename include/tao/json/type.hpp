@@ -5,6 +5,7 @@
 #define TAO_JSON_TYPE_HPP
 
 #include <cstdint>
+#include <string_view>
 
 namespace tao
 {
