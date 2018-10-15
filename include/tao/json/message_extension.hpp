@@ -37,7 +37,7 @@ namespace tao
          {
          }
 
-         friend std::ostream& operator<<( std::ostream& os, const message_extension& v ) noexcept
+         friend std::ostream& operator<<( std::ostream& os, const message_extension& v )
          {
             os << ' ';
             v.m_v.public_base().append_message_extension( os );
