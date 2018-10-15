@@ -106,24 +106,24 @@ namespace tao
          };
 
          template< template< typename... > class Traits >
-         struct position_base
+         struct position_traits
             : Traits< void >
          {
             template< typename >
             using base = position;
          };
 
-         template< template< typename... > class Traits >
-         struct position_traits
-         {
-            template< typename T >
-            struct type
-               : std::conditional_t< std::is_same_v< T, void >, position_base< Traits >, Traits< T > >
-            {
-            };
-         };
-
       }  // namespace internal
+
+      template< template< typename... > class Traits >
+      struct make_position_traits
+      {
+         template< typename T >
+         struct type
+            : std::conditional_t< std::is_same_v< T, void >, internal::position_traits< Traits >, Traits< T > >
+         {
+         };
+      };
 
       template< template< typename... > class Traits, template< typename... > class... Transformers >
       auto basic_parse_file_with_position( const std::string& filename )
@@ -137,7 +137,7 @@ namespace tao
       template< template< typename... > class... Transformers >
       auto parse_file_with_position( const std::string& filename )
       {
-         return basic_parse_file_with_position< internal::position_traits< traits >::template type, Transformers... >( filename );
+         return basic_parse_file_with_position< make_position_traits< traits >::template type, Transformers... >( filename );
       }
 
    }  // namespace json
