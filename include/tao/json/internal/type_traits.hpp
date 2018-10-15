@@ -142,7 +142,7 @@ namespace tao
 
          template< template< typename... > class Traits, typename T >
          struct enable_implicit_constructor< Traits, T, decltype( Traits< T >::enable_implicit_constructor ) >
-            : std::bool_constant< Traits< void >::enable_implicit_constructor || Traits< T >::enable_implicit_constructor >
+            : std::bool_constant< Traits< T >::enable_implicit_constructor >
          {
          };
 
