@@ -20,7 +20,7 @@ namespace tao
          // Events producer to generate events from a JSON Value.
 
          template< auto Recurse, typename Consumer, template< typename... > class Traits >
-         void basic_from_value( Consumer& consumer, const basic_value< Traits >& v )
+         void from_value( Consumer& consumer, const basic_value< Traits >& v )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -110,14 +110,14 @@ namespace tao
          template< typename Consumer, template< typename... > class Traits >
          void from_value( Consumer& consumer, const basic_value< Traits >& v )
          {
-            basic_from_value< from_value< Consumer, Traits >, Consumer, Traits >( consumer, v );
+            from_value< from_value< Consumer, Traits >, Consumer, Traits >( consumer, v );
          }
 
          // Events producer to generate events from an rvalue JSON value.
          // Note: Strings from the source might be moved to the consumer.
 
          template< auto Recurse, typename Consumer, template< typename... > class Traits >
-         void basic_from_value( Consumer& consumer, basic_value< Traits >&& v )
+         void from_value( Consumer& consumer, basic_value< Traits >&& v )
          {
             switch( v.type() ) {
                case type::UNINITIALIZED:
@@ -201,7 +201,7 @@ namespace tao
          template< typename Consumer, template< typename... > class Traits >
          void from_value( Consumer& consumer, basic_value< Traits >&& v )
          {
-            basic_from_value< from_value< Consumer, Traits >, Consumer, Traits >( consumer, std::move( v ) );
+            from_value< from_value< Consumer, Traits >, Consumer, Traits >( consumer, std::move( v ) );
          }
 
       }  // namespace events
