@@ -62,6 +62,11 @@ namespace tao
             return m_byte_in_line;
          }
 
+         void set_source( const std::string& s )
+         {
+            m_source = s;
+         }
+
          template< typename T >
          void set_position( const T& p )
          {
