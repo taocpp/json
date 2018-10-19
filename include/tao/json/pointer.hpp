@@ -5,6 +5,7 @@
 #define TAO_JSON_POINTER_HPP
 
 #include <algorithm>
+#include <cassert>
 #include <cstdint>
 #include <stdexcept>
 #include <string>
@@ -301,6 +302,12 @@ namespace tao
          void push_back( const token& t )
          {
             m_tokens.emplace_back( t );
+         }
+
+         void pop_back()
+         {
+            assert( !m_tokens.empty() );
+            m_tokens.pop_back();
          }
 
          friend bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
