@@ -653,7 +653,7 @@ namespace tao
          }
 
          template< typename... Ts >
-         auto unsafe_emplace_back( Ts&&... ts )
+         basic_value& unsafe_emplace_back( Ts&&... ts )
          {
             return m_union.a.emplace_back( std::forward< Ts >( ts )... );
          }
@@ -871,10 +871,10 @@ namespace tao
          }
 
          template< typename... Ts >
-         void emplace_back( Ts&&... ts )
+         basic_value& emplace_back( Ts&&... ts )
          {
             prepare_array();
-            unsafe_emplace_back( std::forward< Ts >( ts )... );
+            return unsafe_emplace_back( std::forward< Ts >( ts )... );
          }
 
          void append( std::initializer_list< internal::single< Traits > >&& l )
