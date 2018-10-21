@@ -6,29 +6,26 @@
 
 #include <type_traits>
 
+#include "../external/pegtl/internal/always_false.hpp"
+
 namespace tao
 {
    namespace json
    {
       namespace internal
       {
-         template< template< typename... > class >
-         struct invalid_transformer
-         {
-         };
-
          template< template< typename... > class T >
-         struct report_invalid_transformer
+         struct invalid_transformer
          {
             // if this static assert is triggered there is a high chance that 'T' is
             // a traits class template and you intended to call a method starting with "basic_*",
             // e.g. basic_parse_file< my_traits >( ... ) instead of parse_file< my_traits >( ... ).
-            static_assert( sizeof( invalid_transformer< T > ) == 0, "T is not a valid transformer" );
+            static_assert( json_pegtl::internal::always_false< invalid_transformer< T > >::value, "T is not a valid transformer" );
          };
 
          template< typename B, template< typename... > class T, typename = void >
          struct check_transformer
-            : report_invalid_transformer< T >
+            : invalid_transformer< T >
          {
             using type = B;
          };
