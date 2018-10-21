@@ -307,6 +307,21 @@ namespace tao
             return m_type == json::type::OPAQUE_PTR;
          }
 
+         // bool is_destroyed() const noexcept
+         // {
+         //    return m_type == json::type::DESTROYED;
+         // }
+
+         bool is_discarded() const noexcept
+         {
+            return m_type == json::type::DISCARDED;
+         }
+
+         bool is_uninitialized() const noexcept
+         {
+            return m_type == json::type::UNINITIALIZED;
+         }
+
          // The unsafe_get_*() accessor functions MUST NOT be
          // called when the type of the value is not the one
          // corresponding to the type of the accessor!
