@@ -25,6 +25,8 @@
 // Custom Types
 #include "json/binding.hpp"
 #include "json/consume.hpp"
+#include "json/consume_file.hpp"
+#include "json/consume_string.hpp"
 #include "json/produce.hpp"
 
 // Binary Literals

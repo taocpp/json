@@ -240,6 +240,11 @@ namespace tao
             TEST_ASSERT( f.b == "fridolin" );
          }
          {
+            const auto f = consume_string< foo, my_traits >( "  [  \"kasimir\"  ,  \"fridolin\", 2  ]  " );
+            TEST_ASSERT( f.a == "kasimir" );
+            TEST_ASSERT( f.b == "fridolin" );
+         }
+         {
             parts_parser pp( "  [  ]  ", __FUNCTION__ );
             const auto v = consume< std::shared_ptr< std::vector< int > >, my_traits >( pp );
             TEST_ASSERT( v->empty() );
@@ -260,6 +265,13 @@ namespace tao
          {
             cbor::parts_parser pp( test_unhex( "8a00010203040506070809" ), __FUNCTION__ );
             const auto v = consume< std::vector< unsigned >, my_traits >( pp );
+            TEST_ASSERT( v.size() == 10 );
+            for( std::size_t i = 0; i < 10; ++i ) {
+               TEST_ASSERT( v[ i ] == i );
+            }
+         }
+         {
+            const auto v = cbor::consume_string< std::vector< unsigned >, my_traits >( test_unhex( "8a00010203040506070809" ) );
             TEST_ASSERT( v.size() == 10 );
             for( std::size_t i = 0; i < 10; ++i ) {
                TEST_ASSERT( v[ i ] == i );

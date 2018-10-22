@@ -6,6 +6,8 @@
 
 #include "../json.hpp"
 
+#include "msgpack/consume_file.hpp"
+#include "msgpack/consume_string.hpp"
 #include "msgpack/from_string.hpp"
 #include "msgpack/parse_file.hpp"
 #include "msgpack/parts_parser.hpp"
