@@ -64,7 +64,7 @@ namespace tao
          inline constexpr bool has_as_impl = false;
 
          template< typename T, typename... Args >
-         inline constexpr bool has_as_impl< std::void_t< decltype( T::as( std::declval< Args >()... ) ) >, T, Args... > = true;
+         inline constexpr bool has_as_impl< decltype( T::as( std::declval< Args >()... ), void() ), T, Args... > = true;
 
          template< typename T, typename V, typename... With >
          inline constexpr bool has_as = has_as_impl< void, T, const V&, With&... >;
@@ -73,49 +73,37 @@ namespace tao
          inline constexpr bool has_to_impl = false;
 
          template< typename T, typename... Args >
-         inline constexpr bool has_to_impl< std::void_t< decltype( T::to( std::declval< Args >()... ) ) >, T, Args... > = true;
+         inline constexpr bool has_to_impl< decltype( T::to( std::declval< Args >()... ), void() ), T, Args... > = true;
 
          template< typename T, typename V, typename... With >
          inline constexpr bool has_to = has_to_impl< void, T, const V&, With&... >;
 
          template< template< typename... > class, typename, typename, typename = void >
-         struct has_consume_one : std::false_type
-         {
-         };
+         inline constexpr bool has_consume_one = false;
 
          template< template< typename... > class Traits, typename P, typename U >
-         struct has_consume_one< Traits, P, U, decltype( Traits< U >::template consume< Traits >( std::declval< P& >() ), void() ) > : std::true_type
-         {
-         };
+         inline constexpr bool has_consume_one< Traits, P, U, decltype( Traits< U >::template consume< Traits >( std::declval< P& >() ), void() ) > = true;
 
          template< template< typename... > class, typename, typename, typename = void >
-         struct has_consume_two : std::false_type
-         {
-         };
+         inline constexpr bool has_consume_two = false;
 
          template< template< typename... > class Traits, typename P, typename U >
-         struct has_consume_two< Traits, P, U, decltype( Traits< U >::template consume< Traits >( std::declval< P& >(), std::declval< U& >() ), void() ) > : std::true_type
-         {
-         };
+         inline constexpr bool has_consume_two< Traits, P, U, decltype( Traits< U >::template consume< Traits >( std::declval< P& >(), std::declval< U& >() ), void() ) > = true;
 
          template< template< typename... > class Traits, typename T, typename = void >
-         struct has_is_nothing : std::false_type
-         {
-         };
+         inline constexpr bool has_is_nothing = false;
 
          template< template< typename... > class Traits, typename T >
-         struct has_is_nothing< Traits, T, decltype( Traits< T >::template is_nothing< Traits >( std::declval< const T& >() ), void() ) > : std::true_type
-         {
-         };
+         inline constexpr bool has_is_nothing< Traits, T, decltype( Traits< T >::template is_nothing< Traits >( std::declval< const T& >() ), void() ) > = true;
 
          template< template< typename... > class Traits, typename T >
-         auto is_nothing( const T& t ) -> std::enable_if_t< has_is_nothing< Traits, T >::value, bool >
+         auto is_nothing( const T& t ) -> std::enable_if_t< has_is_nothing< Traits, T >, bool >
          {
             return Traits< T >::template is_nothing< Traits >( t );
          }
 
          template< template< typename... > class Traits, typename T >
-         auto is_nothing( const T & /*unused*/ ) -> std::enable_if_t< !has_is_nothing< Traits, T >::value, bool >
+         auto is_nothing( const T & /*unused*/ ) -> std::enable_if_t< !has_is_nothing< Traits, T >, bool >
          {
             return false;
          }
