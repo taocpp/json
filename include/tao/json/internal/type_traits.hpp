@@ -60,37 +60,23 @@ namespace tao
          {
          };
 
-         template< typename, typename, typename, typename = void >
-         struct has_as_impl : std::false_type
-         {
-         };
+         template< typename, typename... >
+         inline constexpr bool has_as_impl = false;
+
+         template< typename T, typename... Args >
+         inline constexpr bool has_as_impl< std::void_t< decltype( T::as( std::declval< Args >()... ) ) >, T, Args... > = true;
 
          template< typename T, typename V, typename... With >
-         struct has_as_impl< T, V, type_list< With... >, decltype( T::as( std::declval< const V& >(), std::declval< With& >()... ), void() ) > : std::true_type
-         {
-         };
+         inline constexpr bool has_as = has_as_impl< void, T, const V&, With&... >;
+
+         template< typename, typename... >
+         inline constexpr bool has_to_impl = false;
+
+         template< typename T, typename... Args >
+         inline constexpr bool has_to_impl< std::void_t< decltype( T::to( std::declval< Args >()... ) ) >, T, Args... > = true;
 
          template< typename T, typename V, typename... With >
-         struct has_as
-            : public has_as_impl< T, V, type_list< With... > >
-         {
-         };
-
-         template< typename, typename, typename, typename, typename = void >
-         struct has_to_impl : std::false_type
-         {
-         };
-
-         template< typename T, typename V, typename U, typename... With >
-         struct has_to_impl< T, V, U, type_list< With... >, decltype( T::to( std::declval< const V& >(), std::declval< U& >(), std::declval< With& >()... ), void() ) > : std::true_type
-         {
-         };
-
-         template< typename T, typename V, typename U, typename... With >
-         struct has_to
-            : public has_to_impl< T, V, U, type_list< With... > >
-         {
-         };
+         inline constexpr bool has_to = has_to_impl< void, T, const V&, With&... >;
 
          template< template< typename... > class, typename, typename, typename = void >
          struct has_consume_one : std::false_type
