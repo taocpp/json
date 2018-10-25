@@ -165,7 +165,7 @@ namespace tao
             void operator=( const file_mapper& ) = delete;
             void operator=( file_mapper&& ) = delete;
 
-            bool empty() const noexcept
+            [[nodiscard]] bool empty() const noexcept
             {
                return m_size == 0;
             }

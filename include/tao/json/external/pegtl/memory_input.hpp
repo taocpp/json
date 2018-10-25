@@ -283,7 +283,7 @@ namespace tao
             return this->m_source;
          }
 
-         bool empty() const noexcept
+         [[nodiscard]] bool empty() const noexcept
          {
             return this->current() == this->end();
          }

@@ -71,7 +71,7 @@ namespace tao
                return input().current();
             }
 
-            bool empty() const noexcept
+            [[nodiscard]] bool empty() const noexcept
             {
                return begin() == end();
             }

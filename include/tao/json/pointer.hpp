@@ -254,7 +254,7 @@ namespace tao
             return !m_tokens.empty();
          }
 
-         bool empty() const noexcept
+         [[nodiscard]] bool empty() const noexcept
          {
             return m_tokens.empty();
          }
