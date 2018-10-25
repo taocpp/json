@@ -114,7 +114,7 @@ namespace tao
          return npos - 1;
       }
 
-      constexpr bool empty() const noexcept
+      [[nodiscard]] constexpr bool empty() const noexcept
       {
          return size_ == 0;
       }
@@ -126,7 +126,10 @@ namespace tao
 
       constexpr const_reference at( size_type pos ) const
       {
-         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::at" ) : data_[ pos ];  // NOLINT
+         if( pos >= size() ) {
+            throw std::out_of_range( "index out of range in tao::basic_binary_view::at" );  // NOLINT
+         }
+         return data_[ pos ];
       }
 
       constexpr const_reference front() const noexcept
