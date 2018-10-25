@@ -87,37 +87,27 @@ namespace tao
 
       struct null_t
       {
-         constexpr explicit null_t( int /*unused*/ )
-         {
-         }
+         explicit constexpr null_t( int /*unused*/ ) {}
       };
 
       struct empty_string_t
       {
-         constexpr explicit empty_string_t( int /*unused*/ )
-         {
-         }
+         explicit constexpr empty_string_t( int /*unused*/ ) {}
       };
 
       struct empty_binary_t
       {
-         constexpr explicit empty_binary_t( int /*unused*/ )
-         {
-         }
+         explicit constexpr empty_binary_t( int /*unused*/ ) {}
       };
 
       struct empty_array_t
       {
-         constexpr explicit empty_array_t( int /*unused*/ )
-         {
-         }
+         explicit constexpr empty_array_t( int /*unused*/ ) {}
       };
 
       struct empty_object_t
       {
-         constexpr explicit empty_object_t( int /*unused*/ )
-         {
-         }
+         constexpr explicit empty_object_t( int /*unused*/ ) {}
       };
 
       constexpr null_t null{ 0 };                  // NOLINT
