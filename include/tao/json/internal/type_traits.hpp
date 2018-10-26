@@ -15,7 +15,6 @@ namespace tao
    {
       namespace internal
       {
-
          template< typename... Ts >
          struct type_list
          {
