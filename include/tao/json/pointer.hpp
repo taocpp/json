@@ -202,7 +202,7 @@ namespace tao
          void parse( const std::string& v )
          {
             std::string t;
-            json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, const char* > in( v, "parse()" );
+            json_pegtl::memory_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, const char* > in( v, "parse()" );
             json_pegtl::parse< internal::pointer_grammar, internal::pointer_action >( in, m_tokens, t );
          }
 

@@ -47,7 +47,7 @@ namespace tao
             template< utf8_mode V >
             struct data
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
 
                template< json_pegtl::apply_mode A,
                          json_pegtl::rewind_mode M,

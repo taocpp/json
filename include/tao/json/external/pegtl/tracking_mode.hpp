@@ -12,8 +12,8 @@ namespace tao
    {
       enum class tracking_mode : bool
       {
-         IMMEDIATE,
-         LAZY
+         immediate,
+         lazy
       };
 
    }  // namespace TAO_JSON_PEGTL_NAMESPACE

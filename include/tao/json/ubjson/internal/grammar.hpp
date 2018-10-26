@@ -37,7 +37,7 @@ namespace tao
          {
             struct number
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
 
                template< json_pegtl::apply_mode A,
                          json_pegtl::rewind_mode M,
@@ -65,7 +65,7 @@ namespace tao
                {
                   if( in.peek_char() == '-' ) {
                      in.bump_in_this_line();
-                     if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, json_pegtl::rewind_mode::DONTCARE, Action, Control >( in, consumer ) ) {
+                     if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, json_pegtl::rewind_mode::dontcare, Action, Control >( in, consumer ) ) {
                         throw json_pegtl::parse_error( "incomplete ubjson high-precision number", in );
                      }
                      return true;
@@ -162,7 +162,7 @@ namespace tao
             template< std::size_t L, utf8_mode V >
             struct data
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
 
                template< json_pegtl::apply_mode A,
                          json_pegtl::rewind_mode M,
@@ -253,7 +253,7 @@ namespace tao
                {
                   const auto size = read_size< L >( in );
                   json::internal::throw_on_empty( in, size );
-                  json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, const char* > i2( in.current(), in.current() + size, "UBJSON" );
+                  json_pegtl::memory_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, const char* > i2( in.current(), in.current() + size, "UBJSON" );
                   json_pegtl::parse_nested< json_pegtl::must< number, json_pegtl::eof >, json::internal::action, json::internal::control >( in, i2, consumer );
                   in.bump_in_this_line( size );
                }

@@ -25,7 +25,7 @@ namespace tao
 
             void validate_key( const std::string_view v )
             {
-               json_pegtl::memory_input< json_pegtl::tracking_mode::LAZY > in( v.data(), v.size(), "validate_key" );
+               json_pegtl::memory_input< json_pegtl::tracking_mode::lazy > in( v.data(), v.size(), "validate_key" );
                if( !json_pegtl::parse< Rule >( in ) ) {
                   throw std::runtime_error( "invalid key: " + std::string( v.data(), v.size() ) );  // NOLINT
                }

@@ -71,7 +71,7 @@ namespace tao
                return input().current();
             }
 
-            [[nodiscard]] bool empty() const noexcept
+            bool empty() const noexcept
             {
                return begin() == end();
             }
@@ -103,7 +103,7 @@ namespace tao
 
             TAO_JSON_PEGTL_NAMESPACE::position position() const
             {
-               return input().position( iterator() );  // NOTE: Not efficient with LAZY inputs.
+               return input().position( iterator() );  // NOTE: Not efficient with lazy inputs.
             }
 
          protected:

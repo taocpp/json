@@ -12,7 +12,7 @@ int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       const auto r = tao::bench::mark( "pegtl", argv[ i ], [&]() {
-         tao::json_pegtl::file_input< tao::json_pegtl::tracking_mode::LAZY > in( argv[ i ] );
+         tao::json_pegtl::file_input< tao::json_pegtl::tracking_mode::lazy > in( argv[ i ] );
          tao::json_pegtl::parse< tao::json_pegtl::must< tao::json_pegtl::json::text, tao::json_pegtl::eof > >( in );
       } );
       tao::bench::mark( "json", argv[ i ], [&]() {

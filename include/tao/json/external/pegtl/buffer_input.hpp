@@ -29,7 +29,7 @@ namespace tao
       class buffer_input
       {
       public:
-         static constexpr tracking_mode tracking_mode_v = tracking_mode::IMMEDIATE;
+         static constexpr tracking_mode tracking_mode_v = tracking_mode::immediate;
          using reader_t = Reader;
 
          using eol_t = Eol;
@@ -58,7 +58,8 @@ namespace tao
          void operator=( const buffer_input& ) = delete;
          void operator=( buffer_input&& ) = delete;
 
-         [[nodiscard]] bool empty() {
+         bool empty()
+         {
             require( 1 );
             return m_current.data == m_end;
          }

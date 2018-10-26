@@ -31,7 +31,7 @@ namespace tao
 
             struct boolean
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
 
                template< json_pegtl::apply_mode,
                          json_pegtl::rewind_mode,
@@ -79,7 +79,7 @@ namespace tao
 
             struct double_rule
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
 
                template< apply_mode A,
                          rewind_mode M,
@@ -92,7 +92,7 @@ namespace tao
                   switch( in.peek_char() ) {
                      case '-':
                         in.bump_in_this_line();
-                        if( in.empty() || !sor_value::match_number< true, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
+                        if( in.empty() || !sor_value::match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
                            throw json_pegtl::parse_error( "incomplete number", in );
                         }
                         return true;
@@ -158,7 +158,7 @@ namespace tao
 
       // TODO: Optimise some of the simpler cases?
 
-      template< typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::LAZY, json_pegtl::eol::lf_crlf, std::string > >
+      template< typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, std::string > >
       class basic_parts_parser
       {
       public:
@@ -305,7 +305,7 @@ namespace tao
 
          auto mark()
          {
-            return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
+            return m_input.template mark< json_pegtl::rewind_mode::required >();
          }
 
          template< typename T >

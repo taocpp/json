@@ -171,7 +171,7 @@ namespace tao
 
          }  // namespace internal
 
-         template< utf8_mode V = utf8_mode::CHECK, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::LAZY > >
+         template< utf8_mode V = utf8_mode::CHECK, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
          class basic_parts_parser
          {
          public:
@@ -297,7 +297,7 @@ namespace tao
 
             auto mark()
             {
-               return m_input.template mark< json_pegtl::rewind_mode::REQUIRED >();
+               return m_input.template mark< json_pegtl::rewind_mode::required >();
             }
 
             template< typename T >

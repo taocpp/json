@@ -57,7 +57,7 @@ namespace tao
 
             struct unescaped
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::ANY >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
 
                template< typename Input >
                static bool match( Input& in )
@@ -119,7 +119,7 @@ namespace tao
 
             struct sor_value
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::SOR, string, number< false >, object, array, false_, true_, null >;
+               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::sor, string, number< false >, object, array, false_, true_, null >;
 
                template< bool NEG,
                          apply_mode A,
@@ -165,7 +165,7 @@ namespace tao
                static bool match_number( Input& in, States&&... st )
                {
                   if( in.peek_char() == '0' ) {
-                     if( !match_zero< NEG, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
+                     if( !match_zero< NEG, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
                         throw json_pegtl::parse_error( "incomplete number", in );
                      }
                      return true;
@@ -191,7 +191,7 @@ namespace tao
 
                      case '-':
                         in.bump_in_this_line();
-                        if( in.empty() || !match_number< true, A, rewind_mode::DONTCARE, Action, Control >( in, st... ) ) {
+                        if( in.empty() || !match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
                            throw json_pegtl::parse_error( "incomplete number", in );
                         }
                         return true;
