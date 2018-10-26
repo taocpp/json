@@ -20,6 +20,8 @@ namespace tao
    {
       struct position
       {
+         position() = default;
+
          template< typename T >
          position( const internal::iterator& in_iter, T&& in_source )
             : byte( in_iter.byte ),
@@ -29,9 +31,9 @@ namespace tao
          {
          }
 
-         std::size_t byte;
-         std::size_t line;
-         std::size_t byte_in_line;
+         std::size_t byte = 0;
+         std::size_t line = 0;
+         std::size_t byte_in_line = 0;
          std::string source;
       };
 
