@@ -138,7 +138,7 @@ This is even necessary to prevent collisions when there are two occurrences of t
 Constants works for Objects just like for Arrays, though of course a string with the key needs to be supplied in addition to the constant value.
 
 Constants are added to an Object binding with the macros `TAO_JSON_BIND_REQUIRED_BOOL()`, `TAO_JSON_BIND_REQUIRED_SIGNED()`, `TAO_JSON_BIND_REQUIRED_UNSIGNED()` and `TAO_JSON_BIND_REQUIRED_STRING()`.
-There are again variants with `OPTIONAL` in place of `REQUIRED` that are always encoded, but are not flagged as error when missing.
+There are again variants with `optional` in place of `required` that are always encoded, but are not flagged as error when missing.
 
 ```c++
 template< typename U, typename V >
