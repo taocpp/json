@@ -17,6 +17,11 @@ namespace tao
          {
             string_state() = default;
 
+            template< typename Input, typename... States >
+            string_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
+            {
+            }
+
             string_state( const string_state& ) = delete;
             string_state( string_state&& ) = delete;
 
@@ -25,8 +30,8 @@ namespace tao
             void operator=( const string_state& ) = delete;
             void operator=( string_state&& ) = delete;
 
-            template< typename Consumer >
-            void success( Consumer& consumer )
+            template< typename Input, typename Consumer >
+            void success( const Input& /*unused*/, Consumer& consumer )
             {
                consumer.string( std::move( unescaped ) );
             }

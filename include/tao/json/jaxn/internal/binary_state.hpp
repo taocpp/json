@@ -18,7 +18,10 @@ namespace tao
          {
             struct binary_state
             {
-               binary_state() = default;
+               template< typename Input, typename... States >
+               binary_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
+               {
+               }
 
                binary_state( const binary_state& ) = delete;
                binary_state( binary_state&& ) = delete;
@@ -28,8 +31,8 @@ namespace tao
                void operator=( const binary_state& ) = delete;
                void operator=( binary_state&& ) = delete;
 
-               template< typename Consumer >
-               void success( Consumer& consumer )
+               template< typename Input, typename Consumer >
+               void success( const Input& /*unused*/, Consumer& consumer )
                {
                   consumer.binary( std::move( value ) );
                }

@@ -145,7 +145,7 @@ namespace tao
       auto basic_parse_file_with_position( const std::string& filename )
       {
          events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
-         json_pegtl::file_input< json_pegtl::tracking_mode::immediate > in( filename );
+         json_pegtl::file_input< json_pegtl::tracking_mode::eager > in( filename );
          json_pegtl::parse< internal::grammar, internal::position_action, internal::control >( in, consumer );
          return std::move( consumer.value );
       }
