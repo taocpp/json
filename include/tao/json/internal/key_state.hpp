@@ -16,7 +16,7 @@ namespace tao
          struct key_state
          {
             template< typename Input, typename... States >
-            key_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
+            explicit key_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
             {
             }
 

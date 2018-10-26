@@ -26,7 +26,7 @@ namespace tao
             using msize_t = uint16_t;
 
             template< typename Input, typename... States >
-            number_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
+            explicit number_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
             {
             }
 

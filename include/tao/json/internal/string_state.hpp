@@ -18,7 +18,7 @@ namespace tao
             string_state() = default;
 
             template< typename Input, typename... States >
-            string_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
+            explicit string_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
             {
             }
 

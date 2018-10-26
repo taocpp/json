@@ -19,7 +19,7 @@ namespace tao
             struct binary_state
             {
                template< typename Input, typename... States >
-               binary_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
+               explicit binary_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
                {
                }
 
