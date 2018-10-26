@@ -25,7 +25,10 @@ namespace tao
             using exponent10_t = int32_t;
             using msize_t = uint16_t;
 
-            number_state() = default;
+            template< typename Input, typename... States >
+            number_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
+            {
+            }
 
             number_state( const number_state& ) = delete;
             number_state( number_state&& ) = delete;
@@ -42,8 +45,8 @@ namespace tao
             bool drop = false;
             char mantissa[ max_mantissa_digits + 1 ];
 
-            template< typename Consumer >
-            void success( Consumer& consumer )
+            template< typename Input, typename Consumer >
+            void success( const Input& /*unused*/, Consumer& consumer )
             {
                if( !isfp && msize <= 20 ) {
                   mantissa[ msize ] = 0;
