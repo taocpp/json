@@ -58,8 +58,7 @@ namespace tao
          void operator=( const buffer_input& ) = delete;
          void operator=( buffer_input&& ) = delete;
 
-         bool empty()
-         {
+         [[nodiscard]] bool empty() {
             require( 1 );
             return m_current.data == m_end;
          }

@@ -57,7 +57,7 @@ namespace tao
       }
 
       constexpr basic_binary_view( const basic_binary_view& ) noexcept = default;
-      /*constexpr*/ basic_binary_view& operator=( const basic_binary_view& ) noexcept = default;
+      constexpr basic_binary_view& operator=( const basic_binary_view& ) noexcept = default;
 
       constexpr const_iterator begin() const noexcept
       {
@@ -114,7 +114,7 @@ namespace tao
          return npos - 1;
       }
 
-      constexpr bool empty() const noexcept
+      [[nodiscard]] constexpr bool empty() const noexcept
       {
          return size_ == 0;
       }
@@ -126,7 +126,10 @@ namespace tao
 
       constexpr const_reference at( size_type pos ) const
       {
-         return ( pos >= size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::at" ) : data_[ pos ];  // NOLINT
+         if( pos >= size() ) {
+            throw std::out_of_range( "index out of range in tao::basic_binary_view::at" );  // NOLINT
+         }
+         return data_[ pos ];
       }
 
       constexpr const_reference front() const noexcept
@@ -144,18 +147,18 @@ namespace tao
          return data_;
       }
 
-      /*constexpr*/ void remove_prefix( size_type n ) noexcept
+      constexpr void remove_prefix( size_type n ) noexcept
       {
          data_ += n;
          size_ -= n;
       }
 
-      /*constexpr*/ void remove_suffix( size_type n ) noexcept
+      constexpr void remove_suffix( size_type n ) noexcept
       {
          size_ -= n;
       }
 
-      /*constexpr*/ void swap( basic_binary_view& s ) noexcept
+      constexpr void swap( basic_binary_view& s ) noexcept
       {
          std::swap( data_, s.data_ );
          std::swap( size_, s.size_ );
@@ -176,7 +179,7 @@ namespace tao
          return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::substr" ) : basic_binary_view( data() + pos, ( std::min )( n, size() - pos ) );  // NOLINT
       }
 
-      /*constexpr*/ int compare( basic_binary_view s ) const noexcept
+      constexpr int compare( basic_binary_view s ) const noexcept
       {
          const size_type rlen = ( std::min )( size(), s.size() );
          const int result = std::memcmp( data(), s.data(), rlen );
@@ -206,7 +209,7 @@ namespace tao
          return substr( pos1, n1 ).compare( basic_binary_view( s, n2 ) );
       }
 
-      /*constexpr*/ size_type find( basic_binary_view s, size_type pos = 0 ) const noexcept
+      constexpr size_type find( basic_binary_view s, size_type pos = 0 ) const noexcept
       {
          if( pos > size() - s.size() ) {
             return npos;
@@ -225,7 +228,7 @@ namespace tao
          return find( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type rfind( basic_binary_view s, size_type pos = npos ) const noexcept
+      constexpr size_type rfind( basic_binary_view s, size_type pos = npos ) const noexcept
       {
          if( pos > size() - s.size() ) {
             return npos;
@@ -244,7 +247,7 @@ namespace tao
          return rfind( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_first_of( basic_binary_view s, size_type pos = 0 ) const noexcept
+      constexpr size_type find_first_of( basic_binary_view s, size_type pos = 0 ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
@@ -263,7 +266,7 @@ namespace tao
          return find_first_of( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_last_of( basic_binary_view s, size_type pos = npos ) const noexcept
+      constexpr size_type find_last_of( basic_binary_view s, size_type pos = npos ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
@@ -282,7 +285,7 @@ namespace tao
          return find_last_of( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_first_not_of( basic_binary_view s, size_type pos = 0 ) const noexcept
+      constexpr size_type find_first_not_of( basic_binary_view s, size_type pos = 0 ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
@@ -303,7 +306,7 @@ namespace tao
          return find_first_not_of( basic_binary_view( s, n ), pos );
       }
 
-      /*constexpr*/ size_type find_last_not_of( basic_binary_view s, size_type pos = npos ) const noexcept
+      constexpr size_type find_last_not_of( basic_binary_view s, size_type pos = npos ) const noexcept
       {
          if( pos > size() - 1 ) {
             return npos;
