@@ -1698,7 +1698,7 @@ namespace tao
 
             void key( const std::string_view sv )
             {
-               key( std::string( sv.data(), sv.size() ) );
+               key( std::string( sv ) );
             }
 
             void key( const char* v )

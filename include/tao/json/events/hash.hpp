@@ -113,7 +113,7 @@ namespace tao
                m_digests.back()->feed( 's' );
                const auto s = v.size();
                m_digests.back()->feed( &s, sizeof( s ) );
-               m_digests.back()->feed( v.data(), v.size() );
+               m_digests.back()->feed( v );
             }
 
             void binary( const tao::binary_view v )
@@ -147,10 +147,10 @@ namespace tao
 
             void key( const std::string_view v )
             {
-               m_digests.back()->feed( v.data(), v.size() );
+               m_digests.back()->feed( v );
                m_keys.emplace_back( m_digests.back()->get() );
                if( m_properties.back().count( m_keys.back() ) != 0 ) {
-                  throw std::runtime_error( "duplicate JSON object key: " + std::string( v.data(), v.size() ) );  // NOLINT
+                  throw std::runtime_error( "duplicate JSON object key: " + std::string( v ) );  // NOLINT
                }
                m_digests.back()->reset();
             }

@@ -153,7 +153,7 @@ namespace tao
                }
             }
 
-            void feed( const std::string& v ) noexcept
+            void feed( const std::string_view v ) noexcept
             {
                feed( v.data(), v.size() );
             }

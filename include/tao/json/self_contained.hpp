@@ -102,11 +102,9 @@ namespace tao
             case type::BINARY:
                return;
 
-            case type::STRING_VIEW: {
-               const auto sv = v.unsafe_get_string_view();
-               v.unsafe_emplace_string( sv.data(), sv.size() );
+            case type::STRING_VIEW:
+               v.unsafe_emplace_string( v.unsafe_get_string_view() );
                return;
-            }
 
             case type::BINARY_VIEW: {
                const auto xv = v.unsafe_get_binary_view();

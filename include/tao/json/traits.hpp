@@ -352,10 +352,8 @@ namespace tao
             switch( v.type() ) {
                case type::STRING:
                   return v.unsafe_get_string();
-               case type::STRING_VIEW: {
-                  const auto sv = v.unsafe_get_string_view();
-                  return std::string( sv.data(), sv.size() );
-               }
+               case type::STRING_VIEW:
+                  return std::string( v.unsafe_get_string_view() );
                default:
                   throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string", json::message_extension( v ) ) );  // NOLINT
             }
@@ -453,7 +451,7 @@ namespace tao
          template< template< typename... > class Traits >
          static void assign( basic_value< Traits >& v, const std::string_view sv )
          {
-            v.unsafe_emplace_string( sv.data(), sv.size() );
+            v.unsafe_emplace_string( sv );
          }
 
          template< template< typename... > class Traits, typename Consumer >
