@@ -95,9 +95,4 @@ namespace tao
 #define TAO_JSON_PEGTL_KEYWORD( x ) \
    TAO_JSON_PEGTL_INTERNAL_STRING( tao::TAO_JSON_PEGTL_NAMESPACE::ascii::keyword, x )
 
-// Compatibility, remove with 3.0
-#define TAOCPP_PEGTL_STRING( x ) TAO_JSON_PEGTL_STRING( x )
-#define TAOCPP_PEGTL_ISTRING( x ) TAO_JSON_PEGTL_ISTRING( x )
-#define TAOCPP_PEGTL_KEYWORD( x ) TAO_JSON_PEGTL_KEYWORD( x )
-
 #endif
