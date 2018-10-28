@@ -57,6 +57,17 @@ The library is not stable as in "under construction"; some parts of the API are 
 
 This library also serves as a real-world example application of the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing the JSON and JAXN representation formats.
 
+## Contact
+
+The Art of C++ / JSON is part of [The Art of C++](https://taocpp.github.io/).
+
+For questions and suggestions about The Art of C++ / JSON please contact the authors at `taocpp(at)icemx.net`.
+
+## Thank You
+
+* Niels Lohmann and his [JSON library](https://github.com/nlohmann/json) for the inspiration.
+* Milo Yip and his [Native JSON Benchmark] for a reference to measure progress against.
+
 ## License
 
 The Art of C++ / JSON is certified [Open Source] software.
@@ -70,17 +81,6 @@ It is distributed under the terms of the [MIT license] reproduced here.
 > The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 >
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-## Contact
-
-The Art of C++ / JSON is part of [The Art of C++](https://taocpp.github.io/).
-
-For questions and suggestions about The Art of C++ / JSON please contact the authors at `taocpp(at)icemx.net`.
-
-## Thank You
-
-* Niels Lohmann and his [JSON library](https://github.com/nlohmann/json) for the inspiration.
-* Milo Yip and his [Native JSON Benchmark] for a reference to measure progress against.
 
 ## Additional Licenses
 
