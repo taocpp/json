@@ -18,6 +18,7 @@ set(testsources
   create.cpp
   double.cpp
   dump_sizes.cpp
+  enable_implicit_constructor.cpp
   escape.cpp
   events_compare.cpp
   events_debug.cpp
