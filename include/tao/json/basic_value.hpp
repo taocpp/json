@@ -1008,29 +1008,47 @@ namespace tao
             return *p;
          }
 
-         template< typename T >
-         basic_value* unsafe_find( const T& key ) noexcept
+         basic_value* unsafe_find( const std::size_t index ) noexcept
+         {
+            return ( index < m_union.a.size() ) ? ( m_union.a.data() + index ) : nullptr;
+         }
+
+         const basic_value* unsafe_find( const std::size_t index ) const noexcept
+         {
+            return ( index < m_union.a.size() ) ? ( m_union.a.data() + index ) : nullptr;
+         }
+
+         basic_value* find( const std::size_t index )
+         {
+            validate_json_type( json::type::ARRAY );
+            return unsafe_find( index );
+         }
+
+         const basic_value* find( const std::size_t index ) const
+         {
+            validate_json_type( json::type::ARRAY );
+            return unsafe_find( index );
+         }
+
+         basic_value* unsafe_find( const std::string& key ) noexcept
          {
             const auto it = m_union.o.find( key );
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
-         template< typename T >
-         const basic_value* unsafe_find( const T& key ) const noexcept
+         const basic_value* unsafe_find( const std::string& key ) const noexcept
          {
             const auto it = m_union.o.find( key );
             return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
          }
 
-         template< typename T >
-         basic_value* find( const T& key )
+         basic_value* find( const std::string& key )
          {
             validate_json_type( json::type::OBJECT );
             return unsafe_find( key );
          }
 
-         template< typename T >
-         const basic_value* find( const T& key ) const
+         const basic_value* find( const std::string& key ) const
          {
             validate_json_type( json::type::OBJECT );
             return unsafe_find( key );
