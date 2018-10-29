@@ -44,10 +44,18 @@ namespace tao
             }
 
             template< template< typename... > class Traits, typename C >
-            static auto first_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< json::internal::has_to< V, basic_value< Traits >, C >, std::exception_ptr >
+            static std::exception_ptr first_to( const basic_value< Traits >& v, C& x ) noexcept
             {
                try {
-                  V::to( v, x );
+                  if constexpr( json::internal::has_to< V, basic_value< Traits >, C > ) {
+                     V::to( v, x );
+                  }
+                  else if constexpr( json::internal::has_as< V, basic_value< Traits > > ) {
+                     x = V::as( v );
+                  }
+                  else {
+                     static_assert( std::is_void_v< V >, "neither V::to() nor V::as() found" );
+                  }
                   return std::exception_ptr();
                }
                catch( ... ) {
@@ -55,47 +63,25 @@ namespace tao
                }
             }
 
-            template< template< typename... > class Traits, typename C >
-            static auto first_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< V, basic_value< Traits >, C > && json::internal::has_as< V, basic_value< Traits > >, std::exception_ptr >
-            {
-               try {
-                  x = V::as( v );
-                  return std::exception_ptr();
-               }
-               catch( ... ) {
-                  return std::current_exception();
-               }
-            }
-
-            template< template< typename... > class Traits, typename C >
-            static auto first_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< V, basic_value< Traits >, C > && !json::internal::has_as< V, basic_value< Traits > >, std::exception_ptr > = delete;
-
             template< typename A, template< typename... > class Traits, typename C >
-            static auto later_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< json::internal::has_to< A, basic_value< Traits >, C >, bool >
+            static bool later_to( const basic_value< Traits >& v, C& x ) noexcept
             {
                try {
-                  A::to( v, x );
+                  if constexpr( json::internal::has_to< A, basic_value< Traits >, C > ) {
+                     A::to( v, x );
+                  }
+                  else if constexpr( json::internal::has_as< A, basic_value< Traits > > ) {
+                     x = A::as( v );
+                  }
+                  else {
+                     static_assert( std::is_void_v< A >, "neither A::to() nor A::as() found" );
+                  }
                   return true;
                }
                catch( ... ) {
                   return false;
                }
             }
-
-            template< typename A, template< typename... > class Traits, typename C >
-            static auto later_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< A, basic_value< Traits >, C > && json::internal::has_as< A, basic_value< Traits > >, bool >
-            {
-               try {
-                  x = A::as( v );
-                  return true;
-               }
-               catch( ... ) {
-                  return false;
-               }
-            }
-
-            template< typename A, template< typename... > class Traits, typename C >
-            static auto later_to( const basic_value< Traits >& v, C& x ) -> std::enable_if_t< !json::internal::has_to< A, basic_value< Traits >, C > && !json::internal::has_as< A, basic_value< Traits > >, bool > = delete;
 
             template< template< typename... > class Traits, typename C >
             static void to( const basic_value< Traits >& v, C& x )
