@@ -109,6 +109,11 @@ namespace tao
             return *this;
          }
 
+         bool has_index() const noexcept
+         {
+            return m_index != std::string::npos;
+         }
+
          const std::string& key() const noexcept
          {
             return m_key;
@@ -116,7 +121,7 @@ namespace tao
 
          std::size_t index() const
          {
-            if( m_index == std::string::npos ) {
+            if( !has_index() ) {
                throw std::invalid_argument( internal::format( "unable to resolve json pointer with array, token '", m_key, "' is not an index" ) );  // NOLINT
             }
             return m_index;

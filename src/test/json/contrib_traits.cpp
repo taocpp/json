@@ -38,15 +38,13 @@ namespace tao
 
       void test_unique()
       {
-         {
-            const std::unique_ptr< std::uint64_t > f( new std::uint64_t( 42 ) );
-            value v = f;
-            TEST_ASSERT( v == f );
-            TEST_ASSERT( v.is_number() );
-            const auto g = v.as< std::unique_ptr< std::uint64_t > >();
-            TEST_ASSERT( g != f );
-            TEST_ASSERT( *g == *f );
-         }
+         const std::unique_ptr< std::uint64_t > f( new std::uint64_t( 42 ) );
+         value v = f;
+         TEST_ASSERT( v == f );
+         TEST_ASSERT( v.is_number() );
+         const auto g = v.as< std::unique_ptr< std::uint64_t > >();
+         TEST_ASSERT( g != f );
+         TEST_ASSERT( *g == *f );
       }
 
       void test_deque()
@@ -170,6 +168,16 @@ namespace tao
          TEST_ASSERT( !( v == i ) );
       }
 
+      void test_pointer()
+      {
+         const pointer p( "/foo/1/bar/-" );
+         value v = p;
+         TEST_ASSERT( v == value::array( { "foo", 1, "bar", "-" } ) );
+         events::to_value t;
+         events::produce( t, p );
+         TEST_ASSERT( t.value == v );
+      }
+
       void unit_test()
       {
          test_shared();
@@ -180,6 +188,8 @@ namespace tao
          test_set();
          test_vector();
          test_map();
+
+         test_pointer();
       }
 
    }  // namespace json

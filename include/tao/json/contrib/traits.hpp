@@ -9,6 +9,8 @@
 #include "pair_traits.hpp"
 #include "tuple_traits.hpp"
 
+#include "pointer_traits.hpp"
+
 #include "array_traits.hpp"
 #include "deque_traits.hpp"
 #include "list_traits.hpp"
@@ -38,6 +40,18 @@ namespace tao
       template< typename... Ts >
       struct traits< std::tuple< Ts... > >
          : public tuple_traits< Ts... >
+      {
+      };
+
+      template<>
+      struct traits< token >
+         : public token_traits
+      {
+      };
+
+      template<>
+      struct traits< pointer >
+         : public pointer_traits
       {
       };
 
