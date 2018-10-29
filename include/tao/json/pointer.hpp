@@ -195,26 +195,20 @@ namespace tao
       }  // namespace internal
 
       class pointer
+         : public std::vector< token >
       {
       private:
-         std::vector< token > m_tokens;
-
          void parse( const std::string& v )
          {
             std::string t;
             json_pegtl::memory_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, const char* > in( v, "parse()" );
-            json_pegtl::parse< internal::pointer_grammar, internal::pointer_action >( in, m_tokens, t );
+            json_pegtl::parse< internal::pointer_grammar, internal::pointer_action >( in, vector(), t );
          }
 
       public:
          pointer() = default;
-
          pointer( const pointer& ) = default;
-
-         pointer( pointer&& p ) noexcept
-            : m_tokens( std::move( p.m_tokens ) )
-         {
-         }
+         pointer( pointer&& p ) = default;
 
          explicit pointer( const std::string& v )
          {
@@ -222,102 +216,49 @@ namespace tao
          }
 
          pointer( const std::initializer_list< token >& l )
-            : m_tokens( l )
+            : std::vector< token >( l )
          {
          }
 
          ~pointer() = default;
 
          pointer& operator=( const pointer& ) = default;
-
-         pointer& operator=( pointer&& p ) noexcept
-         {
-            m_tokens = std::move( p.m_tokens );
-            return *this;
-         }
+         pointer& operator=( pointer&& p ) = default;
 
          pointer& operator=( const std::string& v )
          {
-            m_tokens.clear();
+            clear();
             parse( v );
             return *this;
          }
 
          pointer& operator=( const std::initializer_list< token >& l )
          {
-            m_tokens = l;
+            vector() = l;
             return *this;
          }
 
          explicit operator bool() const noexcept
          {
-            return !m_tokens.empty();
+            return !empty();
          }
 
-         [[nodiscard]] bool empty() const noexcept
-         {
-            return m_tokens.empty();
-         }
-
-         std::size_t size() const noexcept
-         {
-            return m_tokens.size();
-         }
-
-         const token& at( const std::size_t i ) const noexcept
-         {
-            return m_tokens.at( i );
-         }
-
-         const token& operator[]( const std::size_t i ) const noexcept
-         {
-            return m_tokens[ i ];
-         }
-
-         std::vector< token >::const_iterator begin() const noexcept
-         {
-            return m_tokens.begin();
-         }
-
-         std::vector< token >::const_iterator end() const noexcept
-         {
-            return m_tokens.end();
-         }
-
-         void push_back( const std::string& v )
-         {
-            m_tokens.emplace_back( v );
-         }
-
-         void push_back( std::string&& v )
-         {
-            m_tokens.emplace_back( std::move( v ) );
-         }
-
-         void push_back( const std::size_t i )
-         {
-            m_tokens.emplace_back( i );
-         }
-
-         void push_back( const token& t )
-         {
-            m_tokens.emplace_back( t );
-         }
+         void push_back() = delete;
 
          void pop_back()
          {
-            assert( !m_tokens.empty() );
-            m_tokens.pop_back();
+            assert( !empty() );
+            vector().pop_back();
          }
 
          friend bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
          {
-            return lhs.m_tokens == rhs.m_tokens;
+            return lhs.vector() == rhs.vector();
          }
 
          friend bool operator<( const pointer& lhs, const pointer& rhs ) noexcept
          {
-            return lhs.m_tokens < rhs.m_tokens;
+            return lhs.vector() < rhs.vector();
          }
 
          bool is_prefix_of( const pointer& other ) const noexcept
@@ -326,6 +267,16 @@ namespace tao
                return std::equal( begin(), end(), other.begin() );
             }
             return false;
+         }
+
+         std::vector< token >& vector() noexcept
+         {
+            return static_cast< std::vector< token >& >( *this );
+         }
+
+         const std::vector< token >& vector() const noexcept
+         {
+            return static_cast< const std::vector< token >& >( *this );
          }
       };
 
@@ -351,19 +302,19 @@ namespace tao
 
       inline pointer& operator+=( pointer& lhs, const std::string& rhs )
       {
-         lhs.push_back( rhs );
+         lhs.emplace_back( rhs );
          return lhs;
       }
 
       inline pointer& operator+=( pointer& lhs, std::string&& rhs )
       {
-         lhs.push_back( std::move( rhs ) );
+         lhs.emplace_back( std::move( rhs ) );
          return lhs;
       }
 
       inline pointer& operator+=( pointer& lhs, const std::size_t rhs )
       {
-         lhs.push_back( rhs );
+         lhs.emplace_back( rhs );
          return lhs;
       }
 
