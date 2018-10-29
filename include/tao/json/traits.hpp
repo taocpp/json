@@ -744,6 +744,22 @@ namespace tao
       };
 
       template< template< typename... > class Traits >
+      struct traits< basic_value< Traits > >
+      {
+         template< template< typename... > class, typename Consumer >
+         static void produce( Consumer& c, const basic_value< Traits >& v )
+         {
+            events::from_value( c, v );
+         }
+
+         template< template< typename... > class, typename Consumer >
+         static void produce( Consumer& c, basic_value< Traits >&& v )
+         {
+            events::from_value( c, std::move( v ) );
+         }
+      };
+
+      template< template< typename... > class Traits >
       struct traits< std::vector< basic_value< Traits > > >
       {
          static void assign( basic_value< Traits >& v, const std::vector< basic_value< Traits > >& a )
@@ -761,7 +777,7 @@ namespace tao
          {
             c.begin_array( a.size() );
             for( const auto& i : a ) {
-               events::from_value( c, i );
+               Traits< basic_value< Traits > >::produce( c, i );
                c.element();
             }
             c.end_array( a.size() );
@@ -772,7 +788,7 @@ namespace tao
          {
             c.begin_array( a.size() );
             for( auto&& i : a ) {
-               events::from_value( c, std::move( i ) );
+               Traits< basic_value< Traits > >::produce( c, std::move( i ) );
                c.element();
             }
             c.end_array( a.size() );
@@ -798,7 +814,7 @@ namespace tao
             c.begin_array( o.size() );
             for( const auto& i : o ) {
                c.key( i.first );
-               events::from_value( c, i.second );
+               Traits< basic_value< Traits > >::produce( c, i.second );
                c.member();
             }
             c.end_array( o.size() );
@@ -810,7 +826,7 @@ namespace tao
             c.begin_array( o.size() );
             for( auto&& i : o ) {
                c.key( std::move( i.first ) );
-               events::from_value( c, std::move( i.second ) );
+               Traits< basic_value< Traits > >::produce( c, std::move( i.second ) );
                c.member();
             }
             c.end_array( o.size() );
