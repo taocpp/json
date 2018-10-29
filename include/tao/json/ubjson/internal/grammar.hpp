@@ -297,7 +297,7 @@ namespace tao
                   }
                   if( c == marker::UINT8 ) {
                      // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
-                     consumer.binary( read_string< L, utf8_mode::TRUST, tao::binary_view >( in ) );
+                     consumer.binary( read_string< L, utf8_mode::trust, tao::binary_view >( in ) );
                      return;
                   }
                   const auto size = read_size< L >( in );
@@ -398,7 +398,7 @@ namespace tao
             {
             };
 
-            using grammar = basic_grammar< 1 << 24, utf8_mode::CHECK >;
+            using grammar = basic_grammar< 1 << 24, utf8_mode::check >;
 
          }  // namespace internal
 

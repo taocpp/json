@@ -110,13 +110,13 @@ namespace tao
                         in.bump_in_this_line();
                         return;
                      case format::BIN8:
-                        consumer.binary( json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) ) );
+                        consumer.binary( json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) ) );
                         return;
                      case format::BIN16:
-                        consumer.binary( json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) ) );
+                        consumer.binary( json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) ) );
                         return;
                      case format::BIN32:
-                        consumer.binary( json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
+                        consumer.binary( json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
                         return;
                      case format::EXT8:
                         discard( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) + 1 );
@@ -238,7 +238,7 @@ namespace tao
             {
             };
 
-            using grammar = basic_grammar< utf8_mode::CHECK >;
+            using grammar = basic_grammar< utf8_mode::check >;
 
          }  // namespace internal
 

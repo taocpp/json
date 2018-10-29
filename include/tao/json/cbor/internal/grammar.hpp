@@ -233,10 +233,10 @@ namespace tao
                static void parse_binary_unsafe( Input& in, Consumer& consumer )
                {
                   if( peek_minor_unsafe( in ) != minor_mask ) {
-                     consumer.binary( read_string_1< utf8_mode::TRUST, tao::binary_view >( in ) );
+                     consumer.binary( read_string_1< utf8_mode::trust, tao::binary_view >( in ) );
                   }
                   else {
-                     consumer.binary( read_string_n< utf8_mode::TRUST, std::vector< std::byte > >( in, major::BINARY ) );
+                     consumer.binary( read_string_n< utf8_mode::trust, std::vector< std::byte > >( in, major::BINARY ) );
                   }
                }
 
@@ -398,7 +398,7 @@ namespace tao
             {
             };
 
-            using grammar = basic_grammar< utf8_mode::CHECK >;
+            using grammar = basic_grammar< utf8_mode::check >;
 
          }  // namespace internal
 

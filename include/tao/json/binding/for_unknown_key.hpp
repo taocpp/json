@@ -12,8 +12,8 @@ namespace tao
       {
          enum class for_unknown_key : bool
          {
-            THROW,
-            CONTINUE
+            fail,
+            skip
          };
 
       }  // namespace binding

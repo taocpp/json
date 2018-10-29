@@ -159,7 +159,7 @@ Array bindings can "inherit" a base class' Array bindings, and Object bindings c
 
 By default, the Object traits' `to()` and `consume()` functions will throw an exception when they encounter an unknown Object key while converting a Value, or parsing some input, respectively.
 
-This can be changed by using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_unknown_key::CONTINUE` as template parameter in the appropriate place (instead of `tao::json::binding::for_unknown_key::THROW`).
+This can be changed by using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_unknown_key::skip` as template parameter in the appropriate place (instead of `tao::json::binding::for_unknown_key::fail`).
 
 With this change, unknown keys will be ignored.
 
@@ -167,7 +167,7 @@ With this change, unknown keys will be ignored.
 
 By default, the Object traits' `assign()` and `produce()` functions will encode all variables that it knows about, including those that might be considered "nothing".
 
-This can be changed by again using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_nothing_value::SUPPRESS` as template parameter in the appropriate place (instead of `tao::json::binding::for_nothing_value::ENCODE`).
+This can be changed by again using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_nothing_value::suppress` as template parameter in the appropriate place (instead of `tao::json::binding::for_nothing_value::ENCODE`).
 
 To determine whether something is to be considered "nothing", the Traits' optional `is_nothing()` function is used.
 

@@ -41,7 +41,7 @@ namespace tao
          using basic_object = internal::basic_object< E, N, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
 
          template< typename... As >
-         using object = basic_object< for_unknown_key::THROW, for_nothing_value::ENCODE, As... >;
+         using object = basic_object< for_unknown_key::fail, for_nothing_value::encode, As... >;
 
       }  // namespace binding
 

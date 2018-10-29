@@ -12,8 +12,8 @@ namespace tao
       {
          enum class for_nothing_value : bool
          {
-            ENCODE,
-            SUPPRESS
+            encode,
+            suppress
          };
 
       }  // namespace binding

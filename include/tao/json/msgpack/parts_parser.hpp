@@ -48,11 +48,11 @@ namespace tao
             {
                switch( peek_format( in ) ) {
                   case format::BIN8:
-                     return json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) );
+                     return json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) );
                   case format::BIN16:
-                     return json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );
+                     return json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) );
                   case format::BIN32:
-                     return json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
+                     return json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
                   default:
                      throw json_pegtl::parse_error( "expected binary data", in );  // NOLINT
                }
@@ -171,7 +171,7 @@ namespace tao
 
          }  // namespace internal
 
-         template< utf8_mode V = utf8_mode::CHECK, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
+         template< utf8_mode V = utf8_mode::check, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
          class basic_parts_parser
          {
          public:
