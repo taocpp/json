@@ -107,20 +107,14 @@ namespace tao
             return false;
          }
 
-         template< template< typename... > class Traits, typename T, typename = bool >
-         struct enable_implicit_constructor
-            : std::bool_constant< Traits< void >::enable_implicit_constructor >
-         {
-         };
+         template< template< typename... > class Traits, typename T, typename = void >
+         inline constexpr bool has_enable_implicit_constructor = false;
 
          template< template< typename... > class Traits, typename T >
-         struct enable_implicit_constructor< Traits, T, decltype( Traits< T >::enable_implicit_constructor ) >
-            : std::bool_constant< Traits< T >::enable_implicit_constructor >
-         {
-         };
+         inline constexpr bool has_enable_implicit_constructor< Traits, T, decltype( Traits< T >::enable_implicit_constructor, void() ) > = true;
 
          template< template< typename... > class Traits, typename T >
-         inline constexpr bool enable_implicit_constructor_v = enable_implicit_constructor< Traits, T >::value;
+         inline constexpr bool enable_implicit_constructor = Traits< std::conditional_t< has_enable_implicit_constructor< Traits, T >, T, void > >::enable_implicit_constructor;
 
       }  // namespace internal
 
