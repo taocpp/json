@@ -47,18 +47,6 @@ namespace tao
             }
          };
 
-         template< typename T >
-         struct is_basic_value
-            : public std::false_type
-         {
-         };
-
-         template< template< typename... > class Traits >
-         struct is_basic_value< basic_value< Traits > >
-            : public std::true_type
-         {
-         };
-
          template< typename, typename... >
          inline constexpr bool has_as_impl = false;
 
@@ -96,13 +84,13 @@ namespace tao
          inline constexpr bool has_is_nothing< Traits, T, decltype( Traits< T >::template is_nothing< Traits >( std::declval< const T& >() ), void() ) > = true;
 
          template< template< typename... > class Traits, typename T >
-         auto is_nothing( const T& t ) -> std::enable_if_t< has_is_nothing< Traits, T >, bool >
+         std::enable_if_t< has_is_nothing< Traits, T >, bool > is_nothing( const T& t ) noexcept( noexcept( Traits< T >::template is_nothing< Traits >( t ) ) )
          {
             return Traits< T >::template is_nothing< Traits >( t );
          }
 
          template< template< typename... > class Traits, typename T >
-         auto is_nothing( const T & /*unused*/ ) -> std::enable_if_t< !has_is_nothing< Traits, T >, bool >
+         std::enable_if_t< !has_is_nothing< Traits, T >, bool > is_nothing( const T& /*unused*/ ) noexcept
          {
             return false;
          }
