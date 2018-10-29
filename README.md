@@ -12,7 +12,7 @@
 
 *Warning: The documentation is currently not quite keeping pace with what will hopefully be the last large pre-1.0.0 development burst.*
 
-* [Version 1.x](doc/README.md) (C++17)
+* [Version 1.x](doc/README.md) (requires C++17)
 
 ## Features
 
