@@ -1,6 +1,6 @@
 # Design Decisions
 
-* [Require C++17](#require-c--17)
+* [Require C++17](#require-c17)
 * [Initialiser Lists](#initialiser-lists)
 * [Omitted Functions](#omitted-functions)
 
