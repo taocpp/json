@@ -256,16 +256,6 @@ namespace tao
             vector().pop_back();
          }
 
-         friend bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
-         {
-            return lhs.vector() == rhs.vector();
-         }
-
-         friend bool operator<( const pointer& lhs, const pointer& rhs ) noexcept
-         {
-            return lhs.vector() < rhs.vector();
-         }
-
          bool is_prefix_of( const pointer& other ) const noexcept
          {
             if( other.size() >= size() ) {
@@ -284,6 +274,16 @@ namespace tao
             return static_cast< const std::vector< token >& >( *this );
          }
       };
+
+      inline bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
+      {
+         return lhs.vector() == rhs.vector();
+      }
+
+      inline bool operator<( const pointer& lhs, const pointer& rhs ) noexcept
+      {
+         return lhs.vector() < rhs.vector();
+      }
 
       inline bool operator!=( const pointer& lhs, const pointer& rhs ) noexcept
       {
