@@ -1,9 +1,18 @@
 # Design Decisions
 
+* [Require C++17](#require-c--17)
 * [Initialiser Lists](#initialiser-lists)
 * [Omitted Functions](#omitted-functions)
 
 This library is designed for correctness and simplicity, is based on C++ standard containers, and strives for speed through minimalism (rather than complicated optimisations).
+
+## Require C++17
+
+For the first three years this library was compatible with C++11, however we changed the required standard version to C++17 before reaching version 1.0.0.
+There were two main reasons for making this change.
+
+1. With C++11 the library had to include and maintain implementations of `std::optional` and `std::string_view`; the latter was not a full replacement since C++11 `std::string` does not know about string views.
+2. Many places throughout the library that benefit from being able to use C++17 language features; for examples look at the flock of C++17-related commits made after the standards upgrade in October 2018.
 
 ## Initialiser-Lists
 
