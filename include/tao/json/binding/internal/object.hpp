@@ -72,7 +72,7 @@ namespace tao
                template< typename A, std::size_t I >
                static void set_optional_bit( std::bitset< sizeof...( As ) >& t )
                {
-                  t.set( I, A::kind == member_kind::OPTIONAL );
+                  t.set( I, A::kind == member_kind::optional );
                }
 
                template< typename A, typename C, template< typename... > class Traits >
@@ -109,7 +109,7 @@ namespace tao
                      const auto& k = p.first;
                      const auto i = m.find( k );
                      if( i == m.end() ) {
-                        if constexpr( E == for_unknown_key::CONTINUE ) {
+                        if constexpr( E == for_unknown_key::skip ) {
                            continue;
                         }
                         std::ostringstream oss;
@@ -124,7 +124,7 @@ namespace tao
                   b |= o;
                   if( !b.all() ) {
                      std::ostringstream oss;
-                     json::internal::format_to( oss, "missing required key(s)" );
+                     json::internal::format_to( oss, "missing requiredrequired key(s)" );
                      list_missing_keys( oss, b, m );
                      json::internal::format_to( oss, " for type ", typeid( C ), json::message_extension( v ) );
                      throw std::runtime_error( oss.str() );  // NOLINT
@@ -134,7 +134,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename C >
                static void assign_member( basic_value< Traits >& v, const C& x )
                {
-                  if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
+                  if( ( N == for_nothing_value::encode ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      v.unsafe_emplace( A::template key< Traits >(), A::read( x ) );
                   }
                }
@@ -180,7 +180,7 @@ namespace tao
                      const auto k = parser.key();
                      const auto i = m.find( k );
                      if( i == m.end() ) {
-                        if constexpr( E == for_unknown_key::CONTINUE ) {
+                        if constexpr( E == for_unknown_key::skip ) {
                            parser.skip_value();
                            continue;
                         }
@@ -209,7 +209,7 @@ namespace tao
                template< template< typename... > class Traits, typename C >
                static std::size_t produce_size( const C& x )
                {
-                  if constexpr( N == for_nothing_value::ENCODE ) {
+                  if constexpr( N == for_nothing_value::encode ) {
                      return sizeof...( As );
                   }
                   return ( std::size_t( !As::template is_nothing< Traits >( x ) ) + ... );
@@ -218,7 +218,7 @@ namespace tao
                template< typename A, template< typename... > class Traits, typename Consumer, typename C >
                static void produce_member( Consumer& consumer, const C& x )
                {
-                  if( ( N == for_nothing_value::ENCODE ) || ( !A::template is_nothing< Traits >( x ) ) ) {
+                  if( ( N == for_nothing_value::encode ) || ( !A::template is_nothing< Traits >( x ) ) ) {
                      A::template produce_key< Traits >( consumer );
                      A::template produce< Traits >( consumer, x );
                      consumer.member();
@@ -240,7 +240,7 @@ namespace tao
                   if( !A::template is_nothing< Traits >( x ) ) {
                      return a.at( A::template key< Traits >() ) == A::read( x );
                   }
-                  if constexpr( N == for_nothing_value::ENCODE ) {
+                  if constexpr( N == for_nothing_value::encode ) {
                      return a.at( A::template key< Traits >() ).is_null();
                   }
                   const auto i = a.find( A::template key< Traits >() );

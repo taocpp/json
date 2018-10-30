@@ -12,8 +12,8 @@ namespace tao
       {
          enum class member_kind : bool
          {
-            OPTIONAL,
-            REQUIRED
+            optional,
+            required
          };
 
       }  // namespace binding

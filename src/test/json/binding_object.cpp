@@ -84,7 +84,7 @@ namespace tao
          TEST_ASSERT( a.z.second == 6 );
          value w = v;
          w[ "s" ] = "";
-         w[ "d" ] = null;  // Must compare equal without this entry when using for_nothing_value::SUPPRESS.
+         w[ "d" ] = null;  // Must compare equal without this entry when using for_nothing_value::suppress.
          TEST_ASSERT( a == w );
          TEST_ASSERT( w == a );
          TEST_ASSERT( !( a != w ) );

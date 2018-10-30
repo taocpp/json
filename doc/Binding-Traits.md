@@ -138,7 +138,7 @@ This is even necessary to prevent collisions when there are two occurrences of t
 Constants works for Objects just like for Arrays, though of course a string with the key needs to be supplied in addition to the constant value.
 
 Constants are added to an Object binding with the macros `TAO_JSON_BIND_REQUIRED_BOOL()`, `TAO_JSON_BIND_REQUIRED_SIGNED()`, `TAO_JSON_BIND_REQUIRED_UNSIGNED()` and `TAO_JSON_BIND_REQUIRED_STRING()`.
-There are again variants with `OPTIONAL` in place of `REQUIRED` that are always encoded, but are not flagged as error when missing.
+There are again variants with `optional` in place of `required` that are always encoded, but are not flagged as error when missing.
 
 ```c++
 template< typename U, typename V >
@@ -159,7 +159,7 @@ Array bindings can "inherit" a base class' Array bindings, and Object bindings c
 
 By default, the Object traits' `to()` and `consume()` functions will throw an exception when they encounter an unknown Object key while converting a Value, or parsing some input, respectively.
 
-This can be changed by using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_unknown_key::CONTINUE` as template parameter in the appropriate place (instead of `tao::json::binding::for_unknown_key::THROW`).
+This can be changed by using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_unknown_key::skip` as template parameter in the appropriate place (instead of `tao::json::binding::for_unknown_key::fail`).
 
 With this change, unknown keys will be ignored.
 
@@ -167,7 +167,7 @@ With this change, unknown keys will be ignored.
 
 By default, the Object traits' `assign()` and `produce()` functions will encode all variables that it knows about, including those that might be considered "nothing".
 
-This can be changed by again using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_nothing_value::SUPPRESS` as template parameter in the appropriate place (instead of `tao::json::binding::for_nothing_value::ENCODE`).
+This can be changed by again using `tao::json::binding::basic_object` instead of `tao::json::binding::object`, and passing `tao::json::binding::for_nothing_value::suppress` as template parameter in the appropriate place (instead of `tao::json::binding::for_nothing_value::ENCODE`).
 
 To determine whether something is to be considered "nothing", the Traits' optional `is_nothing()` function is used.
 

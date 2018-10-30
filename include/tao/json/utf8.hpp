@@ -15,8 +15,8 @@ namespace tao
    {
       enum class utf8_mode : bool
       {
-         CHECK,
-         TRUST
+         check,
+         trust
       };
 
       namespace internal
@@ -28,7 +28,7 @@ namespace tao
          };
 
          template< typename Input >
-         void consume_utf8_impl( Input& in, const utf8_todo< utf8_mode::CHECK > todo )
+         void consume_utf8_impl( Input& in, const utf8_todo< utf8_mode::check > todo )
          {
             std::size_t i = 0;
             while( i < todo.todo ) {
@@ -41,7 +41,7 @@ namespace tao
          }
 
          template< typename Input >
-         void consume_utf8_impl( Input& in, const utf8_todo< utf8_mode::TRUST > todo )
+         void consume_utf8_impl( Input& in, const utf8_todo< utf8_mode::trust > todo )
          {
             in.bump_in_this_line( todo.todo );
          }

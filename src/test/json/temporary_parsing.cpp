@@ -176,8 +176,8 @@ namespace tao
 
       template<>
       struct my_traits< test_suppress >
-         : binding::basic_object< binding::for_unknown_key::CONTINUE,
-                                  binding::for_nothing_value::SUPPRESS,
+         : binding::basic_object< binding::for_unknown_key::skip,
+                                  binding::for_nothing_value::suppress,
                                   TAO_JSON_BIND_OPTIONAL( "list", &test_suppress::list ) >
       {
       };

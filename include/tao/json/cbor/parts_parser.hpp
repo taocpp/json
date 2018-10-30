@@ -77,7 +77,7 @@ namespace tao
 
          }  // namespace internal
 
-         template< utf8_mode V = utf8_mode::CHECK, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
+         template< utf8_mode V = utf8_mode::check, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
          class basic_parts_parser
          {
          public:
@@ -133,7 +133,7 @@ namespace tao
 
             std::string binary()
             {
-               return string_impl< utf8_mode::TRUST, std::vector< std::byte > >( internal::major::BINARY, "expected binary" );
+               return string_impl< utf8_mode::trust, std::vector< std::byte > >( internal::major::BINARY, "expected binary" );
             }
 
             std::string key()
@@ -156,7 +156,7 @@ namespace tao
                if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected definitive binary", m_input );  // NOLINT
                }
-               return internal::read_string_1< utf8_mode::TRUST, tao::binary_view >( m_input );
+               return internal::read_string_1< utf8_mode::trust, tao::binary_view >( m_input );
             }
 
             std::string_view key_view()

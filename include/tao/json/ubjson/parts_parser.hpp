@@ -115,7 +115,7 @@ namespace tao
 
          }  // namespace internal
 
-         template< std::size_t L, utf8_mode V = utf8_mode::CHECK, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
+         template< std::size_t L, utf8_mode V = utf8_mode::check, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
          class basic_parts_parser
          {
          public:
@@ -165,7 +165,7 @@ namespace tao
                check_marker( internal::marker::UINT8, "expected type uint8 for array for binary" );
                check_marker( internal::marker::CONTAINER_SIZE, "expected sized array for binary" );
                const auto size = internal::read_size< L >( m_input );
-               return json::internal::read_string< utf8_mode::TRUST, tao::binary_view >( m_input, size );
+               return json::internal::read_string< utf8_mode::trust, tao::binary_view >( m_input, size );
             }
 
             std::string_view key()

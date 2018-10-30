@@ -161,13 +161,13 @@ namespace tao
 
          enum class schema_format
          {
-            NONE,
-            DATE_TIME,
-            EMAIL,
-            HOSTNAME,
-            IPV4,
-            IPV6,
-            URI
+            none,
+            date_time,
+            email,
+            hostname,
+            ipv4,
+            ipv6,
+            uri
          };
 
          inline constexpr schema_flags operator|( const schema_flags lhs, const schema_flags rhs ) noexcept
@@ -225,8 +225,8 @@ namespace tao
             std::uint64_t m_min_properties;
             std::set< std::string > m_required;
 
-            schema_flags m_flags = schema_flags::NONE;
-            schema_format m_format = schema_format::NONE;
+            schema_flags m_flags = NONE;
+            schema_format m_format = schema_format::none;
 
             void add_type( const schema_flags v )
             {
@@ -560,22 +560,22 @@ namespace tao
                   }
                   const auto& s = p->unsafe_get_string();
                   if( s == "date-time" ) {
-                     m_format = schema_format::DATE_TIME;
+                     m_format = schema_format::date_time;
                   }
                   else if( s == "email" ) {
-                     m_format = schema_format::EMAIL;
+                     m_format = schema_format::email;
                   }
                   else if( s == "hostname" ) {
-                     m_format = schema_format::HOSTNAME;
+                     m_format = schema_format::hostname;
                   }
                   else if( s == "ipv4" ) {
-                     m_format = schema_format::IPV4;
+                     m_format = schema_format::ipv4;
                   }
                   else if( s == "ipv6" ) {
-                     m_format = schema_format::IPV6;
+                     m_format = schema_format::ipv6;
                   }
                   else if( s == "uri" ) {
-                     m_format = schema_format::URI;
+                     m_format = schema_format::uri;
                   }
                   // unknown "format" values are ignored
                }
@@ -1244,40 +1244,40 @@ namespace tao
                      m_match = false;
                   }
                }
-               if( m_match && m_node->m_format != schema_format::NONE ) {
+               if( m_match && m_node->m_format != schema_format::none ) {
                   switch( m_node->m_format ) {
-                     case schema_format::DATE_TIME:
+                     case schema_format::date_time:
                         if( !internal::parse_date_time( v ) ) {
                            m_match = false;
                         }
                         break;
-                     case schema_format::EMAIL:
+                     case schema_format::email:
                         if( ( v.size() > 255 ) || !internal::parse< internal::email >( v ) ) {
                            m_match = false;
                         }
                         break;
-                     case schema_format::HOSTNAME:
+                     case schema_format::hostname:
                         if( ( v.size() > 255 ) || !internal::parse< internal::hostname >( v ) ) {
                            m_match = false;
                         }
                         break;
-                     case schema_format::IPV4:
+                     case schema_format::ipv4:
                         if( !internal::parse< json_pegtl::uri::IPv4address >( v ) ) {
                            m_match = false;
                         }
                         break;
-                     case schema_format::IPV6:
+                     case schema_format::ipv6:
                         if( !internal::parse< json_pegtl::uri::IPv6address >( v ) ) {
                            m_match = false;
                         }
                         break;
-                     case schema_format::URI:
+                     case schema_format::uri:
                         // TODO: What rule exactly should we apply here?? JSON Schema is not exactly the best spec I've ever read...
                         if( !internal::parse< json_pegtl::uri::URI >( v ) ) {
                            m_match = false;
                         }
                         break;
-                     case schema_format::NONE:;
+                     case schema_format::none:;
                   }
                }
             }
