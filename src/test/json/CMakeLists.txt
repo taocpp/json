@@ -25,6 +25,7 @@ set(testsources
   events_hash.cpp
   events_to_stream.cpp
   events_to_string.cpp
+  gonculator.cpp
   include_json.cpp
   index.cpp
   integer.cpp
