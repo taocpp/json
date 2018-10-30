@@ -31,6 +31,8 @@
 #include "pointer.hpp"
 #include "type.hpp"
 
+#include "contrib/gonculator.hpp"  // TEMPORARY
+
 namespace tao
 {
    namespace json
@@ -1064,6 +1066,16 @@ namespace tao
             return internal::pointer_find( this, k.begin(), k.end() );
          }
 
+         basic_value* find( const gonculator& k )
+         {
+            return internal::gonculator_find( this, k.begin(), k.end() );
+         }
+
+         const basic_value* find( const gonculator& k ) const
+         {
+            return internal::gonculator_find( this, k.begin(), k.end() );
+         }
+
          basic_value& unsafe_at( const std::size_t index ) noexcept
          {
             return m_union.a[ index ];
@@ -1134,6 +1146,16 @@ namespace tao
             return internal::pointer_at( this, k.begin(), k.end() );
          }
 
+         basic_value& at( const gonculator& k )
+         {
+            return internal::gonculator_at( this, k.begin(), k.end() );
+         }
+
+         const basic_value& at( const gonculator& k ) const
+         {
+            return internal::gonculator_at( this, k.begin(), k.end() );
+         }
+
          basic_value& operator[]( const std::size_t index ) noexcept
          {
             assert( m_type == json::type::ARRAY );
@@ -1160,7 +1182,7 @@ namespace tao
 
          basic_value& operator[]( const pointer& k )
          {
-            if( !k ) {
+            if( k.empty() ) {
                return *this;
             }
             const auto b = k.begin();
