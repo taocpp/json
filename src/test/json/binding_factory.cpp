@@ -172,11 +172,8 @@ namespace tao
          TEST_THROWS( z.as< std::unique_ptr< base_1 > >() );
          const value v = {
             { "one", { { "s", "foo" } } },
-            {
-               "two",
-               { { "i", 42 },
-                 { "j", 23 } },
-            }
+            { "two", { { "i", 42 },
+                       { "j", 23 } } }
          };
          TEST_THROWS( v.as< std::unique_ptr< base_1 > >() );
          const value w = {
@@ -186,7 +183,7 @@ namespace tao
          TEST_THROWS( value( std::shared_ptr< base_1 >( new derived_3 ) ) );
          events::discard d;
          TEST_THROWS( events::produce( d, std::shared_ptr< base_1 >( new derived_3 ) ) );
-         parts_parser p( "{ \"four\", null }", __FUNCTION__ );
+         parts_parser p( "{ \"four\" : null }", __FUNCTION__ );
          TEST_THROWS( consume< std::shared_ptr< base_1 > >( p ) );
       }
 
