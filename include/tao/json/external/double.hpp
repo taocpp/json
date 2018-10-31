@@ -35,7 +35,6 @@
 
 // clang-format off
 
-#include <stdarg.h>
 #include <limits.h>
 
 #include <cassert>
@@ -126,12 +125,6 @@ namespace json_double_conversion
       return a < b ? a : b;
    }
 
-   inline int StrLength(const char* string) {
-      size_t length = std::strlen(string);
-      assert(length == static_cast<size_t>(static_cast<int>(length)));
-      return static_cast<int>(length);
-   }
-
    template <typename T>
    class Vector {
    public:
@@ -140,27 +133,12 @@ namespace json_double_conversion
          assert(len == 0 || (len > 0 && data != nullptr));
       }
 
-      Vector<T> SubVector(int from, int to) {
-         assert(to <= length_);
-         assert(from < to);
-         assert(0 <= from);
-         return Vector<T>(start() + from, to - from);
-      }
-
       int length() const { return length_; }
-
-      bool is_empty() const { return length_ == 0; }
-
-      T* start() const { return start_; }
 
       T& operator[](int index) const {
          assert(0 <= index && index < length_);
          return start_[index];
       }
-
-      T& first() { return start_[0]; }
-
-      T& last() { return start_[length_ - 1]; }
 
    private:
       T* start_;
@@ -191,7 +169,6 @@ namespace json_double_conversion
 
       void AssignUInt16(uint16_t value);
       void AssignUInt64(uint64_t value);
-      void AssignBignum(const Bignum& other);
 
       void AssignDecimalString(Vector<const char> value);
 
@@ -206,28 +183,12 @@ namespace json_double_conversion
       void MultiplyByUInt32(uint32_t factor);
       void MultiplyByUInt64(uint64_t factor);
       void MultiplyByPowerOfTen(int exponent);
-      void Times10() { return MultiplyByUInt32(10); }
 
       static int Compare(const Bignum& a, const Bignum& b);
-      static bool Equal(const Bignum& a, const Bignum& b) {
-         return Compare(a, b) == 0;
-      }
       static bool LessEqual(const Bignum& a, const Bignum& b) {
          return Compare(a, b) <= 0;
       }
-      static bool Less(const Bignum& a, const Bignum& b) {
-         return Compare(a, b) < 0;
-      }
-      static int PlusCompare(const Bignum& a, const Bignum& b, const Bignum& c);
-      static bool PlusEqual(const Bignum& a, const Bignum& b, const Bignum& c) {
-         return PlusCompare(a, b, c) == 0;
-      }
-      static bool PlusLessEqual(const Bignum& a, const Bignum& b, const Bignum& c) {
-         return PlusCompare(a, b, c) <= 0;
-      }
-      static bool PlusLess(const Bignum& a, const Bignum& b, const Bignum& c) {
-         return PlusCompare(a, b, c) < 0;
-      }
+
    private:
       typedef uint32_t Chunk;
       typedef uint64_t DoubleChunk;
@@ -298,18 +259,6 @@ namespace json_double_conversion
       used_digits_ = needed_bigits;
       Clamp();
    }
-
-   inline void Bignum::AssignBignum(const Bignum& other) {
-      exponent_ = other.exponent_;
-      for (int i = 0; i < other.used_digits_; ++i) {
-         bigits_[i] = other.bigits_[i];
-      }
-      for (int i = other.used_digits_; i < used_digits_; ++i) {
-         bigits_[i] = 0;
-      }
-      used_digits_ = other.used_digits_;
-   }
-
 
    inline uint64_t ReadUInt64(Vector<const char> buffer,
                               int from,
@@ -603,43 +552,12 @@ namespace json_double_conversion
       if (bigit_length_a < bigit_length_b) return -1;
       if (bigit_length_a > bigit_length_b) return +1;
       for (int i = bigit_length_a - 1; i >= Min(a.exponent_, b.exponent_); --i) {
-         Chunk bigit_a = a.BigitAt(i);
-         Chunk bigit_b = b.BigitAt(i);
+         const Chunk bigit_a = a.BigitAt(i);
+         const Chunk bigit_b = b.BigitAt(i);
          if (bigit_a < bigit_b) return -1;
          if (bigit_a > bigit_b) return +1;
       }
       return 0;
-   }
-
-   inline int Bignum::PlusCompare(const Bignum& a, const Bignum& b, const Bignum& c) {
-      assert(a.IsClamped());
-      assert(b.IsClamped());
-      assert(c.IsClamped());
-      if (a.BigitLength() < b.BigitLength()) {
-         return PlusCompare(b, a, c);
-      }
-      if (a.BigitLength() + 1 < c.BigitLength()) return -1;
-      if (a.BigitLength() > c.BigitLength()) return +1;
-      if (a.exponent_ >= b.BigitLength() && a.BigitLength() < c.BigitLength()) {
-         return -1;
-      }
-      Chunk borrow = 0;
-      int min_exponent = Min(Min(a.exponent_, b.exponent_), c.exponent_);
-      for (int i = c.BigitLength() - 1; i >= min_exponent; --i) {
-         Chunk chunk_a = a.BigitAt(i);
-         Chunk chunk_b = b.BigitAt(i);
-         Chunk chunk_c = c.BigitAt(i);
-         Chunk sum = chunk_a + chunk_b;
-         if (sum > chunk_c + borrow) {
-            return +1;
-         } else {
-            borrow = chunk_c + borrow - sum;
-            if (borrow > 1) return -1;
-            borrow <<= kBigitSize;
-         }
-      }
-      if (borrow == 0) return 0;
-      return -1;
    }
 
    inline void Bignum::Clamp() {
@@ -1005,11 +923,6 @@ namespace json_double_conversion
       static const int kMinDecimalExponent = -348;
       static const int kMaxDecimalExponent = 340;
 
-      static void GetCachedPowerForBinaryExponentRange(int min_exponent,
-                                                       int max_exponent,
-                                                       DiyFp* power,
-                                                       int* decimal_exponent);
-
       static void GetCachedPowerForDecimalExponent(int requested_exponent,
                                                    DiyFp* power,
                                                    int* found_exponent);
@@ -1115,25 +1028,6 @@ namespace json_double_conversion
    static const int kCachedPowersOffset = 348;
    static const double kD_1_LOG2_10 = 0.30102999566398114;
 
-   inline void PowersOfTenCache::GetCachedPowerForBinaryExponentRange(
-                                                                      int min_exponent,
-                                                                      int max_exponent,
-                                                                      DiyFp* power,
-                                                                      int* decimal_exponent) {
-      int kQ = DiyFp::kSignificandSize;
-      double k = std::ceil((min_exponent + kQ - 1) * kD_1_LOG2_10);
-      int foo = kCachedPowersOffset;
-      int index =
-         (foo + static_cast<int>(k) - 1) / kDecimalExponentDistance + 1;
-      assert(0 <= index && index < kCachedPowersLength);
-      CachedPower cached_power = kCachedPowers[index];
-      assert(min_exponent <= cached_power.binary_exponent);
-      (void) max_exponent;
-      assert(cached_power.binary_exponent <= max_exponent);
-      *decimal_exponent = cached_power.decimal_exponent;
-      *power = DiyFp(cached_power.significand, cached_power.binary_exponent);
-   }
-
    inline void PowersOfTenCache::GetCachedPowerForDecimalExponent(int requested_exponent,
                                                                   DiyFp* power,
                                                                   int* found_exponent) {
@@ -1184,55 +1078,6 @@ namespace json_double_conversion
 
    static const int kExactPowersOfTenSize = TAO_JSON_GDCV8_ARRAY_SIZE(exact_powers_of_ten);
    static const int kMaxSignificantDecimalDigits = 780;
-
-   inline Vector<const char> TrimLeadingZeros(Vector<const char> buffer) {
-      for (int i = 0; i < buffer.length(); i++) {
-         if (buffer[i] != '0') {
-            return buffer.SubVector(i, buffer.length());
-         }
-      }
-      return Vector<const char>(buffer.start(), 0);
-   }
-
-   inline Vector<const char> TrimTrailingZeros(Vector<const char> buffer) {
-      for (int i = buffer.length() - 1; i >= 0; --i) {
-         if (buffer[i] != '0') {
-            return buffer.SubVector(0, i + 1);
-         }
-      }
-      return Vector<const char>(buffer.start(), 0);
-   }
-
-   inline void CutToMaxSignificantDigits(Vector<const char> buffer,
-                                         int exponent,
-                                         char* significant_buffer,
-                                         int* significant_exponent) {
-      for (int i = 0; i < kMaxSignificantDecimalDigits - 1; ++i) {
-         significant_buffer[i] = buffer[i];
-      }
-      assert(buffer[buffer.length() - 1] != '0');
-      significant_buffer[kMaxSignificantDecimalDigits - 1] = '1';
-      *significant_exponent =
-         exponent + (buffer.length() - kMaxSignificantDecimalDigits);
-   }
-
-   inline void TrimAndCut(Vector<const char> buffer, int exponent,
-                          char* buffer_copy_space, int space_size,
-                          Vector<const char>* trimmed, int* updated_exponent) {
-      Vector<const char> right_trimmed = TrimTrailingZeros(buffer);
-      exponent -= right_trimmed.length();
-      if (right_trimmed.length() > kMaxSignificantDecimalDigits) {
-         (void) space_size;
-         assert(space_size >= kMaxSignificantDecimalDigits);
-         CutToMaxSignificantDigits(right_trimmed, exponent,
-                                   buffer_copy_space, updated_exponent);
-         *trimmed = Vector<const char>(buffer_copy_space,
-                                       kMaxSignificantDecimalDigits);
-      } else {
-         *trimmed = right_trimmed;
-         *updated_exponent = exponent;
-      }
-   }
 
    inline uint64_t ReadUint64(Vector<const char> buffer,
                               int* number_of_read_digits) {
