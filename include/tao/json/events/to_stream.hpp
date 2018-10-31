@@ -14,7 +14,7 @@
 
 #include "../binary_view.hpp"
 
-#include "../external/jeaiii.hpp"
+#include "../external/itoa.hpp"
 #include "../external/ryu.hpp"
 
 #include "../internal/escape.hpp"
@@ -67,13 +67,13 @@ namespace tao
             void number( const std::int64_t v )
             {
                next();
-               jeaiii::i64tos( os, v );
+               itoa::i64tos( os, v );
             }
 
             void number( const std::uint64_t v )
             {
                next();
-               jeaiii::u64tos( os, v );
+               itoa::u64tos( os, v );
             }
 
             void number( const double v )
