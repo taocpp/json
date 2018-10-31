@@ -223,7 +223,7 @@ namespace tao
                   case type::UNSIGNED:
                      return p.unsafe_get_unsigned() == rhs;
                   case type::DOUBLE:
-                     return p.unsafe_get_double() == rhs;
+                     return p.unsafe_get_double() == rhs;  // TODO: Is it ok for overall semantics that NaN != NaN?
                   default:
                      return false;
                }
