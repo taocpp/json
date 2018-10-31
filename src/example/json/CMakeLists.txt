@@ -8,6 +8,7 @@ set (examplesources
   cbor_to_pretty_json.cpp
   cbor_to_ubjson.cpp
   jaxn_to_cbor.cpp
+  jaxn_to_cplusplus.cpp
   jaxn_to_jaxn.cpp
   jaxn_to_msgpack.cpp
   jaxn_to_pretty_jaxn.cpp
