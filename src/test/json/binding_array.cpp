@@ -60,6 +60,17 @@ namespace tao
          TEST_ASSERT( a.first == 142 );
          TEST_ASSERT( a.second == "hallo" );
          TEST_THROWS( v.as< type_2 >() );
+         TEST_ASSERT( a == v );
+         TEST_ASSERT( v == a );
+         const value x = null;
+         const value y = value::array( { 142, "world" } );
+         const value z = value::array( { 143, "hallo" } );
+         TEST_ASSERT( a != x );
+         TEST_ASSERT( a != y );
+         TEST_ASSERT( a != z );
+         TEST_ASSERT( x != a );
+         TEST_ASSERT( y != a );
+         TEST_ASSERT( z != a );
       }
 
       void unit_test_2()

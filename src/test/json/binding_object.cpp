@@ -55,7 +55,9 @@ namespace tao
          TEST_ASSERT( a.z.first == 5 );
          TEST_ASSERT( a.z.second == 6 );
          TEST_ASSERT( a == v );
+         TEST_ASSERT( value( a ) == v );
          TEST_ASSERT( v == a );
+         TEST_ASSERT( v == value( a ) );
          TEST_ASSERT( !( a != v ) );
          TEST_ASSERT( !( v != a ) );
          type_1 b;
@@ -66,6 +68,18 @@ namespace tao
          TEST_ASSERT( b.d && ( *a.d == 43.1 ) );
          TEST_ASSERT( b.z.first == 5 );
          TEST_ASSERT( b.z.second == 6 );
+         auto w = v;
+         w[ "b" ] = false;
+         TEST_ASSERT( w != a );
+         TEST_ASSERT( w != v );
+         TEST_ASSERT( value( null ) != a );
+         TEST_ASSERT( value( null ) != v );
+         TEST_ASSERT( value( null ) != w );
+         b = consume_string< type_1 >( R"( { "i" : 42, "s" : "foo", "b" : true, "d" : 43.1, "z" : [ 5, 6 ] } )" );
+         TEST_ASSERT( v == b );
+         TEST_THROWS( consume_string< type_1 >( R"( { "s" : "foo", "b" : true, "d" : 43.1, "z" : [ 5, 6 ] } )" ) );
+         TEST_THROWS( consume_string< type_1 >( R"( { "i" : 42, "s" : "foo", "b" : true, "e" : 43.1, "z" : [ 5, 6 ] } )" ) );
+         TEST_THROWS( consume_string< type_1 >( R"( { "i" : 42, "s" : "foo", "b" : true, "d" : 43.1, "z" : [ 5, 6 ], "i" : 43 } )" ) );
       }
 
       void unit_test_2()
@@ -94,10 +108,16 @@ namespace tao
          v.to( b );
          TEST_ASSERT( b.i == 42 );
          TEST_ASSERT( b.s == "hallo" );
-         TEST_ASSERT( b.b && ( *a.b == true ) );
+         TEST_ASSERT( b.b && ( *b.b == true ) );
          TEST_ASSERT( !b.d );
          TEST_ASSERT( b.z.first == 5 );
          TEST_ASSERT( b.z.second == 6 );
+         w.get_object().erase( "i" );
+         TEST_THROWS( w.as< type_1 >() );
+         w[ "i" ] = 42;
+         b = w.as< type_1 >();
+         w[ "j" ] = 43;
+         TEST_THROWS( w.as< type_1 >() );
       }
 
       void unit_test_3()
@@ -174,14 +194,10 @@ namespace tao
 
       void unit_test_5()
       {
-         const value v = from_string( "{ \"bool\" : true, \"signed\" : -4, \"unsigned\" : 32, \"string\" : \"servus\" }" );
-         const auto a = v.as< type_5 >();
-         const value w = a;
-         TEST_ASSERT( v == w );
+         const value v = from_string( R"({ "bool" : true, "signed" : -4, "unsigned" : 32, "string" : "servus" })" );
+         v.as< type_5 >();
       }
 
-      // TODO: Test consume...
-      // TODO: Test additional keys in input.
       // TODO: Test with different for_unknown_key.
       // TODO: Test with different for_nothing_value (incl. consistency of size to consumer).
 
