@@ -35,23 +35,13 @@
 
 // clang-format off
 
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdarg.h>
 #include <limits.h>
 
-#include <ostream>
-
-#ifndef ASSERT
-#define ASSERT( eXPReSSioN ) ((void)0)
-#endif
-#ifndef UNIMPLEMENTED
-#define UNIMPLEMENTED() (abort())
-#endif
-#ifndef UNREACHABLE
-#define UNREACHABLE()   (abort())
-#endif
+#include <cassert>
+#include <cmath>
+#include <cstdlib>
+#include <cstring>
 
 // Double operations detection based on target architecture.
 // Linux uses a 80bit wide floating point stack on x86. This induces double
@@ -73,24 +63,24 @@
    defined(__SH4__) || defined(__alpha__) ||                            \
    defined(_MIPS_ARCH_MIPS32R2) ||                                      \
    defined(__AARCH64EL__) || defined(__aarch64__)
-#define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
+#define TAO_JSON_DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
 #elif defined(__mc68000__)
-#undef DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS
+#undef TAO_JSON_DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS
 #elif defined(_M_IX86) || defined(__i386__) || defined(__i386)
 #if defined(_WIN32)
 // Windows uses a 64bit wide floating point stack.
-#define DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
+#define TAO_JSON_DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
 #else
-#undef DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS
+#undef TAO_JSON_DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS
 #endif  // _WIN32
 #else
 #error Target architecture was not detected as supported by Double-Conversion.
 #endif
 
 #if defined(__GNUC__)
-#define DOUBLE_CONVERSION_UNUSED __attribute__((unused))
+#define TAO_JSON_DOUBLE_CONVERSION_UNUSED __attribute__((unused))
 #else
-#define DOUBLE_CONVERSION_UNUSED
+#define TAO_JSON_DOUBLE_CONVERSION_UNUSED
 #endif
 
 #if defined(_WIN32) && !defined(__MINGW32__)
@@ -114,24 +104,12 @@ typedef unsigned __int64 uint64_t;
 
 typedef uint16_t uc16;
 
-#define UINT64_2PART_C(a, b) (((static_cast<uint64_t>(a) << 32) + 0x##b##u))
+#define TAO_JSON_UINT64_2PART_C(a, b) (((static_cast<uint64_t>(a) << 32) + 0x##b##u))
 
-#ifndef GDCV8_ARRAY_SIZE
-#define GDCV8_ARRAY_SIZE(a)                             \
+#ifndef TAO_JSON_GDCV8_ARRAY_SIZE
+#define TAO_JSON_GDCV8_ARRAY_SIZE(a)                             \
    ((sizeof(a) / sizeof(*(a))) /                        \
     static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
-#endif
-
-#ifndef DISALLOW_COPY_AND_ASSIGN
-#define DISALLOW_COPY_AND_ASSIGN(TypeName)      \
-   TypeName(const TypeName&) = delete;          \
-   void operator=(const TypeName&) = delete
-#endif
-
-#ifndef DISALLOW_IMPLICIT_CONSTRUCTORS
-#define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName)        \
-   TypeName() = delete;                                 \
-   DISALLOW_COPY_AND_ASSIGN(TypeName)
 #endif
 
 namespace json_double_conversion
@@ -149,23 +127,23 @@ namespace json_double_conversion
    }
 
    inline int StrLength(const char* string) {
-      size_t length = strlen(string);
-      ASSERT(length == static_cast<size_t>(static_cast<int>(length)));
+      size_t length = std::strlen(string);
+      assert(length == static_cast<size_t>(static_cast<int>(length)));
       return static_cast<int>(length);
    }
 
    template <typename T>
    class Vector {
    public:
-      Vector() : start_(NULL), length_(0) {}
+      Vector() : start_(nullptr), length_(0) {}
       Vector(T* data, int len) : start_(data), length_(len) {
-         ASSERT(len == 0 || (len > 0 && data != NULL));
+         assert(len == 0 || (len > 0 && data != nullptr));
       }
 
       Vector<T> SubVector(int from, int to) {
-         ASSERT(to <= length_);
-         ASSERT(from < to);
-         ASSERT(0 <= from);
+         assert(to <= length_);
+         assert(from < to);
+         assert(0 <= from);
          return Vector<T>(start() + from, to - from);
       }
 
@@ -176,7 +154,7 @@ namespace json_double_conversion
       T* start() const { return start_; }
 
       T& operator[](int index) const {
-         ASSERT(0 <= index && index < length_);
+         assert(0 <= index && index < length_);
          return start_[index];
       }
 
@@ -191,11 +169,11 @@ namespace json_double_conversion
 
    template <class Dest, class Source>
    inline Dest BitCast(const Source& source) {
-      DOUBLE_CONVERSION_UNUSED
+      TAO_JSON_DOUBLE_CONVERSION_UNUSED
          typedef char VerifySizesAreEqual[sizeof(Dest) == sizeof(Source) ? 1 : -1];
 
       Dest dest;
-      memmove(&dest, &source, sizeof(dest));
+      std::memmove(&dest, &source, sizeof(dest));
       return dest;
    }
 
@@ -210,12 +188,12 @@ namespace json_double_conversion
       static const int kMaxSignificantBits = 3584;
 
       Bignum();
+
       void AssignUInt16(uint16_t value);
       void AssignUInt64(uint64_t value);
       void AssignBignum(const Bignum& other);
 
       void AssignDecimalString(Vector<const char> value);
-      void AssignHexString(Vector<const char> value);
 
       void AssignPowerUInt16(uint16_t base, int exponent);
 
@@ -229,9 +207,6 @@ namespace json_double_conversion
       void MultiplyByUInt64(uint64_t factor);
       void MultiplyByPowerOfTen(int exponent);
       void Times10() { return MultiplyByUInt32(10); }
-      uint16_t DivideModuloIntBignum(const Bignum& other);
-
-      bool ToHexString(char* buffer, int buffer_size) const;
 
       static int Compare(const Bignum& a, const Bignum& b);
       static bool Equal(const Bignum& a, const Bignum& b) {
@@ -264,9 +239,7 @@ namespace json_double_conversion
       static const int kBigitCapacity = kMaxSignificantBits / kBigitSize;
 
       void EnsureCapacity(int size) {
-         if (size > kBigitCapacity) {
-            UNREACHABLE();
-         }
+         assert(size <= kBigitCapacity);
       }
       void Align(const Bignum& other);
       void Clamp();
@@ -301,7 +274,7 @@ namespace json_double_conversion
    }
 
    inline void Bignum::AssignUInt16(uint16_t value) {
-      ASSERT(kBigitSize >= BitSize(value));
+      assert(kBigitSize >= BitSize(value));
       Zero();
       if (value == 0) return;
 
@@ -344,7 +317,7 @@ namespace json_double_conversion
       uint64_t result = 0;
       for (int i = from; i < from + digits_to_read; ++i) {
          int digit = buffer[i] - '0';
-         ASSERT(0 <= digit && digit <= 9);
+         assert(0 <= digit && digit <= 9);
          result = result * 10 + digit;
       }
       return result;
@@ -368,41 +341,6 @@ namespace json_double_conversion
       Clamp();
    }
 
-   inline int HexCharValue(char c) {
-      if ('0' <= c && c <= '9') return c - '0';
-      if ('a' <= c && c <= 'f') return 10 + c - 'a';
-      ASSERT('A' <= c && c <= 'F');
-      return 10 + c - 'A';
-   }
-
-   inline void Bignum::AssignHexString(Vector<const char> value) {
-      Zero();
-      int length = value.length();
-
-      int needed_bigits = length * 4 / kBigitSize + 1;
-      EnsureCapacity(needed_bigits);
-      int string_index = length - 1;
-      for (int i = 0; i < needed_bigits - 1; ++i) {
-         Chunk current_bigit = 0;
-         for (int j = 0; j < kBigitSize / 4; j++) {
-            current_bigit += HexCharValue(value[string_index--]) << (j * 4);
-         }
-         bigits_[i] = current_bigit;
-      }
-      used_digits_ = needed_bigits - 1;
-
-      Chunk most_significant_bigit = 0;
-      for (int j = 0; j <= string_index; ++j) {
-         most_significant_bigit <<= 4;
-         most_significant_bigit += HexCharValue(value[j]);
-      }
-      if (most_significant_bigit != 0) {
-         bigits_[used_digits_] = most_significant_bigit;
-         used_digits_++;
-      }
-      Clamp();
-   }
-
    inline void Bignum::AddUInt64(uint64_t operand) {
       if (operand == 0) return;
       Bignum other;
@@ -411,13 +349,13 @@ namespace json_double_conversion
    }
 
    inline void Bignum::AddBignum(const Bignum& other) {
-      ASSERT(IsClamped());
-      ASSERT(other.IsClamped());
+      assert(IsClamped());
+      assert(other.IsClamped());
       Align(other);
       EnsureCapacity(1 + Max(BigitLength(), other.BigitLength()) - exponent_);
       Chunk carry = 0;
       int bigit_pos = other.exponent_ - exponent_;
-      ASSERT(bigit_pos >= 0);
+      assert(bigit_pos >= 0);
       for (int i = 0; i < other.used_digits_; ++i) {
          Chunk sum = bigits_[bigit_pos] + other.bigits_[i] + carry;
          bigits_[bigit_pos] = sum & kBigitMask;
@@ -431,20 +369,20 @@ namespace json_double_conversion
          bigit_pos++;
       }
       used_digits_ = Max(bigit_pos, used_digits_);
-      ASSERT(IsClamped());
+      assert(IsClamped());
    }
 
    inline void Bignum::SubtractBignum(const Bignum& other) {
-      ASSERT(IsClamped());
-      ASSERT(other.IsClamped());
-      ASSERT(LessEqual(other, *this));
+      assert(IsClamped());
+      assert(other.IsClamped());
+      assert(LessEqual(other, *this));
       Align(other);
 
       int offset = other.exponent_ - exponent_;
       Chunk borrow = 0;
       int i;
       for (i = 0; i < other.used_digits_; ++i) {
-         ASSERT((borrow == 0) || (borrow == 1));
+         assert((borrow == 0) || (borrow == 1));
          Chunk difference = bigits_[i + offset] - other.bigits_[i] - borrow;
          bigits_[i + offset] = difference & kBigitMask;
          borrow = difference >> (kChunkSize - 1);
@@ -473,7 +411,7 @@ namespace json_double_conversion
          return;
       }
       if (used_digits_ == 0) return;
-      ASSERT(kDoubleChunkSize >= kBigitSize + 32 + 1);
+      assert(kDoubleChunkSize >= kBigitSize + 32 + 1);
       DoubleChunk carry = 0;
       for (int i = 0; i < used_digits_; ++i) {
          DoubleChunk product = static_cast<DoubleChunk>(factor) * bigits_[i] + carry;
@@ -494,7 +432,7 @@ namespace json_double_conversion
          Zero();
          return;
       }
-      ASSERT(kBigitSize < 32);
+      assert(kBigitSize < 32);
       uint64_t carry = 0;
       uint64_t low = factor & 0xFFFFFFFF;
       uint64_t high = factor >> 32;
@@ -515,7 +453,7 @@ namespace json_double_conversion
    }
 
    inline void Bignum::MultiplyByPowerOfTen(int exponent) {
-      const uint64_t kFive27 = UINT64_2PART_C(0x6765c793, fa10079d);
+      const uint64_t kFive27 = TAO_JSON_UINT64_2PART_C(0x6765c793, fa10079d);
       const uint16_t kFive1 = 5;
       const uint16_t kFive2 = kFive1 * 5;
       const uint16_t kFive3 = kFive2 * 5;
@@ -533,7 +471,7 @@ namespace json_double_conversion
          { kFive1, kFive2, kFive3, kFive4, kFive5, kFive6,
            kFive7, kFive8, kFive9, kFive10, kFive11, kFive12 };
 
-      ASSERT(exponent >= 0);
+      assert(exponent >= 0);
       if (exponent == 0) return;
       if (used_digits_ == 0) return;
       int remaining_exponent = exponent;
@@ -552,12 +490,12 @@ namespace json_double_conversion
    }
 
    inline void Bignum::Square() {
-      ASSERT(IsClamped());
+      assert(IsClamped());
       int product_length = 2 * used_digits_;
       EnsureCapacity(product_length);
 
       if ((1 << (2 * (kChunkSize - kBigitSize))) <= used_digits_) {
-         UNIMPLEMENTED();
+         std::abort();  // Unimplemented.
       }
       DoubleChunk accumulator = 0;
       int copy_offset = used_digits_;
@@ -590,15 +528,15 @@ namespace json_double_conversion
          bigits_[i] = static_cast<Chunk>(accumulator) & kBigitMask;
          accumulator >>= kBigitSize;
       }
-      ASSERT(accumulator == 0);
+      assert(accumulator == 0);
       used_digits_ = product_length;
       exponent_ *= 2;
       Clamp();
    }
 
    inline void Bignum::AssignPowerUInt16(uint16_t base, int power_exponent) {
-      ASSERT(base != 0);
-      ASSERT(power_exponent >= 0);
+      assert(base != 0);
+      assert(power_exponent >= 0);
       if (power_exponent == 0) {
          AssignUInt16(1);
          return;
@@ -651,105 +589,6 @@ namespace json_double_conversion
       ShiftLeft(shifts * power_exponent);
    }
 
-   inline uint16_t Bignum::DivideModuloIntBignum(const Bignum& other) {
-      ASSERT(IsClamped());
-      ASSERT(other.IsClamped());
-      ASSERT(other.used_digits_ > 0);
-
-      if (BigitLength() < other.BigitLength()) {
-         return 0;
-      }
-      Align(other);
-
-      uint16_t result = 0;
-
-      while (BigitLength() > other.BigitLength()) {
-         ASSERT(other.bigits_[other.used_digits_ - 1] >= ((1 << kBigitSize) / 16));
-         ASSERT(bigits_[used_digits_ - 1] < 0x10000);
-         result += static_cast<uint16_t>(bigits_[used_digits_ - 1]);
-         SubtractTimes(other, bigits_[used_digits_ - 1]);
-      }
-      ASSERT(BigitLength() == other.BigitLength());
-
-      Chunk this_bigit = bigits_[used_digits_ - 1];
-      Chunk other_bigit = other.bigits_[other.used_digits_ - 1];
-
-      if (other.used_digits_ == 1) {
-         int quotient = this_bigit / other_bigit;
-         bigits_[used_digits_ - 1] = this_bigit - other_bigit * quotient;
-         ASSERT(quotient < 0x10000);
-         result += static_cast<uint16_t>(quotient);
-         Clamp();
-         return result;
-      }
-      int division_estimate = this_bigit / (other_bigit + 1);
-      ASSERT(division_estimate < 0x10000);
-      result += static_cast<uint16_t>(division_estimate);
-      SubtractTimes(other, division_estimate);
-
-      if (other_bigit * (division_estimate + 1) > this_bigit) {
-         return result;
-      }
-      while (LessEqual(other, *this)) {
-         SubtractBignum(other);
-         result++;
-      }
-      return result;
-   }
-
-   template<typename S>
-   inline int SizeInHexChars(S number) {
-      ASSERT(number > 0);
-      int result = 0;
-      while (number != 0) {
-         number >>= 4;
-         result++;
-      }
-      return result;
-   }
-
-   inline char HexCharOfValue(int value) {
-      ASSERT(0 <= value && value <= 16);
-      if (value < 10) return static_cast<char>(value + '0');
-      return static_cast<char>(value - 10 + 'A');
-   }
-
-   inline bool Bignum::ToHexString(char* buffer, int buffer_size) const {
-      ASSERT(IsClamped());
-      ASSERT(kBigitSize % 4 == 0);
-      const int kHexCharsPerBigit = kBigitSize / 4;
-
-      if (used_digits_ == 0) {
-         if (buffer_size < 2) return false;
-         buffer[0] = '0';
-         buffer[1] = '\0';
-         return true;
-      }
-      int needed_chars = (BigitLength() - 1) * kHexCharsPerBigit +
-         SizeInHexChars(bigits_[used_digits_ - 1]) + 1;
-      if (needed_chars > buffer_size) return false;
-      int string_index = needed_chars - 1;
-      buffer[string_index--] = '\0';
-      for (int i = 0; i < exponent_; ++i) {
-         for (int j = 0; j < kHexCharsPerBigit; ++j) {
-            buffer[string_index--] = '0';
-         }
-      }
-      for (int i = 0; i < used_digits_ - 1; ++i) {
-         Chunk current_bigit = bigits_[i];
-         for (int j = 0; j < kHexCharsPerBigit; ++j) {
-            buffer[string_index--] = HexCharOfValue(current_bigit & 0xF);
-            current_bigit >>= 4;
-         }
-      }
-      Chunk most_significant_bigit = bigits_[used_digits_ - 1];
-      while (most_significant_bigit != 0) {
-         buffer[string_index--] = HexCharOfValue(most_significant_bigit & 0xF);
-         most_significant_bigit >>= 4;
-      }
-      return true;
-   }
-
    inline Bignum::Chunk Bignum::BigitAt(int index) const {
       if (index >= BigitLength()) return 0;
       if (index < exponent_) return 0;
@@ -757,8 +596,8 @@ namespace json_double_conversion
    }
 
    inline int Bignum::Compare(const Bignum& a, const Bignum& b) {
-      ASSERT(a.IsClamped());
-      ASSERT(b.IsClamped());
+      assert(a.IsClamped());
+      assert(b.IsClamped());
       int bigit_length_a = a.BigitLength();
       int bigit_length_b = b.BigitLength();
       if (bigit_length_a < bigit_length_b) return -1;
@@ -773,9 +612,9 @@ namespace json_double_conversion
    }
 
    inline int Bignum::PlusCompare(const Bignum& a, const Bignum& b, const Bignum& c) {
-      ASSERT(a.IsClamped());
-      ASSERT(b.IsClamped());
-      ASSERT(c.IsClamped());
+      assert(a.IsClamped());
+      assert(b.IsClamped());
+      assert(c.IsClamped());
       if (a.BigitLength() < b.BigitLength()) {
          return PlusCompare(b, a, c);
       }
@@ -836,14 +675,14 @@ namespace json_double_conversion
          }
          used_digits_ += zero_digits;
          exponent_ -= zero_digits;
-         ASSERT(used_digits_ >= 0);
-         ASSERT(exponent_ >= 0);
+         assert(used_digits_ >= 0);
+         assert(exponent_ >= 0);
       }
    }
 
    inline void Bignum::BigitsShiftLeft(int shift_amount) {
-      ASSERT(shift_amount < kBigitSize);
-      ASSERT(shift_amount >= 0);
+      assert(shift_amount < kBigitSize);
+      assert(shift_amount >= 0);
       Chunk carry = 0;
       for (int i = 0; i < used_digits_; ++i) {
          Chunk new_carry = bigits_[i] >> (kBigitSize - shift_amount);
@@ -857,7 +696,7 @@ namespace json_double_conversion
    }
 
    inline void Bignum::SubtractTimes(const Bignum& other, int factor) {
-      ASSERT(exponent_ <= other.exponent_);
+      assert(exponent_ <= other.exponent_);
       if (factor < 3) {
          for (int i = 0; i < factor; ++i) {
             SubtractBignum(other);
@@ -892,8 +731,8 @@ namespace json_double_conversion
       DiyFp(uint64_t significand, int exponent) : f_(significand), e_(exponent) {}
 
       void Subtract(const DiyFp& other) {
-         ASSERT(e_ == other.e_);
-         ASSERT(f_ >= other.f_);
+         assert(e_ == other.e_);
+         assert(f_ >= other.f_);
          f_ -= other.f_;
       }
 
@@ -929,11 +768,11 @@ namespace json_double_conversion
       }
 
       void Normalize() {
-         ASSERT(f_ != 0);
+         assert(f_ != 0);
          uint64_t significand = f_;
          int exponent = e_;
 
-         const uint64_t k10MSBits = UINT64_2PART_C(0xFFC00000, 00000000);
+         const uint64_t k10MSBits = TAO_JSON_UINT64_2PART_C(0xFFC00000, 00000000);
          while ((significand & k10MSBits) == 0) {
             significand <<= 10;
             exponent -= 10;
@@ -959,7 +798,7 @@ namespace json_double_conversion
       void set_e(int new_value) { e_ = new_value; }
 
    private:
-      static const uint64_t kUint64MSB = UINT64_2PART_C(0x80000000, 00000000);
+      static const uint64_t kUint64MSB = TAO_JSON_UINT64_2PART_C(0x80000000, 00000000);
 
       uint64_t f_;
       int e_;
@@ -970,10 +809,10 @@ namespace json_double_conversion
 
    class Double {
    public:
-      static const uint64_t kSignMask = UINT64_2PART_C(0x80000000, 00000000);
-      static const uint64_t kExponentMask = UINT64_2PART_C(0x7FF00000, 00000000);
-      static const uint64_t kSignificandMask = UINT64_2PART_C(0x000FFFFF, FFFFFFFF);
-      static const uint64_t kHiddenBit = UINT64_2PART_C(0x00100000, 00000000);
+      static const uint64_t kSignMask = TAO_JSON_UINT64_2PART_C(0x80000000, 00000000);
+      static const uint64_t kExponentMask = TAO_JSON_UINT64_2PART_C(0x7FF00000, 00000000);
+      static const uint64_t kSignificandMask = TAO_JSON_UINT64_2PART_C(0x000FFFFF, FFFFFFFF);
+      static const uint64_t kHiddenBit = TAO_JSON_UINT64_2PART_C(0x00100000, 00000000);
       static const int kPhysicalSignificandSize = 52;
       static const int kSignificandSize = 53;
 
@@ -984,13 +823,13 @@ namespace json_double_conversion
             : d64_(DiyFpToUint64(diy_fp)) {}
 
       DiyFp AsDiyFp() const {
-         ASSERT(Sign() > 0);
-         ASSERT(!IsSpecial());
+         assert(Sign() > 0);
+         assert(!IsSpecial());
          return DiyFp(Significand(), Exponent());
       }
 
       DiyFp AsNormalizedDiyFp() const {
-         ASSERT(value() > 0.0);
+         assert(value() > 0.0);
          uint64_t f = Significand();
          int e = Exponent();
 
@@ -1076,12 +915,12 @@ namespace json_double_conversion
       }
 
       DiyFp UpperBoundary() const {
-         ASSERT(Sign() > 0);
+         assert(Sign() > 0);
          return DiyFp(Significand() * 2 + 1, Exponent() - 1);
       }
 
       void NormalizedBoundaries(DiyFp* out_m_minus, DiyFp* out_m_plus) const {
-         ASSERT(value() > 0.0);
+         assert(value() > 0.0);
          DiyFp v = this->AsDiyFp();
          DiyFp m_plus = DiyFp::Normalize(DiyFp((v.f() << 1) + 1, v.e() - 1));
          DiyFp m_minus;
@@ -1123,8 +962,8 @@ namespace json_double_conversion
       static const int kExponentBias = 0x3FF + kPhysicalSignificandSize;
       static const int kDenormalExponent = -kExponentBias + 1;
       static const int kMaxExponent = 0x7FF - kExponentBias;
-      static const uint64_t kInfinity = UINT64_2PART_C(0x7FF00000, 00000000);
-      static const uint64_t kNaN = UINT64_2PART_C(0x7FF80000, 00000000);
+      static const uint64_t kInfinity = TAO_JSON_UINT64_2PART_C(0x7FF00000, 00000000);
+      static const uint64_t kNaN = TAO_JSON_UINT64_2PART_C(0x7FF80000, 00000000);
 
       const uint64_t d64_;
 
@@ -1155,7 +994,8 @@ namespace json_double_conversion
             (biased_exponent << kPhysicalSignificandSize);
       }
 
-      DISALLOW_COPY_AND_ASSIGN(Double);
+      Double( const Double& ) = delete;
+      void operator=( const Double& ) = delete;
    };
 
    struct PowersOfTenCache
@@ -1182,96 +1022,96 @@ namespace json_double_conversion
    };
 
    static const CachedPower kCachedPowers[] = {
-      {UINT64_2PART_C(0xfa8fd5a0, 081c0288), -1220, -348},
-      {UINT64_2PART_C(0xbaaee17f, a23ebf76), -1193, -340},
-      {UINT64_2PART_C(0x8b16fb20, 3055ac76), -1166, -332},
-      {UINT64_2PART_C(0xcf42894a, 5dce35ea), -1140, -324},
-      {UINT64_2PART_C(0x9a6bb0aa, 55653b2d), -1113, -316},
-      {UINT64_2PART_C(0xe61acf03, 3d1a45df), -1087, -308},
-      {UINT64_2PART_C(0xab70fe17, c79ac6ca), -1060, -300},
-      {UINT64_2PART_C(0xff77b1fc, bebcdc4f), -1034, -292},
-      {UINT64_2PART_C(0xbe5691ef, 416bd60c), -1007, -284},
-      {UINT64_2PART_C(0x8dd01fad, 907ffc3c), -980, -276},
-      {UINT64_2PART_C(0xd3515c28, 31559a83), -954, -268},
-      {UINT64_2PART_C(0x9d71ac8f, ada6c9b5), -927, -260},
-      {UINT64_2PART_C(0xea9c2277, 23ee8bcb), -901, -252},
-      {UINT64_2PART_C(0xaecc4991, 4078536d), -874, -244},
-      {UINT64_2PART_C(0x823c1279, 5db6ce57), -847, -236},
-      {UINT64_2PART_C(0xc2109436, 4dfb5637), -821, -228},
-      {UINT64_2PART_C(0x9096ea6f, 3848984f), -794, -220},
-      {UINT64_2PART_C(0xd77485cb, 25823ac7), -768, -212},
-      {UINT64_2PART_C(0xa086cfcd, 97bf97f4), -741, -204},
-      {UINT64_2PART_C(0xef340a98, 172aace5), -715, -196},
-      {UINT64_2PART_C(0xb23867fb, 2a35b28e), -688, -188},
-      {UINT64_2PART_C(0x84c8d4df, d2c63f3b), -661, -180},
-      {UINT64_2PART_C(0xc5dd4427, 1ad3cdba), -635, -172},
-      {UINT64_2PART_C(0x936b9fce, bb25c996), -608, -164},
-      {UINT64_2PART_C(0xdbac6c24, 7d62a584), -582, -156},
-      {UINT64_2PART_C(0xa3ab6658, 0d5fdaf6), -555, -148},
-      {UINT64_2PART_C(0xf3e2f893, dec3f126), -529, -140},
-      {UINT64_2PART_C(0xb5b5ada8, aaff80b8), -502, -132},
-      {UINT64_2PART_C(0x87625f05, 6c7c4a8b), -475, -124},
-      {UINT64_2PART_C(0xc9bcff60, 34c13053), -449, -116},
-      {UINT64_2PART_C(0x964e858c, 91ba2655), -422, -108},
-      {UINT64_2PART_C(0xdff97724, 70297ebd), -396, -100},
-      {UINT64_2PART_C(0xa6dfbd9f, b8e5b88f), -369, -92},
-      {UINT64_2PART_C(0xf8a95fcf, 88747d94), -343, -84},
-      {UINT64_2PART_C(0xb9447093, 8fa89bcf), -316, -76},
-      {UINT64_2PART_C(0x8a08f0f8, bf0f156b), -289, -68},
-      {UINT64_2PART_C(0xcdb02555, 653131b6), -263, -60},
-      {UINT64_2PART_C(0x993fe2c6, d07b7fac), -236, -52},
-      {UINT64_2PART_C(0xe45c10c4, 2a2b3b06), -210, -44},
-      {UINT64_2PART_C(0xaa242499, 697392d3), -183, -36},
-      {UINT64_2PART_C(0xfd87b5f2, 8300ca0e), -157, -28},
-      {UINT64_2PART_C(0xbce50864, 92111aeb), -130, -20},
-      {UINT64_2PART_C(0x8cbccc09, 6f5088cc), -103, -12},
-      {UINT64_2PART_C(0xd1b71758, e219652c), -77, -4},
-      {UINT64_2PART_C(0x9c400000, 00000000), -50, 4},
-      {UINT64_2PART_C(0xe8d4a510, 00000000), -24, 12},
-      {UINT64_2PART_C(0xad78ebc5, ac620000), 3, 20},
-      {UINT64_2PART_C(0x813f3978, f8940984), 30, 28},
-      {UINT64_2PART_C(0xc097ce7b, c90715b3), 56, 36},
-      {UINT64_2PART_C(0x8f7e32ce, 7bea5c70), 83, 44},
-      {UINT64_2PART_C(0xd5d238a4, abe98068), 109, 52},
-      {UINT64_2PART_C(0x9f4f2726, 179a2245), 136, 60},
-      {UINT64_2PART_C(0xed63a231, d4c4fb27), 162, 68},
-      {UINT64_2PART_C(0xb0de6538, 8cc8ada8), 189, 76},
-      {UINT64_2PART_C(0x83c7088e, 1aab65db), 216, 84},
-      {UINT64_2PART_C(0xc45d1df9, 42711d9a), 242, 92},
-      {UINT64_2PART_C(0x924d692c, a61be758), 269, 100},
-      {UINT64_2PART_C(0xda01ee64, 1a708dea), 295, 108},
-      {UINT64_2PART_C(0xa26da399, 9aef774a), 322, 116},
-      {UINT64_2PART_C(0xf209787b, b47d6b85), 348, 124},
-      {UINT64_2PART_C(0xb454e4a1, 79dd1877), 375, 132},
-      {UINT64_2PART_C(0x865b8692, 5b9bc5c2), 402, 140},
-      {UINT64_2PART_C(0xc83553c5, c8965d3d), 428, 148},
-      {UINT64_2PART_C(0x952ab45c, fa97a0b3), 455, 156},
-      {UINT64_2PART_C(0xde469fbd, 99a05fe3), 481, 164},
-      {UINT64_2PART_C(0xa59bc234, db398c25), 508, 172},
-      {UINT64_2PART_C(0xf6c69a72, a3989f5c), 534, 180},
-      {UINT64_2PART_C(0xb7dcbf53, 54e9bece), 561, 188},
-      {UINT64_2PART_C(0x88fcf317, f22241e2), 588, 196},
-      {UINT64_2PART_C(0xcc20ce9b, d35c78a5), 614, 204},
-      {UINT64_2PART_C(0x98165af3, 7b2153df), 641, 212},
-      {UINT64_2PART_C(0xe2a0b5dc, 971f303a), 667, 220},
-      {UINT64_2PART_C(0xa8d9d153, 5ce3b396), 694, 228},
-      {UINT64_2PART_C(0xfb9b7cd9, a4a7443c), 720, 236},
-      {UINT64_2PART_C(0xbb764c4c, a7a44410), 747, 244},
-      {UINT64_2PART_C(0x8bab8eef, b6409c1a), 774, 252},
-      {UINT64_2PART_C(0xd01fef10, a657842c), 800, 260},
-      {UINT64_2PART_C(0x9b10a4e5, e9913129), 827, 268},
-      {UINT64_2PART_C(0xe7109bfb, a19c0c9d), 853, 276},
-      {UINT64_2PART_C(0xac2820d9, 623bf429), 880, 284},
-      {UINT64_2PART_C(0x80444b5e, 7aa7cf85), 907, 292},
-      {UINT64_2PART_C(0xbf21e440, 03acdd2d), 933, 300},
-      {UINT64_2PART_C(0x8e679c2f, 5e44ff8f), 960, 308},
-      {UINT64_2PART_C(0xd433179d, 9c8cb841), 986, 316},
-      {UINT64_2PART_C(0x9e19db92, b4e31ba9), 1013, 324},
-      {UINT64_2PART_C(0xeb96bf6e, badf77d9), 1039, 332},
-      {UINT64_2PART_C(0xaf87023b, 9bf0ee6b), 1066, 340},
+      {TAO_JSON_UINT64_2PART_C(0xfa8fd5a0, 081c0288), -1220, -348},
+      {TAO_JSON_UINT64_2PART_C(0xbaaee17f, a23ebf76), -1193, -340},
+      {TAO_JSON_UINT64_2PART_C(0x8b16fb20, 3055ac76), -1166, -332},
+      {TAO_JSON_UINT64_2PART_C(0xcf42894a, 5dce35ea), -1140, -324},
+      {TAO_JSON_UINT64_2PART_C(0x9a6bb0aa, 55653b2d), -1113, -316},
+      {TAO_JSON_UINT64_2PART_C(0xe61acf03, 3d1a45df), -1087, -308},
+      {TAO_JSON_UINT64_2PART_C(0xab70fe17, c79ac6ca), -1060, -300},
+      {TAO_JSON_UINT64_2PART_C(0xff77b1fc, bebcdc4f), -1034, -292},
+      {TAO_JSON_UINT64_2PART_C(0xbe5691ef, 416bd60c), -1007, -284},
+      {TAO_JSON_UINT64_2PART_C(0x8dd01fad, 907ffc3c), -980, -276},
+      {TAO_JSON_UINT64_2PART_C(0xd3515c28, 31559a83), -954, -268},
+      {TAO_JSON_UINT64_2PART_C(0x9d71ac8f, ada6c9b5), -927, -260},
+      {TAO_JSON_UINT64_2PART_C(0xea9c2277, 23ee8bcb), -901, -252},
+      {TAO_JSON_UINT64_2PART_C(0xaecc4991, 4078536d), -874, -244},
+      {TAO_JSON_UINT64_2PART_C(0x823c1279, 5db6ce57), -847, -236},
+      {TAO_JSON_UINT64_2PART_C(0xc2109436, 4dfb5637), -821, -228},
+      {TAO_JSON_UINT64_2PART_C(0x9096ea6f, 3848984f), -794, -220},
+      {TAO_JSON_UINT64_2PART_C(0xd77485cb, 25823ac7), -768, -212},
+      {TAO_JSON_UINT64_2PART_C(0xa086cfcd, 97bf97f4), -741, -204},
+      {TAO_JSON_UINT64_2PART_C(0xef340a98, 172aace5), -715, -196},
+      {TAO_JSON_UINT64_2PART_C(0xb23867fb, 2a35b28e), -688, -188},
+      {TAO_JSON_UINT64_2PART_C(0x84c8d4df, d2c63f3b), -661, -180},
+      {TAO_JSON_UINT64_2PART_C(0xc5dd4427, 1ad3cdba), -635, -172},
+      {TAO_JSON_UINT64_2PART_C(0x936b9fce, bb25c996), -608, -164},
+      {TAO_JSON_UINT64_2PART_C(0xdbac6c24, 7d62a584), -582, -156},
+      {TAO_JSON_UINT64_2PART_C(0xa3ab6658, 0d5fdaf6), -555, -148},
+      {TAO_JSON_UINT64_2PART_C(0xf3e2f893, dec3f126), -529, -140},
+      {TAO_JSON_UINT64_2PART_C(0xb5b5ada8, aaff80b8), -502, -132},
+      {TAO_JSON_UINT64_2PART_C(0x87625f05, 6c7c4a8b), -475, -124},
+      {TAO_JSON_UINT64_2PART_C(0xc9bcff60, 34c13053), -449, -116},
+      {TAO_JSON_UINT64_2PART_C(0x964e858c, 91ba2655), -422, -108},
+      {TAO_JSON_UINT64_2PART_C(0xdff97724, 70297ebd), -396, -100},
+      {TAO_JSON_UINT64_2PART_C(0xa6dfbd9f, b8e5b88f), -369, -92},
+      {TAO_JSON_UINT64_2PART_C(0xf8a95fcf, 88747d94), -343, -84},
+      {TAO_JSON_UINT64_2PART_C(0xb9447093, 8fa89bcf), -316, -76},
+      {TAO_JSON_UINT64_2PART_C(0x8a08f0f8, bf0f156b), -289, -68},
+      {TAO_JSON_UINT64_2PART_C(0xcdb02555, 653131b6), -263, -60},
+      {TAO_JSON_UINT64_2PART_C(0x993fe2c6, d07b7fac), -236, -52},
+      {TAO_JSON_UINT64_2PART_C(0xe45c10c4, 2a2b3b06), -210, -44},
+      {TAO_JSON_UINT64_2PART_C(0xaa242499, 697392d3), -183, -36},
+      {TAO_JSON_UINT64_2PART_C(0xfd87b5f2, 8300ca0e), -157, -28},
+      {TAO_JSON_UINT64_2PART_C(0xbce50864, 92111aeb), -130, -20},
+      {TAO_JSON_UINT64_2PART_C(0x8cbccc09, 6f5088cc), -103, -12},
+      {TAO_JSON_UINT64_2PART_C(0xd1b71758, e219652c), -77, -4},
+      {TAO_JSON_UINT64_2PART_C(0x9c400000, 00000000), -50, 4},
+      {TAO_JSON_UINT64_2PART_C(0xe8d4a510, 00000000), -24, 12},
+      {TAO_JSON_UINT64_2PART_C(0xad78ebc5, ac620000), 3, 20},
+      {TAO_JSON_UINT64_2PART_C(0x813f3978, f8940984), 30, 28},
+      {TAO_JSON_UINT64_2PART_C(0xc097ce7b, c90715b3), 56, 36},
+      {TAO_JSON_UINT64_2PART_C(0x8f7e32ce, 7bea5c70), 83, 44},
+      {TAO_JSON_UINT64_2PART_C(0xd5d238a4, abe98068), 109, 52},
+      {TAO_JSON_UINT64_2PART_C(0x9f4f2726, 179a2245), 136, 60},
+      {TAO_JSON_UINT64_2PART_C(0xed63a231, d4c4fb27), 162, 68},
+      {TAO_JSON_UINT64_2PART_C(0xb0de6538, 8cc8ada8), 189, 76},
+      {TAO_JSON_UINT64_2PART_C(0x83c7088e, 1aab65db), 216, 84},
+      {TAO_JSON_UINT64_2PART_C(0xc45d1df9, 42711d9a), 242, 92},
+      {TAO_JSON_UINT64_2PART_C(0x924d692c, a61be758), 269, 100},
+      {TAO_JSON_UINT64_2PART_C(0xda01ee64, 1a708dea), 295, 108},
+      {TAO_JSON_UINT64_2PART_C(0xa26da399, 9aef774a), 322, 116},
+      {TAO_JSON_UINT64_2PART_C(0xf209787b, b47d6b85), 348, 124},
+      {TAO_JSON_UINT64_2PART_C(0xb454e4a1, 79dd1877), 375, 132},
+      {TAO_JSON_UINT64_2PART_C(0x865b8692, 5b9bc5c2), 402, 140},
+      {TAO_JSON_UINT64_2PART_C(0xc83553c5, c8965d3d), 428, 148},
+      {TAO_JSON_UINT64_2PART_C(0x952ab45c, fa97a0b3), 455, 156},
+      {TAO_JSON_UINT64_2PART_C(0xde469fbd, 99a05fe3), 481, 164},
+      {TAO_JSON_UINT64_2PART_C(0xa59bc234, db398c25), 508, 172},
+      {TAO_JSON_UINT64_2PART_C(0xf6c69a72, a3989f5c), 534, 180},
+      {TAO_JSON_UINT64_2PART_C(0xb7dcbf53, 54e9bece), 561, 188},
+      {TAO_JSON_UINT64_2PART_C(0x88fcf317, f22241e2), 588, 196},
+      {TAO_JSON_UINT64_2PART_C(0xcc20ce9b, d35c78a5), 614, 204},
+      {TAO_JSON_UINT64_2PART_C(0x98165af3, 7b2153df), 641, 212},
+      {TAO_JSON_UINT64_2PART_C(0xe2a0b5dc, 971f303a), 667, 220},
+      {TAO_JSON_UINT64_2PART_C(0xa8d9d153, 5ce3b396), 694, 228},
+      {TAO_JSON_UINT64_2PART_C(0xfb9b7cd9, a4a7443c), 720, 236},
+      {TAO_JSON_UINT64_2PART_C(0xbb764c4c, a7a44410), 747, 244},
+      {TAO_JSON_UINT64_2PART_C(0x8bab8eef, b6409c1a), 774, 252},
+      {TAO_JSON_UINT64_2PART_C(0xd01fef10, a657842c), 800, 260},
+      {TAO_JSON_UINT64_2PART_C(0x9b10a4e5, e9913129), 827, 268},
+      {TAO_JSON_UINT64_2PART_C(0xe7109bfb, a19c0c9d), 853, 276},
+      {TAO_JSON_UINT64_2PART_C(0xac2820d9, 623bf429), 880, 284},
+      {TAO_JSON_UINT64_2PART_C(0x80444b5e, 7aa7cf85), 907, 292},
+      {TAO_JSON_UINT64_2PART_C(0xbf21e440, 03acdd2d), 933, 300},
+      {TAO_JSON_UINT64_2PART_C(0x8e679c2f, 5e44ff8f), 960, 308},
+      {TAO_JSON_UINT64_2PART_C(0xd433179d, 9c8cb841), 986, 316},
+      {TAO_JSON_UINT64_2PART_C(0x9e19db92, b4e31ba9), 1013, 324},
+      {TAO_JSON_UINT64_2PART_C(0xeb96bf6e, badf77d9), 1039, 332},
+      {TAO_JSON_UINT64_2PART_C(0xaf87023b, 9bf0ee6b), 1066, 340},
    };
 
-   static const int kCachedPowersLength = GDCV8_ARRAY_SIZE(kCachedPowers);
+   static const int kCachedPowersLength = TAO_JSON_GDCV8_ARRAY_SIZE(kCachedPowers);
    static const int kCachedPowersOffset = 348;
    static const double kD_1_LOG2_10 = 0.30102999566398114;
 
@@ -1281,15 +1121,15 @@ namespace json_double_conversion
                                                                       DiyFp* power,
                                                                       int* decimal_exponent) {
       int kQ = DiyFp::kSignificandSize;
-      double k = ceil((min_exponent + kQ - 1) * kD_1_LOG2_10);
+      double k = std::ceil((min_exponent + kQ - 1) * kD_1_LOG2_10);
       int foo = kCachedPowersOffset;
       int index =
          (foo + static_cast<int>(k) - 1) / kDecimalExponentDistance + 1;
-      ASSERT(0 <= index && index < kCachedPowersLength);
+      assert(0 <= index && index < kCachedPowersLength);
       CachedPower cached_power = kCachedPowers[index];
-      ASSERT(min_exponent <= cached_power.binary_exponent);
+      assert(min_exponent <= cached_power.binary_exponent);
       (void) max_exponent;
-      ASSERT(cached_power.binary_exponent <= max_exponent);
+      assert(cached_power.binary_exponent <= max_exponent);
       *decimal_exponent = cached_power.decimal_exponent;
       *power = DiyFp(cached_power.significand, cached_power.binary_exponent);
    }
@@ -1297,15 +1137,15 @@ namespace json_double_conversion
    inline void PowersOfTenCache::GetCachedPowerForDecimalExponent(int requested_exponent,
                                                                   DiyFp* power,
                                                                   int* found_exponent) {
-      ASSERT(kMinDecimalExponent <= requested_exponent);
-      ASSERT(requested_exponent < kMaxDecimalExponent + kDecimalExponentDistance);
+      assert(kMinDecimalExponent <= requested_exponent);
+      assert(requested_exponent < kMaxDecimalExponent + kDecimalExponentDistance);
       int index =
          (requested_exponent + kCachedPowersOffset) / kDecimalExponentDistance;
       CachedPower cached_power = kCachedPowers[index];
       *power = DiyFp(cached_power.significand, cached_power.binary_exponent);
       *found_exponent = cached_power.decimal_exponent;
-      ASSERT(*found_exponent <= requested_exponent);
-      ASSERT(requested_exponent < *found_exponent + kDecimalExponentDistance);
+      assert(*found_exponent <= requested_exponent);
+      assert(requested_exponent < *found_exponent + kDecimalExponentDistance);
    }
 
    static const int kMaxExactDoubleIntegerDecimalDigits = 15;
@@ -1314,7 +1154,7 @@ namespace json_double_conversion
    static const int kMaxDecimalPower = 309;
    static const int kMinDecimalPower = -324;
 
-   static const uint64_t kMaxUint64 = UINT64_2PART_C(0xFFFFFFFF, FFFFFFFF);
+   static const uint64_t kMaxUint64 = TAO_JSON_UINT64_2PART_C(0xFFFFFFFF, FFFFFFFF);
 
    static const double exact_powers_of_ten[] = {
       1.0,  // 10^0
@@ -1342,7 +1182,7 @@ namespace json_double_conversion
       10000000000000000000000.0
    };
 
-   static const int kExactPowersOfTenSize = GDCV8_ARRAY_SIZE(exact_powers_of_ten);
+   static const int kExactPowersOfTenSize = TAO_JSON_GDCV8_ARRAY_SIZE(exact_powers_of_ten);
    static const int kMaxSignificantDecimalDigits = 780;
 
    inline Vector<const char> TrimLeadingZeros(Vector<const char> buffer) {
@@ -1370,7 +1210,7 @@ namespace json_double_conversion
       for (int i = 0; i < kMaxSignificantDecimalDigits - 1; ++i) {
          significant_buffer[i] = buffer[i];
       }
-      ASSERT(buffer[buffer.length() - 1] != '0');
+      assert(buffer[buffer.length() - 1] != '0');
       significant_buffer[kMaxSignificantDecimalDigits - 1] = '1';
       *significant_exponent =
          exponent + (buffer.length() - kMaxSignificantDecimalDigits);
@@ -1383,7 +1223,7 @@ namespace json_double_conversion
       exponent -= right_trimmed.length();
       if (right_trimmed.length() > kMaxSignificantDecimalDigits) {
          (void) space_size;
-         ASSERT(space_size >= kMaxSignificantDecimalDigits);
+         assert(space_size >= kMaxSignificantDecimalDigits);
          CutToMaxSignificantDigits(right_trimmed, exponent,
                                    buffer_copy_space, updated_exponent);
          *trimmed = Vector<const char>(buffer_copy_space,
@@ -1400,7 +1240,7 @@ namespace json_double_conversion
       int i = 0;
       while (i < buffer.length() && result <= (kMaxUint64 / 10 - 1)) {
          int digit = buffer[i++] - '0';
-         ASSERT(0 <= digit && digit <= 9);
+         assert(0 <= digit && digit <= 9);
          result = 10 * result + digit;
       }
       *number_of_read_digits = i;
@@ -1428,7 +1268,7 @@ namespace json_double_conversion
    inline bool DoubleStrtod(Vector<const char> trimmed,
                             int exponent,
                             double* result) {
-#if !defined(DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS)
+#if !defined(TAO_JSON_DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS)
       // On x86 the floating-point stack can be 64 or 80 bits wide. If it is
       // 80 bits wide (as is the case on Linux) then double-rounding occurs and the
       // result is not accurate.
@@ -1441,13 +1281,13 @@ namespace json_double_conversion
          int read_digits;
          if (exponent < 0 && -exponent < kExactPowersOfTenSize) {
             *result = static_cast<double>(ReadUint64(trimmed, &read_digits));
-            ASSERT(read_digits == trimmed.length());
+            assert(read_digits == trimmed.length());
             *result /= exact_powers_of_ten[-exponent];
             return true;
          }
          if (0 <= exponent && exponent < kExactPowersOfTenSize) {
             *result = static_cast<double>(ReadUint64(trimmed, &read_digits));
-            ASSERT(read_digits == trimmed.length());
+            assert(read_digits == trimmed.length());
             *result *= exact_powers_of_ten[exponent];
             return true;
          }
@@ -1456,7 +1296,7 @@ namespace json_double_conversion
          if ((0 <= exponent) &&
              (exponent - remaining_digits < kExactPowersOfTenSize)) {
             *result = static_cast<double>(ReadUint64(trimmed, &read_digits));
-            ASSERT(read_digits == trimmed.length());
+            assert(read_digits == trimmed.length());
             *result *= exact_powers_of_ten[remaining_digits];
             *result *= exact_powers_of_ten[exponent - remaining_digits];
             return true;
@@ -1466,19 +1306,19 @@ namespace json_double_conversion
    }
 
    inline DiyFp AdjustmentPowerOfTen(int exponent) {
-      ASSERT(0 < exponent);
-      ASSERT(exponent < PowersOfTenCache::kDecimalExponentDistance);
-      ASSERT(PowersOfTenCache::kDecimalExponentDistance == 8);
+      assert(0 < exponent);
+      assert(exponent < PowersOfTenCache::kDecimalExponentDistance);
+      assert(PowersOfTenCache::kDecimalExponentDistance == 8);
       switch (exponent) {
-         case 1: return DiyFp(UINT64_2PART_C(0xa0000000, 00000000), -60);
-         case 2: return DiyFp(UINT64_2PART_C(0xc8000000, 00000000), -57);
-         case 3: return DiyFp(UINT64_2PART_C(0xfa000000, 00000000), -54);
-         case 4: return DiyFp(UINT64_2PART_C(0x9c400000, 00000000), -50);
-         case 5: return DiyFp(UINT64_2PART_C(0xc3500000, 00000000), -47);
-         case 6: return DiyFp(UINT64_2PART_C(0xf4240000, 00000000), -44);
-         case 7: return DiyFp(UINT64_2PART_C(0x98968000, 00000000), -40);
+         case 1: return DiyFp(TAO_JSON_UINT64_2PART_C(0xa0000000, 00000000), -60);
+         case 2: return DiyFp(TAO_JSON_UINT64_2PART_C(0xc8000000, 00000000), -57);
+         case 3: return DiyFp(TAO_JSON_UINT64_2PART_C(0xfa000000, 00000000), -54);
+         case 4: return DiyFp(TAO_JSON_UINT64_2PART_C(0x9c400000, 00000000), -50);
+         case 5: return DiyFp(TAO_JSON_UINT64_2PART_C(0xc3500000, 00000000), -47);
+         case 6: return DiyFp(TAO_JSON_UINT64_2PART_C(0xf4240000, 00000000), -44);
+         case 7: return DiyFp(TAO_JSON_UINT64_2PART_C(0x98968000, 00000000), -40);
          default:
-            UNREACHABLE();
+            std::abort();
       }
    }
 
@@ -1497,7 +1337,7 @@ namespace json_double_conversion
       input.Normalize();
       error <<= old_e - input.e();
 
-      ASSERT(exponent <= PowersOfTenCache::kMaxDecimalExponent);
+      assert(exponent <= PowersOfTenCache::kMaxDecimalExponent);
       if (exponent < PowersOfTenCache::kMinDecimalExponent) {
          *result = 0.0;
          return true;
@@ -1513,7 +1353,7 @@ namespace json_double_conversion
          DiyFp adjustment_power = AdjustmentPowerOfTen(adjustment_exponent);
          input.Multiply(adjustment_power);
          if (kMaxUint64DecimalDigits - buffer.length() >= adjustment_exponent) {
-            ASSERT(DiyFp::kSignificandSize == 64);
+            assert(DiyFp::kSignificandSize == 64);
          } else {
             error += kDenominator / 2;
          }
@@ -1542,8 +1382,8 @@ namespace json_double_conversion
          error = (error >> shift_amount) + 1 + kDenominator;
          precision_digits_count -= shift_amount;
       }
-      ASSERT(DiyFp::kSignificandSize == 64);
-      ASSERT(precision_digits_count < 64);
+      assert(DiyFp::kSignificandSize == 64);
+      assert(precision_digits_count < 64);
       uint64_t one64 = 1;
       uint64_t precision_bits_mask = (one64 << precision_digits_count) - 1;
       uint64_t precision_bits = input.f() & precision_bits_mask;
@@ -1566,10 +1406,10 @@ namespace json_double_conversion
    inline int CompareBufferWithDiyFp(Vector<const char> buffer,
                                      int exponent,
                                      DiyFp diy_fp) {
-      ASSERT(buffer.length() + exponent <= kMaxDecimalPower + 1);
-      ASSERT(buffer.length() + exponent > kMinDecimalPower);
-      ASSERT(buffer.length() <= kMaxSignificantDecimalDigits);
-      ASSERT(((kMaxDecimalPower + 1) * 333 / 100) < Bignum::kMaxSignificantBits);
+      assert(buffer.length() + exponent <= kMaxDecimalPower + 1);
+      assert(buffer.length() + exponent > kMinDecimalPower);
+      assert(buffer.length() <= kMaxSignificantDecimalDigits);
+      assert(((kMaxDecimalPower + 1) * 333 / 100) < Bignum::kMaxSignificantBits);
       Bignum buffer_bignum;
       Bignum diy_fp_bignum;
       buffer_bignum.AssignDecimalString(buffer);
