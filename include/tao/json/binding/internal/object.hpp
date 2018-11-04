@@ -131,6 +131,10 @@ namespace tao
                   }
                }
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4127 )
+#endif
                template< typename A, template< typename... > class Traits, typename C >
                static void assign_member( basic_value< Traits >& v, const C& x )
                {
@@ -138,6 +142,9 @@ namespace tao
                      v.unsafe_emplace( A::template key< Traits >(), A::read( x ) );
                   }
                }
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
                template< template< typename... > class Traits, typename C >
                static void assign( basic_value< Traits >& v, const C& x )
