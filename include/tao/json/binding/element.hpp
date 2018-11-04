@@ -87,11 +87,11 @@ namespace tao
             }
          };
 
-         template< typename CP, CP, typename P, P, typename = void >
+         template< auto CP, auto P, typename = void >
          struct element2;
 
          template< typename A, typename CR, CR ( *CP )( const A& ), typename R, R ( *P )( A& ) >
-         struct element2< CR ( * )( const A& ), CP, R ( * )( A& ), P >
+         struct element2< CP, P >
          {
             static auto read( const A& v )
             {
@@ -124,7 +124,7 @@ namespace tao
          };
 
          template< typename A, typename CR, CR ( *CP )( const A& ), typename R, void ( *P )( A&, R&& ) >
-         struct element2< CR ( * )( const A& ), CP, void ( * )( A&, R&& ), P >
+         struct element2< CP, P >
          {
             static auto read( const A& v )
             {

@@ -28,7 +28,7 @@ namespace tao
             using setter_t = decltype( std::get< I >( std::declval< Tuple& >() ) ) ( * )( Tuple& );
 
             template< std::size_t I >
-            using helper_t = binding::element2< getter_t< I >, static_cast< getter_t< I > >( &std::get< I > ), setter_t< I >, static_cast< setter_t< I > >( &std::get< I > ) >;
+            using helper_t = binding::element2< static_cast< getter_t< I > >( &std::get< I > ), static_cast< setter_t< I > >( &std::get< I > ) >;
 
             using type = binding::array< helper_t< Is >... >;
          };
