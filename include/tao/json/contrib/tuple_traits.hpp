@@ -15,6 +15,18 @@ namespace tao
    {
       namespace internal
       {
+         template< std::size_t I, typename Tuple >
+         decltype( auto ) get( Tuple& t ) noexcept( noexcept( std::get< I >( t ) ) )
+         {
+            return std::get< I >( t );
+         }
+
+         template< std::size_t I, typename Tuple >
+         decltype( auto ) cget( const Tuple& t ) noexcept( noexcept( std::get< I >( t ) ) )
+         {
+            return std::get< I >( t );
+         }
+
          template< typename Tuple, typename Indices >
          struct tuple_traits;
 
@@ -22,13 +34,7 @@ namespace tao
          struct tuple_traits< Tuple, std::index_sequence< Is... > >
          {
             template< std::size_t I >
-            using getter_t = decltype( std::get< I >( std::declval< const Tuple& >() ) ) ( * )( const Tuple& );
-
-            template< std::size_t I >
-            using setter_t = decltype( std::get< I >( std::declval< Tuple& >() ) ) ( * )( Tuple& );
-
-            template< std::size_t I >
-            using helper_t = binding::element2< static_cast< getter_t< I > >( &std::get< I > ), static_cast< setter_t< I > >( &std::get< I > ) >;
+            using helper_t = binding::element2< &cget< I, Tuple >, &get< I, Tuple > >;
 
             using type = binding::array< helper_t< Is >... >;
          };
