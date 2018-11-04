@@ -15,26 +15,26 @@ namespace tao
    {
       namespace internal
       {
-         template< std::size_t I, typename Tuple >
-         decltype( auto ) get( Tuple& t ) noexcept
+         template< std::size_t I, typename... Ts >
+         decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
          {
-            return std::get< I >( t );
+            return std::get< I, Ts... >( t );
          }
 
-         template< std::size_t I, typename Tuple >
-         decltype( auto ) cget( const Tuple& t ) noexcept
+         template< std::size_t I, typename... Ts >
+         decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
          {
-            return std::get< I >( t );
+            return std::get< I, Ts... >( t );
          }
 
-         template< typename Tuple, typename Indices >
+         template< typename Indices, typename... Ts >
          struct tuple_traits;
 
-         template< typename Tuple, std::size_t... Is >
-         struct tuple_traits< Tuple, std::index_sequence< Is... > >
+         template< std::size_t... Is, typename... Ts >
+         struct tuple_traits< std::index_sequence< Is... >, Ts... >
          {
             template< std::size_t I >
-            using helper_t = binding::element2< &cget< I, Tuple >, &get< I, Tuple > >;
+            using helper_t = binding::element2< &cget< I, Ts... >, &get< I, Ts... > >;
 
             using type = binding::array< helper_t< Is >... >;
          };
@@ -43,7 +43,7 @@ namespace tao
 
       template< typename... Ts >
       struct tuple_traits
-         : public internal::tuple_traits< std::tuple< Ts... >, std::index_sequence_for< Ts... > >::type
+         : internal::tuple_traits< std::index_sequence_for< Ts... >, Ts... >::type
       {
       };
 
