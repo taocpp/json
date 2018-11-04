@@ -201,6 +201,7 @@ namespace json_double_conversion
 
       void EnsureCapacity(int size) {
          assert(size <= kBigitCapacity);
+         (void)size;
       }
       void Align(const Bignum& other);
       void Clamp();
