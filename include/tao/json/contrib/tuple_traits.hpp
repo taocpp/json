@@ -16,13 +16,13 @@ namespace tao
       namespace internal
       {
          template< std::size_t I, typename Tuple >
-         decltype( auto ) get( Tuple& t ) noexcept( noexcept( std::get< I >( t ) ) )
+         decltype( auto ) get( Tuple& t ) noexcept
          {
             return std::get< I >( t );
          }
 
          template< std::size_t I, typename Tuple >
-         decltype( auto ) cget( const Tuple& t ) noexcept( noexcept( std::get< I >( t ) ) )
+         decltype( auto ) cget( const Tuple& t ) noexcept
          {
             return std::get< I >( t );
          }
