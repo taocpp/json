@@ -110,7 +110,7 @@ namespace tao
          template< typename Consumer, template< typename... > class Traits >
          void from_value( Consumer& consumer, const basic_value< Traits >& v )
          {
-            from_value< from_value< Consumer, Traits >, Consumer, Traits >( consumer, v );
+            from_value< static_cast< void ( * )( Consumer&, const basic_value< Traits >& ) >( &from_value< Consumer, Traits > ), Consumer, Traits >( consumer, v );
          }
 
          // Events producer to generate events from an rvalue JSON value.
@@ -201,7 +201,7 @@ namespace tao
          template< typename Consumer, template< typename... > class Traits >
          void from_value( Consumer& consumer, basic_value< Traits >&& v )
          {
-            from_value< from_value< Consumer, Traits >, Consumer, Traits >( consumer, std::move( v ) );
+            from_value< static_cast< void ( * )( Consumer&, basic_value< Traits > && ) >( &from_value< Consumer, Traits > ), Consumer, Traits >( consumer, std::move( v ) );
          }
 
       }  // namespace events
