@@ -16,18 +16,14 @@ namespace tao
       namespace internal
       {
          template< std::size_t I, typename... Ts >
-         struct const_getter
+         struct getter
          {
-            static const std::tuple_element_t< I, std::tuple< Ts... > >& get( const std::tuple< Ts... >& t ) noexcept
+            static decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
             {
                return std::get< I >( t );
             }
-         };
 
-         template< std::size_t I, typename... Ts >
-         struct getter
-         {
-            static std::tuple_element_t< I, std::tuple< Ts... > >& get( std::tuple< Ts... >& t ) noexcept
+            static decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
             {
                return std::get< I >( t );
             }
@@ -40,7 +36,7 @@ namespace tao
          struct tuple_traits< std::index_sequence< Is... >, Ts... >
          {
             template< std::size_t I >
-            using helper_t = binding::element2< &const_getter< I, Ts... >::get, &getter< I, Ts... >::get >;
+            using helper_t = binding::element2< &getter< I, Ts... >::cget, &getter< I, Ts... >::get >;
 
             using type = binding::array< helper_t< Is >... >;
          };
