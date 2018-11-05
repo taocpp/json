@@ -16,13 +16,13 @@ namespace tao
       namespace internal
       {
          template< std::size_t I, typename... Ts >
-         std::tuple_element_t< I, std::tuple< Ts... > >& get( std::tuple< Ts... >& t ) noexcept
+         const std::tuple_element_t< I, std::tuple< Ts... > >& cget( const std::tuple< Ts... >& t ) noexcept
          {
             return std::get< I >( t );
          }
 
          template< std::size_t I, typename... Ts >
-         const std::tuple_element_t< I, std::tuple< Ts... > >& cget( const std::tuple< Ts... >& t ) noexcept
+         std::tuple_element_t< I, std::tuple< Ts... > >& get( std::tuple< Ts... >& t ) noexcept
          {
             return std::get< I >( t );
          }
@@ -34,7 +34,7 @@ namespace tao
          struct tuple_traits< std::index_sequence< Is... >, Ts... >
          {
             template< std::size_t I >
-            using helper_t = binding::element2< &cget< I, Ts... >, &get< I, Ts... > >;
+            using helper_t = binding::element2< static_cast< std::tuple_element_t< I, const std::tuple< Ts... > >& (*)(const std::tuple< Ts... >&)noexcept >( &cget< I > ), static_cast< std::tuple_element_t< I, std::tuple< Ts... > >& (*)(std::tuple< Ts... >&)noexcept >( &get< I > ) >;
 
             using type = binding::array< helper_t< Is >... >;
          };
