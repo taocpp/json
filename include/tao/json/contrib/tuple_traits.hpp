@@ -16,15 +16,15 @@ namespace tao
       namespace internal
       {
          template< std::size_t I, typename... Ts >
-         decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
+         std::tuple_element_t< I, std::tuple< Ts... > >& get( std::tuple< Ts... >& t ) noexcept
          {
-            return std::get< I, Ts... >( t );
+            return std::get< I >( t );
          }
 
          template< std::size_t I, typename... Ts >
-         decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
+         const std::tuple_element_t< I, std::tuple< Ts... > >& cget( const std::tuple< Ts... >& t ) noexcept
          {
-            return std::get< I, Ts... >( t );
+            return std::get< I >( t );
          }
 
          template< typename Indices, typename... Ts >
