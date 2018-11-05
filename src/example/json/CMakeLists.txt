@@ -53,7 +53,7 @@ foreach (examplesourcefile ${examplesources})
     CXX_EXTENSIONS OFF
   )
   if (MSVC)
-    target_compile_options (${exename} PRIVATE /W4 /WX /utf-8 /std:c++latest)
+    target_compile_options (${exename} PRIVATE /W4 /WX /utf-8)
   else ()
     target_compile_options (${exename} PRIVATE -pedantic -Wall -Wextra -Wshadow -Werror)
   endif ()
