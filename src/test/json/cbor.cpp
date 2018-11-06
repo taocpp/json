@@ -4,6 +4,8 @@
 #include "test.hpp"
 #include "test_unhex.hpp"
 
+#include "make_events.hpp"
+
 #include <tao/json/from_string.hpp>
 #include <tao/json/to_string.hpp>
 
@@ -13,6 +15,14 @@ namespace tao
 {
    namespace json
    {
+      void events_test()
+      {
+         cbor::events::to_string t;
+         test::make_events( t );
+         const auto r = json_pegtl::internal::file_reader( "tests/taocpp/make_events.cbor" ).read();
+         TEST_ASSERT( r == t.value() );
+      }
+
       void cbor_encode( const std::string& text, const std::string& data )
       {
          TEST_ASSERT( cbor::to_string( from_string( text ) ) == test_unhex( data ) );
@@ -29,7 +39,7 @@ namespace tao
          TEST_ASSERT( to_string( a ) == to_string( cbor::from_string( cbor::to_string( a ) ) ) );
       }
 
-      void unit_test()
+      void encode_tests()
       {
          cbor_encode( "null", "f6" );
          cbor_encode( "true", "f5" );
@@ -70,7 +80,10 @@ namespace tao
 
          cbor_encode( "[{}]", "81a0" );
          cbor_encode( "{\"a\":[]}", "a1616180" );
+      }
 
+      void decode_tests()
+      {
          cbor_decode( "00", "0" );
          cbor_decode( "80", "[]" );
          cbor_decode( "9fff", "[]" );
@@ -99,7 +112,10 @@ namespace tao
          cbor_decode( "7f6161626262ff", "\"abb\"" );
 
          // TODO: Decode tests for broken inputs.
+      }
 
+      void roundtrip_tests()
+      {
          cbor_roundtrip( "0" );
          cbor_roundtrip( "1" );
          cbor_roundtrip( "-1" );
@@ -120,6 +136,14 @@ namespace tao
          cbor_roundtrip( "{\"a\":[],\"b\":{},\"\":0}" );
          cbor_roundtrip( "1.23" );
          cbor_roundtrip( "345e-123" );
+      }
+
+      void unit_test()
+      {
+         events_test();
+         encode_tests();
+         decode_tests();
+         roundtrip_tests();
       }
 
    }  // namespace json
