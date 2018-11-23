@@ -998,6 +998,25 @@ namespace tao
             unsafe_assign_opaque_ptr( data, producer );
          }
 
+         template< typename T >
+         void assign( T&& v ) noexcept( noexcept( unsafe_assign< T >( std::forward< T >( v ) ) ) )
+         {
+            unsafe_discard();
+            unsafe_assign( std::forward< T >( v ) );
+         }
+
+         void assign( std::initializer_list< internal::pair< Traits > >&& l )
+         {
+            unsafe_discard();
+            unsafe_assign( std::move( l ) );
+         }
+
+         void assign( const std::initializer_list< internal::pair< Traits > >& l )
+         {
+            unsafe_discard();
+            unsafe_assign( l );
+         }
+
          const basic_value& skip_value_ptr() const noexcept
          {
             const basic_value* p = this;
