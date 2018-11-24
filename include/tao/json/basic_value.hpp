@@ -1155,13 +1155,13 @@ namespace tao
 
          basic_value& operator[]( const std::size_t index ) noexcept
          {
-            validate_json_type( json::type::ARRAY );
+            assert( m_type == json::type::ARRAY );
             return m_union.a[ index ];
          }
 
          const basic_value& operator[]( const std::size_t index ) const noexcept
          {
-            validate_json_type( json::type::ARRAY );
+            assert( m_type == json::type::ARRAY );
             return m_union.a[ index ];
          }
 
