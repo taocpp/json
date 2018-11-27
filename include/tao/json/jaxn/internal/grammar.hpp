@@ -215,10 +215,6 @@ namespace tao
 
                struct key : string {};
 
-               struct identifier_first : ranges< 'a', 'z', 'A', 'Z', '_', '_', '$' > {};
-               struct identifier_other : ranges< 'a', 'z', 'A', 'Z', '0', '9', '_', '_', '$' > {};
-               struct identifier : seq< identifier_first, star< identifier_other > > {};
-
                struct mkey : sor< key, identifier > {};
                struct member : if_must< mkey, name_separator, value > {};
                struct object_content : opt< list_tail< member, value_separator > > {};
