@@ -51,8 +51,10 @@ namespace tao
 
                template< json_pegtl::apply_mode A,
                          json_pegtl::rewind_mode M,
-                         template< typename... > class Action,
-                         template< typename... > class Control,
+                         template< typename... >
+                         class Action,
+                         template< typename... >
+                         class Control,
                          typename Input,
                          typename Consumer >
                static bool match( Input& in, Consumer& consumer )

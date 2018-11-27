@@ -172,8 +172,7 @@ namespace tao
          TEST_THROWS( z.as< std::unique_ptr< base_1 > >() );
          const value v = {
             { "one", { { "s", "foo" } } },
-            { "two", { { "i", 42 },
-                       { "j", 23 } } }
+            { "two", { { "i", 42 }, { "j", 23 } } }
          };
          TEST_THROWS( v.as< std::unique_ptr< base_1 > >() );
          const value w = {

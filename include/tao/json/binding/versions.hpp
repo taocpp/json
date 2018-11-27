@@ -97,7 +97,7 @@ namespace tao
                try {
                   auto m = parser.mark();
                   V::template consume< Traits >( parser, x );
-                  m( true );
+                  (void)m( true );
                   return std::exception_ptr();
                }
                catch( ... ) {

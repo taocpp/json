@@ -35,8 +35,10 @@ namespace tao
 
                template< json_pegtl::apply_mode,
                          json_pegtl::rewind_mode,
-                         template< typename... > class,
-                         template< typename... > class,
+                         template< typename... >
+                         class,
+                         template< typename... >
+                         class,
                          typename Input >
                static bool match( Input& in, bool& st ) noexcept( noexcept( in.size( 5 ) ) )
                {
@@ -83,8 +85,10 @@ namespace tao
 
                template< apply_mode A,
                          rewind_mode M,
-                         template< typename... > class Action,
-                         template< typename... > class Control,
+                         template< typename... >
+                         class Action,
+                         template< typename... >
+                         class Control,
                          typename Input,
                          typename... States >
                static bool match_impl( Input& in, States&&... st )
@@ -104,8 +108,10 @@ namespace tao
 
                template< apply_mode A,
                          rewind_mode M,
-                         template< typename... > class Action,
-                         template< typename... > class Control,
+                         template< typename... >
+                         class Action,
+                         template< typename... >
+                         class Control,
                          typename Input,
                          typename... States >
                static bool match( Input& in, States&&... st )

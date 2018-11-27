@@ -13,7 +13,7 @@ namespace tao
    namespace TAO_JSON_PEGTL_NAMESPACE
    {
       template< typename Rule >
-      std::size_t analyze( const bool verbose = true )
+      [[nodiscard]] std::size_t analyze( const bool verbose = true )
       {
          return analysis::analyze_cycles< Rule >( verbose ).problems();
       }
