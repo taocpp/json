@@ -386,7 +386,7 @@ namespace tao
                throw json_pegtl::parse_error( std::forward< T >( t ), m_input );
             }
 
-         private:
+         protected:
             Input m_input;
          };
 
