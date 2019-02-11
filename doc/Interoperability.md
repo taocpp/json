@@ -72,4 +72,4 @@ The following JSON-esque formats are currently unsupported.
 * YAML
 * VelocyPack
 
-Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey

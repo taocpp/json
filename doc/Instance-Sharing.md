@@ -174,4 +174,4 @@ The assign methods like `tao::json::value::assign_boolean()` have an unsafe vers
 
 TODO: List all other unsafe functions.
 
-Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey

@@ -522,4 +522,4 @@ Comparison between a JSON Value and another type is performed by either
 
 See the [documentation on Type Traits](Type-Traits.md#compare-value-with-type) for details on how to enable comparison operators without temporary Values for a type.
 
-Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey
