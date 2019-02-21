@@ -9,6 +9,7 @@ set(testsources
   binding_versions.cpp
   cbor.cpp
   compare.cpp
+  contrib_diff.cpp
   contrib_get.cpp
   contrib_patch.cpp
   contrib_position.cpp
