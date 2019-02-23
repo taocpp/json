@@ -416,6 +416,11 @@ namespace tao
          return internal::tokens_to_string( p.begin(), p.end() );
       }
 
+      inline std::string to_string( pointer&& p )
+      {
+         return internal::tokens_to_string( p.begin(), p.end() );
+      }
+
       inline namespace literals
       {
          inline pointer operator"" _json_pointer( const char* data, const std::size_t size )
