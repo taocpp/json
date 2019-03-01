@@ -11,16 +11,6 @@
 
 #include "grammar.hpp"
 
-#if defined( _MSC_VER )
-#define TAO_JSON_WEAK_PREFIX __declspec( selectany )
-#define TAO_JSON_WEAK_SUFFIX
-#else
-#define TAO_JSON_WEAK_PREFIX
-// clang-format off
-#define TAO_JSON_WEAK_SUFFIX __attribute__(( weak ))
-// clang-format on
-#endif
-
 namespace tao
 {
    namespace json
@@ -71,24 +61,24 @@ namespace tao
          };
 
          // clang-format off
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::text >::error_message TAO_JSON_WEAK_SUFFIX = "no valid JSON";  // NOLINT
+         template<> inline const std::string errors< rules::text >::error_message = "no valid JSON";  // NOLINT
 
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::end_array >::error_message TAO_JSON_WEAK_SUFFIX = "incomplete array, expected ']'";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::end_object >::error_message TAO_JSON_WEAK_SUFFIX = "incomplete object, expected '}'";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::member >::error_message TAO_JSON_WEAK_SUFFIX = "expected member";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::name_separator >::error_message TAO_JSON_WEAK_SUFFIX = "expected ':'";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::array_element >::error_message TAO_JSON_WEAK_SUFFIX = "expected value";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::value >::error_message TAO_JSON_WEAK_SUFFIX = "expected value";  // NOLINT
+         template<> inline const std::string errors< rules::end_array >::error_message = "incomplete array, expected ']'";  // NOLINT
+         template<> inline const std::string errors< rules::end_object >::error_message = "incomplete object, expected '}'";  // NOLINT
+         template<> inline const std::string errors< rules::member >::error_message = "expected member";  // NOLINT
+         template<> inline const std::string errors< rules::name_separator >::error_message = "expected ':'";  // NOLINT
+         template<> inline const std::string errors< rules::array_element >::error_message = "expected value";  // NOLINT
+         template<> inline const std::string errors< rules::value >::error_message = "expected value";  // NOLINT
 
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::edigits >::error_message TAO_JSON_WEAK_SUFFIX = "expected at least one exponent digit";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::fdigits >::error_message TAO_JSON_WEAK_SUFFIX = "expected at least one fraction digit";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::xdigit >::error_message TAO_JSON_WEAK_SUFFIX = "incomplete universal character name";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::escaped >::error_message TAO_JSON_WEAK_SUFFIX = "unknown escape sequence";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::unescaped >::error_message TAO_JSON_WEAK_SUFFIX = "invalid unescaped character";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::string::content >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated string";  // NOLINT
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< rules::key::content >::error_message TAO_JSON_WEAK_SUFFIX = "unterminated key";  // NOLINT
+         template<> inline const std::string errors< rules::edigits >::error_message = "expected at least one exponent digit";  // NOLINT
+         template<> inline const std::string errors< rules::fdigits >::error_message = "expected at least one fraction digit";  // NOLINT
+         template<> inline const std::string errors< rules::xdigit >::error_message = "incomplete universal character name";  // NOLINT
+         template<> inline const std::string errors< rules::escaped >::error_message = "unknown escape sequence";  // NOLINT
+         template<> inline const std::string errors< rules::unescaped >::error_message = "invalid unescaped character";  // NOLINT
+         template<> inline const std::string errors< rules::string::content >::error_message = "unterminated string";  // NOLINT
+         template<> inline const std::string errors< rules::key::content >::error_message = "unterminated key";  // NOLINT
 
-         template<> TAO_JSON_WEAK_PREFIX const std::string errors< json_pegtl::eof >::error_message TAO_JSON_WEAK_SUFFIX = "unexpected character after JSON value";  // NOLINT
+         template<> inline const std::string errors< json_pegtl::eof >::error_message = "unexpected character after JSON value";  // NOLINT
          // clang-format on
 
       }  // namespace internal
@@ -96,8 +86,5 @@ namespace tao
    }  // namespace json
 
 }  // namespace tao
-
-#undef TAO_JSON_WEAK_PREFIX
-#undef TAO_JSON_WEAK_SUFFIX
 
 #endif
