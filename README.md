@@ -5,6 +5,7 @@
 [![TravisCI](https://travis-ci.org/taocpp/json.svg)](https://travis-ci.org/taocpp/json)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/taocpp/json.svg)](https://lgtm.com/projects/g/taocpp/json/context:cpp)
 
 [The Art of C++](https://taocpp.github.io/) / JSON is a zero-dependency C++17 header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, and provides an [Events Interface](doc/Events-Interface.md) to convert from and to JSON, JAXN, CBOR, MsgPack and UBJSON, and more.
 
