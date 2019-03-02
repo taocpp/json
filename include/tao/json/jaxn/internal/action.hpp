@@ -6,12 +6,17 @@
 
 #include <string_view>
 
-#include "../../external/pegtl/nothing.hpp"
+#include "../../external/pegtl/contrib/change_action_and_state.hpp"
+#include "../../external/pegtl/contrib/change_state.hpp"
 
-#include "errors.hpp"
-#include "grammar.hpp"
-
+#include "../../internal/key_state.hpp"
 #include "../../internal/number_state.hpp"
+#include "../../internal/string_state.hpp"
+
+#include "binary_state.hpp"
+#include "bunescape_action.hpp"
+#include "grammar.hpp"
+#include "unescape_action.hpp"
 
 namespace tao
 {
@@ -23,7 +28,6 @@ namespace tao
          {
             template< typename Rule >
             struct action
-               : json_pegtl::nothing< Rule >
             {
             };
 
@@ -323,6 +327,30 @@ namespace tao
                   }
                   result.exponent10 += ( result.eneg ? -exponent10 : exponent10 );
                }
+            };
+
+            template< bool NEG >
+            struct action< rules::number< NEG > >
+               : json_pegtl::change_state< tao::json::internal::number_state< NEG > >
+            {
+            };
+
+            template<>
+            struct action< rules::string >
+               : json_pegtl::change_action_and_state< unescape_action, tao::json::internal::string_state >
+            {
+            };
+
+            template<>
+            struct action< rules::key >
+               : json_pegtl::change_action_and_state< unescape_action, tao::json::internal::key_state >
+            {
+            };
+
+            template<>
+            struct action< rules::binary >
+               : json_pegtl::change_action_and_state< bunescape_action, binary_state >
+            {
             };
 
          }  // namespace internal

@@ -4,12 +4,14 @@
 #ifndef TAO_JSON_INTERNAL_ACTION_HPP
 #define TAO_JSON_INTERNAL_ACTION_HPP
 
-#include "../external/pegtl/nothing.hpp"
+#include "../external/pegtl/contrib/change_action_and_state.hpp"
+#include "../external/pegtl/contrib/change_state.hpp"
 
-#include "errors.hpp"
 #include "grammar.hpp"
-
+#include "key_state.hpp"
 #include "number_state.hpp"
+#include "string_state.hpp"
+#include "unescape_action.hpp"
 
 namespace tao
 {
@@ -19,7 +21,6 @@ namespace tao
       {
          template< typename Rule >
          struct action
-            : json_pegtl::nothing< Rule >
          {
          };
 
@@ -231,6 +232,24 @@ namespace tao
                }
                result.exponent10 += ( result.eneg ? -exponent10 : exponent10 );
             }
+         };
+
+         template< bool NEG >
+         struct action< rules::number< NEG > >
+            : json_pegtl::change_state< number_state< NEG > >
+         {
+         };
+
+         template<>
+         struct action< rules::string::content >
+            : json_pegtl::change_action_and_state< unescape_action, string_state >
+         {
+         };
+
+         template<>
+         struct action< rules::key::content >
+            : json_pegtl::change_action_and_state< unescape_action, key_state >
+         {
          };
 
       }  // namespace internal

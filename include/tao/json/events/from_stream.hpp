@@ -10,7 +10,7 @@
 #include "../external/pegtl/parse.hpp"
 
 #include "../internal/action.hpp"
-#include "../internal/control.hpp"
+#include "../internal/errors.hpp"
 #include "../internal/grammar.hpp"
 
 namespace tao
@@ -23,7 +23,7 @@ namespace tao
          void from_stream( Consumer& consumer, std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
          {
             json_pegtl::istream_input in( stream, maximum_buffer_size, source ? source : "tao::json::events::from_stream" );
-            json_pegtl::parse< internal::grammar, internal::action, internal::control >( in, consumer );
+            json_pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
          }
 
          template< typename Consumer >

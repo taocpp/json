@@ -41,29 +41,29 @@ namespace tao
             template< typename Input >
             major peek_major_unsafe( Input& in )
             {
-               return static_cast< major >( in.peek_byte() & major_mask );
+               return static_cast< major >( in.peek_uint8() & major_mask );
             }
 
             template< typename Input >
             std::uint8_t peek_minor_unsafe( Input& in )
             {
-               return in.peek_byte() & minor_mask;
+               return in.peek_uint8() & minor_mask;
             }
 
             template< typename Input >
             major peek_major( Input& in )
             {
-               return static_cast< major >( json::internal::peek_byte( in ) & major_mask );
+               return static_cast< major >( json::internal::peek_uint8( in ) & major_mask );
             }
 
-            // Assume in.size( 1 ) >= 1 and in.peek_byte() is the byte with major/minor.
+            // Assume in.size( 1 ) >= 1 and in.peek_uint8() is the byte with major/minor.
 
             template< typename Input >
             double read_fp16( Input& in )
             {
                json::internal::throw_on_empty( in, 3 );
 
-               const int half = ( in.peek_byte( 1 ) << 8 ) + in.peek_byte( 2 );
+               const int half = ( in.peek_uint8( 1 ) << 8 ) + in.peek_uint8( 2 );
                const int exp = ( half >> 10 ) & 0x1f;
                const int mant = half & 0x3ff;
 
@@ -148,7 +148,7 @@ namespace tao
             {
                Result result;
                in.bump_in_this_line();
-               while( json::internal::peek_byte( in ) != 0xff ) {
+               while( json::internal::peek_uint8( in ) != 0xff ) {
                   if( peek_major_unsafe( in ) != m ) {
                      throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
                   }
@@ -271,7 +271,7 @@ namespace tao
                {
                   in.bump_in_this_line();
                   consumer.begin_array();
-                  while( json::internal::peek_byte( in ) != 0xff ) {
+                  while( json::internal::peek_uint8( in ) != 0xff ) {
                      parse_unsafe( in, consumer );
                      consumer.element();
                   }
@@ -313,7 +313,7 @@ namespace tao
                {
                   in.bump_in_this_line();
                   consumer.begin_object();
-                  while( json::internal::peek_byte( in ) != 0xff ) {
+                  while( json::internal::peek_uint8( in ) != 0xff ) {
                      if( peek_major_unsafe( in ) != major::STRING ) {
                         throw json_pegtl::parse_error( "non-string object key", in );
                      }

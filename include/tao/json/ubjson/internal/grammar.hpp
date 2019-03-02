@@ -9,8 +9,8 @@
 
 #include "../../binary_view.hpp"
 #include "../../internal/action.hpp"
-#include "../../internal/control.hpp"
 #include "../../internal/endian.hpp"
+#include "../../internal/errors.hpp"
 #include "../../internal/grammar.hpp"
 #include "../../internal/parse_util.hpp"
 #include "../../utf8.hpp"
@@ -138,7 +138,7 @@ namespace tao
             template< typename Result, typename Input >
             Result read_char( Input& in )
             {
-               if( in.empty() || ( in.peek_byte( 0 ) > 127 ) ) {
+               if( in.empty() || ( in.peek_uint8( 0 ) > 127 ) ) {
                   throw json_pegtl::parse_error( "missing or invalid ubjson char", in );
                }
                Result result( in.current(), 1 );
@@ -250,7 +250,7 @@ namespace tao
                   const auto size = read_size< L >( in );
                   json::internal::throw_on_empty( in, size );
                   json_pegtl::memory_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, const char* > i2( in.current(), in.current() + size, "UBJSON" );
-                  json_pegtl::parse_nested< json_pegtl::must< number, json_pegtl::eof >, json::internal::action, json::internal::control >( in, i2, consumer );
+                  json_pegtl::parse_nested< json_pegtl::must< number, json_pegtl::eof >, json::internal::action, json::internal::errors >( in, i2, consumer );
                   in.bump_in_this_line( size );
                }
 

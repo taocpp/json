@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_INTERNAL_CSTREAM_READER_HPP
@@ -8,8 +8,9 @@
 #include <cstddef>
 #include <cstdio>
 
+#include <system_error>
+
 #include "../config.hpp"
-#include "../input_error.hpp"
 
 namespace tao
 {
@@ -33,9 +34,15 @@ namespace tao
                if( std::feof( m_cstream ) != 0 ) {
                   return 0;
                }
+
                // Please contact us if you know how to provoke the following exception.
                // The example on cppreference.com doesn't work, at least not on macOS.
-               TAO_JSON_PEGTL_THROW_INPUT_ERROR( "error in fread() from cstream" );  // LCOV_EXCL_LINE
+
+               // LCOV_EXCL_START
+               const auto ec = std::ferror( m_cstream );
+               assert( ec != 0 );
+               throw std::system_error( ec, std::system_category(), "fread() failed" );
+               // LCOV_EXCL_STOP
             }
 
             std::FILE* m_cstream;

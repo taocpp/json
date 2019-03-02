@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_NORMAL_HPP
@@ -9,16 +9,12 @@
 
 #include "apply_mode.hpp"
 #include "config.hpp"
-#include "nothing.hpp"
+#include "match.hpp"
 #include "parse_error.hpp"
 #include "rewind_mode.hpp"
 
 #include "internal/demangle.hpp"
-#include "internal/dusel_mode.hpp"
-#include "internal/duseltronik.hpp"
-#include "internal/has_apply.hpp"
-#include "internal/has_apply0.hpp"
-#include "internal/skip_control.hpp"
+#include "internal/has_match.hpp"
 
 namespace tao
 {
@@ -48,17 +44,24 @@ namespace tao
             throw parse_error( "parse error matching " + internal::demangle< Rule >(), in );
          }
 
-         template< template< typename... > class Action, typename Input, typename... States >
-         static auto apply0( const Input& /*unused*/, States&&... st )
-         {
-            return Action< Rule >::apply0( st... );
-         }
-
-         template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
-         static auto apply( const Iterator& begin, const Input& in, States&&... st )
+         template< template< typename... > class Action,
+                   typename Iterator,
+                   typename Input,
+                   typename... States >
+         static auto apply( const Iterator& begin, const Input& in, States&&... st ) noexcept( noexcept( Action< Rule >::apply( std::declval< const typename Input::action_t& >(), st... ) ) )
+            -> decltype( Action< Rule >::apply( std::declval< const typename Input::action_t& >(), st... ) )
          {
             const typename Input::action_t action_input( begin, in );
             return Action< Rule >::apply( action_input, st... );
+         }
+
+         template< template< typename... > class Action,
+                   typename Input,
+                   typename... States >
+         static auto apply0( const Input& /*unused*/, States&&... st ) noexcept( noexcept( Action< Rule >::apply0( st... ) ) )
+            -> decltype( Action< Rule >::apply0( st... ) )
+         {
+            return Action< Rule >::apply0( st... );
          }
 
          template< apply_mode A,
@@ -71,16 +74,12 @@ namespace tao
                    typename... States >
          [[nodiscard]] static bool match( Input& in, States&&... st )
          {
-            constexpr char use_control = !internal::skip_control< Rule >;
-            constexpr char use_action = use_control && ( A == apply_mode::action ) && ( !std::is_base_of_v< nothing< Rule >, Action< Rule > > );
-            constexpr char use_apply_void = use_action && internal::has_apply< Action< Rule >, void, typename Input::action_t, States... >::value;
-            constexpr char use_apply_bool = use_action && internal::has_apply< Action< Rule >, bool, typename Input::action_t, States... >::value;
-            constexpr char use_apply0_void = use_action && internal::has_apply0< Action< Rule >, void, States... >::value;
-            constexpr char use_apply0_bool = use_action && internal::has_apply0< Action< Rule >, bool, States... >::value;
-            static_assert( !use_action || use_apply_bool || use_apply_void || use_apply0_bool || use_apply0_void, "actions not disabled but no apply() or apply0() found" );
-            static_assert( use_apply_void + use_apply_bool + use_apply0_void + use_apply0_bool < 2, "both apply() and apply0() defined" );
-            constexpr auto mode = static_cast< dusel_mode >( use_control + use_apply_void + 2 * use_apply_bool + 3 * use_apply0_void + 4 * use_apply0_bool );
-            return internal::duseltronik< Rule, A, M, Action, Control, mode >::match( in, st... );
+            if constexpr( internal::has_match_v< Rule, A, M, Action, Control, Input, States... > ) {
+               return Action< Rule >::template match< Rule, A, M, Action, Control >( in, st... );
+            }
+            else {  // NOLINT
+               return TAO_JSON_PEGTL_NAMESPACE::match< Rule, A, M, Action, Control >( in, st... );
+            }
          }
       };
 

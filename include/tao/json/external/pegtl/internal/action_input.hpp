@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_INTERNAL_ACTION_INPUT_HPP
@@ -20,16 +20,6 @@ namespace tao
    {
       namespace internal
       {
-         [[nodiscard]] inline const char* begin_c_ptr( const char* p ) noexcept
-         {
-            return p;
-         }
-
-         [[nodiscard]] inline const char* begin_c_ptr( const iterator& it ) noexcept
-         {
-            return it.data;
-         }
-
          template< typename Input >
          class action_input
          {
@@ -63,7 +53,12 @@ namespace tao
 
             [[nodiscard]] const char* begin() const noexcept
             {
-               return begin_c_ptr( iterator() );
+               if constexpr( std::is_same_v< iterator_t, const char* > ) {
+                  return iterator();
+               }
+               else {  // NOLINT
+                  return iterator().data;
+               }
             }
 
             [[nodiscard]] const char* end() const noexcept
@@ -88,7 +83,7 @@ namespace tao
 
             [[nodiscard]] std::string_view string_view() const noexcept
             {
-               return std::string_view( begin(), end() );
+               return std::string_view( begin(), size() );
             }
 
             [[nodiscard]] char peek_char( const std::size_t offset = 0 ) const noexcept
@@ -96,7 +91,7 @@ namespace tao
                return begin()[ offset ];
             }
 
-            [[nodiscard]] std::uint8_t peek_byte( const std::size_t offset = 0 ) const noexcept
+            [[nodiscard]] std::uint8_t peek_uint8( const std::size_t offset = 0 ) const noexcept
             {
                return static_cast< std::uint8_t >( peek_char( offset ) );
             }

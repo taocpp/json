@@ -9,7 +9,7 @@
 #include "../external/pegtl/parse.hpp"
 
 #include "../internal/action.hpp"
-#include "../internal/control.hpp"
+#include "../internal/errors.hpp"
 #include "../internal/grammar.hpp"
 
 namespace tao
@@ -24,7 +24,7 @@ namespace tao
          void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
          {
             json_pegtl::memory_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::events::from_string", byte, line, column );
-            json_pegtl::parse< internal::grammar, internal::action, internal::control >( in, consumer );
+            json_pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
          }
 
          template< typename Consumer >

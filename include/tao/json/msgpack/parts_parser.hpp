@@ -25,7 +25,7 @@ namespace tao
             template< typename Input >
             format peek_format( Input& in )
             {
-               return format( json::internal::peek_byte( in ) );
+               return format( json::internal::peek_uint8( in ) );
             }
 
             template< typename Input >
@@ -69,7 +69,7 @@ namespace tao
             template< typename Input >
             std::int64_t read_signed( Input& in )
             {
-               const auto b = json::internal::peek_byte( in );
+               const auto b = json::internal::peek_uint8( in );
                if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
                   in.bump_in_this_line();
                   return std::int64_t( b );
@@ -111,7 +111,7 @@ namespace tao
             template< typename Input >
             std::uint64_t read_unsigned( Input& in )
             {
-               const auto b = json::internal::peek_byte( in );
+               const auto b = json::internal::peek_uint8( in );
                if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
                   in.bump_in_this_line();
                   return std::uint64_t( b );
@@ -154,7 +154,7 @@ namespace tao
             template< format Min, format Max, format S16, format S32, typename Input >
             std::size_t read_container_size( Input& in )
             {
-               const auto b = json::internal::peek_byte( in );
+               const auto b = json::internal::peek_uint8( in );
                if( ( std::uint8_t( Min ) <= b ) && ( b <= std::uint8_t( Max ) ) ) {
                   in.bump_in_this_line();
                   return state_t( b - std::uint8_t( Min ) );

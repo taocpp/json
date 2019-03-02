@@ -34,10 +34,10 @@ namespace tao
          }
 
          template< typename Input >
-         std::uint8_t peek_byte( Input& in )
+         std::uint8_t peek_uint8( Input& in )
          {
             throw_on_empty( in );
-            return in.peek_byte();
+            return in.peek_uint8();
          }
 
          template< typename Input >

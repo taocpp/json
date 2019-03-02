@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_BUFFER_INPUT_HPP
@@ -106,7 +106,7 @@ namespace tao
             return m_current.data[ offset ];
          }
 
-         [[nodiscard]] std::uint8_t peek_byte( const std::size_t offset = 0 ) const noexcept
+         [[nodiscard]] std::uint8_t peek_uint8( const std::size_t offset = 0 ) const noexcept
          {
             return static_cast< std::uint8_t >( peek_char( offset ) );
          }

@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_INTERNAL_PEEK_UINT8_HPP
@@ -23,9 +23,9 @@ namespace tao
             using pair_t = input_pair< std::uint8_t >;
 
             template< typename Input >
-            [[nodiscard]] static pair_t peek( Input& in, const std::size_t o = 0 ) noexcept( noexcept( in.peek_byte( 0 ) ) )
+            [[nodiscard]] static pair_t peek( Input& in, const std::size_t o = 0 ) noexcept( noexcept( in.Input::peek_uint8( 0 ) ) )
             {
-               return { in.peek_byte( o ), 1 };
+               return { in.peek_uint8( o ), 1 };
             }
          };
 

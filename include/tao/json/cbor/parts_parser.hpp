@@ -60,7 +60,7 @@ namespace tao
             template< typename Input >
             bool read_boolean( Input& in )
             {
-               const auto b = json::internal::peek_byte( in );
+               const auto b = json::internal::peek_uint8( in );
                switch( b ) {
                   case std::uint8_t( major::OTHER ) + 20:
                   case std::uint8_t( major::OTHER ) + 21:
@@ -94,7 +94,7 @@ namespace tao
 
             bool null()
             {
-               if( json::internal::peek_byte( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {
+               if( json::internal::peek_uint8( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {
                   m_input.bump_in_this_line( 1 );
                   return true;
                }
@@ -143,7 +143,7 @@ namespace tao
 
             std::string_view string_view()
             {
-               const auto b = json::internal::peek_byte( m_input );
+               const auto b = json::internal::peek_uint8( m_input );
                if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected definitive string", m_input );  // NOLINT
                }
@@ -152,7 +152,7 @@ namespace tao
 
             tao::binary_view binary_view()
             {
-               const auto b = json::internal::peek_byte( m_input );
+               const auto b = json::internal::peek_uint8( m_input );
                if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
                   throw json_pegtl::parse_error( "expected definitive binary", m_input );  // NOLINT
                }
@@ -213,7 +213,7 @@ namespace tao
 
             double number_double()
             {
-               const auto b = json::internal::peek_byte( m_input );
+               const auto b = json::internal::peek_uint8( m_input );
                switch( b ) {
                   case std::uint8_t( internal::major::OTHER ) + 25:
                      return internal::read_fp16( m_input );
@@ -272,7 +272,7 @@ namespace tao
 
             void end_container_indefinite()
             {
-               if( json::internal::peek_byte( m_input ) != 0xff ) {
+               if( json::internal::peek_uint8( m_input ) != 0xff ) {
                   throw json_pegtl::parse_error( "container not at end", m_input );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
@@ -309,7 +309,7 @@ namespace tao
 
             void next_in_container_indefinite()
             {
-               if( json::internal::peek_byte( m_input ) == 0xff ) {
+               if( json::internal::peek_uint8( m_input ) == 0xff ) {
                   throw json_pegtl::parse_error( "unexpected end of indefinite container", m_input );  // NOLINT
                }
             }
@@ -343,7 +343,7 @@ namespace tao
 
             bool next_or_end_container_indefinite()
             {
-               if( json::internal::peek_byte( m_input ) == 0xff ) {
+               if( json::internal::peek_uint8( m_input ) == 0xff ) {
                   m_input.bump_in_this_line( 1 );
                   return false;
                }

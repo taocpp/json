@@ -5,7 +5,7 @@
 #define TAO_JSON_PARTS_PARSER_HPP
 
 #include "external/pegtl.hpp"
-#include "external/pegtl/contrib/changes.hpp"
+#include "external/pegtl/contrib/change_state.hpp"
 #include "external/pegtl/contrib/integer.hpp"
 #include "external/pegtl/contrib/json.hpp"
 
@@ -63,7 +63,6 @@ namespace tao
 
             template< typename Rule >
             struct integer_action
-               : json_pegtl::nothing< Rule >
             {
             };
 
@@ -129,14 +128,14 @@ namespace tao
          };
 
          template< typename Rule >
-         struct double_control
-            : json_pegtl::normal< Rule >
+         struct double_action
+            : internal::action< Rule >
          {
          };
 
          template< bool NEG >
-         struct double_control< rules::number< NEG > >
-            : json_pegtl::change_state< rules::number< NEG >, number_state< NEG > >
+         struct double_action< rules::number< NEG > >
+            : json_pegtl::change_state< number_state< NEG > >
          {
          };
 
@@ -195,7 +194,7 @@ namespace tao
          double number_double()
          {
             internal::double_state_and_consumer st;
-            json_pegtl::parse< json_pegtl::must< internal::rules::double_rule, internal::rules::wss >, internal::action, internal::double_control >( m_input, st );
+            json_pegtl::parse< json_pegtl::must< internal::rules::double_rule, internal::rules::wss >, internal::double_action >( m_input, st );
             return st.converted;
          }
 

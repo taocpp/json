@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_INTERNAL_FILE_MAPPER_POSIX_HPP
@@ -7,11 +7,11 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+#include <system_error>
+
 #include "../config.hpp"
 
 #include "file_opener.hpp"
-
-#include "../input_error.hpp"
 
 namespace tao
 {
@@ -32,7 +32,8 @@ namespace tao
                  m_data( static_cast< const char* >( ::mmap( nullptr, m_size, PROT_READ, MAP_PRIVATE, reader.m_fd, 0 ) ) )
             {
                if( ( m_size != 0 ) && ( intptr_t( m_data ) == -1 ) ) {
-                  TAO_JSON_PEGTL_THROW_INPUT_ERROR( "unable to mmap() file " << reader.m_source << " descriptor " << reader.m_fd );
+                  const auto ec = errno;
+                  throw std::system_error( ec, std::system_category(), reader.m_source );
                }
             }
 
@@ -74,11 +75,6 @@ namespace tao
             [[nodiscard]] iterator end() const noexcept
             {
                return m_data + m_size;
-            }
-
-            [[nodiscard]] std::string string() const
-            {
-               return std::string( m_data, m_size );
             }
 
          private:

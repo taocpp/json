@@ -27,7 +27,7 @@ namespace tao
             template< utf8_mode U, typename Input >
             std::string_view read_string( Input& in )
             {
-               const auto b = json::internal::peek_byte( in );
+               const auto b = json::internal::peek_uint8( in );
                if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
                   in.bump_in_this_line();
                   return json::internal::read_string< U, std::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) );
@@ -70,7 +70,7 @@ namespace tao
                template< typename Input, typename Consumer >
                static void parse_unsafe( Input& in, Consumer& consumer )
                {
-                  const auto b = in.peek_byte();
+                  const auto b = in.peek_uint8();
                   if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
                      consumer.number( std::uint64_t( b ) );
                      in.bump_in_this_line();

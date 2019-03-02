@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "../internal/action.hpp"
-#include "../internal/control.hpp"
+#include "../internal/errors.hpp"
 #include "../internal/grammar.hpp"
 
 #include "../../external/pegtl/file_input.hpp"
@@ -26,7 +26,7 @@ namespace tao
             void parse_file( Consumer& consumer, T&& filename )
             {
                json_pegtl::file_input< json_pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
-               json_pegtl::parse< internal::grammar, internal::action, internal::control >( in, consumer );
+               json_pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
             }
 
          }  // namespace events

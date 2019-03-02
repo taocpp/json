@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2014-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_INTERNAL_FILE_MAPPER_WIN32_HPP
@@ -26,8 +26,9 @@
 #undef TAO_JSON_PEGTL_WIN32_LEAN_AND_MEAN_WAS_DEFINED
 #endif
 
+#include <system_error>
+
 #include "../config.hpp"
-#include "../input_error.hpp"
 
 namespace tao
 {
@@ -58,7 +59,8 @@ namespace tao
             {
                LARGE_INTEGER size;
                if( !::GetFileSizeEx( m_handle, &size ) ) {
-                  TAO_JSON_PEGTL_THROW_INPUT_WIN32_ERROR( "unable to GetFileSizeEx() file " << m_source << " handle " << m_handle );
+                  const auto ec = ::GetLastError();
+                  throw std::system_error( ec, std::system_category(), std::string( "GetFileSizeEx(): " ) + m_source );
                }
                return std::size_t( size.QuadPart );
             }
@@ -70,17 +72,17 @@ namespace tao
             [[nodiscard]] HANDLE open() const
             {
                SetLastError( 0 );
-               const HANDLE handle = ::CreateFileA( m_source,
+               std::wstring ws( m_source, m_source + strlen( m_source ) );
+               const HANDLE handle = ::CreateFile2( ws.c_str(),
                                                     GENERIC_READ,
                                                     FILE_SHARE_READ,
-                                                    nullptr,
                                                     OPEN_EXISTING,
-                                                    FILE_ATTRIBUTE_NORMAL,
                                                     nullptr );
                if( handle != INVALID_HANDLE_VALUE ) {
                   return handle;
                }
-               TAO_JSON_PEGTL_THROW_INPUT_WIN32_ERROR( "unable to CreateFileA() file " << m_source << " for reading" );
+               const auto ec = ::GetLastError();
+               throw std::system_error( ec, std::system_category(), std::string( "CreateFile2(): " ) + m_source );
             }
          };
 
@@ -129,7 +131,8 @@ namespace tao
                if( handle != NULL || file_size == 0 ) {
                   return handle;
                }
-               TAO_JSON_PEGTL_THROW_INPUT_WIN32_ERROR( "unable to CreateFileMappingW() file " << reader.m_source << " for reading" );
+               const auto ec = ::GetLastError();
+               throw std::system_error( ec, std::system_category(), std::string( "CreateFileMappingW(): " ) + reader.m_source );
             }
          };
 
@@ -143,14 +146,15 @@ namespace tao
 
             explicit file_mapper( const win32_file_mapper& mapper )
                : m_size( mapper.m_size ),
-                 m_data( static_cast< const char* const >( ::MapViewOfFile( mapper.m_handle,
-                                                                            FILE_MAP_READ,
-                                                                            0,
-                                                                            0,
-                                                                            0 ) ) )
+                 m_data( static_cast< const char* >( ::MapViewOfFile( mapper.m_handle,
+                                                                      FILE_MAP_READ,
+                                                                      0,
+                                                                      0,
+                                                                      0 ) ) )
             {
                if( ( m_size != 0 ) && ( intptr_t( m_data ) == 0 ) ) {
-                  TAO_JSON_PEGTL_THROW_INPUT_WIN32_ERROR( "unable to MapViewOfFile() file mapping object with handle " << mapper.m_handle );
+                  const auto ec = ::GetLastError();
+                  throw std::system_error( ec, std::system_category(), "MapViewOfFile()" );
                }
             }
 
@@ -191,11 +195,6 @@ namespace tao
             [[nodiscard]] iterator end() const noexcept
             {
                return m_data + m_size;
-            }
-
-            [[nodiscard]] std::string string() const
-            {
-               return std::string( m_data, m_size );
             }
 
          private:
