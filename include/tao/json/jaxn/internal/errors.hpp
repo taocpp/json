@@ -31,11 +31,14 @@ namespace tao
                   throw json_pegtl::parse_error( error_message, in );
                }
 
-               template< template< typename... > class Action, typename Input, typename... States >
-               static void apply0( const Input& in, States&&... st )
+               template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
+               static auto apply( const Iterator& begin, const Input& in, States&&... st )
+                  -> decltype( Action< Rule >::apply( std::declval< const typename Input::action_t& >(), st... ) )
                {
                   try {
-                     Action< Rule >::apply0( st... );
+                     using action_t = typename Input::action_t;
+                     const action_t action_input( begin, in );
+                     return Action< Rule >::apply( action_input, st... );
                   }
                   catch( const json_pegtl::parse_error& ) {
                      throw;
@@ -45,13 +48,12 @@ namespace tao
                   }
                }
 
-               template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
-               static void apply( const Iterator& begin, const Input& in, States&&... st )
+               template< template< typename... > class Action, typename Input, typename... States >
+               static auto apply0( const Input& in, States&&... st )
+                  -> decltype( Action< Rule >::apply0( st... ) )
                {
                   try {
-                     using action_t = typename Input::action_t;
-                     const action_t action_input( begin, in );
-                     Action< Rule >::apply( action_input, st... );
+                     return Action< Rule >::apply0( st... );
                   }
                   catch( const json_pegtl::parse_error& ) {
                      throw;
