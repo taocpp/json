@@ -7,7 +7,6 @@
 #include <cstddef>
 
 #include "../../external/pegtl/contrib/unescape.hpp"
-#include "../../external/pegtl/nothing.hpp"
 
 #include "grammar.hpp"
 
@@ -20,7 +19,7 @@ namespace tao
          namespace internal
          {
             template< typename Rule >
-            struct bunescape_action : json_pegtl::nothing< Rule >
+            struct bunescape_action
             {
             };
 

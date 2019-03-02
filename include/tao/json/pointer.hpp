@@ -155,7 +155,6 @@ namespace tao
 
          template< typename Rule >
          struct pointer_action
-            : public json_pegtl::nothing< Rule >
          {
          };
 
