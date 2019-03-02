@@ -146,7 +146,7 @@ namespace tao
       {
          events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
          json_pegtl::file_input< json_pegtl::tracking_mode::eager > in( filename );
-         json_pegtl::parse< internal::grammar, internal::position_action, internal::control >( in, consumer );
+         json_pegtl::parse< internal::grammar, internal::position_action, internal::errors >( in, consumer );
          return std::move( consumer.value );
       }
 
