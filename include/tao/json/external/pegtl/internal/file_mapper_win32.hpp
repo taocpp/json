@@ -73,11 +73,21 @@ namespace tao
             {
                SetLastError( 0 );
                std::wstring ws( m_source, m_source + strlen( m_source ) );
-               const HANDLE handle = ::CreateFile2( ws.c_str(),
-                                                    GENERIC_READ,
-                                                    FILE_SHARE_READ,
-                                                    OPEN_EXISTING,
-                                                    nullptr );
+#if( _WIN32_WINNT >= 0x0602 )
+               const auto handle = ::CreateFile2( ws.c_str(),
+                                                  GENERIC_READ,
+                                                  FILE_SHARE_READ,
+                                                  OPEN_EXISTING,
+                                                  nullptr );
+#else
+               const auto handle = ::CreateFileW( ws.c_str(),
+                                                  GENERIC_READ,
+                                                  FILE_SHARE_READ,
+                                                  nullptr,
+                                                  OPEN_EXISTING,
+                                                  FILE_ATTRIBUTE_NORMAL,
+                                                  nullptr );
+#endif
                if( handle != INVALID_HANDLE_VALUE ) {
                   return handle;
                }
