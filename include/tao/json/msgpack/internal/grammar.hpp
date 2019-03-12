@@ -40,17 +40,17 @@ namespace tao
                   case format::STR32:
                      return json::internal::read_string< U, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
                   default:
-                     throw json_pegtl::parse_error( "unexpected key type", in );
+                     throw pegtl::parse_error( "unexpected key type", in );
                }
             }
 
             template< utf8_mode V >
             struct data
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
-               template< json_pegtl::apply_mode A,
-                         json_pegtl::rewind_mode M,
+               template< pegtl::apply_mode A,
+                         pegtl::rewind_mode M,
                          template< typename... >
                          class Action,
                          template< typename... >
@@ -102,7 +102,7 @@ namespace tao
                         in.bump_in_this_line();
                         return;
                      case format::UNUSED:
-                        throw json_pegtl::parse_error( "unused first byte 0xc1", in );
+                        throw pegtl::parse_error( "unused first byte 0xc1", in );
                      case format::BOOL_TRUE:
                         consumer.boolean( true );
                         in.bump_in_this_line();
@@ -236,7 +236,7 @@ namespace tao
             };
 
             template< utf8_mode V >
-            struct basic_grammar : json_pegtl::must< data< V >, json_pegtl::eof >
+            struct basic_grammar : pegtl::must< data< V >, pegtl::eof >
             {
             };
 

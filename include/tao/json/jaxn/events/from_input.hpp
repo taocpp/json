@@ -25,7 +25,7 @@ namespace tao
             template< typename Consumer, typename Input >
             void from_input( Consumer& consumer, Input&& in )
             {
-               json_pegtl::parse< internal::grammar, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
+               pegtl::parse< internal::grammar, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
             }
 
          }  // namespace events

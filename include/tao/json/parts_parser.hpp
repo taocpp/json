@@ -25,16 +25,16 @@ namespace tao
          namespace rules
          {
             struct wss
-               : json_pegtl::star< ws >
+               : pegtl::star< ws >
             {
             };
 
             struct boolean
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
-               template< json_pegtl::apply_mode,
-                         json_pegtl::rewind_mode,
+               template< pegtl::apply_mode,
+                         pegtl::rewind_mode,
                          template< typename... >
                          class,
                          template< typename... >
@@ -67,20 +67,20 @@ namespace tao
             };
 
             template<>
-            struct integer_action< json_pegtl::integer::signed_rule >
-               : json_pegtl::integer::signed_action
+            struct integer_action< pegtl::integer::signed_rule >
+               : pegtl::integer::signed_action
             {
             };
 
             template<>
-            struct integer_action< json_pegtl::integer::unsigned_rule >
-               : json_pegtl::integer::unsigned_action
+            struct integer_action< pegtl::integer::unsigned_rule >
+               : pegtl::integer::unsigned_action
             {
             };
 
             struct double_rule
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
                template< apply_mode A,
                          rewind_mode M,
@@ -96,7 +96,7 @@ namespace tao
                      case '-':
                         in.bump_in_this_line();
                         if( in.empty() || !sor_value::match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
-                           throw json_pegtl::parse_error( "incomplete number", in );
+                           throw pegtl::parse_error( "incomplete number", in );
                         }
                         return true;
 
@@ -135,7 +135,7 @@ namespace tao
 
          template< bool NEG >
          struct double_action< rules::number< NEG > >
-            : json_pegtl::change_state< number_state< NEG > >
+            : pegtl::change_state< number_state< NEG > >
          {
          };
 
@@ -163,7 +163,7 @@ namespace tao
 
       // TODO: Optimise some of the simpler cases?
 
-      template< typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, std::string > >
+      template< typename Input = pegtl::string_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, std::string > >
       class basic_parts_parser
       {
       public:
@@ -171,7 +171,7 @@ namespace tao
          explicit basic_parts_parser( Ts&&... ts )
             : m_input( std::forward< Ts >( ts )... )
          {
-            json_pegtl::parse< internal::rules::wss >( m_input );
+            pegtl::parse< internal::rules::wss >( m_input );
          }
 
          bool empty()
@@ -181,41 +181,41 @@ namespace tao
 
          bool null()
          {
-            return json_pegtl::parse< json_pegtl::seq< internal::rules::null, internal::rules::wss > >( m_input );
+            return pegtl::parse< pegtl::seq< internal::rules::null, internal::rules::wss > >( m_input );
          }
 
          bool boolean()
          {
             bool r;
-            json_pegtl::parse< json_pegtl::must< internal::rules::boolean, internal::rules::wss > >( m_input, r );
+            pegtl::parse< pegtl::must< internal::rules::boolean, internal::rules::wss > >( m_input, r );
             return r;
          }
 
          double number_double()
          {
             internal::double_state_and_consumer st;
-            json_pegtl::parse< json_pegtl::must< internal::rules::double_rule, internal::rules::wss >, internal::double_action >( m_input, st );
+            pegtl::parse< pegtl::must< internal::rules::double_rule, internal::rules::wss >, internal::double_action >( m_input, st );
             return st.converted;
          }
 
          std::int64_t number_signed()
          {
             internal::integer_state< std::int64_t > st;
-            json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
+            pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }
 
          std::uint64_t number_unsigned()
          {
             internal::integer_state< std::uint64_t > st;
-            json_pegtl::parse< json_pegtl::must< json_pegtl::sor< json_pegtl::one< '0' >, json_pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
+            pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
             return st.converted;
          }
 
          std::string string()
          {
             internal::string_state s;
-            json_pegtl::parse< json_pegtl::must< internal::rules::string, internal::rules::wss >, internal::unescape_action >( m_input, s );
+            pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss >, internal::unescape_action >( m_input, s );
             return std::move( s.unescaped );
          }
 
@@ -227,20 +227,20 @@ namespace tao
          std::string key()
          {
             internal::string_state s;
-            json_pegtl::parse< json_pegtl::must< internal::rules::string, internal::rules::wss, json_pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, s );
+            pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, s );
             return std::move( s.unescaped );
          }
 
          template< char C >
          void parse_single_must()
          {
-            json_pegtl::parse< json_pegtl::must< json_pegtl::one< C >, internal::rules::wss > >( m_input );
+            pegtl::parse< pegtl::must< pegtl::one< C >, internal::rules::wss > >( m_input );
          }
 
          template< char C >
          bool parse_single_test()
          {
-            return json_pegtl::parse< json_pegtl::seq< json_pegtl::one< C >, internal::rules::wss > >( m_input );
+            return pegtl::parse< pegtl::seq< pegtl::one< C >, internal::rules::wss > >( m_input );
          }
 
          struct state_t
@@ -305,18 +305,18 @@ namespace tao
 
          void skip_value()
          {
-            json_pegtl::parse< json_pegtl::must< json_pegtl::json::value > >( m_input );  // Includes standard JSON right-padding.
+            pegtl::parse< pegtl::must< pegtl::json::value > >( m_input );  // Includes standard JSON right-padding.
          }
 
          auto mark()
          {
-            return m_input.template mark< json_pegtl::rewind_mode::required >();
+            return m_input.template mark< pegtl::rewind_mode::required >();
          }
 
          template< typename T >
          void throw_parse_error( T&& t ) const
          {
-            throw json_pegtl::parse_error( std::forward< T >( t ), m_input );
+            throw pegtl::parse_error( std::forward< T >( t ), m_input );
          }
 
       protected:

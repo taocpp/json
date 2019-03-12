@@ -20,13 +20,13 @@ namespace tao
             // clang-format off
             namespace rules
             {
-               using namespace json_pegtl;  // NOLINT
+               using namespace pegtl;  // NOLINT
 
                struct line_comment_char : sor< one< '\t' >, utf8::ranges< 0x20, 0x7E, 0x80, 0x10FFFF > > {};
                struct line_comment : seq< one< '/' >, until< eolf, must< line_comment_char > > > {};
 
                struct block_comment_char : sor< one< '\t' >, utf8::ranges< 0x20, 0x7E, 0x80, 0x10FFFF >, eol > {};
-               struct end_block_comment : until< json_pegtl::string< '*', '/' >, must< block_comment_char > > {};
+               struct end_block_comment : until< pegtl::string< '*', '/' >, must< block_comment_char > > {};
                struct block_comment : if_must< one< '*' >, end_block_comment > {};
 
                struct comment : sor< line_comment, block_comment > {};
@@ -34,7 +34,7 @@ namespace tao
                struct ws : sor< one< ' ', '\t', '\n', '\r' >, seq< one< '#' >, until< eolf > >, if_must< one< '/' >, comment > > {};
 
                template< typename R, typename P = ws >
-               using padr = json_pegtl::internal::seq< R, json_pegtl::internal::star< P > >;
+               using padr = pegtl::internal::seq< R, pegtl::internal::star< P > >;
 
                struct begin_array : padr< one< '[' > > {};
                struct begin_object : padr< one< '{' > > {};
@@ -45,14 +45,14 @@ namespace tao
                struct element_separator : padr< one< ',' > > {};
                struct value_concat : pad< one< '+' >, ws > {};
 
-               struct false_ : json_pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
-               struct null : json_pegtl::string< 'n', 'u', 'l', 'l' > {};
-               struct true_ : json_pegtl::string< 't', 'r', 'u', 'e' > {};
+               struct false_ : pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
+               struct null : pegtl::string< 'n', 'u', 'l', 'l' > {};
+               struct true_ : pegtl::string< 't', 'r', 'u', 'e' > {};
 
-               struct nan : json_pegtl::string< 'N', 'a', 'N' > {};
+               struct nan : pegtl::string< 'N', 'a', 'N' > {};
 
                template< bool NEG >
-               struct infinity : json_pegtl::string< 'I', 'n', 'f', 'i', 'n', 'i', 't', 'y' > {};
+               struct infinity : pegtl::string< 'I', 'n', 'f', 'i', 'n', 'i', 't', 'y' > {};
 
                template< bool NEG >
                struct hexnum : plus< abnf::HEXDIG > {};
@@ -83,7 +83,7 @@ namespace tao
                template< char D >
                struct unescaped
                {
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+                  using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
                   template< typename Input >
                   static bool match( Input& in )
@@ -91,7 +91,7 @@ namespace tao
                      bool result = false;
 
                      while( !in.empty() ) {
-                        if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
+                        if( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
                            if( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != '\\' ) && ( t.data != D ) && ( t.data != 0x7F ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;
@@ -100,7 +100,7 @@ namespace tao
                         }
                         return result;
                      }
-                     throw json_pegtl::parse_error( "invalid character in string", in );
+                     throw pegtl::parse_error( "invalid character in string", in );
                   }
                };
 
@@ -116,7 +116,7 @@ namespace tao
                template< char D >
                struct mchars_non_eol
                {
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+                  using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
                   template< typename Input >
                   static bool match( Input& in )
@@ -124,7 +124,7 @@ namespace tao
                      bool result = false;
 
                      while( !in.empty() ) {
-                        if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
+                        if( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
                            if( ( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != D ) && ( t.data != 0x7F ) ) || ( t.data == '\t' ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;
@@ -133,7 +133,7 @@ namespace tao
                         }
                         return result;
                      }
-                     throw json_pegtl::parse_error( "invalid character in string", in );
+                     throw pegtl::parse_error( "invalid character in string", in );
                   }
                };
 
@@ -160,7 +160,7 @@ namespace tao
                template< char D >
                struct bunescaped
                {
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+                  using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
                   template< typename Input >
                   static bool match( Input& in )
@@ -176,7 +176,7 @@ namespace tao
                         }
                         return result;
                      }
-                     throw json_pegtl::parse_error( "invalid character in binary string", in );
+                     throw pegtl::parse_error( "invalid character in binary string", in );
                   }
                };
 
@@ -231,7 +231,7 @@ namespace tao
 
                struct sor_value
                {
-                  using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::sor, string, number< false >, object, array, false_, true_, null >;
+                  using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, false_, true_, null >;
 
                   template< typename Rule,
                             apply_mode A,
@@ -275,7 +275,7 @@ namespace tao
                            case '7':
                            case '8':
                            case '9':
-                              throw json_pegtl::parse_error( "invalid leading zero", in );
+                              throw pegtl::parse_error( "invalid leading zero", in );
                         }
                      }
                      return Control< zero< NEG > >::template match< A, M, Action, Control >( in, st... );
@@ -299,7 +299,7 @@ namespace tao
 
                         case '0':
                            if( !match_zero< NEG, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
-                              throw json_pegtl::parse_error( "incomplete number", in );
+                              throw pegtl::parse_error( "incomplete number", in );
                            }
                            return true;
 
@@ -333,14 +333,14 @@ namespace tao
                         case '+':
                            in.bump_in_this_line();
                            if( in.empty() || !match_number< false, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
-                              throw json_pegtl::parse_error( "incomplete number", in );
+                              throw pegtl::parse_error( "incomplete number", in );
                            }
                            return true;
 
                         case '-':
                            in.bump_in_this_line();
                            if( in.empty() || !match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
-                              throw json_pegtl::parse_error( "incomplete number", in );
+                              throw pegtl::parse_error( "incomplete number", in );
                            }
                            return true;
 
@@ -372,7 +372,7 @@ namespace tao
 
             }  // namespace rules
 
-            struct grammar : json_pegtl::must< rules::text, json_pegtl::eof > {};
+            struct grammar : pegtl::must< rules::text, pegtl::eof > {};
             // clang-format on
 
          }  // namespace internal

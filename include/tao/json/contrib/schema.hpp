@@ -34,35 +34,35 @@ namespace tao
       {
          // TODO: Check if these grammars are correct.
          struct local_part_label
-            : json_pegtl::plus< json_pegtl::sor< json_pegtl::alnum, json_pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > >
+            : pegtl::plus< pegtl::sor< pegtl::alnum, pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > >
          {
          };
 
          struct local_part
-            : json_pegtl::list_must< local_part_label, json_pegtl::one< '.' > >
+            : pegtl::list_must< local_part_label, pegtl::one< '.' > >
          {
          };
 
          struct hostname_label
-            : json_pegtl::seq< json_pegtl::alnum, json_pegtl::rep_max< 62, json_pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > >
+            : pegtl::seq< pegtl::alnum, pegtl::rep_max< 62, pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > >
          {
          };
 
          struct hostname
-            : json_pegtl::list_must< hostname_label, json_pegtl::one< '.' > >
+            : pegtl::list_must< hostname_label, pegtl::one< '.' > >
          {
          };
 
          struct email
-            : json_pegtl::seq< local_part, json_pegtl::one< '@' >, hostname >
+            : pegtl::seq< local_part, pegtl::one< '@' >, hostname >
          {
          };
 
          template< typename Rule >
          bool parse( const std::string_view v )  // NOLINT
          {
-            json_pegtl::memory_input in( v.data(), v.size(), "" );
-            return json_pegtl::parse< json_pegtl::seq< Rule, json_pegtl::eof > >( in );
+            pegtl::memory_input in( v.data(), v.size(), "" );
+            return pegtl::parse< pegtl::seq< Rule, pegtl::eof > >( in );
          }
 
          inline bool parse_date_time( const std::string_view v )
@@ -1262,18 +1262,18 @@ namespace tao
                         }
                         break;
                      case schema_format::ipv4:
-                        if( !internal::parse< json_pegtl::uri::IPv4address >( v ) ) {
+                        if( !internal::parse< pegtl::uri::IPv4address >( v ) ) {
                            m_match = false;
                         }
                         break;
                      case schema_format::ipv6:
-                        if( !internal::parse< json_pegtl::uri::IPv6address >( v ) ) {
+                        if( !internal::parse< pegtl::uri::IPv6address >( v ) ) {
                            m_match = false;
                         }
                         break;
                      case schema_format::uri:
                         // TODO: What rule exactly should we apply here?? JSON Schema is not exactly the best spec I've ever read...
-                        if( !internal::parse< json_pegtl::uri::URI >( v ) ) {
+                        if( !internal::parse< pegtl::uri::URI >( v ) ) {
                            m_match = false;
                         }
                         break;

@@ -20,7 +20,7 @@ namespace tao
          void throw_on_empty( Input& in )
          {
             if( in.empty() ) {
-               throw json_pegtl::parse_error( format( "unexpected end of input" ), in );
+               throw pegtl::parse_error( format( "unexpected end of input" ), in );
             }
          }
 
@@ -29,7 +29,7 @@ namespace tao
          {
             const auto available = in.size( required );
             if( available < required ) {
-               throw json_pegtl::parse_error( format( "unexpected end of input -- required ", required, " available ", available ), in );
+               throw pegtl::parse_error( format( "unexpected end of input -- required ", required, " available ", available ), in );
             }
          }
 

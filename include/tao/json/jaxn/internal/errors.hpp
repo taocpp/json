@@ -21,14 +21,14 @@ namespace tao
          {
             template< typename Rule >
             struct errors
-               : json_pegtl::normal< Rule >
+               : pegtl::normal< Rule >
             {
                static const std::string error_message;
 
                template< typename Input, typename... States >
                static void raise( const Input& in, States&&... /*unused*/ )
                {
-                  throw json_pegtl::parse_error( error_message, in );
+                  throw pegtl::parse_error( error_message, in );
                }
 
                template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
@@ -40,11 +40,11 @@ namespace tao
                      const action_t action_input( begin, in );
                      return Action< Rule >::apply( action_input, st... );
                   }
-                  catch( const json_pegtl::parse_error& ) {
+                  catch( const pegtl::parse_error& ) {
                      throw;
                   }
                   catch( const std::exception& e ) {
-                     throw json_pegtl::parse_error( e.what(), in );
+                     throw pegtl::parse_error( e.what(), in );
                   }
                }
 
@@ -55,11 +55,11 @@ namespace tao
                   try {
                      return Action< Rule >::apply0( st... );
                   }
-                  catch( const json_pegtl::parse_error& ) {
+                  catch( const pegtl::parse_error& ) {
                      throw;
                   }
                   catch( const std::exception& e ) {
-                     throw json_pegtl::parse_error( e.what(), in );
+                     throw pegtl::parse_error( e.what(), in );
                   }
                }
             };
@@ -105,7 +105,7 @@ namespace tao
             template<> inline const std::string errors< rules::bvalue >::error_message = "expected binary";  // NOLINT
             template<> inline const std::string errors< rules::bpart >::error_message = "expected a pair of hexadecimal digits";  // NOLINT
 
-            template<> inline const std::string errors< json_pegtl::eof >::error_message = "unexpected character after JAXN value";  // NOLINT
+            template<> inline const std::string errors< pegtl::eof >::error_message = "unexpected character after JAXN value";  // NOLINT
             // clang-format on
 
          }  // namespace internal

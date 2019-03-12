@@ -5,7 +5,7 @@
 #define TAO_JSON_PEGTL_CONFIG_HPP
 
 #if !defined( TAO_JSON_PEGTL_NAMESPACE )
-#define TAO_JSON_PEGTL_NAMESPACE json_pegtl
+#define TAO_JSON_PEGTL_NAMESPACE tao::json::pegtl
 #endif
 
 // Enable some improvements to the readability of

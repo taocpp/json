@@ -34,7 +34,7 @@ namespace tao
 
          inline void to_stream( std::ostream& os, const std::type_info& t )
          {
-            os << json_pegtl::internal::demangle( t.name() );
+            os << pegtl::internal::demangle( t.name() );
          }
 
          template< typename T >

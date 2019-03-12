@@ -97,7 +97,7 @@ namespace tao
                   std::uint64_t value = 0;
                   for( char c : in ) {
                      if( value & 0xF000000000000000 ) {
-                        throw json_pegtl::parse_error( "JAXN hexadecimal number too large", in );  // NOLINT
+                        throw pegtl::parse_error( "JAXN hexadecimal number too large", in );  // NOLINT
                      }
                      value <<= 4;
                      value += unhex( c );
@@ -110,7 +110,7 @@ namespace tao
                         consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
                      }
                      else {
-                        throw json_pegtl::parse_error( "JAXN hexadecimal number too large to negate", in );  // NOLINT
+                        throw pegtl::parse_error( "JAXN hexadecimal number too large to negate", in );  // NOLINT
                      }
                   }
                   else {
@@ -252,7 +252,7 @@ namespace tao
                   }
 
                   if( s > ( 1 << 20 ) ) {
-                     throw json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );  // NOLINT
+                     throw pegtl::parse_error( "JSON number with 1 megabyte digits", in );  // NOLINT
                   }
 
                   const auto c = ( std::min )( s, json::internal::max_mantissa_digits );
@@ -317,7 +317,7 @@ namespace tao
                      ++b;
                   }
                   if( ( in.end() - b ) > 9 ) {
-                     throw json_pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );  // NOLINT
+                     throw pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );  // NOLINT
                   }
                   int exponent10 = 0;
 
@@ -331,25 +331,25 @@ namespace tao
 
             template< bool NEG >
             struct action< rules::number< NEG > >
-               : json_pegtl::change_state< tao::json::internal::number_state< NEG > >
+               : pegtl::change_state< tao::json::internal::number_state< NEG > >
             {
             };
 
             template<>
             struct action< rules::string >
-               : json_pegtl::change_action_and_state< unescape_action, tao::json::internal::string_state >
+               : pegtl::change_action_and_state< unescape_action, tao::json::internal::string_state >
             {
             };
 
             template<>
             struct action< rules::key >
-               : json_pegtl::change_action_and_state< unescape_action, tao::json::internal::key_state >
+               : pegtl::change_action_and_state< unescape_action, tao::json::internal::key_state >
             {
             };
 
             template<>
             struct action< rules::binary >
-               : json_pegtl::change_action_and_state< bunescape_action, binary_state >
+               : pegtl::change_action_and_state< bunescape_action, binary_state >
             {
             };
 

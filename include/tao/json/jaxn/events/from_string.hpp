@@ -22,7 +22,7 @@ namespace tao
             template< typename Consumer >
             void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
             {
-               jaxn::events::from_input( consumer, json_pegtl::memory_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, const char* >( data, data + size, source ? source : "tao::json::events::jaxn::from_string", byte, line, column ) );
+               jaxn::events::from_input( consumer, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* >( data, data + size, source ? source : "tao::json::events::jaxn::from_string", byte, line, column ) );
             }
 
             template< typename Consumer >

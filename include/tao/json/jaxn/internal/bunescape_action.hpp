@@ -75,7 +75,7 @@ namespace tao
                         break;
 
                      default:
-                        throw json_pegtl::parse_error( "invalid character in unescape", in );  // NOLINT, LCOV_EXCL_LINE
+                        throw pegtl::parse_error( "invalid character in unescape", in );  // NOLINT, LCOV_EXCL_LINE
                   }
                }
             };
@@ -87,7 +87,7 @@ namespace tao
                static void apply( const Input& in, State& st )
                {
                   assert( !in.empty() );  // First character MUST be present, usually 'x'.
-                  st.value.push_back( static_cast< std::byte >( json_pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
+                  st.value.push_back( static_cast< std::byte >( pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
                }
             };
 
@@ -109,7 +109,7 @@ namespace tao
                template< typename Input, typename State >
                static void apply( const Input& in, State& st )
                {
-                  st.value.push_back( static_cast< std::byte >( json_pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
+                  st.value.push_back( static_cast< std::byte >( pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
                }
             };
 

@@ -48,7 +48,7 @@ namespace tao
                   case 29:
                   case 30:
                   case 31:
-                     throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", n, " for tag" ), in );
+                     throw pegtl::parse_error( json::internal::format( "unexpected minor ", n, " for tag" ), in );
                }
                return peek_major( in );
             }
@@ -67,7 +67,7 @@ namespace tao
                      in.bump_in_this_line( 1 );
                      return bool( b - std::uint8_t( major::OTHER ) - 20 );
                   default:
-                     throw json_pegtl::parse_error( "expected boolean", in );  // NOLINT
+                     throw pegtl::parse_error( "expected boolean", in );  // NOLINT
                }
                std::abort();
             }
@@ -77,7 +77,7 @@ namespace tao
 
          }  // namespace internal
 
-         template< utf8_mode V = utf8_mode::check, typename Input = json_pegtl::string_input< json_pegtl::tracking_mode::lazy > >
+         template< utf8_mode V = utf8_mode::check, typename Input = pegtl::string_input< pegtl::tracking_mode::lazy > >
          class basic_parts_parser
          {
          public:
@@ -111,7 +111,7 @@ namespace tao
             {
                const auto b = internal::peek_first_major( m_input );
                if( b != m ) {
-                  throw json_pegtl::parse_error( e, m_input );  // NOLINT
+                  throw pegtl::parse_error( e, m_input );  // NOLINT
                }
             }
 
@@ -145,7 +145,7 @@ namespace tao
             {
                const auto b = json::internal::peek_uint8( m_input );
                if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
-                  throw json_pegtl::parse_error( "expected definitive string", m_input );  // NOLINT
+                  throw pegtl::parse_error( "expected definitive string", m_input );  // NOLINT
                }
                return internal::read_string_1< V, std::string_view >( m_input );
             }
@@ -154,7 +154,7 @@ namespace tao
             {
                const auto b = json::internal::peek_uint8( m_input );
                if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
-                  throw json_pegtl::parse_error( "expected definitive binary", m_input );  // NOLINT
+                  throw pegtl::parse_error( "expected definitive binary", m_input );  // NOLINT
                }
                return internal::read_string_1< utf8_mode::trust, tao::binary_view >( m_input );
             }
@@ -169,7 +169,7 @@ namespace tao
             {
                const auto u = internal::read_unsigned_unsafe( m_input );
                if( u > 9223372036854775807ull ) {
-                  throw json_pegtl::parse_error( "positive integer overflow", m_input );  // NOLINT
+                  throw pegtl::parse_error( "positive integer overflow", m_input );  // NOLINT
                }
                return std::int64_t( u );
             }
@@ -178,7 +178,7 @@ namespace tao
             {
                const auto u = internal::read_unsigned_unsafe( m_input );
                if( u > 9223372036854775808ull ) {
-                  throw json_pegtl::parse_error( "negative integer overflow", m_input );  // NOLINT
+                  throw pegtl::parse_error( "negative integer overflow", m_input );  // NOLINT
                }
                return std::int64_t( ~u );
             }
@@ -197,7 +197,7 @@ namespace tao
                   case internal::major::NEGATIVE:
                      return number_signed_negative();
                   default:
-                     throw json_pegtl::parse_error( "expected integer", m_input );  // NOLINT
+                     throw pegtl::parse_error( "expected integer", m_input );  // NOLINT
                }
                std::abort();
             }
@@ -222,7 +222,7 @@ namespace tao
                   case std::uint8_t( internal::major::OTHER ) + 27:
                      return json::internal::read_big_endian_number< double >( m_input + 1 );
                   default:
-                     throw json_pegtl::parse_error( "expected floating point number", m_input );  // NOLINT
+                     throw pegtl::parse_error( "expected floating point number", m_input );  // NOLINT
                }
             }
 
@@ -266,14 +266,14 @@ namespace tao
             void end_container_sized( const state_t& p )
             {
                if( *p.size != p.i ) {
-                  throw json_pegtl::parse_error( "container size mismatch", m_input );  // NOLINT
+                  throw pegtl::parse_error( "container size mismatch", m_input );  // NOLINT
                }
             }
 
             void end_container_indefinite()
             {
                if( json::internal::peek_uint8( m_input ) != 0xff ) {
-                  throw json_pegtl::parse_error( "container not at end", m_input );  // NOLINT
+                  throw pegtl::parse_error( "container not at end", m_input );  // NOLINT
                }
                m_input.bump_in_this_line( 1 );
             }
@@ -303,14 +303,14 @@ namespace tao
             void next_in_container_sized( state_t& p )
             {
                if( p.i++ >= *p.size ) {
-                  throw json_pegtl::parse_error( "unexpected end of sized container", m_input );  // NOLINT
+                  throw pegtl::parse_error( "unexpected end of sized container", m_input );  // NOLINT
                }
             }
 
             void next_in_container_indefinite()
             {
                if( json::internal::peek_uint8( m_input ) == 0xff ) {
-                  throw json_pegtl::parse_error( "unexpected end of indefinite container", m_input );  // NOLINT
+                  throw pegtl::parse_error( "unexpected end of indefinite container", m_input );  // NOLINT
                }
             }
 
@@ -372,18 +372,18 @@ namespace tao
             void skip_value()
             {
                json::events::discard consumer;  // TODO: Optimise to not generate events (which requires preparing their - discarded - arguments)?
-               json_pegtl::parse< json_pegtl::must< internal::data< V > > >( m_input, consumer );
+               pegtl::parse< pegtl::must< internal::data< V > > >( m_input, consumer );
             }
 
             auto mark()
             {
-               return m_input.template mark< json_pegtl::rewind_mode::required >();
+               return m_input.template mark< pegtl::rewind_mode::required >();
             }
 
             template< typename T >
             void throw_parse_error( T&& t ) const
             {
-               throw json_pegtl::parse_error( std::forward< T >( t ), m_input );
+               throw pegtl::parse_error( std::forward< T >( t ), m_input );
             }
 
          protected:

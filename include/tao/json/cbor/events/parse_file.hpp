@@ -24,8 +24,8 @@ namespace tao
             template< typename T, typename Consumer >
             void parse_file( Consumer& consumer, T&& filename )
             {
-               json_pegtl::file_input< json_pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
-               json_pegtl::parse< internal::grammar >( in, consumer );
+               pegtl::file_input< pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
+               pegtl::parse< internal::grammar >( in, consumer );
             }
 
          }  // namespace events

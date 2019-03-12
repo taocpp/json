@@ -6,19 +6,22 @@
 
 #include "bench_mark.hpp"
 
+namespace pegtl = tao::json::pegtl;
+
 // clang-format off
 
 int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       const auto r = tao::bench::mark( "pegtl", argv[ i ], [&]() {
-         tao::json_pegtl::file_input< tao::json_pegtl::tracking_mode::lazy > in( argv[ i ] );
-         tao::json_pegtl::parse< tao::json_pegtl::must< tao::json_pegtl::json::text, tao::json_pegtl::eof > >( in );
+         pegtl::file_input< pegtl::tracking_mode::lazy > in( argv[ i ] );
+         pegtl::parse< pegtl::must< pegtl::json::text, pegtl::eof > >( in );
       } );
       tao::bench::mark( "json", argv[ i ], [&]() {
          tao::json::events::discard consumer;
          tao::json::events::parse_file( consumer, argv[ i ] );
-      }, r );
+      },
+      r );
    }
    return 0;
 }

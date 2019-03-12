@@ -27,10 +27,10 @@ namespace tao
          {
             struct number
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
-               template< json_pegtl::apply_mode A,
-                         json_pegtl::rewind_mode M,
+               template< pegtl::apply_mode A,
+                         pegtl::rewind_mode M,
                          template< typename... >
                          class Action,
                          template< typename... >
@@ -47,8 +47,8 @@ namespace tao
                }
 
             private:
-               template< json_pegtl::apply_mode A,
-                         json_pegtl::rewind_mode M,
+               template< pegtl::apply_mode A,
+                         pegtl::rewind_mode M,
                          template< typename... >
                          class Action,
                          template< typename... >
@@ -59,8 +59,8 @@ namespace tao
                {
                   if( in.peek_char() == '-' ) {
                      in.bump_in_this_line();
-                     if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, json_pegtl::rewind_mode::dontcare, Action, Control >( in, consumer ) ) {
-                        throw json_pegtl::parse_error( "incomplete ubjson high-precision number", in );
+                     if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, pegtl::rewind_mode::dontcare, Action, Control >( in, consumer ) ) {
+                        throw pegtl::parse_error( "incomplete ubjson high-precision number", in );
                      }
                      return true;
                   }
@@ -117,7 +117,7 @@ namespace tao
                   case marker::INT64:
                      return json::internal::read_big_endian_number< std::int64_t >( in );
                   default:
-                     throw json_pegtl::parse_error( "unknown ubjson size type " + std::to_string( unsigned( c ) ), in );
+                     throw pegtl::parse_error( "unknown ubjson size type " + std::to_string( unsigned( c ) ), in );
                }
             }
 
@@ -126,11 +126,11 @@ namespace tao
             {
                const auto s = read_size_read( in );
                if( s < 0 ) {
-                  throw json_pegtl::parse_error( "negative ubjson size " + std::to_string( s ), in );
+                  throw pegtl::parse_error( "negative ubjson size " + std::to_string( s ), in );
                }
                const auto t = static_cast< std::uint64_t >( s );
                if( t > static_cast< std::uint64_t >( L ) ) {
-                  throw json_pegtl::parse_error( "ubjson size exceeds limit " + std::to_string( t ), in );
+                  throw pegtl::parse_error( "ubjson size exceeds limit " + std::to_string( t ), in );
                }
                return static_cast< std::size_t >( t );
             }
@@ -139,7 +139,7 @@ namespace tao
             Result read_char( Input& in )
             {
                if( in.empty() || ( in.peek_uint8( 0 ) > 127 ) ) {
-                  throw json_pegtl::parse_error( "missing or invalid ubjson char", in );
+                  throw pegtl::parse_error( "missing or invalid ubjson char", in );
                }
                Result result( in.current(), 1 );
                in.bump_in_this_line( 1 );
@@ -156,10 +156,10 @@ namespace tao
             template< std::size_t L, utf8_mode V >
             struct data
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
-               template< json_pegtl::apply_mode A,
-                         json_pegtl::rewind_mode M,
+               template< pegtl::apply_mode A,
+                         pegtl::rewind_mode M,
                          template< typename... >
                          class Action,
                          template< typename... >
@@ -238,9 +238,9 @@ namespace tao
                         parse_object( in, consumer );
                         break;
                      case marker::NO_OP:
-                        throw json_pegtl::parse_error( "unsupported ubjson no-op", in );
+                        throw pegtl::parse_error( "unsupported ubjson no-op", in );
                      default:
-                        throw json_pegtl::parse_error( "unknown ubjson type " + std::to_string( unsigned( c ) ), in );
+                        throw pegtl::parse_error( "unknown ubjson type " + std::to_string( unsigned( c ) ), in );
                   }
                }
 
@@ -249,8 +249,8 @@ namespace tao
                {
                   const auto size = read_size< L >( in );
                   json::internal::throw_on_empty( in, size );
-                  json_pegtl::memory_input< json_pegtl::tracking_mode::lazy, json_pegtl::eol::lf_crlf, const char* > i2( in.current(), in.current() + size, "UBJSON" );
-                  json_pegtl::parse_nested< json_pegtl::must< number, json_pegtl::eof >, json::internal::action, json::internal::errors >( in, i2, consumer );
+                  pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > i2( in.current(), in.current() + size, "UBJSON" );
+                  pegtl::parse_nested< pegtl::must< number, pegtl::eof >, json::internal::action, json::internal::errors >( in, i2, consumer );
                   in.bump_in_this_line( size );
                }
 
@@ -289,7 +289,7 @@ namespace tao
                {
                   const auto c = read_marker( in );
                   if( read_marker( in ) != marker::CONTAINER_SIZE ) {
-                     throw json_pegtl::parse_error( "ubjson array type not followed by size", in );
+                     throw pegtl::parse_error( "ubjson array type not followed by size", in );
                   }
                   if( c == marker::UINT8 ) {
                      // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
@@ -359,7 +359,7 @@ namespace tao
                {
                   const auto c = read_marker( in );
                   if( read_marker( in ) != marker::CONTAINER_SIZE ) {
-                     throw json_pegtl::parse_error( "ubjson object type not followed by size", in );
+                     throw pegtl::parse_error( "ubjson object type not followed by size", in );
                   }
                   const auto size = read_size< L >( in );
                   consumer.begin_object( size );
@@ -385,12 +385,12 @@ namespace tao
                }
             };
 
-            struct nops : json_pegtl::star< json_pegtl::one< char( marker::NO_OP ) > >
+            struct nops : pegtl::star< pegtl::one< char( marker::NO_OP ) > >
             {
             };
 
             template< std::size_t L, utf8_mode V >
-            struct basic_grammar : json_pegtl::must< nops, data< L, V >, nops, json_pegtl::eof >
+            struct basic_grammar : pegtl::must< nops, data< L, V >, nops, pegtl::eof >
             {
             };
 

@@ -8,28 +8,20 @@
 
 #include "../config.hpp"
 
-namespace tao
+namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
-   namespace TAO_JSON_PEGTL_NAMESPACE
+   template< typename, typename, template< typename... > class, typename... >
+   struct has_apply
+      : std::false_type
    {
-      namespace internal
-      {
-         template< typename, typename, template< typename... > class, typename... >
-         struct has_apply
-            : std::false_type
-         {
-         };
+   };
 
-         template< typename C, template< typename... > class Action, typename... S >
-         struct has_apply< C, decltype( C::template apply< Action >( std::declval< S >()... ) ), Action, S... >
-            : std::true_type
-         {
-         };
+   template< typename C, template< typename... > class Action, typename... S >
+   struct has_apply< C, decltype( C::template apply< Action >( std::declval< S >()... ) ), Action, S... >
+      : std::true_type
+   {
+   };
 
-      }  // namespace internal
-
-   }  // namespace TAO_JSON_PEGTL_NAMESPACE
-
-}  // namespace tao
+}  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 
 #endif

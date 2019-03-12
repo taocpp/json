@@ -107,7 +107,7 @@ namespace tao
                   case 29:
                   case 30:
                   case 31:
-                     throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for number or length" ), in );
+                     throw pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for number or length" ), in );
                }
             }
 
@@ -116,7 +116,7 @@ namespace tao
             {
                const auto u = read_unsigned_unsafe( in );
                if( u > 9223372036854775808ull ) {
-                  throw json_pegtl::parse_error( "negative integer overflow", in );
+                  throw pegtl::parse_error( "negative integer overflow", in );
                }
                return std::int64_t( ~u );
             }
@@ -126,7 +126,7 @@ namespace tao
             {
                const auto s = read_unsigned_unsafe( in );
                if( s > static_cast< std::uint64_t >( ( std::numeric_limits< std::size_t >::max )() ) ) {
-                  throw json_pegtl::parse_error( "cbor size exceeds size_t " + std::to_string( s ), in );
+                  throw pegtl::parse_error( "cbor size exceeds size_t " + std::to_string( s ), in );
                }
                return static_cast< std::size_t >( s );
             }
@@ -150,7 +150,7 @@ namespace tao
                in.bump_in_this_line();
                while( json::internal::peek_uint8( in ) != 0xff ) {
                   if( peek_major_unsafe( in ) != m ) {
-                     throw json_pegtl::parse_error( "non-matching fragment in indefinite length string", in );
+                     throw pegtl::parse_error( "non-matching fragment in indefinite length string", in );
                   }
                   const auto size = read_size_unsafe( in );
                   json::internal::throw_on_empty( in, size );
@@ -166,10 +166,10 @@ namespace tao
             template< utf8_mode V >
             struct data
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
-               template< json_pegtl::apply_mode A,
-                         json_pegtl::rewind_mode M,
+               template< pegtl::apply_mode A,
+                         pegtl::rewind_mode M,
                          template< typename... >
                          class Action,
                          template< typename... >
@@ -298,7 +298,7 @@ namespace tao
                   consumer.begin_object( size );
                   for( std::size_t i = 0; i < size; ++i ) {
                      if( peek_major( in ) != major::STRING ) {
-                        throw json_pegtl::parse_error( "non-string object key", in );
+                        throw pegtl::parse_error( "non-string object key", in );
                      }
                      parse_key_unsafe( in, consumer );
                      json::internal::throw_on_empty( in );
@@ -315,7 +315,7 @@ namespace tao
                   consumer.begin_object();
                   while( json::internal::peek_uint8( in ) != 0xff ) {
                      if( peek_major_unsafe( in ) != major::STRING ) {
-                        throw json_pegtl::parse_error( "non-string object key", in );
+                        throw pegtl::parse_error( "non-string object key", in );
                      }
                      parse_key_unsafe( in, consumer );
                      json::internal::throw_on_empty( in );
@@ -360,7 +360,7 @@ namespace tao
                      case 29:
                      case 30:
                      case 31:
-                        throw json_pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for tag" ), in );
+                        throw pegtl::parse_error( json::internal::format( "unexpected minor ", m, " for tag" ), in );
                   }
                }
 
@@ -390,13 +390,13 @@ namespace tao
                         consumer.number( json::internal::read_big_endian_number< double >( in, 1 ) );
                         return;
                      default:
-                        throw json_pegtl::parse_error( json::internal::format( "unsupported minor ", m, " for major 7" ), in );
+                        throw pegtl::parse_error( json::internal::format( "unsupported minor ", m, " for major 7" ), in );
                   }
                }
             };
 
             template< utf8_mode V >
-            struct basic_grammar : json_pegtl::must< data< V >, json_pegtl::eof >
+            struct basic_grammar : pegtl::must< data< V >, pegtl::eof >
             {
             };
 

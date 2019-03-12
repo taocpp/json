@@ -125,7 +125,7 @@ namespace tao
          check_consumer_impl< events::tee< Consumer, Consumer > >();
          check_consumer_impl< events::tee< Consumer, events::discard, Consumer > >();
 
-         check_consumer_impl< events::validate_keys< Consumer, json_pegtl::success > >();
+         check_consumer_impl< events::validate_keys< Consumer, pegtl::success > >();
 
          check_consumer_impl< events::limit_value_count< Consumer, 2 > >();
          check_consumer_impl< events::limit_nesting_depth< Consumer, 2 > >();

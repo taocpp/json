@@ -6,16 +6,12 @@
 
 #include "config.hpp"
 
-namespace tao
+namespace TAO_JSON_PEGTL_NAMESPACE
 {
-   namespace TAO_JSON_PEGTL_NAMESPACE
+   struct require_apply
    {
-      struct require_apply
-      {
-      };
+   };
 
-   }  // namespace TAO_JSON_PEGTL_NAMESPACE
-
-}  // namespace tao
+}  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 #endif

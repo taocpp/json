@@ -157,7 +157,7 @@ namespace tao
                }
 
                if( s > ( 1 << 20 ) ) {
-                  throw json_pegtl::parse_error( "JSON number with 1 megabyte digits", in );  // NOLINT
+                  throw pegtl::parse_error( "JSON number with 1 megabyte digits", in );  // NOLINT
                }
 
                const auto c = ( std::min )( s, max_mantissa_digits );
@@ -222,7 +222,7 @@ namespace tao
                   ++b;
                }
                if( ( in.end() - b ) > 9 ) {
-                  throw json_pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );  // NOLINT
+                  throw pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );  // NOLINT
                }
                int exponent10 = 0;
 
@@ -236,19 +236,19 @@ namespace tao
 
          template< bool NEG >
          struct action< rules::number< NEG > >
-            : json_pegtl::change_state< number_state< NEG > >
+            : pegtl::change_state< number_state< NEG > >
          {
          };
 
          template<>
          struct action< rules::string::content >
-            : json_pegtl::change_action_and_state< unescape_action, string_state >
+            : pegtl::change_action_and_state< unescape_action, string_state >
          {
          };
 
          template<>
          struct action< rules::key::content >
-            : json_pegtl::change_action_and_state< unescape_action, key_state >
+            : pegtl::change_action_and_state< unescape_action, key_state >
          {
          };
 

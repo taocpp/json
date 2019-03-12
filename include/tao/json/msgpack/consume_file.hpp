@@ -22,14 +22,14 @@ namespace tao
          template< typename T, template< typename... > class Traits = traits, typename F >
          T consume_file( F&& filename )
          {
-            msgpack::basic_parts_parser< utf8_mode::check, json_pegtl::file_input< json_pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+            msgpack::basic_parts_parser< utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
             return json::consume< T, Traits >( pp );
          }
 
          template< template< typename... > class Traits = traits, typename F, typename T >
          T consume_file( F&& filename, T& t )
          {
-            msgpack::basic_parts_parser< utf8_mode::check, json_pegtl::file_input< json_pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+            msgpack::basic_parts_parser< utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
             return json::consume< Traits >( pp, t );
          }
 

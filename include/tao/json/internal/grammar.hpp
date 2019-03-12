@@ -16,12 +16,12 @@ namespace tao
          // clang-format off
          namespace rules
          {
-            using namespace json_pegtl;  // NOLINT
+            using namespace pegtl;  // NOLINT
 
             struct ws : one< ' ', '\t', '\n', '\r' > {};
 
             template< typename R, typename P = ws >
-            using padr = json_pegtl::internal::seq< R, json_pegtl::internal::star< P > >;
+            using padr = pegtl::internal::seq< R, pegtl::internal::star< P > >;
 
             struct begin_array : padr< one< '[' > > {};
             struct begin_object : padr< one< '{' > > {};
@@ -31,9 +31,9 @@ namespace tao
             struct value_separator : padr< one< ',' > > {};
             struct element_separator : padr< one< ',' > > {};
 
-            struct false_ : json_pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
-            struct null : json_pegtl::string< 'n', 'u', 'l', 'l' > {};
-            struct true_ : json_pegtl::string< 't', 'r', 'u', 'e' > {};
+            struct false_ : pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
+            struct null : pegtl::string< 'n', 'u', 'l', 'l' > {};
+            struct true_ : pegtl::string< 't', 'r', 'u', 'e' > {};
 
             struct digits : plus< abnf::DIGIT > {};
 
@@ -57,7 +57,7 @@ namespace tao
 
             struct unescaped
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::any >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
                template< typename Input >
                static bool match( Input& in )
@@ -65,7 +65,7 @@ namespace tao
                   bool result = false;
 
                   while( !in.empty() ) {
-                     if( const auto t = json_pegtl::internal::peek_utf8::peek( in ) ) {
+                     if( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
                         if( ( 0x20 <= t.data ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
                            in.bump_in_this_line( t.size );
                            result = true;
@@ -119,7 +119,7 @@ namespace tao
 
             struct sor_value
             {
-               using analyze_t = json_pegtl::analysis::generic< json_pegtl::analysis::rule_type::sor, string, number< false >, object, array, false_, true_, null >;
+               using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, false_, true_, null >;
 
                template< bool NEG,
                          apply_mode A,
@@ -147,7 +147,7 @@ namespace tao
                         case '7':
                         case '8':
                         case '9':
-                           throw json_pegtl::parse_error( "invalid leading zero", in );
+                           throw pegtl::parse_error( "invalid leading zero", in );
                      }
                   }
                   in.bump_in_this_line();
@@ -166,7 +166,7 @@ namespace tao
                {
                   if( in.peek_char() == '0' ) {
                      if( !match_zero< NEG, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
-                        throw json_pegtl::parse_error( "incomplete number", in );
+                        throw pegtl::parse_error( "incomplete number", in );
                      }
                      return true;
                   }
@@ -192,7 +192,7 @@ namespace tao
                      case '-':
                         in.bump_in_this_line();
                         if( in.empty() || !match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
-                           throw json_pegtl::parse_error( "incomplete number", in );
+                           throw pegtl::parse_error( "incomplete number", in );
                         }
                         return true;
 
@@ -224,7 +224,7 @@ namespace tao
 
          }  // namespace rules
 
-         struct grammar : json_pegtl::must< rules::text, json_pegtl::eof > {};
+         struct grammar : pegtl::must< rules::text, pegtl::eof > {};
          // clang-format on
 
       }  // namespace internal
