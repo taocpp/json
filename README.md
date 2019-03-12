@@ -1,4 +1,4 @@
-# The Art of C++ / JSON
+# Welcome to taoJSON
 
 [![Release](https://img.shields.io/github/release/taocpp/json.svg)](https://github.com/taocpp/json/releases/latest)
 [![Download](https://api.bintray.com/packages/taocpp/public-conan/json%3Ataocpp/images/download.svg)](https://bintray.com/taocpp/public-conan/json%3Ataocpp/_latestVersion)
@@ -7,7 +7,7 @@
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/taocpp/json.svg)](https://lgtm.com/projects/g/taocpp/json/context:cpp)
 
-[The Art of C++](https://taocpp.github.io/) / JSON is a zero-dependency C++17 header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, and provides an [Events Interface](doc/Events-Interface.md) to convert from and to JSON, JAXN, CBOR, MsgPack and UBJSON, and more.
+[The Art of C++](https://taocpp.github.io/) / taoJSON is a zero-dependency C++17 header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, and provides an [Events Interface](doc/Events-Interface.md) to convert from and to JSON, JAXN, CBOR, MsgPack and UBJSON, and more.
 
 ## Documentation
 
