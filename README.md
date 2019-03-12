@@ -60,9 +60,9 @@ This library also serves as a real-world example application of the [Parsing Exp
 
 ## Contact
 
-The Art of C++ / JSON is part of [The Art of C++](https://taocpp.github.io/).
+taoJSON is part of [The Art of C++](https://taocpp.github.io/).
 
-For questions and suggestions about The Art of C++ / JSON please contact the authors at `taocpp(at)icemx.net`.
+For questions and suggestions about taoJSON please contact the authors at `taocpp(at)icemx.net`.
 
 ## Thank You
 
@@ -71,7 +71,7 @@ For questions and suggestions about The Art of C++ / JSON please contact the aut
 
 ## License
 
-The Art of C++ / JSON is certified [Open Source] software.
+taoJSON is certified [Open Source] software.
 It may be used for any purpose, including commercial purposes, at absolutely no cost.
 It is distributed under the terms of the [MIT license] reproduced here.
 
@@ -85,7 +85,7 @@ It is distributed under the terms of the [MIT license] reproduced here.
 
 ## Additional Licenses
 
-The Art of C++ / JSON contains modified portions of the [double-conversion library](https://github.com/google/double-conversion) which is licensed as follows:
+taoJSON contains modified portions of the [double-conversion library](https://github.com/google/double-conversion) which is licensed as follows:
 
 > Copyright 2006-2011, the V8 project authors. All rights reserved. Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 >
@@ -95,7 +95,7 @@ The Art of C++ / JSON contains modified portions of the [double-conversion libra
 >
 > THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-The Art of C++ / JSON contains modified portions of [James Edward Anhalt III's itoa library](https://github.com/jeaiii/itoa) which is licensed as follows:
+taoJSON contains modified portions of [James Edward Anhalt III's itoa library](https://github.com/jeaiii/itoa) which is licensed as follows:
 
 > Copyright (c) 2017 James Edward Anhalt III - https://github.com/jeaiii/itoa
 >
@@ -117,7 +117,7 @@ The Art of C++ / JSON contains modified portions of [James Edward Anhalt III's i
 > OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 > SOFTWARE.
 
-The Art of C++ / JSON contains modified portions of [Ulf Adams' Ryu implementation](https://github.com/ulfjack/ryu) which is licensed as follows:
+taoJSON contains modified portions of [Ulf Adams' Ryu implementation](https://github.com/ulfjack/ryu) which is licensed as follows:
 
 > Copyright 2018 Ulf Adams
 >
