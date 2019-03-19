@@ -35,8 +35,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template< std::size_t N, char... Cs >
       struct rep_string
          : internal::make_rep_string< N, internal::string<>, Cs... >::type
-      {
-      };
+      {};
 
    }  // namespace ascii
 

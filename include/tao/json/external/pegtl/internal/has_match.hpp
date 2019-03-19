@@ -25,8 +25,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
              typename... States >
    struct has_match
       : std::false_type
-   {
-   };
+   {};
 
    template< typename Rule,
              apply_mode A,
@@ -39,8 +38,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
              typename... States >
    struct has_match< decltype( (void)Action< Rule >::template match< Rule, A, M, Action, Control >( std::declval< Input& >(), std::declval< States&& >()... ), void() ), Rule, A, M, Action, Control, Input, States... >
       : std::true_type
-   {
-   };
+   {};
 
    template< typename Rule,
              apply_mode A,

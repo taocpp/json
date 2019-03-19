@@ -10,7 +10,7 @@
 #include <string_view>
 #include <tuple>
 #include <type_traits>
-#include <typeinfo>
+#include <typeindex>
 #include <utility>
 #include <vector>
 
@@ -34,7 +34,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       using children_t = std::vector< std::unique_ptr< node_t > >;
       children_t children;
 
-      const std::type_info* id = nullptr;
+      std::type_index id = typeid( void );
       std::string source;
 
       TAO_JSON_PEGTL_NAMESPACE::internal::iterator m_begin;
@@ -56,19 +56,19 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
 
       [[nodiscard]] bool is_root() const noexcept
       {
-         return id == nullptr;
+         return id == typeid( void );
       }
 
       template< typename U >
       [[nodiscard]] bool is() const noexcept
       {
-         return id == &typeid( U );
+         return id == typeid( U );
       }
 
       [[nodiscard]] std::string name() const
       {
          assert( !is_root() );
-         return TAO_JSON_PEGTL_NAMESPACE::internal::demangle( id->name() );
+         return TAO_JSON_PEGTL_NAMESPACE::internal::demangle( id.name() );
       }
 
       [[nodiscard]] position begin() const
@@ -115,7 +115,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       template< typename Rule, typename Input, typename... States >
       void start( const Input& in, States&&... /*unused*/ )
       {
-         id = &typeid( Rule );
+         id = typeid( Rule );
          source = in.source();
          m_begin = TAO_JSON_PEGTL_NAMESPACE::internal::iterator( in.iterator() );
       }
@@ -138,7 +138,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       // note that "child" is the node whose Rule just succeeded
       // and "*this" is the parent where the node should be appended.
       template< typename... States >
-      void emplace_back( std::unique_ptr< node_t > child, States&&... /*unused*/ )
+      void emplace_back( std::unique_ptr< node_t >&& child, States&&... /*unused*/ )
       {
          assert( child );
          children.emplace_back( std::move( child ) );
@@ -169,11 +169,13 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
 
          [[nodiscard]] std::unique_ptr< Node >& back() noexcept
          {
+            assert( !stack.empty() );
             return stack.back();
          }
 
          void pop_back() noexcept
          {
+            assert( !stack.empty() );
             return stack.pop_back();
          }
       };

@@ -9,8 +9,7 @@
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
    struct require_apply
-   {
-   };
+   {};
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 

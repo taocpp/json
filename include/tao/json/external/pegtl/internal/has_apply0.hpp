@@ -13,14 +13,12 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< typename, typename, template< typename... > class, typename... >
    struct has_apply0
       : std::false_type
-   {
-   };
+   {};
 
    template< typename C, template< typename... > class Action, typename... S >
    struct has_apply0< C, decltype( C::template apply0< Action >( std::declval< S >()... ) ), Action, S... >
       : std::true_type
-   {
-   };
+   {};
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 
