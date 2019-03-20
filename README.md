@@ -7,7 +7,7 @@
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/taocpp/json.svg)](https://lgtm.com/projects/g/taocpp/json/context:cpp)
 
-taoJSON is a zero-dependency C++ header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, and provides an [Events Interface](doc/Events-Interface.md) to convert from and to JSON, JAXN, CBOR, MsgPack and UBJSON, and much more...
+taoJSON is a zero-dependency C++ header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, uses an [Events Interface](doc/Events-Interface.md) to convert from and to JSON, JAXN, CBOR, MsgPack and UBJSON, and much more...
 
 ## Documentation
 
