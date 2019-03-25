@@ -432,11 +432,6 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       };
 
       template< typename >
-      struct element
-      {
-      };
-
-      template< typename >
       using store_all = std::true_type;
 
       template< typename >
@@ -459,14 +454,34 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       using selector_t = typename selector< T >::type;
 
       template< typename Rule, typename Collection >
-      using select_tuple = std::conditional_t< Collection::template contains< Rule >::value, std::tuple< Collection >, std::tuple<> >;
+      using select_tuple = std::conditional_t< Collection::template contains< Rule >, std::tuple< Collection >, std::tuple<> >;
 
    }  // namespace internal
 
-   using store_content = std::true_type;
+   template< typename Rule, typename... Collections >
+   using selector = internal::selector_t< decltype( std::tuple_cat( std::declval< internal::select_tuple< Rule, Collections > >()... ) ) >;
+
+   template< typename Base >
+   struct apply
+      : std::true_type
+   {
+      template< typename... Rules >
+      struct on
+      {
+         using type = Base;
+
+         template< typename Rule >
+         static constexpr bool contains = ( std::is_same_v< Rule, Rules > || ... );
+      };
+   };
+
+   struct store_content
+      : apply< store_content >
+   {};
 
    // some nodes don't need to store their content
-   struct remove_content : std::true_type
+   struct remove_content
+      : apply< remove_content >
    {
       template< typename Node, typename... States >
       static void transform( std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( n->Node::remove_content( st... ) ) )
@@ -475,62 +490,37 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       }
    };
 
-   // if a node has only one child, replace the node with its child, otherwise apply B
-   template< typename Base >
-   struct fold_one_or : Base
+   // if a node has only one child, replace the node with its child, otherwise remove content
+   struct fold_one
+      : apply< fold_one >
    {
       template< typename Node, typename... States >
-      static void transform( std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( n->children.size(), Base::transform( n, st... ) ) )
+      static void transform( std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( n->children.size(), n->Node::remove_content( st... ) ) )
       {
          if( n->children.size() == 1 ) {
             n = std::move( n->children.front() );
          }
          else {
-            Base::transform( n, st... );
+            n->remove_content( st... );
          }
       }
    };
 
-   // if a node has no children, discard the node, otherwise apply B
-   template< typename Base >
-   struct discard_empty_or : Base
+   // if a node has no children, discard the node, otherwise remove content
+   struct discard_empty
+      : apply< discard_empty >
    {
       template< typename Node, typename... States >
-      static void transform( std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( n->children.empty(), Base::transform( n, st... ) ) )
+      static void transform( std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( n->children.empty(), n->Node::remove_content( st... ) ) )
       {
          if( n->children.empty() ) {
             n.reset();
          }
          else {
-            Base::transform( n, st... );
+            n->remove_content( st... );
          }
       }
    };
-
-   using fold_one = fold_one_or< remove_content >;
-   using discard_empty = discard_empty_or< remove_content >;
-
-   template< typename Rule, typename... Collections >
-   using selector = internal::selector_t< decltype( std::tuple_cat( std::declval< internal::select_tuple< Rule, Collections > >()... ) ) >;
-
-   template< typename Base >
-   struct apply
-   {
-      template< typename... Rules >
-      struct to
-         : internal::element< Rules >...
-      {
-         using type = Base;
-
-         template< typename Rule >
-         using contains = std::is_base_of< internal::element< Rule >, to >;
-      };
-   };
-
-   using apply_store_content = apply< store_content >;
-   using apply_remove_content = apply< remove_content >;
-   using apply_fold_one = apply< fold_one >;
-   using apply_discard_empty = apply< discard_empty >;
 
    template< typename Rule,
              typename Node,
