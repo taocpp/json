@@ -42,9 +42,10 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
          return false;
       }
 
-      struct inverted
+      typedef struct
          : range< !R, Peek, Lo, Hi >
-      {};
+      {
+      } inverted;
    };
 
    template< result_on_found R, typename Peek, typename Peek::data_t Lo, typename Peek::data_t Hi >
