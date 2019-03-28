@@ -71,6 +71,7 @@ namespace tao
          template<> inline const std::string errors< rules::name_separator >::error_message = "expected ':'";  // NOLINT
          template<> inline const std::string errors< rules::array_element >::error_message = "expected value";  // NOLINT
          template<> inline const std::string errors< rules::value >::error_message = "expected value";  // NOLINT
+         template<> inline const std::string errors< rules::sor_value >::error_message = "expected value";  // NOLINT
 
          template<> inline const std::string errors< rules::edigits >::error_message = "expected at least one exponent digit";  // NOLINT
          template<> inline const std::string errors< rules::fdigits >::error_message = "expected at least one fraction digit";  // NOLINT

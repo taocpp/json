@@ -20,12 +20,30 @@ namespace tao
       {
          namespace events
          {
-            // Events producer to parse a JAXN string representation.
+            // Events producers that parse a JAXN string representation.
 
             template< typename Consumer, typename Input >
             void from_input( Consumer& consumer, Input&& in )
             {
                pegtl::parse< internal::grammar, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
+            }
+
+            template< typename Consumer, typename Input >
+            void from_input_embedded( Consumer& consumer, Input&& in )
+            {
+               pegtl::parse< internal::embedded, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
+            }
+
+            template< typename Consumer, typename Outer, typename Input >
+            void from_input_nested( Consumer& consumer, const Outer& oi, Input&& in )
+            {
+               pegtl::parse_nested< internal::grammar, internal::action, internal::errors >( oi, std::forward< Input >( in ), consumer );
+            }
+
+            template< typename Consumer, typename Outer, typename Input >
+            void from_input_embedded_nested( Consumer& consumer, const Outer& oi, Input&& in )
+            {
+               pegtl::parse_nested< internal::embedded, internal::action, internal::errors >( oi, std::forward< Input >( in ), consumer );
             }
 
          }  // namespace events

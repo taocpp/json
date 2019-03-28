@@ -225,6 +225,7 @@ namespace tao
          }  // namespace rules
 
          struct grammar : pegtl::must< rules::text, pegtl::eof > {};
+         struct embedded : pegtl::must< rules::sor_value > {};
          // clang-format on
 
       }  // namespace internal
