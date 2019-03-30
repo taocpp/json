@@ -5,7 +5,7 @@
 #define TAO_JSON_PARTS_PARSER_HPP
 
 #include "external/pegtl.hpp"
-#include "external/pegtl/contrib/change_state.hpp"
+#include "external/pegtl/contrib/change_states.hpp"
 #include "external/pegtl/contrib/integer.hpp"
 #include "external/pegtl/contrib/json.hpp"
 
@@ -13,7 +13,6 @@
 #include "internal/format.hpp"
 #include "internal/grammar.hpp"
 #include "internal/number_state.hpp"
-#include "internal/string_state.hpp"
 #include "internal/unescape_action.hpp"
 
 namespace tao
@@ -135,8 +134,13 @@ namespace tao
 
          template< bool NEG >
          struct double_action< rules::number< NEG > >
-            : pegtl::change_state< number_state< NEG > >
+            : pegtl::change_states< number_state< NEG > >
          {
+            template< typename Input, typename Consumer >
+            static void success( const Input& /*unused*/, number_state< NEG >& state, Consumer& consumer )
+            {
+               state.success( consumer );
+            }
          };
 
          struct double_state_and_consumer
@@ -214,9 +218,9 @@ namespace tao
 
          std::string string()
          {
-            internal::string_state s;
-            pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss >, internal::unescape_action >( m_input, s );
-            return std::move( s.unescaped );
+            std::string unescaped;
+            pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
+            return unescaped;
          }
 
          std::vector< std::byte > binary()
@@ -226,9 +230,9 @@ namespace tao
 
          std::string key()
          {
-            internal::string_state s;
-            pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, s );
-            return std::move( s.unescaped );
+            std::string unescaped;
+            pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
+            return unescaped;
          }
 
          template< char C >

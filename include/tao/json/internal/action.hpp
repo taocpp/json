@@ -4,13 +4,14 @@
 #ifndef TAO_JSON_INTERNAL_ACTION_HPP
 #define TAO_JSON_INTERNAL_ACTION_HPP
 
-#include "../external/pegtl/contrib/change_action_and_state.hpp"
-#include "../external/pegtl/contrib/change_state.hpp"
+#include <string>
+#include <utility>
+
+#include "../external/pegtl/contrib/change_action_and_states.hpp"
+#include "../external/pegtl/contrib/change_states.hpp"
 
 #include "grammar.hpp"
-#include "key_state.hpp"
 #include "number_state.hpp"
-#include "string_state.hpp"
 #include "unescape_action.hpp"
 
 namespace tao
@@ -236,20 +237,35 @@ namespace tao
 
          template< bool NEG >
          struct action< rules::number< NEG > >
-            : pegtl::change_state< number_state< NEG > >
+            : pegtl::change_states< number_state< NEG > >
          {
+            template< typename Input, typename Consumer >
+            static void success( const Input& /*unused*/, number_state< NEG >& state, Consumer& consumer )
+            {
+               state.success( consumer );
+            }
          };
 
          template<>
          struct action< rules::string::content >
-            : pegtl::change_action_and_state< unescape_action, string_state >
+            : pegtl::change_action_and_states< unescape_action, std::string >
          {
+            template< typename Input, typename Consumer >
+            static void success( const Input& /*unused*/, std::string& unescaped, Consumer& consumer )
+            {
+               consumer.string( std::move( unescaped ) );
+            }
          };
 
          template<>
          struct action< rules::key::content >
-            : pegtl::change_action_and_state< unescape_action, key_state >
+            : pegtl::change_action_and_states< unescape_action, std::string >
          {
+            template< typename Input, typename Consumer >
+            static void success( const Input& /*unused*/, std::string& unescaped, Consumer& consumer )
+            {
+               consumer.key( std::move( unescaped ) );
+            }
          };
 
       }  // namespace internal

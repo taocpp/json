@@ -4,16 +4,16 @@
 #ifndef TAO_JSON_JAXN_INTERNAL_ACTION_HPP
 #define TAO_JSON_JAXN_INTERNAL_ACTION_HPP
 
+#include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
-#include "../../external/pegtl/contrib/change_action_and_state.hpp"
-#include "../../external/pegtl/contrib/change_state.hpp"
+#include "../../external/pegtl/contrib/change_action_and_states.hpp"
+#include "../../external/pegtl/contrib/change_states.hpp"
 
-#include "../../internal/key_state.hpp"
 #include "../../internal/number_state.hpp"
-#include "../../internal/string_state.hpp"
 
-#include "binary_state.hpp"
 #include "bunescape_action.hpp"
 #include "grammar.hpp"
 #include "unescape_action.hpp"
@@ -102,7 +102,7 @@ namespace tao
                      value <<= 4;
                      value += unhex( c );
                   }
-                  if( NEG ) {
+                  if constexpr( NEG ) {
                      if( value < 9223372036854775808ull ) {
                         consumer.number( -static_cast< std::int64_t >( value ) );
                      }
@@ -331,26 +331,46 @@ namespace tao
 
             template< bool NEG >
             struct action< rules::number< NEG > >
-               : pegtl::change_state< tao::json::internal::number_state< NEG > >
+               : pegtl::change_states< tao::json::internal::number_state< NEG > >
             {
+               template< typename Input, typename Consumer >
+               static void success( const Input& /*unused*/, tao::json::internal::number_state< NEG >& state, Consumer& consumer )
+               {
+                  state.success( consumer );
+               }
             };
 
             template<>
             struct action< rules::string >
-               : pegtl::change_action_and_state< unescape_action, tao::json::internal::string_state >
+               : pegtl::change_action_and_states< unescape_action, std::string >
             {
+               template< typename Input, typename Consumer >
+               static void success( const Input& /*unused*/, std::string& unescaped, Consumer& consumer )
+               {
+                  consumer.string( std::move( unescaped ) );
+               }
             };
 
             template<>
             struct action< rules::key >
-               : pegtl::change_action_and_state< unescape_action, tao::json::internal::key_state >
+               : pegtl::change_action_and_states< unescape_action, std::string >
             {
+               template< typename Input, typename Consumer >
+               static void success( const Input& /*unused*/, std::string& unescaped, Consumer& consumer )
+               {
+                  consumer.key( std::move( unescaped ) );
+               }
             };
 
             template<>
             struct action< rules::binary >
-               : pegtl::change_action_and_state< bunescape_action, binary_state >
+               : pegtl::change_action_and_states< bunescape_action, std::vector< std::byte > >
             {
+               template< typename Input, typename Consumer >
+               static void success( const Input& /*unused*/, std::vector< std::byte >& value, Consumer& consumer )
+               {
+                  consumer.binary( std::move( value ) );
+               }
             };
 
          }  // namespace internal

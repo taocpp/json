@@ -90,8 +90,8 @@ namespace tao
                   {
                      bool result = false;
 
-                     while( !in.empty() ) {
-                        if( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
+                     while( const std::size_t s = in.size( 4 ) ) {
+                        if( const auto t = pegtl::internal::peek_utf8::peek( in, s ) ) {
                            if( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != '\\' ) && ( t.data != D ) && ( t.data != 0x7F ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;
@@ -123,8 +123,8 @@ namespace tao
                   {
                      bool result = false;
 
-                     while( !in.empty() ) {
-                        if( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
+                     while( const std::size_t s = in.size( 4 ) ) {
+                        if( const auto t = pegtl::internal::peek_utf8::peek( in, s ) ) {
                            if( ( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != D ) && ( t.data != 0x7F ) ) || ( t.data == '\t' ) ) {
                               in.bump_in_this_line( t.size );
                               result = true;

@@ -32,7 +32,7 @@ namespace tao
          {
             std::size_t i = 0;
             while( i < todo.todo ) {
-               const auto p = pegtl::internal::peek_utf8::peek( in ).size;
+               const auto p = pegtl::internal::peek_utf8::peek( in, todo.todo - i ).size;
                if( ( p == 0 ) || ( ( i += p ) > todo.todo ) ) {
                   throw pegtl::parse_error( "invalid utf8", in );
                }

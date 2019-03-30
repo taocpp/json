@@ -5,6 +5,7 @@
 #define TAO_JSON_JAXN_INTERNAL_BUNESCAPE_ACTION_HPP
 
 #include <cstddef>
+#include <vector>
 
 #include "../../external/pegtl/contrib/unescape.hpp"
 
@@ -26,52 +27,52 @@ namespace tao
             template<>
             struct bunescape_action< rules::bescaped_char >
             {
-               template< typename Input, typename State >
-               static void apply( const Input& in, State& st )
+               template< typename Input >
+               static void apply( const Input& in, std::vector< std::byte >& value )
                {
                   switch( *in.begin() ) {
                      case '"':
-                        st.value.push_back( std::byte( '"' ) );
+                        value.push_back( std::byte( '"' ) );
                         break;
 
                      case '\'':
-                        st.value.push_back( std::byte( '\'' ) );
+                        value.push_back( std::byte( '\'' ) );
                         break;
 
                      case '\\':
-                        st.value.push_back( std::byte( '\\' ) );
+                        value.push_back( std::byte( '\\' ) );
                         break;
 
                      case '/':
-                        st.value.push_back( std::byte( '/' ) );
+                        value.push_back( std::byte( '/' ) );
                         break;
 
                      case 'b':
-                        st.value.push_back( std::byte( '\b' ) );
+                        value.push_back( std::byte( '\b' ) );
                         break;
 
                      case 'f':
-                        st.value.push_back( std::byte( '\f' ) );
+                        value.push_back( std::byte( '\f' ) );
                         break;
 
                      case 'n':
-                        st.value.push_back( std::byte( '\n' ) );
+                        value.push_back( std::byte( '\n' ) );
                         break;
 
                      case 'r':
-                        st.value.push_back( std::byte( '\r' ) );
+                        value.push_back( std::byte( '\r' ) );
                         break;
 
                      case 't':
-                        st.value.push_back( std::byte( '\t' ) );
+                        value.push_back( std::byte( '\t' ) );
                         break;
 
                      case 'v':
-                        st.value.push_back( std::byte( '\v' ) );
+                        value.push_back( std::byte( '\v' ) );
                         break;
 
                      case '0':
-                        st.value.push_back( std::byte( '\0' ) );
+                        value.push_back( std::byte( '\0' ) );
                         break;
 
                      default:
@@ -83,33 +84,33 @@ namespace tao
             template<>
             struct bunescape_action< rules::bescaped_hexcode >
             {
-               template< typename Input, typename State >
-               static void apply( const Input& in, State& st )
+               template< typename Input >
+               static void apply( const Input& in, std::vector< std::byte >& value )
                {
                   assert( !in.empty() );  // First character MUST be present, usually 'x'.
-                  st.value.push_back( static_cast< std::byte >( pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
+                  value.push_back( static_cast< std::byte >( pegtl::unescape::unhex_string< char >( in.begin() + 1, in.end() ) ) );
                }
             };
 
             template< char D >
             struct bunescape_action< rules::bunescaped< D > >
             {
-               template< typename Input, typename State >
-               static void apply( const Input& in, State& st )
+               template< typename Input >
+               static void apply( const Input& in, std::vector< std::byte >& value )
                {
                   const auto begin = static_cast< const std::byte* >( static_cast< const void* >( in.begin() ) );
                   const auto end = begin + in.size();
-                  st.value.insert( st.value.end(), begin, end );
+                  value.insert( value.end(), begin, end );
                }
             };
 
             template<>
             struct bunescape_action< rules::bbyte >
             {
-               template< typename Input, typename State >
-               static void apply( const Input& in, State& st )
+               template< typename Input >
+               static void apply( const Input& in, std::vector< std::byte >& value )
                {
-                  st.value.push_back( static_cast< std::byte >( pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
+                  value.push_back( static_cast< std::byte >( pegtl::unescape::unhex_string< char >( in.begin(), in.end() ) ) );
                }
             };
 

@@ -64,8 +64,8 @@ namespace tao
                {
                   bool result = false;
 
-                  while( !in.empty() ) {
-                     if( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
+                  while( const std::size_t s = in.size( 4 ) ) {
+                     if( const auto t = pegtl::internal::peek_utf8::peek( in, s ) ) {
                         if( ( 0x20 <= t.data ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
                            in.bump_in_this_line( t.size );
                            result = true;

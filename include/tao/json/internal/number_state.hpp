@@ -22,13 +22,10 @@ namespace tao
          template< bool NEG >
          struct number_state  // NOLINT
          {
-            using exponent10_t = int32_t;
-            using msize_t = uint16_t;
+            using exponent10_t = std::int32_t;
+            using msize_t = std::uint16_t;
 
-            template< typename Input, typename... States >
-            explicit number_state( const Input& /*unused*/, States&&... /*unused*/ ) noexcept  // NOLINT
-            {
-            }
+            number_state() = default;
 
             number_state( const number_state& ) = delete;
             number_state( number_state&& ) = delete;
@@ -45,8 +42,8 @@ namespace tao
             bool drop = false;
             char mantissa[ max_mantissa_digits + 1 ];
 
-            template< typename Input, typename Consumer >
-            void success( const Input& /*unused*/, Consumer& consumer )
+            template< typename Consumer >
+            void success( Consumer& consumer )
             {
                if( !isfp && msize <= 20 ) {
                   mantissa[ msize ] = 0;
@@ -54,7 +51,7 @@ namespace tao
                   errno = 0;
                   const std::uint64_t ull = std::strtoull( mantissa, &p, 10 );
                   if( ( errno != ERANGE ) && ( p == mantissa + msize ) ) {
-                     if( NEG ) {
+                     if constexpr( NEG ) {
                         if( ull < 9223372036854775808ull ) {
                            consumer.number( -static_cast< std::int64_t >( ull ) );
                            return;

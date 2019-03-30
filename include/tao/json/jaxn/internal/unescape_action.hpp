@@ -23,8 +23,8 @@ namespace tao
             template<> struct unescape_action< rules::escaped_unicode > : pegtl::unescape::unescape_j {};
             template<> struct unescape_action< rules::escaped_unicode_code_point_content > : pegtl::unescape::unescape_u {};
 
+            template<> struct unescape_action< rules::identifier > : pegtl::unescape::append_all {};  // For parts_parser.
             template< char D > struct unescape_action< rules::unescaped< D > > : pegtl::unescape::append_all {};
-
             template< char D > struct unescape_action< rules::mchars< D > > : pegtl::unescape::append_all {};
             // clang-format on
 
