@@ -13,6 +13,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    {
    };
 
+   using maybe_nothing = nothing< void >;
+
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 #endif
