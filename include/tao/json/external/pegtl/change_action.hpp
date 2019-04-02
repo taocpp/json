@@ -1,20 +1,20 @@
 // Copyright (c) 2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_CONTRIB_CHANGE_STATE_HPP
-#define TAO_JSON_PEGTL_CONTRIB_CHANGE_STATE_HPP
+#ifndef TAO_JSON_PEGTL_CHANGE_ACTION_HPP
+#define TAO_JSON_PEGTL_CHANGE_ACTION_HPP
 
-#include "change_action_and_state.hpp"
+#include <type_traits>
 
-#include "../apply_mode.hpp"
-#include "../config.hpp"
-#include "../nothing.hpp"
-#include "../rewind_mode.hpp"
+#include "apply_mode.hpp"
+#include "config.hpp"
+#include "nothing.hpp"
+#include "rewind_mode.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
-   template< typename NewState >
-   struct change_state
+   template< template< typename... > class NewAction >
+   struct change_action
       : maybe_nothing
    {
       template< typename Rule,
@@ -28,7 +28,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                 typename... States >
       [[nodiscard]] static bool match( Input& in, States&&... st )
       {
-         return change_action_and_state< Action, NewState >::template match< Rule, A, M, Action, Control >( in, st... );
+         static_assert( !std::is_same_v< Action< void >, NewAction< void > >, "old and new action class templates are identical" );
+         return Control< Rule >::template match< A, M, NewAction, Control >( in, st... );
       }
    };
 

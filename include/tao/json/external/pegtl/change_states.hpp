@@ -1,18 +1,20 @@
 // Copyright (c) 2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_CONTRIB_DISCARD_INPUT_HPP
-#define TAO_JSON_PEGTL_CONTRIB_DISCARD_INPUT_HPP
+#ifndef TAO_JSON_PEGTL_CHANGE_STATES_HPP
+#define TAO_JSON_PEGTL_CHANGE_STATES_HPP
 
-#include "../apply_mode.hpp"
-#include "../config.hpp"
-#include "../match.hpp"
-#include "../nothing.hpp"
-#include "../rewind_mode.hpp"
+#include "change_action_and_states.hpp"
+
+#include "apply_mode.hpp"
+#include "config.hpp"
+#include "nothing.hpp"
+#include "rewind_mode.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
-   struct discard_input
+   template< typename... NewStates >
+   struct change_states
       : maybe_nothing
    {
       template< typename Rule,
@@ -26,9 +28,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                 typename... States >
       [[nodiscard]] static bool match( Input& in, States&&... st )
       {
-         const bool result = TAO_JSON_PEGTL_NAMESPACE::match< Rule, apply_mode::nothing, M, Action, Control >( in, st... );
-         in.discard();
-         return result;
+         return change_action_and_states< Action, NewStates... >::template match< Rule, A, M, Action, Control >( in, st... );
       }
    };
 
