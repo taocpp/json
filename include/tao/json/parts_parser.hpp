@@ -61,6 +61,7 @@ namespace tao
 
             template< typename Rule >
             struct integer_action
+               : public pegtl::nothing< Rule >
             {
             };
 

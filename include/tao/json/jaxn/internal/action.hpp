@@ -9,6 +9,7 @@
 #include <utility>
 #include <vector>
 
+#include "../../external/pegtl/nothing.hpp"
 #include "../../internal/number_state.hpp"
 
 #include "bunescape_action.hpp"
@@ -25,6 +26,7 @@ namespace tao
          {
             template< typename Rule >
             struct action
+               : public pegtl::nothing< Rule >
             {
             };
 

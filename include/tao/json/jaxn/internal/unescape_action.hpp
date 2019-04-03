@@ -5,6 +5,7 @@
 #define TAO_JSON_JAXN_INTERNAL_UNESCAPE_ACTION_HPP
 
 #include "../../external/pegtl/contrib/unescape.hpp"
+#include "../../external/pegtl/nothing.hpp"
 
 #include "grammar.hpp"
 
@@ -17,7 +18,7 @@ namespace tao
          namespace internal
          {
             // clang-format off
-            template< typename Rule > struct unescape_action {};
+            template< typename Rule > struct unescape_action : pegtl::nothing< Rule > {};
 
             template<> struct unescape_action< rules::escaped_char > : pegtl::unescape::unescape_c< rules::escaped_char, '"', '\'', '\\', '/', '\b', '\f', '\n', '\r', '\t', '\v', '\0' > {};
             template<> struct unescape_action< rules::escaped_unicode > : pegtl::unescape::unescape_j {};

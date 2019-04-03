@@ -7,6 +7,8 @@
 #include <string>
 #include <utility>
 
+#include "../external/pegtl/nothing.hpp"
+
 #include "grammar.hpp"
 #include "number_state.hpp"
 #include "unescape_action.hpp"
@@ -19,6 +21,7 @@ namespace tao
       {
          template< typename Rule >
          struct action
+            : public pegtl::nothing< Rule >
          {
          };
 

@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "../../external/pegtl/contrib/unescape.hpp"
+#include "../../external/pegtl/nothing.hpp"
 
 #include "grammar.hpp"
 
@@ -21,6 +22,7 @@ namespace tao
          {
             template< typename Rule >
             struct bunescape_action
+               : public pegtl::nothing< Rule >
             {
             };
 
