@@ -33,8 +33,8 @@ namespace tao
          class to_pretty_stream
          {
          protected:
+            alignas( 64 ) char buffer[ 64 ];
             std::ostream& os;
-            char buffer[ 32 ];
             const std::size_t indent;
             const std::string eol;
 
@@ -68,23 +68,19 @@ namespace tao
             }
 
          public:
-            to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
-               : os( in_os ),
-                 buffer(),
-                 indent( in_indent ),
-                 eol( "\n" )
-            {
-               std::memset( buffer, os.fill(), sizeof( buffer ) );
-            }
-
             template< typename S >
             to_pretty_stream( std::ostream& in_os, const std::size_t in_indent, S&& in_eol )
-               : os( in_os ),
-                 buffer(),
+               : buffer(),
+                 os( in_os ),
                  indent( in_indent ),
                  eol( std::forward< S >( in_eol ) )
             {
                std::memset( buffer, os.fill(), sizeof( buffer ) );
+            }
+
+            to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
+               : to_pretty_stream( in_os, in_indent, "\n" )
+            {
             }
 
             void null()
