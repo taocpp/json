@@ -5,29 +5,52 @@
 
 ## Custom Base Class for Values
 
-The class template `tao::json::basic_value<>` has two template parameters, the type traits, and a `Base` class that it (privately) inherits from.
+By default, `tao::json::basic_value<>` uses `tao::json::internal::empty_base`, an empty dummy class, as public base class.
+This can be changed to a custom public base class, allowing applications to add arbitrary custom member variables or member functions to every single JSON Value instance, including, recursively, all nested sub-values contained in Arrays and Objects.
 
-This allows applications to add arbitrary custom data to every single JSON Value instance, including, recursively, in all nested sub-values contained in Arrays and Objects.
-
-The library preserves the contents of the base class, and otherwise ignores it.
-More precisely:
-
-* The Base is copied when the value is copy constructed or assigned.
-* The Base is moved when the value is move constructed or assigned.
-* Otherwise the Base is default initialised when constructing a value.
-* The Base is ignored by the default comparison operators.
-
-Access to the `Base` instance of a value is given through two accessor functions named `base()`.
+To set up a custom public base class it is necessary to use custom [traits](Type-Traits.md) where the specialisation for `void` defines a different `public_base`.
 
 ```c++
-template< template< typename... > class Traits, class Base >
-Base& basic_value< Traits, Base >::base() noexcept;
+template< typename T >
+struct my_traits
+   : tao::json::traits< T >
+{};
 
-template< template< typename... > class Traits, class Base >
-const Base& basic_value< Traits, Base >::base() const noexcept;
+struct my_base
+{};
+
+template<>
+struct my_traits< void >
+   : tao::json::traits< void >
+{
+   template< typename > using public_base = my_base;
+};
 ```
 
-The application can use the Base for whatever it wants, for example to add filenames and line numbers to parsed values as [shown below](#annotate-with-filename-and-line-number).
+Note that `public_base` is a template, and `tao::json::value< my_traits >` will use `my_traits< void >::public_base< tao::json::value< my_traits > >` as public base class.
+This design pattern is also known as CRTP, the *curiously recurring template pattern*.
+
+In the example `my_base` is not a template and the template parameter to `my_traits< void >::public_base<>` is ignored, however it is possible and to let `my_base` use the `tao::json::value< my_traits >` template parameter when necessary.
+
+The library preserves the contents of the public base class, and otherwise ignores it.
+More precisely:
+
+* The base is copied when the value is copy constructed or assigned.
+* The base is moved when the value is move constructed or assigned.
+* Otherwise the base is default initialised when constructing a value.
+* The base is ignored by the default comparison operators.
+
+Access to the public base class instance of a value is given through two accessor functions named `public_base()`.
+
+```c++
+template< template< typename... > class Traits >
+Traits< void >::public_base< basic_value< Traits > >& basic_value< Traits >::public_base() noexcept;
+
+template< template< typename... > class Traits, class Base >
+const Traits< void >::public_base< basic_value< Traits > >& basic_value< Traits, Base >::public_base() const noexcept;
+```
+
+The application can use the public base for whatever it wants, for example to add filenames and line numbers to parsed values as [shown below](#annotate-with-filename-and-line-number), or to add new public member functions to all values.
 
 ## Annotate with filename and line number
 

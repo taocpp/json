@@ -7,7 +7,7 @@
 * [Produce JSON Events from (custom) type](#produce-events-from-type)
 * [Consume a (custom) type from a parser](#consume-type-from-parser)
 * [Default Key for Objects](#default-key-for-objects)
-* [Batteries Included[(#batteries-included)
+* [Batteries Included](#batteries-included)
 
 For brevity we will often write "the traits" instead of "the (corresponding/appropriate/whatever) specialisation of the traits class template".
 
