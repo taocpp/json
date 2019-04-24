@@ -811,25 +811,25 @@ namespace tao
          template< template< typename... > class, typename Consumer >
          static void produce( Consumer& c, const std::map< std::string, basic_value< Traits > >& o )
          {
-            c.begin_array( o.size() );
+            c.begin_object( o.size() );
             for( const auto& i : o ) {
                c.key( i.first );
                Traits< basic_value< Traits > >::produce( c, i.second );
                c.member();
             }
-            c.end_array( o.size() );
+            c.end_object( o.size() );
          }
 
          template< template< typename... > class, typename Consumer >
          static void produce( Consumer& c, std::map< std::string, basic_value< Traits > >&& o )
          {
-            c.begin_array( o.size() );
+            c.begin_object( o.size() );
             for( auto&& i : o ) {
                c.key( std::move( i.first ) );
                Traits< basic_value< Traits > >::produce( c, std::move( i.second ) );
                c.member();
             }
-            c.end_array( o.size() );
+            c.end_object( o.size() );
          }
       };
 
