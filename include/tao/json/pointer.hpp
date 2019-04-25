@@ -416,6 +416,11 @@ namespace tao
          return internal::tokens_to_string( p.begin(), p.end() );
       }
 
+      inline std::string to_string( pointer& p )
+      {
+         return internal::tokens_to_string( p.begin(), p.end() );
+      }
+
       inline std::string to_string( pointer&& p )
       {
          return internal::tokens_to_string( p.begin(), p.end() );
