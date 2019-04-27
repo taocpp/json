@@ -114,16 +114,16 @@ namespace tao
 
             std::vector< std::byte > binary()
             {
-               internal::binary_state s;
-               pegtl::parse< pegtl::must< internal::rules::binary, jaxn::internal::rules::wss >, internal::bunescape_action >( m_input, s );
-               return std::move( s.value );
+               std::vector< std::byte > data;
+               pegtl::parse< pegtl::must< internal::rules::binary, jaxn::internal::rules::wss >, internal::bunescape_action >( m_input, data );
+               return data;
             }
 
             std::string key()
             {
-               json::internal::string_state s;
-               pegtl::parse< pegtl::must< internal::rules::mkey, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, s );
-               return std::move( s.unescaped );
+               std::string unescaped;
+               pegtl::parse< pegtl::must< internal::rules::mkey, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
+               return unescaped;
             }
 
             // TODO: std::string_view key_view() that only works for identifiers (and possibly strings without escape sequences)?

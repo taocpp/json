@@ -31,6 +31,7 @@ set(testsources
   integer.cpp
   jaxn_ostream.cpp
   jaxn_parse.cpp
+  jaxn_parts_parser.cpp
   json_ostream.cpp
   json_parse.cpp
   json_parts_parser.cpp
