@@ -105,9 +105,9 @@ namespace tao
 
             std::string string()
             {
-               json::internal::string_state s;
-               pegtl::parse< pegtl::must< internal::rules::string, jaxn::internal::rules::wss >, internal::unescape_action >( m_input, s );
-               return std::move( s.unescaped );
+               std::string unescaped;
+               pegtl::parse< pegtl::must< internal::rules::string, jaxn::internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
+               return unescaped;
             }
 
             // TODO: std::string_view string_view() that only works for strings without escape sequences?
