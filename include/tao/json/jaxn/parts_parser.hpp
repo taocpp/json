@@ -6,7 +6,6 @@
 
 #include "../parts_parser.hpp"
 
-#include "internal/binary_state.hpp"
 #include "internal/bunescape_action.hpp"
 #include "internal/grammar.hpp"
 #include "internal/unescape_action.hpp"
@@ -127,7 +126,7 @@ namespace tao
                return std::move( s.unescaped );
             }
 
-            // TODO: std::string_view key_view() that only works for identifier (and possibly strings without escape sequences)?
+            // TODO: std::string_view key_view() that only works for identifiers (and possibly strings without escape sequences)?
 
          protected:
             template< char C >

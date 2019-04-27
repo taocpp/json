@@ -42,6 +42,7 @@ set(testsources
   object_construction.cpp
   opaque_pointer.cpp
   optional.cpp
+  public_base.cpp
   self_contained.cpp
   sha256.cpp
   string_view.cpp

@@ -139,19 +139,19 @@ namespace tao
       {
          my_value v1;
          assert( v1.empty() );
-         assert( v1.size() == 0 );
+         assert( v1.size() == 0 );  // NOLINT
 
          my_value v2 = "";
          assert( v2.empty() );
-         assert( v2.size() == 0 );
+         assert( v2.size() == 0 );  // NOLINT
 
          my_value v3 = empty_array;
          assert( v3.empty() );
-         assert( v3.size() == 0 );
+         assert( v3.size() == 0 );  // NOLINT
 
          my_value v4 = empty_object;
          assert( v4.empty() );
-         assert( v4.size() == 0 );
+         assert( v4.size() == 0 );  // NOLINT
 
          my_value f1 = 0;
          assert( !f1.empty() );
