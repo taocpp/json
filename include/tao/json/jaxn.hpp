@@ -9,7 +9,6 @@
 #include "jaxn/from_stream.hpp"
 #include "jaxn/from_string.hpp"
 #include "jaxn/parse_file.hpp"
-#include "jaxn/parts_parser.hpp"
 #include "jaxn/to_stream.hpp"
 #include "jaxn/to_string.hpp"
 
