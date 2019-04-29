@@ -26,6 +26,13 @@ namespace tao
          {
          }
 
+         position( const std::string& in_source, const std::size_t in_line, const std::size_t in_byte_in_line )
+            : m_line( in_line ),
+              m_byte_in_line( in_byte_in_line ),
+              m_source( in_source )
+         {
+         }
+
          position( const position& ) = default;
 
          position( position&& p ) noexcept
