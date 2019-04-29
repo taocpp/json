@@ -4,6 +4,11 @@
 #ifndef TAO_JSON_CONTRIB_POSITION_HPP
 #define TAO_JSON_CONTRIB_POSITION_HPP
 
+#include <ostream>
+#include <string>
+#include <type_traits>
+#include <utility>
+
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
 #include "../message_extension.hpp"
@@ -26,10 +31,10 @@ namespace tao
          {
          }
 
-         position( const std::string& in_source, const std::size_t in_line, const std::size_t in_byte_in_line )
+         position( std::string in_source, const std::size_t in_line, const std::size_t in_byte_in_line )
             : m_line( in_line ),
               m_byte_in_line( in_byte_in_line ),
-              m_source( in_source )
+              m_source( std::move( in_source ) )
          {
          }
 
