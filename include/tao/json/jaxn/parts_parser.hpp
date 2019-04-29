@@ -66,7 +66,7 @@ namespace tao
                pegtl::parse< internal::rules::wss >( m_input );
             }
 
-            bool empty() noexcept( noexcept( m_input.empty() ) )
+            bool empty() // noexcept( noexcept( m_input.empty() ) )
             {
                return m_input.empty();
             }
@@ -207,7 +207,7 @@ namespace tao
                pegtl::parse< pegtl::must< pegtl::json::value > >( m_input );  // Includes right-padding.
             }
 
-            auto mark() noexcept( noexcept( m_input.template mark< pegtl::rewind_mode::required >() ) )
+            auto mark() // noexcept( noexcept( m_input.template mark< pegtl::rewind_mode::required >() ) )
             {
                return m_input.template mark< pegtl::rewind_mode::required >();
             }
