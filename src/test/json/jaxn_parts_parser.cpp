@@ -4,6 +4,7 @@
 #include "test.hpp"
 
 #include <tao/json.hpp>
+#include <tao/json/jaxn/parts_parser.hpp>
 
 namespace tao
 {
