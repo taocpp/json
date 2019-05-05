@@ -164,9 +164,12 @@ namespace tao
                std::size_t i = size % 64;
                if( i < 56 ) {
                   M[ i++ ] = 0x80;  // NOLINT
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Waggressive-loop-optimizations"
                   while( i < 56 ) {
                      M[ i++ ] = 0x00;  // NOLINT
                   }
+#pragma GCC diagnostic pop
                }
                else {
                   M[ i++ ] = 0x80;  // NOLINT
