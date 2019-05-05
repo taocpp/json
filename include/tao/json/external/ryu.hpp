@@ -1058,7 +1058,7 @@ namespace tao
             if( ieeeExponent == 0 ) {
                if( ieeeMantissa == 0 ) {
                   const std::uint32_t size = sign ? 4 : 3;
-                  std::memcpy( result, "-0.0" + 4 - size, size );
+                  std::memcpy( result, &( "-0.0"[ 4 - size ] ), size );
                   return size;
                }
                // We subtract 2 so that the bounds computation has 2 additional bits.
