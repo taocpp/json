@@ -597,7 +597,7 @@ namespace tao
          template< typename... Ts >
          void unsafe_emplace_string( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
          {
-            new( &m_union.s ) std::string( std::forward< Ts >( ts )... );
+            ::new( (void*)&m_union.s ) std::string( std::forward< Ts >( ts )... );
             m_type = json::type::STRING;
          }
 

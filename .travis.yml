@@ -1,6 +1,6 @@
 language: generic
 os: linux
-dist: trusty
+dist: xenial
 
 matrix:
   include:
@@ -20,10 +20,18 @@ matrix:
       env:
         - CXX=g++-8
 
+    - compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-9']
+      env:
+        - CXX=g++-9
+
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-5']
           packages: ['clang-5.0', 'g++-7']
       env:
         - CXX=clang++-5.0
@@ -31,7 +39,7 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-6']
           packages: ['clang-6.0', 'g++-7']
       env:
         - CXX=clang++-6.0
@@ -39,7 +47,7 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-7']
           packages: ['clang-7', 'g++-7']
       env:
         - CXX=clang++-7
@@ -47,14 +55,22 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'g++-7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'g++-8']
       env:
-        - CXX=clang++-7
+        - CXX=clang++-8
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'g++-8']
+      env:
+        - CXX=clang++-8
         - CPPFLAGS=-fms-extensions
 
     - os: osx
-      osx_image: xcode10
+      osx_image: xcode10.2
       compiler: clang
       env:
         - CXX=clang++
@@ -63,23 +79,23 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-7']
+          packages: ['g++-9']
       env:
-        - CXX=g++-7
+        - CXX=g++-9
         - CXXFLAGS="-O0 --coverage"
       before_script:
         - pip install --user cpp-coveralls
       script:
         - make -kj3 check
-        - coveralls --gcov gcov-7 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
+        - coveralls --gcov gcov-9 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
 
     - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
+          packages: ['g++-9']
       env:
-        - CXX=g++-8
+        - CXX=g++-9
         - CPPFLAGS="-fsanitize=undefined -fuse-ld=gold"
 
     - compiler: gcc
@@ -87,38 +103,38 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
+          packages: ['g++-9']
       env:
-        - CXX=g++-8
+        - CXX=g++-9
         - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
 
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'g++-7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'g++-8']
       env:
-        - CXX=clang++-7
+        - CXX=clang++-8
         - CPPFLAGS=-fsanitize=undefined
 
     - compiler: clang
       sudo: required
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'g++-7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'g++-8']
       env:
-        - CXX=clang++-7
+        - CXX=clang++-8
         - CPPFLAGS=-fsanitize=address
 
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'clang-tidy-7', 'g++-7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'clang-tidy-8', 'g++-8']
       env:
-        - CXX=clang++-7
-        - CLANG_TIDY=clang-tidy-7
+        - CXX=clang++-8
+        - CLANG_TIDY=clang-tidy-8
       script:
         - make -kj3 clang-tidy
 
@@ -138,9 +154,9 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
+          packages: ['g++-9']
       env:
-        - CXX=g++-8
+        - CXX=g++-9
       script:
         - mkdir build
         - cd build
