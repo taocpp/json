@@ -139,16 +139,16 @@ namespace tao::json
    namespace internal
    {
       // clang-format off
-         struct pointer_zero : pegtl::one< '0' > {};
-         struct pointer_one : pegtl::one< '1' > {};
-         struct pointer_tilde : pegtl::one< '~' > {};
-         struct pointer_escaped : pegtl::sor< pointer_zero, pointer_one > {};
-         struct pointer_slash : pegtl::one< '/' > {};
-         struct pointer_char : pegtl::utf8::not_one< '/' > {};
-         struct pointer_escape : pegtl::if_must< pointer_tilde, pointer_escaped > {};
-         struct pointer_token : pegtl::star< pegtl::sor< pointer_escape, pointer_char > > {};
-         struct pointer_rule : pegtl::until< pegtl::eof, pegtl::must< pointer_slash, pointer_token > > {};
-         struct pointer_grammar : pegtl::must< pointer_rule > {};
+      struct pointer_zero : pegtl::one< '0' > {};
+      struct pointer_one : pegtl::one< '1' > {};
+      struct pointer_tilde : pegtl::one< '~' > {};
+      struct pointer_escaped : pegtl::sor< pointer_zero, pointer_one > {};
+      struct pointer_slash : pegtl::one< '/' > {};
+      struct pointer_char : pegtl::utf8::not_one< '/' > {};
+      struct pointer_escape : pegtl::if_must< pointer_tilde, pointer_escaped > {};
+      struct pointer_token : pegtl::star< pegtl::sor< pointer_escape, pointer_char > > {};
+      struct pointer_rule : pegtl::until< pegtl::eof, pegtl::must< pointer_slash, pointer_token > > {};
+      struct pointer_grammar : pegtl::must< pointer_rule > {};
       // clang-format on
 
       template< typename Rule >

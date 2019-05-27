@@ -155,20 +155,20 @@ namespace tao::json
    };
 
    // clang-format off
-      template<> struct traits< signed char > : internal::signed_trait< signed char > {};
-      template<> struct traits< signed short > : internal::signed_trait< signed short > {};
-      template<> struct traits< signed int > : internal::signed_trait< signed int > {};
-      template<> struct traits< signed long > : internal::signed_trait< signed long > {};
-      template<> struct traits< signed long long > : internal::signed_trait< signed long long > {};
+   template<> struct traits< signed char > : internal::signed_trait< signed char > {};
+   template<> struct traits< signed short > : internal::signed_trait< signed short > {};
+   template<> struct traits< signed int > : internal::signed_trait< signed int > {};
+   template<> struct traits< signed long > : internal::signed_trait< signed long > {};
+   template<> struct traits< signed long long > : internal::signed_trait< signed long long > {};
 
-      template<> struct traits< unsigned char > : internal::unsigned_trait< unsigned char > {};
-      template<> struct traits< unsigned short > : internal::unsigned_trait< unsigned short > {};
-      template<> struct traits< unsigned int > : internal::unsigned_trait< unsigned int > {};
-      template<> struct traits< unsigned long > : internal::unsigned_trait< unsigned long > {};
-      template<> struct traits< unsigned long long > : internal::unsigned_trait< unsigned long long > {};
+   template<> struct traits< unsigned char > : internal::unsigned_trait< unsigned char > {};
+   template<> struct traits< unsigned short > : internal::unsigned_trait< unsigned short > {};
+   template<> struct traits< unsigned int > : internal::unsigned_trait< unsigned int > {};
+   template<> struct traits< unsigned long > : internal::unsigned_trait< unsigned long > {};
+   template<> struct traits< unsigned long long > : internal::unsigned_trait< unsigned long long > {};
 
-      template<> struct traits< float > : internal::float_trait< float > {};
-      template<> struct traits< double > : internal::float_trait< double > {};
+   template<> struct traits< float > : internal::float_trait< float > {};
+   template<> struct traits< double > : internal::float_trait< double > {};
    // clang-format on
 
    template<>
