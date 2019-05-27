@@ -6,35 +6,27 @@
 
 #include <cstdint>
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer >
+   struct prefer_unsigned
+      : public Consumer
    {
-      namespace events
+      using Consumer::Consumer;
+
+      using Consumer::number;
+
+      void number( const std::int64_t v )
       {
-         template< typename Consumer >
-         struct prefer_unsigned
-            : public Consumer
-         {
-            using Consumer::Consumer;
+         if( v >= 0 ) {
+            Consumer::number( std::uint64_t( v ) );
+         }
+         else {
+            Consumer::number( v );
+         }
+      }
+   };
 
-            using Consumer::number;
-
-            void number( const std::int64_t v )
-            {
-               if( v >= 0 ) {
-                  Consumer::number( std::uint64_t( v ) );
-               }
-               else {
-                  Consumer::number( v );
-               }
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

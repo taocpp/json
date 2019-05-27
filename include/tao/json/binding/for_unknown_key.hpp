@@ -4,22 +4,14 @@
 #ifndef TAO_JSON_BINDING_FOR_UNKNOWN_KEY_HPP
 #define TAO_JSON_BINDING_FOR_UNKNOWN_KEY_HPP
 
-namespace tao
+namespace tao::json::binding
 {
-   namespace json
+   enum class for_unknown_key : bool
    {
-      namespace binding
-      {
-         enum class for_unknown_key : bool
-         {
-            fail,
-            skip
-         };
+      fail,
+      skip
+   };
 
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding
 
 #endif

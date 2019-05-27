@@ -13,30 +13,26 @@
 
 #include "internal/format.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   // Use ostream << std::setw( n ) for pretty-printing with indent n.
+
+   template< template< typename... > class Traits >
+   std::ostream& operator<<( std::ostream& o, const basic_value< Traits >& v )
    {
-      // Use ostream << std::setw( n ) for pretty-printing with indent n.
-
-      template< template< typename... > class Traits >
-      std::ostream& operator<<( std::ostream& o, const basic_value< Traits >& v )
-      {
-         const auto w = o.width( 0 );
-         if( w > 0 ) {
-            if( w >= 256 ) {
-               throw std::runtime_error( internal::format( "indentation ", w, " larger than 255" ) );  // NOLINT
-            }
-            json::to_stream( o, v, static_cast< std::size_t >( w ) );
+      const auto w = o.width( 0 );
+      if( w > 0 ) {
+         if( w >= 256 ) {
+            throw std::runtime_error( internal::format( "indentation ", w, " larger than 255" ) );  // NOLINT
          }
-         else {
-            json::to_stream( o, v );
-         }
-         return o;
+         json::to_stream( o, v, static_cast< std::size_t >( w ) );
       }
+      else {
+         json::to_stream( o, v );
+      }
+      return o;
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

@@ -8,19 +8,15 @@
 
 #include "../binding.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename U, typename V >
+   struct pair_traits
+      : public binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
+                               TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
    {
-      template< typename U, typename V >
-      struct pair_traits
-         : public binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
-                                  TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
-      {
-      };
+   };
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

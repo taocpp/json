@@ -11,45 +11,41 @@
 
 #include "internal/array_traits.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename T, typename... Ts >
+   struct vector_traits
+      : public internal::array_traits< std::vector< T, Ts... > >
    {
-      template< typename T, typename... Ts >
-      struct vector_traits
-         : public internal::array_traits< std::vector< T, Ts... > >
+      template< template< typename... > class Traits, typename... With >
+      static void to( const basic_value< Traits >& v, std::vector< T, Ts... >& r, With&... with )
       {
-         template< template< typename... > class Traits, typename... With >
-         static void to( const basic_value< Traits >& v, std::vector< T, Ts... >& r, With&... with )
-         {
-            const auto& a = v.get_array();
-            for( const auto& i : a ) {
-               r.emplace_back( i.template as_with< T >( with... ) );
-            }
+         const auto& a = v.get_array();
+         for( const auto& i : a ) {
+            r.emplace_back( i.template as_with< T >( with... ) );
          }
+      }
 
 #ifdef _MSC_VER
 #pragma warning( push )
 #pragma warning( disable : 4127 )
 #endif
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::vector< T, Ts... >& v )
-         {
-            auto s = parser.begin_array();
-            if( s.size ) {
-               v.reserve( *s.size );
-            }
-            while( parser.element_or_end_array( s ) ) {
-               v.emplace_back( json::consume< T, Traits >( parser ) );
-            }
+      template< template< typename... > class Traits, typename Producer >
+      static void consume( Producer& parser, std::vector< T, Ts... >& v )
+      {
+         auto s = parser.begin_array();
+         if( s.size ) {
+            v.reserve( *s.size );
          }
+         while( parser.element_or_end_array( s ) ) {
+            v.emplace_back( json::consume< T, Traits >( parser ) );
+         }
+      }
 #ifdef _MSC_VER
 #pragma warning( pop )
 #endif
-      };
+   };
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

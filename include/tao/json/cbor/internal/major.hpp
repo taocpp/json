@@ -6,35 +6,23 @@
 
 #include <cstdint>
 
-namespace tao
+namespace tao::json::cbor::internal
 {
-   namespace json
+   enum class major : std::uint8_t
    {
-      namespace cbor
-      {
-         namespace internal
-         {
-            enum class major : std::uint8_t
-            {
-               UNSIGNED = 0,
-               NEGATIVE = 0x20,
-               BINARY = 0x40,
-               STRING = 0x60,
-               ARRAY = 0x80,
-               OBJECT = 0xa0,
-               TAG = 0xc0,
-               OTHER = 0xe0
-            };
+      UNSIGNED = 0,
+      NEGATIVE = 0x20,
+      BINARY = 0x40,
+      STRING = 0x60,
+      ARRAY = 0x80,
+      OBJECT = 0xa0,
+      TAG = 0xc0,
+      OTHER = 0xe0
+   };
 
-            static constexpr std::uint8_t major_mask = 0xe0;
-            static constexpr std::uint8_t minor_mask = 0x1f;
+   static constexpr std::uint8_t major_mask = 0xe0;
+   static constexpr std::uint8_t minor_mask = 0x1f;
 
-         }  // namespace internal
-
-      }  // namespace cbor
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::cbor::internal
 
 #endif

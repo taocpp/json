@@ -11,35 +11,31 @@
 #include "events/to_value.hpp"
 #include "events/transformer.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
+   basic_value< Traits > basic_from_string( Ts&&... ts )
    {
-      template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-      basic_value< Traits > basic_from_string( Ts&&... ts )
+      events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
+      events::from_string( consumer, std::forward< Ts >( ts )... );
+      return std::move( consumer.value );
+   }
+
+   template< template< typename... > class... Transformers, typename... Ts >
+   value from_string( Ts&&... ts )
+   {
+      return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
+   }
+
+   inline namespace literals
+   {
+      inline value operator"" _json( const char* data, const std::size_t size )
       {
-         events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
-         events::from_string( consumer, std::forward< Ts >( ts )... );
-         return std::move( consumer.value );
+         return json::from_string( data, size, "literal" );
       }
 
-      template< template< typename... > class... Transformers, typename... Ts >
-      value from_string( Ts&&... ts )
-      {
-         return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
-      }
+   }  // namespace literals
 
-      inline namespace literals
-      {
-         inline value operator"" _json( const char* data, const std::size_t size )
-         {
-            return json::from_string( data, size, "literal" );
-         }
-
-      }  // namespace literals
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

@@ -6,17 +6,13 @@
 #include <tao/json/from_string.hpp>
 #include <tao/json/value.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void unit_test()
    {
-      void unit_test()
-      {
-         TEST_ASSERT( "42"_json.get_unsigned() == 42 );
-      }
+      TEST_ASSERT( "42"_json.get_unsigned() == 42 );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

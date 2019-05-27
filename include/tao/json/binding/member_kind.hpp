@@ -4,22 +4,14 @@
 #ifndef TAO_JSON_BINDING_MEMBER_KIND_HPP
 #define TAO_JSON_BINDING_MEMBER_KIND_HPP
 
-namespace tao
+namespace tao::json::binding
 {
-   namespace json
+   enum class member_kind : bool
    {
-      namespace binding
-      {
-         enum class member_kind : bool
-         {
-            optional,
-            required
-         };
+      optional,
+      required
+   };
 
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding
 
 #endif

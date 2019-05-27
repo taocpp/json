@@ -44,32 +44,28 @@
 // - try odd digit first
 // - try writing 4 chars at a time
 
-namespace tao
+namespace tao::json::itoa
 {
-   namespace json
+   struct pair
    {
-      namespace itoa
-      {
-         struct pair
-         {
-            char t;
-            char o;
-         };
+      char t;
+      char o;
+   };
 
-         // clang-format off
+   // clang-format off
 #define TAO_JSON_ITOA_P( T ) { T, '0' }, { T, '1' }, { T, '2' }, { T, '3' }, { T, '4' }, { T, '5' }, { T, '6' }, { T, '7' }, { T, '8' }, { T, '9' }
-         // clang-format on
+   // clang-format on
 
-         static const pair s_pairs[] = { TAO_JSON_ITOA_P( '0' ),
-                                         TAO_JSON_ITOA_P( '1' ),
-                                         TAO_JSON_ITOA_P( '2' ),
-                                         TAO_JSON_ITOA_P( '3' ),
-                                         TAO_JSON_ITOA_P( '4' ),
-                                         TAO_JSON_ITOA_P( '5' ),
-                                         TAO_JSON_ITOA_P( '6' ),
-                                         TAO_JSON_ITOA_P( '7' ),
-                                         TAO_JSON_ITOA_P( '8' ),
-                                         TAO_JSON_ITOA_P( '9' ) };
+   static const pair s_pairs[] = { TAO_JSON_ITOA_P( '0' ),
+                                   TAO_JSON_ITOA_P( '1' ),
+                                   TAO_JSON_ITOA_P( '2' ),
+                                   TAO_JSON_ITOA_P( '3' ),
+                                   TAO_JSON_ITOA_P( '4' ),
+                                   TAO_JSON_ITOA_P( '5' ),
+                                   TAO_JSON_ITOA_P( '6' ),
+                                   TAO_JSON_ITOA_P( '7' ),
+                                   TAO_JSON_ITOA_P( '8' ),
+                                   TAO_JSON_ITOA_P( '9' ) };
 
 #define TAO_JSON_ITOA_W( N, I ) *(pair*)&b[ N ] = s_pairs[ I ]
 #define TAO_JSON_ITOA_A( N ) t = ( std::uint64_t( 1 ) << ( 32 + N / 5 * N * 53 / 16 ) ) / std::uint32_t( 1e##N ) + 1 + N / 6 - N / 8, t *= u, t >>= N / 5 * N * 53 / 16, t += N / 6 * 4, TAO_JSON_ITOA_W( 0, t >> 32 )
@@ -91,67 +87,63 @@ namespace tao
 
 #define TAO_JSON_ITOA_LG( F ) ( u < 100 ? u < 10 ? F( 0 ) : F( 1 ) : u < 1000000 ? u < 10000 ? u < 1000 ? F( 2 ) : F( 3 ) : u < 100000 ? F( 4 ) : F( 5 ) : u < 100000000 ? u < 10000000 ? F( 6 ) : F( 7 ) : u < 1000000000 ? F( 8 ) : F( 9 ) )
 
-         inline char* u32toa( const std::uint32_t u, char* b )
-         {
-            std::uint64_t t;
-            return TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
-         }
+   inline char* u32toa( const std::uint32_t u, char* b )
+   {
+      std::uint64_t t;
+      return TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
+   }
 
-         inline char* i32toa( const std::int32_t i, char* b )
-         {
-            const std::uint32_t u = i < 0 ? ( *b++ = '-', 0 - std::uint32_t( i ) ) : i;
-            std::uint64_t t;
-            return TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
-         }
+   inline char* i32toa( const std::int32_t i, char* b )
+   {
+      const std::uint32_t u = i < 0 ? ( *b++ = '-', 0 - std::uint32_t( i ) ) : i;
+      std::uint64_t t;
+      return TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
+   }
 
-         inline char* u64toa( const std::uint64_t n, char* b )
-         {
-            std::uint32_t u;
-            std::uint64_t t;
+   inline char* u64toa( const std::uint64_t n, char* b )
+   {
+      std::uint32_t u;
+      std::uint64_t t;
 
-            if( std::uint32_t( n >> 32 ) == 0 ) {
-               return u = std::uint32_t( n ), TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
-            }
-            std::uint64_t a = n / 100000000;
+      if( std::uint32_t( n >> 32 ) == 0 ) {
+         return u = std::uint32_t( n ), TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
+      }
+      std::uint64_t a = n / 100000000;
 
-            if( std::uint32_t( a >> 32 ) == 0 ) {
-               u = std::uint32_t( a );
-               TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
-            }
-            else {
-               u = std::uint32_t( a / 100000000 );
-               TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
-               u = a % 100000000;
-               TAO_JSON_ITOA_LN( 7 );
-            }
-            u = n % 100000000;
-            return TAO_JSON_ITOA_LN( 7 );
-         }
+      if( std::uint32_t( a >> 32 ) == 0 ) {
+         u = std::uint32_t( a );
+         TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
+      }
+      else {
+         u = std::uint32_t( a / 100000000 );
+         TAO_JSON_ITOA_LG( TAO_JSON_ITOA_LN );
+         u = a % 100000000;
+         TAO_JSON_ITOA_LN( 7 );
+      }
+      u = n % 100000000;
+      return TAO_JSON_ITOA_LN( 7 );
+   }
 
-         inline char* i64toa( const std::int64_t i, char* b )
-         {
-            const std::uint64_t n = i < 0 ? ( *b++ = '-', 0 - std::uint64_t( i ) ) : i;
-            return u64toa( n, b );
-         }
+   inline char* i64toa( const std::int64_t i, char* b )
+   {
+      const std::uint64_t n = i < 0 ? ( *b++ = '-', 0 - std::uint64_t( i ) ) : i;
+      return u64toa( n, b );
+   }
 
-         inline void i64tos( std::ostream& o, const std::int64_t i )
-         {
-            char b[ 24 ];
-            const auto* s = i64toa( i, b );
-            o.write( b, s - b );
-         }
+   inline void i64tos( std::ostream& o, const std::int64_t i )
+   {
+      char b[ 24 ];
+      const auto* s = i64toa( i, b );
+      o.write( b, s - b );
+   }
 
-         inline void u64tos( std::ostream& o, const std::uint64_t i )
-         {
-            char b[ 24 ];
-            const auto* s = u64toa( i, b );
-            o.write( b, s - b );
-         }
+   inline void u64tos( std::ostream& o, const std::uint64_t i )
+   {
+      char b[ 24 ];
+      const auto* s = u64toa( i, b );
+      o.write( b, s - b );
+   }
 
-      }  // namespace itoa
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::itoa
 
 #endif

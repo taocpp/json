@@ -6,59 +6,55 @@
 #include <tao/json/self_contained.hpp>
 #include <tao/json/value.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void unit_test()
    {
-      void unit_test()
-      {
-         value e;
+      value e;
 
-         value d = { { "foo", 1 } };
-         value v = std::move( d );
+      value d = { { "foo", 1 } };
+      value v = std::move( d );
 
-         value v1 = { { "bar", v }, { "baz", value::array( { 2, v, 3 } ) } };
-         value v2 = { { "bar", &v }, { "baz", value::array( { 2, &v, 3 } ) } };
-         value v4 = { { "bar", { { "foo", 1 } } }, { "baz", value::array( { 2, { { "foo", 1 } }, 3 } ) } };
+      value v1 = { { "bar", v }, { "baz", value::array( { 2, v, 3 } ) } };
+      value v2 = { { "bar", &v }, { "baz", value::array( { 2, &v, 3 } ) } };
+      value v4 = { { "bar", { { "foo", 1 } } }, { "baz", value::array( { 2, { { "foo", 1 } }, 3 } ) } };
 
-         TEST_ASSERT( v1 == v2 );
-         TEST_ASSERT( v1 == v4 );
-         TEST_ASSERT( v2 == v4 );
+      TEST_ASSERT( v1 == v2 );
+      TEST_ASSERT( v1 == v4 );
+      TEST_ASSERT( v2 == v4 );
 
-         TEST_ASSERT( v1.at( "bar" ).type() == type::OBJECT );
-         TEST_ASSERT( v1.at( "baz" ).at( 1 ).type() == type::OBJECT );
+      TEST_ASSERT( v1.at( "bar" ).type() == type::OBJECT );
+      TEST_ASSERT( v1.at( "baz" ).at( 1 ).type() == type::OBJECT );
 
-         TEST_ASSERT( v2.at( "bar" ).type() == type::VALUE_PTR );
-         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::VALUE_PTR );
+      TEST_ASSERT( v2.at( "bar" ).type() == type::VALUE_PTR );
+      TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::VALUE_PTR );
 
-         TEST_ASSERT( is_self_contained( e ) );
+      TEST_ASSERT( is_self_contained( e ) );
 
-         TEST_ASSERT( is_self_contained( v1 ) );
-         TEST_ASSERT( !is_self_contained( v2 ) );
-         TEST_ASSERT( is_self_contained( v4 ) );
+      TEST_ASSERT( is_self_contained( v1 ) );
+      TEST_ASSERT( !is_self_contained( v2 ) );
+      TEST_ASSERT( is_self_contained( v4 ) );
 
-         make_self_contained( e );
+      make_self_contained( e );
 #ifndef NDEBUG
-         TEST_THROWS( make_self_contained( d ) );
+      TEST_THROWS( make_self_contained( d ) );
 #endif
-         make_self_contained( v1 );
-         make_self_contained( v2 );
+      make_self_contained( v1 );
+      make_self_contained( v2 );
 
-         TEST_ASSERT( is_self_contained( v1 ) );
-         TEST_ASSERT( is_self_contained( v2 ) );
-         TEST_ASSERT( v1 == v2 );
-         TEST_ASSERT( v1 == v4 );
-         TEST_ASSERT( v2 == v4 );
+      TEST_ASSERT( is_self_contained( v1 ) );
+      TEST_ASSERT( is_self_contained( v2 ) );
+      TEST_ASSERT( v1 == v2 );
+      TEST_ASSERT( v1 == v4 );
+      TEST_ASSERT( v2 == v4 );
 
-         TEST_ASSERT( v1.at( "bar" ).type() == type::OBJECT );
-         TEST_ASSERT( v1.at( "baz" ).at( 1 ).type() == type::OBJECT );
+      TEST_ASSERT( v1.at( "bar" ).type() == type::OBJECT );
+      TEST_ASSERT( v1.at( "baz" ).at( 1 ).type() == type::OBJECT );
 
-         TEST_ASSERT( v2.at( "bar" ).type() == type::OBJECT );
-         TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::OBJECT );
-      }
+      TEST_ASSERT( v2.at( "bar" ).type() == type::OBJECT );
+      TEST_ASSERT( v2.at( "baz" ).at( 1 ).type() == type::OBJECT );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

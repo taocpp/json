@@ -9,82 +9,74 @@
 
 #include <stdexcept>
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer, std::size_t Limit >
+   class limit_nesting_depth
+      : public Consumer
    {
-      namespace events
+   private:
+      std::size_t m_depth = 0;
+
+      void count_and_limit()
       {
-         template< typename Consumer, std::size_t Limit >
-         class limit_nesting_depth
-            : public Consumer
-         {
-         private:
-            std::size_t m_depth = 0;
+         if( ++m_depth > Limit ) {
+            throw std::runtime_error( "nesting depth limit exceeded" );  // NOLINT
+         }
+      }
 
-            void count_and_limit()
-            {
-               if( ++m_depth > Limit ) {
-                  throw std::runtime_error( "nesting depth limit exceeded" );  // NOLINT
-               }
-            }
+   public:
+      using Consumer::Consumer;
 
-         public:
-            using Consumer::Consumer;
+      void begin_array()
+      {
+         count_and_limit();
+         Consumer::begin_array();
+      }
 
-            void begin_array()
-            {
-               count_and_limit();
-               Consumer::begin_array();
-            }
+      void begin_array( const std::size_t size )
+      {
+         count_and_limit();
+         Consumer::begin_array( size );
+      }
 
-            void begin_array( const std::size_t size )
-            {
-               count_and_limit();
-               Consumer::begin_array( size );
-            }
+      void end_array()
+      {
+         Consumer::end_array();
+         --m_depth;
+      }
 
-            void end_array()
-            {
-               Consumer::end_array();
-               --m_depth;
-            }
+      void end_array( const std::size_t size )
+      {
+         Consumer::end_array( size );
+         --m_depth;
+      }
 
-            void end_array( const std::size_t size )
-            {
-               Consumer::end_array( size );
-               --m_depth;
-            }
+      void begin_object()
+      {
+         count_and_limit();
+         Consumer::begin_object();
+      }
 
-            void begin_object()
-            {
-               count_and_limit();
-               Consumer::begin_object();
-            }
+      void begin_object( const std::size_t size )
+      {
+         count_and_limit();
+         Consumer::begin_object( size );
+      }
 
-            void begin_object( const std::size_t size )
-            {
-               count_and_limit();
-               Consumer::begin_object( size );
-            }
+      void end_object()
+      {
+         Consumer::end_object();
+         --m_depth;
+      }
 
-            void end_object()
-            {
-               Consumer::end_object();
-               --m_depth;
-            }
+      void end_object( const std::size_t size )
+      {
+         Consumer::end_object( size );
+         --m_depth;
+      }
+   };
 
-            void end_object( const std::size_t size )
-            {
-               Consumer::end_object( size );
-               --m_depth;
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

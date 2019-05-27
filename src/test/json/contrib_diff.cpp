@@ -8,40 +8,36 @@
 
 #include <tao/json/contrib/diff.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void unit_test()  // NOLINT
    {
-      void unit_test()  // NOLINT
-      {
-         const value source = {
-            { "foo", 42 },
-            { "blue", 3.14 },
-            { "bar", value::array( { 1, 2, 3, 4, 5 } ) },
-            { "baz", 2 }
-         };
+      const value source = {
+         { "foo", 42 },
+         { "blue", 3.14 },
+         { "bar", value::array( { 1, 2, 3, 4, 5 } ) },
+         { "baz", 2 }
+      };
 
-         const value destination = {
-            { "bar", value::array( { 1, 2, 7 } ) },
-            { "foo", 42 },
-            { "yellow", empty_object },
-            { "baz", "hello" }
-         };
+      const value destination = {
+         { "bar", value::array( { 1, 2, 7 } ) },
+         { "foo", 42 },
+         { "yellow", empty_object },
+         { "baz", "hello" }
+      };
 
-         const auto d = diff( source, destination );
+      const auto d = diff( source, destination );
 
-         // clang-format off
-         TEST_ASSERT( d == value::array( { { { "op", "replace" }, { "path", "/bar/2" }, { "value", 7 } },
-                                           { { "op", "remove" }, { "path", "/bar/4" } },
-                                           { { "op", "remove" }, { "path", "/bar/3" } },
-                                           { { "op", "replace" }, { "path", "/baz" }, { "value", "hello" } },
-                                           { { "op", "remove" }, { "path", "/blue" } },
-                                           { { "op", "add" }, { "path", "/yellow" }, { "value", empty_object } } } ) );
-         // clang-format on
-      }
+      // clang-format off
+      TEST_ASSERT( d == value::array( { { { "op", "replace" }, { "path", "/bar/2" }, { "value", 7 } },
+                                        { { "op", "remove" }, { "path", "/bar/4" } },
+                                        { { "op", "remove" }, { "path", "/bar/3" } },
+                                        { { "op", "replace" }, { "path", "/baz" }, { "value", "hello" } },
+                                        { { "op", "remove" }, { "path", "/blue" } },
+                                        { { "op", "add" }, { "path", "/yellow" }, { "value", empty_object } } } ) );
+      // clang-format on
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

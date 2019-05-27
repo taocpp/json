@@ -19,133 +19,125 @@
 
 #include "../internal/escape.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   // Events consumer to build a JSON string representation.
+
+   class to_stream
    {
-      namespace events
+   protected:
+      std::ostream& os;
+      bool first;
+
+      void next()
       {
-         // Events consumer to build a JSON string representation.
+         if( !first ) {
+            os.put( ',' );
+         }
+      }
 
-         class to_stream
-         {
-         protected:
-            std::ostream& os;
-            bool first;
+   public:
+      explicit to_stream( std::ostream& in_os ) noexcept
+         : os( in_os ),
+           first( true )
+      {
+      }
 
-            void next()
-            {
-               if( !first ) {
-                  os.put( ',' );
-               }
-            }
+      void null()
+      {
+         next();
+         os.write( "null", 4 );
+      }
 
-         public:
-            explicit to_stream( std::ostream& in_os ) noexcept
-               : os( in_os ),
-                 first( true )
-            {
-            }
+      void boolean( const bool v )
+      {
+         next();
+         if( v ) {
+            os.write( "true", 4 );
+         }
+         else {
+            os.write( "false", 5 );
+         }
+      }
 
-            void null()
-            {
-               next();
-               os.write( "null", 4 );
-            }
+      void number( const std::int64_t v )
+      {
+         next();
+         itoa::i64tos( os, v );
+      }
 
-            void boolean( const bool v )
-            {
-               next();
-               if( v ) {
-                  os.write( "true", 4 );
-               }
-               else {
-                  os.write( "false", 5 );
-               }
-            }
+      void number( const std::uint64_t v )
+      {
+         next();
+         itoa::u64tos( os, v );
+      }
 
-            void number( const std::int64_t v )
-            {
-               next();
-               itoa::i64tos( os, v );
-            }
+      void number( const double v )
+      {
+         next();
+         if( !std::isfinite( v ) ) {
+            // if this throws, consider using non_finite_to_* transformers
+            throw std::runtime_error( "non-finite double value invalid for JSON string representation" );  // NOLINT
+         }
+         ryu::d2s_stream( os, v );
+      }
 
-            void number( const std::uint64_t v )
-            {
-               next();
-               itoa::u64tos( os, v );
-            }
+      void string( const std::string_view v )
+      {
+         next();
+         os.put( '"' );
+         internal::escape( os, v );
+         os.put( '"' );
+      }
 
-            void number( const double v )
-            {
-               next();
-               if( !std::isfinite( v ) ) {
-                  // if this throws, consider using non_finite_to_* transformers
-                  throw std::runtime_error( "non-finite double value invalid for JSON string representation" );  // NOLINT
-               }
-               ryu::d2s_stream( os, v );
-            }
+      void binary( const tao::binary_view /*unused*/ )
+      {
+         // if this throws, consider using binary_to_* transformers
+         throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
+      }
 
-            void string( const std::string_view v )
-            {
-               next();
-               os.put( '"' );
-               internal::escape( os, v );
-               os.put( '"' );
-            }
+      void begin_array( const std::size_t /*unused*/ = 0 )
+      {
+         next();
+         os.put( '[' );
+         first = true;
+      }
 
-            void binary( const tao::binary_view /*unused*/ )
-            {
-               // if this throws, consider using binary_to_* transformers
-               throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
-            }
+      void element() noexcept
+      {
+         first = false;
+      }
 
-            void begin_array( const std::size_t /*unused*/ = 0 )
-            {
-               next();
-               os.put( '[' );
-               first = true;
-            }
+      void end_array( const std::size_t /*unused*/ = 0 )
+      {
+         os.put( ']' );
+      }
 
-            void element() noexcept
-            {
-               first = false;
-            }
+      void begin_object( const std::size_t /*unused*/ = 0 )
+      {
+         next();
+         os.put( '{' );
+         first = true;
+      }
 
-            void end_array( const std::size_t /*unused*/ = 0 )
-            {
-               os.put( ']' );
-            }
+      void key( const std::string_view v )
+      {
+         string( v );
+         os.put( ':' );
+         first = true;
+      }
 
-            void begin_object( const std::size_t /*unused*/ = 0 )
-            {
-               next();
-               os.put( '{' );
-               first = true;
-            }
+      void member() noexcept
+      {
+         first = false;
+      }
 
-            void key( const std::string_view v )
-            {
-               string( v );
-               os.put( ':' );
-               first = true;
-            }
+      void end_object( const std::size_t /*unused*/ = 0 )
+      {
+         os.put( '}' );
+      }
+   };
 
-            void member() noexcept
-            {
-               first = false;
-            }
-
-            void end_object( const std::size_t /*unused*/ = 0 )
-            {
-               os.put( '}' );
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

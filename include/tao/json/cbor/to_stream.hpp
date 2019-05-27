@@ -13,23 +13,15 @@
 
 #include "events/to_stream.hpp"
 
-namespace tao
+namespace tao::json::cbor
 {
-   namespace json
+   template< template< typename... > class... Transformers, template< typename... > class Traits >
+   void to_stream( std::ostream& os, const basic_value< Traits >& v )
    {
-      namespace cbor
-      {
-         template< template< typename... > class... Transformers, template< typename... > class Traits >
-         void to_stream( std::ostream& os, const basic_value< Traits >& v )
-         {
-            json::events::transformer< events::to_stream, Transformers... > consumer( os );
-            json::events::from_value( consumer, v );
-         }
+      json::events::transformer< events::to_stream, Transformers... > consumer( os );
+      json::events::from_value( consumer, v );
+   }
 
-      }  // namespace cbor
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::cbor
 
 #endif

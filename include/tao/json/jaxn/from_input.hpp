@@ -12,30 +12,22 @@
 
 #include "events/from_input.hpp"
 
-namespace tao
+namespace tao::json::jaxn
 {
-   namespace json
+   template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
+   basic_value< Traits > basic_from_input( Ts&&... ts )
    {
-      namespace jaxn
-      {
-         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-         basic_value< Traits > basic_from_input( Ts&&... ts )
-         {
-            json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
-            events::from_input( consumer, std::forward< Ts >( ts )... );
-            return std::move( consumer.value );
-         }
+      json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
+      events::from_input( consumer, std::forward< Ts >( ts )... );
+      return std::move( consumer.value );
+   }
 
-         template< template< typename... > class... Transformers, typename... Ts >
-         value from_input( Ts&&... ts )
-         {
-            return basic_from_input< traits, Transformers... >( std::forward< Ts >( ts )... );
-         }
+   template< template< typename... > class... Transformers, typename... Ts >
+   value from_input( Ts&&... ts )
+   {
+      return basic_from_input< traits, Transformers... >( std::forward< Ts >( ts )... );
+   }
 
-      }  // namespace jaxn
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::jaxn
 
 #endif

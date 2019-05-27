@@ -6,34 +6,26 @@
 
 #include <sstream>
 
-namespace tao
+namespace tao::json::internal
 {
-   namespace json
+   template< typename T >
+   void hexdump( std::ostream& os, const T& v )
    {
-      namespace internal
-      {
-         template< typename T >
-         void hexdump( std::ostream& os, const T& v )
-         {
-            static const char h[] = "0123456789ABCDEF";
-            for( const auto b : v ) {
-               os.put( h[ static_cast< unsigned char >( b ) >> 4 ] );
-               os.put( h[ static_cast< unsigned char >( b ) & 0xF ] );
-            }
-         }
+      static const char h[] = "0123456789ABCDEF";
+      for( const auto b : v ) {
+         os.put( h[ static_cast< unsigned char >( b ) >> 4 ] );
+         os.put( h[ static_cast< unsigned char >( b ) & 0xF ] );
+      }
+   }
 
-         template< typename T >
-         std::string hexdump( const T& v )
-         {
-            std::ostringstream os;
-            internal::hexdump( os, v );
-            return os.str();
-         }
+   template< typename T >
+   std::string hexdump( const T& v )
+   {
+      std::ostringstream os;
+      internal::hexdump( os, v );
+      return os.str();
+   }
 
-      }  // namespace internal
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::internal
 
 #endif

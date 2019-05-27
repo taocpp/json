@@ -12,42 +12,34 @@
 #include "../internal/errors.hpp"
 #include "../internal/grammar.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   // Events producers that parse a JSON string representation.
+
+   template< typename Consumer, typename Input >
+   void from_input( Consumer& consumer, Input&& in )
    {
-      namespace events
-      {
-         // Events producers that parse a JSON string representation.
+      pegtl::parse< internal::grammar, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
+   }
 
-         template< typename Consumer, typename Input >
-         void from_input( Consumer& consumer, Input&& in )
-         {
-            pegtl::parse< internal::grammar, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
-         }
+   template< typename Consumer, typename Input >
+   void from_input_embedded( Consumer& consumer, Input&& in )
+   {
+      pegtl::parse< internal::embedded, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
+   }
 
-         template< typename Consumer, typename Input >
-         void from_input_embedded( Consumer& consumer, Input&& in )
-         {
-            pegtl::parse< internal::embedded, internal::action, internal::errors >( std::forward< Input >( in ), consumer );
-         }
+   template< typename Consumer, typename Outer, typename Input >
+   void from_input_nested( Consumer& consumer, const Outer& oi, Input&& in )
+   {
+      pegtl::parse_nested< internal::grammar, internal::action, internal::errors >( oi, std::forward< Input >( in ), consumer );
+   }
 
-         template< typename Consumer, typename Outer, typename Input >
-         void from_input_nested( Consumer& consumer, const Outer& oi, Input&& in )
-         {
-            pegtl::parse_nested< internal::grammar, internal::action, internal::errors >( oi, std::forward< Input >( in ), consumer );
-         }
+   template< typename Consumer, typename Outer, typename Input >
+   void from_input_embedded_nested( Consumer& consumer, const Outer& oi, Input&& in )
+   {
+      pegtl::parse_nested< internal::embedded, internal::action, internal::errors >( oi, std::forward< Input >( in ), consumer );
+   }
 
-         template< typename Consumer, typename Outer, typename Input >
-         void from_input_embedded_nested( Consumer& consumer, const Outer& oi, Input&& in )
-         {
-            pegtl::parse_nested< internal::embedded, internal::action, internal::errors >( oi, std::forward< Input >( in ), consumer );
-         }
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

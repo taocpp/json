@@ -5,16 +5,10 @@
 
 #include <tao/json.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
-   {
-      void unit_test()
-      {
-      }
+   void unit_test() {}
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

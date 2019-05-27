@@ -10,43 +10,35 @@
 
 #include "pair.hpp"
 
-namespace tao
+namespace tao::json::internal
 {
-   namespace json
+   template< template< typename... > class Traits >
+   struct single
    {
-      namespace internal
+      mutable basic_value< Traits > value;
+
+      template< typename U >
+      single( U&& v )  // NOLINT
+         : value( std::forward< U >( v ) )
       {
-         template< template< typename... > class Traits >
-         struct single
-         {
-            mutable basic_value< Traits > value;
+      }
 
-            template< typename U >
-            single( U&& v )  // NOLINT
-               : value( std::forward< U >( v ) )
-            {
-            }
+      single( std::initializer_list< pair< Traits > >&& l )
+         : value( std::move( l ) )
+      {
+      }
 
-            single( std::initializer_list< pair< Traits > >&& l )
-               : value( std::move( l ) )
-            {
-            }
+      single( const std::initializer_list< pair< Traits > >& l )
+         : value( l )
+      {
+      }
 
-            single( const std::initializer_list< pair< Traits > >& l )
-               : value( l )
-            {
-            }
+      single( std::initializer_list< pair< Traits > >& l )
+         : value( l )
+      {
+      }
+   };
 
-            single( std::initializer_list< pair< Traits > >& l )
-               : value( l )
-            {
-            }
-         };
-
-      }  // namespace internal
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::internal
 
 #endif

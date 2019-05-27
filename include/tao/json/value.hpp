@@ -8,14 +8,10 @@
 #include "operators.hpp"
 #include "traits.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
-   {
-      using value = basic_value< traits >;
+   using value = basic_value< traits >;
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

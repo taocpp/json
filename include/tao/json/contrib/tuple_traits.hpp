@@ -9,48 +9,44 @@
 
 #include "../binding.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   namespace internal
    {
-      namespace internal
+      template< std::size_t I, typename... Ts >
+      struct getter
       {
-         template< std::size_t I, typename... Ts >
-         struct getter
+         static decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
          {
-            static decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
-            {
-               return std::get< I >( t );
-            }
+            return std::get< I >( t );
+         }
 
-            static decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
-            {
-               return std::get< I >( t );
-            }
-         };
-
-         template< typename Indices, typename... Ts >
-         struct tuple_traits;
-
-         template< std::size_t... Is, typename... Ts >
-         struct tuple_traits< std::index_sequence< Is... >, Ts... >
+         static decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
          {
-            template< std::size_t I >
-            using helper_t = binding::element2< &getter< I, Ts... >::cget, &getter< I, Ts... >::get >;
-
-            using type = binding::array< helper_t< Is >... >;
-         };
-
-      }  // namespace internal
-
-      template< typename... Ts >
-      struct tuple_traits
-         : internal::tuple_traits< std::index_sequence_for< Ts... >, Ts... >::type
-      {
+            return std::get< I >( t );
+         }
       };
 
-   }  // namespace json
+      template< typename Indices, typename... Ts >
+      struct tuple_traits;
 
-}  // namespace tao
+      template< std::size_t... Is, typename... Ts >
+      struct tuple_traits< std::index_sequence< Is... >, Ts... >
+      {
+         template< std::size_t I >
+         using helper_t = binding::element2< &getter< I, Ts... >::cget, &getter< I, Ts... >::get >;
+
+         using type = binding::array< helper_t< Is >... >;
+      };
+
+   }  // namespace internal
+
+   template< typename... Ts >
+   struct tuple_traits
+      : internal::tuple_traits< std::index_sequence_for< Ts... >, Ts... >::type
+   {
+   };
+
+}  // namespace tao::json
 
 #endif

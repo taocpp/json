@@ -111,7 +111,7 @@ typedef uint16_t uc16;
     static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 #endif
 
-namespace json_double_conversion
+namespace tao::json::double_conversion
 {
    static const int kCharSize = sizeof( char );
 
@@ -1317,6 +1317,6 @@ namespace json_double_conversion
       }
    }
 
-} // json_double_conversion
+}  // namespace tao::json::double_conversion
 
 #endif

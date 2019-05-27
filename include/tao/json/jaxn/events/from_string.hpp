@@ -9,40 +9,28 @@
 
 #include "from_input.hpp"
 
-namespace tao
+namespace tao::json::jaxn::events
 {
-   namespace json
+   // Events producer to parse a JAXN string representation.
+
+   template< typename Consumer >
+   void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
    {
-      namespace jaxn
-      {
-         namespace events
-         {
-            // Events producer to parse a JAXN string representation.
+      jaxn::events::from_input( consumer, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* >( data, data + size, source ? source : "tao::json::events::jaxn::from_string", byte, line, column ) );
+   }
 
-            template< typename Consumer >
-            void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
-            {
-               jaxn::events::from_input( consumer, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* >( data, data + size, source ? source : "tao::json::events::jaxn::from_string", byte, line, column ) );
-            }
+   template< typename Consumer >
+   void from_string( Consumer& consumer, const char* data, const std::size_t size, const std::string& source, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
+   {
+      jaxn::events::from_string( consumer, data, size, source.c_str(), byte, line, column );
+   }
 
-            template< typename Consumer >
-            void from_string( Consumer& consumer, const char* data, const std::size_t size, const std::string& source, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
-            {
-               jaxn::events::from_string( consumer, data, size, source.c_str(), byte, line, column );
-            }
+   template< typename Consumer, typename... Ts >
+   void from_string( Consumer& consumer, const std::string_view data, Ts&&... ts )
+   {
+      jaxn::events::from_string( consumer, data.data(), data.size(), std::forward< Ts >( ts )... );
+   }
 
-            template< typename Consumer, typename... Ts >
-            void from_string( Consumer& consumer, const std::string_view data, Ts&&... ts )
-            {
-               jaxn::events::from_string( consumer, data.data(), data.size(), std::forward< Ts >( ts )... );
-            }
-
-         }  // namespace events
-
-      }  // namespace jaxn
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::jaxn::events
 
 #endif

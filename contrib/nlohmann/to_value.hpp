@@ -9,109 +9,101 @@
 #include <utility>
 #include <vector>
 
-namespace tao
+namespace tao::json::nlohmann
 {
-   namespace json
+   // Events consumer to build an nlohmann/json value.
+
+   template< typename Value >
+   class to_value
    {
-      namespace nlohmann
+   private:
+      std::vector< Value > stack_;
+      std::vector< std::string > keys_;
+
+   public:
+      Value value;
+
+      void null()
       {
-         // Events consumer to build an nlohmann/json value.
+         value = nullptr;
+      }
 
-         template< typename Value >
-         class to_value
-         {
-         private:
-            std::vector< Value > stack_;
-            std::vector< std::string > keys_;
+      void boolean( const bool v )
+      {
+         value = v;
+      }
 
-         public:
-            Value value;
+      void number( const std::int64_t v )
+      {
+         value = v;
+      }
 
-            void null()
-            {
-               value = nullptr;
-            }
+      void number( const std::uint64_t v )
+      {
+         value = v;
+      }
 
-            void boolean( const bool v )
-            {
-               value = v;
-            }
+      void number( const double v )
+      {
+         value = v;
+      }
 
-            void number( const std::int64_t v )
-            {
-               value = v;
-            }
+      void string( const std::string& v )
+      {
+         value = v;
+      }
 
-            void number( const std::uint64_t v )
-            {
-               value = v;
-            }
+      void string( std::string&& v )
+      {
+         value = std::move( v );
+      }
 
-            void number( const double v )
-            {
-               value = v;
-            }
+      // array
+      void begin_array()
+      {
+         stack_.push_back( Value::array() );
+      }
 
-            void string( const std::string& v )
-            {
-               value = v;
-            }
+      void element()
+      {
+         stack_.back().push_back( std::move( value ) );
+      }
 
-            void string( std::string&& v )
-            {
-               value = std::move( v );
-            }
+      void end_array()
+      {
+         value = std::move( stack_.back() );
+         stack_.pop_back();
+      }
 
-            // array
-            void begin_array()
-            {
-               stack_.push_back( Value::array() );
-            }
+      // object
+      void begin_object()
+      {
+         stack_.push_back( Value::object() );
+      }
 
-            void element()
-            {
-               stack_.back().push_back( std::move( value ) );
-            }
+      void key( const std::string& v )
+      {
+         keys_.push_back( v );
+      }
 
-            void end_array()
-            {
-               value = std::move( stack_.back() );
-               stack_.pop_back();
-            }
+      void key( std::string&& v )
+      {
+         keys_.push_back( std::move( v ) );
+      }
 
-            // object
-            void begin_object()
-            {
-               stack_.push_back( Value::object() );
-            }
+      void member()
+      {
+         stack_.back().push_back( typename Value::object_t::value_type( std::move( keys_.back() ), std::move( value ) ) );
+         keys_.pop_back();
+      }
 
-            void key( const std::string& v )
-            {
-               keys_.push_back( v );
-            }
+      void end_object()
+      {
+         value = std::move( stack_.back() );
+         stack_.pop_back();
+      }
+   };
 
-            void key( std::string&& v )
-            {
-               keys_.push_back( std::move( v ) );
-            }
-
-            void member()
-            {
-               stack_.back().push_back( typename Value::object_t::value_type( std::move( keys_.back() ), std::move( value ) ) );
-               keys_.pop_back();
-            }
-
-            void end_object()
-            {
-               value = std::move( stack_.back() );
-               stack_.pop_back();
-            }
-         };
-
-      }  // namespace nlohmann
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::nlohmann
 
 #endif

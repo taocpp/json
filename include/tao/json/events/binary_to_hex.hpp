@@ -7,28 +7,20 @@
 #include "../binary_view.hpp"
 #include "../internal/hexdump.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer >
+   struct binary_to_hex
+      : public Consumer
    {
-      namespace events
+      using Consumer::Consumer;
+
+      void binary( const tao::binary_view v )
       {
-         template< typename Consumer >
-         struct binary_to_hex
-            : public Consumer
-         {
-            using Consumer::Consumer;
+         Consumer::string( internal::hexdump( v ) );
+      }
+   };
 
-            void binary( const tao::binary_view v )
-            {
-               Consumer::string( internal::hexdump( v ) );
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

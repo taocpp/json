@@ -9,34 +9,26 @@
 
 #include "../external/pegtl/internal/pegtl_string.hpp"
 
-namespace tao
+namespace tao::json::internal
 {
-   namespace json
+   template< char... Cs >
+   struct string_t
+      : public pegtl::string< Cs... >
    {
-      namespace internal
+      static constexpr const char value[] = { Cs..., 0 };
+
+      static constexpr std::string_view as_string_view() noexcept
       {
-         template< char... Cs >
-         struct string_t
-            : public pegtl::string< Cs... >
-         {
-            static constexpr const char value[] = { Cs..., 0 };
+         return std::string_view( value, sizeof...( Cs ) );
+      }
 
-            static constexpr std::string_view as_string_view() noexcept
-            {
-               return std::string_view( value, sizeof...( Cs ) );
-            }
+      static std::string as_string()
+      {
+         return std::string( value, sizeof...( Cs ) );
+      }
+   };
 
-            static std::string as_string()
-            {
-               return std::string( value, sizeof...( Cs ) );
-            }
-         };
-
-      }  // namespace internal
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::internal
 
 #define TAO_JSON_STRING_T( VaLue ) TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, VaLue )
 

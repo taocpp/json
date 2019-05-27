@@ -16,57 +16,49 @@
 
 #include "../external/pegtl/internal/demangle.hpp"
 
-namespace tao
+namespace tao::json::internal
 {
-   namespace json
+   inline void to_stream( std::ostream& os, const bool v )
    {
-      namespace internal
-      {
-         inline void to_stream( std::ostream& os, const bool v )
-         {
-            os << ( v ? "true" : "false" );
-         }
+      os << ( v ? "true" : "false" );
+   }
 
-         inline void to_stream( std::ostream& os, const type t )
-         {
-            os << to_string( t );
-         }
+   inline void to_stream( std::ostream& os, const type t )
+   {
+      os << to_string( t );
+   }
 
-         inline void to_stream( std::ostream& os, const std::type_info& t )
-         {
-            os << pegtl::internal::demangle( t.name() );
-         }
+   inline void to_stream( std::ostream& os, const std::type_info& t )
+   {
+      os << pegtl::internal::demangle( t.name() );
+   }
 
-         template< typename T >
-         void to_stream( std::ostream& os, const T& t )
-         {
-            os << t;
-         }
+   template< typename T >
+   void to_stream( std::ostream& os, const T& t )
+   {
+      os << t;
+   }
 
-         template< std::size_t N >
-         void to_stream( std::ostream& os, const char ( &t )[ N ] )
-         {
-            os.write( t, N - 1 );
-         }
+   template< std::size_t N >
+   void to_stream( std::ostream& os, const char ( &t )[ N ] )
+   {
+      os.write( t, N - 1 );
+   }
 
-         template< typename... Ts >
-         void format_to( std::ostream& oss, const Ts&... ts )
-         {
-            ( internal::to_stream( oss, ts ), ... );
-         }
+   template< typename... Ts >
+   void format_to( std::ostream& oss, const Ts&... ts )
+   {
+      ( internal::to_stream( oss, ts ), ... );
+   }
 
-         template< typename... Ts >
-         std::string format( const Ts&... ts )
-         {
-            std::ostringstream oss;
-            format_to( oss, ts... );
-            return oss.str();
-         }
+   template< typename... Ts >
+   std::string format( const Ts&... ts )
+   {
+      std::ostringstream oss;
+      format_to( oss, ts... );
+      return oss.str();
+   }
 
-      }  // namespace internal
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::internal
 
 #endif

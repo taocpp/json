@@ -6,53 +6,41 @@
 
 #include <cstdint>
 
-namespace tao
+namespace tao::json::ubjson::internal
 {
-   namespace json
+   enum class marker : char
    {
-      namespace ubjson
-      {
-         namespace internal
-         {
-            enum class marker : char
-            {
-               NULL_ = 'Z',
+      NULL_ = 'Z',
 
-               NO_OP = 'N',
+      NO_OP = 'N',
 
-               TRUE_ = 'T',
-               FALSE_ = 'F',
+      TRUE_ = 'T',
+      FALSE_ = 'F',
 
-               INT8 = 'i',
-               UINT8 = 'U',
-               INT16 = 'I',
-               INT32 = 'l',
-               INT64 = 'L',
+      INT8 = 'i',
+      UINT8 = 'U',
+      INT16 = 'I',
+      INT32 = 'l',
+      INT64 = 'L',
 
-               FLOAT32 = 'd',
-               FLOAT64 = 'D',
+      FLOAT32 = 'd',
+      FLOAT64 = 'D',
 
-               HIGH_PRECISION = 'H',
+      HIGH_PRECISION = 'H',
 
-               CHAR = 'C',
-               STRING = 'S',
+      CHAR = 'C',
+      STRING = 'S',
 
-               BEGIN_ARRAY = '[',
-               END_ARRAY = ']',
+      BEGIN_ARRAY = '[',
+      END_ARRAY = ']',
 
-               BEGIN_OBJECT = '{',
-               END_OBJECT = '}',
+      BEGIN_OBJECT = '{',
+      END_OBJECT = '}',
 
-               CONTAINER_SIZE = '#',
-               CONTAINER_TYPE = '$'
-            };
+      CONTAINER_SIZE = '#',
+      CONTAINER_TYPE = '$'
+   };
 
-         }  // namespace internal
-
-      }  // namespace ubjson
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::ubjson::internal
 
 #endif

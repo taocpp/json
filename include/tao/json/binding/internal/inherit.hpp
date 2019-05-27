@@ -8,50 +8,38 @@
 
 #include "../inherit.hpp"
 
-namespace tao
+namespace tao::json::binding::internal
 {
-   namespace json
+   template< typename T >
+   struct inherit_elements_t
    {
-      namespace binding
-      {
-         namespace internal
-         {
-            template< typename T >
-            struct inherit_elements_t
-            {
-               using list = json::internal::type_list< T >;
-            };
+      using list = json::internal::type_list< T >;
+   };
 
-            template< typename T >
-            struct inherit_elements_t< inherit< T > >
-            {
-               using list = typename T::elements;
-            };
+   template< typename T >
+   struct inherit_elements_t< inherit< T > >
+   {
+      using list = typename T::elements;
+   };
 
-            template< typename T >
-            using inherit_elements = typename inherit_elements_t< T >::list;
+   template< typename T >
+   using inherit_elements = typename inherit_elements_t< T >::list;
 
-            template< typename T >
-            struct inherit_members_t
-            {
-               using list = json::internal::type_list< T >;
-            };
+   template< typename T >
+   struct inherit_members_t
+   {
+      using list = json::internal::type_list< T >;
+   };
 
-            template< typename T >
-            struct inherit_members_t< inherit< T > >
-            {
-               using list = typename T::members;
-            };
+   template< typename T >
+   struct inherit_members_t< inherit< T > >
+   {
+      using list = typename T::members;
+   };
 
-            template< typename T >
-            using inherit_members = typename inherit_members_t< T >::list;
+   template< typename T >
+   using inherit_members = typename inherit_members_t< T >::list;
 
-         }  // namespace internal
-
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding::internal
 
 #endif

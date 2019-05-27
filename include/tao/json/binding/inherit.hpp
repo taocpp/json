@@ -4,19 +4,11 @@
 #ifndef TAO_JSON_BINDING_INHERIT_HPP
 #define TAO_JSON_BINDING_INHERIT_HPP
 
-namespace tao
+namespace tao::json::binding
 {
-   namespace json
-   {
-      namespace binding
-      {
-         template< typename T >
-         struct inherit;
+   template< typename T >
+   struct inherit;
 
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding
 
 #endif

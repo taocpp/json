@@ -10,26 +10,22 @@
 #include "forward.hpp"
 #include "parts_parser.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename T, template< typename... > class Traits = traits, typename F >
+   T consume_string( F&& string )
    {
-      template< typename T, template< typename... > class Traits = traits, typename F >
-      T consume_string( F&& string )
-      {
-         basic_parts_parser< pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
-         return consume< T, Traits >( pp );
-      }
+      basic_parts_parser< pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
+      return consume< T, Traits >( pp );
+   }
 
-      template< template< typename... > class Traits = traits, typename F, typename T >
-      T consume_string( F&& string, T& t )
-      {
-         basic_parts_parser< pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
-         return consume< Traits >( pp, t );
-      }
+   template< template< typename... > class Traits = traits, typename F, typename T >
+   T consume_string( F&& string, T& t )
+   {
+      basic_parts_parser< pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
+      return consume< Traits >( pp, t );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

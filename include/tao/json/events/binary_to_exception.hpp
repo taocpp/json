@@ -8,28 +8,20 @@
 
 #include "../binary_view.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer >
+   struct binary_to_exception
+      : public Consumer
    {
-      namespace events
+      using Consumer::Consumer;
+
+      void binary( const tao::binary_view /*unused*/ )
       {
-         template< typename Consumer >
-         struct binary_to_exception
-            : public Consumer
-         {
-            using Consumer::Consumer;
+         throw std::runtime_error( "invalid binary data" );  // NOLINT
+      }
+   };
 
-            void binary( const tao::binary_view /*unused*/ )
-            {
-               throw std::runtime_error( "invalid binary data" );  // NOLINT
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

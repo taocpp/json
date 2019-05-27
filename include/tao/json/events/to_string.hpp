@@ -9,34 +9,26 @@
 
 #include "to_stream.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   // Events consumer to build a JSON string representation.
+
+   struct to_string
+      : public to_stream
    {
-      namespace events
+      std::ostringstream oss;
+
+      to_string()
+         : to_stream( oss )
       {
-         // Events consumer to build a JSON string representation.
+      }
 
-         struct to_string
-            : public to_stream
-         {
-            std::ostringstream oss;
+      std::string value() const
+      {
+         return oss.str();
+      }
+   };
 
-            to_string()
-               : to_stream( oss )
-            {
-            }
-
-            std::string value() const
-            {
-               return oss.str();
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

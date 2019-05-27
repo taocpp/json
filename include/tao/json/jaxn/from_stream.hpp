@@ -15,42 +15,34 @@
 
 #include "events/from_stream.hpp"
 
-namespace tao
+namespace tao::json::jaxn
 {
-   namespace json
+   template< template< typename... > class Traits, template< typename... > class... Transformers >
+   basic_value< Traits > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
    {
-      namespace jaxn
-      {
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_value< Traits > basic_from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
-         {
-            json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
-            events::from_stream( consumer, stream, source, maximum_buffer_size );
-            return std::move( consumer.value );
-         }
+      json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
+      events::from_stream( consumer, stream, source, maximum_buffer_size );
+      return std::move( consumer.value );
+   }
 
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_value< Traits > basic_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
-         {
-            return basic_from_stream< Traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
-         }
+   template< template< typename... > class Traits, template< typename... > class... Transformers >
+   basic_value< Traits > basic_from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+   {
+      return basic_from_stream< Traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
+   }
 
-         template< template< typename... > class... Transformers >
-         value from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
-         {
-            return basic_from_stream< traits, Transformers... >( stream, source, maximum_buffer_size );
-         }
+   template< template< typename... > class... Transformers >
+   value from_stream( std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
+   {
+      return basic_from_stream< traits, Transformers... >( stream, source, maximum_buffer_size );
+   }
 
-         template< template< typename... > class... Transformers >
-         value from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
-         {
-            return basic_from_stream< traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
-         }
+   template< template< typename... > class... Transformers >
+   value from_stream( std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+   {
+      return basic_from_stream< traits, Transformers... >( stream, source.c_str(), maximum_buffer_size );
+   }
 
-      }  // namespace jaxn
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::jaxn
 
 #endif

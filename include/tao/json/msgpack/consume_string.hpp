@@ -11,30 +11,22 @@
 
 #include "parts_parser.hpp"
 
-namespace tao
+namespace tao::json::msgpack
 {
-   namespace json
+   template< typename T, template< typename... > class Traits = traits, typename F >
+   T consume_string( F&& string )
    {
-      namespace msgpack
-      {
-         template< typename T, template< typename... > class Traits = traits, typename F >
-         T consume_string( F&& string )
-         {
-            msgpack::basic_parts_parser< utf8_mode::check, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
-            return json::consume< T, Traits >( pp );
-         }
+      msgpack::basic_parts_parser< utf8_mode::check, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
+      return json::consume< T, Traits >( pp );
+   }
 
-         template< template< typename... > class Traits = traits, typename F, typename T >
-         T consume_string( F&& string, T& t )
-         {
-            msgpack::basic_parts_parser< utf8_mode::check, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
-            return json::consume< Traits >( pp, t );
-         }
+   template< template< typename... > class Traits = traits, typename F, typename T >
+   T consume_string( F&& string, T& t )
+   {
+      msgpack::basic_parts_parser< utf8_mode::check, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
+      return json::consume< Traits >( pp, t );
+   }
 
-      }  // namespace msgpack
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::msgpack
 
 #endif

@@ -17,138 +17,130 @@
 #include "../internal/escape.hpp"
 #include "../internal/hexdump.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   // Events consumer that writes the events to a stream for debug purposes.
+
+   class debug
    {
-      namespace events
+   private:
+      std::ostream& os;
+
+   public:
+      explicit debug( std::ostream& in_os ) noexcept
+         : os( in_os )
       {
-         // Events consumer that writes the events to a stream for debug purposes.
+      }
 
-         class debug
-         {
-         private:
-            std::ostream& os;
+      void null()
+      {
+         os << "null\n";
+      }
 
-         public:
-            explicit debug( std::ostream& in_os ) noexcept
-               : os( in_os )
-            {
-            }
+      void boolean( const bool v )
+      {
+         if( v ) {
+            os << "boolean: true\n";
+         }
+         else {
+            os << "boolean: false\n";
+         }
+      }
 
-            void null()
-            {
-               os << "null\n";
-            }
+      void number( const std::int64_t v )
+      {
+         os << "std::int64_t: " << v << '\n';
+      }
 
-            void boolean( const bool v )
-            {
-               if( v ) {
-                  os << "boolean: true\n";
-               }
-               else {
-                  os << "boolean: false\n";
-               }
-            }
+      void number( const std::uint64_t v )
+      {
+         os << "std::uint64_t: " << v << '\n';
+      }
 
-            void number( const std::int64_t v )
-            {
-               os << "std::int64_t: " << v << '\n';
-            }
+      void number( const double v )
+      {
+         os << "double: ";
+         if( !std::isfinite( v ) ) {
+            os << v;
+         }
+         else {
+            ryu::d2s_stream( os, v );
+         }
+         os << '\n';
+      }
 
-            void number( const std::uint64_t v )
-            {
-               os << "std::uint64_t: " << v << '\n';
-            }
+      void string( const std::string_view v )
+      {
+         os << "string: \"";
+         internal::escape( os, v );
+         os << "\"\n";
+      }
 
-            void number( const double v )
-            {
-               os << "double: ";
-               if( !std::isfinite( v ) ) {
-                  os << v;
-               }
-               else {
-                  ryu::d2s_stream( os, v );
-               }
-               os << '\n';
-            }
+      void binary( const tao::binary_view v )
+      {
+         os << "binary: ";
+         internal::hexdump( os, v );
+         os << '\n';
+      }
 
-            void string( const std::string_view v )
-            {
-               os << "string: \"";
-               internal::escape( os, v );
-               os << "\"\n";
-            }
+      void begin_array()
+      {
+         os << "begin array\n";
+      }
 
-            void binary( const tao::binary_view v )
-            {
-               os << "binary: ";
-               internal::hexdump( os, v );
-               os << '\n';
-            }
+      void begin_array( const std::size_t size )
+      {
+         os << "begin array " << size << '\n';
+      }
 
-            void begin_array()
-            {
-               os << "begin array\n";
-            }
+      void element()
+      {
+         os << "element\n";
+      }
 
-            void begin_array( const std::size_t size )
-            {
-               os << "begin array " << size << '\n';
-            }
+      void end_array()
+      {
+         os << "end array\n";
+      }
 
-            void element()
-            {
-               os << "element\n";
-            }
+      void end_array( const std::size_t size )
+      {
+         os << "end array " << size << '\n';
+      }
 
-            void end_array()
-            {
-               os << "end array\n";
-            }
+      void begin_object()
+      {
+         os << "begin object\n";
+      }
 
-            void end_array( const std::size_t size )
-            {
-               os << "end array " << size << '\n';
-            }
+      void begin_object( const std::size_t size )
+      {
+         os << "begin object " << size << '\n';
+      }
 
-            void begin_object()
-            {
-               os << "begin object\n";
-            }
+      void key( const std::string_view v )
+      {
+         os << "key: \"";
+         internal::escape( os, v );
+         os << "\"\n";
+      }
 
-            void begin_object( const std::size_t size )
-            {
-               os << "begin object " << size << '\n';
-            }
+      void member()
+      {
+         os << "member\n";
+      }
 
-            void key( const std::string_view v )
-            {
-               os << "key: \"";
-               internal::escape( os, v );
-               os << "\"\n";
-            }
+      void end_object()
+      {
+         os << "end object\n";
+      }
 
-            void member()
-            {
-               os << "member\n";
-            }
+      void end_object( const std::size_t size )
+      {
+         os << "end object " << size << '\n';
+      }
+   };
 
-            void end_object()
-            {
-               os << "end object\n";
-            }
-
-            void end_object( const std::size_t size )
-            {
-               os << "end object " << size << '\n';
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

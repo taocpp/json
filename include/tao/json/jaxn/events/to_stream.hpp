@@ -12,68 +12,56 @@
 
 #include "../is_identifier.hpp"
 
-namespace tao
+namespace tao::json::jaxn::events
 {
-   namespace json
+   // Events consumer to build a JAXN string representation.
+
+   struct to_stream
+      : public json::events::to_stream
    {
-      namespace jaxn
+      using json::events::to_stream::number;
+      using json::events::to_stream::to_stream;
+
+      void number( const double v )
       {
-         namespace events
-         {
-            // Events consumer to build a JAXN string representation.
+         next();
+         if( !std::isfinite( v ) ) {
+            if( std::isnan( v ) ) {  // NOLINT
+               os << "NaN";
+            }
+            else if( v < 0 ) {
+               os << "-Infinity";
+            }
+            else {
+               os << "Infinity";
+            }
+         }
+         else {
+            ryu::d2s_stream( os, v );
+         }
+      }
 
-            struct to_stream
-               : public json::events::to_stream
-            {
-               using json::events::to_stream::number;
-               using json::events::to_stream::to_stream;
+      void key( const std::string_view v )
+      {
+         if( jaxn::is_identifier( v ) ) {
+            next();
+            os.write( v.data(), v.size() );
+         }
+         else {
+            string( v );
+         }
+         os.put( ':' );
+         first = true;
+      }
 
-               void number( const double v )
-               {
-                  next();
-                  if( !std::isfinite( v ) ) {
-                     if( std::isnan( v ) ) {  // NOLINT
-                        os << "NaN";
-                     }
-                     else if( v < 0 ) {
-                        os << "-Infinity";
-                     }
-                     else {
-                        os << "Infinity";
-                     }
-                  }
-                  else {
-                     ryu::d2s_stream( os, v );
-                  }
-               }
+      void binary( const tao::binary_view v )
+      {
+         next();
+         os.put( '$' );
+         json::internal::hexdump( os, v );
+      }
+   };
 
-               void key( const std::string_view v )
-               {
-                  if( jaxn::is_identifier( v ) ) {
-                     next();
-                     os.write( v.data(), v.size() );
-                  }
-                  else {
-                     string( v );
-                  }
-                  os.put( ':' );
-                  first = true;
-               }
-
-               void binary( const tao::binary_view v )
-               {
-                  next();
-                  os.put( '$' );
-                  json::internal::hexdump( os, v );
-               }
-            };
-
-         }  // namespace events
-
-      }  // namespace jaxn
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::jaxn::events
 
 #endif

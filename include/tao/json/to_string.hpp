@@ -8,20 +8,16 @@
 
 #include "to_stream.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< template< typename... > class... Transformers, typename... Ts >
+   std::string to_string( Ts&&... ts )
    {
-      template< template< typename... > class... Transformers, typename... Ts >
-      std::string to_string( Ts&&... ts )
-      {
-         std::ostringstream o;
-         json::to_stream< Transformers... >( o, std::forward< Ts >( ts )... );
-         return o.str();
-      }
+      std::ostringstream o;
+      json::to_stream< Transformers... >( o, std::forward< Ts >( ts )... );
+      return o.str();
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

@@ -4,22 +4,14 @@
 #ifndef TAO_JSON_BINDING_FOR_NOTHING_VALUE_HPP
 #define TAO_JSON_BINDING_FOR_NOTHING_VALUE_HPP
 
-namespace tao
+namespace tao::json::binding
 {
-   namespace json
+   enum class for_nothing_value : bool
    {
-      namespace binding
-      {
-         enum class for_nothing_value : bool
-         {
-            encode,
-            suppress
-         };
+      encode,
+      suppress
+   };
 
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding
 
 #endif

@@ -11,78 +11,70 @@
 
 #include "../external/double.hpp"
 
-namespace tao
+namespace tao::json::internal
 {
-   namespace json
+   static const std::size_t max_mantissa_digits = 772;
+
+   template< bool NEG >
+   struct number_state  // NOLINT
    {
-      namespace internal
+      using exponent10_t = std::int32_t;
+      using msize_t = std::uint16_t;
+
+      number_state() = default;
+
+      number_state( const number_state& ) = delete;
+      number_state( number_state&& ) = delete;
+
+      ~number_state() = default;
+
+      void operator=( const number_state& ) = delete;
+      void operator=( number_state&& ) = delete;
+
+      exponent10_t exponent10 = 0;
+      msize_t msize = 0;  // Excluding sign.
+      bool isfp = false;
+      bool eneg = false;
+      bool drop = false;
+      char mantissa[ max_mantissa_digits + 1 ];
+
+      template< typename Consumer >
+      void success( Consumer& consumer )
       {
-         static const std::size_t max_mantissa_digits = 772;
-
-         template< bool NEG >
-         struct number_state  // NOLINT
-         {
-            using exponent10_t = std::int32_t;
-            using msize_t = std::uint16_t;
-
-            number_state() = default;
-
-            number_state( const number_state& ) = delete;
-            number_state( number_state&& ) = delete;
-
-            ~number_state() = default;
-
-            void operator=( const number_state& ) = delete;
-            void operator=( number_state&& ) = delete;
-
-            exponent10_t exponent10 = 0;
-            msize_t msize = 0;  // Excluding sign.
-            bool isfp = false;
-            bool eneg = false;
-            bool drop = false;
-            char mantissa[ max_mantissa_digits + 1 ];
-
-            template< typename Consumer >
-            void success( Consumer& consumer )
-            {
-               if( !isfp && msize <= 20 ) {
-                  mantissa[ msize ] = 0;
-                  char* p;
-                  errno = 0;
-                  const std::uint64_t ull = std::strtoull( mantissa, &p, 10 );
-                  if( ( errno != ERANGE ) && ( p == mantissa + msize ) ) {
-                     if constexpr( NEG ) {
-                        if( ull < 9223372036854775808ull ) {
-                           consumer.number( -static_cast< std::int64_t >( ull ) );
-                           return;
-                        }
-                        if( ull == 9223372036854775808ull ) {
-                           consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
-                           return;
-                        }
-                     }
-                     else {
-                        consumer.number( ull );
-                        return;
-                     }
+         if( !isfp && msize <= 20 ) {
+            mantissa[ msize ] = 0;
+            char* p;
+            errno = 0;
+            const std::uint64_t ull = std::strtoull( mantissa, &p, 10 );
+            if( ( errno != ERANGE ) && ( p == mantissa + msize ) ) {
+               if constexpr( NEG ) {
+                  if( ull < 9223372036854775808ull ) {
+                     consumer.number( -static_cast< std::int64_t >( ull ) );
+                     return;
+                  }
+                  if( ull == 9223372036854775808ull ) {
+                     consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
+                     return;
                   }
                }
-               if( drop ) {
-                  mantissa[ msize++ ] = '1';
-                  --exponent10;
+               else {
+                  consumer.number( ull );
+                  return;
                }
-               const auto d = json_double_conversion::Strtod( json_double_conversion::Vector< const char >( mantissa, msize ), exponent10 );
-               if( !std::isfinite( d ) ) {
-                  throw std::runtime_error( "invalid double value" );  // NOLINT
-               }
-               consumer.number( NEG ? -d : d );
             }
-         };
+         }
+         if( drop ) {
+            mantissa[ msize++ ] = '1';
+            --exponent10;
+         }
+         const auto d = double_conversion::Strtod( double_conversion::Vector< const char >( mantissa, msize ), exponent10 );
+         if( !std::isfinite( d ) ) {
+            throw std::runtime_error( "invalid double value" );  // NOLINT
+         }
+         consumer.number( NEG ? -d : d );
+      }
+   };
 
-      }  // namespace internal
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::internal
 
 #endif

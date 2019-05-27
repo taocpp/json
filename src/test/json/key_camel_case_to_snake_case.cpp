@@ -8,35 +8,31 @@
 
 #include <tao/json/events/key_camel_case_to_snake_case.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void test( const value& v, const std::string& s )
    {
-      void test( const value& v, const std::string& s )
-      {
-         TEST_ASSERT( to_string< events::key_camel_case_to_snake_case >( v ) == s );
-      }
+      TEST_ASSERT( to_string< events::key_camel_case_to_snake_case >( v ) == s );
+   }
 
-      void unit_test()
-      {
-         test( { { "fooBar", 42 } }, "{\"foo_bar\":42}" );
-         test( { { "foo2Bar", 42 } }, "{\"foo2_bar\":42}" );
-         test( { { "fooHTTPBar", 42 } }, "{\"foo_http_bar\":42}" );
-         test( { { "HTTPBar", 42 } }, "{\"http_bar\":42}" );
+   void unit_test()
+   {
+      test( { { "fooBar", 42 } }, "{\"foo_bar\":42}" );
+      test( { { "foo2Bar", 42 } }, "{\"foo2_bar\":42}" );
+      test( { { "fooHTTPBar", 42 } }, "{\"foo_http_bar\":42}" );
+      test( { { "HTTPBar", 42 } }, "{\"http_bar\":42}" );
 
-         test( { { "fooBar", "fooBar" } }, "{\"foo_bar\":\"fooBar\"}" );
+      test( { { "fooBar", "fooBar" } }, "{\"foo_bar\":\"fooBar\"}" );
 
-         test( { { "foo_", 42 } }, "{\"foo_\":42}" );
-         test( { { "foo_bar", 42 } }, "{\"foo_bar\":42}" );
-         test( { { "_foo", 42 } }, "{\"_foo\":42}" );
+      test( { { "foo_", 42 } }, "{\"foo_\":42}" );
+      test( { { "foo_bar", 42 } }, "{\"foo_bar\":42}" );
+      test( { { "_foo", 42 } }, "{\"_foo\":42}" );
 
-         test( { { "Foo", 42 } }, "{\"foo\":42}" );
-         test( { { "_Foo", 42 } }, "{\"_foo\":42}" );
-         test( { { "foo_Bar", 42 } }, "{\"foo_bar\":42}" );
-      }
+      test( { { "Foo", 42 } }, "{\"foo\":42}" );
+      test( { { "_Foo", 42 } }, "{\"_foo\":42}" );
+      test( { { "foo_Bar", 42 } }, "{\"foo_bar\":42}" );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

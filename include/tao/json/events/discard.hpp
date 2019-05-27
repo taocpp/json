@@ -10,42 +10,34 @@
 
 #include "../binary_view.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   // Events consumer that discards events.
+
+   struct discard
    {
-      namespace events
-      {
-         // Events consumer that discards events.
+      void null() noexcept {}
 
-         struct discard
-         {
-            void null() noexcept {}
+      void boolean( const bool /*unused*/ ) noexcept {}
 
-            void boolean( const bool /*unused*/ ) noexcept {}
+      void number( const std::int64_t /*unused*/ ) noexcept {}
+      void number( const std::uint64_t /*unused*/ ) noexcept {}
+      void number( const double /*unused*/ ) noexcept {}
 
-            void number( const std::int64_t /*unused*/ ) noexcept {}
-            void number( const std::uint64_t /*unused*/ ) noexcept {}
-            void number( const double /*unused*/ ) noexcept {}
+      void string( const std::string_view /*unused*/ ) noexcept {}
 
-            void string( const std::string_view /*unused*/ ) noexcept {}
+      void binary( const tao::binary_view /*unused*/ ) noexcept {}
 
-            void binary( const tao::binary_view /*unused*/ ) noexcept {}
+      void begin_array( const std::size_t /*unused*/ = 0 ) noexcept {}
+      void element() noexcept {}
+      void end_array( const std::size_t /*unused*/ = 0 ) noexcept {}
 
-            void begin_array( const std::size_t /*unused*/ = 0 ) noexcept {}
-            void element() noexcept {}
-            void end_array( const std::size_t /*unused*/ = 0 ) noexcept {}
+      void begin_object( const std::size_t /*unused*/ = 0 ) noexcept {}
+      void key( const std::string_view /*unused*/ ) noexcept {}
+      void member() noexcept {}
+      void end_object( const std::size_t /*unused*/ = 0 ) noexcept {}
+   };
 
-            void begin_object( const std::size_t /*unused*/ = 0 ) noexcept {}
-            void key( const std::string_view /*unused*/ ) noexcept {}
-            void member() noexcept {}
-            void end_object( const std::size_t /*unused*/ = 0 ) noexcept {}
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

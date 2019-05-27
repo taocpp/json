@@ -12,26 +12,22 @@
 #include "forward.hpp"
 #include "parts_parser.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename T, template< typename... > class Traits = traits, typename F >
+   T consume_file( F&& filename )
    {
-      template< typename T, template< typename... > class Traits = traits, typename F >
-      T consume_file( F&& filename )
-      {
-         basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
-         return consume< T, Traits >( pp );
-      }
+      basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+      return consume< T, Traits >( pp );
+   }
 
-      template< template< typename... > class Traits = traits, typename F, typename T >
-      T consume_file( F&& filename, T& t )
-      {
-         basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
-         return consume< Traits >( pp, t );
-      }
+   template< template< typename... > class Traits = traits, typename F, typename T >
+   T consume_file( F&& filename, T& t )
+   {
+      basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+      return consume< Traits >( pp, t );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

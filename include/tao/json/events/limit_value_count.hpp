@@ -9,46 +9,38 @@
 
 #include <stdexcept>
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer, std::size_t Limit >
+   class limit_value_count
+      : public Consumer
    {
-      namespace events
+   private:
+      std::size_t m_count = 1;  // Top-level value is implied.
+
+      void count_and_limit()
       {
-         template< typename Consumer, std::size_t Limit >
-         class limit_value_count
-            : public Consumer
-         {
-         private:
-            std::size_t m_count = 1;  // Top-level value is implied.
+         if( ++m_count > Limit ) {
+            throw std::runtime_error( "value count limit exceeded" );  // NOLINT
+         }
+      }
 
-            void count_and_limit()
-            {
-               if( ++m_count > Limit ) {
-                  throw std::runtime_error( "value count limit exceeded" );  // NOLINT
-               }
-            }
+   public:
+      using Consumer::Consumer;
 
-         public:
-            using Consumer::Consumer;
+      void element()
+      {
+         count_and_limit();
+         Consumer::element();
+      }
 
-            void element()
-            {
-               count_and_limit();
-               Consumer::element();
-            }
+      void member()
+      {
+         count_and_limit();
+         Consumer::member();
+      }
+   };
 
-            void member()
-            {
-               count_and_limit();
-               Consumer::member();
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

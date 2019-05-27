@@ -17,37 +17,29 @@
 #include "binding/internal/inherit.hpp"
 #include "binding/internal/object.hpp"
 
-namespace tao
+namespace tao::json::binding
 {
-   namespace json
+   namespace internal
    {
-      namespace binding
+      template< typename... As >
+      struct make_array
       {
-         namespace internal
-         {
-            template< typename... As >
-            struct make_array
-            {
-               using list = json::internal::merge_type_lists< internal::inherit_elements< As >... >;
-               using type = internal::array< list >;
-            };
+         using list = json::internal::merge_type_lists< internal::inherit_elements< As >... >;
+         using type = internal::array< list >;
+      };
 
-         }  // namespace internal
+   }  // namespace internal
 
-         template< typename... As >
-         using array = typename internal::make_array< As... >::type;
+   template< typename... As >
+   using array = typename internal::make_array< As... >::type;
 
-         template< for_unknown_key E, for_nothing_value N, typename... As >
-         using basic_object = internal::basic_object< E, N, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
+   template< for_unknown_key E, for_nothing_value N, typename... As >
+   using basic_object = internal::basic_object< E, N, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
 
-         template< typename... As >
-         using object = basic_object< for_unknown_key::fail, for_nothing_value::encode, As... >;
+   template< typename... As >
+   using object = basic_object< for_unknown_key::fail, for_nothing_value::encode, As... >;
 
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding
 
 #define TAO_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< __VA_ARGS__ >
 

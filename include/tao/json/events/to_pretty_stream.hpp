@@ -22,177 +22,169 @@
 
 #include "../internal/escape.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   // Events consumer to build a JSON pretty string representation.
+
+   class to_pretty_stream
    {
-      namespace events
+   protected:
+      alignas( 64 ) char buffer[ 64 ];
+      std::ostream& os;
+      const std::size_t indent;
+      const std::string eol;
+
+      std::size_t current_indent = 0;
+
+      bool first = true;
+      bool after_key = true;
+
+      void next_line()
       {
-         // Events consumer to build a JSON pretty string representation.
+         os << eol;
+         std::size_t len = current_indent;
+         while( len != 0 ) {
+            const auto chunk = ( std::min )( indent, sizeof( buffer ) );
+            os.write( buffer, chunk );
+            len -= chunk;
+         }
+      }
 
-         class to_pretty_stream
-         {
-         protected:
-            alignas( 64 ) char buffer[ 64 ];
-            std::ostream& os;
-            const std::size_t indent;
-            const std::string eol;
+      void next()
+      {
+         if( !first ) {
+            os.put( ',' );
+         }
+         if( after_key ) {
+            after_key = false;
+         }
+         else {
+            next_line();
+         }
+      }
 
-            std::size_t current_indent = 0;
+   public:
+      template< typename S >
+      to_pretty_stream( std::ostream& in_os, const std::size_t in_indent, S&& in_eol )
+         : buffer(),
+           os( in_os ),
+           indent( in_indent ),
+           eol( std::forward< S >( in_eol ) )
+      {
+         std::memset( buffer, os.fill(), sizeof( buffer ) );
+      }
 
-            bool first = true;
-            bool after_key = true;
+      to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
+         : to_pretty_stream( in_os, in_indent, "\n" )
+      {
+      }
 
-            void next_line()
-            {
-               os << eol;
-               std::size_t len = current_indent;
-               while( len != 0 ) {
-                  const auto chunk = ( std::min )( indent, sizeof( buffer ) );
-                  os.write( buffer, chunk );
-                  len -= chunk;
-               }
-            }
+      void null()
+      {
+         next();
+         os.write( "null", 4 );
+      }
 
-            void next()
-            {
-               if( !first ) {
-                  os.put( ',' );
-               }
-               if( after_key ) {
-                  after_key = false;
-               }
-               else {
-                  next_line();
-               }
-            }
+      void boolean( const bool v )
+      {
+         next();
+         if( v ) {
+            os.write( "true", 4 );
+         }
+         else {
+            os.write( "false", 5 );
+         }
+      }
 
-         public:
-            template< typename S >
-            to_pretty_stream( std::ostream& in_os, const std::size_t in_indent, S&& in_eol )
-               : buffer(),
-                 os( in_os ),
-                 indent( in_indent ),
-                 eol( std::forward< S >( in_eol ) )
-            {
-               std::memset( buffer, os.fill(), sizeof( buffer ) );
-            }
+      void number( const std::int64_t v )
+      {
+         next();
+         itoa::i64tos( os, v );
+      }
 
-            to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
-               : to_pretty_stream( in_os, in_indent, "\n" )
-            {
-            }
+      void number( const std::uint64_t v )
+      {
+         next();
+         itoa::u64tos( os, v );
+      }
 
-            void null()
-            {
-               next();
-               os.write( "null", 4 );
-            }
+      void number( const double v )
+      {
+         next();
+         if( !std::isfinite( v ) ) {
+            // if this throws, consider using non_finite_to_* transformers
+            throw std::runtime_error( "non-finite double value invalid for JSON string representation" );  // NOLINT
+         }
+         ryu::d2s_stream( os, v );
+      }
 
-            void boolean( const bool v )
-            {
-               next();
-               if( v ) {
-                  os.write( "true", 4 );
-               }
-               else {
-                  os.write( "false", 5 );
-               }
-            }
+      void string( const std::string_view v )
+      {
+         next();
+         os.put( '"' );
+         internal::escape( os, v );
+         os.put( '"' );
+      }
 
-            void number( const std::int64_t v )
-            {
-               next();
-               itoa::i64tos( os, v );
-            }
+      void binary( const tao::binary_view /*unused*/ )
+      {
+         // if this throws, consider using binary_to_* transformers
+         throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
+      }
 
-            void number( const std::uint64_t v )
-            {
-               next();
-               itoa::u64tos( os, v );
-            }
+      void begin_array( const std::size_t /*unused*/ = 0 )
+      {
+         next();
+         os.put( '[' );
+         current_indent += indent;
+         first = true;
+      }
 
-            void number( const double v )
-            {
-               next();
-               if( !std::isfinite( v ) ) {
-                  // if this throws, consider using non_finite_to_* transformers
-                  throw std::runtime_error( "non-finite double value invalid for JSON string representation" );  // NOLINT
-               }
-               ryu::d2s_stream( os, v );
-            }
+      void element() noexcept
+      {
+         first = false;
+      }
 
-            void string( const std::string_view v )
-            {
-               next();
-               os.put( '"' );
-               internal::escape( os, v );
-               os.put( '"' );
-            }
+      void end_array( const std::size_t /*unused*/ = 0 )
+      {
+         current_indent -= indent;
+         if( !first ) {
+            next_line();
+         }
+         os.put( ']' );
+      }
 
-            void binary( const tao::binary_view /*unused*/ )
-            {
-               // if this throws, consider using binary_to_* transformers
-               throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
-            }
+      void begin_object( const std::size_t /*unused*/ = 0 )
+      {
+         next();
+         os.put( '{' );
+         current_indent += indent;
+         first = true;
+      }
 
-            void begin_array( const std::size_t /*unused*/ = 0 )
-            {
-               next();
-               os.put( '[' );
-               current_indent += indent;
-               first = true;
-            }
+      void key( const std::string_view v )
+      {
+         string( v );
+         os.write( ": ", 2 );
+         first = true;
+         after_key = true;
+      }
 
-            void element() noexcept
-            {
-               first = false;
-            }
+      void member() noexcept
+      {
+         first = false;
+      }
 
-            void end_array( const std::size_t /*unused*/ = 0 )
-            {
-               current_indent -= indent;
-               if( !first ) {
-                  next_line();
-               }
-               os.put( ']' );
-            }
+      void end_object( const std::size_t /*unused*/ = 0 )
+      {
+         current_indent -= indent;
+         if( !first ) {
+            next_line();
+         }
+         os.put( '}' );
+      }
+   };
 
-            void begin_object( const std::size_t /*unused*/ = 0 )
-            {
-               next();
-               os.put( '{' );
-               current_indent += indent;
-               first = true;
-            }
-
-            void key( const std::string_view v )
-            {
-               string( v );
-               os.write( ": ", 2 );
-               first = true;
-               after_key = true;
-            }
-
-            void member() noexcept
-            {
-               first = false;
-            }
-
-            void end_object( const std::size_t /*unused*/ = 0 )
-            {
-               current_indent -= indent;
-               if( !first ) {
-                  next_line();
-               }
-               os.put( '}' );
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

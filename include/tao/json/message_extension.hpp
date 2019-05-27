@@ -7,49 +7,45 @@
 #include <ostream>
 #include <string>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename T, typename = void >
+   struct message_extension
    {
-      template< typename T, typename = void >
-      struct message_extension
+      const T& m_v;
+
+      explicit message_extension( const T& v ) noexcept
+         : m_v( v )
       {
-         const T& m_v;
+      }
 
-         explicit message_extension( const T& v ) noexcept
-            : m_v( v )
-         {
-         }
-
-         friend std::ostream& operator<<( std::ostream& os, const message_extension& /*unused*/ ) noexcept
-         {
-            return os;
-         }
-      };
-
-      template< typename T >
-      struct message_extension< T, decltype( std::declval< const T& >().public_base().append_message_extension( std::declval< std::ostream& >() ), void() ) >
+      friend std::ostream& operator<<( std::ostream& os, const message_extension& /*unused*/ ) noexcept
       {
-         const T& m_v;
+         return os;
+      }
+   };
 
-         explicit message_extension( const T& v ) noexcept
-            : m_v( v )
-         {
-         }
+   template< typename T >
+   struct message_extension< T, decltype( std::declval< const T& >().public_base().append_message_extension( std::declval< std::ostream& >() ), void() ) >
+   {
+      const T& m_v;
 
-         friend std::ostream& operator<<( std::ostream& os, const message_extension& v )
-         {
-            os << ' ';
-            v.m_v.public_base().append_message_extension( os );
-            return os;
-         }
-      };
+      explicit message_extension( const T& v ) noexcept
+         : m_v( v )
+      {
+      }
 
-      template< typename T >
-      message_extension( const T& )->message_extension< T >;
+      friend std::ostream& operator<<( std::ostream& os, const message_extension& v )
+      {
+         os << ' ';
+         v.m_v.public_base().append_message_extension( os );
+         return os;
+      }
+   };
 
-   }  // namespace json
+   template< typename T >
+   message_extension( const T& )->message_extension< T >;
 
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

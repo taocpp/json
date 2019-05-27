@@ -11,49 +11,41 @@
 
 #include "../external/pegtl.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer, typename Rule >
+   struct validate_keys
+      : public Consumer
    {
-      namespace events
+      using Consumer::Consumer;
+
+      void validate_key( const std::string_view v )
       {
-         template< typename Consumer, typename Rule >
-         struct validate_keys
-            : public Consumer
-         {
-            using Consumer::Consumer;
+         pegtl::memory_input< pegtl::tracking_mode::lazy > in( v.data(), v.size(), "validate_key" );
+         if( !pegtl::parse< Rule >( in ) ) {
+            throw std::runtime_error( "invalid key: " + std::string( v ) );  // NOLINT
+         }
+      }
 
-            void validate_key( const std::string_view v )
-            {
-               pegtl::memory_input< pegtl::tracking_mode::lazy > in( v.data(), v.size(), "validate_key" );
-               if( !pegtl::parse< Rule >( in ) ) {
-                  throw std::runtime_error( "invalid key: " + std::string( v ) );  // NOLINT
-               }
-            }
+      void key( const std::string_view v )
+      {
+         validate_key( v );
+         Consumer::key( v );
+      }
 
-            void key( const std::string_view v )
-            {
-               validate_key( v );
-               Consumer::key( v );
-            }
+      void key( const char* v )
+      {
+         validate_key( v );
+         Consumer::key( v );
+      }
 
-            void key( const char* v )
-            {
-               validate_key( v );
-               Consumer::key( v );
-            }
+      void key( std::string&& v )
+      {
+         validate_key( v );
+         Consumer::key( std::move( v ) );
+      }
+   };
 
-            void key( std::string&& v )
-            {
-               validate_key( v );
-               Consumer::key( std::move( v ) );
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

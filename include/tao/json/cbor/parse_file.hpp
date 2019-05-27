@@ -12,30 +12,22 @@
 
 #include "events/parse_file.hpp"
 
-namespace tao
+namespace tao::json::cbor
 {
-   namespace json
+   template< template< typename... > class Traits, template< typename... > class... Transformers >
+   basic_value< Traits > basic_parse_file( const std::string& filename )
    {
-      namespace cbor
-      {
-         template< template< typename... > class Traits, template< typename... > class... Transformers >
-         basic_value< Traits > basic_parse_file( const std::string& filename )
-         {
-            json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
-            events::parse_file( consumer, filename );
-            return std::move( consumer.value );
-         }
+      json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
+      events::parse_file( consumer, filename );
+      return std::move( consumer.value );
+   }
 
-         template< template< typename... > class... Transformers >
-         value parse_file( const std::string& filename )
-         {
-            return basic_parse_file< traits, Transformers... >( filename );
-         }
+   template< template< typename... > class... Transformers >
+   value parse_file( const std::string& filename )
+   {
+      return basic_parse_file< traits, Transformers... >( filename );
+   }
 
-      }  // namespace cbor
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::cbor
 
 #endif

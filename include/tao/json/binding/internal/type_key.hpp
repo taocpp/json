@@ -9,59 +9,46 @@
 #include "../../internal/string_t.hpp"
 #include "../../internal/type_traits.hpp"
 
-namespace tao
+namespace tao::json::binding::internal
 {
-   namespace json
+   struct use_default_key
+   {};
+
+   template< typename K, typename V >
+   struct type_key;
+
+   template< char... Cs, typename V >
+   struct type_key< json::internal::string_t< Cs... >, V >
    {
-      namespace binding
+      template< template< typename... > class Traits >
+      static std::string key()
       {
-         namespace internal
-         {
-            struct use_default_key
-            {
-            };
+         return json::internal::string_t< Cs... >::as_string();
+      }
 
-            template< typename K, typename V >
-            struct type_key;
+      template< template< typename... > class Traits = traits, typename Consumer >
+      static void produce_key( Consumer& consumer )
+      {
+         consumer.key( json::internal::string_t< Cs... >::as_string_view() );
+      }
+   };
 
-            template< char... Cs, typename V >
-            struct type_key< json::internal::string_t< Cs... >, V >
-            {
-               template< template< typename... > class Traits >
-               static std::string key()
-               {
-                  return json::internal::string_t< Cs... >::as_string();
-               }
+   template< typename V >
+   struct type_key< use_default_key, V >
+   {
+      template< template< typename... > class Traits >
+      static std::string key()
+      {
+         return Traits< V >::template default_key< Traits >::as_string();
+      }
 
-               template< template< typename... > class Traits = traits, typename Consumer >
-               static void produce_key( Consumer& consumer )
-               {
-                  consumer.key( json::internal::string_t< Cs... >::as_string_view() );
-               }
-            };
+      template< template< typename... > class Traits = traits, typename Consumer >
+      static void produce_key( Consumer& consumer )
+      {
+         consumer.key( Traits< V >::template default_key< Traits >::as_string_view() );
+      }
+   };
 
-            template< typename V >
-            struct type_key< use_default_key, V >
-            {
-               template< template< typename... > class Traits >
-               static std::string key()
-               {
-                  return Traits< V >::template default_key< Traits >::as_string();
-               }
-
-               template< template< typename... > class Traits = traits, typename Consumer >
-               static void produce_key( Consumer& consumer )
-               {
-                  consumer.key( Traits< V >::template default_key< Traits >::as_string_view() );
-               }
-            };
-
-         }  // namespace internal
-
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding::internal
 
 #endif

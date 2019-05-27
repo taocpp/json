@@ -6,41 +6,37 @@
 #include <tao/json.hpp>
 #include <tao/json/contrib/get.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void unit_test()
    {
-      void unit_test()
-      {
-         const value v = from_string( "{ \"a\": 1, \"b\": { \"ba\": 2, \"bb\": [ 3, 4, [], {}, { \"bb4a\": true } ] } }" );
-         TEST_ASSERT( get::value( v, "a" ).is_value_ptr() );
-         TEST_ASSERT( get::value( v, "a" ).skip_value_ptr().is_integer() );
-         TEST_ASSERT( get::value( v, "a" ).skip_value_ptr().as< int >() == 1 );
+      const value v = from_string( "{ \"a\": 1, \"b\": { \"ba\": 2, \"bb\": [ 3, 4, [], {}, { \"bb4a\": true } ] } }" );
+      TEST_ASSERT( get::value( v, "a" ).is_value_ptr() );
+      TEST_ASSERT( get::value( v, "a" ).skip_value_ptr().is_integer() );
+      TEST_ASSERT( get::value( v, "a" ).skip_value_ptr().as< int >() == 1 );
 
-         TEST_ASSERT( get::as< int >( get::value( v, "a" ) ) == 1 );
-         TEST_ASSERT( !get::value( v, "zz" ) );
-         TEST_THROWS( get::as< int >( get::value( v, "zz" ) ) );
+      TEST_ASSERT( get::as< int >( get::value( v, "a" ) ) == 1 );
+      TEST_ASSERT( !get::value( v, "zz" ) );
+      TEST_THROWS( get::as< int >( get::value( v, "zz" ) ) );
 
-         TEST_ASSERT( get::as< int >( v, "a" ) == 1 );
-         TEST_THROWS( get::as< int >( v, "zz" ) );
+      TEST_ASSERT( get::as< int >( v, "a" ) == 1 );
+      TEST_THROWS( get::as< int >( v, "zz" ) );
 
-         TEST_ASSERT( *get::optional< int >( v, "a" ) == 1 );
-         TEST_ASSERT( !get::optional< int >( v, "zz" ) );
-         TEST_ASSERT( !get::optional< int >( get::value( v, "zz" ) ) );
+      TEST_ASSERT( *get::optional< int >( v, "a" ) == 1 );
+      TEST_ASSERT( !get::optional< int >( v, "zz" ) );
+      TEST_ASSERT( !get::optional< int >( get::value( v, "zz" ) ) );
 
-         TEST_ASSERT( get::defaulted( 2, v, "a" ) == 1 );
-         TEST_ASSERT( get::defaulted( 2, v, "zz" ) == 2 );
-         TEST_ASSERT( get::defaulted( 2, get::value( v, "zz" ) ) == 2 );
+      TEST_ASSERT( get::defaulted( 2, v, "a" ) == 1 );
+      TEST_ASSERT( get::defaulted( 2, v, "zz" ) == 2 );
+      TEST_ASSERT( get::defaulted( 2, get::value( v, "zz" ) ) == 2 );
 
-         TEST_ASSERT( get::as< bool >( v, "b", "bb", 4, "bb4a" ) == true );
-         TEST_ASSERT( *get::optional< bool >( v, "b", "bb", 4, "bb4a" ) == true );
-         TEST_ASSERT( get::defaulted( false, v, "b", "bb", 4, "bb4a" ) == true );
+      TEST_ASSERT( get::as< bool >( v, "b", "bb", 4, "bb4a" ) == true );
+      TEST_ASSERT( *get::optional< bool >( v, "b", "bb", 4, "bb4a" ) == true );
+      TEST_ASSERT( get::defaulted( false, v, "b", "bb", 4, "bb4a" ) == true );
 
-         TEST_ASSERT( !get::value( get::value( v, "zz" ), "zz" ) );
-      }
+      TEST_ASSERT( !get::value( get::value( v, "zz" ), "zz" ) );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

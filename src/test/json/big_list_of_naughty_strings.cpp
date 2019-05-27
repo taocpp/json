@@ -26,22 +26,18 @@ std::string get_file_contents( const char* filename )
    throw std::runtime_error( "unable to read input file" );  // NOLINT
 }
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void unit_test()
    {
-      void unit_test()
-      {
-         const auto v = parse_file( "tests/blns.json" );
-         TEST_ASSERT( v.get_array().size() == 494 );
-         const auto s = to_string( v, 2 ) + '\n';
-         TEST_ASSERT( s == get_file_contents( "tests/blns.json" ) );
-         const auto v2 = from_string( s );
-         TEST_ASSERT( v2 == v );
-      }
+      const auto v = parse_file( "tests/blns.json" );
+      TEST_ASSERT( v.get_array().size() == 494 );
+      const auto s = to_string( v, 2 ) + '\n';
+      TEST_ASSERT( s == get_file_contents( "tests/blns.json" ) );
+      const auto v2 = from_string( s );
+      TEST_ASSERT( v2 == v );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

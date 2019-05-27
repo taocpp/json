@@ -4,63 +4,59 @@
 #include "../pointer.hpp"
 #include "../traits.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   struct token_traits
    {
-      struct token_traits
+      template< template< typename... > class Traits >
+      static void assign( basic_value< Traits >& v, const token& t )
       {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const token& t )
-         {
-            if( t.has_index() ) {
-               v = t.index();
-            }
-            else {
-               v = t.key();
-            }
+         if( t.has_index() ) {
+            v = t.index();
          }
-
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const token& t )
-         {
-            if( t.has_index() ) {
-               json::events::produce< Traits >( c, t.index() );
-            }
-            else {
-               json::events::produce< Traits >( c, t.key() );
-            }
+         else {
+            v = t.key();
          }
-      };
+      }
 
-      struct pointer_traits
+      template< template< typename... > class Traits, typename Consumer >
+      static void produce( Consumer& c, const token& t )
       {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const pointer& p )
-         {
-            v.prepare_array();
-            v.unsafe_get_array().reserve( p.size() );
-
-            for( const auto& i : p ) {
-               v.unsafe_emplace_back( i );
-            }
+         if( t.has_index() ) {
+            json::events::produce< Traits >( c, t.index() );
          }
-
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const pointer& p )
-         {
-            c.begin_array( p.size() );
-
-            for( const auto& i : p ) {
-               json::events::produce< Traits >( c, i );
-               c.element();
-            }
-            c.end_array( p.size() );
+         else {
+            json::events::produce< Traits >( c, t.key() );
          }
-      };
+      }
+   };
 
-   }  // namespace json
+   struct pointer_traits
+   {
+      template< template< typename... > class Traits >
+      static void assign( basic_value< Traits >& v, const pointer& p )
+      {
+         v.prepare_array();
+         v.unsafe_get_array().reserve( p.size() );
 
-}  // namespace tao
+         for( const auto& i : p ) {
+            v.unsafe_emplace_back( i );
+         }
+      }
+
+      template< template< typename... > class Traits, typename Consumer >
+      static void produce( Consumer& c, const pointer& p )
+      {
+         c.begin_array( p.size() );
+
+         for( const auto& i : p ) {
+            json::events::produce< Traits >( c, i );
+            c.element();
+         }
+         c.end_array( p.size() );
+      }
+   };
+
+}  // namespace tao::json
 
 #endif

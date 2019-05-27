@@ -12,36 +12,32 @@
 
 #include "internal/object_traits.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename T, typename... Ts >
+   struct unordered_map_traits
+      : public internal::object_traits< std::unordered_map< std::string, T, Ts... > >
    {
-      template< typename T, typename... Ts >
-      struct unordered_map_traits
-         : public internal::object_traits< std::unordered_map< std::string, T, Ts... > >
+      template< template< typename... > class Traits, typename... With >
+      static void to( const basic_value< Traits >& v, std::unordered_map< std::string, T, Ts... >& r, With&... with )
       {
-         template< template< typename... > class Traits, typename... With >
-         static void to( const basic_value< Traits >& v, std::unordered_map< std::string, T, Ts... >& r, With&... with )
-         {
-            const auto& o = v.get_object();
-            for( const auto& i : o ) {
-               r.emplace( i.first, Traits< T >::as( i.second, with... ) );
-            }
+         const auto& o = v.get_object();
+         for( const auto& i : o ) {
+            r.emplace( i.first, Traits< T >::as( i.second, with... ) );
          }
+      }
 
-         template< template< typename... > class Traits, typename Producer >
-         static void consume( Producer& parser, std::unordered_map< std::string, T, Ts... >& v )
-         {
-            auto s = parser.begin_object();
-            while( parser.member_or_end_object( s ) ) {
-               auto k = parser.key();
-               v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
-            }
+      template< template< typename... > class Traits, typename Producer >
+      static void consume( Producer& parser, std::unordered_map< std::string, T, Ts... >& v )
+      {
+         auto s = parser.begin_object();
+         while( parser.member_or_end_object( s ) ) {
+            auto k = parser.key();
+            v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
          }
-      };
+      }
+   };
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif

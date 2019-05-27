@@ -51,131 +51,127 @@
 #include <tao/json/ubjson/events/to_stream.hpp>
 #include <tao/json/ubjson/events/to_string.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename Consumer >
+   void check_consumer_impl( Consumer* c = nullptr )
    {
-      template< typename Consumer >
-      void check_consumer_impl( Consumer* c = nullptr )
-      {
-         if( c == nullptr ) {
-            return;
-         }
-
-         std::string s;
-         std::string k;
-         std::string_view sv;
-         std::vector< std::byte > x;
-         tao::binary_view xv;
-
-         // each consumer *must* accept the following events (type-wise, not actual order/values)
-
-         c->null();
-
-         c->boolean( true );
-
-         c->number( int64_t( 0 ) );
-         c->number( uint64_t( 0 ) );
-         c->number( double( 0 ) );
-
-         const char* p = "";
-         c->string( "" );
-         c->string( p );
-         c->string( s );
-         c->string( std::move( s ) );
-         c->string( sv );
-
-         c->binary( x );
-         c->binary( std::move( x ) );
-         c->binary( xv );
-
-         c->begin_array();
-         c->begin_array( std::size_t( 0 ) );
-
-         c->element();
-
-         c->end_array();
-         c->end_array( std::size_t( 0 ) );
-
-         c->begin_object();
-         c->begin_object( std::size_t( 0 ) );
-
-         c->key( "" );
-         c->key( k );
-         c->key( std::move( k ) );
-         c->key( sv );
-
-         c->member();
-
-         c->end_object();
-         c->end_object( std::size_t( 0 ) );
+      if( c == nullptr ) {
+         return;
       }
 
-      template< typename Consumer >
-      void check_consumer()
-      {
-         check_consumer_impl< Consumer >();
+      std::string s;
+      std::string k;
+      std::string_view sv;
+      std::vector< std::byte > x;
+      tao::binary_view xv;
 
-         check_consumer_impl< events::ref< Consumer > >();
-         check_consumer_impl< events::virtual_ref< Consumer > >();
+      // each consumer *must* accept the following events (type-wise, not actual order/values)
 
-         check_consumer_impl< events::tee< Consumer > >();
-         check_consumer_impl< events::tee< events::discard, Consumer > >();
-         check_consumer_impl< events::tee< Consumer, events::discard > >();
-         check_consumer_impl< events::tee< Consumer, Consumer > >();
-         check_consumer_impl< events::tee< Consumer, events::discard, Consumer > >();
+      c->null();
 
-         check_consumer_impl< events::validate_keys< Consumer, pegtl::success > >();
+      c->boolean( true );
 
-         check_consumer_impl< events::limit_value_count< Consumer, 2 > >();
-         check_consumer_impl< events::limit_nesting_depth< Consumer, 2 > >();
+      c->number( int64_t( 0 ) );
+      c->number( uint64_t( 0 ) );
+      c->number( double( 0 ) );
 
-         check_consumer_impl< events::transformer< Consumer > >();
-         check_consumer_impl< events::transformer< Consumer, events::binary_to_base64 > >();
-         check_consumer_impl< events::transformer< Consumer, events::binary_to_base64url > >();
-         check_consumer_impl< events::transformer< Consumer, events::binary_to_exception > >();
-         check_consumer_impl< events::transformer< Consumer, events::binary_to_hex > >();
-         check_consumer_impl< events::transformer< Consumer, events::key_camel_case_to_snake_case > >();
-         check_consumer_impl< events::transformer< Consumer, events::key_snake_case_to_camel_case > >();
-         check_consumer_impl< events::transformer< Consumer, events::non_finite_to_exception > >();
-         check_consumer_impl< events::transformer< Consumer, events::non_finite_to_null > >();
-         check_consumer_impl< events::transformer< Consumer, events::non_finite_to_string > >();
-         check_consumer_impl< events::transformer< Consumer, events::prefer_signed > >();
-         check_consumer_impl< events::transformer< Consumer, events::prefer_unsigned > >();
-      }
+      const char* p = "";
+      c->string( "" );
+      c->string( p );
+      c->string( s );
+      c->string( std::move( s ) );
+      c->string( sv );
 
-      void unit_test()
-      {
-         check_consumer< events::compare >();
-         check_consumer< events::debug >();
-         check_consumer< events::discard >();
-         check_consumer< events::hash >();
-         check_consumer< events::statistics >();
-         check_consumer< events::to_pretty_stream >();
-         check_consumer< events::to_stream >();
-         check_consumer< events::to_string >();
-         check_consumer< events::to_value >();
-         check_consumer< events::validate_event_order >();
+      c->binary( x );
+      c->binary( std::move( x ) );
+      c->binary( xv );
 
-         check_consumer< events::tee<> >();
+      c->begin_array();
+      c->begin_array( std::size_t( 0 ) );
 
-         check_consumer< cbor::events::to_stream >();
-         check_consumer< cbor::events::to_string >();
+      c->element();
 
-         check_consumer< jaxn::events::to_pretty_stream >();
-         check_consumer< jaxn::events::to_stream >();
+      c->end_array();
+      c->end_array( std::size_t( 0 ) );
 
-         check_consumer< msgpack::events::to_stream >();
-         check_consumer< msgpack::events::to_string >();
+      c->begin_object();
+      c->begin_object( std::size_t( 0 ) );
 
-         check_consumer< ubjson::events::to_stream >();
-         check_consumer< ubjson::events::to_string >();
+      c->key( "" );
+      c->key( k );
+      c->key( std::move( k ) );
+      c->key( sv );
 
-         check_consumer< internal::schema_consumer< traits > >();
-      }
+      c->member();
 
-   }  // namespace json
+      c->end_object();
+      c->end_object( std::size_t( 0 ) );
+   }
 
-}  // namespace tao
+   template< typename Consumer >
+   void check_consumer()
+   {
+      check_consumer_impl< Consumer >();
+
+      check_consumer_impl< events::ref< Consumer > >();
+      check_consumer_impl< events::virtual_ref< Consumer > >();
+
+      check_consumer_impl< events::tee< Consumer > >();
+      check_consumer_impl< events::tee< events::discard, Consumer > >();
+      check_consumer_impl< events::tee< Consumer, events::discard > >();
+      check_consumer_impl< events::tee< Consumer, Consumer > >();
+      check_consumer_impl< events::tee< Consumer, events::discard, Consumer > >();
+
+      check_consumer_impl< events::validate_keys< Consumer, pegtl::success > >();
+
+      check_consumer_impl< events::limit_value_count< Consumer, 2 > >();
+      check_consumer_impl< events::limit_nesting_depth< Consumer, 2 > >();
+
+      check_consumer_impl< events::transformer< Consumer > >();
+      check_consumer_impl< events::transformer< Consumer, events::binary_to_base64 > >();
+      check_consumer_impl< events::transformer< Consumer, events::binary_to_base64url > >();
+      check_consumer_impl< events::transformer< Consumer, events::binary_to_exception > >();
+      check_consumer_impl< events::transformer< Consumer, events::binary_to_hex > >();
+      check_consumer_impl< events::transformer< Consumer, events::key_camel_case_to_snake_case > >();
+      check_consumer_impl< events::transformer< Consumer, events::key_snake_case_to_camel_case > >();
+      check_consumer_impl< events::transformer< Consumer, events::non_finite_to_exception > >();
+      check_consumer_impl< events::transformer< Consumer, events::non_finite_to_null > >();
+      check_consumer_impl< events::transformer< Consumer, events::non_finite_to_string > >();
+      check_consumer_impl< events::transformer< Consumer, events::prefer_signed > >();
+      check_consumer_impl< events::transformer< Consumer, events::prefer_unsigned > >();
+   }
+
+   void unit_test()
+   {
+      check_consumer< events::compare >();
+      check_consumer< events::debug >();
+      check_consumer< events::discard >();
+      check_consumer< events::hash >();
+      check_consumer< events::statistics >();
+      check_consumer< events::to_pretty_stream >();
+      check_consumer< events::to_stream >();
+      check_consumer< events::to_string >();
+      check_consumer< events::to_value >();
+      check_consumer< events::validate_event_order >();
+
+      check_consumer< events::tee<> >();
+
+      check_consumer< cbor::events::to_stream >();
+      check_consumer< cbor::events::to_string >();
+
+      check_consumer< jaxn::events::to_pretty_stream >();
+      check_consumer< jaxn::events::to_stream >();
+
+      check_consumer< msgpack::events::to_stream >();
+      check_consumer< msgpack::events::to_string >();
+
+      check_consumer< ubjson::events::to_stream >();
+      check_consumer< ubjson::events::to_string >();
+
+      check_consumer< internal::schema_consumer< traits > >();
+   }
+
+}  // namespace tao::json
 
 #include "main.hpp"

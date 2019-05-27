@@ -9,22 +9,14 @@
 
 #include "../forward.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< template< typename... > class Traits = traits, typename Consumer, typename T >
+   void produce( Consumer& c, T&& t )
    {
-      namespace events
-      {
-         template< template< typename... > class Traits = traits, typename Consumer, typename T >
-         void produce( Consumer& c, T&& t )
-         {
-            Traits< std::decay_t< T > >::template produce< Traits >( c, std::forward< T >( t ) );
-         }
+      Traits< std::decay_t< T > >::template produce< Traits >( c, std::forward< T >( t ) );
+   }
 
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

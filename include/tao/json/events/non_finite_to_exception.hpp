@@ -7,33 +7,25 @@
 #include <cmath>
 #include <stdexcept>
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer >
+   struct non_finite_to_exception
+      : public Consumer
    {
-      namespace events
+      using Consumer::Consumer;
+
+      using Consumer::number;
+
+      void number( const double v )
       {
-         template< typename Consumer >
-         struct non_finite_to_exception
-            : public Consumer
-         {
-            using Consumer::Consumer;
+         if( !std::isfinite( v ) ) {
+            throw std::runtime_error( "invalid non-finite double value" );  // NOLINT
+         }
+         Consumer::number( v );
+      }
+   };
 
-            using Consumer::number;
-
-            void number( const double v )
-            {
-               if( !std::isfinite( v ) ) {
-                  throw std::runtime_error( "invalid non-finite double value" );  // NOLINT
-               }
-               Consumer::number( v );
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

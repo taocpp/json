@@ -8,63 +8,55 @@
 #include <string>
 #include <string_view>
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer >
+   struct key_camel_case_to_snake_case
+      : public Consumer
    {
-      namespace events
+      using Consumer::Consumer;
+
+      void key( const std::string_view v )
       {
-         template< typename Consumer >
-         struct key_camel_case_to_snake_case
-            : public Consumer
-         {
-            using Consumer::Consumer;
-
-            void key( const std::string_view v )
-            {
-               std::string t;
-               bool last_upper = false;
-               for( const auto c : v ) {
-                  if( std::isupper( c ) ) {  // NOLINT
-                     last_upper = true;
-                     t += c;
-                  }
-                  else {
-                     if( last_upper ) {
-                        const char o = t.back();
-                        t.pop_back();
-                        if( !t.empty() && t.back() != '_' ) {
-                           t += '_';
-                        }
-                        t += o;
-                     }
-                     last_upper = false;
-                     t += c;
-                  }
-               }
-               std::string r;
-               bool last_lower = false;
-               for( const auto c : t ) {
-                  if( std::isupper( c ) ) {  // NOLINT
-                     if( last_lower ) {
-                        r += '_';
-                     }
-                     last_lower = false;
-                     r += static_cast< char >( std::tolower( c ) );
-                  }
-                  else {
-                     last_lower = static_cast< bool >( std::islower( c ) );
-                     r += c;
-                  }
-               }
-               Consumer::key( std::move( r ) );
+         std::string t;
+         bool last_upper = false;
+         for( const auto c : v ) {
+            if( std::isupper( c ) ) {  // NOLINT
+               last_upper = true;
+               t += c;
             }
-         };
+            else {
+               if( last_upper ) {
+                  const char o = t.back();
+                  t.pop_back();
+                  if( !t.empty() && t.back() != '_' ) {
+                     t += '_';
+                  }
+                  t += o;
+               }
+               last_upper = false;
+               t += c;
+            }
+         }
+         std::string r;
+         bool last_lower = false;
+         for( const auto c : t ) {
+            if( std::isupper( c ) ) {  // NOLINT
+               if( last_lower ) {
+                  r += '_';
+               }
+               last_lower = false;
+               r += static_cast< char >( std::tolower( c ) );
+            }
+            else {
+               last_lower = static_cast< bool >( std::islower( c ) );
+               r += c;
+            }
+         }
+         Consumer::key( std::move( r ) );
+      }
+   };
 
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

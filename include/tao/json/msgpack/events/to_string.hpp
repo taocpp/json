@@ -9,36 +9,24 @@
 
 #include "to_stream.hpp"
 
-namespace tao
+namespace tao::json::msgpack::events
 {
-   namespace json
+   struct to_string
+      : public to_stream
    {
-      namespace msgpack
+      std::ostringstream oss;
+
+      to_string()
+         : to_stream( oss )
       {
-         namespace events
-         {
-            struct to_string
-               : public to_stream
-            {
-               std::ostringstream oss;
+      }
 
-               to_string()
-                  : to_stream( oss )
-               {
-               }
+      std::string value() const
+      {
+         return oss.str();
+      }
+   };
 
-               std::string value() const
-               {
-                  return oss.str();
-               }
-            };
-
-         }  // namespace events
-
-      }  // namespace msgpack
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::msgpack::events
 
 #endif

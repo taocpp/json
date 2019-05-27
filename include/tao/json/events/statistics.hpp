@@ -13,110 +13,102 @@
 
 #include "../binary_view.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   struct statistics
    {
-      namespace events
+      std::size_t null_count = 0;
+      std::size_t true_count = 0;
+      std::size_t false_count = 0;
+
+      std::size_t signed_count = 0;
+      std::size_t unsigned_count = 0;
+      std::size_t double_count = 0;
+
+      std::size_t string_count = 0;
+      std::size_t string_lengths = 0;
+      std::size_t key_count = 0;
+      std::size_t key_lengths = 0;
+      std::size_t binary_count = 0;
+      std::size_t binary_lengths = 0;
+
+      std::size_t array_count = 0;
+      std::size_t array_elements = 0;
+      std::size_t object_count = 0;
+      std::size_t object_members = 0;
+
+      void null() noexcept
       {
-         struct statistics
-         {
-            std::size_t null_count = 0;
-            std::size_t true_count = 0;
-            std::size_t false_count = 0;
+         ++null_count;
+      }
 
-            std::size_t signed_count = 0;
-            std::size_t unsigned_count = 0;
-            std::size_t double_count = 0;
+      void boolean( const bool v ) noexcept
+      {
+         ++( v ? true_count : false_count );
+      }
 
-            std::size_t string_count = 0;
-            std::size_t string_lengths = 0;
-            std::size_t key_count = 0;
-            std::size_t key_lengths = 0;
-            std::size_t binary_count = 0;
-            std::size_t binary_lengths = 0;
+      void number( const std::int64_t /*unused*/ ) noexcept
+      {
+         ++signed_count;
+      }
 
-            std::size_t array_count = 0;
-            std::size_t array_elements = 0;
-            std::size_t object_count = 0;
-            std::size_t object_members = 0;
+      void number( const std::uint64_t /*unused*/ ) noexcept
+      {
+         ++unsigned_count;
+      }
 
-            void null() noexcept
-            {
-               ++null_count;
-            }
+      void number( const double /*unused*/ ) noexcept
+      {
+         ++double_count;
+      }
 
-            void boolean( const bool v ) noexcept
-            {
-               ++( v ? true_count : false_count );
-            }
+      void string( const std::string_view v ) noexcept
+      {
+         ++string_count;
+         string_lengths += v.size();
+      }
 
-            void number( const std::int64_t /*unused*/ ) noexcept
-            {
-               ++signed_count;
-            }
+      void binary( const tao::binary_view v ) noexcept
+      {
+         ++binary_count;
+         binary_lengths += v.size();
+      }
 
-            void number( const std::uint64_t /*unused*/ ) noexcept
-            {
-               ++unsigned_count;
-            }
+      void begin_array( const std::size_t /*unused*/ = 0 ) noexcept
+      {
+         ++array_count;
+      }
 
-            void number( const double /*unused*/ ) noexcept
-            {
-               ++double_count;
-            }
+      void element() noexcept
+      {
+         ++array_elements;
+      }
 
-            void string( const std::string_view v ) noexcept
-            {
-               ++string_count;
-               string_lengths += v.size();
-            }
+      void end_array( const std::size_t /*unused*/ = 0 ) noexcept
+      {
+      }
 
-            void binary( const tao::binary_view v ) noexcept
-            {
-               ++binary_count;
-               binary_lengths += v.size();
-            }
+      void begin_object( const std::size_t /*unused*/ = 0 ) noexcept
+      {
+         ++object_count;
+      }
 
-            void begin_array( const std::size_t /*unused*/ = 0 ) noexcept
-            {
-               ++array_count;
-            }
+      void key( const std::string_view v ) noexcept
+      {
+         ++key_count;
+         key_lengths += v.size();
+      }
 
-            void element() noexcept
-            {
-               ++array_elements;
-            }
+      void member() noexcept
+      {
+         ++object_members;
+      }
 
-            void end_array( const std::size_t /*unused*/ = 0 ) noexcept
-            {
-            }
+      void end_object( const std::size_t /*unused*/ = 0 ) noexcept
+      {
+      }
+   };
 
-            void begin_object( const std::size_t /*unused*/ = 0 ) noexcept
-            {
-               ++object_count;
-            }
-
-            void key( const std::string_view v ) noexcept
-            {
-               ++key_count;
-               key_lengths += v.size();
-            }
-
-            void member() noexcept
-            {
-               ++object_members;
-            }
-
-            void end_object( const std::size_t /*unused*/ = 0 ) noexcept
-            {
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

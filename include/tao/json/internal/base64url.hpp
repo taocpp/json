@@ -7,55 +7,47 @@
 #include <stdexcept>
 #include <string>
 
-namespace tao
+namespace tao::json::internal
 {
-   namespace json
+   template< typename T >
+   std::string base64url( const T& v )
    {
-      namespace internal
-      {
-         template< typename T >
-         std::string base64url( const T& v )
-         {
-            static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+      static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
-            std::string s;
-            s.reserve( ( v.size() + 2 ) / 3 * 4 );
+      std::string s;
+      s.reserve( ( v.size() + 2 ) / 3 * 4 );
 
-            unsigned cycle = 0;
-            unsigned encode = 0;
-            for( const auto c : v ) {
-               encode <<= 8;
-               encode += static_cast< unsigned char >( c );
-               s += table[ ( encode >> ( ++cycle * 2 ) ) & 0x3f ];  // NOLINT
-               if( cycle == 3 ) {
-                  cycle = 0;
-                  s += table[ encode & 0x3f ];  // NOLINT
-               }
-            }
-
-            switch( cycle ) {
-               case 0:
-                  break;
-
-               case 1:
-                  s += table[ ( encode << 4 ) & 0x3f ];  // NOLINT
-                  break;
-
-               case 2:
-                  s += table[ ( encode << 2 ) & 0x3f ];  // NOLINT
-                  break;
-
-               default:
-                  throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
-            }
-
-            return s;
+      unsigned cycle = 0;
+      unsigned encode = 0;
+      for( const auto c : v ) {
+         encode <<= 8;
+         encode += static_cast< unsigned char >( c );
+         s += table[ ( encode >> ( ++cycle * 2 ) ) & 0x3f ];  // NOLINT
+         if( cycle == 3 ) {
+            cycle = 0;
+            s += table[ encode & 0x3f ];  // NOLINT
          }
+      }
 
-      }  // namespace internal
+      switch( cycle ) {
+         case 0:
+            break;
 
-   }  // namespace json
+         case 1:
+            s += table[ ( encode << 4 ) & 0x3f ];  // NOLINT
+            break;
 
-}  // namespace tao
+         case 2:
+            s += table[ ( encode << 2 ) & 0x3f ];  // NOLINT
+            break;
+
+         default:
+            throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+      }
+
+      return s;
+   }
+
+}  // namespace tao::json::internal
 
 #endif

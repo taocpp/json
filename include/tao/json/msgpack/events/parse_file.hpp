@@ -11,29 +11,17 @@
 
 #include "../internal/grammar.hpp"
 
-namespace tao
+namespace tao::json::msgpack::events
 {
-   namespace json
+   // Events producer to parse a file containing a MSGPACK string representation.
+
+   template< typename T, typename Consumer >
+   void parse_file( Consumer& consumer, T&& filename )
    {
-      namespace msgpack
-      {
-         namespace events
-         {
-            // Events producer to parse a file containing a MSGPACK string representation.
+      pegtl::file_input< pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
+      pegtl::parse< internal::grammar >( in, consumer );
+   }
 
-            template< typename T, typename Consumer >
-            void parse_file( Consumer& consumer, T&& filename )
-            {
-               pegtl::file_input< pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
-               pegtl::parse< internal::grammar >( in, consumer );
-            }
-
-         }  // namespace events
-
-      }  // namespace msgpack
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::msgpack::events
 
 #endif

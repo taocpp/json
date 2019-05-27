@@ -6,41 +6,37 @@
 #include <tao/json/from_string.hpp>
 #include <tao/json/to_string.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void roundtrip( const std::string& v )
    {
-      void roundtrip( const std::string& v )
-      {
-         TEST_ASSERT( to_string( from_string( v ) ) == v );
-      }
+      TEST_ASSERT( to_string( from_string( v ) ) == v );
+   }
 
-      void unit_test()
-      {
-         roundtrip( "\" \\u0000 \"" );
-         roundtrip( "\" \\b \"" );
-         roundtrip( "\" \\f \"" );
-         roundtrip( "\" \\n \"" );
-         roundtrip( "\" \\r \"" );
-         roundtrip( "\" \\t \"" );
-         roundtrip( "\" \\\\ \"" );
-         roundtrip( "\" \\\" \"" );
-         roundtrip( "\" \\u007f \"" );
-         roundtrip( "\" \\b.\\f \"" );
-         roundtrip( "\" \\b\\f\\n\\r\\t\\\\\\\" \"" );
-         roundtrip( "\" \\bx\\fxz\\nzx\\ryx\\txy\\\\yz\\\" \"" );
+   void unit_test()
+   {
+      roundtrip( "\" \\u0000 \"" );
+      roundtrip( "\" \\b \"" );
+      roundtrip( "\" \\f \"" );
+      roundtrip( "\" \\n \"" );
+      roundtrip( "\" \\r \"" );
+      roundtrip( "\" \\t \"" );
+      roundtrip( "\" \\\\ \"" );
+      roundtrip( "\" \\\" \"" );
+      roundtrip( "\" \\u007f \"" );
+      roundtrip( "\" \\b.\\f \"" );
+      roundtrip( "\" \\b\\f\\n\\r\\t\\\\\\\" \"" );
+      roundtrip( "\" \\bx\\fxz\\nzx\\ryx\\txy\\\\yz\\\" \"" );
 
-         const std::string s1 = "\" \\b\\f\\n\\r\\t\\\\\\\" \"";
-         TEST_ASSERT( from_string( s1 ).get_string() == " \b\f\n\r\t\\\" " );
-         TEST_ASSERT( to_string( from_string( s1 ) ) == s1 );
+      const std::string s1 = "\" \\b\\f\\n\\r\\t\\\\\\\" \"";
+      TEST_ASSERT( from_string( s1 ).get_string() == " \b\f\n\r\t\\\" " );
+      TEST_ASSERT( to_string( from_string( s1 ) ) == s1 );
 
-         const std::string s2 = "\" \\u007f \"";
-         TEST_ASSERT( from_string( s2 ).get_string() == " \x7f " );
-         TEST_ASSERT( to_string( from_string( s2 ) ) == s2 );
-      }
+      const std::string s2 = "\" \\u007f \"";
+      TEST_ASSERT( from_string( s2 ).get_string() == " \x7f " );
+      TEST_ASSERT( to_string( from_string( s2 ) ) == s2 );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

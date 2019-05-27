@@ -9,38 +9,26 @@
 
 #include "to_stream.hpp"
 
-namespace tao
+namespace tao::json::jaxn::events
 {
-   namespace json
+   // Events consumer to build a JAXN string representation.
+
+   struct to_string
+      : public to_stream
    {
-      namespace jaxn
+      std::ostringstream oss;
+
+      to_string()
+         : to_stream( oss )
       {
-         namespace events
-         {
-            // Events consumer to build a JAXN string representation.
+      }
 
-            struct to_string
-               : public to_stream
-            {
-               std::ostringstream oss;
+      std::string value() const
+      {
+         return oss.str();
+      }
+   };
 
-               to_string()
-                  : to_stream( oss )
-               {
-               }
-
-               std::string value() const
-               {
-                  return oss.str();
-               }
-            };
-
-         }  // namespace events
-
-      }  // namespace jaxn
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::jaxn::events
 
 #endif

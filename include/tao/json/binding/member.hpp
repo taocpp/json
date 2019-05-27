@@ -11,30 +11,22 @@
 
 #include "internal/type_key.hpp"
 
-namespace tao
+namespace tao::json::binding
 {
-   namespace json
+   template< member_kind R, typename K, auto P >
+   struct member
+      : public element< P >,
+        public internal::type_key< K, typename element< P >::internal_t >
    {
-      namespace binding
+      static constexpr member_kind kind = R;
+
+      template< template< typename... > class Traits, typename C >
+      static bool is_nothing( const C& x )
       {
-         template< member_kind R, typename K, auto P >
-         struct member
-            : public element< P >,
-              public internal::type_key< K, typename element< P >::internal_t >
-         {
-            static constexpr member_kind kind = R;
+         return json::internal::is_nothing< Traits >( element< P >::read( x ) );
+      }
+   };
 
-            template< template< typename... > class Traits, typename C >
-            static bool is_nothing( const C& x )
-            {
-               return json::internal::is_nothing< Traits >( element< P >::read( x ) );
-            }
-         };
-
-      }  // namespace binding
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::binding
 
 #endif

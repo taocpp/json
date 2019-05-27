@@ -11,30 +11,22 @@
 
 #include "events/from_string.hpp"
 
-namespace tao
+namespace tao::json::msgpack
 {
-   namespace json
+   template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
+   basic_value< Traits > basic_from_string( Ts&&... ts )
    {
-      namespace msgpack
-      {
-         template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-         basic_value< Traits > basic_from_string( Ts&&... ts )
-         {
-            json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
-            events::from_string( consumer, std::forward< Ts >( ts )... );
-            return std::move( consumer.value );
-         }
+      json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
+      events::from_string( consumer, std::forward< Ts >( ts )... );
+      return std::move( consumer.value );
+   }
 
-         template< template< typename... > class... Transformers, typename... Ts >
-         value from_string( Ts&&... ts )
-         {
-            return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
-         }
+   template< template< typename... > class... Transformers, typename... Ts >
+   value from_string( Ts&&... ts )
+   {
+      return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
+   }
 
-      }  // namespace msgpack
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::msgpack
 
 #endif

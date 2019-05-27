@@ -12,29 +12,17 @@
 
 #include "../../external/pegtl/file_input.hpp"
 
-namespace tao
+namespace tao::json::jaxn::events
 {
-   namespace json
+   // Events producer to parse a file containing a JAXN string representation.
+
+   template< typename T, typename Consumer >
+   void parse_file( Consumer& consumer, T&& filename )
    {
-      namespace jaxn
-      {
-         namespace events
-         {
-            // Events producer to parse a file containing a JAXN string representation.
+      pegtl::file_input< pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
+      pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
+   }
 
-            template< typename T, typename Consumer >
-            void parse_file( Consumer& consumer, T&& filename )
-            {
-               pegtl::file_input< pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
-               pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
-            }
-
-         }  // namespace events
-
-      }  // namespace jaxn
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::jaxn::events
 
 #endif

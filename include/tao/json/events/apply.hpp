@@ -7,22 +7,14 @@
 #include "ref.hpp"
 #include "transformer.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< template< typename... > class... Transformer, typename Consumer >
+   transformer< ref< Consumer >, Transformer... > apply( Consumer& c ) noexcept( noexcept( transformer< ref< Consumer >, Transformer... >( c ) ) )
    {
-      namespace events
-      {
-         template< template< typename... > class... Transformer, typename Consumer >
-         transformer< ref< Consumer >, Transformer... > apply( Consumer& c ) noexcept( noexcept( transformer< ref< Consumer >, Transformer... >( c ) ) )
-         {
-            return transformer< ref< Consumer >, Transformer... >( c );
-         }
+      return transformer< ref< Consumer >, Transformer... >( c );
+   }
 
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

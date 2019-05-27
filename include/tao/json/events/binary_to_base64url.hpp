@@ -9,28 +9,20 @@
 #include "../binary_view.hpp"
 #include "../internal/base64url.hpp"
 
-namespace tao
+namespace tao::json::events
 {
-   namespace json
+   template< typename Consumer >
+   struct binary_to_base64url
+      : public Consumer
    {
-      namespace events
+      using Consumer::Consumer;
+
+      void binary( const tao::binary_view v )
       {
-         template< typename Consumer >
-         struct binary_to_base64url
-            : public Consumer
-         {
-            using Consumer::Consumer;
+         Consumer::string( internal::base64url( v ) );
+      }
+   };
 
-            void binary( const tao::binary_view v )
-            {
-               Consumer::string( internal::base64url( v ) );
-            }
-         };
-
-      }  // namespace events
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::events
 
 #endif

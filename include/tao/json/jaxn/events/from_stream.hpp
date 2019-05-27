@@ -13,33 +13,21 @@
 #include "../internal/errors.hpp"
 #include "../internal/grammar.hpp"
 
-namespace tao
+namespace tao::json::jaxn::events
 {
-   namespace json
+   template< typename Consumer >
+   void from_stream( Consumer& consumer, std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
    {
-      namespace jaxn
-      {
-         namespace events
-         {
-            template< typename Consumer >
-            void from_stream( Consumer& consumer, std::istream& stream, const char* source = nullptr, const std::size_t maximum_buffer_size = 4000 )
-            {
-               pegtl::istream_input in( stream, maximum_buffer_size, source ? source : "tao::json::events::jaxn::from_stream" );
-               pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
-            }
+      pegtl::istream_input in( stream, maximum_buffer_size, source ? source : "tao::json::events::jaxn::from_stream" );
+      pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
+   }
 
-            template< typename Consumer >
-            void from_stream( Consumer& consumer, std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
-            {
-               from_stream( consumer, stream, source.c_str(), maximum_buffer_size );
-            }
+   template< typename Consumer >
+   void from_stream( Consumer& consumer, std::istream& stream, const std::string& source, const std::size_t maximum_buffer_size = 4000 )
+   {
+      from_stream( consumer, stream, source.c_str(), maximum_buffer_size );
+   }
 
-         }  // namespace events
-
-      }  // namespace jaxn
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::jaxn::events
 
 #endif

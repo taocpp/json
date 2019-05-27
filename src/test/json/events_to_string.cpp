@@ -6,24 +6,20 @@
 #include <tao/json/events/from_string.hpp>
 #include <tao/json/events/to_string.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   void test( const std::string& v )
    {
-      void test( const std::string& v )
-      {
-         events::to_string consumer;
-         events::from_string( consumer, v );
-         TEST_ASSERT( consumer.value() == v );
-      }
+      events::to_string consumer;
+      events::from_string( consumer, v );
+      TEST_ASSERT( consumer.value() == v );
+   }
 
-      void unit_test()
-      {
-         test( "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
-      }
+   void unit_test()
+   {
+      test( "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
+   }
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #include "main.hpp"

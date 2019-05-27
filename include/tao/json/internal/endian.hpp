@@ -13,56 +13,48 @@
 #include "endian_gcc.hpp"
 #endif
 
-namespace tao
+namespace tao::json::internal
 {
-   namespace json
+   template< typename N >
+   N h_to_be( const N n ) noexcept
    {
-      namespace internal
-      {
-         template< typename N >
-         N h_to_be( const N n ) noexcept
-         {
-            return N( to_and_from_be< sizeof( N ) >::convert( n ) );
-         }
+      return N( to_and_from_be< sizeof( N ) >::convert( n ) );
+   }
 
-         template< typename N >
-         N be_to_h( const N n ) noexcept
-         {
-            return h_to_be( n );
-         }
+   template< typename N >
+   N be_to_h( const N n ) noexcept
+   {
+      return h_to_be( n );
+   }
 
-         template< typename N >
-         N be_to_h( const void* p ) noexcept
-         {
-            N n;
-            std::memcpy( &n, p, sizeof( n ) );
-            return internal::be_to_h( n );
-         }
+   template< typename N >
+   N be_to_h( const void* p ) noexcept
+   {
+      N n;
+      std::memcpy( &n, p, sizeof( n ) );
+      return internal::be_to_h( n );
+   }
 
-         template< typename N >
-         N h_to_le( const N n ) noexcept
-         {
-            return N( to_and_from_le< sizeof( N ) >::convert( n ) );
-         }
+   template< typename N >
+   N h_to_le( const N n ) noexcept
+   {
+      return N( to_and_from_le< sizeof( N ) >::convert( n ) );
+   }
 
-         template< typename N >
-         N le_to_h( const N n ) noexcept
-         {
-            return h_to_le( n );
-         }
+   template< typename N >
+   N le_to_h( const N n ) noexcept
+   {
+      return h_to_le( n );
+   }
 
-         template< typename N >
-         N le_to_h( const void* p ) noexcept
-         {
-            N n;
-            std::memcpy( &n, p, sizeof( n ) );
-            return internal::le_to_h( n );
-         }
+   template< typename N >
+   N le_to_h( const void* p ) noexcept
+   {
+      N n;
+      std::memcpy( &n, p, sizeof( n ) );
+      return internal::le_to_h( n );
+   }
 
-      }  // namespace internal
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::internal
 
 #endif

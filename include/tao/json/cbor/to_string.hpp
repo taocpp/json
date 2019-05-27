@@ -13,24 +13,16 @@
 
 #include "events/to_string.hpp"
 
-namespace tao
+namespace tao::json::cbor
 {
-   namespace json
+   template< template< typename... > class... Transformers, template< typename... > class Traits >
+   std::string to_string( const basic_value< Traits >& v )
    {
-      namespace cbor
-      {
-         template< template< typename... > class... Transformers, template< typename... > class Traits >
-         std::string to_string( const basic_value< Traits >& v )
-         {
-            json::events::transformer< events::to_string, Transformers... > consumer;
-            json::events::from_value( consumer, v );
-            return consumer.value();
-         }
+      json::events::transformer< events::to_string, Transformers... > consumer;
+      json::events::from_value( consumer, v );
+      return consumer.value();
+   }
 
-      }  // namespace cbor
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json::cbor
 
 #endif

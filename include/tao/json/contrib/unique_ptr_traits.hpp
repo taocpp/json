@@ -12,82 +12,78 @@
 #include "internal/indirect_traits.hpp"
 #include "internal/type_traits.hpp"
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   namespace internal
    {
-      namespace internal
-      {
-         template< typename T, typename U >
-         struct unique_ptr_traits
-         {
-            template< template< typename... > class Traits, typename... With >
-            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
-            {
-               return std::unique_ptr< U >( new T( v, with... ) );
-            }
-
-            template< template< typename... > class Traits, typename... With >
-            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
-            {
-               return std::unique_ptr< U >( new T( Traits< T >::as( v, with... ) ) );
-            }
-
-            template< template< typename... > class Traits, typename... With >
-            static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
-            {
-               std::unique_ptr< U > t( new T() );
-               Traits< T >::to( v, static_cast< T& >( *t ), with... );
-               return t;
-            }
-
-            template< template< typename... > class Traits, typename Producer >
-            static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer > || use_third_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
-            {
-               return Traits< T >::template consume< Traits >( parser );
-            }
-
-            template< template< typename... > class Traits, typename Producer >
-            static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
-            {
-               std::unique_ptr< U > t( new T() );
-               Traits< T >::template consume< Traits >( parser, static_cast< T& >( *t ) );
-               return t;
-            }
-         };
-
-      }  // namespace internal
-
-      template< typename T, typename U = T >
+      template< typename T, typename U >
       struct unique_ptr_traits
-         : public internal::unique_ptr_traits< T, U >
       {
-         template< template< typename... > class Traits >
-         static void assign( basic_value< Traits >& v, const std::unique_ptr< U >& o )
+         template< template< typename... > class Traits, typename... With >
+         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
          {
-            assert( o );
-            v = static_cast< const T& >( *o );
+            return std::unique_ptr< U >( new T( v, with... ) );
          }
 
-         template< template< typename... > class Traits, typename Consumer >
-         static void produce( Consumer& c, const std::unique_ptr< U >& o )
+         template< template< typename... > class Traits, typename... With >
+         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
          {
-            assert( o );
-            json::events::produce< Traits >( c, static_cast< const T& >( *o ) );
+            return std::unique_ptr< U >( new T( Traits< T >::as( v, with... ) ) );
+         }
+
+         template< template< typename... > class Traits, typename... With >
+         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
+         {
+            std::unique_ptr< U > t( new T() );
+            Traits< T >::to( v, static_cast< T& >( *t ), with... );
+            return t;
+         }
+
+         template< template< typename... > class Traits, typename Producer >
+         static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer > || use_third_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
+         {
+            return Traits< T >::template consume< Traits >( parser );
+         }
+
+         template< template< typename... > class Traits, typename Producer >
+         static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
+         {
+            std::unique_ptr< U > t( new T() );
+            Traits< T >::template consume< Traits >( parser, static_cast< T& >( *t ) );
+            return t;
          }
       };
 
-      template< typename T >
-      struct unique_ptr_traits< T, T >
-         : public internal::unique_ptr_traits< T, T >,
-           public internal::indirect_traits< std::unique_ptr< T > >
+   }  // namespace internal
+
+   template< typename T, typename U = T >
+   struct unique_ptr_traits
+      : public internal::unique_ptr_traits< T, U >
+   {
+      template< template< typename... > class Traits >
+      static void assign( basic_value< Traits >& v, const std::unique_ptr< U >& o )
       {
-         template< typename V >
-         using with_base = unique_ptr_traits< T, V >;
-      };
+         assert( o );
+         v = static_cast< const T& >( *o );
+      }
 
-   }  // namespace json
+      template< template< typename... > class Traits, typename Consumer >
+      static void produce( Consumer& c, const std::unique_ptr< U >& o )
+      {
+         assert( o );
+         json::events::produce< Traits >( c, static_cast< const T& >( *o ) );
+      }
+   };
 
-}  // namespace tao
+   template< typename T >
+   struct unique_ptr_traits< T, T >
+      : public internal::unique_ptr_traits< T, T >,
+        public internal::indirect_traits< std::unique_ptr< T > >
+   {
+      template< typename V >
+      using with_base = unique_ptr_traits< T, V >;
+   };
+
+}  // namespace tao::json
 
 #endif

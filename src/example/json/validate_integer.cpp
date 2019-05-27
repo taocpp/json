@@ -12,44 +12,40 @@
 #include <tao/json/events/discard.hpp>
 #include <tao/json/events/from_value.hpp>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
+   template< typename Consumer, std::uint64_t Min, std::uint64_t Max >
+   struct validate_integer
+      : public Consumer
    {
-      template< typename Consumer, std::uint64_t Min, std::uint64_t Max >
-      struct validate_integer
-         : public Consumer
+      static_assert( Max >= Min );
+      static_assert( Max <= std::uint64_t( ( std::numeric_limits< std::int64_t >::max )() ), "Max may not be larger than 2^63-1" );
+
+      using Consumer::Consumer;
+
+      void number( const std::int64_t v )
       {
-         static_assert( Max >= Min );
-         static_assert( Max <= std::uint64_t( ( std::numeric_limits< std::int64_t >::max )() ), "Max may not be larger than 2^63-1" );
-
-         using Consumer::Consumer;
-
-         void number( const std::int64_t v )
-         {
-            if( ( v < std::int64_t( Min ) ) || ( v > std::int64_t( Max ) ) ) {
-               throw std::runtime_error( "integer range violated: " + std::to_string( v ) );  // NOLINT
-            }
-            Consumer::number( v );
+         if( ( v < std::int64_t( Min ) ) || ( v > std::int64_t( Max ) ) ) {
+            throw std::runtime_error( "integer range violated: " + std::to_string( v ) );  // NOLINT
          }
+         Consumer::number( v );
+      }
 
-         void number( const std::uint64_t v )
-         {
-            if( ( v < Min ) || ( v > Max ) ) {
-               throw std::runtime_error( "unsigned range violated: " + std::to_string( v ) );  // NOLINT
-            }
-            Consumer::number( v );
+      void number( const std::uint64_t v )
+      {
+         if( ( v < Min ) || ( v > Max ) ) {
+            throw std::runtime_error( "unsigned range violated: " + std::to_string( v ) );  // NOLINT
          }
+         Consumer::number( v );
+      }
 
-         void number( const double v ) noexcept( noexcept( std::declval< Consumer >().number( v ) ) )
-         {
-            Consumer::number( v );
-         }
-      };
+      void number( const double v ) noexcept( noexcept( std::declval< Consumer >().number( v ) ) )
+      {
+         Consumer::number( v );
+      }
+   };
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 int main( int /*unused*/, char** /*unused*/ )
 {

@@ -7,15 +7,11 @@
 #include <iostream>
 #include <stdexcept>
 
-namespace tao
+namespace tao::json
 {
-   namespace json
-   {
-      std::size_t failed = 0;  // NOLINT
+   std::size_t failed = 0;  // NOLINT
 
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #define TEST_ASSERT( ... )                                         \
    do {                                                            \

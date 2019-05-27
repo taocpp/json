@@ -6,21 +6,17 @@
 
 #include <type_traits>
 
-namespace tao
+namespace tao::internal
 {
-   namespace internal
+   template< typename T >
+   struct identity
    {
-      template< typename T >
-      struct identity
-      {
-         using type = T;
-      };
+      using type = T;
+   };
 
-      template< typename T >
-      using identity_t = typename identity< T >::type;
+   template< typename T >
+   using identity_t = typename identity< T >::type;
 
-   }  // namespace internal
-
-}  // namespace tao
+}  // namespace tao::internal
 
 #endif
