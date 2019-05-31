@@ -29,8 +29,7 @@ namespace tao::json::events
    public:
       explicit debug( std::ostream& in_os ) noexcept
          : os( in_os )
-      {
-      }
+      {}
 
       void null()
       {

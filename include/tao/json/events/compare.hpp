@@ -45,7 +45,7 @@ namespace tao::json
             m_match = true;
          }
 
-         static const basic_value< Traits >* skip_pointer( const basic_value< Traits >* p ) noexcept
+         [[nodiscard]] static const basic_value< Traits >* skip_pointer( const basic_value< Traits >* p ) noexcept
          {
             while( p && p->is_value_ptr() ) {
                p = p->unsafe_get_value_ptr();
@@ -58,12 +58,12 @@ namespace tao::json
             m_current.push_back( skip_pointer( p ) );
          }
 
-         bool match() const noexcept
+         [[nodiscard]] bool match() const noexcept
          {
             return m_match;
          }
 
-         const basic_value< Traits >& current() const noexcept
+         [[nodiscard]] const basic_value< Traits >& current() const noexcept
          {
             return *m_current.back();
          }

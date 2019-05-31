@@ -40,8 +40,7 @@ namespace tao::json::events
       explicit to_stream( std::ostream& in_os ) noexcept
          : os( in_os ),
            first( true )
-      {
-      }
+      {}
 
       void null()
       {

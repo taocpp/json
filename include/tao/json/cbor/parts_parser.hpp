@@ -18,7 +18,7 @@ namespace tao::json::cbor
    namespace internal
    {
       template< typename Input >
-      major peek_first_major( Input& in )
+      [[nodiscard]] major peek_first_major( Input& in )
       {
          const auto m = peek_major( in );
          if( m != major::TAG ) {
@@ -54,7 +54,7 @@ namespace tao::json::cbor
 #pragma warning( disable : 4702 )
 #endif
       template< typename Input >
-      bool read_boolean( Input& in )
+      [[nodiscard]] bool read_boolean( Input& in )
       {
          const auto b = json::internal::peek_uint8( in );
          switch( b ) {
@@ -83,12 +83,12 @@ namespace tao::json::cbor
       {
       }
 
-      bool empty()
+      [[nodiscard]] bool empty()
       {
          return m_input.empty();
       }
 
-      bool null()
+      [[nodiscard]] bool null()
       {
          if( json::internal::peek_uint8( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {
             m_input.bump_in_this_line( 1 );
@@ -97,7 +97,7 @@ namespace tao::json::cbor
          return false;
       }
 
-      bool boolean()
+      [[nodiscard]] bool boolean()
       {
          return read_boolean( m_input );
       }
@@ -112,7 +112,7 @@ namespace tao::json::cbor
       }
 
       template< utf8_mode U, typename T >
-      T string_impl( const internal::major m, const char* e )
+      [[nodiscard]] T string_impl( const internal::major m, const char* e )
       {
          check_major( m, e );
          if( internal::peek_minor_unsafe( m_input ) != internal::minor_mask ) {
@@ -122,22 +122,22 @@ namespace tao::json::cbor
       }
 
    public:
-      std::string string()
+      [[nodiscard]] std::string string()
       {
          return string_impl< V, std::string >( internal::major::STRING, "expected string" );
       }
 
-      std::string binary()
+      [[nodiscard]] std::string binary()
       {
          return string_impl< utf8_mode::trust, std::vector< std::byte > >( internal::major::BINARY, "expected binary" );
       }
 
-      std::string key()
+      [[nodiscard]] std::string key()
       {
          return string();
       }
 
-      std::string_view string_view()
+      [[nodiscard]] std::string_view string_view()
       {
          const auto b = json::internal::peek_uint8( m_input );
          if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
@@ -146,7 +146,7 @@ namespace tao::json::cbor
          return internal::read_string_1< V, std::string_view >( m_input );
       }
 
-      tao::binary_view binary_view()
+      [[nodiscard]] tao::binary_view binary_view()
       {
          const auto b = json::internal::peek_uint8( m_input );
          if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
@@ -155,13 +155,13 @@ namespace tao::json::cbor
          return internal::read_string_1< utf8_mode::trust, tao::binary_view >( m_input );
       }
 
-      std::string_view key_view()
+      [[nodiscard]] std::string_view key_view()
       {
          return string_view();
       }
 
    private:
-      std::int64_t number_signed_unsigned()
+      [[nodiscard]] std::int64_t number_signed_unsigned()
       {
          const auto u = internal::read_unsigned_unsafe( m_input );
          if( u > 9223372036854775807ULL ) {
@@ -170,7 +170,7 @@ namespace tao::json::cbor
          return std::int64_t( u );
       }
 
-      std::int64_t number_signed_negative()
+      [[nodiscard]] std::int64_t number_signed_negative()
       {
          const auto u = internal::read_unsigned_unsafe( m_input );
          if( u > 9223372036854775808ULL ) {
@@ -184,7 +184,7 @@ namespace tao::json::cbor
 #pragma warning( disable : 4702 )
 #endif
    public:
-      std::int64_t number_signed()
+      [[nodiscard]] std::int64_t number_signed()
       {
          const auto b = internal::peek_first_major( m_input );
          switch( b ) {
@@ -201,13 +201,13 @@ namespace tao::json::cbor
 #pragma warning( pop )
 #endif
 
-      std::uint64_t number_unsigned()
+      [[nodiscard]] std::uint64_t number_unsigned()
       {
          check_major( internal::major::UNSIGNED, "expected unsigned" );
          return internal::read_unsigned_unsafe( m_input );
       }
 
-      double number_double()
+      [[nodiscard]] double number_double()
       {
          const auto b = json::internal::peek_uint8( m_input );
          switch( b ) {
@@ -229,14 +229,13 @@ namespace tao::json::cbor
 
          explicit state_t( const std::size_t in_size )
             : size( in_size )
-         {
-         }
+         {}
 
          std::size_t i = 0;
          std::optional< std::size_t > size;
       };
 
-      state_t begin_container()
+      [[nodiscard]] state_t begin_container()
       {
          if( internal::peek_minor_unsafe( m_input ) == 31 ) {
             m_input.bump_in_this_line( 1 );
@@ -246,13 +245,13 @@ namespace tao::json::cbor
       }
 
    public:
-      state_t begin_array()
+      [[nodiscard]] state_t begin_array()
       {
          check_major( internal::major::ARRAY, "expected array" );
          return begin_container();
       }
 
-      state_t begin_object()
+      [[nodiscard]] state_t begin_object()
       {
          check_major( internal::major::OBJECT, "expected object" );
          return begin_container();
@@ -332,12 +331,12 @@ namespace tao::json::cbor
       }
 
    private:
-      bool next_or_end_container_sized( state_t& p )
+      [[nodiscard]] bool next_or_end_container_sized( state_t& p )
       {
          return p.i++ < *p.size;
       }
 
-      bool next_or_end_container_indefinite()
+      [[nodiscard]] bool next_or_end_container_indefinite()
       {
          if( json::internal::peek_uint8( m_input ) == 0xff ) {
             m_input.bump_in_this_line( 1 );
@@ -346,7 +345,7 @@ namespace tao::json::cbor
          return true;
       }
 
-      bool next_or_end_container( state_t& p )
+      [[nodiscard]] bool next_or_end_container( state_t& p )
       {
          if( p.size ) {
             return next_or_end_container_sized( p );
@@ -355,12 +354,12 @@ namespace tao::json::cbor
       }
 
    public:
-      bool element_or_end_array( state_t& p )
+      [[nodiscard]] bool element_or_end_array( state_t& p )
       {
          return next_or_end_container( p );
       }
 
-      bool member_or_end_object( state_t& p )
+      [[nodiscard]] bool member_or_end_object( state_t& p )
       {
          return next_or_end_container( p );
       }
@@ -371,7 +370,7 @@ namespace tao::json::cbor
          pegtl::parse< pegtl::must< internal::data< V > > >( m_input, consumer );
       }
 
-      auto mark()
+      [[nodiscard]] auto mark()
       {
          return m_input.template mark< pegtl::rewind_mode::required >();
       }

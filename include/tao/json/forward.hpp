@@ -31,8 +31,7 @@ namespace tao
 
       template< typename T, typename = void >
       struct traits
-      {
-      };
+      {};
 
       template< template< typename... > class Traits >
       class basic_value;

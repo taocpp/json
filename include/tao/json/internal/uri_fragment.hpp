@@ -48,7 +48,7 @@ namespace tao::json::internal
    };
    // clang-format on
 
-   inline char xdigit_value( const char c )
+   [[nodiscard]] inline char xdigit_value( const char c )
    {
       // clang-format off
       switch ( c ) {
@@ -74,7 +74,7 @@ namespace tao::json::internal
       // clang-format on
    }
 
-   inline pointer uri_fragment_to_pointer( const std::string_view v )
+   [[nodiscard]] inline pointer uri_fragment_to_pointer( const std::string_view v )
    {
       pointer result;
       if( v.empty() || v[ 0 ] != '#' ) {
@@ -141,7 +141,7 @@ namespace tao::json::internal
       return result;
    }
 
-   inline std::string tokens_to_uri_fragment( std::vector< token >::const_iterator it, const std::vector< token >::const_iterator& end )
+   [[nodiscard]] inline std::string tokens_to_uri_fragment( std::vector< token >::const_iterator it, const std::vector< token >::const_iterator& end )
    {
       static const char* hex = "0123456789ABCDEF";
 
@@ -172,7 +172,7 @@ namespace tao::json::internal
       return result;
    }
 
-   inline std::string to_uri_fragment( const pointer& p )
+   [[nodiscard]] inline std::string to_uri_fragment( const pointer& p )
    {
       return tokens_to_uri_fragment( p.begin(), p.end() );
    }

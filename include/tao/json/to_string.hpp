@@ -11,7 +11,7 @@
 namespace tao::json
 {
    template< template< typename... > class... Transformers, typename... Ts >
-   std::string to_string( Ts&&... ts )
+   [[nodiscard]] std::string to_string( Ts&&... ts )
    {
       std::ostringstream o;
       json::to_stream< Transformers... >( o, std::forward< Ts >( ts )... );

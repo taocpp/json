@@ -13,7 +13,7 @@
 namespace tao::json::jaxn
 {
    template< template< typename... > class... Transformers, template< typename... > class Traits >
-   std::string to_string( const basic_value< Traits >& v )
+   [[nodiscard]] std::string to_string( const basic_value< Traits >& v )
    {
       std::ostringstream o;
       jaxn::to_stream< Transformers... >( o, v );
@@ -21,7 +21,7 @@ namespace tao::json::jaxn
    }
 
    template< template< typename... > class... Transformers, template< typename... > class Traits >
-   std::string to_string( const basic_value< Traits >& v, const unsigned indent )
+   [[nodiscard]] std::string to_string( const basic_value< Traits >& v, const unsigned indent )
    {
       std::ostringstream o;
       jaxn::to_stream< Transformers... >( o, v, indent );

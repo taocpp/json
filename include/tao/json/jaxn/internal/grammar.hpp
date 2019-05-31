@@ -80,7 +80,7 @@ namespace tao::json::jaxn::internal
          using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
          template< typename Input >
-         static bool match( Input& in )
+         [[nodiscard]] static bool match( Input& in )
          {
             bool result = false;
 
@@ -113,7 +113,7 @@ namespace tao::json::jaxn::internal
          using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
          template< typename Input >
-         static bool match( Input& in )
+         [[nodiscard]] static bool match( Input& in )
          {
             bool result = false;
 
@@ -157,7 +157,7 @@ namespace tao::json::jaxn::internal
          using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
          template< typename Input >
-         static bool match( Input& in )
+         [[nodiscard]] static bool match( Input& in )
          {
             bool result = false;
 
@@ -233,7 +233,7 @@ namespace tao::json::jaxn::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match_must( Input& in, States&&... st )
+         [[nodiscard]] static bool match_must( Input& in, States&&... st )
          {
             return Control< must< Rule > >::template match< A, rewind_mode::dontcare, Action, Control >( in, st... );
          }
@@ -245,7 +245,7 @@ namespace tao::json::jaxn::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match_zero( Input& in, States&&... st )
+         [[nodiscard]] static bool match_zero( Input& in, States&&... st )
          {
             if( in.size( 2 ) > 1 ) {
                switch( in.peek_char( 1 ) ) {
@@ -282,7 +282,7 @@ namespace tao::json::jaxn::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match_number( Input& in, States&&... st )
+         [[nodiscard]] static bool match_number( Input& in, States&&... st )
          {
             switch( in.peek_char() ) {
             case 'N':
@@ -308,7 +308,7 @@ namespace tao::json::jaxn::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match_impl( Input& in, States&&... st )
+         [[nodiscard]] static bool match_impl( Input& in, States&&... st )
          {
             switch( in.peek_char() ) {
             case '{': return Control< object >::template match< A, M, Action, Control >( in, st... );
@@ -349,7 +349,7 @@ namespace tao::json::jaxn::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match( Input& in, States&&... st )
+         [[nodiscard]] static bool match( Input& in, States&&... st )
          {
             if( in.size( 2 ) && match_impl< A, M, Action, Control >( in, st... ) ) {
                in.discard();
@@ -366,8 +366,8 @@ namespace tao::json::jaxn::internal
 
    }  // namespace rules
 
-            struct grammar : pegtl::must< rules::text, pegtl::eof > {};
-            struct embedded : pegtl::must< rules::sor_value > {};
+   struct grammar : pegtl::must< rules::text, pegtl::eof > {};
+   struct embedded : pegtl::must< rules::sor_value > {};
    // clang-format on
 
 }  // namespace tao::json::jaxn::internal

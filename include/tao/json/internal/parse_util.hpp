@@ -30,21 +30,21 @@ namespace tao::json::internal
    }
 
    template< typename Input >
-   std::uint8_t peek_uint8( Input& in )
+   [[nodiscard]] std::uint8_t peek_uint8( Input& in )
    {
       throw_on_empty( in );
       return in.peek_uint8();
    }
 
    template< typename Input >
-   char peek_char( Input& in )
+   [[nodiscard]] char peek_char( Input& in )
    {
       throw_on_empty( in );
       return in.peek_char();
    }
 
    template< typename Input >
-   char read_char_unsafe( Input& in )
+   [[nodiscard]] char read_char_unsafe( Input& in )
    {
       const auto r = in.peek_char();
       in.bump_in_this_line( 1 );
@@ -52,14 +52,14 @@ namespace tao::json::internal
    }
 
    template< typename Input >
-   char read_char( Input& in )
+   [[nodiscard]] char read_char( Input& in )
    {
       throw_on_empty( in );
       return read_char_unsafe( in );
    }
 
    template< utf8_mode U, typename Result, typename Input >
-   Result read_string( Input& in, const std::size_t size )
+   [[nodiscard]] Result read_string( Input& in, const std::size_t size )
    {
       using value_t = typename Result::value_type;
       json::internal::throw_on_empty( in, size );
@@ -70,7 +70,7 @@ namespace tao::json::internal
    }
 
    template< typename Result, typename Number = Result, typename Input >
-   Result read_big_endian_number( Input& in, const std::size_t extra = 0 )
+   [[nodiscard]] Result read_big_endian_number( Input& in, const std::size_t extra = 0 )
    {
       throw_on_empty( in, extra + sizeof( Number ) );
       const auto result = static_cast< Result >( be_to_h< Number >( in.current() + extra ) );

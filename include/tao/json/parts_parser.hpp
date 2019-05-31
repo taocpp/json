@@ -22,8 +22,7 @@ namespace tao::json
       {
          struct wss
             : pegtl::star< ws >
-         {
-         };
+         {};
 
          struct boolean
          {
@@ -36,7 +35,7 @@ namespace tao::json
                       template< typename... >
                       class,
                       typename Input >
-            static bool match( Input& in, bool& st ) noexcept( noexcept( in.size( 5 ) ) )
+            [[nodiscard]] static bool match( Input& in, bool& st ) noexcept( noexcept( in.size( 5 ) ) )
             {
                const auto s = in.size( 5 );
                if( s >= 5 ) {
@@ -60,20 +59,17 @@ namespace tao::json
          template< typename Rule >
          struct integer_action
             : public pegtl::nothing< Rule >
-         {
-         };
+         {};
 
          template<>
          struct integer_action< pegtl::integer::signed_rule >
             : pegtl::integer::signed_action
-         {
-         };
+         {};
 
          template<>
          struct integer_action< pegtl::integer::unsigned_rule >
             : pegtl::integer::unsigned_action
-         {
-         };
+         {};
 
          struct double_rule
          {
@@ -87,7 +83,7 @@ namespace tao::json
                       class Control,
                       typename Input,
                       typename... States >
-            static bool match_impl( Input& in, States&&... st )
+            [[nodiscard]] static bool match_impl( Input& in, States&&... st )
             {
                switch( in.peek_char() ) {
                   case '-':
@@ -110,7 +106,7 @@ namespace tao::json
                       class Control,
                       typename Input,
                       typename... States >
-            static bool match( Input& in, States&&... st )
+            [[nodiscard]] static bool match( Input& in, States&&... st )
             {
                return in.size( 2 ) && match_impl< A, M, Action, Control >( in, st... );
             }
@@ -127,8 +123,7 @@ namespace tao::json
       template< typename Rule >
       struct double_action
          : internal::action< Rule >
-      {
-      };
+      {};
 
       template< bool NEG >
       struct double_action< rules::number< NEG > >
@@ -176,57 +171,57 @@ namespace tao::json
          pegtl::parse< internal::rules::wss >( m_input );
       }
 
-      bool empty()
+      [[nodiscard]] bool empty()
       {
          return m_input.empty();
       }
 
-      bool null()
+      [[nodiscard]] bool null()
       {
          return pegtl::parse< pegtl::seq< internal::rules::null, internal::rules::wss > >( m_input );
       }
 
-      bool boolean()
+      [[nodiscard]] bool boolean()
       {
          bool r;
          pegtl::parse< pegtl::must< internal::rules::boolean, internal::rules::wss > >( m_input, r );
          return r;
       }
 
-      double number_double()
+      [[nodiscard]] double number_double()
       {
          internal::double_state_and_consumer st;
          pegtl::parse< pegtl::must< internal::rules::double_rule, internal::rules::wss >, internal::double_action >( m_input, st );
          return st.converted;
       }
 
-      std::int64_t number_signed()
+      [[nodiscard]] std::int64_t number_signed()
       {
          internal::integer_state< std::int64_t > st;
          pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
          return st.converted;
       }
 
-      std::uint64_t number_unsigned()
+      [[nodiscard]] std::uint64_t number_unsigned()
       {
          internal::integer_state< std::uint64_t > st;
          pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
          return st.converted;
       }
 
-      std::string string()
+      [[nodiscard]] std::string string()
       {
          std::string unescaped;
          pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
          return unescaped;
       }
 
-      std::vector< std::byte > binary()
+      [[nodiscard]] std::vector< std::byte > binary()
       {
          throw std::runtime_error( "json format does not support binary" );  // NOLINT
       }
 
-      std::string key()
+      [[nodiscard]] std::string key()
       {
          std::string unescaped;
          pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
@@ -240,7 +235,7 @@ namespace tao::json
       }
 
       template< char C >
-      bool parse_single_test()
+      [[nodiscard]] bool parse_single_test()
       {
          return pegtl::parse< pegtl::seq< pegtl::one< C >, internal::rules::wss > >( m_input );
       }
@@ -251,7 +246,7 @@ namespace tao::json
          static constexpr std::size_t* size = nullptr;
       };
 
-      state_t begin_array()
+      [[nodiscard]] state_t begin_array()
       {
          parse_single_must< '[' >();
          return state_t();
@@ -269,7 +264,7 @@ namespace tao::json
          }
       }
 
-      bool element_or_end_array( state_t& p )
+      [[nodiscard]] bool element_or_end_array( state_t& p )
       {
          if( parse_single_test< ']' >() ) {
             return false;
@@ -278,7 +273,7 @@ namespace tao::json
          return true;
       }
 
-      state_t begin_object()
+      [[nodiscard]] state_t begin_object()
       {
          parse_single_must< '{' >();
          return state_t();
@@ -296,7 +291,7 @@ namespace tao::json
          }
       }
 
-      bool member_or_end_object( state_t& p )
+      [[nodiscard]] bool member_or_end_object( state_t& p )
       {
          if( parse_single_test< '}' >() ) {
             return false;
@@ -310,7 +305,7 @@ namespace tao::json
          pegtl::parse< pegtl::must< pegtl::json::value > >( m_input );  // Includes standard JSON right-padding.
       }
 
-      auto mark()
+      [[nodiscard]] auto mark()
       {
          return m_input.template mark< pegtl::rewind_mode::required >();
       }

@@ -33,8 +33,7 @@ namespace tao::json
                          TAO_JSON_BIND_REQUIRED( "b", &type_1::b ),
                          TAO_JSON_BIND_OPTIONAL( "d", &type_1::d ),
                          TAO_JSON_BIND_REQUIRED1( &type_1::z ) >
-   {
-   };
+   {};
 
    void unit_test_1()
    {
@@ -159,15 +158,13 @@ namespace tao::json
    template<>
    struct traits< type_3 >
       : public binding::object< TAO_JSON_BIND_REQUIRED( "i", &type_3::i ) >
-   {
-   };
+   {};
 
    template<>
    struct traits< type_4 >
       : public binding::object< binding::inherit< traits< type_3 > >,
                                 TAO_JSON_BIND_REQUIRED( "j", &type_4::j ) >
-   {
-   };
+   {};
 
    void unit_test_4()
    {
@@ -178,8 +175,7 @@ namespace tao::json
    }
 
    struct type_5
-   {
-   };
+   {};
 
    template<>
    struct traits< type_5 >
@@ -187,8 +183,7 @@ namespace tao::json
                                 TAO_JSON_BIND_REQUIRED_SIGNED( "signed", -4 ),
                                 TAO_JSON_BIND_REQUIRED_UNSIGNED( "unsigned", 32 ),
                                 TAO_JSON_BIND_REQUIRED_STRING( "string", "servus" ) >
-   {
-   };
+   {};
 
    void unit_test_5()
    {

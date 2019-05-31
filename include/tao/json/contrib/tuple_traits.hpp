@@ -16,12 +16,12 @@ namespace tao::json
       template< std::size_t I, typename... Ts >
       struct getter
       {
-         static decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
+         [[nodiscard]] static decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
          {
             return std::get< I >( t );
          }
 
-         static decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
+         [[nodiscard]] static decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
          {
             return std::get< I >( t );
          }
@@ -44,8 +44,7 @@ namespace tao::json
    template< typename... Ts >
    struct tuple_traits
       : internal::tuple_traits< std::index_sequence_for< Ts... >, Ts... >::type
-   {
-   };
+   {};
 
 }  // namespace tao::json
 

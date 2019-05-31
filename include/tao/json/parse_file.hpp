@@ -14,7 +14,7 @@
 namespace tao::json
 {
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   basic_value< Traits > basic_parse_file( const std::string& filename )
+   [[nodiscard]] basic_value< Traits > basic_parse_file( const std::string& filename )
    {
       events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
       events::parse_file( consumer, filename );
@@ -22,7 +22,7 @@ namespace tao::json
    }
 
    template< template< typename... > class... Transformers >
-   value parse_file( const std::string& filename )
+   [[nodiscard]] value parse_file( const std::string& filename )
    {
       return basic_parse_file< traits, Transformers... >( filename );
    }

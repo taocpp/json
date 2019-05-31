@@ -12,20 +12,17 @@ namespace tao::json
    struct version_a
       : binding::array< TAO_JSON_BIND_ELEMENT( &type_1::first ),
                         TAO_JSON_BIND_ELEMENT( &type_1::second ) >
-   {
-   };
+   {};
 
    struct version_b
       : binding::array< TAO_JSON_BIND_ELEMENT( &type_1::first ),
                         TAO_JSON_BIND_ELEMENT( &type_1::second ),
                         binding::element_b< true > >
-   {
-   };
+   {};
 
    template<>
    struct traits< type_1 >
-      : binding::versions< version_b,
-                           version_a >
+      : binding::versions< version_b, version_a >
    {
       TAO_JSON_DEFAULT_KEY( "t" );
    };

@@ -12,8 +12,7 @@ namespace tao::json
    template< typename T >
    struct my_traits
       : traits< T >
-   {
-   };
+   {};
 
    template<>
    struct my_traits< void >
@@ -22,7 +21,7 @@ namespace tao::json
       template< typename T >
       struct public_base
       {
-         const T& self() const noexcept
+         [[nodiscard]] const T& self() const noexcept
          {
             return static_cast< const T& >( *this );
          }

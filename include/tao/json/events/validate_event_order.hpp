@@ -42,8 +42,7 @@ namespace tao::json::events
       {
          explicit sizes_t( const std::size_t in_expected )
             : expected( in_expected )
-         {
-         }
+         {}
 
          void check( const std::size_t in_expected )
          {
@@ -97,7 +96,7 @@ namespace tao::json::events
       }
 
    public:
-      bool is_complete() const noexcept
+      [[nodiscard]] bool is_complete() const noexcept
       {
          return state == EXPECT_NOTHING;
       }

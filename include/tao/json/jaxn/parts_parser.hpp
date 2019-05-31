@@ -18,26 +18,22 @@ namespace tao::json::jaxn
       {
          struct wss
             : pegtl::star< ws >
-         {
-         };
+         {};
 
          template< typename Rule >
          struct integer_action
             : pegtl::nothing< Rule >
-         {
-         };
+         {};
 
          template<>
          struct integer_action< pegtl::integer::signed_rule >
             : pegtl::integer::signed_action
-         {
-         };
+         {};
 
          template<>
          struct integer_action< pegtl::integer::unsigned_rule >
             : pegtl::integer::unsigned_action
-         {
-         };
+         {};
 
       }  // namespace rules
 
@@ -62,29 +58,29 @@ namespace tao::json::jaxn
          pegtl::parse< internal::rules::wss >( m_input );
       }
 
-      bool empty()  // noexcept( noexcept( m_input.empty() ) )
+      [[nodiscard]] bool empty()  // noexcept( noexcept( m_input.empty() ) )
       {
          return m_input.empty();
       }
 
-      bool null()
+      [[nodiscard]] bool null()
       {
          return pegtl::parse< pegtl::seq< json::internal::rules::null, jaxn::internal::rules::wss > >( m_input );
       }
 
-      bool boolean()
+      [[nodiscard]] bool boolean()
       {
          bool r;
          pegtl::parse< pegtl::must< json::internal::rules::boolean, jaxn::internal::rules::wss > >( m_input, r );
          return r;
       }
 
-      double number_double()
+      [[nodiscard]] double number_double()
       {
          return 42.0;  // TODO
       }
 
-      std::int64_t number_signed()
+      [[nodiscard]] std::int64_t number_signed()
       {
          // TODO: Error on leading zero after sign.
          internal::integer_state< std::int64_t > st;
@@ -92,14 +88,14 @@ namespace tao::json::jaxn
          return st.converted;
       }
 
-      std::uint64_t number_unsigned()
+      [[nodiscard]] std::uint64_t number_unsigned()
       {
          internal::integer_state< std::uint64_t > st;
          pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
          return st.converted;
       }
 
-      std::string string()
+      [[nodiscard]] std::string string()
       {
          std::string unescaped;
          pegtl::parse< pegtl::must< internal::rules::string, jaxn::internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
@@ -108,14 +104,14 @@ namespace tao::json::jaxn
 
       // TODO: std::string_view string_view() that only works for strings without escape sequences?
 
-      std::vector< std::byte > binary()
+      [[nodiscard]] std::vector< std::byte > binary()
       {
          std::vector< std::byte > data;
          pegtl::parse< pegtl::must< internal::rules::binary, jaxn::internal::rules::wss >, internal::bunescape_action >( m_input, data );
          return data;
       }
 
-      std::string key()
+      [[nodiscard]] std::string key()
       {
          std::string unescaped;
          pegtl::parse< pegtl::must< internal::rules::mkey, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
@@ -144,7 +140,7 @@ namespace tao::json::jaxn
       };
 
    public:
-      state_t begin_array()
+      [[nodiscard]] state_t begin_array()
       {
          parse_single_must< '[' >();
          return state_t();
@@ -162,7 +158,7 @@ namespace tao::json::jaxn
          }
       }
 
-      bool element_or_end_array( state_t& p )
+      [[nodiscard]] bool element_or_end_array( state_t& p )
       {
          if( parse_single_test< ']' >() ) {
             return false;
@@ -171,7 +167,7 @@ namespace tao::json::jaxn
          return true;
       }
 
-      state_t begin_object()
+      [[nodiscard]] state_t begin_object()
       {
          parse_single_must< '{' >();
          return state_t();
@@ -189,7 +185,7 @@ namespace tao::json::jaxn
          }
       }
 
-      bool member_or_end_object( state_t& p )
+      [[nodiscard]] bool member_or_end_object( state_t& p )
       {
          if( parse_single_test< '}' >() ) {
             return false;
@@ -203,7 +199,7 @@ namespace tao::json::jaxn
          pegtl::parse< pegtl::must< pegtl::json::value > >( m_input );  // Includes right-padding.
       }
 
-      auto mark()  // noexcept( noexcept( m_input.template mark< pegtl::rewind_mode::required >() ) )
+      [[nodiscard]] auto mark()  // noexcept( noexcept( m_input.template mark< pegtl::rewind_mode::required >() ) )
       {
          return m_input.template mark< pegtl::rewind_mode::required >();
       }

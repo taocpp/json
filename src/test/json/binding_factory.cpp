@@ -63,14 +63,12 @@ namespace tao::json
    struct traits< std::shared_ptr< base_1 > >
       : binding::factory< TAO_JSON_FACTORY_BIND( "one", derived_1 ),
                           TAO_JSON_FACTORY_BIND1( derived_2 ) >
-   {
-   };
+   {};
 
    template<>
    struct traits< std::unique_ptr< base_1 > >
       : traits< std::shared_ptr< base_1 > >
-   {
-   };
+   {};
 
    void unit_test_1()
    {
@@ -198,31 +196,25 @@ namespace tao::json
    };
 
    struct arg_dummy
-   {
-   };
+   {};
 
    struct derived_8
       : public base_2
    {
-      derived_8( const value& /*unused*/, const arg_dummy& /*unused*/ )
-      {
-      }
+      derived_8( const value& /*unused*/, const arg_dummy& /*unused*/ ) {}
    };
 
    struct derived_9
       : public base_2
    {
-      derived_9( const value& /*unused*/, const arg_dummy& /*unused*/ )
-      {
-      }
+      derived_9( const value& /*unused*/, const arg_dummy& /*unused*/ ) {}
    };
 
    template<>
    struct traits< std::shared_ptr< base_2 > >
       : binding::factory< TAO_JSON_FACTORY_BIND( "eight", derived_8 ),
                           TAO_JSON_FACTORY_BIND( "nine", derived_9 ) >
-   {
-   };
+   {};
 
    void unit_test_6()
    {

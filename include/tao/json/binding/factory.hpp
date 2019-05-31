@@ -44,13 +44,13 @@ namespace tao::json::binding
       struct factory_type
          : public type_key< K, T >
       {
-         static const std::type_info* type()
+         [[nodiscard]] static const std::type_info* type()
          {
             return &typeid( T );
          }
 
          template< template< typename... > class Traits, typename... With >
-         static Pointer< Base > as( const basic_value< Traits >& v, With&... with )
+         [[nodiscard]] static Pointer< Base > as( const basic_value< Traits >& v, With&... with )
          {
             using R = typename Traits< Pointer< T > >::template with_base< Base >;
             return R::as( v, with... );
@@ -64,7 +64,7 @@ namespace tao::json::binding
          }
 
          template< template< typename... > class Traits, typename Producer >
-         static Pointer< Base > consume( Producer& parser )
+         [[nodiscard]] static Pointer< Base > consume( Producer& parser )
          {
             using R = typename Traits< Pointer< T > >::template with_base< Base >;
             return R::template consume< Traits >( parser );
@@ -95,8 +95,7 @@ namespace tao::json::binding
       {
          explicit entry1( F c )
             : function( c )
-         {
-         }
+         {}
 
          F function;
       };
@@ -107,8 +106,7 @@ namespace tao::json::binding
          entry2( F c, std::string&& n )
             : function( c ),
               name( std::move( n ) )
-         {
-         }
+         {}
 
          F function;
          std::string name;
@@ -214,11 +212,10 @@ namespace tao::json::binding
       }
 
       template< typename V, template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename Consumer, typename F >
-      static bool emplace_produce( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
+      static void emplace_produce( std::map< const std::type_info*, entry2< F >, json::internal::type_info_less >& m )
       {
          using W = typename V::template bind< Base, Pointer >;
          m.emplace( W::type(), entry2< F >( &W::template produce< Traits, Consumer >, W::template key< Traits >() ) );
-         return true;
       }
 
       template< template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename Consumer >

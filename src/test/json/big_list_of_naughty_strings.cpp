@@ -11,7 +11,7 @@
 #include <fstream>
 #include <string>
 
-std::string get_file_contents( const char* filename )
+[[nodiscard]] std::string get_file_contents( const char* filename )
 {
    std::ifstream in( filename, std::ios::in | std::ios::binary );
    if( !in.fail() ) {

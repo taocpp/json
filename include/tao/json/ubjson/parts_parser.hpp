@@ -18,7 +18,7 @@ namespace tao::json::ubjson
    namespace internal
    {
       template< typename Input >
-      bool read_boolean( Input& in )
+      [[nodiscard]] bool read_boolean( Input& in )
       {
          const auto b = peek_marker( in );
          switch( b ) {
@@ -35,7 +35,7 @@ namespace tao::json::ubjson
       }
 
       template< typename Input >
-      std::int64_t read_signed( Input& in )
+      [[nodiscard]] std::int64_t read_signed( Input& in )
       {
          const auto b = peek_marker( in );
          switch( format( b ) ) {
@@ -54,7 +54,7 @@ namespace tao::json::ubjson
          }
       }
 
-      inline std::uint64_t test_unsigned( const std::int64_t i )
+      [[nodiscard]] inline std::uint64_t test_unsigned( const std::int64_t i )
       {
          if( i < 0 ) {
             throw std::runtime_error( "negative number for unsigned" );  // NOLINT
@@ -63,7 +63,7 @@ namespace tao::json::ubjson
       }
 
       template< typename Input >
-      std::uint64_t read_unsigned( Input& in )
+      [[nodiscard]] std::uint64_t read_unsigned( Input& in )
       {
          const auto b = peek_marker( in );
          switch( b ) {
@@ -83,7 +83,7 @@ namespace tao::json::ubjson
       }
 
       template< typename Input >
-      double read_double( Input& in )
+      [[nodiscard]] double read_double( Input& in )
       {
          switch( peek_marker( in ) ) {
             case marker::FLOAT32:
@@ -96,7 +96,7 @@ namespace tao::json::ubjson
       }
 
       template< utf8_mode V, typename Result, typename Input >
-      Result read_string_or_char( Input& in )
+      [[nodiscard]] Result read_string_or_char( Input& in )
       {
          const auto b = read_marker( in );
          switch( b ) {
@@ -118,15 +118,14 @@ namespace tao::json::ubjson
       template< typename... Ts >
       explicit basic_parts_parser( Ts&&... ts )
          : m_input( std::forward< Ts >( ts )... )
-      {
-      }
+      {}
 
-      bool empty()
+      [[nodiscard]] bool empty()
       {
          return m_input.empty();
       }
 
-      bool null()
+      [[nodiscard]] bool null()
       {
          if( internal::peek_marker( m_input ) == internal::marker::NULL_ ) {
             m_input.bump_in_this_line( 1 );
@@ -135,7 +134,7 @@ namespace tao::json::ubjson
          return false;
       }
 
-      bool boolean()
+      [[nodiscard]] bool boolean()
       {
          return internal::read_boolean( m_input );
       }
@@ -149,12 +148,12 @@ namespace tao::json::ubjson
          m_input.bump_in_this_line();
       }
 
-      std::string_view string()
+      [[nodiscard]] std::string_view string()
       {
          return internal::read_string_or_char< V, std::string_view >( m_input );
       }
 
-      tao::binary_view binary()
+      [[nodiscard]] tao::binary_view binary()
       {
          check_marker( internal::marker::BEGIN_ARRAY, "expected array for binary" );
          check_marker( internal::marker::CONTAINER_TYPE, "expected typed array for binary" );
@@ -164,22 +163,22 @@ namespace tao::json::ubjson
          return json::internal::read_string< utf8_mode::trust, tao::binary_view >( m_input, size );
       }
 
-      std::string_view key()
+      [[nodiscard]] std::string_view key()
       {
          return string();
       }
 
-      std::int64_t number_signed()
+      [[nodiscard]] std::int64_t number_signed()
       {
          return internal::read_signed( m_input );
       }
 
-      std::uint64_t number_unsigned()
+      [[nodiscard]] std::uint64_t number_unsigned()
       {
          return internal::read_unsigned( m_input );
       }
 
-      double number_double()
+      [[nodiscard]] double number_double()
       {
          return internal::read_double( m_input );
       }
@@ -190,15 +189,14 @@ namespace tao::json::ubjson
 
          explicit state_t( const std::size_t in_size )
             : size( in_size )
-         {
-         }
+         {}
 
          std::size_t i = 0;
          std::optional< std::size_t > size;
       };
 
       template< internal::marker Begin, internal::marker End >
-      state_t begin_container( const char* e )
+      [[nodiscard]] state_t begin_container( const char* e )
       {
          check_marker( Begin, e );
          const auto b = internal::peek_marker( m_input );
@@ -215,12 +213,12 @@ namespace tao::json::ubjson
          }
       }
 
-      state_t begin_array()
+      [[nodiscard]] state_t begin_array()
       {
          return begin_container< internal::marker::BEGIN_ARRAY, internal::marker::END_ARRAY >( "expected array" );
       }
 
-      state_t begin_object()
+      [[nodiscard]] state_t begin_object()
       {
          return begin_container< internal::marker::BEGIN_OBJECT, internal::marker::END_OBJECT >( "expected object" );
       }
@@ -323,17 +321,17 @@ namespace tao::json::ubjson
          }
       }
 
-      bool element_or_end_array_sized( state_t& p )
+      [[nodiscard]] bool element_or_end_array_sized( state_t& p )
       {
          return p.i++ < *p.size;
       }
 
-      bool member_or_end_object_sized( state_t& p )
+      [[nodiscard]] bool member_or_end_object_sized( state_t& p )
       {
          return p.i++ < *p.size;
       }
 
-      bool element_or_end_array_indefinite( const state_t& /*unused*/ )
+      [[nodiscard]] bool element_or_end_array_indefinite( const state_t& /*unused*/ )
       {
          if( internal::peek_marker( m_input ) == internal::marker::END_ARRAY ) {
             m_input.bump_in_this_line( 1 );
@@ -342,7 +340,7 @@ namespace tao::json::ubjson
          return true;
       }
 
-      bool member_or_end_object_indefinite( const state_t& /*unused*/ )
+      [[nodiscard]] bool member_or_end_object_indefinite( const state_t& /*unused*/ )
       {
          if( internal::peek_marker( m_input ) == internal::marker::END_OBJECT ) {
             m_input.bump_in_this_line( 1 );
@@ -351,7 +349,7 @@ namespace tao::json::ubjson
          return true;
       }
 
-      bool element_or_end_array( state_t& p )
+      [[nodiscard]] bool element_or_end_array( state_t& p )
       {
          if( p.size ) {
             return element_or_end_array_sized( p );
@@ -359,7 +357,7 @@ namespace tao::json::ubjson
          return element_or_end_array_indefinite( p );
       }
 
-      bool member_or_end_object( state_t& p )
+      [[nodiscard]] bool member_or_end_object( state_t& p )
       {
          if( p.size ) {
             return member_or_end_object_sized( p );
@@ -373,7 +371,7 @@ namespace tao::json::ubjson
          pegtl::parse< pegtl::must< internal::data< L, V > > >( m_input, consumer );
       }
 
-      auto mark()
+      [[nodiscard]] auto mark()
       {
          return m_input.template mark< pegtl::rewind_mode::required >();
       }

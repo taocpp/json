@@ -374,7 +374,7 @@ namespace tao::json
       tee( Ts&&... )->tee< internal::decay_and_strip_t< Ts >... >;
 
       template< typename... T >
-      tee< T&... > tie( T&... t )
+      [[nodiscard]] tee< T&... > tie( T&... t )
       {
          return tee< T&... >( t... );
       }

@@ -15,12 +15,12 @@ namespace tao::json
    class type_3
    {
    public:
-      int get_int() const noexcept
+      [[nodiscard]] int get_int() const noexcept
       {
          return 7;
       }
 
-      const std::string& get_string() const noexcept
+      [[nodiscard]] const std::string& get_string() const noexcept
       {
          return m_string;
       }
@@ -33,8 +33,7 @@ namespace tao::json
    struct traits< type_3 >
       : binding::array< TAO_JSON_BIND_ELEMENT( &type_3::get_int ),
                         TAO_JSON_BIND_ELEMENT( &type_3::get_string ) >
-   {
-   };
+   {};
 
    struct type_4
    {
@@ -48,8 +47,7 @@ namespace tao::json
                         TAO_JSON_BIND_ELEMENT_UNSIGNED( 90 ),
                         TAO_JSON_BIND_ELEMENT_SIGNED( -5 ),
                         TAO_JSON_BIND_ELEMENT_STRING( "abc" ) >
-   {
-   };
+   {};
 
    void unit_test_1()
    {
@@ -464,15 +462,13 @@ namespace tao::json
    template<>
    struct traits< type_a >
       : public binding::array< TAO_JSON_BIND_ELEMENT( &type_a::i ) >
-   {
-   };
+   {};
 
    template<>
    struct traits< type_b >
       : public binding::array< binding::inherit< traits< type_a > >,
                                TAO_JSON_BIND_ELEMENT( &type_b::j ) >
-   {
-   };
+   {};
 
    void unit_test_40()
    {
@@ -492,8 +488,7 @@ namespace tao::json
    struct traits< type_c >
       : public binding::array< TAO_JSON_BIND_ELEMENT( &type_c::k ),
                                binding::inherit< traits< type_b > > >
-   {
-   };
+   {};
 
    void unit_test_41()
    {

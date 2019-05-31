@@ -20,7 +20,7 @@
 namespace tao::json::produce
 {
    template< template< typename... > class Traits = traits, typename T >
-   basic_value< Traits > to_value( T&& t )
+   [[nodiscard]] basic_value< Traits > to_value( T&& t )
    {
       events::to_basic_value< Traits > consumer;
       events::produce< Traits >( consumer, std::forward< T >( t ) );
@@ -49,7 +49,7 @@ namespace tao::json::produce
    }
 
    template< template< typename... > class Traits = traits, typename... Ts >
-   std::string to_string( Ts&&... ts )
+   [[nodiscard]] std::string to_string( Ts&&... ts )
    {
       std::ostringstream oss;
       to_stream< Traits >( oss, std::forward< Ts >( ts )... );

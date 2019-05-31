@@ -11,13 +11,13 @@ namespace tao::json::get
    namespace internal
    {
       template< template< typename... > class Traits >
-      const basic_value< Traits >* find( const basic_value< Traits >& v, const std::string& key )
+      [[nodiscard]] const basic_value< Traits >* find( const basic_value< Traits >& v, const std::string& key )
       {
          return v.skip_value_ptr().find( key );
       }
 
       template< template< typename... > class Traits >
-      const basic_value< Traits >* find( const basic_value< Traits >& v, const std::size_t index )
+      [[nodiscard]] const basic_value< Traits >* find( const basic_value< Traits >& v, const std::size_t index )
       {
          const auto& a = v.skip_value_ptr().get_array();
          return ( index < a.size() ) ? ( a.data() + index ) : nullptr;
@@ -26,7 +26,7 @@ namespace tao::json::get
    }  // namespace internal
 
    template< template< typename... > class Traits, typename K >
-   basic_value< Traits > value( const basic_value< Traits >& v, const K& key )
+   [[nodiscard]] basic_value< Traits > value( const basic_value< Traits >& v, const K& key )
    {
       if( v ) {
          if( const auto* p = internal::find( v, key ) ) {
@@ -37,7 +37,7 @@ namespace tao::json::get
    }
 
    template< template< typename... > class Traits, typename K, typename... Ks >
-   basic_value< Traits > value( const basic_value< Traits >& v, const K& key, const Ks&... ks )
+   [[nodiscard]] basic_value< Traits > value( const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
       if( v ) {
          if( const auto* p = internal::find( v, key ) ) {
@@ -48,13 +48,13 @@ namespace tao::json::get
    }
 
    template< typename T, typename U = T, template< typename... > class Traits >
-   T as( const basic_value< Traits >& v )
+   [[nodiscard]] T as( const basic_value< Traits >& v )
    {
       return v.skip_value_ptr().template as< U >();
    }
 
    template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
-   T as( const basic_value< Traits >& v, const K& key, Ks&&... ks )
+   [[nodiscard]] T as( const basic_value< Traits >& v, const K& key, Ks&&... ks )
    {
       return get::as< T, U >( v.skip_value_ptr().at( key ), ks... );
    }
@@ -72,7 +72,7 @@ namespace tao::json::get
    }
 
    template< typename T, typename U = T, template< typename... > class Traits >
-   std::optional< T > optional( const basic_value< Traits >& v )
+   [[nodiscard]] std::optional< T > optional( const basic_value< Traits >& v )
    {
       if( v ) {
          return std::optional< T >( std::in_place, get::as< U >( v ) );
@@ -81,7 +81,7 @@ namespace tao::json::get
    }
 
    template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
-   std::optional< T > optional( const basic_value< Traits >& v, const K& key, const Ks&... ks )
+   [[nodiscard]] std::optional< T > optional( const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
       if( v ) {
          if( const auto* p = internal::find( v, key ) ) {
@@ -92,7 +92,7 @@ namespace tao::json::get
    }
 
    template< typename T, typename U = T, template< typename... > class Traits >
-   T defaulted( const T& t, const basic_value< Traits >& v )
+   [[nodiscard]] T defaulted( const T& t, const basic_value< Traits >& v )
    {
       if( v ) {
          return get::as< T, U >( v );
@@ -101,7 +101,7 @@ namespace tao::json::get
    }
 
    template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
-   T defaulted( const T& t, const basic_value< Traits >& v, const K& key, const Ks&... ks )
+   [[nodiscard]] T defaulted( const T& t, const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
       if( v ) {
          if( const auto* p = internal::find( v, key ) ) {

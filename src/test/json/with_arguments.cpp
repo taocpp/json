@@ -16,8 +16,7 @@ namespace tao::json
    {
       template< template< typename... > class Traits >
       type_1( const basic_value< Traits >& /*unused*/, const arg_0& /*unused*/ )
-      {
-      }
+      {}
 
       int i = 1;
    };
@@ -50,7 +49,7 @@ namespace tao::json
    template<>
    struct traits< type_2 >
    {
-      static type_2 as( const value& /*unused*/, const arg_0& /*unused*/, const arg_0& /*unused*/ )
+      [[nodiscard]] static type_2 as( const value& /*unused*/, const arg_0& /*unused*/, const arg_0& /*unused*/ )
       {
          return type_2();
       }
@@ -74,9 +73,7 @@ namespace tao::json
    template<>
    struct traits< type_3 >
    {
-      static void to( const value& /*unused*/, type_3& /*unused*/, const arg_0& /*unused*/ )
-      {
-      }
+      static void to( const value& /*unused*/, type_3& /*unused*/, const arg_0& /*unused*/ ) {}
    };
 
    void unit_test_3()

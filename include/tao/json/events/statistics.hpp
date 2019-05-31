@@ -85,8 +85,7 @@ namespace tao::json::events
       }
 
       void end_array( const std::size_t /*unused*/ = 0 ) noexcept
-      {
-      }
+      {}
 
       void begin_object( const std::size_t /*unused*/ = 0 ) noexcept
       {
@@ -105,8 +104,7 @@ namespace tao::json::events
       }
 
       void end_object( const std::size_t /*unused*/ = 0 ) noexcept
-      {
-      }
+      {}
    };
 
 }  // namespace tao::json::events

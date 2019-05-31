@@ -20,7 +20,7 @@ namespace tao::json::cbor::events
       {
       }
 
-      std::string value() const
+      [[nodiscard]] std::string value() const
       {
          return oss.str();
       }

@@ -18,10 +18,9 @@ namespace tao::json::msgpack::events
 
       to_string()
          : to_stream( oss )
-      {
-      }
+      {}
 
-      std::string value() const
+      [[nodiscard]] std::string value() const
       {
          return oss.str();
       }

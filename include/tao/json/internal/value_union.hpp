@@ -26,15 +26,13 @@ namespace tao::json::internal
    union value_union
    {
       value_union() noexcept  // NOLINT
-      {
-      }
+      {}
 
       value_union( const value_union& ) = delete;
       value_union( value_union&& ) = delete;
 
       ~value_union() noexcept  // NOLINT
-      {
-      }
+      {}
 
       void operator=( const value_union& ) = delete;
       void operator=( value_union&& ) = delete;

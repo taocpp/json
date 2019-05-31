@@ -20,23 +20,19 @@ namespace tao::json::internal
       template< typename U >
       single( U&& v )  // NOLINT
          : value( std::forward< U >( v ) )
-      {
-      }
+      {}
 
       single( std::initializer_list< pair< Traits > >&& l )
          : value( std::move( l ) )
-      {
-      }
+      {}
 
       single( const std::initializer_list< pair< Traits > >& l )
          : value( l )
-      {
-      }
+      {}
 
       single( std::initializer_list< pair< Traits > >& l )
          : value( l )
-      {
-      }
+      {}
    };
 
 }  // namespace tao::json::internal

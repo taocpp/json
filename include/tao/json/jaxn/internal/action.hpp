@@ -21,8 +21,7 @@ namespace tao::json::jaxn::internal
    template< typename Rule >
    struct action
       : public pegtl::nothing< Rule >
-   {
-   };
+   {};
 
    template<>
    struct action< rules::null >
@@ -67,7 +66,7 @@ namespace tao::json::jaxn::internal
    template< bool NEG >
    struct action< rules::hexnum< NEG > >
    {
-      static char unhex( const char c )
+      [[nodiscard]] static char unhex( const char c )
       {
          if( ( '0' <= c ) && ( c <= '9' ) ) {
             return c - '0';

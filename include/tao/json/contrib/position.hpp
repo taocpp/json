@@ -26,15 +26,13 @@ namespace tao::json
 
    public:
       position() noexcept  // NOLINT
-      {
-      }
+      {}
 
       position( std::string in_source, const std::size_t in_line, const std::size_t in_byte_in_line )
          : m_line( in_line ),
            m_byte_in_line( in_byte_in_line ),
            m_source( std::move( in_source ) )
-      {
-      }
+      {}
 
       position( const position& ) = default;
 
@@ -57,17 +55,17 @@ namespace tao::json
          return *this;
       }
 
-      const std::string& source() const noexcept
+      [[nodiscard]] const std::string& source() const noexcept
       {
          return m_source;
       }
 
-      std::size_t line() const noexcept
+      [[nodiscard]] std::size_t line() const noexcept
       {
          return m_line;
       }
 
-      std::size_t byte_in_line() const noexcept
+      [[nodiscard]] std::size_t byte_in_line() const noexcept
       {
          return m_byte_in_line;
       }
@@ -145,14 +143,11 @@ namespace tao::json
    struct make_position_traits
    {
       template< typename T >
-      struct type
-         : std::conditional_t< std::is_same_v< T, void >, internal::position_traits< Traits >, Traits< T > >
-      {
-      };
+      using type = std::conditional_t< std::is_same_v< T, void >, internal::position_traits< Traits >, Traits< T > >;
    };
 
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   auto basic_parse_file_with_position( const std::string& filename )
+   [[nodiscard]] auto basic_parse_file_with_position( const std::string& filename )
    {
       events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
       pegtl::file_input< pegtl::tracking_mode::eager > in( filename );
@@ -161,7 +156,7 @@ namespace tao::json
    }
 
    template< template< typename... > class... Transformers >
-   auto parse_file_with_position( const std::string& filename )
+   [[nodiscard]] auto parse_file_with_position( const std::string& filename )
    {
       return basic_parse_file_with_position< make_position_traits< traits >::template type, Transformers... >( filename );
    }

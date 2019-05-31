@@ -17,12 +17,12 @@ namespace tao::json::internal
    {
       static constexpr const char value[] = { Cs..., 0 };
 
-      static constexpr std::string_view as_string_view() noexcept
+      [[nodiscard]] static constexpr std::string_view as_string_view() noexcept
       {
          return std::string_view( value, sizeof...( Cs ) );
       }
 
-      static std::string as_string()
+      [[nodiscard]] static std::string as_string()
       {
          return std::string( value, sizeof...( Cs ) );
       }

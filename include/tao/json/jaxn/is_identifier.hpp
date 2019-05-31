@@ -9,7 +9,7 @@
 
 namespace tao::json::jaxn
 {
-   inline bool is_identifier( const std::string_view v ) noexcept
+   [[nodiscard]] inline bool is_identifier( const std::string_view v ) noexcept
    {
       if( v.empty() || std::isdigit( v[ 0 ] ) ) {  // NOLINT
          return false;

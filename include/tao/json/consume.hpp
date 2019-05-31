@@ -13,13 +13,13 @@
 namespace tao::json
 {
    template< typename T, template< typename... > class Traits = traits, typename Producer >
-   std::enable_if_t< internal::has_consume_one< Traits, Producer, T >, T > consume( Producer& parser )
+   [[nodiscard]] std::enable_if_t< internal::has_consume_one< Traits, Producer, T >, T > consume( Producer& parser )
    {
       return Traits< T >::template consume< Traits >( parser );
    }
 
    template< typename T, template< typename... > class Traits = traits, typename Producer >
-   std::enable_if_t< !internal::has_consume_one< Traits, Producer, T >, T > consume( Producer& parser )
+   [[nodiscard]] std::enable_if_t< !internal::has_consume_one< Traits, Producer, T >, T > consume( Producer& parser )
    {
       T t;
       Traits< T >::template consume< Traits >( parser, t );

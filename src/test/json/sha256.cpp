@@ -9,7 +9,7 @@ namespace tao::json
 {
    static char hex[] = "0123456789ABCDEF";
 
-   std::string to_hex( const std::string& s )
+   [[nodiscard]] std::string to_hex( const std::string& s )
    {
       std::string result;
       result.reserve( s.size() * 2 );

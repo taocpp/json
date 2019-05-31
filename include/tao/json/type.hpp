@@ -29,7 +29,7 @@ namespace tao::json
       OPAQUE_PTR
    };
 
-   constexpr bool needs_discard( const type t )
+   [[nodiscard]] constexpr bool needs_discard( const type t )
    {
       switch( t ) {
          case type::STRING:

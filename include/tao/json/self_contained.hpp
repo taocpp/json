@@ -16,7 +16,7 @@ namespace tao::json
    // returns true is no such nodes were found.
 
    template< template< typename... > class Traits >
-   bool is_self_contained( const basic_value< Traits >& v ) noexcept
+   [[nodiscard]] bool is_self_contained( const basic_value< Traits >& v ) noexcept
    {
       switch( v.type() ) {
          case type::UNINITIALIZED:
@@ -141,7 +141,7 @@ namespace tao::json
    }
 
    template< template< typename... > class Traits >
-   basic_value< Traits > self_contained_copy( const basic_value< Traits >& v )
+   [[nodiscard]] basic_value< Traits > self_contained_copy( const basic_value< Traits >& v )
    {
       basic_value< Traits > r( &v );
       make_self_contained( r );

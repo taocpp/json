@@ -58,27 +58,23 @@ namespace tao::json
    template<>
    struct my_traits< derived_one >
       : binding::object< TAO_JSON_BIND_REQUIRED( "s", &derived_one::s ) >
-   {
-   };
+   {};
 
    template<>
    struct my_traits< derived_two >
       : binding::object< TAO_JSON_BIND_REQUIRED( "i", &derived_two::i ) >
-   {
-   };
+   {};
 
    template<>
    struct my_traits< std::shared_ptr< base_class > >
       : binding::factory< TAO_JSON_FACTORY_BIND( "one", derived_one ),
                           TAO_JSON_FACTORY_BIND( "two", derived_two ) >
-   {
-   };
+   {};
 
    template<>
    struct my_traits< std::unique_ptr< base_class > >
       : my_traits< std::shared_ptr< base_class > >
-   {
-   };
+   {};
 
    struct foo
    {
@@ -90,21 +86,18 @@ namespace tao::json
       : public binding::array< TAO_JSON_BIND_ELEMENT( &foo::a ),
                                TAO_JSON_BIND_ELEMENT( &foo::b ),
                                binding::element_u< 2 > >
-   {
-   };
+   {};
 
    struct foo_version_one
       : public binding::array< TAO_JSON_BIND_ELEMENT( &foo::a ),
                                TAO_JSON_BIND_ELEMENT( &foo::b ) >
-   {
-   };
+   {};
 
    template<>
    struct my_traits< foo >
       : binding::versions< foo_version_two,
                            foo_version_one >
-   {
-   };
+   {};
 
    struct foo2
       : public foo
@@ -116,8 +109,7 @@ namespace tao::json
    struct my_traits< foo2 >
       : binding::array< binding::inherit< foo_version_one >,
                         TAO_JSON_BIND_ELEMENT( &foo2::plus ) >
-   {
-   };
+   {};
 
    struct bar
    {
@@ -129,12 +121,11 @@ namespace tao::json
    struct my_traits< bar >
       : binding::object< TAO_JSON_BIND_REQUIRED( "i", &bar::i ),
                          TAO_JSON_BIND_OPTIONAL( "c", &bar::c ) >
-   {
-   };
+   {};
 
    struct baz
    {
-      int get_i() const
+      [[nodiscard]] int get_i() const
       {
          return i;
       }
@@ -143,7 +134,7 @@ namespace tao::json
       int j = -2;
    };
 
-   int get_j( const baz& b )
+   [[nodiscard]] int get_j( const baz& b )
    {
       return b.j;
    }
@@ -152,8 +143,7 @@ namespace tao::json
    struct my_traits< baz >
       : binding::array< TAO_JSON_BIND_ELEMENT( &baz::get_i ),
                         TAO_JSON_BIND_ELEMENT( &get_j ) >
-   {
-   };
+   {};
 
    struct test_empty
    {
@@ -163,8 +153,7 @@ namespace tao::json
    template<>
    struct my_traits< test_empty >
       : binding::object< TAO_JSON_BIND_OPTIONAL( "list", &test_empty::list ) >
-   {
-   };
+   {};
 
    struct test_suppress
    {
@@ -176,8 +165,7 @@ namespace tao::json
       : binding::basic_object< binding::for_unknown_key::skip,
                                binding::for_nothing_value::suppress,
                                TAO_JSON_BIND_OPTIONAL( "list", &test_suppress::list ) >
-   {
-   };
+   {};
 
    using my_value = basic_value< my_traits >;
 

@@ -33,37 +33,32 @@ namespace tao::json
       // TODO: Check if these grammars are correct.
       struct local_part_label
          : pegtl::plus< pegtl::sor< pegtl::alnum, pegtl::one< '!', '#', '$', '%', '&', '\'', '*', '+', '-', '/', '=', '?', '^', '_', '`', '{', '|', '}', '~' > > >
-      {
-      };
+      {};
 
       struct local_part
          : pegtl::list_must< local_part_label, pegtl::one< '.' > >
-      {
-      };
+      {};
 
       struct hostname_label
          : pegtl::seq< pegtl::alnum, pegtl::rep_max< 62, pegtl::ranges< 'a', 'z', 'A', 'Z', '0', '9', '-' > > >
-      {
-      };
+      {};
 
       struct hostname
          : pegtl::list_must< hostname_label, pegtl::one< '.' > >
-      {
-      };
+      {};
 
       struct email
          : pegtl::seq< local_part, pegtl::one< '@' >, hostname >
-      {
-      };
+      {};
 
       template< typename Rule >
-      bool parse( const std::string_view v )  // NOLINT
+      [[nodiscard]] bool parse( const std::string_view v )  // NOLINT
       {
          pegtl::memory_input in( v.data(), v.size(), "" );
          return pegtl::parse< pegtl::seq< Rule, pegtl::eof > >( in );
       }
 
-      inline bool parse_date_time( const std::string_view v )
+      [[nodiscard]] inline bool parse_date_time( const std::string_view v )
       {
          static std::regex re( "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:[0-5]\\d:[0-5]\\d(\\.\\d+)?(Z|[+-]\\d{2}:[0-5]\\d)$" );
          if( !std::regex_search( v.begin(), v.end(), re ) ) {
@@ -168,7 +163,7 @@ namespace tao::json
          uri
       };
 
-      inline constexpr schema_flags operator|( const schema_flags lhs, const schema_flags rhs ) noexcept
+      [[nodiscard]] inline constexpr schema_flags operator|( const schema_flags lhs, const schema_flags rhs ) noexcept
       {
          return static_cast< schema_flags >( static_cast< std::underlying_type< schema_flags >::type >( lhs ) | static_cast< std::underlying_type< schema_flags >::type >( rhs ) );
       }
@@ -276,7 +271,7 @@ namespace tao::json
             throw std::runtime_error( "invalid JSON Schema: invalid primitive type '" + v + '\'' );  // NOLINT
          }
 
-         const basic_value< Traits >* find( const char* s ) const
+         [[nodiscard]] const basic_value< Traits >* find( const char* s ) const
          {
             const auto* p = m_value->unsafe_find( s );
             if( p != nullptr ) {
@@ -795,7 +790,7 @@ namespace tao::json
          void operator=( const schema_node& ) = delete;
          void operator=( schema_node&& ) = delete;
 
-         const std::set< const basic_value< Traits >* >& referenced_pointers() const noexcept
+         [[nodiscard]] const std::set< const basic_value< Traits >* >& referenced_pointers() const noexcept
          {
             return m_referenced_pointers;
          }
@@ -955,7 +950,7 @@ namespace tao::json
             }
          }
 
-         static bool is_multiple_of( const double v, const double d )
+         [[nodiscard]] static bool is_multiple_of( const double v, const double d )
          {
             const auto r = std::fmod( v, d );
             if( std::fabs( r ) < std::numeric_limits< double >::epsilon() ) {
@@ -1344,7 +1339,7 @@ namespace tao::json
          void operator=( const schema_consumer& ) = delete;
          void operator=( schema_consumer&& ) = delete;
 
-         bool finalize()
+         [[nodiscard]] bool finalize()
          {
             if( m_match && !m_all_of.empty() ) {
                for( auto& e : m_all_of ) {
@@ -1387,7 +1382,7 @@ namespace tao::json
             return m_match;
          }
 
-         bool match() const noexcept
+         [[nodiscard]] bool match() const noexcept
          {
             return m_match;
          }
@@ -1799,7 +1794,7 @@ namespace tao::json
             }
          }
 
-         std::unique_ptr< schema_consumer< Traits > > consumer( const basic_value< Traits >* p ) const
+         [[nodiscard]] std::unique_ptr< schema_consumer< Traits > > consumer( const basic_value< Traits >* p ) const
          {
             const auto it = m_nodes.find( p );
             if( it == m_nodes.end() ) {
@@ -1808,7 +1803,7 @@ namespace tao::json
             return std::make_unique< schema_consumer< Traits > >( this->shared_from_this(), *it->second );
          }
 
-         std::unique_ptr< schema_consumer< Traits > > consumer() const
+         [[nodiscard]] std::unique_ptr< schema_consumer< Traits > > consumer() const
          {
             return consumer( &m_value );
          }
@@ -1828,12 +1823,12 @@ namespace tao::json
       {
       }
 
-      std::unique_ptr< internal::schema_consumer< Traits > > consumer() const
+      [[nodiscard]] std::unique_ptr< internal::schema_consumer< Traits > > consumer() const
       {
          return m_container->consumer();
       }
 
-      bool validate( const basic_value< Traits >& v ) const
+      [[nodiscard]] bool validate( const basic_value< Traits >& v ) const
       {
          // TODO: Value validation should be implemented independently,
          // as it could be more efficient than Events validation!
@@ -1846,7 +1841,7 @@ namespace tao::json
    using schema = basic_schema< traits >;
 
    template< template< typename... > class Traits >
-   basic_schema< Traits > make_schema( const basic_value< Traits >& v )
+   [[nodiscard]] basic_schema< Traits > make_schema( const basic_value< Traits >& v )
    {
       return basic_schema< Traits >( v );
    }

@@ -10,7 +10,7 @@
 namespace tao::json::internal
 {
    template< typename T >
-   std::string base64( const T& v )
+   [[nodiscard]] std::string base64( const T& v )
    {
       static const char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 

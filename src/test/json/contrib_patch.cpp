@@ -9,7 +9,7 @@
 
 namespace tao::json
 {
-   value cpatch( const value& v, const value& patch )
+   [[nodiscard]] value cpatch( const value& v, const value& patch )
    {
       return json::patch( v, patch );
    }

@@ -30,8 +30,7 @@ namespace tao::json::cbor::events
    public:
       explicit to_stream( std::ostream& in_os ) noexcept
          : os( in_os )
-      {
-      }
+      {}
 
       void null()
       {
@@ -116,8 +115,7 @@ namespace tao::json::cbor::events
       }
 
       void element() noexcept
-      {
-      }
+      {}
 
       void end_array()
       {
@@ -125,8 +123,7 @@ namespace tao::json::cbor::events
       }
 
       void end_array( const std::size_t /*unused*/ ) noexcept
-      {
-      }
+      {}
 
       void begin_object()
       {
@@ -144,8 +141,7 @@ namespace tao::json::cbor::events
       }
 
       void member() noexcept
-      {
-      }
+      {}
 
       void end_object()
       {
@@ -153,8 +149,7 @@ namespace tao::json::cbor::events
       }
 
       void end_object( const std::size_t /*unused*/ ) noexcept
-      {
-      }
+      {}
    };
 
 }  // namespace tao::json::cbor::events

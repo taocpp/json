@@ -19,13 +19,13 @@ namespace tao::json::msgpack
    namespace internal
    {
       template< typename Input >
-      format peek_format( Input& in )
+      [[nodiscard]] format peek_format( Input& in )
       {
          return format( json::internal::peek_uint8( in ) );
       }
 
       template< typename Input >
-      bool read_boolean( Input& in )
+      [[nodiscard]] bool read_boolean( Input& in )
       {
          const auto b = internal::peek_format( in );
          switch( b ) {
@@ -40,7 +40,7 @@ namespace tao::json::msgpack
       }
 
       template< typename Input >
-      tao::binary_view read_binary( Input& in )
+      [[nodiscard]] tao::binary_view read_binary( Input& in )
       {
          switch( peek_format( in ) ) {
             case format::BIN8:
@@ -54,7 +54,7 @@ namespace tao::json::msgpack
          }
       }
 
-      inline std::int64_t test_signed( const std::uint64_t i )
+      [[nodiscard]] inline std::int64_t test_signed( const std::uint64_t i )
       {
          if( ( i & ( std::uint64_t( 1 ) << 63 ) ) != 0 ) {
             throw std::runtime_error( "integer overflow for signed" );  // NOLINT
@@ -63,7 +63,7 @@ namespace tao::json::msgpack
       }
 
       template< typename Input >
-      std::int64_t read_signed( Input& in )
+      [[nodiscard]] std::int64_t read_signed( Input& in )
       {
          const auto b = json::internal::peek_uint8( in );
          if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
@@ -96,7 +96,7 @@ namespace tao::json::msgpack
          }
       }
 
-      inline std::uint64_t test_unsigned( const std::int64_t i )
+      [[nodiscard]] inline std::uint64_t test_unsigned( const std::int64_t i )
       {
          if( i < 0 ) {
             throw std::runtime_error( "negative number for unsigned" );  // NOLINT
@@ -105,7 +105,7 @@ namespace tao::json::msgpack
       }
 
       template< typename Input >
-      std::uint64_t read_unsigned( Input& in )
+      [[nodiscard]] std::uint64_t read_unsigned( Input& in )
       {
          const auto b = json::internal::peek_uint8( in );
          if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
@@ -135,7 +135,7 @@ namespace tao::json::msgpack
       }
 
       template< typename Input >
-      double read_double( Input& in )
+      [[nodiscard]] double read_double( Input& in )
       {
          switch( peek_format( in ) ) {
             case format::FLOAT32:
@@ -148,7 +148,7 @@ namespace tao::json::msgpack
       }
 
       template< format Min, format Max, format S16, format S32, typename Input >
-      std::size_t read_container_size( Input& in )
+      [[nodiscard]] std::size_t read_container_size( Input& in )
       {
          const auto b = json::internal::peek_uint8( in );
          if( ( std::uint8_t( Min ) <= b ) && ( b <= std::uint8_t( Max ) ) ) {
@@ -174,15 +174,14 @@ namespace tao::json::msgpack
       template< typename... Ts >
       explicit basic_parts_parser( Ts&&... ts )
          : m_input( std::forward< Ts >( ts )... )
-      {
-      }
+      {}
 
-      bool empty()
+      [[nodiscard]] bool empty()
       {
          return m_input.empty();
       }
 
-      bool null()
+      [[nodiscard]] bool null()
       {
          if( internal::peek_format( m_input ) == internal::format::NIL ) {
             m_input.bump_in_this_line( 1 );
@@ -191,37 +190,37 @@ namespace tao::json::msgpack
          return false;
       }
 
-      bool boolean()
+      [[nodiscard]] bool boolean()
       {
          return internal::read_boolean( m_input );
       }
 
-      std::string_view string()
+      [[nodiscard]] std::string_view string()
       {
          return internal::read_string< V >( m_input );
       }
 
-      tao::binary_view binary()
+      [[nodiscard]] tao::binary_view binary()
       {
          return internal::read_binary( m_input );
       }
 
-      std::string_view key()
+      [[nodiscard]] std::string_view key()
       {
          return internal::read_string< V >( m_input );
       }
 
-      std::int64_t number_signed()
+      [[nodiscard]] std::int64_t number_signed()
       {
          return internal::read_signed( m_input );
       }
 
-      std::uint64_t number_unsigned()
+      [[nodiscard]] std::uint64_t number_unsigned()
       {
          return internal::read_unsigned( m_input );
       }
 
-      double number_double()
+      [[nodiscard]] double number_double()
       {
          return internal::read_double( m_input );
       }
@@ -230,19 +229,18 @@ namespace tao::json::msgpack
       {
          explicit state_t( const std::size_t in_size )
             : size( in_size )
-         {
-         }
+         {}
 
          std::size_t i = 0;
          std::size_t size;
       };
 
-      state_t begin_array()
+      [[nodiscard]] state_t begin_array()
       {
          return state_t( internal::read_container_size< internal::format::FIXARRAY_MIN, internal::format::FIXARRAY_MAX, internal::format::ARRAY16, internal::format::ARRAY32 >( m_input ) );
       }
 
-      state_t begin_object()
+      [[nodiscard]] state_t begin_object()
       {
          return state_t( internal::read_container_size< internal::format::FIXMAP_MIN, internal::format::FIXMAP_MAX, internal::format::MAP16, internal::format::MAP32 >( m_input ) );
       }
@@ -275,12 +273,12 @@ namespace tao::json::msgpack
          }
       }
 
-      bool element_or_end_array( state_t& p )
+      [[nodiscard]] bool element_or_end_array( state_t& p )
       {
          return p.i++ < p.size;
       }
 
-      bool member_or_end_object( state_t& p )
+      [[nodiscard]] bool member_or_end_object( state_t& p )
       {
          return p.i++ < p.size;
       }
@@ -291,7 +289,7 @@ namespace tao::json::msgpack
          pegtl::parse< pegtl::must< internal::data< V > > >( m_input, consumer );
       }
 
-      auto mark()
+      [[nodiscard]] auto mark()
       {
          return m_input.template mark< pegtl::rewind_mode::required >();
       }

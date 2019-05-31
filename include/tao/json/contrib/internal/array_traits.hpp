@@ -17,7 +17,7 @@ namespace tao::json::internal
    struct array_multi_traits
    {
       template< template< typename... > class Traits >
-      static bool is_nothing( const T& o )
+      [[nodiscard]] static bool is_nothing( const T& o )
       {
          return o.empty();
       }
@@ -37,21 +37,21 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return p.is_array() && ( p.unsafe_get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), p.unsafe_get_array().begin() );
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return p.is_array() ? std::lexicographical_compare( p.unsafe_get_array().begin(), p.unsafe_get_array().end(), rhs.begin(), rhs.end() ) : ( p.type() < type::ARRAY );
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return p.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p.unsafe_get_array().begin(), p.unsafe_get_array().end() ) : ( p.type() > type::ARRAY );

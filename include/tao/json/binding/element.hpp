@@ -21,7 +21,7 @@ namespace tao::json::binding
    {
       using internal_t = std::decay_t< decltype( std::declval< C >().*P ) >;
 
-      static const auto& read( const C& v )
+      [[nodiscard]] static const auto& read( const C& v )
       {
          return v.*P;
       }
@@ -56,7 +56,7 @@ namespace tao::json::binding
    {
       using internal_t = std::decay_t< decltype( ( std::declval< const C >().*P )() ) >;
 
-      static decltype( auto ) read( const C& v )
+      [[nodiscard]] static decltype( auto ) read( const C& v )
       {
          return ( v.*P )();
       }
@@ -71,7 +71,7 @@ namespace tao::json::binding
    template< typename C, typename T, T ( *P )( const C& ) >
    struct element< P >
    {
-      static decltype( auto ) read( const C& v )
+      [[nodiscard]] static decltype( auto ) read( const C& v )
       {
          return P( v );
       }
@@ -89,7 +89,7 @@ namespace tao::json::binding
    template< typename A, typename CR, CR ( *CP )( const A& ), typename R, R ( *P )( A& ) >
    struct element2< CP, P >
    {
-      static decltype( auto ) read( const A& v )
+      [[nodiscard]] static decltype( auto ) read( const A& v )
       {
          return CP( v );
       }
@@ -122,7 +122,7 @@ namespace tao::json::binding
    template< typename A, typename CR, CR ( *CP )( const A& ), typename R, void ( *P )( A&, R&& ) >
    struct element2< CP, P >
    {
-      static decltype( auto ) read( const A& v )
+      [[nodiscard]] static decltype( auto ) read( const A& v )
       {
          return CP( v );
       }

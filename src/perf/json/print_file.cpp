@@ -12,7 +12,7 @@ int main( int argc, char** argv )
       tao::json::events::parse_file( consumer, argv[ i ] );
 
       tao::bench::mark( "json", argv[ i ], [&]() {
-         tao::json::to_string( consumer.value );
+         (void)tao::json::to_string( consumer.value );
       } );
    }
    return 0;

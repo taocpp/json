@@ -143,8 +143,7 @@ namespace tao::json
 
       basic_value( std::initializer_list< internal::pair< Traits > >& l )
          : basic_value( static_cast< const std::initializer_list< internal::pair< Traits > >& >( l ) )
-      {
-      }
+      {}
 
       ~basic_value() noexcept
       {
@@ -154,28 +153,28 @@ namespace tao::json
 #endif
       }
 
-      static basic_value array( std::initializer_list< internal::single< Traits > >&& l )
+      [[nodiscard]] static basic_value array( std::initializer_list< internal::single< Traits > >&& l )
       {
          basic_value v;
          v.append( std::move( l ) );
          return v;
       }
 
-      static basic_value array( const std::initializer_list< internal::single< Traits > >& l )
+      [[nodiscard]] static basic_value array( const std::initializer_list< internal::single< Traits > >& l )
       {
          basic_value v;
          v.append( l );
          return v;
       }
 
-      static basic_value object( std::initializer_list< internal::pair< Traits > >&& l )
+      [[nodiscard]] static basic_value object( std::initializer_list< internal::pair< Traits > >&& l )
       {
          basic_value v;
          v.insert( std::move( l ) );
          return v;
       }
 
-      static basic_value object( const std::initializer_list< internal::pair< Traits > >& l )
+      [[nodiscard]] static basic_value object( const std::initializer_list< internal::pair< Traits > >& l )
       {
          basic_value v;
          v.insert( l );
@@ -198,124 +197,124 @@ namespace tao::json
          ( *this ) = ( std::move( t ) );
       }
 
-      public_base_t& public_base() noexcept
+      [[nodiscard]] public_base_t& public_base() noexcept
       {
          return static_cast< public_base_t& >( *this );
       }
 
-      const public_base_t& public_base() const noexcept
+      [[nodiscard]] const public_base_t& public_base() const noexcept
       {
          return static_cast< const public_base_t& >( *this );
       }
 
-      json::type type() const noexcept
+      [[nodiscard]] json::type type() const noexcept
       {
          return m_type;
       }
 
-      explicit operator bool() const noexcept
+      [[nodiscard]] explicit operator bool() const noexcept
       {
          assert( m_type != json::type::DISCARDED );
          assert( m_type != json::type::DESTROYED );
          return m_type != json::type::UNINITIALIZED;
       }
 
-      bool is_null() const noexcept
+      [[nodiscard]] bool is_null() const noexcept
       {
          return m_type == json::type::NULL_;
       }
 
-      bool is_boolean() const noexcept
+      [[nodiscard]] bool is_boolean() const noexcept
       {
          return m_type == json::type::BOOLEAN;
       }
 
-      bool is_signed() const noexcept
+      [[nodiscard]] bool is_signed() const noexcept
       {
          return m_type == json::type::SIGNED;
       }
 
-      bool is_unsigned() const noexcept
+      [[nodiscard]] bool is_unsigned() const noexcept
       {
          return m_type == json::type::UNSIGNED;
       }
 
-      bool is_integer() const noexcept
+      [[nodiscard]] bool is_integer() const noexcept
       {
          return is_signed() || is_unsigned();
       }
 
-      bool is_double() const noexcept
+      [[nodiscard]] bool is_double() const noexcept
       {
          return m_type == json::type::DOUBLE;
       }
 
-      bool is_number() const noexcept
+      [[nodiscard]] bool is_number() const noexcept
       {
          return is_integer() || is_double();
       }
 
-      bool is_string() const noexcept
+      [[nodiscard]] bool is_string() const noexcept
       {
          return m_type == json::type::STRING;
       }
 
-      bool is_string_view() const noexcept
+      [[nodiscard]] bool is_string_view() const noexcept
       {
          return m_type == json::type::STRING_VIEW;
       }
 
-      bool is_string_type() const noexcept
+      [[nodiscard]] bool is_string_type() const noexcept
       {
          return is_string() || is_string_view();
       }
 
-      bool is_binary() const noexcept
+      [[nodiscard]] bool is_binary() const noexcept
       {
          return m_type == json::type::BINARY;
       }
 
-      bool is_binary_view() const noexcept
+      [[nodiscard]] bool is_binary_view() const noexcept
       {
          return m_type == json::type::BINARY_VIEW;
       }
 
-      bool is_binary_type() const noexcept
+      [[nodiscard]] bool is_binary_type() const noexcept
       {
          return is_binary() || is_binary_view();
       }
 
-      bool is_array() const noexcept
+      [[nodiscard]] bool is_array() const noexcept
       {
          return m_type == json::type::ARRAY;
       }
 
-      bool is_object() const noexcept
+      [[nodiscard]] bool is_object() const noexcept
       {
          return m_type == json::type::OBJECT;
       }
 
-      bool is_value_ptr() const noexcept
+      [[nodiscard]] bool is_value_ptr() const noexcept
       {
          return m_type == json::type::VALUE_PTR;
       }
 
-      bool is_opaque_ptr() const noexcept
+      [[nodiscard]] bool is_opaque_ptr() const noexcept
       {
          return m_type == json::type::OPAQUE_PTR;
       }
 
-      // bool is_destroyed() const noexcept
+      // [[nodiscard]] bool is_destroyed() const noexcept
       // {
       //    return m_type == json::type::DESTROYED;
       // }
 
-      bool is_discarded() const noexcept
+      [[nodiscard]] bool is_discarded() const noexcept
       {
          return m_type == json::type::DISCARDED;
       }
 
-      bool is_uninitialized() const noexcept
+      [[nodiscard]] bool is_uninitialized() const noexcept
       {
          return m_type == json::type::UNINITIALIZED;
       }
@@ -324,127 +323,127 @@ namespace tao::json
       // called when the type of the value is not the one
       // corresponding to the type of the accessor!
 
-      bool unsafe_get_boolean() const noexcept
+      [[nodiscard]] bool unsafe_get_boolean() const noexcept
       {
          return m_union.b;
       }
 
-      std::int64_t unsafe_get_signed() const noexcept
+      [[nodiscard]] std::int64_t unsafe_get_signed() const noexcept
       {
          return m_union.i;
       }
 
-      std::uint64_t unsafe_get_unsigned() const noexcept
+      [[nodiscard]] std::uint64_t unsafe_get_unsigned() const noexcept
       {
          return m_union.u;
       }
 
-      double unsafe_get_double() const noexcept
+      [[nodiscard]] double unsafe_get_double() const noexcept
       {
          return m_union.d;
       }
 
-      std::string& unsafe_get_string() noexcept
+      [[nodiscard]] std::string& unsafe_get_string() noexcept
       {
          return m_union.s;
       }
 
-      const std::string& unsafe_get_string() const noexcept
+      [[nodiscard]] const std::string& unsafe_get_string() const noexcept
       {
          return m_union.s;
       }
 
-      std::string_view unsafe_get_string_view() const noexcept
+      [[nodiscard]] std::string_view unsafe_get_string_view() const noexcept
       {
          return m_union.sv;
       }
 
-      std::string_view unsafe_get_string_type() const noexcept
+      [[nodiscard]] std::string_view unsafe_get_string_type() const noexcept
       {
          return ( m_type == json::type::STRING ) ? m_union.s : m_union.sv;
       }
 
-      binary& unsafe_get_binary() noexcept
+      [[nodiscard]] binary& unsafe_get_binary() noexcept
       {
          return m_union.x;
       }
 
-      const binary& unsafe_get_binary() const noexcept
+      [[nodiscard]] const binary& unsafe_get_binary() const noexcept
       {
          return m_union.x;
       }
 
-      tao::binary_view unsafe_get_binary_view() const noexcept
+      [[nodiscard]] tao::binary_view unsafe_get_binary_view() const noexcept
       {
          return m_union.xv;
       }
 
-      tao::binary_view unsafe_get_binary_type() const noexcept
+      [[nodiscard]] tao::binary_view unsafe_get_binary_type() const noexcept
       {
          return ( m_type == json::type::BINARY ) ? m_union.x : m_union.xv;
       }
 
-      array_t& unsafe_get_array() noexcept
+      [[nodiscard]] array_t& unsafe_get_array() noexcept
       {
          return m_union.a;
       }
 
-      const array_t& unsafe_get_array() const noexcept
+      [[nodiscard]] const array_t& unsafe_get_array() const noexcept
       {
          return m_union.a;
       }
 
-      object_t& unsafe_get_object() noexcept
+      [[nodiscard]] object_t& unsafe_get_object() noexcept
       {
          return m_union.o;
       }
 
-      const object_t& unsafe_get_object() const noexcept
+      [[nodiscard]] const object_t& unsafe_get_object() const noexcept
       {
          return m_union.o;
       }
 
-      const basic_value* unsafe_get_value_ptr() const noexcept
+      [[nodiscard]] const basic_value* unsafe_get_value_ptr() const noexcept
       {
          return m_union.p;
       }
 
-      const internal::opaque_ptr_t unsafe_get_opaque_ptr() const noexcept
+      [[nodiscard]] const internal::opaque_ptr_t unsafe_get_opaque_ptr() const noexcept
       {
          return m_union.q;
       }
 
       template< json::type E >
-      decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) unsafe_get() noexcept
+      [[nodiscard]] decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) unsafe_get() noexcept
       {
          return internal::get_by_enum< E >::get( m_union );
       }
 
       template< json::type E >
-      decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value >& >() ) ) unsafe_get() const noexcept
+      [[nodiscard]] decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value >& >() ) ) unsafe_get() const noexcept
       {
          return internal::get_by_enum< E >::get( m_union );
       }
 
-      bool get_boolean() const
+      [[nodiscard]] bool get_boolean() const
       {
          validate_json_type( json::type::BOOLEAN );
          return unsafe_get_boolean();
       }
 
-      std::int64_t get_signed() const
+      [[nodiscard]] std::int64_t get_signed() const
       {
          validate_json_type( json::type::SIGNED );
          return unsafe_get_signed();
       }
 
-      std::uint64_t get_unsigned() const
+      [[nodiscard]] std::uint64_t get_unsigned() const
       {
          validate_json_type( json::type::UNSIGNED );
          return unsafe_get_unsigned();
       }
 
-      double get_double() const
+      [[nodiscard]] double get_double() const
       {
          validate_json_type( json::type::DOUBLE );
          return unsafe_get_double();

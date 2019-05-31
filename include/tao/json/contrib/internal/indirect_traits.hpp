@@ -19,13 +19,13 @@ namespace tao::json::internal
    struct indirect_traits
    {
       template< typename U >
-      static const U& add_const( const U& u )
+      [[nodiscard]] static const U& add_const( const U& u )
       {
          return u;
       }
 
       template< template< typename... > class Traits >
-      static bool is_nothing( const T& o )
+      [[nodiscard]] static bool is_nothing( const T& o )
       {
          assert( o );
          return internal::is_nothing< Traits >( add_const( *o ) );
@@ -46,19 +46,19 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          return rhs ? ( lhs == *rhs ) : ( lhs == null );
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          return rhs ? ( lhs < *rhs ) : ( lhs < null );
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          return rhs ? ( lhs > *rhs ) : ( lhs > null );
       }

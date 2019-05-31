@@ -205,7 +205,7 @@ namespace tao::json::internal
          }
       }
 
-      std::string get()
+      [[nodiscard]] std::string get()
       {
          std::string result( 32, '\0' );
          store_unsafe( static_cast< unsigned char* >( static_cast< void* >( const_cast< char* >( result.data() ) ) ) );  // NOLINT

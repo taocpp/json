@@ -26,7 +26,7 @@ namespace tao::json::jaxn::internal
       }
 
       template< template< typename... > class Action, typename Iterator, typename Input, typename... States >
-      static auto apply( const Iterator& begin, const Input& in, States&&... st )
+      [[nodiscard]] static auto apply( const Iterator& begin, const Input& in, States&&... st )
          -> decltype( Action< Rule >::apply( std::declval< const typename Input::action_t& >(), st... ) )
       {
          try {
@@ -43,7 +43,7 @@ namespace tao::json::jaxn::internal
       }
 
       template< template< typename... > class Action, typename Input, typename... States >
-      static auto apply0( const Input& in, States&&... st )
+      [[nodiscard]] static auto apply0( const Input& in, States&&... st )
          -> decltype( Action< Rule >::apply0( st... ) )
       {
          try {

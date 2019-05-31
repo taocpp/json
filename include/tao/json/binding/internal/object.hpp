@@ -56,8 +56,7 @@ namespace tao::json::binding::internal
          entry( F c, std::size_t i )
             : function( c ),
               index( i )
-         {
-         }
+         {}
 
          F function;
          std::size_t index;
@@ -208,7 +207,7 @@ namespace tao::json::binding::internal
       }
 
       template< template< typename... > class Traits, typename C >
-      static std::size_t produce_size( const C& x )
+      [[nodiscard]] static std::size_t produce_size( const C& x )
       {
          if constexpr( N == for_nothing_value::encode ) {
             return sizeof...( As );
@@ -236,7 +235,7 @@ namespace tao::json::binding::internal
       }
 
       template< typename A, template< typename... > class Traits, typename C >
-      static bool equal_member( const std::map< std::string, basic_value< Traits > >& a, C& x )
+      [[nodiscard]] static bool equal_member( const std::map< std::string, basic_value< Traits > >& a, C& x )
       {
          if( !A::template is_nothing< Traits >( x ) ) {
             return a.at( A::template key< Traits >() ) == A::read( x );
@@ -249,7 +248,7 @@ namespace tao::json::binding::internal
       }
 
       template< template< typename... > class Traits, typename C >
-      static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          if( p.is_object() && ( p.unsafe_get_object().size() == sizeof...( As ) ) ) {

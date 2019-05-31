@@ -33,19 +33,19 @@ namespace tao::json::cbor::internal
    }
 
    template< typename Input >
-   major peek_major_unsafe( Input& in )
+   [[nodiscard]] major peek_major_unsafe( Input& in )
    {
       return static_cast< major >( in.peek_uint8() & major_mask );
    }
 
    template< typename Input >
-   std::uint8_t peek_minor_unsafe( Input& in )
+   [[nodiscard]] std::uint8_t peek_minor_unsafe( Input& in )
    {
       return in.peek_uint8() & minor_mask;
    }
 
    template< typename Input >
-   major peek_major( Input& in )
+   [[nodiscard]] major peek_major( Input& in )
    {
       return static_cast< major >( json::internal::peek_uint8( in ) & major_mask );
    }
@@ -53,7 +53,7 @@ namespace tao::json::cbor::internal
    // Assume in.size( 1 ) >= 1 and in.peek_uint8() is the byte with major/minor.
 
    template< typename Input >
-   double read_fp16( Input& in )
+   [[nodiscard]] double read_fp16( Input& in )
    {
       json::internal::throw_on_empty( in, 3 );
 
@@ -76,7 +76,7 @@ namespace tao::json::cbor::internal
    }
 
    template< typename Input >
-   std::uint64_t read_embedded_unsafe( Input& in )
+   [[nodiscard]] std::uint64_t read_embedded_unsafe( Input& in )
    {
       const auto result = peek_minor_unsafe( in ) & minor_mask;
       in.bump_in_this_line();
@@ -84,7 +84,7 @@ namespace tao::json::cbor::internal
    }
 
    template< typename Input >
-   std::uint64_t read_unsigned_unsafe( Input& in )
+   [[nodiscard]] std::uint64_t read_unsigned_unsafe( Input& in )
    {
       switch( const auto m = peek_minor_unsafe( in ) ) {
          default:
@@ -106,7 +106,7 @@ namespace tao::json::cbor::internal
    }
 
    template< typename Input >
-   std::int64_t read_negative_unsafe( Input& in )
+   [[nodiscard]] std::int64_t read_negative_unsafe( Input& in )
    {
       const auto u = read_unsigned_unsafe( in );
       if( u > 9223372036854775808ULL ) {
@@ -116,7 +116,7 @@ namespace tao::json::cbor::internal
    }
 
    template< typename Input >
-   std::size_t read_size_unsafe( Input& in )
+   [[nodiscard]] std::size_t read_size_unsafe( Input& in )
    {
       const auto s = read_unsigned_unsafe( in );
       if( s > static_cast< std::uint64_t >( ( std::numeric_limits< std::size_t >::max )() ) ) {
@@ -126,7 +126,7 @@ namespace tao::json::cbor::internal
    }
 
    template< utf8_mode U, typename Result, typename Input >
-   Result read_string_1( Input& in )
+   [[nodiscard]] Result read_string_1( Input& in )
    {
       const auto size = read_size_unsafe( in );
       json::internal::throw_on_empty( in, size );
@@ -138,7 +138,7 @@ namespace tao::json::cbor::internal
    }
 
    template< utf8_mode U, typename Result, typename Input >
-   Result read_string_n( Input& in, const major m )
+   [[nodiscard]] Result read_string_n( Input& in, const major m )
    {
       Result result;
       in.bump_in_this_line();
@@ -170,7 +170,7 @@ namespace tao::json::cbor::internal
                 class Control,
                 typename Input,
                 typename Consumer >
-      static bool match( Input& in, Consumer& consumer )
+      [[nodiscard]] static bool match( Input& in, Consumer& consumer )
       {
          if( !in.empty() ) {
             parse_unsafe( in, consumer );
@@ -274,7 +274,7 @@ namespace tao::json::cbor::internal
       }
 
       template< typename Input, typename Consumer >
-      static bool parse_array_unsafe( Input& in, Consumer& consumer )
+      static void parse_array_unsafe( Input& in, Consumer& consumer )
       {
          if( peek_minor_unsafe( in ) != minor_mask ) {
             parse_array_1( in, consumer );
@@ -282,7 +282,6 @@ namespace tao::json::cbor::internal
          else {
             parse_array_n( in, consumer );
          }
-         return true;
       }
 
       template< typename Input, typename Consumer >
@@ -390,9 +389,9 @@ namespace tao::json::cbor::internal
    };
 
    template< utf8_mode V >
-   struct basic_grammar : pegtl::must< data< V >, pegtl::eof >
-   {
-   };
+   struct basic_grammar
+      : pegtl::must< data< V >, pegtl::eof >
+   {};
 
    using grammar = basic_grammar< utf8_mode::check >;
 

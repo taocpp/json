@@ -19,7 +19,7 @@
 namespace tao::json::msgpack::internal
 {
    template< utf8_mode U, typename Input >
-   std::string_view read_string( Input& in )
+   [[nodiscard]] std::string_view read_string( Input& in )
    {
       const auto b = json::internal::peek_uint8( in );
       if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
@@ -51,7 +51,7 @@ namespace tao::json::msgpack::internal
                 class Control,
                 typename Input,
                 typename Consumer >
-      static bool match( Input& in, Consumer& consumer )
+      [[nodiscard]] static bool match( Input& in, Consumer& consumer )
       {
          if( !in.empty() ) {
             parse_unsafe( in, consumer );
@@ -231,8 +231,7 @@ namespace tao::json::msgpack::internal
 
    template< utf8_mode V >
    struct basic_grammar : pegtl::must< data< V >, pegtl::eof >
-   {
-   };
+   {};
 
    using grammar = basic_grammar< utf8_mode::check >;
 

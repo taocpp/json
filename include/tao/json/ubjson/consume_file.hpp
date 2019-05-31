@@ -16,14 +16,14 @@
 namespace tao::json::ubjson
 {
    template< typename T, template< typename... > class Traits = traits, typename F >
-   T consume_file( F&& filename )
+   [[nodiscard]] T consume_file( F&& filename )
    {
       ubjson::basic_parts_parser< 1 << 24, utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
       return json::consume< T, Traits >( pp );
    }
 
    template< template< typename... > class Traits = traits, typename F, typename T >
-   T consume_file( F&& filename, T& t )
+   [[nodiscard]] T consume_file( F&& filename, T& t )
    {
       ubjson::basic_parts_parser< 1 << 24, utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
       return json::consume< Traits >( pp, t );

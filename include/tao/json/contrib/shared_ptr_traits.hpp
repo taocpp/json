@@ -21,19 +21,19 @@ namespace tao::json
       struct shared_ptr_traits
       {
          template< template< typename... > class Traits, typename... With >
-         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
+         [[nodiscard]] static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
          {
             return std::make_shared< T >( v, with... );
          }
 
          template< template< typename... > class Traits, typename... With >
-         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
+         [[nodiscard]] static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
          {
             return std::make_shared< T >( Traits< T >::as( v, with... ) );
          }
 
          template< template< typename... > class Traits, typename... With >
-         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
+         [[nodiscard]] static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::shared_ptr< U > >
          {
             auto t = std::make_shared< T >();
             Traits< T >::to( v, *t, with... );
@@ -41,13 +41,13 @@ namespace tao::json
          }
 
          template< template< typename... > class Traits, typename Producer >
-         static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer > || use_third_ptr_consume< T, Traits, Producer >, std::shared_ptr< U > >
+         [[nodiscard]] static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer > || use_third_ptr_consume< T, Traits, Producer >, std::shared_ptr< U > >
          {
             return Traits< T >::template consume< Traits >( parser );
          }
 
          template< template< typename... > class Traits, typename Producer >
-         static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >, std::shared_ptr< U > >
+         [[nodiscard]] static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >, std::shared_ptr< U > >
          {
             auto t = std::make_shared< T >();
             Traits< T >::template consume< Traits >( parser, *t );

@@ -71,7 +71,7 @@ namespace tao::json::binding::internal
       }
 
       template< template< typename... > class Traits, typename C >
-      static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          if( p.is_array() && ( p.unsafe_get_array().size() == sizeof...( As ) ) ) {

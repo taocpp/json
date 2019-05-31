@@ -12,8 +12,7 @@ namespace tao::json
    template< typename T >
    struct my_traits
       : public traits< T >
-   {
-   };
+   {};
 
    template<>
    struct my_traits< void >
@@ -24,7 +23,7 @@ namespace tao::json
       static constexpr const bool enable_implicit_constructor = false;
    };
 
-   type test( const basic_value< my_traits >& v )
+   [[nodiscard]] type test( const basic_value< my_traits >& v )
    {
       return v.type();
    }

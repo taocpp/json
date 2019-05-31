@@ -31,7 +31,7 @@ namespace tao::json
    struct traits< one >
    {
       template< typename T >
-      static one as( const T& /*unused*/ )
+      [[nodiscard]] static one as( const T& /*unused*/ )
       {
          return one{ 1 };
       }
@@ -51,7 +51,7 @@ namespace tao::json
    struct traits< both >
    {
       template< typename T >
-      static both as( const T& /*unused*/ )
+      [[nodiscard]] static both as( const T& /*unused*/ )
       {
          return both{ 3 };
       }

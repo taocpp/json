@@ -24,7 +24,7 @@ namespace tao::json::internal
    struct number_trait
    {
       template< template< typename... > class Traits >
-      static T as( const basic_value< Traits >& v )
+      [[nodiscard]] static T as( const basic_value< Traits >& v )
       {
          switch( v.type() ) {
             case type::SIGNED:
@@ -44,7 +44,7 @@ namespace tao::json::internal
       : number_trait< T >
    {
       template< template< typename... > class, typename Parts >
-      static T consume( Parts& parser )
+      [[nodiscard]] static T consume( Parts& parser )
       {
          return static_cast< T >( parser.number_signed() );
       }
@@ -62,7 +62,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -78,7 +78,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -94,7 +94,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -115,7 +115,7 @@ namespace tao::json::internal
       : number_trait< T >
    {
       template< template< typename... > class, typename Parts >
-      static T consume( Parts& parser )
+      [[nodiscard]] static T consume( Parts& parser )
       {
          return static_cast< T >( parser.number_unsigned() );
       }
@@ -133,7 +133,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -151,7 +151,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -169,7 +169,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -192,7 +192,7 @@ namespace tao::json::internal
       : number_trait< T >
    {
       template< template< typename... > class, typename Parts >
-      static T consume( Parts& parser )
+      [[nodiscard]] static T consume( Parts& parser )
       {
          return static_cast< T >( parser.number_double() );
       }
@@ -210,7 +210,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -226,7 +226,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -242,7 +242,7 @@ namespace tao::json::internal
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {

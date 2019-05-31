@@ -16,8 +16,7 @@ namespace tao::json
 
       explicit message_extension( const T& v ) noexcept
          : m_v( v )
-      {
-      }
+      {}
 
       friend std::ostream& operator<<( std::ostream& os, const message_extension& /*unused*/ ) noexcept
       {
@@ -32,8 +31,7 @@ namespace tao::json
 
       explicit message_extension( const T& v ) noexcept
          : m_v( v )
-      {
-      }
+      {}
 
       friend std::ostream& operator<<( std::ostream& os, const message_extension& v )
       {

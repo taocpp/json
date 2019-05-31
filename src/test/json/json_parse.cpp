@@ -8,12 +8,12 @@
 
 namespace tao::json
 {
-   value custom_from_string( const char* v )
+   [[nodiscard]] value custom_from_string( const char* v )
    {
       return json::from_string( v );
    }
 
-   value custom_from_string( const std::string& v )
+   [[nodiscard]] value custom_from_string( const std::string& v )
    {
       return json::from_string( v );
    }

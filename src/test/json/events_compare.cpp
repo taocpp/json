@@ -11,14 +11,14 @@
 
 namespace tao::json
 {
-   bool test_value( const value& v, events::compare& c )
+   [[nodiscard]] bool test_value( const value& v, events::compare& c )
    {
       c.reset();
       events::from_value( c, v );
       return c.match();
    }
 
-   bool test_parse( const std::string& v, events::compare& c )
+   [[nodiscard]] bool test_parse( const std::string& v, events::compare& c )
    {
       c.reset();
       events::from_string( c, v );

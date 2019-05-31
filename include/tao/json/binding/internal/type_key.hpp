@@ -21,7 +21,7 @@ namespace tao::json::binding::internal
    struct type_key< json::internal::string_t< Cs... >, V >
    {
       template< template< typename... > class Traits >
-      static std::string key()
+      [[nodiscard]] static std::string key()
       {
          return json::internal::string_t< Cs... >::as_string();
       }
@@ -37,7 +37,7 @@ namespace tao::json::binding::internal
    struct type_key< use_default_key, V >
    {
       template< template< typename... > class Traits >
-      static std::string key()
+      [[nodiscard]] static std::string key()
       {
          return Traits< V >::template default_key< Traits >::as_string();
       }

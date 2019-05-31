@@ -31,7 +31,7 @@ namespace tao::json
    }  // namespace internal
 
    template< template< typename... > class Traits >
-   basic_value< Traits > diff( const basic_value< Traits >& source, const basic_value< Traits >& destination, const pointer& path = pointer() )
+   [[nodiscard]] basic_value< Traits > diff( const basic_value< Traits >& source, const basic_value< Traits >& destination, const pointer& path = pointer() )
    {
       basic_value< Traits > result = empty_array;
       if( source == destination ) {

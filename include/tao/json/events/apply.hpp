@@ -10,7 +10,7 @@
 namespace tao::json::events
 {
    template< template< typename... > class... Transformer, typename Consumer >
-   transformer< ref< Consumer >, Transformer... > apply( Consumer& c ) noexcept( noexcept( transformer< ref< Consumer >, Transformer... >( c ) ) )
+   [[nodiscard]] transformer< ref< Consumer >, Transformer... > apply( Consumer& c ) noexcept( noexcept( transformer< ref< Consumer >, Transformer... >( c ) ) )
    {
       return transformer< ref< Consumer >, Transformer... >( c );
    }

@@ -27,7 +27,7 @@ namespace tao::json
       template<>
       struct token_to_index< 4 >
       {
-         static std::size_t convert( const std::string& key ) noexcept
+         [[nodiscard]] static std::size_t convert( const std::string& key ) noexcept
          {
             if( !key.empty() && key.size() <= 10 ) {
                if( key == "0" ) {
@@ -46,7 +46,7 @@ namespace tao::json
       template<>
       struct token_to_index< 8 >
       {
-         static std::size_t convert( const std::string& key ) noexcept
+         [[nodiscard]] static std::size_t convert( const std::string& key ) noexcept
          {
             if( !key.empty() && key.size() <= 20 ) {
                if( key == "0" ) {
@@ -75,27 +75,23 @@ namespace tao::json
       explicit token( const std::string& in_key )
          : m_index( internal::token_to_index<>::convert( in_key ) ),
            m_key( in_key )
-      {
-      }
+      {}
 
       explicit token( std::string&& in_key ) noexcept
          : m_index( internal::token_to_index<>::convert( in_key ) ),
            m_key( std::move( in_key ) )
-      {
-      }
+      {}
 
       explicit token( const std::size_t in_index )
          : m_index( in_index ),
            m_key( std::to_string( m_index ) )
-      {
-      }
+      {}
 
       token( const token& ) = default;
       token( token&& v ) noexcept
          : m_index( v.m_index ),
            m_key( std::move( v.m_key ) )
-      {
-      }
+      {}
 
       ~token() = default;
 
@@ -107,17 +103,17 @@ namespace tao::json
          return *this;
       }
 
-      bool has_index() const noexcept
+      [[nodiscard]] bool has_index() const noexcept
       {
          return m_index != std::string::npos;
       }
 
-      const std::string& key() const noexcept
+      [[nodiscard]] const std::string& key() const noexcept
       {
          return m_key;
       }
 
-      std::size_t index() const
+      [[nodiscard]] std::size_t index() const
       {
          if( !has_index() ) {
             throw std::invalid_argument( internal::format( "unable to resolve json pointer with array, token '", m_key, "' is not an index" ) );  // NOLINT
@@ -125,12 +121,12 @@ namespace tao::json
          return m_index;
       }
 
-      friend bool operator==( const token& lhs, const token& rhs ) noexcept
+      [[nodiscard]] friend bool operator==( const token& lhs, const token& rhs ) noexcept
       {
          return lhs.m_key == rhs.m_key;
       }
 
-      friend bool operator<( const token& lhs, const token& rhs ) noexcept
+      [[nodiscard]] friend bool operator<( const token& lhs, const token& rhs ) noexcept
       {
          return lhs.m_key < rhs.m_key;
       }
@@ -154,8 +150,7 @@ namespace tao::json
       template< typename Rule >
       struct pointer_action
          : public pegtl::nothing< Rule >
-      {
-      };
+      {};
 
       template<>
       struct pointer_action< pointer_zero >
@@ -220,8 +215,7 @@ namespace tao::json
 
       pointer( const std::initializer_list< token >& l )
          : std::vector< token >( l )
-      {
-      }
+      {}
 
       ~pointer() = default;
 
@@ -241,7 +235,7 @@ namespace tao::json
          return *this;
       }
 
-      explicit operator bool() const noexcept
+      [[nodiscard]] explicit operator bool() const noexcept
       {
          return !empty();
       }
@@ -254,7 +248,7 @@ namespace tao::json
          vector().pop_back();
       }
 
-      bool is_prefix_of( const pointer& other ) const noexcept
+      [[nodiscard]] bool is_prefix_of( const pointer& other ) const noexcept
       {
          if( other.size() >= size() ) {
             return std::equal( begin(), end(), other.begin() );
@@ -262,43 +256,43 @@ namespace tao::json
          return false;
       }
 
-      std::vector< token >& vector() noexcept
+      [[nodiscard]] std::vector< token >& vector() noexcept
       {
          return static_cast< std::vector< token >& >( *this );
       }
 
-      const std::vector< token >& vector() const noexcept
+      [[nodiscard]] const std::vector< token >& vector() const noexcept
       {
          return static_cast< const std::vector< token >& >( *this );
       }
    };
 
-   inline bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
+   [[nodiscard]] inline bool operator==( const pointer& lhs, const pointer& rhs ) noexcept
    {
       return lhs.vector() == rhs.vector();
    }
 
-   inline bool operator<( const pointer& lhs, const pointer& rhs ) noexcept
+   [[nodiscard]] inline bool operator<( const pointer& lhs, const pointer& rhs ) noexcept
    {
       return lhs.vector() < rhs.vector();
    }
 
-   inline bool operator!=( const pointer& lhs, const pointer& rhs ) noexcept
+   [[nodiscard]] inline bool operator!=( const pointer& lhs, const pointer& rhs ) noexcept
    {
       return !( lhs == rhs );
    }
 
-   inline bool operator>( const pointer& lhs, const pointer& rhs ) noexcept
+   [[nodiscard]] inline bool operator>( const pointer& lhs, const pointer& rhs ) noexcept
    {
       return rhs < lhs;
    }
 
-   inline bool operator<=( const pointer& lhs, const pointer& rhs ) noexcept
+   [[nodiscard]] inline bool operator<=( const pointer& lhs, const pointer& rhs ) noexcept
    {
       return !( rhs < lhs );
    }
 
-   inline bool operator>=( const pointer& lhs, const pointer& rhs ) noexcept
+   [[nodiscard]] inline bool operator>=( const pointer& lhs, const pointer& rhs ) noexcept
    {
       return !( lhs < rhs );
    }
@@ -321,21 +315,21 @@ namespace tao::json
       return lhs;
    }
 
-   inline pointer operator+( const pointer& p, const std::string& v )
+   [[nodiscard]] inline pointer operator+( const pointer& p, const std::string& v )
    {
       pointer nrv( p );
       nrv += v;
       return nrv;
    }
 
-   inline pointer operator+( const pointer& p, std::string&& v )
+   [[nodiscard]] inline pointer operator+( const pointer& p, std::string&& v )
    {
       pointer nrv( p );
       nrv += std::move( v );
       return nrv;
    }
 
-   inline pointer operator+( const pointer& p, const std::size_t i )
+   [[nodiscard]] inline pointer operator+( const pointer& p, const std::size_t i )
    {
       pointer nrv( p );
       nrv += i;
@@ -344,7 +338,7 @@ namespace tao::json
 
    namespace internal
    {
-      inline std::string tokens_to_string( std::vector< token >::const_iterator it, const std::vector< token >::const_iterator& end )
+      [[nodiscard]] inline std::string tokens_to_string( std::vector< token >::const_iterator it, const std::vector< token >::const_iterator& end )
       {
          std::string result;
          while( it != end ) {
@@ -366,13 +360,13 @@ namespace tao::json
          return result;
       }
 
-      inline std::runtime_error invalid_type( const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
+      [[nodiscard]] inline std::runtime_error invalid_type( const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
       {
          return std::runtime_error( internal::format( "unable to resolve JSON Pointer '", tokens_to_string( begin, end ), "' -- value type is neither 'object' nor 'array'" ) );
       }
 
       template< typename T >
-      T& pointer_at( T* v, const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
+      [[nodiscard]] T& pointer_at( T* v, const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
       {
          for( auto it = begin; it != end; ++it ) {
             switch( v->type() ) {
@@ -390,7 +384,7 @@ namespace tao::json
       }
 
       template< typename T >
-      T* pointer_find( T* v, const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
+      [[nodiscard]] T* pointer_find( T* v, const std::vector< token >::const_iterator& begin, const std::vector< token >::const_iterator& end )
       {
          for( auto it = begin; v && ( it != end ); ++it ) {
             switch( v->type() ) {
@@ -409,24 +403,24 @@ namespace tao::json
 
    }  // namespace internal
 
-   inline std::string to_string( const pointer& p )
+   [[nodiscard]] inline std::string to_string( const pointer& p )
    {
       return internal::tokens_to_string( p.begin(), p.end() );
    }
 
-   inline std::string to_string( pointer& p )
+   [[nodiscard]] inline std::string to_string( pointer& p )
    {
       return internal::tokens_to_string( p.begin(), p.end() );
    }
 
-   inline std::string to_string( pointer&& p )
+   [[nodiscard]] inline std::string to_string( pointer&& p )
    {
       return internal::tokens_to_string( p.begin(), p.end() );
    }
 
    inline namespace literals
    {
-      inline pointer operator"" _json_pointer( const char* data, const std::size_t size )
+      [[nodiscard]] inline pointer operator"" _json_pointer( const char* data, const std::size_t size )
       {
          return pointer( { data, size } );
       }

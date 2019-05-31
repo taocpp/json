@@ -23,8 +23,7 @@ namespace tao::json::events
    public:
       explicit virtual_ref( Consumer& r ) noexcept
          : m_r( r )
-      {
-      }
+      {}
 
    private:
       Consumer& m_r;

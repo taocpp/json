@@ -19,7 +19,7 @@ namespace tao::json::internal
    }
 
    template< typename T >
-   std::string hexdump( const T& v )
+   [[nodiscard]] std::string hexdump( const T& v )
    {
       std::ostringstream os;
       internal::hexdump( os, v );

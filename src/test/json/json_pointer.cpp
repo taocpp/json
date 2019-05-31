@@ -11,10 +11,10 @@ namespace tao::json
    void unit_test()  // NOLINT
    {
       // do not throw
-      "//"_json_pointer;
-      "/-"_json_pointer;
-      "/99999999999999999999999999999999999999"_json_pointer;
-      "/99999999999999999999"_json_pointer;
+      (void)"//"_json_pointer;
+      (void)"/-"_json_pointer;
+      (void)"/99999999999999999999999999999999999999"_json_pointer;
+      (void)"/99999999999999999999"_json_pointer;
 
       // throw
       TEST_THROWS( "x"_json_pointer );

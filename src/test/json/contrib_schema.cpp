@@ -17,7 +17,7 @@ namespace tao::json
 {
    unsigned tests = 0;
 
-   value parse_stream( const std::string& name )
+   [[nodiscard]] value parse_stream( const std::string& name )
    {
       std::ifstream ifs( name.c_str() );
       return from_stream( ifs, name, 192 );

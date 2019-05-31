@@ -47,7 +47,7 @@ namespace tao::json::events
       void operator=( const hash& ) = delete;
       void operator=( hash&& ) = delete;
 
-      std::string value() const
+      [[nodiscard]] std::string value() const
       {
          return m_digests.back()->get();
       }
@@ -126,8 +126,7 @@ namespace tao::json::events
       }
 
       void element()
-      {
-      }
+      {}
 
       void end_array( const std::size_t /*unused*/ = 0 )
       {

@@ -65,7 +65,7 @@ namespace tao::json::internal
       os.write( l, p - l );
    }
 
-   inline std::string escape( const std::string_view s )
+   [[nodiscard]] inline std::string escape( const std::string_view s )
    {
       std::ostringstream o;
       escape( o, s );

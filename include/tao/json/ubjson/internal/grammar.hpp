@@ -33,7 +33,7 @@ namespace tao::json
                    class Control,
                    typename Input,
                    typename Consumer >
-         static bool match( Input& in, Consumer& consumer )
+         [[nodiscard]] static bool match( Input& in, Consumer& consumer )
          {
             if( in.size( 2 ) && match_unsafe< A, M, Action, Control >( in, consumer ) ) {
                in.discard();
@@ -51,7 +51,7 @@ namespace tao::json
                    class Control,
                    typename Input,
                    typename Consumer >
-         static bool match_unsafe( Input& in, Consumer& consumer )
+         [[nodiscard]] static bool match_unsafe( Input& in, Consumer& consumer )
          {
             if( in.peek_char() == '-' ) {
                in.bump_in_this_line();
@@ -77,25 +77,25 @@ namespace tao::json
    namespace ubjson::internal
    {
       template< typename Input >
-      marker peek_marker( Input& in )
+      [[nodiscard]] marker peek_marker( Input& in )
       {
          return marker( json::internal::peek_char( in ) );
       }
 
       template< typename Input >
-      marker read_marker( Input& in )
+      [[nodiscard]] marker read_marker( Input& in )
       {
          return marker( json::internal::read_char( in ) );
       }
 
       template< typename Input >
-      marker read_marker_unsafe( Input& in )
+      [[nodiscard]] marker read_marker_unsafe( Input& in )
       {
          return marker( json::internal::read_char_unsafe( in ) );
       }
 
       template< typename Input >
-      std::int64_t read_size_read( Input& in )
+      [[nodiscard]] std::int64_t read_size_read( Input& in )
       {
          switch( const auto c = read_marker( in ) ) {
             case marker::INT8:
@@ -114,7 +114,7 @@ namespace tao::json
       }
 
       template< std::size_t L, typename Input >
-      std::size_t read_size( Input& in )
+      [[nodiscard]] std::size_t read_size( Input& in )
       {
          const auto s = read_size_read( in );
          if( s < 0 ) {
@@ -128,7 +128,7 @@ namespace tao::json
       }
 
       template< typename Result, typename Input >
-      Result read_char( Input& in )
+      [[nodiscard]] Result read_char( Input& in )
       {
          if( in.empty() || ( in.peek_uint8( 0 ) > 127 ) ) {
             throw pegtl::parse_error( "missing or invalid ubjson char", in );
@@ -139,7 +139,7 @@ namespace tao::json
       }
 
       template< std::size_t L, utf8_mode U, typename Result, typename Input >
-      Result read_string( Input& in )
+      [[nodiscard]] Result read_string( Input& in )
       {
          const auto size = read_size< L >( in );
          return json::internal::read_string< U, Result >( in, size );
@@ -158,7 +158,7 @@ namespace tao::json
                    class Control,
                    typename Input,
                    typename Consumer >
-         static bool match( Input& in, Consumer& consumer )
+         [[nodiscard]] static bool match( Input& in, Consumer& consumer )
          {
             if( !in.empty() ) {
                parse_unsafe( in, consumer );
@@ -378,13 +378,11 @@ namespace tao::json
       };
 
       struct nops : pegtl::star< pegtl::one< char( marker::NO_OP ) > >
-      {
-      };
+      {};
 
       template< std::size_t L, utf8_mode V >
       struct basic_grammar : pegtl::must< nops, data< L, V >, nops, pegtl::eof >
-      {
-      };
+      {};
 
       using grammar = basic_grammar< 1 << 24, utf8_mode::check >;
 

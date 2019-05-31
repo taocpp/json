@@ -9,12 +9,12 @@
 
 namespace tao::json
 {
-   double string2double( const std::string& s )
+   [[nodiscard]] double string2double( const std::string& s )
    {
       return json::from_string( s ).get_double();
    }
 
-   std::string double2string( const double v )
+   [[nodiscard]] std::string double2string( const double v )
    {
       return json::to_string( json::value( v ) );
    }

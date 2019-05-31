@@ -15,7 +15,7 @@
 namespace tao::json::jaxn
 {
    template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-   basic_value< Traits > basic_from_string( Ts&&... ts )
+   [[nodiscard]] basic_value< Traits > basic_from_string( Ts&&... ts )
    {
       json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
       events::from_string( consumer, std::forward< Ts >( ts )... );
@@ -23,14 +23,14 @@ namespace tao::json::jaxn
    }
 
    template< template< typename... > class... Transformers, typename... Ts >
-   value from_string( Ts&&... ts )
+   [[nodiscard]] value from_string( Ts&&... ts )
    {
       return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
    }
 
    inline namespace literals
    {
-      inline value operator"" _jaxn( const char* data, const std::size_t size )
+      [[nodiscard]] inline value operator"" _jaxn( const char* data, const std::size_t size )
       {
          return jaxn::from_string( data, size, "literal" );
       }

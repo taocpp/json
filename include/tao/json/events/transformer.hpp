@@ -54,8 +54,7 @@ namespace tao::json
       template< typename Consumer, template< typename... > class Head, template< typename... > class... Tail >
       struct transformer< Consumer, Head, Tail... >
          : check_transformer< typename transformer< Consumer, Tail... >::type, Head >
-      {
-      };
+      {};
 
    }  // namespace internal
 

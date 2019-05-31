@@ -20,19 +20,19 @@ namespace tao::json
       struct unique_ptr_traits
       {
          template< template< typename... > class Traits, typename... With >
-         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
+         [[nodiscard]] static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_first_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
          {
             return std::unique_ptr< U >( new T( v, with... ) );
          }
 
          template< template< typename... > class Traits, typename... With >
-         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
+         [[nodiscard]] static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_second_ptr_as< T, Traits, With... > || use_fourth_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
          {
             return std::unique_ptr< U >( new T( Traits< T >::as( v, with... ) ) );
          }
 
          template< template< typename... > class Traits, typename... With >
-         static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
+         [[nodiscard]] static auto as( const basic_value< Traits >& v, With&... with ) -> std::enable_if_t< use_third_ptr_as< T, Traits, With... >, std::unique_ptr< U > >
          {
             std::unique_ptr< U > t( new T() );
             Traits< T >::to( v, static_cast< T& >( *t ), with... );
@@ -40,13 +40,13 @@ namespace tao::json
          }
 
          template< template< typename... > class Traits, typename Producer >
-         static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer > || use_third_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
+         [[nodiscard]] static auto consume( Producer& parser ) -> std::enable_if_t< use_first_ptr_consume< T, Traits, Producer > || use_third_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
          {
             return Traits< T >::template consume< Traits >( parser );
          }
 
          template< template< typename... > class Traits, typename Producer >
-         static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
+         [[nodiscard]] static auto consume( Producer& parser ) -> std::enable_if_t< use_second_ptr_consume< T, Traits, Producer >, std::unique_ptr< U > >
          {
             std::unique_ptr< U > t( new T() );
             Traits< T >::template consume< Traits >( parser, static_cast< T& >( *t ) );

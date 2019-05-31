@@ -56,7 +56,7 @@ namespace tao::json::internal
          using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
 
          template< typename Input >
-         static bool match( Input& in )
+         [[nodiscard]] static bool match( Input& in )
          {
             bool result = false;
 
@@ -124,7 +124,7 @@ namespace tao::json::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match_zero( Input& in, States&&... st )
+         [[nodiscard]] static bool match_zero( Input& in, States&&... st )
          {
             if( in.size( 2 ) > 1 ) {
                switch( in.peek_char( 1 ) ) {
@@ -158,7 +158,7 @@ namespace tao::json::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match_number( Input& in, States&&... st )
+         [[nodiscard]] static bool match_number( Input& in, States&&... st )
          {
             if( in.peek_char() == '0' ) {
                if( !match_zero< NEG, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
@@ -175,7 +175,7 @@ namespace tao::json::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match_impl( Input& in, States&&... st )
+         [[nodiscard]] static bool match_impl( Input& in, States&&... st )
          {
             switch( in.peek_char() ) {
             case '"': return Control< string >::template match< A, M, Action, Control >( in, st... );
@@ -203,7 +203,7 @@ namespace tao::json::internal
                    template< typename... > class Control,
                    typename Input,
                    typename... States >
-         static bool match( Input& in, States&&... st )
+         [[nodiscard]] static bool match( Input& in, States&&... st )
          {
             if( in.size( 2 ) && match_impl< A, M, Action, Control >( in, st... ) ) {
                in.discard();

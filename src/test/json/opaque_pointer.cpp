@@ -95,13 +95,13 @@ namespace tao::json
       };
 
       template< template< typename... > class Traits, typename Consumer >
-      array_t< Traits, Consumer > array( Consumer& c ) noexcept( noexcept( array_t< Traits, Consumer >( c ) ) )
+      [[nodiscard]] array_t< Traits, Consumer > array( Consumer& c ) noexcept( noexcept( array_t< Traits, Consumer >( c ) ) )
       {
          return array_t< Traits, Consumer >( c );
       }
 
       template< template< typename... > class Traits, typename Consumer >
-      object_t< Traits, Consumer > object( Consumer& c ) noexcept( noexcept( object_t< Traits, Consumer >( c ) ) )
+      [[nodiscard]] object_t< Traits, Consumer > object( Consumer& c ) noexcept( noexcept( object_t< Traits, Consumer >( c ) ) )
       {
          return object_t< Traits, Consumer >( c );
       }

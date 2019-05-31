@@ -18,8 +18,7 @@ namespace tao::json::events
    public:
       explicit ref( Consumer& r ) noexcept
          : r_( r )
-      {
-      }
+      {}
 
       void null() noexcept( noexcept( r_.null() ) )
       {

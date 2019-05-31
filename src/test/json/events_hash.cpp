@@ -11,21 +11,21 @@
 
 namespace tao::json
 {
-   std::string hash_value( const value& v )
+   [[nodiscard]] std::string hash_value( const value& v )
    {
       events::hash h;
       events::from_value( h, v );
       return h.value();
    }
 
-   std::string hash_parse( const std::string& v )
+   [[nodiscard]] std::string hash_parse( const std::string& v )
    {
       events::hash h;
       events::from_string( h, v );
       return h.value();
    }
 
-   bool test( const value& v, const std::string& s )
+   [[nodiscard]] bool test( const value& v, const std::string& s )
    {
       return hash_value( v ) == hash_parse( s );
    }

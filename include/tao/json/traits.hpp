@@ -47,8 +47,7 @@ namespace tao::json
    namespace internal
    {
       struct empty_base
-      {
-      };
+      {};
 
    }  // namespace internal
 
@@ -68,7 +67,7 @@ namespace tao::json
       static constexpr const bool enable_implicit_constructor = true;
 
       template< template< typename... > class Traits >
-      static null_t as( const basic_value< Traits >& v ) noexcept
+      [[nodiscard]] static null_t as( const basic_value< Traits >& v ) noexcept
       {
          v.validate_json_type( type::NULL_ );
          return tao::json::null;
@@ -87,19 +86,19 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
       {
          return lhs.skip_value_ptr().is_null();
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
       {
          return lhs.skip_value_ptr().type() < type::NULL_;
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, null_t /*unused*/ ) noexcept
       {
          return lhs.skip_value_ptr().type() > type::NULL_;
       }
@@ -109,7 +108,7 @@ namespace tao::json
    struct traits< bool >
    {
       template< template< typename... > class Traits >
-      static bool as( const basic_value< Traits >& v )
+      [[nodiscard]] static bool as( const basic_value< Traits >& v )
       {
          return v.get_boolean();
       }
@@ -121,7 +120,7 @@ namespace tao::json
       }
 
       template< template< typename... > class, typename Producer >
-      static bool consume( Producer& parser )
+      [[nodiscard]] static bool consume( Producer& parser )
       {
          return parser.boolean();
       }
@@ -133,21 +132,21 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const bool rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const bool rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return p.is_boolean() && ( p.unsafe_get_boolean() == rhs );
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return ( p.type() < type::BOOLEAN ) || ( p.is_boolean() && ( p.unsafe_get_boolean() < rhs ) );
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return ( p.type() > type::BOOLEAN ) || ( p.is_boolean() && ( p.unsafe_get_boolean() > rhs ) );
@@ -183,7 +182,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -197,7 +196,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -210,7 +209,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, empty_string_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -236,7 +235,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -250,7 +249,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -263,7 +262,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, empty_binary_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -289,20 +288,20 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return p.is_array() && p.unsafe_get_array().empty();
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
       {
          return lhs.skip_value_ptr().type() < type::ARRAY;
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return ( p.type() > type::ARRAY ) || ( p.is_array() && !p.unsafe_get_array().empty() );
@@ -321,20 +320,20 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return p.is_object() && p.unsafe_get_object().empty();
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
       {
          return lhs.skip_value_ptr().type() < type::OBJECT;
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          return ( p.type() > type::OBJECT ) || ( p.is_object() && !p.unsafe_get_object().empty() );
@@ -345,7 +344,7 @@ namespace tao::json
    struct traits< std::string >
    {
       template< template< typename... > class Traits >
-      static std::string as( const basic_value< Traits >& v )
+      [[nodiscard]] static std::string as( const basic_value< Traits >& v )
       {
          switch( v.type() ) {
             case type::STRING:
@@ -370,7 +369,7 @@ namespace tao::json
       }
 
       template< template< typename... > class, typename Producer >
-      static std::string consume( Producer& parser )
+      [[nodiscard]] static std::string consume( Producer& parser )
       {
          return parser.string();
       }
@@ -388,7 +387,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -402,7 +401,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -416,7 +415,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const std::string& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -434,7 +433,7 @@ namespace tao::json
    struct traits< std::string_view >
    {
       template< template< typename... > class Traits >
-      static std::string_view as( const basic_value< Traits >& v )
+      [[nodiscard]] static std::string_view as( const basic_value< Traits >& v )
       {
          switch( v.type() ) {
             case type::STRING:
@@ -459,7 +458,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -473,7 +472,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -487,7 +486,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const std::string_view rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -505,7 +504,7 @@ namespace tao::json
    struct traits< const char* >
    {
       template< template< typename... > class Traits >
-      static const char* as( const basic_value< Traits >& v )
+      [[nodiscard]] static const char* as( const basic_value< Traits >& v )
       {
          return v.get_string().c_str();  // String views might not be '\0'-terminated.
       }
@@ -517,7 +516,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const char* rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const char* rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -531,7 +530,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -545,7 +544,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const char* rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -563,7 +562,7 @@ namespace tao::json
    struct traits< const std::string& >
    {
       template< template< typename... > class Traits >
-      static const std::string& as( const basic_value< Traits >& v )
+      [[nodiscard]] static const std::string& as( const basic_value< Traits >& v )
       {
          return v.get_string();
       }
@@ -573,7 +572,7 @@ namespace tao::json
    struct traits< std::vector< std::byte > >
    {
       template< template< typename... > class Traits >
-      static std::vector< std::byte > as( const basic_value< Traits >& v )
+      [[nodiscard]] static std::vector< std::byte > as( const basic_value< Traits >& v )
       {
          switch( v.type() ) {
             case type::BINARY:
@@ -600,7 +599,7 @@ namespace tao::json
       }
 
       template< template< typename... > class, typename Producer >
-      static std::vector< std::byte > consume( Producer& parser )
+      [[nodiscard]] static std::vector< std::byte > consume( Producer& parser )
       {
          return parser.binary();
       }
@@ -618,7 +617,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -632,7 +631,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -646,7 +645,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const std::vector< std::byte >& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -664,7 +663,7 @@ namespace tao::json
    struct traits< tao::binary_view >
    {
       template< template< typename... > class Traits >
-      static tao::binary_view as( const basic_value< Traits >& v )
+      [[nodiscard]] static tao::binary_view as( const basic_value< Traits >& v )
       {
          switch( v.type() ) {
             case type::BINARY:
@@ -689,7 +688,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -703,7 +702,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -717,7 +716,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const tao::binary_view rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
@@ -735,7 +734,7 @@ namespace tao::json
    struct traits< const std::vector< std::byte >& >
    {
       template< template< typename... > class Traits >
-      static const std::vector< std::byte >& as( const basic_value< Traits >& v )
+      [[nodiscard]] static const std::vector< std::byte >& as( const basic_value< Traits >& v )
       {
          return v.get_binary();
       }
@@ -840,21 +839,21 @@ namespace tao::json
       }
 
       template< template< typename... > class TraitsLL >
-      static bool equal( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
       {
          assert( rhs );
          return lhs == *rhs;
       }
 
       template< template< typename... > class TraitsLL >
-      static bool less_than( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
       {
          assert( rhs );
          return lhs < *rhs;
       }
 
       template< template< typename... > class TraitsLL >
-      static bool greater_than( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< TraitsLL >& lhs, const basic_value< Traits >* rhs ) noexcept
       {
          assert( rhs );
          return lhs > *rhs;
@@ -874,13 +873,13 @@ namespace tao::json
       using default_key = typename Traits< T >::template default_key< Traits >;
 
       template< template< typename... > class Traits >
-      static bool is_nothing( const std::optional< T >& o )
+      [[nodiscard]] static bool is_nothing( const std::optional< T >& o )
       {
          return ( !bool( o ) ) || internal::is_nothing< Traits >( *o );  // TODO: Only query o?
       }
 
       template< template< typename... > class Traits >
-      static std::optional< T > as( const basic_value< Traits >& v )
+      [[nodiscard]] static std::optional< T > as( const basic_value< Traits >& v )
       {
          if( v == null ) {
             return std::nullopt;
@@ -900,7 +899,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits, typename Producer >
-      static std::optional< T > consume( Producer& parser )
+      [[nodiscard]] static std::optional< T > consume( Producer& parser )
       {
          if( parser.null() ) {
             return std::nullopt;
@@ -920,19 +919,19 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static bool equal( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
       {
          return rhs ? ( lhs == *rhs ) : ( lhs == null );
       }
 
       template< template< typename... > class Traits >
-      static bool less_than( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
       {
          return rhs ? ( lhs < *rhs ) : ( lhs < null );
       }
 
       template< template< typename... > class Traits >
-      static bool greater_than( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const std::optional< T >& rhs ) noexcept
       {
          return rhs ? ( lhs > *rhs ) : ( lhs > null );
       }

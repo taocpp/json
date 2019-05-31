@@ -52,7 +52,7 @@ namespace tao::json::internal
    }
 
    template< typename... Ts >
-   std::string format( const Ts&... ts )
+   [[nodiscard]] std::string format( const Ts&... ts )
    {
       std::ostringstream oss;
       format_to( oss, ts... );

@@ -34,14 +34,12 @@ namespace tao::json::test
 
       event_data( const event_type in_t )  // NOLINT
          : t( in_t )
-      {
-      }
+      {}
 
       event_data( const bool in_b )  // NOLINT
          : t( event_type::BOOLEAN ),
            b( in_b )
-      {
-      }
+      {}
 
       event_type t{ event_type::NULL_ };
 
@@ -53,28 +51,28 @@ namespace tao::json::test
       double d = 0.0;
    };
 
-   inline event_data int64( const std::int64_t i )
+   [[nodiscard]] inline event_data int64( const std::int64_t i )
    {
       event_data ev( event_type::SIGNED );
       ev.i = i;
       return ev;
    }
 
-   inline event_data uint64( const std::uint64_t u )
+   [[nodiscard]] inline event_data uint64( const std::uint64_t u )
    {
       event_data ev( event_type::UNSIGNED );
       ev.u = u;
       return ev;
    }
 
-   inline event_data string( const std::string& s )
+   [[nodiscard]] inline event_data string( const std::string& s )
    {
       event_data ev( event_type::STRING );
       ev.s = s;
       return ev;
    }
 
-   inline event_data key( const std::string& s )
+   [[nodiscard]] inline event_data key( const std::string& s )
    {
       event_data ev( event_type::KEY );
       ev.s = s;
@@ -86,8 +84,7 @@ namespace tao::json::test
    public:
       consumer( std::initializer_list< event_data > events )
          : m_e( events )
-      {
-      }
+      {}
 
       consumer( consumer&& ) = delete;
       consumer( const consumer& ) = delete;

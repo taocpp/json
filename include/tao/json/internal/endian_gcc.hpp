@@ -17,7 +17,7 @@ namespace tao::json::internal
    struct to_and_from_be
    {
       template< typename T >
-      static T convert( const T n ) noexcept
+      [[nodiscard]] static T convert( const T n ) noexcept
       {
          return n;
       }
@@ -29,12 +29,12 @@ namespace tao::json::internal
    template<>
    struct to_and_from_le< 1 >
    {
-      static std::uint8_t convert( const std::uint8_t n ) noexcept
+      [[nodiscard]] static std::uint8_t convert( const std::uint8_t n ) noexcept
       {
          return n;
       }
 
-      static std::int8_t convert( const std::int8_t n ) noexcept
+      [[nodiscard]] static std::int8_t convert( const std::int8_t n ) noexcept
       {
          return n;
       }
@@ -43,12 +43,12 @@ namespace tao::json::internal
    template<>
    struct to_and_from_le< 2 >
    {
-      static std::int16_t convert( const std::int16_t n ) noexcept
+      [[nodiscard]] static std::int16_t convert( const std::int16_t n ) noexcept
       {
          return __builtin_bswap16( n );
       }
 
-      static std::uint16_t convert( const std::uint16_t n ) noexcept
+      [[nodiscard]] static std::uint16_t convert( const std::uint16_t n ) noexcept
       {
          return __builtin_bswap16( n );
       }
@@ -57,7 +57,7 @@ namespace tao::json::internal
    template<>
    struct to_and_from_le< 4 >
    {
-      static float convert( float n ) noexcept
+      [[nodiscard]] static float convert( float n ) noexcept
       {
          std::uint32_t u;
          std::memcpy( &u, &n, 4 );
@@ -66,12 +66,12 @@ namespace tao::json::internal
          return n;
       }
 
-      static std::int32_t convert( const std::int32_t n ) noexcept
+      [[nodiscard]] static std::int32_t convert( const std::int32_t n ) noexcept
       {
          return __builtin_bswap32( n );
       }
 
-      static std::uint32_t convert( const std::uint32_t n ) noexcept
+      [[nodiscard]] static std::uint32_t convert( const std::uint32_t n ) noexcept
       {
          return __builtin_bswap32( n );
       }
@@ -80,7 +80,7 @@ namespace tao::json::internal
    template<>
    struct to_and_from_le< 8 >
    {
-      static double convert( double n ) noexcept
+      [[nodiscard]] static double convert( double n ) noexcept
       {
          std::uint64_t u;
          std::memcpy( &u, &n, 8 );
@@ -89,12 +89,12 @@ namespace tao::json::internal
          return n;
       }
 
-      static std::int64_t convert( const std::int64_t n ) noexcept
+      [[nodiscard]] static std::int64_t convert( const std::int64_t n ) noexcept
       {
          return __builtin_bswap64( n );
       }
 
-      static std::uint64_t convert( const std::uint64_t n ) noexcept
+      [[nodiscard]] static std::uint64_t convert( const std::uint64_t n ) noexcept
       {
          return __builtin_bswap64( n );
       }
@@ -106,7 +106,7 @@ namespace tao::json::internal
    struct to_and_from_le
    {
       template< typename T >
-      static T convert( const T n ) noexcept
+      [[nodiscard]] static T convert( const T n ) noexcept
       {
          return n;
       }
@@ -118,12 +118,12 @@ namespace tao::json::internal
    template<>
    struct to_and_from_be< 1 >
    {
-      static std::int8_t convert( const std::int8_t n ) noexcept
+      [[nodiscard]] static std::int8_t convert( const std::int8_t n ) noexcept
       {
          return n;
       }
 
-      static std::uint8_t convert( const std::uint8_t n ) noexcept
+      [[nodiscard]] static std::uint8_t convert( const std::uint8_t n ) noexcept
       {
          return n;
       }
@@ -132,12 +132,12 @@ namespace tao::json::internal
    template<>
    struct to_and_from_be< 2 >
    {
-      static std::int16_t convert( const std::int16_t n ) noexcept
+      [[nodiscard]] static std::int16_t convert( const std::int16_t n ) noexcept
       {
          return __builtin_bswap16( n );
       }
 
-      static std::uint16_t convert( const std::uint16_t n ) noexcept
+      [[nodiscard]] static std::uint16_t convert( const std::uint16_t n ) noexcept
       {
          return __builtin_bswap16( n );
       }
@@ -146,7 +146,7 @@ namespace tao::json::internal
    template<>
    struct to_and_from_be< 4 >
    {
-      static float convert( float n ) noexcept
+      [[nodiscard]] static float convert( float n ) noexcept
       {
          std::uint32_t u;
          std::memcpy( &u, &n, 4 );
@@ -155,12 +155,12 @@ namespace tao::json::internal
          return n;
       }
 
-      static std::int32_t convert( const std::int32_t n ) noexcept
+      [[nodiscard]] static std::int32_t convert( const std::int32_t n ) noexcept
       {
          return __builtin_bswap32( n );
       }
 
-      static std::uint32_t convert( const std::uint32_t n ) noexcept
+      [[nodiscard]] static std::uint32_t convert( const std::uint32_t n ) noexcept
       {
          return __builtin_bswap32( n );
       }
@@ -169,7 +169,7 @@ namespace tao::json::internal
    template<>
    struct to_and_from_be< 8 >
    {
-      static double convert( double n ) noexcept
+      [[nodiscard]] static double convert( double n ) noexcept
       {
          std::uint64_t u;
          std::memcpy( &u, &n, 8 );
@@ -178,12 +178,12 @@ namespace tao::json::internal
          return n;
       }
 
-      static std::uint64_t convert( const std::uint64_t n ) noexcept
+      [[nodiscard]] static std::uint64_t convert( const std::uint64_t n ) noexcept
       {
          return __builtin_bswap64( n );
       }
 
-      static std::int64_t convert( const std::int64_t n ) noexcept
+      [[nodiscard]] static std::int64_t convert( const std::int64_t n ) noexcept
       {
          return __builtin_bswap64( n );
       }

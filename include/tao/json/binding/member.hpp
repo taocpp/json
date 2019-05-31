@@ -21,7 +21,7 @@ namespace tao::json::binding
       static constexpr member_kind kind = R;
 
       template< template< typename... > class Traits, typename C >
-      static bool is_nothing( const C& x )
+      [[nodiscard]] static bool is_nothing( const C& x )
       {
          return json::internal::is_nothing< Traits >( element< P >::read( x ) );
       }

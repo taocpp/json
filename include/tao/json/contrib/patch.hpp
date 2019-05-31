@@ -87,14 +87,14 @@ namespace tao::json
    }
 
    template< template< typename... > class Traits >
-   basic_value< Traits > patch( basic_value< Traits > v, const basic_value< Traits >& patch )
+   [[nodiscard]] basic_value< Traits > patch( basic_value< Traits > v, const basic_value< Traits >& patch )
    {
       patch_inplace( v, patch );
       return v;
    }
 
    template< template< typename... > class Traits >
-   basic_value< Traits > patch( basic_value< Traits > v, basic_value< Traits >&& patch )
+   [[nodiscard]] basic_value< Traits > patch( basic_value< Traits > v, basic_value< Traits >&& patch )
    {
       patch_inplace( v, std::move( patch ) );
       return v;

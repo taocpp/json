@@ -13,7 +13,7 @@ namespace tao::json
 {
    namespace internal
    {
-      constexpr char unhex_char( const char c ) noexcept
+      [[nodiscard]] constexpr char unhex_char( const char c ) noexcept
       {
          return ( c < 'A' ) ? ( c - '0' ) : ( ( c < 'a' ) ? ( c - 'A' + 10 ) : ( c - 'a' + 10 ) );
       }
@@ -27,7 +27,7 @@ namespace tao::json
       template< typename T, typename V, V... Vs >
       struct unhex_helper< T, vlist< V, Vs... > >
       {
-         static constexpr T unhex()
+         [[nodiscard]] static constexpr T unhex()
          {
             return T{ Vs... };
          }
@@ -60,14 +60,14 @@ namespace tao::json
       };
 
       template< typename T, typename V, char C >
-      constexpr T unhex()
+      [[nodiscard]] constexpr T unhex()
       {
          static_assert( pegtl::internal::always_false< T >::value, "not a hex literal" );
          return T{};
       }
 
       template< typename T, typename V, char C0, char C1, char... Cs >
-      constexpr T unhex()
+      [[nodiscard]] constexpr T unhex()
       {
          static_assert( C0 == '0', "not a hex literal" );
          static_assert( C1 == 'x' || C1 == 'X', "not a hex literal" );
@@ -75,7 +75,7 @@ namespace tao::json
       }
 
       template< typename T, char... Cs >
-      constexpr T unhex()
+      [[nodiscard]] constexpr T unhex()
       {
          return unhex< T, typename T::value_type, Cs... >();
       }
@@ -85,7 +85,7 @@ namespace tao::json
    inline namespace literals
    {
       template< char... Cs >
-      std::vector< std::byte > operator"" _binary()
+      [[nodiscard]] std::vector< std::byte > operator"" _binary()
       {
          return internal::unhex< std::vector< std::byte >, Cs... >();
       }

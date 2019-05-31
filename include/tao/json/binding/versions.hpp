@@ -19,8 +19,7 @@ namespace tao::json::binding
    template< typename V >
    struct versions< V >
       : public V
-   {
-   };
+   {};
 
    template< typename V, typename... Vs >
    struct versions< V, Vs... >
@@ -40,7 +39,7 @@ namespace tao::json::binding
       }
 
       template< template< typename... > class Traits, typename C >
-      static std::exception_ptr first_to( const basic_value< Traits >& v, C& x ) noexcept
+      [[nodiscard]] static std::exception_ptr first_to( const basic_value< Traits >& v, C& x ) noexcept
       {
          try {
             if constexpr( json::internal::has_to< V, basic_value< Traits >, C > ) {
@@ -60,7 +59,7 @@ namespace tao::json::binding
       }
 
       template< typename A, template< typename... > class Traits, typename C >
-      static bool later_to( const basic_value< Traits >& v, C& x ) noexcept
+      [[nodiscard]] static bool later_to( const basic_value< Traits >& v, C& x ) noexcept
       {
          try {
             if constexpr( json::internal::has_to< A, basic_value< Traits >, C > ) {
@@ -88,7 +87,7 @@ namespace tao::json::binding
       }
 
       template< template< typename... > class Traits, typename Producer, typename C >
-      static std::exception_ptr first_consume( Producer& parser, C& x )
+      [[nodiscard]] static std::exception_ptr first_consume( Producer& parser, C& x )
       {
          try {
             auto m = parser.mark();
@@ -102,7 +101,7 @@ namespace tao::json::binding
       }
 
       template< typename A, template< typename... > class Traits, typename Producer, typename C >
-      static bool later_consume( Producer& parser, C& x )
+      [[nodiscard]] static bool later_consume( Producer& parser, C& x )
       {
          try {
             auto m = parser.mark();

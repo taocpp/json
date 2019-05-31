@@ -24,7 +24,7 @@ namespace tao::json::binding
    struct element_b
    {
       template< typename C >
-      static bool read( const C& /*unused*/ )
+      [[nodiscard]] static bool read( const C& /*unused*/ )
       {
          return V;
       }
@@ -58,7 +58,7 @@ namespace tao::json::binding
    struct element_i
    {
       template< typename C >
-      static std::int64_t read( const C& /*unused*/ )
+      [[nodiscard]] static std::int64_t read( const C& /*unused*/ )
       {
          return V;
       }
@@ -92,7 +92,7 @@ namespace tao::json::binding
    struct element_u
    {
       template< typename C >
-      static std::uint64_t read( const C& /*unused*/ )
+      [[nodiscard]] static std::uint64_t read( const C& /*unused*/ )
       {
          return V;
       }
@@ -131,7 +131,7 @@ namespace tao::json::binding
       using string = json::internal::string_t< Cs... >;
 
       template< typename C >
-      static std::string_view read( const C& /*unused*/ )
+      [[nodiscard]] static std::string_view read( const C& /*unused*/ )
       {
          return string::as_string_view();
       }
@@ -171,7 +171,7 @@ namespace tao::json::binding
       static constexpr member_kind kind = R;
 
       template< template< typename... > class Traits, typename T >
-      static bool is_nothing( const T& /*unused*/ )
+      [[nodiscard]] static bool is_nothing( const T& /*unused*/ )
       {
          return false;
       }
@@ -185,7 +185,7 @@ namespace tao::json::binding
       static constexpr member_kind kind = R;
 
       template< template< typename... > class Traits, typename T >
-      static bool is_nothing( const T& /*unused*/ )
+      [[nodiscard]] static bool is_nothing( const T& /*unused*/ )
       {
          return false;
       }
@@ -199,7 +199,7 @@ namespace tao::json::binding
       static constexpr member_kind kind = R;
 
       template< template< typename... > class Traits, typename T >
-      static bool is_nothing( const T& /*unused*/ )
+      [[nodiscard]] static bool is_nothing( const T& /*unused*/ )
       {
          return false;
       }
@@ -213,7 +213,7 @@ namespace tao::json::binding
       static constexpr member_kind kind = R;
 
       template< template< typename... > class Traits, typename T >
-      static bool is_nothing( const T& /*unused*/ )
+      [[nodiscard]] static bool is_nothing( const T& /*unused*/ )
       {
          return false;
       }

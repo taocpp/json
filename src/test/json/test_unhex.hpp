@@ -9,7 +9,7 @@
 
 namespace tao::json
 {
-   inline char test_unhex( const char c )
+   [[nodiscard]] inline char test_unhex( const char c )
    {
       if( ( '0' <= c ) && ( c <= '9' ) ) {
          return c - '0';
@@ -26,7 +26,7 @@ namespace tao::json
       // LCOV_EXCL_STOP
    }
 
-   inline std::string test_unhex( const std::string& data )
+   [[nodiscard]] inline std::string test_unhex( const std::string& data )
    {
       assert( !( data.size() & 1 ) );
       std::string result;

@@ -57,7 +57,7 @@ namespace tao::json
    do {                                                            \
       std::cout << "TEST_THROWS( " #__VA_ARGS__ " )" << std::endl; \
       try {                                                        \
-         __VA_ARGS__;                                              \
+         (void)( __VA_ARGS__ );                                    \
          std::cerr << "json: unit test [ "                         \
                    << ( #__VA_ARGS__ )                             \
                    << " ] did not throw in line [ "                \
