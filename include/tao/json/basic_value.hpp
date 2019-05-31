@@ -408,7 +408,7 @@ namespace tao::json
          return m_union.p;
       }
 
-      [[nodiscard]] const internal::opaque_ptr_t unsafe_get_opaque_ptr() const noexcept
+      [[nodiscard]] internal::opaque_ptr_t unsafe_get_opaque_ptr() const noexcept
       {
          return m_union.q;
       }
@@ -449,97 +449,97 @@ namespace tao::json
          return unsafe_get_double();
       }
 
-      std::string& get_string()
+      [[nodiscard]] std::string& get_string()
       {
          validate_json_type( json::type::STRING );
          return unsafe_get_string();
       }
 
-      const std::string& get_string() const
+      [[nodiscard]] const std::string& get_string() const
       {
          validate_json_type( json::type::STRING );
          return unsafe_get_string();
       }
 
-      std::string_view get_string_view() const
+      [[nodiscard]] std::string_view get_string_view() const
       {
          validate_json_type( json::type::STRING_VIEW );
          return unsafe_get_string_view();
       }
 
-      std::string_view get_string_type() const noexcept
+      [[nodiscard]] std::string_view get_string_type() const noexcept
       {
          return ( m_type == json::type::STRING_VIEW ) ? m_union.sv : get_string();
       }
 
-      binary& get_binary()
+      [[nodiscard]] binary& get_binary()
       {
          validate_json_type( json::type::BINARY );
          return unsafe_get_binary();
       }
 
-      const binary& get_binary() const
+      [[nodiscard]] const binary& get_binary() const
       {
          validate_json_type( json::type::BINARY );
          return unsafe_get_binary();
       }
 
-      tao::binary_view get_binary_view() const
+      [[nodiscard]] tao::binary_view get_binary_view() const
       {
          validate_json_type( json::type::BINARY_VIEW );
          return unsafe_get_binary_view();
       }
 
-      tao::binary_view get_binary_type() const noexcept
+      [[nodiscard]] tao::binary_view get_binary_type() const noexcept
       {
          return ( m_type == json::type::BINARY_VIEW ) ? m_union.xv : get_binary();
       }
 
-      array_t& get_array()
+      [[nodiscard]] array_t& get_array()
       {
          validate_json_type( json::type::ARRAY );
          return unsafe_get_array();
       }
 
-      const array_t& get_array() const
+      [[nodiscard]] const array_t& get_array() const
       {
          validate_json_type( json::type::ARRAY );
          return unsafe_get_array();
       }
 
-      object_t& get_object()
+      [[nodiscard]] object_t& get_object()
       {
          validate_json_type( json::type::OBJECT );
          return unsafe_get_object();
       }
 
-      const object_t& get_object() const
+      [[nodiscard]] const object_t& get_object() const
       {
          validate_json_type( json::type::OBJECT );
          return unsafe_get_object();
       }
 
-      const basic_value* get_value_ptr() const
+      [[nodiscard]] const basic_value* get_value_ptr() const
       {
          validate_json_type( json::type::VALUE_PTR );
          return unsafe_get_value_ptr();
       }
 
-      const internal::opaque_ptr_t get_opaque_ptr() const noexcept
+      [[nodiscard]] internal::opaque_ptr_t get_opaque_ptr() const noexcept
       {
          validate_json_type( json::type::OPAQUE_PTR );
          return unsafe_get_opaque_ptr();
       }
 
       template< json::type E >
-      decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) get()
+      [[nodiscard]] decltype( internal::get_by_enum< E >::get( std::declval< internal::value_union< basic_value >& >() ) ) get()
       {
          validate_json_type( E );
          return internal::get_by_enum< E >::get( m_union );
       }
 
       template< json::type E >
-      decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value >& >() ) ) get() const
+      [[nodiscard]] decltype( internal::get_by_enum< E >::get( std::declval< const internal::value_union< basic_value >& >() ) ) get() const
       {
          validate_json_type( E );
          return internal::get_by_enum< E >::get( m_union );
@@ -1014,7 +1014,7 @@ namespace tao::json
          unsafe_assign( l );
       }
 
-      const basic_value& skip_value_ptr() const noexcept
+      [[nodiscard]] const basic_value& skip_value_ptr() const noexcept
       {
          const basic_value* p = this;
          while( p->is_value_ptr() ) {
@@ -1024,83 +1024,83 @@ namespace tao::json
          return *p;
       }
 
-      basic_value* unsafe_find( const std::size_t index ) noexcept
+      [[nodiscard]] basic_value* unsafe_find( const std::size_t index ) noexcept
       {
          return ( index < m_union.a.size() ) ? ( m_union.a.data() + index ) : nullptr;
       }
 
-      const basic_value* unsafe_find( const std::size_t index ) const noexcept
+      [[nodiscard]] const basic_value* unsafe_find( const std::size_t index ) const noexcept
       {
          return ( index < m_union.a.size() ) ? ( m_union.a.data() + index ) : nullptr;
       }
 
-      basic_value* find( const std::size_t index )
+      [[nodiscard]] basic_value* find( const std::size_t index )
       {
          validate_json_type( json::type::ARRAY );
          return unsafe_find( index );
       }
 
-      const basic_value* find( const std::size_t index ) const
+      [[nodiscard]] const basic_value* find( const std::size_t index ) const
       {
          validate_json_type( json::type::ARRAY );
          return unsafe_find( index );
       }
 
-      basic_value* unsafe_find( const std::string& key ) noexcept
+      [[nodiscard]] basic_value* unsafe_find( const std::string& key ) noexcept
       {
          const auto it = m_union.o.find( key );
          return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
       }
 
-      const basic_value* unsafe_find( const std::string& key ) const noexcept
+      [[nodiscard]] const basic_value* unsafe_find( const std::string& key ) const noexcept
       {
          const auto it = m_union.o.find( key );
          return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
       }
 
-      basic_value* find( const std::string& key )
+      [[nodiscard]] basic_value* find( const std::string& key )
       {
          validate_json_type( json::type::OBJECT );
          return unsafe_find( key );
       }
 
-      const basic_value* find( const std::string& key ) const
+      [[nodiscard]] const basic_value* find( const std::string& key ) const
       {
          validate_json_type( json::type::OBJECT );
          return unsafe_find( key );
       }
 
-      basic_value* find( const pointer& k )
+      [[nodiscard]] basic_value* find( const pointer& k )
       {
          return internal::pointer_find( this, k.begin(), k.end() );
       }
 
-      const basic_value* find( const pointer& k ) const
+      [[nodiscard]] const basic_value* find( const pointer& k ) const
       {
          return internal::pointer_find( this, k.begin(), k.end() );
       }
 
-      basic_value& unsafe_at( const std::size_t index ) noexcept
+      [[nodiscard]] basic_value& unsafe_at( const std::size_t index ) noexcept
       {
          return m_union.a[ index ];
       }
 
-      const basic_value& unsafe_at( const std::size_t index ) const noexcept
+      [[nodiscard]] const basic_value& unsafe_at( const std::size_t index ) const noexcept
       {
          return m_union.a[ index ];
       }
 
-      basic_value& unsafe_at( const std::string& key ) noexcept
+      [[nodiscard]] basic_value& unsafe_at( const std::string& key ) noexcept
       {
          return m_union.o.find( key )->second;
       }
 
-      const basic_value& unsafe_at( const std::string& key ) const noexcept
+      [[nodiscard]] const basic_value& unsafe_at( const std::string& key ) const noexcept
       {
          return m_union.o.find( key )->second;
       }
 
-      basic_value& at( const std::size_t index )
+      [[nodiscard]] basic_value& at( const std::size_t index )
       {
          validate_json_type( json::type::ARRAY );
          auto& a = m_union.a;
@@ -1110,7 +1110,7 @@ namespace tao::json
          return a[ index ];
       }
 
-      const basic_value& at( const std::size_t index ) const
+      [[nodiscard]] const basic_value& at( const std::size_t index ) const
       {
          validate_json_type( json::type::ARRAY );
          const auto& a = m_union.a;
@@ -1120,7 +1120,7 @@ namespace tao::json
          return a[ index ];
       }
 
-      basic_value& at( const std::string& key )
+      [[nodiscard]] basic_value& at( const std::string& key )
       {
          validate_json_type( json::type::OBJECT );
          const auto it = m_union.o.find( key );
@@ -1130,7 +1130,7 @@ namespace tao::json
          return it->second;
       }
 
-      const basic_value& at( const std::string& key ) const
+      [[nodiscard]] const basic_value& at( const std::string& key ) const
       {
          validate_json_type( json::type::OBJECT );
          const auto it = m_union.o.find( key );
@@ -1140,41 +1140,41 @@ namespace tao::json
          return it->second;
       }
 
-      basic_value& at( const pointer& k )
+      [[nodiscard]] basic_value& at( const pointer& k )
       {
          return internal::pointer_at( this, k.begin(), k.end() );
       }
 
-      const basic_value& at( const pointer& k ) const
+      [[nodiscard]] const basic_value& at( const pointer& k ) const
       {
          return internal::pointer_at( this, k.begin(), k.end() );
       }
 
-      basic_value& operator[]( const std::size_t index ) noexcept
+      [[nodiscard]] basic_value& operator[]( const std::size_t index ) noexcept
       {
          assert( m_type == json::type::ARRAY );
          return m_union.a[ index ];
       }
 
-      const basic_value& operator[]( const std::size_t index ) const noexcept
+      [[nodiscard]] const basic_value& operator[]( const std::size_t index ) const noexcept
       {
          assert( m_type == json::type::ARRAY );
          return m_union.a[ index ];
       }
 
-      basic_value& operator[]( const std::string& key )
+      [[nodiscard]] basic_value& operator[]( const std::string& key )
       {
          prepare_object();
          return m_union.o[ key ];
       }
 
-      basic_value& operator[]( std::string&& key )
+      [[nodiscard]] basic_value& operator[]( std::string&& key )
       {
          prepare_object();
          return m_union.o[ std::move( key ) ];
       }
 
-      basic_value& operator[]( const pointer& k )
+      [[nodiscard]] basic_value& operator[]( const pointer& k )
       {
          if( k.empty() ) {
             return *this;
@@ -1206,13 +1206,13 @@ namespace tao::json
       }
 
       template< typename T >
-      std::enable_if_t< internal::has_as< Traits< T >, basic_value >, T > as() const
+      [[nodiscard]] std::enable_if_t< internal::has_as< Traits< T >, basic_value >, T > as() const
       {
          return Traits< T >::as( *this );
       }
 
       template< typename T >
-      std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && internal::has_to< Traits< T >, basic_value, T >, T > as() const
+      [[nodiscard]] std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && internal::has_to< Traits< T >, basic_value, T >, T > as() const
       {
          T v;
          Traits< T >::to( *this, v );
@@ -1223,19 +1223,19 @@ namespace tao::json
       std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && !internal::has_to< Traits< T >, basic_value, T > > as() const = delete;
 
       template< typename T, typename K >
-      T as( const K& key ) const
+      [[nodiscard]] T as( const K& key ) const
       {
          return this->at( key ).template as< T >();
       }
 
       template< typename T, typename... With >
-      std::enable_if_t< internal::has_as< Traits< T >, basic_value, With... >, T > as_with( With&&... with ) const
+      [[nodiscard]] std::enable_if_t< internal::has_as< Traits< T >, basic_value, With... >, T > as_with( With&&... with ) const
       {
          return Traits< T >::as( *this, with... );
       }
 
       template< typename T, typename... With >
-      std::enable_if_t< !internal::has_as< Traits< T >, basic_value, With... > && internal::has_to< Traits< T >, basic_value, T, With... >, T > as_with( With&&... with ) const
+      [[nodiscard]] std::enable_if_t< !internal::has_as< Traits< T >, basic_value, With... > && internal::has_to< Traits< T >, basic_value, T, With... >, T > as_with( With&&... with ) const
       {
          T v;
          Traits< T >::to( *this, v, with... );
@@ -1246,7 +1246,7 @@ namespace tao::json
       std::enable_if_t< !internal::has_as< Traits< T >, basic_value, With... > && !internal::has_to< Traits< T >, basic_value, T, With... >, T > as_with( With&&... with ) const = delete;
 
       template< typename T >
-      std::enable_if_t< internal::has_to< Traits< T >, basic_value, T >, void > to( T& v ) const
+      std::enable_if_t< internal::has_to< Traits< T >, basic_value, T > > to( T& v ) const
       {
          Traits< std::decay_t< T > >::to( *this, v );
       }
@@ -1267,7 +1267,7 @@ namespace tao::json
       }
 
       template< typename T, typename... With >
-      std::enable_if_t< internal::has_to< Traits< T >, basic_value, T, With... >, void > to_with( T& v, With&&... with ) const
+      std::enable_if_t< internal::has_to< Traits< T >, basic_value, T, With... > > to_with( T& v, With&&... with ) const
       {
          Traits< std::decay_t< T > >::to( *this, v, with... );
       }
@@ -1282,7 +1282,7 @@ namespace tao::json
       std::enable_if_t< !internal::has_to< Traits< T >, basic_value, T, With... > && !internal::has_as< Traits< T >, basic_value, With... > > to_with( T& v, With&&... with ) const = delete;
 
       template< typename T >
-      std::optional< T > optional() const
+      [[nodiscard]] std::optional< T > optional() const
       {
          if( is_null() ) {
             return std::nullopt;
@@ -1291,7 +1291,7 @@ namespace tao::json
       }
 
       template< typename T, typename K >
-      std::optional< T > optional( const K& key ) const
+      [[nodiscard]] std::optional< T > optional( const K& key ) const
       {
          if( const auto* p = find( key ) ) {
             return p->template as< T >();

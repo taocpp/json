@@ -188,7 +188,7 @@ namespace tao::json
    void unit_test_5()
    {
       const value v = from_string( R"({ "bool" : true, "signed" : -4, "unsigned" : 32, "string" : "servus" })" );
-      v.as< type_5 >();
+      (void)v.as< type_5 >();
    }
 
    // TODO: Test with different for_unknown_key.

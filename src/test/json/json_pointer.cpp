@@ -93,7 +93,7 @@ namespace tao::json
       TEST_ASSERT( v.at( "/foo"_json_pointer ) != value::array( { "bar", "baz" } ) );
       TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz", "bat" } ) );
 
-      v[ "/foo/-"_json_pointer ];  // no assignment, but the null is appended anyways... TODO: change that to require an assignment?
+      (void)v[ "/foo/-"_json_pointer ];  // no assignment, but the null is appended anyways... TODO: change that to require an assignment?
       TEST_ASSERT( v.at( "/foo"_json_pointer ) != value::array( { "bar", "baz", "bat" } ) );
       TEST_ASSERT( v.at( "/foo"_json_pointer ) == value::array( { "bar", "baz", "bat", null } ) );
 
