@@ -40,206 +40,186 @@ namespace tao::json
       {
          template< typename... Ts >
          static void null( std::tuple< Ts... >& /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void boolean( std::tuple< Ts... >& /*unused*/, const bool /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void number( std::tuple< Ts... >& /*unused*/, const std::int64_t /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void number( std::tuple< Ts... >& /*unused*/, const std::uint64_t /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void number( std::tuple< Ts... >& /*unused*/, const double /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void string( std::tuple< Ts... >& /*unused*/, const std::string_view /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void binary( std::tuple< Ts... >& /*unused*/, const tao::binary_view /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void begin_array( std::tuple< Ts... >& /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void begin_array( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void element( std::tuple< Ts... >& /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void end_array( std::tuple< Ts... >& /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void end_array( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void begin_object( std::tuple< Ts... >& /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void begin_object( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void key( std::tuple< Ts... >& /*unused*/, const std::string_view /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void member( std::tuple< Ts... >& /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void end_object( std::tuple< Ts... >& /*unused*/ )
-         {
-         }
+         {}
 
          template< typename... Ts >
          static void end_object( std::tuple< Ts... >& /*unused*/, const std::size_t /*unused*/ )
-         {
-         }
+         {}
       };
 
       template< std::size_t... Is >
       struct events_apply< std::index_sequence< Is... > >
       {
-         using sink = bool[];
-
          template< typename... Ts >
          static void null( std::tuple< Ts... >& t )
          {
-            (void)sink{ ( std::get< Is >( t ).null(), true )... };
+            ( std::get< Is >( t ).null(), ... );
          }
 
          template< typename... Ts >
          static void boolean( std::tuple< Ts... >& t, const bool v )
          {
-            (void)sink{ ( std::get< Is >( t ).boolean( v ), true )... };
+            ( std::get< Is >( t ).boolean( v ), ... );
          }
 
          template< typename... Ts >
          static void number( std::tuple< Ts... >& t, const std::int64_t v )
          {
-            (void)sink{ ( std::get< Is >( t ).number( v ), true )... };
+            ( std::get< Is >( t ).number( v ), ... );
          }
 
          template< typename... Ts >
          static void number( std::tuple< Ts... >& t, const std::uint64_t v )
          {
-            (void)sink{ ( std::get< Is >( t ).number( v ), true )... };
+            ( std::get< Is >( t ).number( v ), ... );
          }
 
          template< typename... Ts >
          static void number( std::tuple< Ts... >& t, const double v )
          {
-            (void)sink{ ( std::get< Is >( t ).number( v ), true )... };
+            ( std::get< Is >( t ).number( v ), ... );
          }
 
          template< typename... Ts >
          static void string( std::tuple< Ts... >& t, const std::string_view v )
          {
-            (void)sink{ ( std::get< Is >( t ).string( v ), true )... };
+            ( std::get< Is >( t ).string( v ), ... );
          }
 
          template< typename... Ts >
          static void binary( std::tuple< Ts... >& t, const tao::binary_view v )
          {
-            (void)sink{ ( std::get< Is >( t ).binary( v ), true )... };
+            ( std::get< Is >( t ).binary( v ), ... );
          }
 
          template< typename... Ts >
          static void begin_array( std::tuple< Ts... >& t )
          {
-            (void)sink{ ( std::get< Is >( t ).begin_array(), true )... };
+            ( std::get< Is >( t ).begin_array(), ... );
          }
 
          template< typename... Ts >
          static void begin_array( std::tuple< Ts... >& t, const std::size_t size )
          {
-            (void)sink{ ( std::get< Is >( t ).begin_array( size ), true )... };
+            ( std::get< Is >( t ).begin_array( size ), ... );
          }
 
          template< typename... Ts >
          static void element( std::tuple< Ts... >& t )
          {
-            (void)sink{ ( std::get< Is >( t ).element(), true )... };
+            ( std::get< Is >( t ).element(), ... );
          }
 
          template< typename... Ts >
          static void end_array( std::tuple< Ts... >& t )
          {
-            (void)sink{ ( std::get< Is >( t ).end_array(), true )... };
+            ( std::get< Is >( t ).end_array(), ... );
          }
 
          template< typename... Ts >
          static void end_array( std::tuple< Ts... >& t, const std::size_t size )
          {
-            (void)sink{ ( std::get< Is >( t ).end_array( size ), true )... };
+            ( std::get< Is >( t ).end_array( size ), ... );
          }
 
          template< typename... Ts >
          static void begin_object( std::tuple< Ts... >& t )
          {
-            (void)sink{ ( std::get< Is >( t ).begin_object(), true )... };
+            ( std::get< Is >( t ).begin_object(), ... );
          }
 
          template< typename... Ts >
          static void begin_object( std::tuple< Ts... >& t, const std::size_t size )
          {
-            (void)sink{ ( std::get< Is >( t ).begin_object( size ), true )... };
+            ( std::get< Is >( t ).begin_object( size ), ... );
          }
 
          template< typename... Ts >
          static void key( std::tuple< Ts... >& t, const std::string_view v )
          {
-            (void)sink{ ( std::get< Is >( t ).key( v ), true )... };
+            ( std::get< Is >( t ).key( v ), ... );
          }
 
          template< typename... Ts >
          static void member( std::tuple< Ts... >& t )
          {
-            (void)sink{ ( std::get< Is >( t ).member(), true )... };
+            ( std::get< Is >( t ).member(), ... );
          }
 
          template< typename... Ts >
          static void end_object( std::tuple< Ts... >& t )
          {
-            (void)sink{ ( std::get< Is >( t ).end_object(), true )... };
+            ( std::get< Is >( t ).end_object(), ... );
          }
 
          template< typename... Ts >
          static void end_object( std::tuple< Ts... >& t, const std::size_t size )
          {
-            (void)sink{ ( std::get< Is >( t ).end_object( size ), true )... };
+            ( std::get< Is >( t ).end_object( size ), ... );
          }
       };
 
@@ -264,8 +244,7 @@ namespace tao::json
          template< typename... Us >
          explicit tee( Us&&... us )
             : ts( std::forward< Us >( us )... )
-         {
-         }
+         {}
 
          void null()
          {
@@ -389,14 +368,10 @@ namespace tao::json
       template<>
       class tee<>
          : public discard
-      {
-      };
+      {};
 
-      template< typename... T >
-      tee< internal::decay_and_strip_t< T >... > make_tee( T&&... t )
-      {
-         return tee< internal::decay_and_strip_t< T >... >( std::forward< T >( t )... );
-      }
+      template< typename... Ts >
+      tee( Ts&&... )->tee< internal::decay_and_strip_t< Ts >... >;
 
       template< typename... T >
       tee< T&... > tie( T&... t )
