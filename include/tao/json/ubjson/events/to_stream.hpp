@@ -49,7 +49,7 @@ namespace tao::json::ubjson::events
             const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
             os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
          }
-         else if( ( v >= -2147483648ll ) && ( v <= 2147483647ll ) ) {
+         else if( ( v >= -2147483648LL ) && ( v <= 2147483647LL ) ) {
             os.put( 'l' );
             const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
             os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
@@ -73,12 +73,12 @@ namespace tao::json::ubjson::events
             const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
             os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
          }
-         else if( v <= 2147483647ul ) {
+         else if( v <= 2147483647UL ) {
             os.put( 'l' );
             const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
             os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
          }
-         else if( v <= 9223372036854775807ull ) {
+         else if( v <= 9223372036854775807ULL ) {
             os.put( 'L' );
             const std::uint64_t x = json::internal::h_to_be( v );
             os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
@@ -86,7 +86,7 @@ namespace tao::json::ubjson::events
          else {
             os.put( 'H' );
             os.put( 'U' );
-            os.put( char( 19 ) + char( v >= 10000000000000000000ull ) );
+            os.put( char( 19 ) + char( v >= 10000000000000000000ULL ) );
             os << v;
          }
       }

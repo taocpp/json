@@ -109,8 +109,8 @@ namespace tao::json
       msgpack_decode( "d38000000000000000", "-9223372036854775808" );
       msgpack_decode( "d37fffffffffffffff", "9223372036854775807" );
 
-      msgpack_decode( "ca402df84d", to_string( value( 2.71828f ) ) );
-      msgpack_decode( "ca9607d3a8", to_string( value( -1.0972e-25f ) ) );
+      msgpack_decode( "ca402df84d", to_string( value( 2.71828F ) ) );
+      msgpack_decode( "ca9607d3a8", to_string( value( -1.0972e-25F ) ) );
 
       msgpack_decode( "cb400921f9f01b866e", "3.14159" );
       msgpack_decode( "cbbd92d043147f15ff", "-4.2777e-12" );

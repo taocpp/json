@@ -82,7 +82,7 @@ namespace tao::json
          }
          if( month == 2 ) {
             const bool is_leap_year = ( year % 4 == 0 ) && ( year % 100 != 0 || year % 400 == 0 );
-            if( day > ( is_leap_year ? 29u : 28u ) ) {
+            if( day > ( is_leap_year ? 29U : 28U ) ) {
                return false;
             }
          }

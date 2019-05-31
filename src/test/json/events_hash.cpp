@@ -37,7 +37,7 @@ namespace tao::json
       TEST_ASSERT( !test( 0, "null" ) );
 
       TEST_ASSERT( test( empty_array, "[]" ) );
-      TEST_ASSERT( test( value::array( { 1, 2u, 3 } ), "[1,2,3.0]" ) );
+      TEST_ASSERT( test( value::array( { 1, 2U, 3 } ), "[1,2,3.0]" ) );
 
       TEST_ASSERT( test( empty_object, "{}" ) );
       TEST_ASSERT( test( { { "a", 0 }, { "b", 1 } }, "{\"a\":0,\"b\":1}" ) );

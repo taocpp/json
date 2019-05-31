@@ -37,7 +37,7 @@ namespace tao::json
       test_simple( true, "true" );
       test_simple( false, "false" );
       test_simple( 42, "42" );
-      test_simple( 42u, "42" );
+      test_simple( 42U, "42" );
       test_simple( 42.1, "42.1" );
       test_simple( NAN, "NaN" );
       test_simple( INFINITY, "Infinity" );
@@ -50,11 +50,11 @@ namespace tao::json
       test_simple( value::array( { 1, 2, 3 } ), "[1,2,3]" );
       test_simple( empty_object, "{}" );
       test_simple( { { "foo", 42 } }, "{foo:42}" );
-      test_simple( { { "foo", 42u } }, "{foo:42}" );
+      test_simple( { { "foo", 42U } }, "{foo:42}" );
       test_simple( { { "foo", 42 }, { "bar", 43 } }, "{bar:43,foo:42}" );
-      test_simple( { { "foo", 42 }, { "bar", 43u } }, "{bar:43,foo:42}" );
-      test_simple( { { "foo", v }, { "bar", 43u } }, "{bar:43,foo:42}" );
-      test_simple( { { "foo", &v }, { "bar", 43u } }, "{bar:43,foo:42}" );
+      test_simple( { { "foo", 42 }, { "bar", 43U } }, "{bar:43,foo:42}" );
+      test_simple( { { "foo", v }, { "bar", 43U } }, "{bar:43,foo:42}" );
+      test_simple( { { "foo", &v }, { "bar", 43U } }, "{bar:43,foo:42}" );
       test_simple( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{foo:[1,{bar:42,baz:[{},43]},[]]}" );
 
       test_pretty( null, "null" );
@@ -67,12 +67,12 @@ namespace tao::json
       test_pretty( empty_array, "[]" );
       test_pretty( value::array( {} ), "[]" );
       test_pretty( value::array( { 1 } ), "[\n  1\n]" );
-      test_pretty( value::array( { 1, 2u, 3 } ), "[\n  1,\n  2,\n  3\n]" );
+      test_pretty( value::array( { 1, 2U, 3 } ), "[\n  1,\n  2,\n  3\n]" );
       test_pretty( empty_object, "{}" );
       test_pretty( { { "foo", 42 } }, "{\n  foo: 42\n}" );
-      test_pretty( { { "foo", 42 }, { "bar", 43u } }, "{\n  bar: 43,\n  foo: 42\n}" );
-      test_pretty( { { "foo", v }, { "bar", 43u } }, "{\n  bar: 43,\n  foo: 42\n}" );
-      test_pretty( { { "foo", &v }, { "bar", 43u } }, "{\n  bar: 43,\n  foo: 42\n}" );
+      test_pretty( { { "foo", 42 }, { "bar", 43U } }, "{\n  bar: 43,\n  foo: 42\n}" );
+      test_pretty( { { "foo", v }, { "bar", 43U } }, "{\n  bar: 43,\n  foo: 42\n}" );
+      test_pretty( { { "foo", &v }, { "bar", 43U } }, "{\n  bar: 43,\n  foo: 42\n}" );
       test_pretty( { { "foo", value::array( { 1, { { "bar", 42 }, { "baz", value::array( { empty_object, 43 } ) } }, empty_array } ) } }, "{\n  foo: [\n    1,\n    {\n      bar: 42,\n      baz: [\n        {},\n        43\n      ]\n    },\n    []\n  ]\n}" );
    }
 

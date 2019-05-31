@@ -48,12 +48,12 @@ namespace tao::json::internal
             const std::uint64_t ull = std::strtoull( mantissa, &p, 10 );
             if( ( errno != ERANGE ) && ( p == mantissa + msize ) ) {
                if constexpr( NEG ) {
-                  if( ull < 9223372036854775808ull ) {
+                  if( ull < 9223372036854775808ULL ) {
                      consumer.number( -static_cast< std::int64_t >( ull ) );
                      return;
                   }
-                  if( ull == 9223372036854775808ull ) {
-                     consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
+                  if( ull == 9223372036854775808ULL ) {
+                     consumer.number( static_cast< std::int64_t >( -9223372036854775807LL - 1 ) );
                      return;
                   }
                }

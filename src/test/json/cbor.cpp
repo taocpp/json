@@ -95,8 +95,8 @@ namespace tao::json
       cbor_decode( "f90400", "0.00006103515625" );
       cbor_decode( "f9c400", "-4.0" );
 
-      cbor_decode( "fa402df84d", to_string( value( 2.71828f ) ) );
-      cbor_decode( "fa9607d3a8", to_string( value( -1.0972e-25f ) ) );
+      cbor_decode( "fa402df84d", to_string( value( 2.71828F ) ) );
+      cbor_decode( "fa9607d3a8", to_string( value( -1.0972e-25F ) ) );
 
       cbor_decode( "fb400921f9f01b866e", "3.14159" );
       cbor_decode( "fbbd92d043147f15ff", "-4.2777e-12" );

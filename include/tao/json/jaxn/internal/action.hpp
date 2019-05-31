@@ -96,11 +96,11 @@ namespace tao::json::jaxn::internal
             value += unhex( c );
          }
          if constexpr( NEG ) {
-            if( value < 9223372036854775808ull ) {
+            if( value < 9223372036854775808ULL ) {
                consumer.number( -static_cast< std::int64_t >( value ) );
             }
-            else if( value == 9223372036854775808ull ) {
-               consumer.number( static_cast< std::int64_t >( -9223372036854775807ll - 1 ) );
+            else if( value == 9223372036854775808ULL ) {
+               consumer.number( static_cast< std::int64_t >( -9223372036854775807LL - 1 ) );
             }
             else {
                throw pegtl::parse_error( "JAXN hexadecimal number too large to negate", in );  // NOLINT

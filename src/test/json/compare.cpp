@@ -142,34 +142,34 @@ namespace tao::json
 
       test_lt( N( 42 ), b );
       test_lt( 42, b );
-      test_lt( 42u, b );
+      test_lt( 42U, b );
       test_lt( 42.0, b );
       test_lt( value( 42 ), b );
-      test_lt( value( 42u ), b );
+      test_lt( value( 42U ), b );
       test_lt( value( 42.0 ), b );
 
       test_lt( N( 42 ), pb );
       test_lt( 42, pb );
-      test_lt( 42u, pb );
+      test_lt( 42U, pb );
       test_lt( 42.0, pb );
       test_lt( value( 42 ), pb );
-      test_lt( value( 42u ), pb );
+      test_lt( value( 42U ), pb );
       test_lt( value( 42.0 ), pb );
 
       test_lt( a, N( 43 ) );
       test_lt( a, 43 );
-      test_lt( a, 43u );
+      test_lt( a, 43U );
       test_lt( a, 43.0 );
       test_lt( a, value( 43 ) );
-      test_lt( a, value( 43u ) );
+      test_lt( a, value( 43U ) );
       test_lt( a, value( 43.0 ) );
 
       test_lt( pa, N( 43 ) );
       test_lt( pa, 43 );
-      test_lt( pa, 43u );
+      test_lt( pa, 43U );
       test_lt( pa, 43.0 );
       test_lt( pa, value( 43 ) );
-      test_lt( pa, value( 43u ) );
+      test_lt( pa, value( 43U ) );
       test_lt( pa, value( 43.0 ) );
    }
 
@@ -371,7 +371,7 @@ namespace tao::json
 
       test_lt( n, true );
       test_lt( n, -42 );
-      test_lt( n, 42u );
+      test_lt( n, 42U );
       test_lt( n, 43.0 );
       test_lt( n, "string" );
       test_lt( n, std::string( "string" ) );
@@ -381,7 +381,7 @@ namespace tao::json
 
       test_lt( pn, true );
       test_lt( pn, -42 );
-      test_lt( pn, 42u );
+      test_lt( pn, 42U );
       test_lt( pn, 43.0 );
       test_lt( pn, "string" );
       test_lt( pn, std::string( "string" ) );

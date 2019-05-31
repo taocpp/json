@@ -64,7 +64,7 @@ namespace tao::json::msgpack::events
          else if( ( v >= -32768 ) && ( v <= 32767 ) ) {
             number_impl< std::uint16_t >( 0xd1, v );
          }
-         else if( ( v >= -2147483648ll ) && ( v <= 2147483647 ) ) {
+         else if( ( v >= -2147483648LL ) && ( v <= 2147483647 ) ) {
             number_impl< std::uint32_t >( 0xd2, v );
          }
          else {
@@ -84,7 +84,7 @@ namespace tao::json::msgpack::events
          else if( v <= 65535 ) {
             number_impl< std::uint16_t >( 0xcd, v );
          }
-         else if( v <= 4294967295ul ) {
+         else if( v <= 4294967295UL ) {
             number_impl< std::uint32_t >( 0xce, v );
          }
          else {
@@ -110,7 +110,7 @@ namespace tao::json::msgpack::events
          else if( v.size() <= 65535 ) {
             number_impl< std::uint16_t >( 0xda, v.size() );
          }
-         else if( v.size() <= 4294967295ul ) {
+         else if( v.size() <= 4294967295UL ) {
             number_impl< std::uint32_t >( 0xdb, v.size() );
          }
          else {
@@ -127,7 +127,7 @@ namespace tao::json::msgpack::events
          else if( v.size() <= 65535 ) {
             number_impl< std::uint16_t >( 0xc5, v.size() );
          }
-         else if( v.size() <= 4294967295ul ) {
+         else if( v.size() <= 4294967295UL ) {
             number_impl< std::uint32_t >( 0xc6, v.size() );
          }
          else {
@@ -149,7 +149,7 @@ namespace tao::json::msgpack::events
          else if( size <= 65535 ) {
             number_impl< std::uint16_t >( 0xdc, size );
          }
-         else if( size <= 4294967295ul ) {
+         else if( size <= 4294967295UL ) {
             number_impl< std::uint32_t >( 0xdd, size );
          }
          else {
@@ -183,7 +183,7 @@ namespace tao::json::msgpack::events
          else if( size <= 65535 ) {
             number_impl< std::uint16_t >( 0xde, size );
          }
-         else if( size <= 4294967295ul ) {
+         else if( size <= 4294967295UL ) {
             number_impl< std::uint32_t >( 0xdf, size );
          }
          else {

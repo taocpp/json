@@ -465,10 +465,10 @@ namespace tao::json
          TEST_ASSERT( v.type() == type::SIGNED );
          TEST_ASSERT( v.get_signed() == 1 );
 
-         v = 1u;
+         v = 1U;
 
          TEST_ASSERT( v.type() == type::UNSIGNED );
-         TEST_ASSERT( v.get_unsigned() == 1u );
+         TEST_ASSERT( v.get_unsigned() == 1U );
 
          v = 2.0;
 

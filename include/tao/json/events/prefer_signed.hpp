@@ -18,7 +18,7 @@ namespace tao::json::events
 
       void number( const std::uint64_t v )
       {
-         if( v <= 9223372036854775807ull ) {
+         if( v <= 9223372036854775807ULL ) {
             Consumer::number( std::int64_t( v ) );
          }
          else {

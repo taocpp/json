@@ -17,7 +17,7 @@ namespace tao::json
    void unit_test()  // NOLINT
    {
       const value n = null;
-      const value one = 1u;
+      const value one = 1U;
       const value two = 2;
       const value ea = empty_array;
       const value eo = empty_object;

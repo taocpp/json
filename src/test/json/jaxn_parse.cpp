@@ -104,9 +104,9 @@ namespace tao::json
       // full signed and unsigned 64 bit integer range
       TEST_ASSERT( custom_from_string( "9223372036854775807" ).get_unsigned() == 9223372036854775807 );
       TEST_ASSERT( custom_from_string( "+9223372036854775807" ).get_unsigned() == 9223372036854775807 );
-      TEST_ASSERT( custom_from_string( "-9223372036854775808" ).get_signed() == -9223372036854775807ll - 1 );
-      TEST_ASSERT( custom_from_string( "18446744073709551615" ).get_unsigned() == 18446744073709551615ull );
-      TEST_ASSERT( custom_from_string( "+18446744073709551615" ).get_unsigned() == 18446744073709551615ull );
+      TEST_ASSERT( custom_from_string( "-9223372036854775808" ).get_signed() == -9223372036854775807LL - 1 );
+      TEST_ASSERT( custom_from_string( "18446744073709551615" ).get_unsigned() == 18446744073709551615ULL );
+      TEST_ASSERT( custom_from_string( "+18446744073709551615" ).get_unsigned() == 18446744073709551615ULL );
 
       // anything beyond is double
       TEST_ASSERT( custom_from_string( "-9223372036854775809" ).is_double() );
@@ -137,9 +137,9 @@ namespace tao::json
 
       TEST_ASSERT( custom_from_string( "9223372036854775807" ) == 9223372036854775807 );
       TEST_ASSERT( custom_from_string( "+9223372036854775807" ) == 9223372036854775807 );
-      TEST_ASSERT( custom_from_string( "-9223372036854775808" ) == -9223372036854775807ll - 1 );
-      TEST_ASSERT( custom_from_string( "18446744073709551615" ) == 18446744073709551615ull );
-      TEST_ASSERT( custom_from_string( "+18446744073709551615" ) == 18446744073709551615ull );
+      TEST_ASSERT( custom_from_string( "-9223372036854775808" ) == -9223372036854775807LL - 1 );
+      TEST_ASSERT( custom_from_string( "18446744073709551615" ) == 18446744073709551615ULL );
+      TEST_ASSERT( custom_from_string( "+18446744073709551615" ) == 18446744073709551615ULL );
 
       TEST_ASSERT( custom_from_string( "\"\"" ) == "" );
       TEST_ASSERT( custom_from_string( "\"'\"" ) == "'" );

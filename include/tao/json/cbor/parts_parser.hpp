@@ -164,7 +164,7 @@ namespace tao::json::cbor
       std::int64_t number_signed_unsigned()
       {
          const auto u = internal::read_unsigned_unsafe( m_input );
-         if( u > 9223372036854775807ull ) {
+         if( u > 9223372036854775807ULL ) {
             throw pegtl::parse_error( "positive integer overflow", m_input );  // NOLINT
          }
          return std::int64_t( u );
@@ -173,7 +173,7 @@ namespace tao::json::cbor
       std::int64_t number_signed_negative()
       {
          const auto u = internal::read_unsigned_unsafe( m_input );
-         if( u > 9223372036854775808ull ) {
+         if( u > 9223372036854775808ULL ) {
             throw pegtl::parse_error( "negative integer overflow", m_input );  // NOLINT
          }
          return std::int64_t( ~u );

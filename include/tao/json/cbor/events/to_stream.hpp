@@ -57,7 +57,7 @@ namespace tao::json::cbor::events
             const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
             os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
          }
-         else if( v < 4294967296ull ) {
+         else if( v < 4294967296ULL ) {
             os.put( char( std::uint8_t( m ) + 26 ) );
             const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
             os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );

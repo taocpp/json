@@ -109,7 +109,7 @@ namespace tao::json::cbor::internal
    std::int64_t read_negative_unsafe( Input& in )
    {
       const auto u = read_unsigned_unsafe( in );
-      if( u > 9223372036854775808ull ) {
+      if( u > 9223372036854775808ULL ) {
          throw pegtl::parse_error( "negative integer overflow", in );
       }
       return std::int64_t( ~u );
