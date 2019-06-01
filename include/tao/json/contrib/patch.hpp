@@ -73,7 +73,7 @@ namespace tao::json
          else if( op == "move" ) {
             const pointer from( entry.at( "from" ).get_string() );
             auto t = std::move( v.at( from ) );
-            v.erase( from );
+            v.erase( from );  // NOLINT
             v.insert( path_pointer, std::move( t ) );
          }
          else if( op == "copy" ) {
