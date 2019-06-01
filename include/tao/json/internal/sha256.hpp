@@ -68,7 +68,7 @@ namespace tao::json::internal
          }
 
          // step 2
-         std::uint32_t a, b, c, d, e, f, g, h;
+         std::uint32_t a, b, c, d, e, f, g, h;  // NOLINT
          a = H[ 0 ];
          b = H[ 1 ];
          c = H[ 2 ];
