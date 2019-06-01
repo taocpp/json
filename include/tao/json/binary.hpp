@@ -15,7 +15,7 @@ namespace tao::json
    {
       [[nodiscard]] constexpr char unhex_char( const char c ) noexcept
       {
-         return ( c < 'A' ) ? ( c - '0' ) : ( ( c < 'a' ) ? ( c - 'A' + 10 ) : ( c - 'a' + 10 ) );
+         return static_cast< char >( ( c < 'A' ) ? ( c - '0' ) : ( ( c < 'a' ) ? ( c - 'A' + 10 ) : ( c - 'a' + 10 ) ) );
       }
 
       template< typename V, V... >
