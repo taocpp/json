@@ -56,21 +56,6 @@ namespace tao::json
             }
          };
 
-         template< typename Rule >
-         struct integer_action
-            : public pegtl::nothing< Rule >
-         {};
-
-         template<>
-         struct integer_action< pegtl::integer::signed_rule >
-            : pegtl::integer::signed_action
-         {};
-
-         template<>
-         struct integer_action< pegtl::integer::unsigned_rule >
-            : pegtl::integer::unsigned_action
-         {};
-
          struct double_rule
          {
             using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
@@ -113,12 +98,6 @@ namespace tao::json
          };
 
       }  // namespace rules
-
-      template< typename I >
-      struct integer_state
-      {
-         I converted = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
-      };
 
       template< typename Rule >
       struct double_action
@@ -197,16 +176,16 @@ namespace tao::json
 
       [[nodiscard]] std::int64_t number_signed()
       {
-         internal::integer_state< std::int64_t > st;
-         pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
-         return st.converted;
+         std::int64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
+         pegtl::parse< pegtl::must< pegtl::integer::signed_rule_with_action, internal::rules::wss > >( m_input, st );
+         return st;
       }
 
       [[nodiscard]] std::uint64_t number_unsigned()
       {
-         internal::integer_state< std::uint64_t > st;
-         pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
-         return st.converted;
+         std::uint64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
+         pegtl::parse< pegtl::must< pegtl::integer::unsigned_rule_with_action, internal::rules::wss > >( m_input, st );
+         return st;
       }
 
       [[nodiscard]] std::string string()
