@@ -12,39 +12,6 @@
 
 namespace tao::json::jaxn
 {
-   namespace internal
-   {
-      namespace rules
-      {
-         struct wss
-            : pegtl::star< ws >
-         {};
-
-         template< typename Rule >
-         struct integer_action
-            : pegtl::nothing< Rule >
-         {};
-
-         template<>
-         struct integer_action< pegtl::integer::signed_rule >
-            : pegtl::integer::signed_action
-         {};
-
-         template<>
-         struct integer_action< pegtl::integer::unsigned_rule >
-            : pegtl::integer::unsigned_action
-         {};
-
-      }  // namespace rules
-
-      template< typename I >
-      struct integer_state
-      {
-         I converted = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
-      };
-
-   }  // namespace internal
-
    // TODO: Optimise some of the simpler cases?
 
    template< typename Input = pegtl::string_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, std::string > >
@@ -55,7 +22,7 @@ namespace tao::json::jaxn
       explicit basic_parts_parser( Ts&&... ts )
          : m_input( std::forward< Ts >( ts )... )
       {
-         pegtl::parse< internal::rules::wss >( m_input );
+         pegtl::parse< json::internal::rules::wss >( m_input );
       }
 
       [[nodiscard]] bool empty()  // noexcept( noexcept( m_input.empty() ) )
@@ -65,13 +32,13 @@ namespace tao::json::jaxn
 
       [[nodiscard]] bool null()
       {
-         return pegtl::parse< pegtl::seq< json::internal::rules::null, jaxn::internal::rules::wss > >( m_input );
+         return pegtl::parse< pegtl::seq< json::internal::rules::null, json::internal::rules::wss > >( m_input );
       }
 
       [[nodiscard]] bool boolean()
       {
          bool r;
-         pegtl::parse< pegtl::must< json::internal::rules::boolean, jaxn::internal::rules::wss > >( m_input, r );
+         pegtl::parse< pegtl::must< json::internal::rules::boolean, json::internal::rules::wss > >( m_input, r );
          return r;
       }
 
@@ -82,23 +49,22 @@ namespace tao::json::jaxn
 
       [[nodiscard]] std::int64_t number_signed()
       {
-         // TODO: Error on leading zero after sign.
-         internal::integer_state< std::int64_t > st;
-         pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::signed_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
-         return st.converted;
+         std::int64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
+         pegtl::parse< pegtl::must< pegtl::integer::signed_rule_with_action, json::internal::rules::wss > >( m_input, st );
+         return st;
       }
 
       [[nodiscard]] std::uint64_t number_unsigned()
       {
-         internal::integer_state< std::uint64_t > st;
-         pegtl::parse< pegtl::must< pegtl::sor< pegtl::one< '0' >, pegtl::integer::unsigned_rule >, internal::rules::wss >, internal::rules::integer_action >( m_input, st );
-         return st.converted;
+         std::uint64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
+         pegtl::parse< pegtl::must< pegtl::integer::unsigned_rule_with_action, json::internal::rules::wss > >( m_input, st );
+         return st;
       }
 
       [[nodiscard]] std::string string()
       {
          std::string unescaped;
-         pegtl::parse< pegtl::must< internal::rules::string, jaxn::internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
+         pegtl::parse< pegtl::must< internal::rules::string, json::internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
          return unescaped;
       }
 
@@ -107,14 +73,14 @@ namespace tao::json::jaxn
       [[nodiscard]] std::vector< std::byte > binary()
       {
          std::vector< std::byte > data;
-         pegtl::parse< pegtl::must< internal::rules::binary, jaxn::internal::rules::wss >, internal::bunescape_action >( m_input, data );
+         pegtl::parse< pegtl::must< internal::rules::binary, json::internal::rules::wss >, internal::bunescape_action >( m_input, data );
          return data;
       }
 
       [[nodiscard]] std::string key()
       {
          std::string unescaped;
-         pegtl::parse< pegtl::must< internal::rules::mkey, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
+         pegtl::parse< pegtl::must< internal::rules::mkey, json::internal::rules::wss, pegtl::one< ':' >, json::internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
          return unescaped;
       }
 
@@ -124,13 +90,13 @@ namespace tao::json::jaxn
       template< char C >
       void parse_single_must()
       {
-         pegtl::parse< pegtl::must< pegtl::one< C >, internal::rules::wss > >( m_input );
+         pegtl::parse< pegtl::must< pegtl::one< C >, json::internal::rules::wss > >( m_input );
       }
 
       template< char C >
       bool parse_single_test()
       {
-         return pegtl::parse< pegtl::seq< pegtl::one< C >, internal::rules::wss > >( m_input );
+         return pegtl::parse< pegtl::seq< pegtl::one< C >, json::internal::rules::wss > >( m_input );
       }
 
       struct state_t
