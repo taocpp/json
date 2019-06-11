@@ -37,6 +37,7 @@
 
 #include <limits.h>
 
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
@@ -114,16 +115,6 @@ typedef uint16_t uc16;
 namespace tao::json::double_conversion
 {
    static const int kCharSize = sizeof( char );
-
-   template <typename T>
-   static T Max(T a, T b) {
-      return a < b ? b : a;
-   }
-
-   template <typename T>
-   static T Min(T a, T b) {
-      return a < b ? a : b;
-   }
 
    template <typename T>
    class Vector {
@@ -302,7 +293,7 @@ namespace tao::json::double_conversion
       assert(IsClamped());
       assert(other.IsClamped());
       Align(other);
-      EnsureCapacity(1 + Max(BigitLength(), other.BigitLength()) - exponent_);
+      EnsureCapacity(1 + (std::max)(BigitLength(), other.BigitLength()) - exponent_);
       Chunk carry = 0;
       int bigit_pos = other.exponent_ - exponent_;
       assert(bigit_pos >= 0);
@@ -318,7 +309,7 @@ namespace tao::json::double_conversion
          carry = sum >> kBigitSize;
          bigit_pos++;
       }
-      used_digits_ = Max(bigit_pos, used_digits_);
+      used_digits_ = (std::max)(bigit_pos, used_digits_);
       assert(IsClamped());
    }
 
@@ -552,7 +543,7 @@ namespace tao::json::double_conversion
       int bigit_length_b = b.BigitLength();
       if (bigit_length_a < bigit_length_b) return -1;
       if (bigit_length_a > bigit_length_b) return +1;
-      for (int i = bigit_length_a - 1; i >= Min(a.exponent_, b.exponent_); --i) {
+      for (int i = bigit_length_a - 1; i >= (std::min)(a.exponent_, b.exponent_); --i) {
          const Chunk bigit_a = a.BigitAt(i);
          const Chunk bigit_b = b.BigitAt(i);
          if (bigit_a < bigit_b) return -1;
