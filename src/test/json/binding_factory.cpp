@@ -242,7 +242,7 @@ namespace tao::json
       arg_dummy d;
 
       const auto v = from_string( "{ \"foo\" : { \"nine\" : 1 }, \"bar\" : { \"eight\" : 2 } }" );
-      const auto a = v.as_with< std::map< std::string, std::shared_ptr< base_2 > > >( d );
+      const auto a = v.as_with< std::map< std::string, std::shared_ptr< base_2 >, std::less<> > >( d );
       TEST_ASSERT( a.size() == 2 );
       TEST_ASSERT( std::dynamic_pointer_cast< derived_9 >( a.at( "foo" ) ) );
       TEST_ASSERT( std::dynamic_pointer_cast< derived_8 >( a.at( "bar" ) ) );

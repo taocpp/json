@@ -495,7 +495,7 @@ namespace tao::json
          TEST_ASSERT( v.type() == type::DOUBLE );
          TEST_ASSERT( std::isnan( v.get_double() ) );
 
-         v = std::map< std::string, value >();
+         v = std::map< std::string, value, std::less<> >();
 
          TEST_ASSERT( v.type() == type::OBJECT );
          TEST_ASSERT( v.get_object().empty() );
@@ -518,7 +518,7 @@ namespace tao::json
       test_empty_array( std::vector< value >() );
 
       test_empty_object( empty_object );
-      test_empty_object( std::map< std::string, value >() );
+      test_empty_object( std::map< std::string, value, std::less<> >() );
 
       test_array_1234();
       test_object_1234();

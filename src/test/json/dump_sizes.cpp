@@ -23,7 +23,7 @@ namespace tao::json
       std::cout << "std::vector< json::value >: " << sizeof( std::vector< value > ) << std::endl;
       std::cout << "std::list< json::value >: " << sizeof( std::list< value > ) << std::endl;
 
-      std::cout << "std::map< std::string, json::value >: " << sizeof( std::map< std::string, value > ) << std::endl;
+      std::cout << "std::map< std::string, json::value, std::less<> >: " << sizeof( std::map< std::string, value, std::less<> > ) << std::endl;
       std::cout << "std::multimap< std::string, json::value >: " << sizeof( std::multimap< std::string, value > ) << std::endl;
       std::cout << "std::unordered_map< std::string, json::value >: " << sizeof( std::unordered_map< std::string, value > ) << std::endl;
       std::cout << "std::unordered_multimap< std::string, json::value >: " << sizeof( std::unordered_multimap< std::string, value > ) << std::endl;

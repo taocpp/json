@@ -126,7 +126,7 @@ namespace tao::json
 
    void test_map()
    {
-      const std::map< std::string, std::uint64_t > f = { { "a", 1 }, { "b", 2 }, { "c", 3 } };
+      const std::map< std::string, std::uint64_t, std::less<> > f = { { "a", 1 }, { "b", 2 }, { "c", 3 } };
       value v = f;
       TEST_ASSERT( v == f );
       TEST_ASSERT( v.is_object() );
@@ -134,10 +134,10 @@ namespace tao::json
       TEST_ASSERT( v[ "a" ] == 1 );
       TEST_ASSERT( v[ "b" ] == 2 );
       TEST_ASSERT( v[ "c" ] == 3 );
-      const auto g = v.as< std::map< std::string, std::uint64_t > >();
+      const auto g = v.as< std::map< std::string, std::uint64_t, std::less<> > >();
       TEST_ASSERT( g == f );
 
-      const std::map< std::string, std::uint64_t > h = { { "a", 1 }, { "b", 3 }, { "c", 1 } };
+      const std::map< std::string, std::uint64_t, std::less<> > h = { { "a", 1 }, { "b", 3 }, { "c", 1 } };
       TEST_ASSERT( h != v );
       TEST_ASSERT( h > v );
       TEST_ASSERT( h >= v );
@@ -151,7 +151,7 @@ namespace tao::json
       TEST_ASSERT( !( v >= h ) );
       TEST_ASSERT( !( v == h ) );
 
-      const std::map< std::string, std::uint64_t > i = { { "a", 1 }, { "c", 2 }, { "d", 0 } };
+      const std::map< std::string, std::uint64_t, std::less<> > i = { { "a", 1 }, { "c", 2 }, { "d", 0 } };
       TEST_ASSERT( i != v );
       TEST_ASSERT( i > v );
       TEST_ASSERT( i >= v );
