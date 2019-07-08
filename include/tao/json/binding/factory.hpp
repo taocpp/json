@@ -116,7 +116,7 @@ namespace tao::json::binding
       using as_func_t = Pointer< Base > ( * )( const basic_value< Traits >&, With&... );
 
       template< typename V, template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
-      static void emplace_as( std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > > >& m )
+      static void emplace_as( std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > >, std::less<> >& m )
       {
          using W = typename V::template bind< Base, Pointer >;
          m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Pointer, Base, With... > >( &W::template as< Traits, With... > ) );
@@ -125,8 +125,8 @@ namespace tao::json::binding
       template< template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
       static void to( const basic_value< Traits >& v, Pointer< Base >& r, With&... with )
       {
-         static const std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > > > m = []() {
-            std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > > > t;
+         static const std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > >, std::less<> > m = []() {
+            std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > >, std::less<> > t;
             ( emplace_as< Ts >( t ), ... );
             assert( t.size() == sizeof...( Ts ) );
             return t;
@@ -181,7 +181,7 @@ namespace tao::json::binding
       }
 
       template< typename V, template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename Producer, typename F >
-      static void emplace_consume( std::map< std::string, entry1< F > >& m )
+      static void emplace_consume( std::map< std::string, entry1< F >, std::less<> >& m )
       {
          using W = typename V::template bind< Base, Pointer >;
          m.emplace( W::template key< Traits >(), entry1< F >( &W::template consume< Traits, Producer > ) );
@@ -191,8 +191,8 @@ namespace tao::json::binding
       static void consume( Producer& parser, Pointer< Base >& r )
       {
          using F = Pointer< Base > ( * )( Producer& );
-         static const std::map< std::string, entry1< F > > m = []() {
-            std::map< std::string, entry1< F > > t;
+         static const std::map< std::string, entry1< F >, std::less<> > m = []() {
+            std::map< std::string, entry1< F >, std::less<> > t;
             ( emplace_consume< Ts, Traits, Pointer, Base, Producer >( t ), ... );
             return t;
          }();

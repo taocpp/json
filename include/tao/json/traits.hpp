@@ -793,20 +793,20 @@ namespace tao::json
    };
 
    template< template< typename... > class Traits >
-   struct traits< std::map< std::string, basic_value< Traits > > >
+   struct traits< std::map< std::string, basic_value< Traits >, std::less<> > >
    {
-      static void assign( basic_value< Traits >& v, const std::map< std::string, basic_value< Traits > >& o )
+      static void assign( basic_value< Traits >& v, const std::map< std::string, basic_value< Traits >, std::less<> >& o )
       {
          v.unsafe_assign_object( std::move( o ) );
       }
 
-      static void assign( basic_value< Traits >& v, std::map< std::string, basic_value< Traits > >&& o ) noexcept
+      static void assign( basic_value< Traits >& v, std::map< std::string, basic_value< Traits >, std::less<> >&& o ) noexcept
       {
          v.unsafe_assign_object( std::move( o ) );
       }
 
       template< template< typename... > class, typename Consumer >
-      static void produce( Consumer& c, const std::map< std::string, basic_value< Traits > >& o )
+      static void produce( Consumer& c, const std::map< std::string, basic_value< Traits >, std::less<> >& o )
       {
          c.begin_object( o.size() );
          for( const auto& i : o ) {
@@ -818,7 +818,7 @@ namespace tao::json
       }
 
       template< template< typename... > class, typename Consumer >
-      static void produce( Consumer& c, std::map< std::string, basic_value< Traits > >&& o )
+      static void produce( Consumer& c, std::map< std::string, basic_value< Traits >, std::less<> >&& o )
       {
          c.begin_object( o.size() );
          for( auto&& i : o ) {

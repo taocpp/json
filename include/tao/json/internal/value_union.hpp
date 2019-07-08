@@ -50,7 +50,7 @@ namespace tao::json::internal
       tao::binary_view xv;
 
       std::vector< T > a;
-      std::map< std::string, T > o;
+      std::map< std::string, T, std::less<> > o;
 
       const T* p;
       opaque_ptr_t q;
