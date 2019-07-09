@@ -1024,50 +1024,58 @@ namespace tao::json
          return *p;
       }
 
-      [[nodiscard]] basic_value* unsafe_find( const std::size_t index ) noexcept
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, basic_value* > unsafe_find( Index&& index ) noexcept
       {
-         return ( index < m_union.a.size() ) ? ( m_union.a.data() + index ) : nullptr;
+         return ( static_cast< std::size_t >( index ) < m_union.a.size() ) ? ( m_union.a.data() + static_cast< std::size_t >( index ) ) : nullptr;
       }
 
-      [[nodiscard]] const basic_value* unsafe_find( const std::size_t index ) const noexcept
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, const basic_value* > unsafe_find( Index&& index ) const noexcept
       {
-         return ( index < m_union.a.size() ) ? ( m_union.a.data() + index ) : nullptr;
+         return ( static_cast< std::size_t >( index ) < m_union.a.size() ) ? ( m_union.a.data() + static_cast< std::size_t >( index ) ) : nullptr;
       }
 
-      [[nodiscard]] basic_value* find( const std::size_t index )
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, basic_value* > find( Index&& index )
       {
          validate_json_type( json::type::ARRAY );
          return unsafe_find( index );
       }
 
-      [[nodiscard]] const basic_value* find( const std::size_t index ) const
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, const basic_value* > find( Index&& index ) const
       {
          validate_json_type( json::type::ARRAY );
          return unsafe_find( index );
       }
 
-      [[nodiscard]] basic_value* unsafe_find( const std::string& key ) noexcept
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t >, basic_value* > unsafe_find( Key&& key ) noexcept
       {
-         const auto it = m_union.o.find( key );
+         const auto it = m_union.o.find( std::forward< Key >( key ) );
          return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
       }
 
-      [[nodiscard]] const basic_value* unsafe_find( const std::string& key ) const noexcept
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t >, const basic_value* > unsafe_find( Key&& key ) const noexcept
       {
-         const auto it = m_union.o.find( key );
+         const auto it = m_union.o.find( std::forward< Key >( key ) );
          return ( it != m_union.o.end() ) ? ( &it->second ) : nullptr;
       }
 
-      [[nodiscard]] basic_value* find( const std::string& key )
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t > && !std::is_convertible_v< Key, pointer >, basic_value* > find( Key&& key )
       {
          validate_json_type( json::type::OBJECT );
-         return unsafe_find( key );
+         return unsafe_find( std::forward< Key >( key ) );
       }
 
-      [[nodiscard]] const basic_value* find( const std::string& key ) const
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t > && !std::is_convertible_v< Key, pointer >, const basic_value* > find( Key&& key ) const
       {
          validate_json_type( json::type::OBJECT );
-         return unsafe_find( key );
+         return unsafe_find( std::forward< Key >( key ) );
       }
 
       [[nodiscard]] basic_value* find( const pointer& k )
@@ -1080,47 +1088,54 @@ namespace tao::json
          return internal::pointer_find( this, k.begin(), k.end() );
       }
 
-      [[nodiscard]] basic_value& unsafe_at( const std::size_t index ) noexcept
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, basic_value& > unsafe_at( Index&& index ) noexcept
       {
          return m_union.a[ index ];
       }
 
-      [[nodiscard]] const basic_value& unsafe_at( const std::size_t index ) const noexcept
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, const basic_value& > unsafe_at( Index&& index ) const noexcept
       {
          return m_union.a[ index ];
       }
 
-      [[nodiscard]] basic_value& unsafe_at( const std::string& key ) noexcept
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t >, basic_value& > unsafe_at( Key&& key ) noexcept
       {
-         return m_union.o.find( key )->second;
+         return m_union.o.find( std::forward< Key >( key ) )->second;
       }
 
-      [[nodiscard]] const basic_value& unsafe_at( const std::string& key ) const noexcept
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t >, const basic_value& > unsafe_at( Key&& key ) const noexcept
       {
-         return m_union.o.find( key )->second;
+         return m_union.o.find( std::forward< Key >( key ) )->second;
       }
 
-      [[nodiscard]] basic_value& at( const std::size_t index )
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, basic_value& > at( Index&& index )
       {
          validate_json_type( json::type::ARRAY );
          auto& a = m_union.a;
-         if( index >= a.size() ) {
+         if( static_cast< std::size_t >( index ) >= a.size() ) {
             throw_index_out_of_bound_exception( index );
          }
          return a[ index ];
       }
 
-      [[nodiscard]] const basic_value& at( const std::size_t index ) const
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, const basic_value& > at( Index&& index ) const
       {
          validate_json_type( json::type::ARRAY );
          const auto& a = m_union.a;
-         if( index >= a.size() ) {
+         if( static_cast< std::size_t >( index ) >= a.size() ) {
             throw_index_out_of_bound_exception( index );
          }
          return a[ index ];
       }
 
-      [[nodiscard]] basic_value& at( const std::string& key )
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t >, basic_value& > at( const Key& key )
       {
          validate_json_type( json::type::OBJECT );
          const auto it = m_union.o.find( key );
@@ -1130,7 +1145,8 @@ namespace tao::json
          return it->second;
       }
 
-      [[nodiscard]] const basic_value& at( const std::string& key ) const
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t >, const basic_value& > at( const Key& key ) const
       {
          validate_json_type( json::type::OBJECT );
          const auto it = m_union.o.find( key );
@@ -1150,28 +1166,25 @@ namespace tao::json
          return internal::pointer_at( this, k.begin(), k.end() );
       }
 
-      [[nodiscard]] basic_value& operator[]( const std::size_t index ) noexcept
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, basic_value& > operator[]( Index&& index ) noexcept
       {
          assert( m_type == json::type::ARRAY );
          return m_union.a[ index ];
       }
 
-      [[nodiscard]] const basic_value& operator[]( const std::size_t index ) const noexcept
+      template< typename Index >
+      [[nodiscard]] std::enable_if_t< std::is_convertible_v< Index, std::size_t >, const basic_value& > operator[]( Index&& index ) const noexcept
       {
          assert( m_type == json::type::ARRAY );
          return m_union.a[ index ];
       }
 
-      [[nodiscard]] basic_value& operator[]( const std::string& key )
+      template< typename Key >
+      [[nodiscard]] std::enable_if_t< !std::is_convertible_v< Key, std::size_t > && !std::is_convertible_v< Key, pointer >, basic_value& > operator[]( Key&& key )
       {
          prepare_object();
-         return m_union.o[ key ];
-      }
-
-      [[nodiscard]] basic_value& operator[]( std::string&& key )
-      {
-         prepare_object();
-         return m_union.o[ std::move( key ) ];
+         return m_union.o[ std::forward< Key >( key ) ];
       }
 
       [[nodiscard]] basic_value& operator[]( const pointer& k )
@@ -1309,7 +1322,8 @@ namespace tao::json
          a.erase( a.begin() + index );
       }
 
-      void erase( const std::string& key )
+      template< typename Key >
+      std::enable_if_t< !std::is_convertible_v< Key, std::size_t > && !std::is_convertible_v< Key, pointer > > erase( const Key& key )
       {
          validate_json_type( json::type::OBJECT );
          if( m_union.o.erase( key ) == 0 ) {
