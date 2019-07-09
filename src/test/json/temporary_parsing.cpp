@@ -278,7 +278,7 @@ namespace tao::json
       }
       {
          parts_parser pp( " { \"a\" : 4, \"b\" : 5 } ", __FUNCTION__ );
-         const auto v = consume< std::map< std::string, int >, my_traits >( pp );
+         const auto v = consume< std::map< std::string, int, std::less<> >, my_traits >( pp );
          TEST_ASSERT( v.size() == 2 );
          TEST_ASSERT( v.at( "a" ) == 4 );
          TEST_ASSERT( v.at( "b" ) == 5 );

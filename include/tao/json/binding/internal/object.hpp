@@ -75,7 +75,7 @@ namespace tao::json::binding::internal
       }
 
       template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename F >
-      static void emplace_to( std::map< std::string, entry< F > >& m )
+      static void emplace_to( std::map< std::string, entry< F >, std::less<> >& m )
       {
          m.emplace( A::template key< Traits >(), entry< F >( &basic_object::to_wrapper< A, C, Traits >, I ) );
       }
@@ -84,8 +84,8 @@ namespace tao::json::binding::internal
       static void to( const basic_value< Traits >& v, C& x )
       {
          using F = void ( * )( const basic_value< Traits >&, C& );
-         static const std::map< std::string, entry< F > > m = []() {
-            std::map< std::string, entry< F > > t;
+         static const std::map< std::string, entry< F >, std::less<> > m = []() {
+            std::map< std::string, entry< F >, std::less<> > t;
             ( emplace_to< As, Is, C, Traits >( t ), ... );
             assert( t.size() == sizeof...( As ) );  // TODO: Check for duplicate keys at compile time?
             return t;
@@ -153,7 +153,7 @@ namespace tao::json::binding::internal
       }
 
       template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename Producer, typename F >
-      static void emplace_consume( std::map< std::string, entry< F > >& m )
+      static void emplace_consume( std::map< std::string, entry< F >, std::less<> >& m )
       {
          m.emplace( A::template key< Traits >(), entry< F >( &basic_object::consume_wrapper< A, C, Traits, Producer >, I ) );
       }
@@ -162,8 +162,8 @@ namespace tao::json::binding::internal
       static void consume( Producer& parser, C& x )
       {
          using F = void ( * )( Producer&, C& );
-         static const std::map< std::string, entry< F > > m = []() {
-            std::map< std::string, entry< F > > t;
+         static const std::map< std::string, entry< F >, std::less<> > m = []() {
+            std::map< std::string, entry< F >, std::less<> > t;
             ( emplace_consume< As, Is, C, Traits, Producer >( t ), ... );
             assert( t.size() == sizeof...( As ) );  // TODO: Check for duplicate keys at compile time?
             return t;
@@ -235,7 +235,7 @@ namespace tao::json::binding::internal
       }
 
       template< typename A, template< typename... > class Traits, typename C >
-      [[nodiscard]] static bool equal_member( const std::map< std::string, basic_value< Traits > >& a, C& x )
+      [[nodiscard]] static bool equal_member( const std::map< std::string, basic_value< Traits >, std::less<> >& a, C& x )
       {
          if( !A::template is_nothing< Traits >( x ) ) {
             return a.at( A::template key< Traits >() ) == A::read( x );

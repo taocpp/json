@@ -44,7 +44,7 @@ namespace tao::json
       static_assert( std::is_nothrow_move_assignable_v< public_base_t > );
 
       using array_t = std::vector< basic_value >;
-      using object_t = std::map< std::string, basic_value >;
+      using object_t = std::map< std::string, basic_value, std::less<> >;
 
       basic_value() noexcept = default;
 
