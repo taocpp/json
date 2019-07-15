@@ -39,14 +39,17 @@ namespace tao::json
    {
    public:
       using public_base_t = typename Traits< void >::template public_base< basic_value< Traits > >;
-      static_assert( std::is_nothrow_default_constructible_v< public_base_t > );
+
       static_assert( std::is_nothrow_move_constructible_v< public_base_t > );
       static_assert( std::is_nothrow_move_assignable_v< public_base_t > );
 
       using array_t = std::vector< basic_value >;
       using object_t = std::map< std::string, basic_value, std::less<> >;
 
-      basic_value() noexcept = default;
+      basic_value() noexcept( std::is_nothrow_default_constructible_v< public_base_t > )
+      {
+         // TODO: noexcept?
+      }
 
       basic_value( const basic_value& r )
          : public_base_t( static_cast< const public_base_t& >( r ) ),
@@ -63,11 +66,17 @@ namespace tao::json
          seize( std::move( r ) );
       }
 
+      basic_value( const uninitialized_t /*unused*/, public_base_t b ) noexcept
+         : public_base_t( std::move( b ) )
+      {
+      }
+
       template< typename T,
                 typename = std::enable_if_t< internal::enable_implicit_constructor< Traits, std::decay_t< T > > >,
                 typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
-      basic_value( T&& v )  // NOLINT
+      basic_value( T&& v, public_base_t b = public_base_t() )  // NOLINT
          noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+         : public_base_t( std::move( b ) )
       {
          if constexpr( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) ) {
             using D = std::decay_t< T >;
@@ -92,7 +101,8 @@ namespace tao::json
                 typename = std::enable_if_t< !internal::enable_implicit_constructor< Traits, std::decay_t< T > > >,
                 typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ),
                 int = 0 >
-      explicit basic_value( T&& v ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      explicit basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+         : public_base_t( std::move( b ) )
       {
          if constexpr( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) ) {
             using D = std::decay_t< T >;
@@ -113,7 +123,8 @@ namespace tao::json
          }
       }
 
-      basic_value( std::initializer_list< internal::pair< Traits > >&& l )
+      basic_value( std::initializer_list< internal::pair< Traits > >&& l, public_base_t b = public_base_t() )
+         : public_base_t( std::move( b ) )
       {
          try {
             unsafe_assign( std::move( l ) );
@@ -127,7 +138,8 @@ namespace tao::json
          }
       }
 
-      basic_value( const std::initializer_list< internal::pair< Traits > >& l )
+      basic_value( const std::initializer_list< internal::pair< Traits > >& l, public_base_t b = public_base_t() )
+         : public_base_t( std::move( b ) )
       {
          try {
             unsafe_assign( l );
@@ -141,8 +153,8 @@ namespace tao::json
          }
       }
 
-      basic_value( std::initializer_list< internal::pair< Traits > >& l )
-         : basic_value( static_cast< const std::initializer_list< internal::pair< Traits > >& >( l ) )
+      basic_value( std::initializer_list< internal::pair< Traits > >& l, public_base_t b = public_base_t() )
+         : basic_value( static_cast< const std::initializer_list< internal::pair< Traits > >& >( l ), std::move( b ) )
       {}
 
       ~basic_value() noexcept
@@ -153,30 +165,30 @@ namespace tao::json
 #endif
       }
 
-      [[nodiscard]] static basic_value array( std::initializer_list< internal::single< Traits > >&& l )
+      [[nodiscard]] static basic_value array( std::initializer_list< internal::single< Traits > >&& l, public_base_t b = public_base_t() )
       {
-         basic_value v;
+         basic_value v( uninitialized, std::move( b ) );
          v.append( std::move( l ) );
          return v;
       }
 
-      [[nodiscard]] static basic_value array( const std::initializer_list< internal::single< Traits > >& l )
+      [[nodiscard]] static basic_value array( const std::initializer_list< internal::single< Traits > >& l, public_base_t b = public_base_t() )
       {
-         basic_value v;
+         basic_value v( uninitialized, std::move( b ) );
          v.append( l );
          return v;
       }
 
-      [[nodiscard]] static basic_value object( std::initializer_list< internal::pair< Traits > >&& l )
+      [[nodiscard]] static basic_value object( std::initializer_list< internal::pair< Traits > >&& l, public_base_t b = public_base_t() )
       {
-         basic_value v;
+         basic_value v( uninitialized, std::move( b ) );
          v.insert( std::move( l ) );
          return v;
       }
 
-      [[nodiscard]] static basic_value object( const std::initializer_list< internal::pair< Traits > >& l )
+      [[nodiscard]] static basic_value object( const std::initializer_list< internal::pair< Traits > >& l, public_base_t b = public_base_t() )
       {
-         basic_value v;
+         basic_value v( uninitialized, std::move( b ) );
          v.insert( l );
          return v;
       }
@@ -737,6 +749,16 @@ namespace tao::json
          Traits< D >::assign( *this, std::forward< T >( v ) );
       }
 
+      // TODO: Rename unsafe_assign( v ) to unsafe_assign_only_value( v ) and change unsafe_assign( v, b ) to unsafe_assign( v, b = public_base_t() )?
+
+      template< typename T >
+      void unsafe_assign( T&& v, public_base_t b ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      {
+         using D = std::decay_t< T >;
+         Traits< D >::assign( *this, std::forward< T >( v ) );
+         public_base() = std::move( b );
+      }
+
       void unsafe_assign( std::initializer_list< internal::pair< Traits > >&& l )
       {
          unsafe_emplace_object();
@@ -1000,6 +1022,15 @@ namespace tao::json
       {
          unsafe_discard();
          unsafe_assign( std::forward< T >( v ) );
+      }
+
+      // TODO: Rename assign( v ) to assign_only_value( v ) and change assign( v, b ) to assign( v, b = public_base_t() )?
+
+      template< typename T >
+      void assign( T&& v, public_base_t b ) noexcept( noexcept( unsafe_assign< T >( std::forward< T >( v ) ) ) )
+      {
+         unsafe_discard();
+         unsafe_assign( std::forward< T >( v ), std::move( b ) );
       }
 
       void assign( std::initializer_list< internal::pair< Traits > >&& l )

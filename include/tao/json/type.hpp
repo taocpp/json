@@ -108,11 +108,19 @@ namespace tao::json
       constexpr explicit empty_object_t( int /*unused*/ ) {}
    };
 
-   constexpr null_t null{ 0 };                  // NOLINT
+   struct uninitialized_t
+   {
+      constexpr explicit uninitialized_t( int /*unused*/ ) {}
+   };
+
+   constexpr null_t null{ 0 };  // NOLINT
+
    constexpr empty_string_t empty_string{ 0 };  // NOLINT
    constexpr empty_binary_t empty_binary{ 0 };  // NOLINT
    constexpr empty_array_t empty_array{ 0 };    // NOLINT
    constexpr empty_object_t empty_object{ 0 };  // NOLINT
+
+   constexpr uninitialized_t uninitialized{ 0 };  // NOLINT
 
 }  // namespace tao::json
 

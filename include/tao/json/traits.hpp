@@ -891,10 +891,10 @@ namespace tao::json
       static void assign( basic_value< Traits >& v, const std::optional< T >& o )
       {
          if( o ) {
-            v = *o;
+            v.unsafe_assign( *o );
          }
          else {
-            v = null;
+            v.unsafe_assign_null();
          }
       }
 
