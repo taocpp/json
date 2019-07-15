@@ -46,10 +46,7 @@ namespace tao::json
       using array_t = std::vector< basic_value >;
       using object_t = std::map< std::string, basic_value, std::less<> >;
 
-      basic_value() noexcept( std::is_nothrow_default_constructible_v< public_base_t > )
-      {
-         // TODO: noexcept?
-      }
+      basic_value() noexcept( std::is_nothrow_default_constructible_v< public_base_t > ) = default;
 
       basic_value( const basic_value& r )
          : public_base_t( static_cast< const public_base_t& >( r ) ),
