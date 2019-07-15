@@ -40,13 +40,14 @@ namespace tao::json
    public:
       using public_base_t = typename Traits< void >::template public_base< basic_value< Traits > >;
 
+      static_assert( !std::is_default_constructible_v< public_base_t > || std::is_nothrow_default_constructible_v< public_base_t > );
       static_assert( std::is_nothrow_move_constructible_v< public_base_t > );
       static_assert( std::is_nothrow_move_assignable_v< public_base_t > );
 
       using array_t = std::vector< basic_value >;
       using object_t = std::map< std::string, basic_value, std::less<> >;
 
-      basic_value() noexcept( std::is_nothrow_default_constructible_v< public_base_t > ) = default;
+      basic_value() noexcept = default;
 
       basic_value( const basic_value& r )
          : public_base_t( static_cast< const public_base_t& >( r ) ),
@@ -746,8 +747,6 @@ namespace tao::json
          Traits< D >::assign( *this, std::forward< T >( v ) );
       }
 
-      // TODO: Rename unsafe_assign( v ) to unsafe_assign_only_value( v ) and change unsafe_assign( v, b ) to unsafe_assign( v, b = public_base_t() )?
-
       template< typename T >
       void unsafe_assign( T&& v, public_base_t b ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
       {
@@ -1020,8 +1019,6 @@ namespace tao::json
          unsafe_discard();
          unsafe_assign( std::forward< T >( v ) );
       }
-
-      // TODO: Rename assign( v ) to assign_only_value( v ) and change assign( v, b ) to assign( v, b = public_base_t() )?
 
       template< typename T >
       void assign( T&& v, public_base_t b ) noexcept( noexcept( unsafe_assign< T >( std::forward< T >( v ) ) ) )
