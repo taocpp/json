@@ -18,6 +18,8 @@
 #include "unordered_set_traits.hpp"
 #include "vector_traits.hpp"
 
+#include "vector_bool_traits.hpp"
+
 #include "map_traits.hpp"
 #include "unordered_map_traits.hpp"
 
@@ -77,6 +79,11 @@ namespace tao::json
    template< typename T, typename... Ts >
    struct traits< std::vector< T, Ts... > >
       : public vector_traits< T, Ts... >
+   {};
+
+   template<>
+   struct traits< std::vector< bool > >
+      : public vector_bool_traits
    {};
 
    template< typename T, typename... Ts >

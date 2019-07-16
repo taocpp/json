@@ -176,6 +176,16 @@ namespace tao::json
       TEST_ASSERT( t.value == v );
    }
 
+   void test_vector_bool()
+   {
+      std::vector< bool > g;
+      g.push_back( true );
+      g.push_back( true );
+      g.push_back( false );
+      value v = g;
+      TEST_ASSERT( v.is_array() );
+   }
+
    void unit_test()
    {
       test_shared();
@@ -188,6 +198,8 @@ namespace tao::json
       test_map();
 
       test_pointer();
+
+      test_vector_bool();
    }
 
 }  // namespace tao::json
