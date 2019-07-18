@@ -52,6 +52,7 @@ set(testsources
   ubjson.cpp
   uri_fragment.cpp
   validate_event_interfaces.cpp
+  validate_utf8.cpp
   value_pointer.cpp
   with_arguments.cpp
 )

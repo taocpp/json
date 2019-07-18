@@ -50,6 +50,26 @@ namespace tao::json
          consume_utf8_impl( in, utf8_todo< M >{ todo } );
       }
 
+      template< typename Input >
+      bool validate_utf8( Input& in )
+      {
+         while( !in.empty() ) {
+            if( const auto t = pegtl::internal::peek_utf8::peek( in, in.size( 4 ) ) ) {
+               in.bump_in_this_line( t.size );
+            }
+            else {
+               return false;
+            }
+         }
+         return true;
+      }
+
+      inline bool validate_utf8( const std::string_view sv ) noexcept
+      {
+         pegtl::memory_input in( sv, "validate_utf8" );
+         return validate_utf8( in );
+      }
+
    }  // namespace internal
 
 }  // namespace tao::json
