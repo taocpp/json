@@ -115,7 +115,7 @@ namespace tao::json::ubjson::events
          // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
          os.write( "[$U#", 4 );
          number( std::uint64_t( v.size() ) );
-         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );  // NOLINT
       }
 
       void begin_array()

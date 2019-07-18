@@ -21,7 +21,7 @@ namespace tao::json::events
             Consumer::string( v );
          }
          else {
-            Consumer::binary( tao::binary_view( reinterpret_cast< const std::byte* >( v.data() ), v.size() ) );
+            Consumer::binary( tao::binary_view( reinterpret_cast< const std::byte* >( v.data() ), v.size() ) );  // NOLINT
          }
       }
    };
