@@ -63,7 +63,7 @@ namespace tao::json::internal
    {
       using value_t = typename Result::value_type;
       json::internal::throw_on_empty( in, size );
-      const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
+      const auto* pointer = reinterpret_cast< const value_t* >( in.current() );  // NOLINT
       const Result result( pointer, size );
       json::internal::consume_utf8< U >( in, size );
       return result;

@@ -131,7 +131,7 @@ namespace tao::json::cbor::internal
       const auto size = read_size_unsafe( in );
       json::internal::throw_on_empty( in, size );
       using value_t = typename Result::value_type;
-      const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
+      const auto* pointer = reinterpret_cast< const value_t* >( in.current() );  // NOLINT
       Result result( pointer, size );
       json::internal::consume_utf8< U >( in, size );
       return result;

@@ -48,14 +48,14 @@ namespace tao::json::msgpack::events
       {
          os.put( char( tag ) );
          const Integer x = json::internal::h_to_be( Integer( v ) );
-         os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
+         os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
       }
 
       void number( const std::int64_t v )
       {
          if( ( v >= -32 ) && ( v <= -1 ) ) {
             const auto x = static_cast< std::int8_t >( v );
-            os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
+            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
          }
          else if( ( v >= -128 ) && ( v <= 127 ) ) {
             number_impl< std::uint8_t >( 0xd0, v );
@@ -75,7 +75,7 @@ namespace tao::json::msgpack::events
       {
          if( v <= 127 ) {
             const auto x = static_cast< std::int8_t >( v );
-            os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
+            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
          }
          else if( v <= 255 ) {
             number_impl< std::uint8_t >( 0xcc, v );
@@ -95,7 +95,7 @@ namespace tao::json::msgpack::events
       {
          os.put( char( 0xcb ) );
          const auto x = json::internal::h_to_be( v );
-         os.write( static_cast< const char* >( static_cast< const void* >( &x ) ), sizeof( x ) );
+         os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
       }
 
       void string( const std::string_view v )
@@ -132,7 +132,7 @@ namespace tao::json::msgpack::events
          else {
             throw std::runtime_error( "binary too long for msgpack" );  // NOLINT
          }
-         os.write( static_cast< const char* >( static_cast< const void* >( v.data() ) ), v.size() );
+         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );  // NOLINT
       }
 
       void begin_array()
