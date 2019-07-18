@@ -108,7 +108,7 @@ namespace tao::json::binding::internal
                std::ostringstream oss;
                json::internal::format_to( oss, "unknown object key \"", json::internal::escape( k ), "\" -- known are" );
                list_all_keys( oss, m );
-               json::internal::format_to( oss, " for type ", typeid( C ), json::message_extension( v ) );
+               json::internal::format_to( oss, " for type ", pegtl::internal::demangle< C >(), json::message_extension( v ) );
                throw std::runtime_error( oss.str() );  // NOLINT
             }
             i->second.function( p.second, x );
@@ -119,7 +119,7 @@ namespace tao::json::binding::internal
             std::ostringstream oss;
             json::internal::format_to( oss, "missing requiredrequired key(s)" );
             list_missing_keys( oss, b, m );
-            json::internal::format_to( oss, " for type ", typeid( C ), json::message_extension( v ) );
+            json::internal::format_to( oss, " for type ", pegtl::internal::demangle< C >(), json::message_extension( v ) );
             throw std::runtime_error( oss.str() );  // NOLINT
          }
       }
@@ -187,11 +187,11 @@ namespace tao::json::binding::internal
                std::ostringstream oss;
                json::internal::format_to( oss, "unknown object key \"", json::internal::escape( k ), "\" -- known are" );
                list_all_keys( oss, m );
-               json::internal::format_to( oss, " for type ", typeid( C ) );
+               json::internal::format_to( oss, " for type ", pegtl::internal::demangle< C >() );
                parser.throw_parse_error( oss.str() );  // NOLINT
             }
             if( b.test( i->second.index ) ) {
-               parser.throw_parse_error( json::internal::format( "duplicate object key \"", json::internal::escape( k ), "\" for type ", typeid( C ) ) );
+               parser.throw_parse_error( json::internal::format( "duplicate object key \"", json::internal::escape( k ), "\" for type ", pegtl::internal::demangle< C >() ) );
             }
             i->second.function( parser, x );
             b.set( i->second.index );
@@ -201,7 +201,7 @@ namespace tao::json::binding::internal
             std::ostringstream oss;
             json::internal::format_to( oss, "missing required key(s)" );
             list_missing_keys( oss, b, m );
-            json::internal::format_to( oss, " for type ", typeid( C ) );
+            json::internal::format_to( oss, " for type ", pegtl::internal::demangle< C >() );
             parser.throw_parse_error( oss.str() );  // NOLINT
          }
       }

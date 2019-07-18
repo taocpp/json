@@ -28,11 +28,6 @@ namespace tao::json::internal
       os << to_string( t );
    }
 
-   inline void to_stream( std::ostream& os, const std::type_info& t )
-   {
-      os << pegtl::internal::demangle( t.name() );
-   }
-
    template< typename T >
    void to_stream( std::ostream& os, const T& t )
    {
