@@ -18,6 +18,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
 {
    struct position
    {
+      position() = default;
+
       template< typename T >
       position( const internal::iterator& in_iter, T&& in_source )
          : byte( in_iter.byte ),
