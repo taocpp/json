@@ -23,6 +23,11 @@
 #include "../../internal/parse_util.hpp"
 #include "../../utf8.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4702 )
+#endif
+
 namespace tao::json::cbor::internal
 {
    template< typename Input >
@@ -396,5 +401,9 @@ namespace tao::json::cbor::internal
    using grammar = basic_grammar< utf8_mode::check >;
 
 }  // namespace tao::json::cbor::internal
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #endif

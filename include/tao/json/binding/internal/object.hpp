@@ -215,6 +215,11 @@ namespace tao::json::binding::internal
          return ( std::size_t( !As::template is_nothing< Traits >( x ) ) + ... );
       }
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4127 )
+#endif
+
       template< typename A, template< typename... > class Traits, typename Consumer, typename C >
       static void produce_member( Consumer& consumer, const C& x )
       {
@@ -224,6 +229,10 @@ namespace tao::json::binding::internal
             consumer.member();
          }
       }
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
       template< template< typename... > class Traits = traits, typename Consumer, typename C >
       static void produce( Consumer& consumer, const C& x )

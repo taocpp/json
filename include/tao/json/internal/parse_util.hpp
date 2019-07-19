@@ -10,6 +10,11 @@
 #include "endian.hpp"
 #include "format.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4702 )
+#endif
+
 namespace tao::json::internal
 {
    template< typename Input >
@@ -79,5 +84,9 @@ namespace tao::json::internal
    }
 
 }  // namespace tao::json::internal
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #endif
