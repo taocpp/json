@@ -14,18 +14,16 @@ namespace tao::json
    namespace internal
    {
       template< std::size_t I, typename... Ts >
-      struct getter
+      [[nodiscard]] decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
       {
-         [[nodiscard]] static decltype( auto ) get( std::tuple< Ts... >& t ) noexcept
-         {
-            return std::get< I >( t );
-         }
+         return std::get< I >( t );
+      }
 
-         [[nodiscard]] static decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
-         {
-            return std::get< I >( t );
-         }
-      };
+      template< std::size_t I, typename... Ts >
+      [[nodiscard]] decltype( auto ) cget( const std::tuple< Ts... >& t ) noexcept
+      {
+         return std::get< I >( t );
+      }
 
       template< typename Indices, typename... Ts >
       struct tuple_traits;
@@ -34,7 +32,7 @@ namespace tao::json
       struct tuple_traits< std::index_sequence< Is... >, Ts... >
       {
          template< std::size_t I >
-         using helper_t = binding::element2< &getter< I, Ts... >::cget, &getter< I, Ts... >::get >;
+         using helper_t = binding::element2< &cget< I, Ts... >, &get< I, Ts... > >;
 
          using type = binding::array< helper_t< Is >... >;
       };
