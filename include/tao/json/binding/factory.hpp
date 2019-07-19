@@ -113,7 +113,13 @@ namespace tao::json::binding
       };
 
       template< template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
-      using as_func_t = Pointer< Base > ( * )( const basic_value< Traits >&, With&... );
+      struct as_func
+      {
+         using type = Pointer< Base > ( * )( const basic_value< Traits >&, With&... );
+      };
+
+      template< template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
+      using as_func_t = typename as_func_t< Traits, Pointer, Base, With... >::type;
 
       template< typename V, template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
       static void emplace_as( std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > >, std::less<> >& m )

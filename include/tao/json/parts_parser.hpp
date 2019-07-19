@@ -101,7 +101,7 @@ namespace tao::json
 
       template< typename Rule >
       struct double_action
-         : json::internal::action< Rule >
+         : internal::action< Rule >
       {};
 
       template< bool NEG >
