@@ -122,7 +122,7 @@ namespace tao::json::binding::internal
          b |= o;
          if( !b.all() ) {
             std::ostringstream oss;
-            json::internal::format_to( oss, "missing requiredrequired key(s)" );
+            json::internal::format_to( oss, "missing required key(s)" );
             list_missing_keys( oss, b, m );
             json::internal::format_to( oss, " for type ", pegtl::internal::demangle< C >(), json::message_extension( v ) );
             throw std::runtime_error( oss.str() );  // NOLINT
