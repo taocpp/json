@@ -85,6 +85,9 @@ namespace tao::json::binding
          using bind = factory_type< K, T, Base, Pointer >;
       };
 
+      template< template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
+      using as_func_t = Pointer< Base > ( * )( const basic_value< Traits >&, With&... );
+
    }  // namespace internal
 
    template< typename... Ts >
@@ -112,21 +115,18 @@ namespace tao::json::binding
          std::string name;
       };
 
-      template< template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
-      using as_func_t = Pointer< Base > ( * )( const basic_value< Traits >&, With&... );
-
       template< typename V, template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
-      static void emplace_as( std::map< std::string, entry1< Pointer< Base > ( * )( const basic_value< Traits >&, With&... ) >, std::less<> >& m )
+      static void emplace_as( std::map< std::string, entry1< internal::as_func_t< Traits, Pointer, Base, With... > >, std::less<> >& m )
       {
          using W = typename V::template bind< Base, Pointer >;
-         m.emplace( W::template key< Traits >(), entry1< as_func_t< Traits, Pointer, Base, With... > >( &W::template as< Traits, With... > ) );
+         m.emplace( W::template key< Traits >(), entry1< internal::as_func_t< Traits, Pointer, Base, With... > >( &W::template as< Traits, With... > ) );
       }
 
       template< template< typename... > class Traits, template< typename... > class Pointer, typename Base, typename... With >
       static void to( const basic_value< Traits >& v, Pointer< Base >& r, With&... with )
       {
-         static const std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > >, std::less<> > m = []() {
-            std::map< std::string, entry1< as_func_t< Traits, Pointer, Base, With... > >, std::less<> > t;
+         static const std::map< std::string, entry1< internal::as_func_t< Traits, Pointer, Base, With... > >, std::less<> > m = []() {
+            std::map< std::string, entry1< internal::as_func_t< Traits, Pointer, Base, With... > >, std::less<> > t;
             ( emplace_as< Ts >( t ), ... );
             assert( t.size() == sizeof...( Ts ) );
             return t;
