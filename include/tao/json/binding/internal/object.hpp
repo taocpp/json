@@ -22,6 +22,11 @@
 #include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"
 
+#ifdef _MSC_VER
+#pragma warning( push )
+#pragma warning( disable : 4702 )
+#endif
+
 namespace tao::json::binding::internal
 {
    template< for_unknown_key E, for_nothing_value N, typename T, typename L = std::make_index_sequence< T::size > >
@@ -269,5 +274,9 @@ namespace tao::json::binding::internal
    };
 
 }  // namespace tao::json::binding::internal
+
+#ifdef _MSC_VER
+#pragma warning( pop )
+#endif
 
 #endif
