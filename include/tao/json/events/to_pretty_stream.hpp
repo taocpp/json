@@ -29,7 +29,7 @@ namespace tao::json::events
    class to_pretty_stream
    {
    protected:
-      alignas( 64 ) char buffer[ 64 ];
+      char buffer[ 32 ];
       std::ostream& os;
       const std::size_t indent;
       const std::string eol;
