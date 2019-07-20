@@ -16,14 +16,14 @@ namespace tao::json::binding
    template< member_kind R, typename K, auto P >
    struct member
       : public element< P >,
-        public internal::type_key< K, typename element< P >::internal_t >
+        public internal::type_key< K, typename binding::element< P >::internal_t >
    {
       static constexpr member_kind kind = R;
 
       template< template< typename... > class Traits, typename C >
       [[nodiscard]] static bool is_nothing( const C& x )
       {
-         return json::internal::is_nothing< Traits >( element< P >::read( x ) );
+         return json::internal::is_nothing< Traits >( binding::element< P >::read( x ) );
       }
    };
 
