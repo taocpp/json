@@ -47,16 +47,28 @@ namespace tao::json::get
       return basic_value< Traits >();
    }
 
-   template< typename T, typename U = T, template< typename... > class Traits >
+   template< typename T, typename U, template< typename... > class Traits >
    [[nodiscard]] T as( const basic_value< Traits >& v )
    {
       return v.skip_value_ptr().template as< U >();
    }
 
-   template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
+   template< typename T, template< typename... > class Traits >
+   [[nodiscard]] auto as( const basic_value< Traits >& v )
+   {
+      return as< T, T >( v );
+   }
+
+   template< typename T, typename U, template< typename... > class Traits, typename K, typename... Ks >
    [[nodiscard]] T as( const basic_value< Traits >& v, const K& key, Ks&&... ks )
    {
       return get::as< T, U >( v.skip_value_ptr().at( key ), ks... );
+   }
+
+   template< typename T, template< typename... > class Traits, typename K, typename... Ks >
+   [[nodiscard]] auto as( const basic_value< Traits >& v, const K& key, Ks&&... ks )
+   {
+      return as< T, T >( v, key, ks... );
    }
 
    template< typename T, template< typename... > class Traits >
@@ -71,7 +83,7 @@ namespace tao::json::get
       get::to( v.skip_value_ptr().at( key ), t, ks... );
    }
 
-   template< typename T, typename U = T, template< typename... > class Traits >
+   template< typename T, typename U, template< typename... > class Traits >
    [[nodiscard]] std::optional< T > optional( const basic_value< Traits >& v )
    {
       if( v ) {
@@ -80,7 +92,13 @@ namespace tao::json::get
       return std::nullopt;
    }
 
-   template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
+   template< typename T, template< typename... > class Traits >
+   [[nodiscard]] auto optional( const basic_value< Traits >& v )
+   {
+      return optional< T, T >( v );
+   }
+
+   template< typename T, typename U, template< typename... > class Traits, typename K, typename... Ks >
    [[nodiscard]] std::optional< T > optional( const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
       if( v ) {
@@ -91,7 +109,13 @@ namespace tao::json::get
       return std::nullopt;
    }
 
-   template< typename T, typename U = T, template< typename... > class Traits >
+   template< typename T, template< typename... > class Traits, typename K, typename... Ks >
+   [[nodiscard]] auto optional( const basic_value< Traits >& v, const K& key, const Ks&... ks )
+   {
+      return optional< T, T >( v, key, ks... );
+   }
+
+   template< typename T, typename U, template< typename... > class Traits >
    [[nodiscard]] T defaulted( const T& t, const basic_value< Traits >& v )
    {
       if( v ) {
@@ -100,7 +124,13 @@ namespace tao::json::get
       return t;
    }
 
-   template< typename T, typename U = T, template< typename... > class Traits, typename K, typename... Ks >
+   template< typename T, template< typename... > class Traits >
+   [[nodiscard]] auto defaulted( const T& t, const basic_value< Traits >& v )
+   {
+      return defaulted< T, T >( t, v );
+   }
+
+   template< typename T, typename U, template< typename... > class Traits, typename K, typename... Ks >
    [[nodiscard]] T defaulted( const T& t, const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
       if( v ) {
@@ -109,6 +139,12 @@ namespace tao::json::get
          }
       }
       return t;
+   }
+
+   template< typename T, template< typename... > class Traits, typename K, typename... Ks >
+   [[nodiscard]] auto defaulted( const T& t, const basic_value< Traits >& v, const K& key, const Ks&... ks )
+   {
+      return defaulted< T, T >( t, v, key, ks... );
    }
 
 }  // namespace tao::json::get
