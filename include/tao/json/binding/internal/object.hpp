@@ -68,7 +68,7 @@ namespace tao::json::binding::internal
    };
 
    template< typename A, typename C, template< typename... > class Traits >
-   static void to_wrapper( const basic_value< Traits >& v, C& x )
+   void to_wrapper( const basic_value< Traits >& v, C& x )
    {
       A::template to< Traits >( v, x );
    }
@@ -77,13 +77,13 @@ namespace tao::json::binding::internal
    auto to_to_map( std::index_sequence< Is... > )
    {
       using F = void ( * )( const basic_value< Traits >&, C& );
-      std::map< std::string, entry< F >, std::less<> > r;
-      ( r.emplace( As::template key< Traits >(), entry< F >( &to_wrapper< As, C, Traits >, Is ) ), ... );
-      return r;
+      return std::map< std::string, entry< F >, std::less<> >{
+         { As::template key< Traits >(), { &to_wrapper< As, C, Traits >, Is } }...
+      };
    }
 
    template< typename A, typename C, template< typename... > class Traits, typename Producer >
-   static void consume_wrapper( Producer& p, C& x )
+   void consume_wrapper( Producer& p, C& x )
    {
       A::template consume< Traits, Producer >( p, x );
    }
@@ -92,9 +92,9 @@ namespace tao::json::binding::internal
    auto to_consume_map( std::index_sequence< Is... > )
    {
       using F = void ( * )( Producer&, C& );
-      std::map< std::string, entry< F >, std::less<> > r;
-      ( r.emplace( As::template key< Traits >(), entry< F >( &consume_wrapper< As, C, Traits, Producer >, Is ) ), ... );
-      return r;
+      return std::map< std::string, entry< F >, std::less<> >{
+         { As::template key< Traits >(), { &consume_wrapper< As, C, Traits, Producer >, Is } }...
+      };
    }
 
    template< for_unknown_key E, for_nothing_value N, typename T >
