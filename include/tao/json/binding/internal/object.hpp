@@ -51,8 +51,7 @@ namespace tao::json::binding::internal
    auto to_bitset( std::index_sequence< Is... > ) noexcept
    {
       std::bitset< sizeof...( As ) > r;
-      std::size_t s = 0;
-      ( r.set( s++, As::kind == member_kind::optional ), ... );
+      ( r.set( Is, As::kind == member_kind::optional ), ... );
       return r;
    }
 
