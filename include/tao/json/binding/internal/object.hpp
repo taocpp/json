@@ -48,7 +48,7 @@ namespace tao::json::binding::internal
    }
 
    template< typename... As, std::size_t... Is >
-   auto to_bitset( std::index_sequence< Is... > ) noexcept
+   auto to_bitset( std::index_sequence< Is... > /*unused*/ ) noexcept
    {
       std::bitset< sizeof...( As ) > r;
       ( r.set( Is, As::kind == member_kind::optional ), ... );
@@ -74,7 +74,7 @@ namespace tao::json::binding::internal
    }
 
    template< template< typename... > class Traits, typename C, typename... As, std::size_t... Is >
-   auto to_to_map( std::index_sequence< Is... > )
+   auto to_to_map( std::index_sequence< Is... > /*unused*/ )
    {
       using F = void ( * )( const basic_value< Traits >&, C& );
       return std::map< std::string, entry< F >, std::less<> >{
@@ -89,7 +89,7 @@ namespace tao::json::binding::internal
    }
 
    template< typename C, template< typename... > class Traits, typename Producer, typename... As, std::size_t... Is >
-   auto to_consume_map( std::index_sequence< Is... > )
+   auto to_consume_map( std::index_sequence< Is... > /*unused*/ )
    {
       using F = void ( * )( Producer&, C& );
       return std::map< std::string, entry< F >, std::less<> >{
