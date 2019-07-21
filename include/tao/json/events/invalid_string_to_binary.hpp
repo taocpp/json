@@ -5,6 +5,7 @@
 #define TAO_JSON_EVENTS_INVALID_STRING_TO_BINARY_HPP
 
 #include <utility>
+#include <vector>
 
 #include "../binary_view.hpp"
 #include "../utf8.hpp"
@@ -28,7 +29,8 @@ namespace tao::json::events
             Consumer::string( std::move( v ) );
          }
          else {
-            Consumer::binary( tao::binary_view( reinterpret_cast< const std::byte* >( v.data() ), v.size() ) );  // NOLINT
+            const std::byte* data = reinterpret_cast< const std::byte* >( v.data() );  // NOLINT
+            Consumer::binary( std::vector< std::byte >( data, data + v.size() ) );
          }
       }
 
