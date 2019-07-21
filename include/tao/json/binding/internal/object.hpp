@@ -48,7 +48,7 @@ namespace tao::json::binding::internal
    }
 
    template< typename... As, std::size_t... Is >
-   auto to_bitset( std::index_sequence< Is... > /*unused*/ ) noexcept
+   auto make_bitset( std::index_sequence< Is... > /*unused*/ ) noexcept
    {
       std::bitset< sizeof...( As ) > r;
       ( r.set( Is, As::kind == member_kind::optional ), ... );
@@ -56,44 +56,39 @@ namespace tao::json::binding::internal
    }
 
    template< typename F >
-   struct entry
+   struct wrap
    {
-      entry( F c, std::size_t i )
-         : function( c ),
-           index( i )
-      {}
-
       F function;
       std::size_t index;
    };
 
    template< typename A, typename C, template< typename... > class Traits >
-   void to_wrapper( const basic_value< Traits >& v, C& x )
+   void wrap_to( const basic_value< Traits >& v, C& x )
    {
       A::template to< Traits >( v, x );
    }
 
    template< template< typename... > class Traits, typename C, typename... As, std::size_t... Is >
-   auto to_to_map( std::index_sequence< Is... > /*unused*/ )
+   auto make_map_to( std::index_sequence< Is... > /*unused*/ )
    {
       using F = void ( * )( const basic_value< Traits >&, C& );
-      return std::map< std::string, entry< F >, std::less<> >{
-         { As::template key< Traits >(), { &to_wrapper< As, C, Traits >, Is } }...
+      return std::map< std::string, wrap< F > >{
+         { As::template key< Traits >(), { &wrap_to< As, C, Traits >, Is } }...
       };
    }
 
    template< typename A, typename C, template< typename... > class Traits, typename Producer >
-   void consume_wrapper( Producer& p, C& x )
+   void wrap_consume( Producer& p, C& x )
    {
       A::template consume< Traits, Producer >( p, x );
    }
 
    template< typename C, template< typename... > class Traits, typename Producer, typename... As, std::size_t... Is >
-   auto to_consume_map( std::index_sequence< Is... > /*unused*/ )
+   auto make_map_consume( std::index_sequence< Is... > /*unused*/ )
    {
       using F = void ( * )( Producer&, C& );
-      return std::map< std::string, entry< F >, std::less<> >{
-         { As::template key< Traits >(), { &consume_wrapper< As, C, Traits, Producer >, Is } }...
+      return std::map< std::string, wrap< F > >{
+         { As::template key< Traits >(), { &wrap_consume< As, C, Traits, Producer >, Is } }...
       };
    }
 
@@ -108,8 +103,8 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits, typename C >
       static void to( const basic_value< Traits >& v, C& x )
       {
-         static const auto m = to_to_map< Traits, C, As... >( std::index_sequence_for< As... >() );
-         static const auto o = to_bitset< As... >( std::index_sequence_for< As... >() );
+         static const auto m = make_map_to< Traits, C, As... >( std::index_sequence_for< As... >() );
+         static const auto o = make_bitset< As... >( std::index_sequence_for< As... >() );
 
          const auto& a = v.get_object();
          std::bitset< sizeof...( As ) > b;
@@ -164,8 +159,8 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits = traits, typename Producer, typename C >
       static void consume( Producer& parser, C& x )
       {
-         static const auto m = to_consume_map< C, Traits, Producer, As... >( std::index_sequence_for< As... >() );
-         static const auto o = to_bitset< As... >( std::index_sequence_for< As... >() );
+         static const auto m = make_map_consume< C, Traits, Producer, As... >( std::index_sequence_for< As... >() );
+         static const auto o = make_bitset< As... >( std::index_sequence_for< As... >() );
 
          auto s = parser.begin_object();
          std::bitset< sizeof...( As ) > b;
