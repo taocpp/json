@@ -29,9 +29,6 @@
 
 namespace tao::json::binding::internal
 {
-   template< for_unknown_key E, for_nothing_value N, typename T, typename L = std::make_index_sequence< T::size > >
-   struct basic_object;
-
    template< typename... Ts >
    void list_all_keys( std::ostream& oss, const std::map< std::string, Ts... >& m )
    {
@@ -50,10 +47,40 @@ namespace tao::json::binding::internal
       }
    }
 
+   template< typename... As, std::size_t... Is >
+   auto to_bitset( std::index_sequence< Is... > ) noexcept
+   {
+      std::bitset< sizeof...( As ) > r;
+      std::size_t s = 0;
+      ( r.set( s++, As::kind == member_kind::optional ), ... );
+      return r;
+   }
+
+   template< typename F >
+   struct entry
+   {
+      entry( F c, std::size_t i )
+         : function( c ),
+           index( i )
+      {}
+
+      F function;
+      std::size_t index;
+   };
+
    template< typename A, typename C, template< typename... > class Traits >
    static void to_wrapper( const basic_value< Traits >& v, C& x )
    {
       A::template to< Traits >( v, x );
+   }
+
+   template< template< typename... > class Traits, typename C, typename... As, std::size_t... Is >
+   auto to_to_map( std::index_sequence< Is... > )
+   {
+      using F = void ( * )( const basic_value< Traits >&, C& );
+      std::map< std::string, entry< F >, std::less<> > r;
+      ( r.emplace( As::template key< Traits >(), entry< F >( &to_wrapper< As, C, Traits >, Is ) ), ... );
+      return r;
    }
 
    template< typename A, typename C, template< typename... > class Traits, typename Producer >
@@ -62,33 +89,28 @@ namespace tao::json::binding::internal
       A::template consume< Traits, Producer >( p, x );
    }
 
-   template< for_unknown_key E, for_nothing_value N, typename... As, std::size_t... Is >
-   struct basic_object< E, N, json::internal::type_list< As... >, std::index_sequence< Is... > >
+   template< typename C, template< typename... > class Traits, typename Producer, typename... As, std::size_t... Is >
+   auto to_consume_map( std::index_sequence< Is... > )
+   {
+      using F = void ( * )( Producer&, C& );
+      std::map< std::string, entry< F >, std::less<> > r;
+      ( r.emplace( As::template key< Traits >(), entry< F >( &consume_wrapper< As, C, Traits, Producer >, Is ) ), ... );
+      return r;
+   }
+
+   template< for_unknown_key E, for_nothing_value N, typename T >
+   struct basic_object;
+
+   template< for_unknown_key E, for_nothing_value N, typename... As >
+   struct basic_object< E, N, json::internal::type_list< As... > >
    {
       using members = json::internal::type_list< As... >;
-
-      template< typename F >
-      struct entry
-      {
-         entry( F c, std::size_t i )
-            : function( c ),
-              index( i )
-         {}
-
-         F function;
-         std::size_t index;
-      };
 
       template< template< typename... > class Traits, typename C >
       static void to( const basic_value< Traits >& v, C& x )
       {
-         using F = void ( * )( const basic_value< Traits >&, C& );
-         static const std::map< std::string, entry< F >, std::less<> > m{
-            { As::template key< Traits >(), { &to_wrapper< As, C, Traits >, Is } }...
-         };
-         static const std::bitset< sizeof...( As ) > o{
-            std::string{ ( As::kind == member_kind::optional ? '1' : '0' )... }
-         };
+         static const auto m = to_to_map< Traits, C, As... >( std::index_sequence_for< As... >() );
+         static const auto o = to_bitset< As... >( std::index_sequence_for< As... >() );
 
          const auto& a = v.get_object();
          std::bitset< sizeof...( As ) > b;
@@ -143,13 +165,8 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits = traits, typename Producer, typename C >
       static void consume( Producer& parser, C& x )
       {
-         using F = void ( * )( Producer&, C& );
-         static const std::map< std::string, entry< F >, std::less<> > m{
-            { As::template key< Traits >(), { &consume_wrapper< As, C, Traits, Producer >, Is } }...
-         };
-         static const std::bitset< sizeof...( As ) > o{
-            std::string{ ( As::kind == member_kind::optional ? '1' : '0' )... }
-         };
+         static const auto m = to_consume_map< C, Traits, Producer, As... >( std::index_sequence_for< As... >() );
+         static const auto o = to_bitset< As... >( std::index_sequence_for< As... >() );
 
          auto s = parser.begin_object();
          std::bitset< sizeof...( As ) > b;
