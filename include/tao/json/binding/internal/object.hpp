@@ -50,6 +50,18 @@ namespace tao::json::binding::internal
       }
    }
 
+   template< typename A, typename C, template< typename... > class Traits >
+   static void to_wrapper( const basic_value< Traits >& v, C& x )
+   {
+      A::template to< Traits >( v, x );
+   }
+
+   template< typename A, typename C, template< typename... > class Traits, typename Producer >
+   static void consume_wrapper( Producer& p, C& x )
+   {
+      A::template consume< Traits, Producer >( p, x );
+   }
+
    template< for_unknown_key E, for_nothing_value N, typename... As, std::size_t... Is >
    struct basic_object< E, N, json::internal::type_list< As... >, std::index_sequence< Is... > >
    {
@@ -67,39 +79,16 @@ namespace tao::json::binding::internal
          std::size_t index;
       };
 
-      template< typename A, std::size_t I >
-      static void set_optional_bit( std::bitset< sizeof...( As ) >& t )
-      {
-         t.set( I, A::kind == member_kind::optional );
-      }
-
-      template< typename A, typename C, template< typename... > class Traits >
-      static void to_wrapper( const basic_value< Traits >& v, C& x )
-      {
-         A::template to< Traits >( v, x );
-      }
-
-      template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename F >
-      static void emplace_to( std::map< std::string, entry< F >, std::less<> >& m )
-      {
-         m.emplace( A::template key< Traits >(), entry< F >( &basic_object::to_wrapper< A, C, Traits >, I ) );
-      }
-
       template< template< typename... > class Traits, typename C >
       static void to( const basic_value< Traits >& v, C& x )
       {
          using F = void ( * )( const basic_value< Traits >&, C& );
-         static const std::map< std::string, entry< F >, std::less<> > m = []() {
-            std::map< std::string, entry< F >, std::less<> > t;
-            ( emplace_to< As, Is, C, Traits >( t ), ... );
-            assert( t.size() == sizeof...( As ) );  // TODO: Check for duplicate keys at compile time?
-            return t;
-         }();
-         static const std::bitset< sizeof...( As ) > o = []() {
-            std::bitset< sizeof...( As ) > t;
-            ( set_optional_bit< As, Is >( t ), ... );
-            return t;
-         }();
+         static const std::map< std::string, entry< F >, std::less<> > m{
+            { As::template key< Traits >(), { &to_wrapper< As, C, Traits >, Is } }...
+         };
+         static const std::bitset< sizeof...( As ) > o{
+            std::string{ ( As::kind == member_kind::optional ? '1' : '0' )... }
+         };
 
          const auto& a = v.get_object();
          std::bitset< sizeof...( As ) > b;
@@ -151,33 +140,16 @@ namespace tao::json::binding::internal
          ( assign_member< As >( v, x ), ... );
       }
 
-      template< typename A, typename C, template< typename... > class Traits, typename Producer >
-      static void consume_wrapper( Producer& parser, C& x )
-      {
-         A::template consume< Traits, Producer >( parser, x );
-      }
-
-      template< typename A, std::size_t I, typename C, template< typename... > class Traits, typename Producer, typename F >
-      static void emplace_consume( std::map< std::string, entry< F >, std::less<> >& m )
-      {
-         m.emplace( A::template key< Traits >(), entry< F >( &basic_object::consume_wrapper< A, C, Traits, Producer >, I ) );
-      }
-
       template< template< typename... > class Traits = traits, typename Producer, typename C >
       static void consume( Producer& parser, C& x )
       {
          using F = void ( * )( Producer&, C& );
-         static const std::map< std::string, entry< F >, std::less<> > m = []() {
-            std::map< std::string, entry< F >, std::less<> > t;
-            ( emplace_consume< As, Is, C, Traits, Producer >( t ), ... );
-            assert( t.size() == sizeof...( As ) );  // TODO: Check for duplicate keys at compile time?
-            return t;
-         }();
-         static const std::bitset< sizeof...( As ) > o = []() {
-            std::bitset< sizeof...( As ) > t;
-            ( set_optional_bit< As, Is >( t ), ... );
-            return t;
-         }();
+         static const std::map< std::string, entry< F >, std::less<> > m{
+            { As::template key< Traits >(), { &consume_wrapper< As, C, Traits, Producer >, Is } }...
+         };
+         static const std::bitset< sizeof...( As ) > o{
+            std::string{ ( As::kind == member_kind::optional ? '1' : '0' )... }
+         };
 
          auto s = parser.begin_object();
          std::bitset< sizeof...( As ) > b;
