@@ -4,10 +4,11 @@
 #ifndef TAO_JSON_EVENTS_INVALID_STRING_TO_EXCEPTION_HPP
 #define TAO_JSON_EVENTS_INVALID_STRING_TO_EXCEPTION_HPP
 
+#include <stdexcept>
+#include <utility>
+
 #include "../internal/hexdump.hpp"
 #include "../utf8.hpp"
-
-#include <stdexcept>
 
 namespace tao::json::events
 {
@@ -16,6 +17,21 @@ namespace tao::json::events
       : public Consumer
    {
       using Consumer::Consumer;
+
+      void string( const char* v )
+      {
+         string( std::string_view( v ) );
+      }
+
+      void string( std::string&& v )
+      {
+         if( internal::validate_utf8_nothrow( v ) ) {
+            Consumer::string( std::move( v ) );
+         }
+         else {
+            throw std::runtime_error( "invalid UTF8 string: $" + internal::hexdump( v ) );  // NOLINT
+         }
+      }
 
       void string( const std::string_view v )
       {
