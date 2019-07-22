@@ -19,55 +19,35 @@ namespace tao::json
 
    namespace internal
    {
-      template< utf8_mode >
-      struct utf8_todo
-      {
-         std::size_t todo;
-      };
-
       template< typename Input >
-      void consume_utf8_impl( Input& in, const utf8_todo< utf8_mode::check > todo )
+      bool consume_utf8_impl( Input& in, const std::size_t todo )
       {
          std::size_t i = 0;
-         while( i < todo.todo ) {
-            const auto p = pegtl::internal::peek_utf8::peek( in, todo.todo - i ).size;
-            if( ( p == 0 ) || ( ( i += p ) > todo.todo ) ) {
-               throw pegtl::parse_error( "invalid utf8", in );
-            }
-            in.bump( p );
-         }
-      }
-
-      template< typename Input >
-      void consume_utf8_impl( Input& in, const utf8_todo< utf8_mode::trust > todo )
-      {
-         in.bump_in_this_line( todo.todo );
-      }
-
-      template< utf8_mode M, typename Input >
-      void consume_utf8( Input& in, const std::size_t todo )
-      {
-         consume_utf8_impl( in, utf8_todo< M >{ todo } );
-      }
-
-      template< typename Input >
-      bool validate_utf8( Input& in )
-      {
-         while( !in.empty() ) {
-            if( const auto t = pegtl::internal::peek_utf8::peek( in, in.size( 4 ) ) ) {
-               in.bump_in_this_line( t.size );
-            }
-            else {
+         while( i < todo ) {
+            const auto p = pegtl::internal::peek_utf8::peek( in, pegtl::internal::peek_utf8::max_input_size ).size;
+            if( ( p == 0 ) || ( ( i += p ) > todo ) ) {
                return false;
             }
+            in.bump_in_this_line( p );
          }
          return true;
       }
 
-      inline bool validate_utf8( const std::string_view sv ) noexcept
+      template< utf8_mode M, typename Input >
+      void consume_utf8_throws( Input& in, const std::size_t todo )
+      {
+         if constexpr( M == utf8_mode::trust ) {
+            in.bump_in_this_line( todo );
+         }
+         else if( !consume_utf8_impl( in, todo ) ) {
+            throw pegtl::parse_error( "invalid utf8", in );
+         }
+      }
+
+      inline bool validate_utf8_nothrow( const std::string_view sv ) noexcept
       {
          pegtl::memory_input in( sv, "validate_utf8" );
-         return validate_utf8( in );
+         return consume_utf8_impl( in, sv.size() );
       }
 
    }  // namespace internal

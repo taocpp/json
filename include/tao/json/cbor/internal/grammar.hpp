@@ -138,7 +138,7 @@ namespace tao::json::cbor::internal
       using value_t = typename Result::value_type;
       const auto* pointer = reinterpret_cast< const value_t* >( in.current() );  // NOLINT
       Result result( pointer, size );
-      json::internal::consume_utf8< U >( in, size );
+      json::internal::consume_utf8_throws< U >( in, size );
       return result;
    }
 
@@ -156,7 +156,7 @@ namespace tao::json::cbor::internal
          using value_t = typename Result::value_type;
          const auto* pointer = static_cast< const value_t* >( static_cast< const void* >( in.current() ) );
          result.insert( result.end(), pointer, pointer + size );
-         json::internal::consume_utf8< U >( in, size );
+         json::internal::consume_utf8_throws< U >( in, size );
       }
       in.bump_in_this_line();
       return result;

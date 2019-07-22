@@ -17,7 +17,7 @@ namespace tao::json::events
 
       void string( const std::string_view v )
       {
-         if( internal::validate_utf8( v ) ) {
+         if( internal::validate_utf8_nothrow( v ) ) {
             Consumer::string( v );
          }
          else {

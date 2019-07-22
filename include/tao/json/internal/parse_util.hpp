@@ -70,7 +70,7 @@ namespace tao::json::internal
       json::internal::throw_on_empty( in, size );
       const auto* pointer = reinterpret_cast< const value_t* >( in.current() );  // NOLINT
       const Result result( pointer, size );
-      json::internal::consume_utf8< U >( in, size );
+      json::internal::consume_utf8_throws< U >( in, size );
       return result;
    }
 
