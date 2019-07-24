@@ -1014,14 +1014,14 @@ namespace tao::json
       }
 
       template< typename T >
-      void assign( T&& v ) noexcept( noexcept( unsafe_assign< T >( std::forward< T >( v ) ) ) )
+      void assign( T&& v ) noexcept( noexcept( std::declval< basic_value& >().template unsafe_assign< T >( std::forward< T >( v ) ) ) )
       {
          unsafe_discard();
          unsafe_assign( std::forward< T >( v ) );
       }
 
       template< typename T >
-      void assign( T&& v, public_base_t b ) noexcept( noexcept( unsafe_assign< T >( std::forward< T >( v ) ) ) )
+      void assign( T&& v, public_base_t b ) noexcept( noexcept( std::declval< basic_value& >().template unsafe_assign< T >( std::forward< T >( v ) ) ) )
       {
          unsafe_discard();
          unsafe_assign( std::forward< T >( v ), std::move( b ) );
