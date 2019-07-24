@@ -18,7 +18,10 @@ namespace TAO_JSON_PEGTL_NAMESPACE
 {
    struct position
    {
-      position() noexcept = default;
+      position() noexcept
+      {
+         // = default doesn't work correctly on GCC 7 and 8
+      }
 
       position( position&& ) noexcept = default;
       position( const position& ) = default;
