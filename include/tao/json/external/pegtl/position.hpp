@@ -32,12 +32,11 @@ namespace TAO_JSON_PEGTL_NAMESPACE
            line( in_iter.line ),
            byte_in_line( in_iter.byte_in_line ),
            source( std::forward< T >( in_source ) )
-      {
-      }
+      {}
 
-      std::size_t byte;
-      std::size_t line;
-      std::size_t byte_in_line;
+      std::size_t byte = 0;
+      std::size_t line = 0;
+      std::size_t byte_in_line = 0;
       std::string source;
    };
 
