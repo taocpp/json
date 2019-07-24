@@ -18,7 +18,13 @@ namespace TAO_JSON_PEGTL_NAMESPACE
 {
    struct position
    {
-      position() = default;
+      position() noexcept = default;
+
+      position( position&& ) noexcept = default;
+      position( const position& ) = default;
+
+      position& operator=( position&& ) noexcept = default;
+      position& operator=( const position& ) = default;
 
       template< typename T >
       position( const internal::iterator& in_iter, T&& in_source )
