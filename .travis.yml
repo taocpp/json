@@ -164,6 +164,15 @@ matrix:
         - cmake --build .
         - cmake --build . --target test
 
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-format-8', 'g++-8']
+      script:
+        - clang-format-8 -i -style=file $(find . -name '[^.]*.[hc]pp')
+        - git diff --exit-code
+
 script:
   - $CXX --version
   - make -kj3
