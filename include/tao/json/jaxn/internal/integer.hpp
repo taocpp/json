@@ -127,7 +127,6 @@ namespace tao::json::jaxn::internal::integer
       template< typename Input >
       static auto apply( const Input& in, std::uint64_t& st )
       {
-         st = 0;  // This function "only" offers basic exception safety.
          auto sv = in.string_view();
          sv.remove_prefix( 2 );
          if( !convert_hex_unsigned( st, sv ) ) {
@@ -154,7 +153,6 @@ namespace tao::json::jaxn::internal::integer
       template< typename Input, typename Unsigned >
       static void apply( const Input& in, Unsigned& st )
       {
-         st = 0;  // This function "only" offers basic exception safety.
          if( !convert_hex_unsigned( st, in.string_view() ) ) {
             throw pegtl::parse_error( "unsigned hex integer overflow", in );
          }
@@ -174,7 +172,6 @@ namespace tao::json::jaxn::internal::integer
                 typename Input >
       [[nodiscard]] static auto match( Input& in, std::uint64_t& st )
       {
-         st = 0;  // This function "only" offers basic exception safety.
          return pegtl::parse< unsigned_rule, unsigned_action_action >( in, st );  // Throws on overflow.
       }
    };
@@ -249,7 +246,7 @@ namespace tao::json::jaxn::internal::integer
                 typename Input >
       [[nodiscard]] static auto match( Input& in, std::int64_t& st )
       {
-         bool negative = false;                                                                   // Superfluous initialisation.
+         bool negative = false;                                                         // Superfluous initialisation.
          return pegtl::parse< signed_rule, signed_action_action >( in, negative, st );  // Throws on overflow.
       }
    };
