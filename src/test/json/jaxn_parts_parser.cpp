@@ -15,7 +15,7 @@ namespace tao::json
          TEST_ASSERT( p.empty() );
       }
       {
-         parts_parser p( " [ true, false, null ] ", __FUNCTION__ );
+         jaxn::parts_parser p( " [ true, false, null ] ", __FUNCTION__ );
          auto a = p.begin_array();
          p.element( a );
          TEST_ASSERT( p.boolean() == true );
@@ -25,6 +25,30 @@ namespace tao::json
          TEST_ASSERT( p.null() == true );
          p.end_array( a );
          TEST_ASSERT( p.empty() );
+      }
+      {
+         jaxn::parts_parser p( "42", __FUNCTION__ );
+         TEST_ASSERT( p.number_unsigned() == 42 );
+      }
+      {
+         jaxn::parts_parser p( "42", __FUNCTION__ );
+         TEST_ASSERT( p.number_signed() == 42 );
+      }
+      {
+         jaxn::parts_parser p( "-42", __FUNCTION__ );
+         TEST_ASSERT( p.number_signed() == -42 );
+      }
+      {
+         jaxn::parts_parser p( "0x1234", __FUNCTION__ );
+         TEST_ASSERT( p.number_unsigned() == 0x1234 );
+      }
+      {
+         jaxn::parts_parser p( "0x1234", __FUNCTION__ );
+         TEST_ASSERT( p.number_signed() == 0x1234 );
+      }
+      {
+         jaxn::parts_parser p( "-0x1234", __FUNCTION__ );
+         TEST_ASSERT( p.number_signed() == -0x1234 );
       }
    }
 

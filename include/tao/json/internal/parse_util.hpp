@@ -4,6 +4,8 @@
 #ifndef TAO_JSON_INTERNAL_PARSE_UTIL_HPP
 #define TAO_JSON_INTERNAL_PARSE_UTIL_HPP
 
+#include <cassert>
+
 #include "../external/pegtl/parse_error.hpp"
 #include "../utf8.hpp"
 
@@ -81,6 +83,24 @@ namespace tao::json::internal
       const auto result = static_cast< Result >( be_to_h< Number >( in.current() + extra ) );
       in.bump_in_this_line( extra + sizeof( Number ) );
       return result;
+   }
+
+   template< typename Integer >
+   [[nodiscard]] Integer hex_char_to_integer( const char c ) noexcept
+   {
+      if( ( '0' <= c ) && ( c <= '9' ) ) {
+         return static_cast< Integer >( c - '0' );
+      }
+      if( ( 'a' <= c ) && ( c <= 'f' ) ) {
+         return static_cast< Integer >( c - 'a' + 10 );
+      }
+      if( ( 'A' <= c ) && ( c <= 'F' ) ) {
+         return static_cast< Integer >( c - 'A' + 10 );
+      }
+      // LCOV_EXCL_START
+      assert( false );
+      return 0;
+      // LCOV_EXCL_STOP
    }
 
 }  // namespace tao::json::internal

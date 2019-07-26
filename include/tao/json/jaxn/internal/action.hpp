@@ -10,7 +10,9 @@
 #include <vector>
 
 #include "../../external/pegtl/nothing.hpp"
+
 #include "../../internal/number_state.hpp"
+#include "../../internal/parse_util.hpp"
 
 #include "bunescape_action.hpp"
 #include "grammar.hpp"
@@ -66,23 +68,6 @@ namespace tao::json::jaxn::internal
    template< bool NEG >
    struct action< rules::hexnum< NEG > >
    {
-      [[nodiscard]] static char unhex( const char c )
-      {
-         if( ( '0' <= c ) && ( c <= '9' ) ) {
-            return static_cast< char >( c - '0' );
-         }
-         if( ( 'a' <= c ) && ( c <= 'f' ) ) {
-            return static_cast< char >( c - 'a' + 10 );
-         }
-         if( ( 'A' <= c ) && ( c <= 'F' ) ) {
-            return static_cast< char >( c - 'A' + 10 );
-         }
-         // LCOV_EXCL_START
-         assert( false );
-         return 0;
-         // LCOV_EXCL_STOP
-      }
-
       template< typename Input, typename Consumer >
       static void apply( const Input& in, Consumer& consumer )
       {
@@ -92,7 +77,7 @@ namespace tao::json::jaxn::internal
                throw pegtl::parse_error( "JAXN hexadecimal number too large", in );  // NOLINT
             }
             value <<= 4;
-            value += unhex( c );
+            value += json::internal::hex_char_to_integer< std::uint8_t >( c );
          }
          if constexpr( NEG ) {
             if( value < 9223372036854775808ULL ) {

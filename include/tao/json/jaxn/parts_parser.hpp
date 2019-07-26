@@ -8,6 +8,7 @@
 
 #include "internal/bunescape_action.hpp"
 #include "internal/grammar.hpp"
+#include "internal/integer.hpp"
 #include "internal/unescape_action.hpp"
 
 namespace tao::json::jaxn
@@ -50,14 +51,14 @@ namespace tao::json::jaxn
       [[nodiscard]] std::int64_t number_signed()
       {
          std::int64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
-         pegtl::parse< pegtl::must< pegtl::integer::signed_rule_with_action, json::internal::rules::wss > >( m_input, st );
+         pegtl::parse< pegtl::must< internal::integer::signed_rule_with_action, json::internal::rules::wss > >( m_input, st );
          return st;
       }
 
       [[nodiscard]] std::uint64_t number_unsigned()
       {
          std::uint64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
-         pegtl::parse< pegtl::must< pegtl::integer::unsigned_rule_with_action, json::internal::rules::wss > >( m_input, st );
+         pegtl::parse< pegtl::must< internal::integer::unsigned_rule_with_action, json::internal::rules::wss > >( m_input, st );
          return st;
       }
 
