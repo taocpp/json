@@ -63,8 +63,8 @@ namespace tao::json::jaxn::internal::integer
    {
       // Assumes input is a non-empty sequence of hex-digits; returns false on overflow.
 
-      for( std::size_t i = 0; i < input.size(); ++i ) {
-         if( !accumulate_hex_digit< Integer, Maximum >( result, input[ i ] ) ) {
+      for( const auto c : input ) {
+         if( !accumulate_hex_digit< Integer, Maximum >( result, c ) ) {
             return false;
          }
       }
