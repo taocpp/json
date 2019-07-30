@@ -35,6 +35,10 @@ namespace tao::json
          TEST_ASSERT( p.number_signed() == 42 );
       }
       {
+         jaxn::parts_parser p( "+42", __FUNCTION__ );
+         TEST_ASSERT( p.number_signed() == 42 );
+      }
+      {
          jaxn::parts_parser p( "-42", __FUNCTION__ );
          TEST_ASSERT( p.number_signed() == -42 );
       }
@@ -47,8 +51,64 @@ namespace tao::json
          TEST_ASSERT( p.number_signed() == 0x1234 );
       }
       {
+         jaxn::parts_parser p( "+0x1234", __FUNCTION__ );
+         TEST_ASSERT( p.number_signed() == 0x1234 );
+      }
+      {
          jaxn::parts_parser p( "-0x1234", __FUNCTION__ );
          TEST_ASSERT( p.number_signed() == -0x1234 );
+      }
+      {
+         jaxn::parts_parser p( "0.0", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == 0.0 );
+      }
+      {
+         jaxn::parts_parser p( "+0.0", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == 0.0 );
+      }
+      {
+         jaxn::parts_parser p( "-0.0", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == -0.0 );
+      }
+      {
+         jaxn::parts_parser p( "100.45", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == 100.45 );
+      }
+      {
+         jaxn::parts_parser p( "+100.45", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == 100.45 );
+      }
+      {
+         jaxn::parts_parser p( "-100.45", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == -100.45 );
+      }
+      {
+         jaxn::parts_parser p( "12345", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == 12345.0 );
+      }
+      {
+         jaxn::parts_parser p( "+12345", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == 12345.0 );
+      }
+      {
+         jaxn::parts_parser p( "-12345", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == -12345.0 );
+      }
+      {
+         jaxn::parts_parser p( "NaN", __FUNCTION__ );
+         TEST_ASSERT( std::isnan( p.number_double() ) );
+      }
+      {
+         jaxn::parts_parser p( "Infinity", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == INFINITY );
+      }
+      {
+         jaxn::parts_parser p( "+Infinity", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == INFINITY );
+      }
+      {
+         jaxn::parts_parser p( "-Infinity", __FUNCTION__ );
+         TEST_ASSERT( p.number_double() == -INFINITY );
       }
    }
 

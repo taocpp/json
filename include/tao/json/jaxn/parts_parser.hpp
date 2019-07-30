@@ -13,6 +13,78 @@
 
 namespace tao::json::jaxn
 {
+   namespace internal
+   {
+      namespace rules
+      {
+         struct double_rule
+         {
+            using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+
+            template< apply_mode A,
+                      rewind_mode M,
+                      template< typename... >
+                      class Action,
+                      template< typename... >
+                      class Control,
+                      typename Input,
+                      typename... States >
+            [[nodiscard]] static bool match_impl( Input& in, States&&... st )
+            {
+               switch( in.peek_char() ) {
+                  case '+':
+                     in.bump_in_this_line();
+                     if( in.empty() || !sor_value::match_number< false, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+                        throw pegtl::parse_error( "incomplete number", in );
+                     }
+                     return true;
+
+                  case '-':
+                     in.bump_in_this_line();
+                     if( in.empty() || !sor_value::match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+                        throw pegtl::parse_error( "incomplete number", in );
+                     }
+                     return true;
+
+                  default:
+                     return sor_value::match_number< false, A, M, Action, Control >( in, st... );
+               }
+            }
+
+            template< apply_mode A,
+                      rewind_mode M,
+                      template< typename... >
+                      class Action,
+                      template< typename... >
+                      class Control,
+                      typename Input,
+                      typename... States >
+            [[nodiscard]] static bool match( Input& in, States&&... st )
+            {
+               return in.size( 2 ) && match_impl< A, M, Action, Control >( in, st... );
+            }
+         };
+
+      }  // namespace rules
+
+      template< typename Rule >
+      struct double_action
+         : action< Rule >
+      {};
+
+      template< bool NEG >
+      struct double_action< rules::number< NEG > >
+         : pegtl::change_states< json::internal::number_state< NEG > >
+      {
+         template< typename Input, typename Consumer >
+         static void success( const Input& /*unused*/, json::internal::number_state< NEG >& state, Consumer& consumer )
+         {
+            state.success( consumer );
+         }
+      };
+
+   }  // namespace internal
+
    // TODO: Optimise some of the simpler cases?
 
    template< typename Input = pegtl::string_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, std::string > >
@@ -45,7 +117,9 @@ namespace tao::json::jaxn
 
       [[nodiscard]] double number_double()
       {
-         return 42.0;  // TODO
+         json::internal::double_state_and_consumer st;
+         pegtl::parse< pegtl::must< internal::rules::double_rule, json::internal::rules::wss >, internal::double_action >( m_input, st );
+         return st.converted;
       }
 
       [[nodiscard]] std::int64_t number_signed()
