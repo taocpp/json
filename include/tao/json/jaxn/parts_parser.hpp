@@ -6,6 +6,7 @@
 
 #include "../parts_parser.hpp"
 
+#include "internal/action.hpp"
 #include "internal/bunescape_action.hpp"
 #include "internal/grammar.hpp"
 #include "internal/integer.hpp"
