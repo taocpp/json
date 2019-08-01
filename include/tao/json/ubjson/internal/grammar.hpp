@@ -382,14 +382,25 @@ namespace tao::json
          }
       };
 
-      struct nops : pegtl::star< pegtl::one< char( marker::NO_OP ) > >
-      {};
+      struct nops
+         : pegtl::star< pegtl::one< char( marker::NO_OP ) > >
+      {
+      };
 
       template< std::size_t L, utf8_mode V >
-      struct basic_grammar : pegtl::must< nops, data< L, V >, nops, pegtl::eof >
-      {};
+      struct basic_grammar
+         : pegtl::must< nops, data< L, V >, nops, pegtl::eof >
+      {
+      };
+
+      template< std::size_t L, utf8_mode V >
+      struct basic_embedded
+         : pegtl::must< data< L, V > >
+      {
+      };
 
       using grammar = basic_grammar< 1 << 24, utf8_mode::check >;
+      using embedded = basic_embedded< 1 << 24, utf8_mode::check >;
 
    }  // namespace ubjson::internal
 

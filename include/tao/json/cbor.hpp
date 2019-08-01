@@ -8,6 +8,7 @@
 
 #include "cbor/consume_file.hpp"
 #include "cbor/consume_string.hpp"
+#include "cbor/from_input.hpp"
 #include "cbor/from_string.hpp"
 #include "cbor/parse_file.hpp"
 #include "cbor/parts_parser.hpp"

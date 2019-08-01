@@ -1,8 +1,8 @@
-// Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_JAXN_FROM_INPUT_HPP
-#define TAO_JSON_JAXN_FROM_INPUT_HPP
+#ifndef TAO_JSON_CBOR_FROM_INPUT_HPP
+#define TAO_JSON_CBOR_FROM_INPUT_HPP
 
 #include <cstddef>
 #include <utility>
@@ -12,13 +12,13 @@
 
 #include "events/from_input.hpp"
 
-namespace tao::json::jaxn
+namespace tao::json::cbor
 {
    template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
    [[nodiscard]] basic_value< Traits > basic_from_input( Ts&&... ts )
    {
       json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
-      jaxn::events::from_input( consumer, std::forward< Ts >( ts )... );
+      cbor::events::from_input( consumer, std::forward< Ts >( ts )... );
       return std::move( consumer.value );
    }
 
@@ -28,6 +28,6 @@ namespace tao::json::jaxn
       return basic_from_input< traits, Transformers... >( std::forward< Ts >( ts )... );
    }
 
-}  // namespace tao::json::jaxn
+}  // namespace tao::json::cbor
 
 #endif

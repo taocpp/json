@@ -8,17 +8,16 @@
 #include <string_view>
 
 #include "../../external/pegtl/memory_input.hpp"
-#include "../../external/pegtl/parse.hpp"
 
-#include "../internal/grammar.hpp"
+#include "from_input.hpp"
 
 namespace tao::json::cbor::events
 {
    template< typename Consumer >
    void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 0 )
    {
-      pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::cbor::from_string", byte, line, byte_in_line );
-      pegtl::parse< cbor::internal::grammar >( in, consumer );
+      pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::cbor::events::from_string", byte, line, byte_in_line );
+      cbor::events::from_input( consumer, std::move( in ) );
    }
 
    template< typename Consumer >

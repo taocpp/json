@@ -19,7 +19,7 @@ namespace tao::json::jaxn::events
    void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
    {
       pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::jaxn::events::from_string", byte, line, column );
-      jaxn::events::from_input( consumer, in );
+      jaxn::events::from_input( consumer, std::move( in ) );
    }
 
    template< typename Consumer >

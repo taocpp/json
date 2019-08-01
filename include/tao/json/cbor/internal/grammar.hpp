@@ -396,9 +396,17 @@ namespace tao::json::cbor::internal
    template< utf8_mode V >
    struct basic_grammar
       : pegtl::must< data< V >, pegtl::eof >
-   {};
+   {
+   };
+
+   template< utf8_mode V >
+   struct basic_embedded
+      : pegtl::must< data< V > >
+   {
+   };
 
    using grammar = basic_grammar< utf8_mode::check >;
+   using embedded = basic_embedded< utf8_mode::check >;
 
 }  // namespace tao::json::cbor::internal
 

@@ -8,6 +8,7 @@
 
 #include "ubjson/consume_file.hpp"
 #include "ubjson/consume_string.hpp"
+#include "ubjson/from_input.hpp"
 #include "ubjson/from_string.hpp"
 #include "ubjson/parse_file.hpp"
 #include "ubjson/parts_parser.hpp"
