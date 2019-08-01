@@ -53,7 +53,7 @@ check: $(UNIT_TESTS)
 
 .PHONY: clean
 clean:
-	@rm -rf build
+	@rm -rf build/src
 	@find . -name '*~' -delete
 
 build/%.d: %.cpp Makefile
