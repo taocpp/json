@@ -707,6 +707,16 @@ namespace tao::json
          return r;
       }
 
+      template< typename... Ts >
+      auto unsafe_try_emplace( Ts&&... ts )
+      {
+         auto r = m_union.o.try_emplace( std::forward< Ts >( ts )... );
+         if( !r.second ) {
+            throw_duplicate_key_exception( r.first->first );
+         }
+         return r;
+      }
+
       std::pair< typename object_t::iterator, bool > unsafe_insert( typename object_t::value_type&& t )
       {
          return m_union.o.emplace( std::move( t ) );
@@ -759,7 +769,7 @@ namespace tao::json
       {
          unsafe_emplace_object();
          for( auto& e : l ) {
-            unsafe_emplace( std::move( e.key ), std::move( e.value ) );
+            unsafe_try_emplace( std::move( e.key ), std::move( e.value ) );
          }
       }
 
@@ -767,7 +777,7 @@ namespace tao::json
       {
          unsafe_emplace_object();
          for( const auto& e : l ) {
-            unsafe_emplace( e.key, e.value );
+            unsafe_try_emplace( e.key, e.value );
          }
       }
 
@@ -966,6 +976,13 @@ namespace tao::json
          return unsafe_emplace( std::forward< Ts >( ts )... );
       }
 
+      template< typename... Ts >
+      std::pair< typename object_t::iterator, bool > try_emplace( Ts&&... ts )
+      {
+         prepare_object();
+         return unsafe_try_emplace( std::forward< Ts >( ts )... );
+      }
+
       std::pair< typename object_t::iterator, bool > insert( typename object_t::value_type&& t )
       {
          prepare_object();
@@ -982,7 +999,7 @@ namespace tao::json
       {
          prepare_object();
          for( auto& e : l ) {
-            unsafe_emplace( std::move( e.key ), std::move( e.value ) );
+            unsafe_try_emplace( std::move( e.key ), std::move( e.value ) );
          }
       }
 
@@ -990,7 +1007,7 @@ namespace tao::json
       {
          prepare_object();
          for( const auto& e : l ) {
-            unsafe_emplace( e.key, e.value );
+            unsafe_try_emplace( e.key, e.value );
          }
       }
 
@@ -1234,7 +1251,7 @@ namespace tao::json
                if( it != v.m_union.o.end() ) {
                   return it->second;
                }
-               const auto r = v.unsafe_emplace( key, null );
+               const auto r = v.unsafe_try_emplace( key, null );
                assert( r.second );
                return r.first->second;
             }
@@ -1404,7 +1421,7 @@ namespace tao::json
                const auto& key = e->key();
                const auto it = o.find( key );
                if( it == o.end() ) {
-                  const auto r = v.unsafe_emplace( key, std::move( value ) );
+                  const auto r = v.unsafe_try_emplace( key, std::move( value ) );
                   assert( r.second );
                   return r.first->second;
                }

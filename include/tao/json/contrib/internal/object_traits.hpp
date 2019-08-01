@@ -81,7 +81,7 @@ namespace tao::json::internal
       {
          v.prepare_object();
          for( const auto& i : o ) {
-            v.unsafe_emplace( i.first, i.second );
+            v.unsafe_try_emplace( i.first, i.second );
          }
       }
    };

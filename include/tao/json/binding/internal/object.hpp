@@ -142,7 +142,7 @@ namespace tao::json::binding::internal
       static void assign_member( basic_value< Traits >& v, const C& x )
       {
          if( ( N == for_nothing_value::encode ) || ( !A::template is_nothing< Traits >( x ) ) ) {
-            v.unsafe_emplace( A::template key< Traits >(), A::read( x ) );
+            v.unsafe_try_emplace( A::template key< Traits >(), A::read( x ) );
          }
       }
 #ifdef _MSC_VER

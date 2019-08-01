@@ -120,7 +120,7 @@ namespace tao::json::events
 
       void member()
       {
-         stack_.back().unsafe_emplace( std::move( keys_.back() ), std::move( value ) );
+         stack_.back().unsafe_try_emplace( std::move( keys_.back() ), std::move( value ) );
          value.discard();
          keys_.pop_back();
       }

@@ -23,7 +23,7 @@ namespace tao::json
       {
          const auto& o = v.get_object();
          for( const auto& i : o ) {
-            r.emplace( i.first, Traits< T >::as( i.second, with... ) );
+            r.try_emplace( i.first, Traits< T >::as( i.second, with... ) );
          }
       }
 
@@ -33,7 +33,7 @@ namespace tao::json
          auto s = parser.begin_object();
          while( parser.member_or_end_object( s ) ) {
             auto k = parser.key();
-            v.emplace( std::move( k ), json::consume< T, Traits >( parser ) );
+            v.try_emplace( std::move( k ), json::consume< T, Traits >( parser ) );
          }
       }
    };

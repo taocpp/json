@@ -22,7 +22,7 @@ namespace tao::json
       {
          const auto& a = v.get_array();
          for( const auto& i : a ) {
-            r.emplace( Traits< T >::as( i, with... ) );
+            r.try_emplace( Traits< T >::as( i, with... ) );
          }
       }
 
@@ -31,7 +31,7 @@ namespace tao::json
       {
          auto s = parser.begin_array();
          while( parser.element_or_end_array( s ) ) {
-            r.emplace( json::consume< T, Traits >( parser ) );
+            r.try_emplace( json::consume< T, Traits >( parser ) );
          }
       }
    };
