@@ -23,10 +23,10 @@ namespace tao::json::msgpack
    }
 
    template< template< typename... > class Traits = traits, typename F, typename T >
-   [[nodiscard]] T consume_file( F&& filename, T& t )
+   void consume_file( F&& filename, T& t )
    {
       msgpack::basic_parts_parser< utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
-      return json::consume< Traits >( pp, t );
+      json::consume< Traits >( pp, t );
    }
 
 }  // namespace tao::json::msgpack

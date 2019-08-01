@@ -6,11 +6,9 @@
 
 #include <string_view>
 
-#include "../external/pegtl/parse.hpp"
+#include "../external/pegtl/memory_input.hpp"
 
-#include "../internal/action.hpp"
-#include "../internal/errors.hpp"
-#include "../internal/grammar.hpp"
+#include "from_input.hpp"
 
 namespace tao::json::events
 {
@@ -20,7 +18,7 @@ namespace tao::json::events
    void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
    {
       pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::events::from_string", byte, line, column );
-      pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
+      json::events::from_input( consumer, in );
    }
 
    template< typename Consumer >

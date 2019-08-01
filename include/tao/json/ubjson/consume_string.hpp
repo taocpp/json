@@ -21,10 +21,10 @@ namespace tao::json::ubjson
    }
 
    template< template< typename... > class Traits = traits, typename F, typename T >
-   [[nodiscard]] T consume_string( F&& string, T& t )
+   void consume_string( F&& string, T& t )
    {
       ubjson::basic_parts_parser< 1 << 24, utf8_mode::check, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
-      return json::consume< Traits >( pp, t );
+      json::consume< Traits >( pp, t );
    }
 
 }  // namespace tao::json::ubjson

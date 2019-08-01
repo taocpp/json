@@ -1,8 +1,8 @@
 // Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_CBOR_CONSUME_FILE_HPP
-#define TAO_JSON_CBOR_CONSUME_FILE_HPP
+#ifndef TAO_JSON_JAXN_CONSUME_FILE_HPP
+#define TAO_JSON_JAXN_CONSUME_FILE_HPP
 
 #include <utility>
 
@@ -13,22 +13,22 @@
 
 #include "parts_parser.hpp"
 
-namespace tao::json::cbor
+namespace tao::json::jaxn
 {
    template< typename T, template< typename... > class Traits = traits, typename F >
    [[nodiscard]] T consume_file( F&& filename )
    {
-      cbor::basic_parts_parser< utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+      jaxn::basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
       return json::consume< T, Traits >( pp );
    }
 
    template< template< typename... > class Traits = traits, typename F, typename T >
    void consume_file( F&& filename, T& t )
    {
-      cbor::basic_parts_parser< utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+      jaxn::basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
       json::consume< Traits >( pp, t );
    }
 
-}  // namespace tao::json::cbor
+}  // namespace tao::json::jaxn
 
 #endif

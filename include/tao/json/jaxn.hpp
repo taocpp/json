@@ -6,6 +6,9 @@
 
 #include "../json.hpp"
 
+#include "jaxn/consume_file.hpp"
+#include "jaxn/consume_string.hpp"
+#include "jaxn/from_input.hpp"
 #include "jaxn/from_stream.hpp"
 #include "jaxn/from_string.hpp"
 #include "jaxn/parse_file.hpp"

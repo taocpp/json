@@ -22,10 +22,10 @@ namespace tao::json
    }
 
    template< template< typename... > class Traits = traits, typename F, typename T >
-   [[nodiscard]] T consume_file( F&& filename, T& t )
+   void consume_file( F&& filename, T& t )
    {
       basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
-      return consume< Traits >( pp, t );
+      consume< Traits >( pp, t );
    }
 
 }  // namespace tao::json

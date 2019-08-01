@@ -7,6 +7,8 @@
 #include <string>
 #include <string_view>
 
+#include "../../external/pegtl/memory_input.hpp"
+
 #include "from_input.hpp"
 
 namespace tao::json::jaxn::events
@@ -16,7 +18,8 @@ namespace tao::json::jaxn::events
    template< typename Consumer >
    void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 0 )
    {
-      jaxn::events::from_input( consumer, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* >( data, data + size, source ? source : "tao::json::events::jaxn::from_string", byte, line, column ) );
+      pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::jaxn::events::from_string", byte, line, column );
+      jaxn::events::from_input( consumer, in );
    }
 
    template< typename Consumer >

@@ -14,7 +14,7 @@
 
 namespace tao::json::events
 {
-   // Events producers that parse a JSON string representation.
+   // Events producers that parse a JSON string representation from a PEGTL input (or something compatible).
 
    template< typename Consumer, typename Input >
    void from_input( Consumer& consumer, Input&& in )

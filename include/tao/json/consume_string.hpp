@@ -20,10 +20,10 @@ namespace tao::json
    }
 
    template< template< typename... > class Traits = traits, typename F, typename T >
-   [[nodiscard]] T consume_string( F&& string, T& t )
+   void consume_string( F&& string, T& t )
    {
       basic_parts_parser< pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
-      return consume< Traits >( pp, t );
+      consume< Traits >( pp, t );
    }
 
 }  // namespace tao::json
