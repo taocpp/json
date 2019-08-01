@@ -1,14 +1,12 @@
 cmake_minimum_required (VERSION 3.3.0 FATAL_ERROR)
 
 set(testsources
-  access.cpp
   big_list_of_naughty_strings.cpp
   binding_array.cpp
   binding_factory.cpp
   binding_object.cpp
   binding_versions.cpp
   cbor.cpp
-  compare.cpp
   contrib_diff.cpp
   contrib_get.cpp
   contrib_patch.cpp
@@ -16,9 +14,7 @@ set(testsources
   contrib_reference.cpp
   contrib_schema.cpp
   contrib_traits.cpp
-  create.cpp
   double.cpp
-  dump_sizes.cpp
   enable_implicit_constructor.cpp
   escape.cpp
   events_compare.cpp
@@ -27,7 +23,6 @@ set(testsources
   events_to_stream.cpp
   events_to_string.cpp
   include_json.cpp
-  index.cpp
   integer.cpp
   jaxn_ostream.cpp
   jaxn_parse.cpp
@@ -42,6 +37,7 @@ set(testsources
   msgpack.cpp
   object_construction.cpp
   opaque_pointer.cpp
+  operators.cpp
   optional.cpp
   public_base.cpp
   self_contained.cpp
@@ -53,7 +49,10 @@ set(testsources
   uri_fragment.cpp
   validate_event_interfaces.cpp
   validate_utf8.cpp
-  value_pointer.cpp
+  value_access.cpp
+  value_create.cpp
+  value_ptr.cpp
+  value_subscript.cpp
   with_arguments.cpp
 )
 
