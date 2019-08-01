@@ -29,6 +29,7 @@ namespace tao::json
       TEST_ASSERT( to_string( type::OBJECT ) == std::string( "object" ) );
 
       TEST_ASSERT( to_string( type::VALUE_PTR ) == std::string( "value_ptr" ) );
+      TEST_ASSERT( to_string( type::OPAQUE_PTR ) == std::string( "opaque_ptr" ) );
 
       TEST_ASSERT( to_string( type( 42 ) ) == std::string( "unknown" ) );
 
@@ -43,13 +44,14 @@ namespace tao::json
       TEST_ASSERT( needs_discard( type::DOUBLE ) == false );
 
       TEST_ASSERT( needs_discard( type::STRING ) == true );
-      TEST_ASSERT( needs_discard( type::STRING_VIEW ) == true );
+      TEST_ASSERT( needs_discard( type::STRING_VIEW ) == !std::is_trivially_destructible_v< std::string_view > );
       TEST_ASSERT( needs_discard( type::BINARY ) == true );
-      TEST_ASSERT( needs_discard( type::BINARY_VIEW ) == true );
+      TEST_ASSERT( needs_discard( type::BINARY_VIEW ) == !std::is_trivially_destructible_v< tao::binary_view > );
       TEST_ASSERT( needs_discard( type::ARRAY ) == true );
       TEST_ASSERT( needs_discard( type::OBJECT ) == true );
 
       TEST_ASSERT( needs_discard( type::VALUE_PTR ) == false );
+      TEST_ASSERT( needs_discard( type::OPAQUE_PTR ) == false );
    }
 
 }  // namespace tao::json

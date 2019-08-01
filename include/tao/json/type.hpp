@@ -6,6 +6,9 @@
 
 #include <cstdint>
 #include <string_view>
+#include <type_traits>
+
+#include "binary_view.hpp"
 
 namespace tao::json
 {
@@ -33,12 +36,14 @@ namespace tao::json
    {
       switch( t ) {
          case type::STRING:
-         case type::STRING_VIEW:
          case type::BINARY:
-         case type::BINARY_VIEW:
          case type::ARRAY:
          case type::OBJECT:
             return true;
+         case type::STRING_VIEW:
+            return !std::is_trivially_destructible_v< std::string_view >;
+         case type::BINARY_VIEW:
+            return !std::is_trivially_destructible_v< tao::binary_view >;
          default:
             return false;
       }
