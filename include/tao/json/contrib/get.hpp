@@ -13,13 +13,13 @@ namespace tao::json::get
       template< template< typename... > class Traits >
       [[nodiscard]] const basic_value< Traits >* find( const basic_value< Traits >& v, const std::string& key )
       {
-         return v.skip_value_ptr().find( key );
+         return v.find( key );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] const basic_value< Traits >* find( const basic_value< Traits >& v, const std::size_t index )
       {
-         const auto& a = v.skip_value_ptr().get_array();
+         const auto& a = v.get_array();
          return ( index < a.size() ) ? ( a.data() + index ) : nullptr;
       }
 
@@ -28,9 +28,9 @@ namespace tao::json::get
    template< template< typename... > class Traits, typename K >
    [[nodiscard]] basic_value< Traits > value( const basic_value< Traits >& v, const K& key )
    {
-      if( v ) {
-         if( const auto* p = internal::find( v, key ) ) {
-            return basic_value< Traits >( p );  // Returns a Value with tao::json::type::VALUE_PTR that is invalidated when v is destroyed!
+      if( const auto& w = v.skip_value_ptr() ) {
+         if( const auto* p = internal::find( w, key ) ) {
+            return basic_value< Traits >( &p->skip_value_ptr() );  // Returns a Value with tao::json::type::VALUE_PTR that is invalidated when v is destroyed!
          }
       }
       return basic_value< Traits >();
@@ -39,8 +39,8 @@ namespace tao::json::get
    template< template< typename... > class Traits, typename K, typename... Ks >
    [[nodiscard]] basic_value< Traits > value( const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
-      if( v ) {
-         if( const auto* p = internal::find( v, key ) ) {
+      if( const auto& w = v.skip_value_ptr() ) {
+         if( const auto* p = internal::find( w, key ) ) {
             return get::value( *p, ks... );
          }
       }
@@ -86,8 +86,8 @@ namespace tao::json::get
    template< typename T, typename U, template< typename... > class Traits >
    [[nodiscard]] std::optional< T > optional( const basic_value< Traits >& v )
    {
-      if( v ) {
-         return std::optional< T >( std::in_place, get::as< U >( v ) );
+      if( const auto& w = v.skip_value_ptr() ) {
+         return std::optional< T >( std::in_place, get::as< U >( w ) );
       }
       return std::nullopt;
    }
@@ -101,8 +101,8 @@ namespace tao::json::get
    template< typename T, typename U, template< typename... > class Traits, typename K, typename... Ks >
    [[nodiscard]] std::optional< T > optional( const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
-      if( v ) {
-         if( const auto* p = internal::find( v, key ) ) {
+      if( const auto& w = v.skip_value_ptr() ) {
+         if( const auto* p = internal::find( w, key ) ) {
             return get::optional< T, U >( *p, ks... );
          }
       }
@@ -118,8 +118,8 @@ namespace tao::json::get
    template< typename T, typename U, template< typename... > class Traits >
    [[nodiscard]] T defaulted( const T& t, const basic_value< Traits >& v )
    {
-      if( v ) {
-         return get::as< T, U >( v );
+      if( const auto& w = v.skip_value_ptr() ) {
+         return get::as< T, U >( w );
       }
       return t;
    }
@@ -133,8 +133,8 @@ namespace tao::json::get
    template< typename T, typename U, template< typename... > class Traits, typename K, typename... Ks >
    [[nodiscard]] T defaulted( const T& t, const basic_value< Traits >& v, const K& key, const Ks&... ks )
    {
-      if( v ) {
-         if( const auto* p = internal::find( v, key ) ) {
+      if( const auto& w = v.skip_value_ptr() ) {
+         if( const auto* p = internal::find( w, key ) ) {
             return get::defaulted< T, U >( t, *p, ks... );
          }
       }
