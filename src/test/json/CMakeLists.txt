@@ -7,6 +7,7 @@ set(testsources
   binding_object.cpp
   binding_versions.cpp
   cbor.cpp
+  cbor_parts_parser.cpp
   contrib_diff.cpp
   contrib_get.cpp
   contrib_patch.cpp

@@ -7,7 +7,7 @@
 
 namespace tao::json
 {
-   void unit_test()
+   void unit_test_1()
    {
       {
          jaxn::parts_parser p( "", __FUNCTION__ );
@@ -142,6 +142,10 @@ namespace tao::json
          TEST_ASSERT( p.binary() == z );
          TEST_ASSERT( p.empty() );
       }
+   }
+
+   void unit_test_2()
+   {
       {
          jaxn::parts_parser p( " [ true , -42.7 , false , null ] ", __FUNCTION__ );
          TEST_ASSERT( p.null() == false );
@@ -203,6 +207,12 @@ namespace tao::json
          const std::map< std::string, std::uint64_t > z = { { "c", 4 }, { "d", 3 }, { "f", 2 }, { "h", 1 } };
          TEST_ASSERT( r == z );
       }
+   }
+
+   void unit_test()
+   {
+      unit_test_1();
+      unit_test_2();
    }
 
 }  // namespace tao::json
