@@ -99,7 +99,7 @@ namespace tao::json::cbor
 
       [[nodiscard]] bool boolean()
       {
-         return read_boolean( m_input );
+         return internal::read_boolean( m_input );
       }
 
    private:
