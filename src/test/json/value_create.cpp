@@ -524,7 +524,7 @@ namespace tao::json
       test_object_1234();
 
       TEST_THROWS( value( json::from_string( "1" ) ).emplace_back( 2 ) );
-      TEST_THROWS( value( json::from_string( "1" ) ).emplace( "foo", 3 ) );
+      TEST_THROWS( value( json::from_string( "1" ) ).try_emplace( "foo", 3 ) );
       {
          value a;
          a.emplace_back( 4 );
@@ -535,7 +535,7 @@ namespace tao::json
       }
       {
          value a;
-         a.emplace( "foo", 5 );
+         a.try_emplace( "foo", 5 );
          TEST_ASSERT( a.type() == type::OBJECT );
          TEST_ASSERT( a.at( "foo" ) == 5 );
          value b( a );

@@ -697,15 +697,15 @@ namespace tao::json
          unsafe_emplace_object( std::move( o ) );
       }
 
-      template< typename... Ts >
-      auto unsafe_emplace( Ts&&... ts )
-      {
-         auto r = m_union.o.emplace( std::forward< Ts >( ts )... );
-         if( !r.second ) {
-            throw_duplicate_key_exception( r.first->first );
-         }
-         return r;
-      }
+      // template< typename... Ts >
+      // [[deprecated( "please use unsafe_try_emplace()" )]] auto unsafe_emplace( Ts&&... ts )
+      // {
+      //    auto r = m_union.o.emplace( std::forward< Ts >( ts )... );
+      //    if( !r.second ) {
+      //       throw_duplicate_key_exception( r.first->first );
+      //    }
+      //    return r;
+      // }
 
       template< typename... Ts >
       auto unsafe_try_emplace( Ts&&... ts )
@@ -717,12 +717,12 @@ namespace tao::json
          return r;
       }
 
-      std::pair< typename object_t::iterator, bool > unsafe_insert( typename object_t::value_type&& t )
+      auto unsafe_insert( typename object_t::value_type&& t )
       {
          return m_union.o.emplace( std::move( t ) );
       }
 
-      std::pair< typename object_t::iterator, bool > unsafe_insert( const typename object_t::value_type& t )
+      auto unsafe_insert( const typename object_t::value_type& t )
       {
          return m_union.o.emplace( t );
       }
@@ -969,27 +969,27 @@ namespace tao::json
          }
       }
 
-      template< typename... Ts >
-      std::pair< typename object_t::iterator, bool > emplace( Ts&&... ts )
-      {
-         prepare_object();
-         return unsafe_emplace( std::forward< Ts >( ts )... );
-      }
+      // template< typename... Ts >
+      // [[deprecated( "please use try_emplace()" )]] auto emplace( Ts&&... ts )
+      // {
+      //    prepare_object();
+      //    return unsafe_emplace( std::forward< Ts >( ts )... );
+      // }
 
       template< typename... Ts >
-      std::pair< typename object_t::iterator, bool > try_emplace( Ts&&... ts )
+      auto try_emplace( Ts&&... ts )
       {
          prepare_object();
          return unsafe_try_emplace( std::forward< Ts >( ts )... );
       }
 
-      std::pair< typename object_t::iterator, bool > insert( typename object_t::value_type&& t )
+      auto insert( typename object_t::value_type&& t )
       {
          prepare_object();
          return unsafe_insert( std::move( t ) );
       }
 
-      std::pair< typename object_t::iterator, bool > insert( const typename object_t::value_type& t )
+      auto insert( const typename object_t::value_type& t )
       {
          prepare_object();
          return unsafe_insert( t );
