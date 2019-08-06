@@ -56,14 +56,6 @@ For convenience, we might add a `using` for the JSON Value class with the new Ty
 using my_value = tao::json::basic_value< my_traits >;
 ```
 
-Or, if we are planning on using [custom Base class for Values](Advanced-Use-Cases.md#custom-base-class-for-values), we might be more elaborate.
-
-```c++
-template< typename Base >
-using my_basic_value = tao::json::basic_value< my_traits, Base >;
-using my_value = tao::json::basic_value< my_traits >;
-```
-
 Note that all Type Traits functions are `static` member functions, and that, depending on the use cases, it is not necessary for a traits specialisation to implement *all* traits functions.
 
 **For many common use cases it is not necessary to manually implement the Traits functions, instead the [Binding Traits](Binding-Traits.md) can be used to generate them automatically.**
@@ -79,8 +71,8 @@ We will use the implementation of `assign()` in the specialisation of `my_traits
 template<>
 struct my_traits< my_type >
 {
-   template< template< typename... > class Traits, typename Base >
-   static void assign( tao::json::basic_value< Traits, Base >& v, const my_type& t )
+   template< template< typename... > class Traits >
+   static void assign( tao::json::basic_value< Traits >& v, const my_type& t )
    {
       v = {
          { "title", t.title },
@@ -121,8 +113,8 @@ The vector `values` can not be moved to the JSON Value since it is a `std::vecto
 template<>
 struct my_traits< my_type >
 {
-   template< template< typename... > class Traits, typename Base >
-   static void assign( tao::json::basic_value< Traits, Base >& v, my_type&& t )
+   template< template< typename... > class Traits >
+   static void assign( tao::json::basic_value< Traits >& v, my_type&& t )
    {
       v = {
          { "title", std::move( t.title ) },
@@ -152,16 +144,16 @@ Here both functions are shown even though a real-world traits class will typical
 template<>
 struct my_traits< my_type >
 {
-   template< template< typename... > class Traits, typename Base >
-   static void to( const tao::json::basic_value< Traits, Base >& v, my_type& d )
+   template< template< typename... > class Traits >
+   static void to( const tao::json::basic_value< Traits >& v, my_type& d )
    {
       const auto& object = v.get_object();
       d.title = v.at( "title" ).template as< std::string >();
       d.values = v.at( "values" ).template as< std::vector< int > >();
    }
 
-   template< template< typename... > class Traits, typename Base >
-   static my_type as( const tao::json::basic_value< Traits, Base >& v )
+   template< template< typename... > class Traits >
+   static my_type as( const tao::json::basic_value< Traits >& v )
    {
       my_type result;
       const auto& object = v.get_object();
@@ -207,8 +199,8 @@ This check should be consistent with the other traits functions, i.e. the check 
 template<>
 struct my_traits< my_type >
 {
-   template< template< typename... > class Traits, typename Base >
-   static bool equal( const tao::json::basic_value< Traits, Base >& v, const my_type& d ) noexcept
+   template< template< typename... > class Traits >
+   static bool equal( const tao::json::basic_value< Traits >& v, const my_type& d ) noexcept
    {
       if( !v.is_object() ) {
          return false;

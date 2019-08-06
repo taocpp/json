@@ -95,8 +95,8 @@ Or, when dealing with mutable `my_data` instances , it might be necessary to spe
 template<>
 struct my_traits< const my_data* >
 {
-   template< template< typename... > class Traits, typename Base >
-   static void assign( basic_value< Traits, Base >& v, const my_data* const d )
+   template< template< typename... > class Traits >
+   static void assign( basic_value< Traits >& v, const my_data* const d )
    {
       v.unsafe_assign_opaque_ptr( d );
    }
@@ -135,8 +135,8 @@ We do NOT recommend the following traits specialisation as it removes the `&` fr
 template<>
 struct my_traits< my_data >
 {
-   template< template< typename... > class Traits, typename Base >
-   static void assign( basic_value< Traits, Base >& v, my_data& d )
+   template< template< typename... > class Traits >
+   static void assign( basic_value< Traits >& v, my_data& d )
    {
       v.unsafe_assign_opaque_ptr( &d );  // NOT recommended!
    }
