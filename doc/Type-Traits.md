@@ -80,7 +80,7 @@ template<>
 struct my_traits< my_type >
 {
    template< template< typename... > class Traits, typename Base >
-   static void assign( tao::json::basic_value< Traits, Base >& v, const my_type& t ) noexcept
+   static void assign( tao::json::basic_value< Traits, Base >& v, const my_type& t )
    {
       v = {
          { "title", t.title },
@@ -122,7 +122,7 @@ template<>
 struct my_traits< my_type >
 {
    template< template< typename... > class Traits, typename Base >
-   static void assign( tao::json::basic_value< Traits, Base >& v, my_type&& t ) noexcept
+   static void assign( tao::json::basic_value< Traits, Base >& v, my_type&& t )
    {
       v = {
          { "title", std::move( t.title ) },
