@@ -25,6 +25,8 @@ namespace tao::json::events
          : m_r( r )
       {}
 
+      virtual ~virtual_ref() = default;
+
    private:
       Consumer& m_r;
 
