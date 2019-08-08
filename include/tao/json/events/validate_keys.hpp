@@ -23,7 +23,7 @@ namespace tao::json::events
       {
          pegtl::memory_input< pegtl::tracking_mode::lazy > in( v.data(), v.size(), "validate_key" );
          if( !pegtl::parse< Rule >( in ) ) {
-            throw std::runtime_error( "invalid key: " + std::string( v ) );  // NOLINT
+            throw std::runtime_error( "invalid key: " + std::string( v ) );
          }
       }
 

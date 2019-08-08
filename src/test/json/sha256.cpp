@@ -14,8 +14,8 @@ namespace tao::json
       std::string result;
       result.reserve( s.size() * 2 );
       for( unsigned char c : s ) {
-         result += hex[ c >> 4 ];  // NOLINT
-         result += hex[ c & 15 ];  // NOLINT
+         result += hex[ c >> 4 ];
+         result += hex[ c & 15 ];
       }
       return result;
    }

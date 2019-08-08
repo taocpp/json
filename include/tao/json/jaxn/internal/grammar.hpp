@@ -14,7 +14,7 @@ namespace tao::json::jaxn::internal
    // clang-format off
    namespace rules
    {
-      using namespace pegtl;  // NOLINT
+      using namespace pegtl;
 
       struct line_comment_char : sor< one< '\t' >, utf8::ranges< 0x20, 0x7E, 0x80, 0x10FFFF > > {};
       struct line_comment : seq< one< '/' >, until< eolf, must< line_comment_char > > > {};

@@ -26,7 +26,7 @@ namespace tao::json::events
                if( c == '_' ) {
                   r += c;
                }
-               else if( std::isupper( c ) ) {  // NOLINT
+               else if( std::isupper( c ) ) {
                   r += '_';
                   r += c;
                   active = false;

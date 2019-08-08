@@ -14,7 +14,7 @@ namespace tao::json
 {
    void test_shared()
    {
-      using namespace test;  // NOLINT
+      using namespace test;
       {
          const auto f = std::make_shared< std::uint64_t >( 42 );
          TEST_ASSERT( !traits< std::shared_ptr< uint64_t > >::is_nothing< traits >( f ) );

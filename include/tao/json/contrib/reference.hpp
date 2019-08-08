@@ -35,9 +35,9 @@ namespace tao::json
             case type::UNINITIALIZED:
                return;
             case type::DISCARDED:
-               throw std::logic_error( "attempt to use a discarded value" );  // NOLINT
+               throw std::logic_error( "attempt to use a discarded value" );
             case type::DESTROYED:
-               throw std::logic_error( "attempt to use a destroyed value" );  // NOLINT
+               throw std::logic_error( "attempt to use a destroyed value" );
             case type::NULL_:
             case type::BOOLEAN:
             case type::SIGNED:
@@ -73,18 +73,18 @@ namespace tao::json
                               case type::OBJECT:
                                  if( const auto* t = p->find( "$ref" ) ) {
                                     if( t->is_string_type() ) {
-                                       throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );  // NOLINT
+                                       throw std::runtime_error( "invalid JSON Reference: referencing additional data members is invalid" );
                                     }
                                  }
                                  p = &p->at( it->key() ).skip_value_ptr();
                                  break;
                               default:
-                                 throw invalid_type( ptr.begin(), std::next( it ) );  // NOLINT
+                                 throw invalid_type( ptr.begin(), std::next( it ) );
                            }
                            ++it;
                         }
                         if( p == &v ) {
-                           throw std::runtime_error( "JSON Reference: invalid self reference" );  // NOLINT
+                           throw std::runtime_error( "JSON Reference: invalid self reference" );
                         }
                         v.assign_value_ptr( p );
                         resolve_references( r, v );
@@ -101,7 +101,7 @@ namespace tao::json
             case type::OPAQUE_PTR:
                return;
          }
-         throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
+         throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
       }
 
    }  // namespace internal

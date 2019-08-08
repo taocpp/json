@@ -20,13 +20,13 @@ namespace tao::json::events
    {
       switch( v.type() ) {
          case type::UNINITIALIZED:
-            throw std::logic_error( "unable to produce events from uninitialized values" );  // NOLINT
+            throw std::logic_error( "unable to produce events from uninitialized values" );
 
          case type::DISCARDED:
-            throw std::logic_error( "unable to produce events from discarded values" );  // NOLINT
+            throw std::logic_error( "unable to produce events from discarded values" );
 
          case type::DESTROYED:
-            throw std::logic_error( "unable to produce events from destroyed values" );  // NOLINT
+            throw std::logic_error( "unable to produce events from destroyed values" );
 
          case type::NULL_:
             consumer.null();
@@ -100,7 +100,7 @@ namespace tao::json::events
             return;
          }
       }
-      throw std::logic_error( internal::format( "invalid value '", static_cast< std::uint8_t >( v.type() ), "' for tao::json::type" ) );  // NOLINT, LCOV_EXCL_LINE
+      throw std::logic_error( internal::format( "invalid value '", static_cast< std::uint8_t >( v.type() ), "' for tao::json::type" ) );  // LCOV_EXCL_LINE
    }
 
    template< typename Consumer, template< typename... > class Traits >
@@ -117,13 +117,13 @@ namespace tao::json::events
    {
       switch( v.type() ) {
          case type::UNINITIALIZED:
-            throw std::logic_error( "unable to produce events from uninitialized values" );  // NOLINT
+            throw std::logic_error( "unable to produce events from uninitialized values" );
 
          case type::DISCARDED:
-            throw std::logic_error( "unable to produce events from discarded values" );  // NOLINT
+            throw std::logic_error( "unable to produce events from discarded values" );
 
          case type::DESTROYED:
-            throw std::logic_error( "unable to produce events from destroyed values" );  // NOLINT
+            throw std::logic_error( "unable to produce events from destroyed values" );
 
          case type::NULL_:
             consumer.null();
@@ -191,7 +191,7 @@ namespace tao::json::events
             return;
          }
       }
-      throw std::logic_error( internal::format( "invalid value '", static_cast< std::uint8_t >( v.type() ), "' for tao::json::type" ) );  // NOLINT, LCOV_EXCL_LINE
+      throw std::logic_error( internal::format( "invalid value '", static_cast< std::uint8_t >( v.type() ), "' for tao::json::type" ) );  // LCOV_EXCL_LINE
    }
 
    template< typename Consumer, template< typename... > class Traits >

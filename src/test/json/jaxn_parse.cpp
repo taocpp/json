@@ -81,7 +81,7 @@ namespace tao::json
       TEST_ASSERT( o.at( "h" ).get_object().at( "c" ).get_string() == "d" );
    }
 
-   void unit_test()  // NOLINT
+   void unit_test()
    {
       TEST_ASSERT( custom_from_string( "null" ) == value( null ) );
       TEST_ASSERT( custom_from_string( "true" ) == value( true ) );

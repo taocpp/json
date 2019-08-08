@@ -29,7 +29,7 @@ namespace tao::json::ubjson
                in.bump_in_this_line( 1 );
                return false;
             default:
-               throw pegtl::parse_error( "expected boolean", in );  // NOLINT
+               throw pegtl::parse_error( "expected boolean", in );
          }
          std::abort();
       }
@@ -50,14 +50,14 @@ namespace tao::json::ubjson
             case marker::INT64:
                return json::internal::read_big_endian_number< std::int64_t >( in, 1 );
             default:
-               throw pegtl::parse_error( "expected signed number", in );  // NOLINT
+               throw pegtl::parse_error( "expected signed number", in );
          }
       }
 
       [[nodiscard]] inline std::uint64_t test_unsigned( const std::int64_t i )
       {
          if( i < 0 ) {
-            throw std::runtime_error( "negative number for unsigned" );  // NOLINT
+            throw std::runtime_error( "negative number for unsigned" );
          }
          return std::uint64_t( i );
       }
@@ -78,7 +78,7 @@ namespace tao::json::ubjson
             case marker::INT64:
                return test_unsigned( json::internal::read_big_endian_number< std::int64_t >( in, 1 ) );
             default:
-               throw pegtl::parse_error( "expected positive number", in );  // NOLINT
+               throw pegtl::parse_error( "expected positive number", in );
          }
       }
 
@@ -91,7 +91,7 @@ namespace tao::json::ubjson
             case marker::FLOAT64:
                return json::internal::read_big_endian_number< double >( in, 1 );
             default:
-               throw pegtl::parse_error( "expected floating point number", in );  // NOLINT
+               throw pegtl::parse_error( "expected floating point number", in );
          }
       }
 
@@ -105,7 +105,7 @@ namespace tao::json::ubjson
             case marker::STRING:
                return internal::read_string< V, Result >( in );
             default:
-               throw pegtl::parse_error( "expected string (or char)", in );  // NOLINT
+               throw pegtl::parse_error( "expected string (or char)", in );
          }
       }
 
@@ -143,7 +143,7 @@ namespace tao::json::ubjson
       {
          const auto b = internal::peek_marker( m_input );
          if( b != m ) {
-            throw pegtl::parse_error( e, m_input );  // NOLINT
+            throw pegtl::parse_error( e, m_input );
          }
          m_input.bump_in_this_line();
       }
@@ -204,7 +204,7 @@ namespace tao::json::ubjson
             case End:
                return state_t( 0 );
             case internal::marker::CONTAINER_TYPE:
-               throw pegtl::parse_error( "typed ubjson containers not implemented", m_input );  // NOLINT
+               throw pegtl::parse_error( "typed ubjson containers not implemented", m_input );
             case internal::marker::CONTAINER_SIZE:
                m_input.bump_in_this_line( 1 );
                return state_t( number_unsigned() );
@@ -226,21 +226,21 @@ namespace tao::json::ubjson
       void end_array_sized( const state_t& p )
       {
          if( *p.size != p.i ) {
-            throw pegtl::parse_error( "array size mismatch", m_input );  // NOLINT
+            throw pegtl::parse_error( "array size mismatch", m_input );
          }
       }
 
       void end_object_sized( const state_t& p )
       {
          if( *p.size != p.i ) {
-            throw pegtl::parse_error( "object size mismatch", m_input );  // NOLINT
+            throw pegtl::parse_error( "object size mismatch", m_input );
          }
       }
 
       void end_array_indefinite( const state_t& /*unused*/ )
       {
          if( internal::peek_marker( m_input ) != internal::marker::END_ARRAY ) {
-            throw pegtl::parse_error( "array not at end", m_input );  // NOLINT
+            throw pegtl::parse_error( "array not at end", m_input );
          }
          m_input.bump_in_this_line( 1 );
       }
@@ -248,7 +248,7 @@ namespace tao::json::ubjson
       void end_object_indefinite( const state_t& /*unused*/ )
       {
          if( internal::peek_marker( m_input ) != internal::marker::END_OBJECT ) {
-            throw pegtl::parse_error( "object not at end", m_input );  // NOLINT
+            throw pegtl::parse_error( "object not at end", m_input );
          }
          m_input.bump_in_this_line( 1 );
       }
@@ -276,28 +276,28 @@ namespace tao::json::ubjson
       void element_sized( state_t& p )
       {
          if( p.i++ >= *p.size ) {
-            throw pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
+            throw pegtl::parse_error( "unexpected array end", m_input );
          }
       }
 
       void member_sized( state_t& p )
       {
          if( p.i++ >= *p.size ) {
-            throw pegtl::parse_error( "unexpected object end", m_input );  // NOLINT
+            throw pegtl::parse_error( "unexpected object end", m_input );
          }
       }
 
       void element_indefinite( state_t& /*unused*/ )
       {
          if( internal::peek_marker( m_input ) == internal::marker::END_ARRAY ) {
-            throw pegtl::parse_error( "unexpected array end", m_input );  // NOLINT
+            throw pegtl::parse_error( "unexpected array end", m_input );
          }
       }
 
       void member_indefinite( state_t& /*unused*/ )
       {
          if( internal::peek_marker( m_input ) == internal::marker::END_OBJECT ) {
-            throw pegtl::parse_error( "unexpected object end", m_input );  // NOLINT
+            throw pegtl::parse_error( "unexpected object end", m_input );
          }
       }
 

@@ -10,7 +10,7 @@
 
 namespace tao::json
 {
-   void unit_test()  // NOLINT
+   void unit_test()
    {
       const value source = {
          { "foo", 42 },

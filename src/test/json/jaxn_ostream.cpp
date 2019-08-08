@@ -30,7 +30,7 @@ namespace tao::json
 
       TEST_THROWS( jaxn::to_string( e ) );
 #ifndef NDEBUG
-      TEST_THROWS( jaxn::to_string( d ) );  // NOLINT
+      TEST_THROWS( jaxn::to_string( d ) );
 #endif
 
       test_simple( null, "null" );

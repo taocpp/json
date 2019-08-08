@@ -187,7 +187,7 @@ namespace tao::json
       TEST_ASSERT( !test_parse( "{\"\":null}", c_hello_world ) );
    }
 
-   void test_array()  // NOLINT
+   void test_array()
    {
       events::compare c_empty_array( empty_array );
 
@@ -292,7 +292,7 @@ namespace tao::json
       TEST_ASSERT( !test_value( value::array( { 1, 2, value::array( { 3, 4, value::array( { 5 } ) } ), 6 } ), c_nested_array ) );
    }
 
-   void test_object()  // NOLINT
+   void test_object()
    {
       events::compare c_empty_object( empty_object );
 

@@ -30,7 +30,7 @@ namespace tao::json::events
 
       void push()
       {
-         m_digests.push_back( std::make_unique< internal::sha256 >() );  // NOLINT
+         m_digests.push_back( std::make_unique< internal::sha256 >() );
       }
 
    public:
@@ -145,7 +145,7 @@ namespace tao::json::events
          m_digests.back()->feed( v );
          m_keys.emplace_back( m_digests.back()->get() );
          if( m_properties.back().count( m_keys.back() ) != 0 ) {
-            throw std::runtime_error( "duplicate JSON object key: " + std::string( v ) );  // NOLINT
+            throw std::runtime_error( "duplicate JSON object key: " + std::string( v ) );
          }
          m_digests.back()->reset();
       }

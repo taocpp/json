@@ -1,7 +1,7 @@
 // Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_SRC_TEST_JSON_TEST_EVENTS_HPP  // NOLINT
+#ifndef TAO_JSON_SRC_TEST_JSON_TEST_EVENTS_HPP
 #define TAO_JSON_SRC_TEST_JSON_TEST_EVENTS_HPP
 
 #include <tao/json.hpp>

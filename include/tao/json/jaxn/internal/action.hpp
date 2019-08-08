@@ -74,7 +74,7 @@ namespace tao::json::jaxn::internal
          std::uint64_t value = 0;
          for( char c : in ) {
             if( value & 0xF000000000000000 ) {
-               throw pegtl::parse_error( "JAXN hexadecimal number too large", in );  // NOLINT
+               throw pegtl::parse_error( "JAXN hexadecimal number too large", in );
             }
             value <<= 4;
             value += json::internal::hex_char_to_integer< std::uint8_t >( c );
@@ -87,7 +87,7 @@ namespace tao::json::jaxn::internal
                consumer.number( static_cast< std::int64_t >( -9223372036854775807LL - 1 ) );
             }
             else {
-               throw pegtl::parse_error( "JAXN hexadecimal number too large to negate", in );  // NOLINT
+               throw pegtl::parse_error( "JAXN hexadecimal number too large to negate", in );
             }
          }
          else {
@@ -229,7 +229,7 @@ namespace tao::json::jaxn::internal
          }
 
          if( s > ( 1 << 20 ) ) {
-            throw pegtl::parse_error( "JSON number with 1 megabyte digits", in );  // NOLINT
+            throw pegtl::parse_error( "JSON number with 1 megabyte digits", in );
          }
 
          const auto c = ( std::min )( s, json::internal::max_mantissa_digits );
@@ -294,7 +294,7 @@ namespace tao::json::jaxn::internal
             ++b;
          }
          if( ( in.end() - b ) > 9 ) {
-            throw pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );  // NOLINT
+            throw pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );
          }
          int exponent10 = 0;
 

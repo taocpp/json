@@ -21,7 +21,7 @@ namespace tao::json::events
       void count_and_limit()
       {
          if( ++m_depth > Limit ) {
-            throw std::runtime_error( "nesting depth limit exceeded" );  // NOLINT
+            throw std::runtime_error( "nesting depth limit exceeded" );
          }
       }
 

@@ -34,7 +34,7 @@ namespace tao::json::internal
             case type::DOUBLE:
                return static_cast< T >( v.unsafe_get_double() );
             default:
-               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to number", json::message_extension( v ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to number", json::message_extension( v ) ) );
          }
       }
    };

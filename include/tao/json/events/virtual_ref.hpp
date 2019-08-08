@@ -27,12 +27,6 @@ namespace tao::json::events
 
       virtual ~virtual_ref() = default;
 
-      virtual_ref( virtual_ref&& ) = delete;
-      virtual_ref( const virtual_ref& ) = delete;
-
-      void operator=( virtual_ref&& ) = delete;
-      void operator=( const virtual_ref& ) = delete;
-
    private:
       Consumer& m_r;
 

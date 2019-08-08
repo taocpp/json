@@ -27,7 +27,7 @@ namespace tao::json::jaxn::events
       {
          next();
          if( !std::isfinite( v ) ) {
-            if( std::isnan( v ) ) {  // NOLINT
+            if( std::isnan( v ) ) {
                os.write( "NaN", 3 );
             }
             else if( v < 0 ) {

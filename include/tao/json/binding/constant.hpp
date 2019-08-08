@@ -34,7 +34,7 @@ namespace tao::json::binding
       {
          const auto t = v.template as< bool >();
          if( t != V ) {
-            throw std::runtime_error( json::internal::format( "boolean mismatch, expected '", V, "' parsed '", t, '\'', json::message_extension( v ) ) );  // NOLINT
+            throw std::runtime_error( json::internal::format( "boolean mismatch, expected '", V, "' parsed '", t, '\'', json::message_extension( v ) ) );
          }
       }
 
@@ -68,7 +68,7 @@ namespace tao::json::binding
       {
          const auto t = v.template as< std::int64_t >();
          if( t != V ) {
-            throw std::runtime_error( json::internal::format( "signed integer mismatch, expected '", V, "' parsed '", t, '\'', json::message_extension( v ) ) );  // NOLINT
+            throw std::runtime_error( json::internal::format( "signed integer mismatch, expected '", V, "' parsed '", t, '\'', json::message_extension( v ) ) );
          }
       }
 
@@ -102,7 +102,7 @@ namespace tao::json::binding
       {
          const auto t = v.template as< std::uint64_t >();
          if( t != V ) {
-            throw std::runtime_error( json::internal::format( "unsigned integer mismatch, expected '", V, "' parsed '", t, '\'', json::message_extension( v ) ) );  // NOLINT
+            throw std::runtime_error( json::internal::format( "unsigned integer mismatch, expected '", V, "' parsed '", t, '\'', json::message_extension( v ) ) );
          }
       }
 
@@ -142,7 +142,7 @@ namespace tao::json::binding
          const auto sc = string::as_string_view();
          const auto sv = v.template as< std::string_view >();
          if( sv != sc ) {
-            throw std::runtime_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sc ), "\" parsed \"", json::internal::escape( sv ), '"', json::message_extension( v ) ) );  // NOLINT
+            throw std::runtime_error( json::internal::format( "string mismatch, expected \"", json::internal::escape( sc ), "\" parsed \"", json::internal::escape( sv ), '"', json::message_extension( v ) ) );
          }
       }
 

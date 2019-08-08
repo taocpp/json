@@ -59,48 +59,48 @@ namespace tao::json::jaxn::internal
    };
 
    // clang-format off
-   template<> inline const std::string errors< rules::text >::error_message = "no valid JAXN";  // NOLINT
+   template<> inline const std::string errors< rules::text >::error_message = "no valid JAXN";
 
-   template<> inline const std::string errors< rules::comment >::error_message = "expected '*' or '/'";  // NOLINT
-   template<> inline const std::string errors< rules::line_comment_char >::error_message = "invalid character in line comment";  // NOLINT
-   template<> inline const std::string errors< rules::block_comment_char >::error_message = "invalid character in block comment";  // NOLINT
-   template<> inline const std::string errors< rules::end_block_comment >::error_message = "unterminated multi-line comment";  // NOLINT
+   template<> inline const std::string errors< rules::comment >::error_message = "expected '*' or '/'";
+   template<> inline const std::string errors< rules::line_comment_char >::error_message = "invalid character in line comment";
+   template<> inline const std::string errors< rules::block_comment_char >::error_message = "invalid character in block comment";
+   template<> inline const std::string errors< rules::end_block_comment >::error_message = "unterminated multi-line comment";
 
-   template<> inline const std::string errors< rules::end_array >::error_message = "incomplete array, expected value or ']'";  // NOLINT
-   template<> inline const std::string errors< rules::end_object >::error_message = "incomplete object, expected key or '}'";  // NOLINT
-   template<> inline const std::string errors< rules::name_separator >::error_message = "expected ':'";  // NOLINT
-   template<> inline const std::string errors< rules::value >::error_message = "expected value";  // NOLINT
-   template<> inline const std::string errors< rules::sor_value >::error_message = "expected value";  // NOLINT
+   template<> inline const std::string errors< rules::end_array >::error_message = "incomplete array, expected value or ']'";
+   template<> inline const std::string errors< rules::end_object >::error_message = "incomplete object, expected key or '}'";
+   template<> inline const std::string errors< rules::name_separator >::error_message = "expected ':'";
+   template<> inline const std::string errors< rules::value >::error_message = "expected value";
+   template<> inline const std::string errors< rules::sor_value >::error_message = "expected value";
 
-   template<> inline const std::string errors< rules::edigits >::error_message = "expected at least one exponent digit";  // NOLINT
-   template<> inline const std::string errors< rules::fdigits >::error_message = "expected at least one fraction digit";  // NOLINT
-   template<> inline const std::string errors< rules::nan >::error_message = "invalid numeric literal";  // NOLINT
-   template<> inline const std::string errors< rules::infinity< false > >::error_message = "invalid numeric literal";  // NOLINT
-   template<> inline const std::string errors< rules::infinity< true > >::error_message = "invalid numeric literal";  // NOLINT
-   template<> inline const std::string errors< rules::hexnum< false > >::error_message = "expected at least one hexadecimal digit";  // NOLINT
-   template<> inline const std::string errors< rules::hexnum< true > >::error_message = "expected at least one hexadecimal digit";  // NOLINT
+   template<> inline const std::string errors< rules::edigits >::error_message = "expected at least one exponent digit";
+   template<> inline const std::string errors< rules::fdigits >::error_message = "expected at least one fraction digit";
+   template<> inline const std::string errors< rules::nan >::error_message = "invalid numeric literal";
+   template<> inline const std::string errors< rules::infinity< false > >::error_message = "invalid numeric literal";
+   template<> inline const std::string errors< rules::infinity< true > >::error_message = "invalid numeric literal";
+   template<> inline const std::string errors< rules::hexnum< false > >::error_message = "expected at least one hexadecimal digit";
+   template<> inline const std::string errors< rules::hexnum< true > >::error_message = "expected at least one hexadecimal digit";
 
-   template<> inline const std::string errors< rules::xdigit >::error_message = "incomplete universal character name";  // NOLINT
-   template<> inline const std::string errors< rules::escaped >::error_message = "unknown escape sequence in string";  // NOLINT
-   template<> inline const std::string errors< rules::chars< '"' > >::error_message = "invalid character in string";  // NOLINT
-   template<> inline const std::string errors< rules::chars< '\'' > >::error_message = "invalid character in string";  // NOLINT
-   template<> inline const std::string errors< rules::qstring_content< '"' > >::error_message = "unterminated string";  // NOLINT
-   template<> inline const std::string errors< rules::qstring_content< '\'' > >::error_message = "unterminated string";  // NOLINT
-   template<> inline const std::string errors< rules::mchars< '"' > >::error_message = "invalid character in multiline string";  // NOLINT
-   template<> inline const std::string errors< rules::mchars< '\'' > >::error_message = "invalid character in multiline string";  // NOLINT
-   template<> inline const std::string errors< rules::mqstring_content< '"' > >::error_message = "unterminated multiline string";  // NOLINT
-   template<> inline const std::string errors< rules::mqstring_content< '\'' > >::error_message = "unterminated multiline string";  // NOLINT
-   template<> inline const std::string errors< rules::string_fragment >::error_message = "expected string";  // NOLINT
+   template<> inline const std::string errors< rules::xdigit >::error_message = "incomplete universal character name";
+   template<> inline const std::string errors< rules::escaped >::error_message = "unknown escape sequence in string";
+   template<> inline const std::string errors< rules::chars< '"' > >::error_message = "invalid character in string";
+   template<> inline const std::string errors< rules::chars< '\'' > >::error_message = "invalid character in string";
+   template<> inline const std::string errors< rules::qstring_content< '"' > >::error_message = "unterminated string";
+   template<> inline const std::string errors< rules::qstring_content< '\'' > >::error_message = "unterminated string";
+   template<> inline const std::string errors< rules::mchars< '"' > >::error_message = "invalid character in multiline string";
+   template<> inline const std::string errors< rules::mchars< '\'' > >::error_message = "invalid character in multiline string";
+   template<> inline const std::string errors< rules::mqstring_content< '"' > >::error_message = "unterminated multiline string";
+   template<> inline const std::string errors< rules::mqstring_content< '\'' > >::error_message = "unterminated multiline string";
+   template<> inline const std::string errors< rules::string_fragment >::error_message = "expected string";
 
-   template<> inline const std::string errors< rules::bescaped >::error_message = "unknown escape sequence in binary string";  // NOLINT
-   template<> inline const std::string errors< rules::bchars< '"' > >::error_message = "invalid character in binary string";  // NOLINT
-   template<> inline const std::string errors< rules::bchars< '\'' > >::error_message = "invalid character in binary string";  // NOLINT
-   template<> inline const std::string errors< rules::bqstring_content< '"' > >::error_message = "unterminated binary string";  // NOLINT
-   template<> inline const std::string errors< rules::bqstring_content< '\'' > >::error_message = "unterminated binary string";  // NOLINT
-   template<> inline const std::string errors< rules::bvalue >::error_message = "expected binary";  // NOLINT
-   template<> inline const std::string errors< rules::bpart >::error_message = "expected a pair of hexadecimal digits";  // NOLINT
+   template<> inline const std::string errors< rules::bescaped >::error_message = "unknown escape sequence in binary string";
+   template<> inline const std::string errors< rules::bchars< '"' > >::error_message = "invalid character in binary string";
+   template<> inline const std::string errors< rules::bchars< '\'' > >::error_message = "invalid character in binary string";
+   template<> inline const std::string errors< rules::bqstring_content< '"' > >::error_message = "unterminated binary string";
+   template<> inline const std::string errors< rules::bqstring_content< '\'' > >::error_message = "unterminated binary string";
+   template<> inline const std::string errors< rules::bvalue >::error_message = "expected binary";
+   template<> inline const std::string errors< rules::bpart >::error_message = "expected a pair of hexadecimal digits";
 
-   template<> inline const std::string errors< pegtl::eof >::error_message = "unexpected character after JAXN value";  // NOLINT
+   template<> inline const std::string errors< pegtl::eof >::error_message = "unexpected character after JAXN value";
    // clang-format on
 
 }  // namespace tao::json::jaxn::internal

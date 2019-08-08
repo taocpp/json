@@ -134,7 +134,7 @@ namespace tao::json::binding
 
          const auto& a = v.get_object();
          if( a.size() != 1 ) {
-            throw std::runtime_error( json::internal::format( "polymorphic factory requires object of size one for base class ", pegtl::internal::demangle< Base >(), json::message_extension( v ) ) );  // NOLINT
+            throw std::runtime_error( json::internal::format( "polymorphic factory requires object of size one for base class ", pegtl::internal::demangle< Base >(), json::message_extension( v ) ) );
          }
          const auto b = a.begin();
          const auto i = m.find( b->first );
@@ -143,7 +143,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type \"", json::internal::escape( b->first ), "\" -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::internal::demangle< Base >(), json::message_extension( v ) );
-            throw std::runtime_error( oss.str() );  // NOLINT
+            throw std::runtime_error( oss.str() );
          }
          r = i->second.function( b->second, with... );
       }
@@ -172,7 +172,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type ", pegtl::internal::demangle< decltype( *p ) >(), " -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::internal::demangle< Base >() );
-            throw std::runtime_error( oss.str() );  // NOLINT
+            throw std::runtime_error( oss.str() );
          }
          i->second.function( v, p );
          v = {
@@ -205,7 +205,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type \"", json::internal::escape( k ), "\" -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::internal::demangle< Base >() );
-            throw std::runtime_error( oss.str() );  // NOLINT
+            throw std::runtime_error( oss.str() );
          }
          r = i->second.function( parser );
          parser.end_object( s );
@@ -235,7 +235,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type ", pegtl::internal::demangle< decltype( *p ) >(), " -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::internal::demangle< Base >() );
-            throw std::runtime_error( oss.str() );  // NOLINT
+            throw std::runtime_error( oss.str() );
          }
          consumer.begin_object( 1 );
          consumer.key( i->second.name );

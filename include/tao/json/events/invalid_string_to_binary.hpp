@@ -29,7 +29,7 @@ namespace tao::json::events
             Consumer::string( std::move( v ) );
          }
          else {
-            const std::byte* data = reinterpret_cast< const std::byte* >( v.data() );  // NOLINT
+            const std::byte* data = reinterpret_cast< const std::byte* >( v.data() );
             Consumer::binary( std::vector< std::byte >( data, data + v.size() ) );
          }
       }
@@ -40,7 +40,7 @@ namespace tao::json::events
             Consumer::string( v );
          }
          else {
-            Consumer::binary( tao::binary_view( reinterpret_cast< const std::byte* >( v.data() ), v.size() ) );  // NOLINT
+            Consumer::binary( tao::binary_view( reinterpret_cast< const std::byte* >( v.data() ), v.size() ) );
          }
       }
    };

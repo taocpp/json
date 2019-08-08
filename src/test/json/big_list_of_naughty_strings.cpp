@@ -23,7 +23,7 @@
       in.close();
       return contents;
    }
-   throw std::runtime_error( "unable to read input file" );  // NOLINT
+   throw std::runtime_error( "unable to read input file" );
 }
 
 namespace tao::json

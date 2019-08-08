@@ -127,17 +127,6 @@ matrix:
         - CXX=clang++-8
         - CPPFLAGS=-fsanitize=address
 
-    - compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'clang-tidy-8', 'g++-8']
-      env:
-        - CXX=clang++-8
-        - CLANG_TIDY=clang-tidy-8
-      script:
-        - make -kj3 clang-tidy
-
     - language: python
       python:
         - "3.6"

@@ -18,7 +18,7 @@ namespace tao::json::events
 
       void binary( const tao::binary_view /*unused*/ )
       {
-         throw std::runtime_error( "invalid binary data" );  // NOLINT
+         throw std::runtime_error( "invalid binary data" );
       }
    };
 

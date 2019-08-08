@@ -20,7 +20,7 @@ namespace tao::json::events
       void number( const double v )
       {
          if( !std::isfinite( v ) ) {
-            throw std::runtime_error( "invalid non-finite double value" );  // NOLINT
+            throw std::runtime_error( "invalid non-finite double value" );
          }
          Consumer::number( v );
       }

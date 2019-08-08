@@ -34,7 +34,7 @@
 namespace tao::json
 {
    template< template< typename... > class Traits >
-   class basic_value  // NOLINT
+   class basic_value
       : public Traits< void >::template public_base< basic_value< Traits > >
    {
    public:
@@ -72,7 +72,7 @@ namespace tao::json
       template< typename T,
                 typename = std::enable_if_t< internal::enable_implicit_constructor< Traits, std::decay_t< T > > >,
                 typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
-      basic_value( T&& v, public_base_t b = public_base_t() )  // NOLINT
+      basic_value( T&& v, public_base_t b = public_base_t() )
          noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          : public_base_t( std::move( b ) )
       {
@@ -558,17 +558,17 @@ namespace tao::json
    private:
       void throw_duplicate_key_exception( const std::string_view k ) const
       {
-         throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( k ), '"', json::message_extension( *this ) ) );  // NOLINT
+         throw std::runtime_error( internal::format( "duplicate JSON object key \"", internal::escape( k ), '"', json::message_extension( *this ) ) );
       }
 
       void throw_index_out_of_bound_exception( const std::size_t i ) const
       {
-         throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::message_extension( *this ) ) );  // NOLINT
+         throw std::out_of_range( internal::format( "JSON array index '", i, "' out of bound '", m_union.a.size(), '\'', json::message_extension( *this ) ) );
       }
 
       void throw_key_not_found_exception( const std::string_view k ) const
       {
-         throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::message_extension( *this ) ) );  // NOLINT
+         throw std::out_of_range( internal::format( "JSON object key \"", internal::escape( k ), "\" not found", json::message_extension( *this ) ) );
       }
 
    public:
@@ -894,7 +894,7 @@ namespace tao::json
             case json::type::ARRAY:
                break;
             default:
-               throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_array()", json::message_extension( *this ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_array()", json::message_extension( *this ) ) );
          }
       }
 
@@ -965,7 +965,7 @@ namespace tao::json
             case json::type::OBJECT:
                break;
             default:
-               throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_object()", json::message_extension( *this ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", m_type, "' for prepare_object()", json::message_extension( *this ) ) );
          }
       }
 
@@ -1256,7 +1256,7 @@ namespace tao::json
                return r.first->second;
             }
             default:
-               throw internal::invalid_type( b, std::next( e ) );  // NOLINT
+               throw internal::invalid_type( b, std::next( e ) );
          }
       }
 
@@ -1376,7 +1376,7 @@ namespace tao::json
       void erase( const pointer& k )
       {
          if( !k ) {
-            throw std::runtime_error( internal::format( "invalid root JSON Pointer for erase", json::message_extension( *this ) ) );  // NOLINT
+            throw std::runtime_error( internal::format( "invalid root JSON Pointer for erase", json::message_extension( *this ) ) );
          }
          const auto b = k.begin();
          const auto e = std::prev( k.end() );
@@ -1389,7 +1389,7 @@ namespace tao::json
                v.erase( e->key() );
                break;
             default:
-               throw internal::invalid_type( b, std::next( e ) );  // NOLINT
+               throw internal::invalid_type( b, std::next( e ) );
          }
       }
 
@@ -1411,7 +1411,7 @@ namespace tao::json
                }
                const auto i = e->index();
                if( i >= a.size() ) {
-                  throw std::out_of_range( internal::format( "invalid JSON Pointer \"", internal::tokens_to_string( b, std::next( e ) ), "\", array index '", i, "' out of bound '", a.size(), '\'', json::message_extension( *this ) ) );  // NOLINT
+                  throw std::out_of_range( internal::format( "invalid JSON Pointer \"", internal::tokens_to_string( b, std::next( e ) ), "\", array index '", i, "' out of bound '", a.size(), '\'', json::message_extension( *this ) ) );
                }
                a.insert( a.begin() + i, std::move( value ) );
                return a.at( i );
@@ -1429,7 +1429,7 @@ namespace tao::json
                return it->second;
             }
             default:
-               throw internal::invalid_type( b, std::next( e ) );  // NOLINT
+               throw internal::invalid_type( b, std::next( e ) );
          }
       }
 
@@ -1492,7 +1492,7 @@ namespace tao::json
       void validate_json_type( const json::type t ) const
       {
          if( m_type != t ) {
-            throw std::logic_error( internal::format( "invalid json type '", m_type, "', expected '", t, '\'', json::message_extension( *this ) ) );  // NOLINT
+            throw std::logic_error( internal::format( "invalid json type '", m_type, "', expected '", t, '\'', json::message_extension( *this ) ) );
          }
       }
 
@@ -1627,10 +1627,10 @@ namespace tao::json
                return;
 
             case json::type::DISCARDED:
-               throw std::logic_error( "attempt to use a discarded value" );  // NOLINT
+               throw std::logic_error( "attempt to use a discarded value" );
 
             case json::type::DESTROYED:
-               throw std::logic_error( "attempt to use a destroyed value" );  // NOLINT
+               throw std::logic_error( "attempt to use a destroyed value" );
 
             case json::type::NULL_:
                return;

@@ -22,10 +22,10 @@ namespace tao::json::internal
       for( const auto c : v ) {
          encode <<= 8;
          encode += static_cast< unsigned char >( c );
-         s += table[ ( encode >> ( ++cycle * 2 ) ) & 0x3f ];  // NOLINT
+         s += table[ ( encode >> ( ++cycle * 2 ) ) & 0x3f ];
          if( cycle == 3 ) {
             cycle = 0;
-            s += table[ encode & 0x3f ];  // NOLINT
+            s += table[ encode & 0x3f ];
          }
       }
 
@@ -34,15 +34,15 @@ namespace tao::json::internal
             break;
 
          case 1:
-            s += table[ ( encode << 4 ) & 0x3f ];  // NOLINT
+            s += table[ ( encode << 4 ) & 0x3f ];
             break;
 
          case 2:
-            s += table[ ( encode << 2 ) & 0x3f ];  // NOLINT
+            s += table[ ( encode << 2 ) & 0x3f ];
             break;
 
          default:
-            throw std::logic_error( "code should be unreachable" );  // NOLINT, LCOV_EXCL_LINE
+            throw std::logic_error( "code should be unreachable" );  // LCOV_EXCL_LINE
       }
 
       return s;

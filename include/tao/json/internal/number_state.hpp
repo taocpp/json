@@ -16,7 +16,7 @@ namespace tao::json::internal
    static const std::size_t max_mantissa_digits = 772;
 
    template< bool NEG >
-   struct number_state  // NOLINT
+   struct number_state
    {
       using exponent10_t = std::int32_t;
       using msize_t = std::uint16_t;
@@ -69,7 +69,7 @@ namespace tao::json::internal
          }
          const auto d = double_conversion::Strtod( double_conversion::Vector< const char >( mantissa, msize ), exponent10 );
          if( !std::isfinite( d ) ) {
-            throw std::runtime_error( "invalid double value" );  // NOLINT
+            throw std::runtime_error( "invalid double value" );
          }
          consumer.number( NEG ? -d : d );
       }

@@ -47,10 +47,10 @@ namespace tao::json::events
          void check( const std::size_t in_expected )
          {
             if( expected != in_expected ) {
-               throw std::logic_error( "inconsistent size" );  // NOLINT
+               throw std::logic_error( "inconsistent size" );
             }
             if( expected != counted ) {
-               throw std::logic_error( "wrong size" );  // NOLINT
+               throw std::logic_error( "wrong size" );
             }
          }
 
@@ -76,10 +76,10 @@ namespace tao::json::events
                return;
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
-               throw std::logic_error( "expected element(), but " + function + " was called" );  // NOLINT
+               throw std::logic_error( "expected element(), but " + function + " was called" );
             case EXPECT_OBJECT_KEY_OR_END:
             case EXPECT_SIZED_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected key() or end_object(...), but " + function + " was called" );  // NOLINT
+               throw std::logic_error( "expected key() or end_object(...), but " + function + " was called" );
             case EXPECT_OBJECT_VALUE:
                state = EXPECT_OBJECT_MEMBER;
                return;
@@ -88,11 +88,11 @@ namespace tao::json::events
                return;
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
-               throw std::logic_error( "expected member(), but " + function + " was called" );  // NOLINT
+               throw std::logic_error( "expected member(), but " + function + " was called" );
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but " + function + " was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but " + function + " was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
    public:
@@ -151,10 +151,10 @@ namespace tao::json::events
                return;
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
-               throw std::logic_error( "expected element(), but begin_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected element(), but begin_array(...) was called" );
             case EXPECT_OBJECT_KEY_OR_END:
             case EXPECT_SIZED_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected key() or end_object(...), but begin_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected key() or end_object(...), but begin_array(...) was called" );
             case EXPECT_OBJECT_VALUE:
                stack.push_back( EXPECT_OBJECT_MEMBER );
                state = EXPECT_ARRAY_VALUE_OR_END;
@@ -165,11 +165,11 @@ namespace tao::json::events
                return;
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
-               throw std::logic_error( "expected member(), but begin_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected member(), but begin_array(...) was called" );
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but begin_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but begin_array(...) was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
       void begin_array( const std::size_t expected )
@@ -183,10 +183,10 @@ namespace tao::json::events
       {
          switch( state ) {
             case EXPECT_TOP_LEVEL_VALUE:
-               throw std::logic_error( "expected any value, but element() was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but element() was called" );
             case EXPECT_ARRAY_VALUE_OR_END:
             case EXPECT_SIZED_ARRAY_VALUE_OR_END:
-               throw std::logic_error( "expected any value or end_array(...), but element() was called" );  // NOLINT
+               throw std::logic_error( "expected any value or end_array(...), but element() was called" );
             case EXPECT_ARRAY_ELEMENT:
                state = EXPECT_ARRAY_VALUE_OR_END;
                return;
@@ -196,46 +196,46 @@ namespace tao::json::events
                return;
             case EXPECT_OBJECT_KEY_OR_END:
             case EXPECT_SIZED_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected key() or end_object(...), but element() was called" );  // NOLINT
+               throw std::logic_error( "expected key() or end_object(...), but element() was called" );
             case EXPECT_OBJECT_VALUE:
             case EXPECT_SIZED_OBJECT_VALUE:
-               throw std::logic_error( "expected any value, but element() was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but element() was called" );
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
-               throw std::logic_error( "expected member(), but element() was called" );  // NOLINT
+               throw std::logic_error( "expected member(), but element() was called" );
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but element() was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but element() was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
       void end_array()
       {
          switch( state ) {
             case EXPECT_TOP_LEVEL_VALUE:
-               throw std::logic_error( "expected any value, but end_array(....) was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but end_array(....) was called" );
             case EXPECT_ARRAY_VALUE_OR_END:
                state = stack.back();
                stack.pop_back();
                return;
             case EXPECT_SIZED_ARRAY_VALUE_OR_END:
-               throw std::logic_error( "expected end_array(std::size_t), but end_array() was called" );  // NOLINT
+               throw std::logic_error( "expected end_array(std::size_t), but end_array() was called" );
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
-               throw std::logic_error( "expected element(), but end_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected element(), but end_array(...) was called" );
             case EXPECT_OBJECT_KEY_OR_END:
             case EXPECT_SIZED_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected key() or end_object(...), but end_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected key() or end_object(...), but end_array(...) was called" );
             case EXPECT_OBJECT_VALUE:
             case EXPECT_SIZED_OBJECT_VALUE:
-               throw std::logic_error( "expected any value, but end_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but end_array(...) was called" );
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
-               throw std::logic_error( "expected member(), but end_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected member(), but end_array(...) was called" );
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but end_array(...) was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but end_array(...) was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
       void end_array( const std::size_t expected )
@@ -245,7 +245,7 @@ namespace tao::json::events
                state = EXPECT_ARRAY_VALUE_OR_END;
                break;
             case EXPECT_ARRAY_VALUE_OR_END:
-               throw std::logic_error( "expected any value or end_array(), but end_array(std::size_t) was called" );  // NOLINT
+               throw std::logic_error( "expected any value or end_array(), but end_array(std::size_t) was called" );
             default:
                break;
          }
@@ -272,10 +272,10 @@ namespace tao::json::events
                return;
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
-               throw std::logic_error( "expected element(), but begin_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected element(), but begin_object(...) was called" );
             case EXPECT_OBJECT_KEY_OR_END:
             case EXPECT_SIZED_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected key() or end_object(...), but begin_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected key() or end_object(...), but begin_object(...) was called" );
             case EXPECT_OBJECT_VALUE:
                stack.push_back( EXPECT_OBJECT_MEMBER );
                state = EXPECT_OBJECT_KEY_OR_END;
@@ -286,11 +286,11 @@ namespace tao::json::events
                return;
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
-               throw std::logic_error( "expected member(), but begin_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected member(), but begin_object(...) was called" );
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but begin_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but begin_object(...) was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
       void begin_object( const std::size_t expected )
@@ -304,13 +304,13 @@ namespace tao::json::events
       {
          switch( state ) {
             case EXPECT_TOP_LEVEL_VALUE:
-               throw std::logic_error( "expected any value, but key() was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but key() was called" );
             case EXPECT_ARRAY_VALUE_OR_END:
             case EXPECT_SIZED_ARRAY_VALUE_OR_END:
-               throw std::logic_error( "expected any value or end_array(...), but key() was called" );  // NOLINT
+               throw std::logic_error( "expected any value or end_array(...), but key() was called" );
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
-               throw std::logic_error( "expected element(), but key() was called" );  // NOLINT
+               throw std::logic_error( "expected element(), but key() was called" );
             case EXPECT_OBJECT_KEY_OR_END:
                state = EXPECT_OBJECT_VALUE;
                return;
@@ -319,33 +319,33 @@ namespace tao::json::events
                return;
             case EXPECT_OBJECT_VALUE:
             case EXPECT_SIZED_OBJECT_VALUE:
-               throw std::logic_error( "expected any value, but key() was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but key() was called" );
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
-               throw std::logic_error( "expected member(), but key() was called" );  // NOLINT
+               throw std::logic_error( "expected member(), but key() was called" );
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but key() was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but key() was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
       void member()
       {
          switch( state ) {
             case EXPECT_TOP_LEVEL_VALUE:
-               throw std::logic_error( "expected any value, but member() was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but member() was called" );
             case EXPECT_ARRAY_VALUE_OR_END:
             case EXPECT_SIZED_ARRAY_VALUE_OR_END:
-               throw std::logic_error( "expected any value or end_array(...), but member() was called" );  // NOLINT
+               throw std::logic_error( "expected any value or end_array(...), but member() was called" );
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
-               throw std::logic_error( "expected element(), but member() was called" );  // NOLINT
+               throw std::logic_error( "expected element(), but member() was called" );
             case EXPECT_OBJECT_KEY_OR_END:
             case EXPECT_SIZED_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected key() or end_object(...), but member() was called" );  // NOLINT
+               throw std::logic_error( "expected key() or end_object(...), but member() was called" );
             case EXPECT_OBJECT_VALUE:
             case EXPECT_SIZED_OBJECT_VALUE:
-               throw std::logic_error( "expected any value, but member() was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but member() was called" );
             case EXPECT_OBJECT_MEMBER:
                state = EXPECT_OBJECT_KEY_OR_END;
                return;
@@ -354,38 +354,38 @@ namespace tao::json::events
                ++sizes.back().counted;
                return;
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but member() was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but member() was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
       void end_object()
       {
          switch( state ) {
             case EXPECT_TOP_LEVEL_VALUE:
-               throw std::logic_error( "expected any value, but end_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but end_object(...) was called" );
             case EXPECT_ARRAY_VALUE_OR_END:
             case EXPECT_SIZED_ARRAY_VALUE_OR_END:
-               throw std::logic_error( "expected any value or end_array(...), but end_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected any value or end_array(...), but end_object(...) was called" );
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
-               throw std::logic_error( "expected element(), but end_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected element(), but end_object(...) was called" );
             case EXPECT_OBJECT_KEY_OR_END:
                state = stack.back();
                stack.pop_back();
                return;
             case EXPECT_SIZED_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected any value or end_object(std::size_t), but end_object() was called" );  // NOLINT
+               throw std::logic_error( "expected any value or end_object(std::size_t), but end_object() was called" );
             case EXPECT_OBJECT_VALUE:
             case EXPECT_SIZED_OBJECT_VALUE:
-               throw std::logic_error( "expected any value, but end_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected any value, but end_object(...) was called" );
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
-               throw std::logic_error( "expected member(), but end_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected member(), but end_object(...) was called" );
             case EXPECT_NOTHING:
-               throw std::logic_error( "expected nothing, but end_object(...) was called" );  // NOLINT
+               throw std::logic_error( "expected nothing, but end_object(...) was called" );
          }
-         throw std::logic_error( "invalid state" );  // NOLINT
+         throw std::logic_error( "invalid state" );
       }
 
       void end_object( const std::size_t expected )
@@ -395,7 +395,7 @@ namespace tao::json::events
                state = EXPECT_OBJECT_KEY_OR_END;
                break;
             case EXPECT_OBJECT_KEY_OR_END:
-               throw std::logic_error( "expected any value or end_object(), but end_object(std::size_t) was called" );  // NOLINT
+               throw std::logic_error( "expected any value or end_object(), but end_object(std::size_t) was called" );
             default:
                break;
          }

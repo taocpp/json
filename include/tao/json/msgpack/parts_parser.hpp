@@ -34,7 +34,7 @@ namespace tao::json::msgpack
                in.bump_in_this_line( 1 );
                return bool( b & 1 );
             default:
-               throw pegtl::parse_error( "expected boolean", in );  // NOLINT
+               throw pegtl::parse_error( "expected boolean", in );
          }
          std::abort();
       }
@@ -50,14 +50,14 @@ namespace tao::json::msgpack
             case format::BIN32:
                return json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
             default:
-               throw pegtl::parse_error( "expected binary data", in );  // NOLINT
+               throw pegtl::parse_error( "expected binary data", in );
          }
       }
 
       [[nodiscard]] inline std::int64_t test_signed( const std::uint64_t i )
       {
          if( ( i & ( std::uint64_t( 1 ) << 63 ) ) != 0 ) {
-            throw std::runtime_error( "integer overflow for signed" );  // NOLINT
+            throw std::runtime_error( "integer overflow for signed" );
          }
          return std::int64_t( i );
       }
@@ -92,14 +92,14 @@ namespace tao::json::msgpack
             case format::INT64:
                return json::internal::read_big_endian_number< std::int64_t >( in, 1 );
             default:
-               throw pegtl::parse_error( "expected signed number", in );  // NOLINT
+               throw pegtl::parse_error( "expected signed number", in );
          }
       }
 
       [[nodiscard]] inline std::uint64_t test_unsigned( const std::int64_t i )
       {
          if( i < 0 ) {
-            throw std::runtime_error( "negative number for unsigned" );  // NOLINT
+            throw std::runtime_error( "negative number for unsigned" );
          }
          return std::uint64_t( i );
       }
@@ -130,7 +130,7 @@ namespace tao::json::msgpack
             case format::INT64:
                return test_unsigned( json::internal::read_big_endian_number< std::int64_t >( in, 1 ) );
             default:
-               throw pegtl::parse_error( "expected positive number", in );  // NOLINT
+               throw pegtl::parse_error( "expected positive number", in );
          }
       }
 
@@ -143,7 +143,7 @@ namespace tao::json::msgpack
             case format::FLOAT64:
                return json::internal::read_big_endian_number< double >( in, 1 );
             default:
-               throw pegtl::parse_error( "expected floating point number", in );  // NOLINT
+               throw pegtl::parse_error( "expected floating point number", in );
          }
       }
 
@@ -161,7 +161,7 @@ namespace tao::json::msgpack
             case S32:
                return state_t( json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) );
             default:
-               throw pegtl::parse_error( "expected container", in );  // NOLINT
+               throw pegtl::parse_error( "expected container", in );
          }
       }
 

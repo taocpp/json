@@ -352,7 +352,7 @@ namespace tao::json
             case type::STRING_VIEW:
                return std::string( v.unsafe_get_string_view() );
             default:
-               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string", json::message_extension( v ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string", json::message_extension( v ) ) );
          }
       }
 
@@ -441,7 +441,7 @@ namespace tao::json
             case type::STRING_VIEW:
                return v.unsafe_get_string_view();
             default:
-               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string_view", json::message_extension( v ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string_view", json::message_extension( v ) ) );
          }
       }
 
@@ -582,7 +582,7 @@ namespace tao::json
                return std::vector< std::byte >( xv.begin(), xv.end() );
             }
             default:
-               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::vector< std::byte >", json::message_extension( v ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::vector< std::byte >", json::message_extension( v ) ) );
          }
       }
 
@@ -671,7 +671,7 @@ namespace tao::json
             case type::BINARY_VIEW:
                return v.unsafe_get_binary_view();
             default:
-               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::binary_view", json::message_extension( v ) ) );  // NOLINT
+               throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::binary_view", json::message_extension( v ) ) );
          }
       }
 

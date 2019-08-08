@@ -60,7 +60,7 @@ namespace tao::json
       TEST_ASSERT( !( w > v ) );
 
 #ifndef NDEBUG
-      TEST_ASSERT( u.type() == type::DISCARDED );  // NOLINT
+      TEST_ASSERT( u.type() == type::DISCARDED );
       TEST_THROWS( u = u );
 #endif
 
@@ -82,7 +82,7 @@ namespace tao::json
    void test_null()
    {
       const value v = null;
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( v );
 
@@ -120,7 +120,7 @@ namespace tao::json
    void test_bool( const bool b )
    {
       const value v( b );
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( !v.is_null() );
       TEST_ASSERT( v.is_boolean() );
@@ -158,7 +158,7 @@ namespace tao::json
    void test_signed( const T t )
    {
       const value v( t );
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( !v.is_null() );
       TEST_ASSERT( !v.is_boolean() );
@@ -204,7 +204,7 @@ namespace tao::json
    void test_unsigned( const T t )
    {
       const value v( t );
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( !v.is_null() );
       TEST_ASSERT( !v.is_boolean() );
@@ -247,7 +247,7 @@ namespace tao::json
    void test_double( const double d )
    {
       const value v( d );
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( !v.is_null() );
       TEST_ASSERT( !v.is_boolean() );
@@ -280,7 +280,7 @@ namespace tao::json
    void test_string( const char ( &s )[ N ] )
    {
       const value v( s );
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( !v.is_null() );
       TEST_ASSERT( !v.is_boolean() );
@@ -318,7 +318,7 @@ namespace tao::json
 
    void test_empty_array( const value& v )
    {
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( !v.is_null() );
       TEST_ASSERT( !v.is_boolean() );
@@ -350,7 +350,7 @@ namespace tao::json
 
    void test_empty_object( const value& v )
    {
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( !v.is_null() );
       TEST_ASSERT( !v.is_boolean() );
@@ -382,7 +382,7 @@ namespace tao::json
    void test_array_1234()
    {
       const value v = value::array( { 1, 2, 3, 4 } );
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( v.is_array() );
       TEST_ASSERT( !v.is_number() );
@@ -410,7 +410,7 @@ namespace tao::json
    void test_object_1234()
    {
       const value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
-      const value v2( v );  // NOLINT
+      const value v2( v );
 
       TEST_ASSERT( v.is_object() );
       TEST_ASSERT( !v.is_number() );
@@ -544,7 +544,7 @@ namespace tao::json
       }
       {
          const value a( "foo" );
-         const value b( a );  // NOLINT
+         const value b( a );
          TEST_ASSERT( a.get_string() == b.get_string() );
       }
       {

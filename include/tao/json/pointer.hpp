@@ -116,7 +116,7 @@ namespace tao::json
       [[nodiscard]] std::size_t index() const
       {
          if( !has_index() ) {
-            throw std::invalid_argument( internal::format( "unable to resolve json pointer with array, token '", m_key, "' is not an index" ) );  // NOLINT
+            throw std::invalid_argument( internal::format( "unable to resolve json pointer with array, token '", m_key, "' is not an index" ) );
          }
          return m_index;
       }
@@ -377,7 +377,7 @@ namespace tao::json
                   v = &v->at( it->key() );
                   break;
                default:
-                  throw invalid_type( begin, std::next( it ) );  // NOLINT
+                  throw invalid_type( begin, std::next( it ) );
             }
          }
          return *v;
@@ -395,7 +395,7 @@ namespace tao::json
                   v = v->unsafe_find( it->key() );
                   break;
                default:
-                  throw invalid_type( begin, std::next( it ) );  // NOLINT
+                  throw invalid_type( begin, std::next( it ) );
             }
          }
          return v;

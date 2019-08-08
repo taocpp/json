@@ -87,7 +87,7 @@ namespace tao::json::cplusplus::events
       {
          next();
          if( !std::isfinite( v ) ) {
-            if( std::isnan( v ) ) {  // NOLINT
+            if( std::isnan( v ) ) {
                os.write( "NAN", 3 );
             }
             else if( v < 0 ) {
@@ -228,7 +228,7 @@ namespace tao::json::cplusplus::events
                return r;
             }
          }
-         throw std::runtime_error( "That's one weird string!" );  // NOLINT
+         throw std::runtime_error( "That's one weird string!" );
       }
    };
 

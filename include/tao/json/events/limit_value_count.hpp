@@ -21,7 +21,7 @@ namespace tao::json::events
       void count_and_limit()
       {
          if( ++m_count > Limit ) {
-            throw std::runtime_error( "value count limit exceeded" );  // NOLINT
+            throw std::runtime_error( "value count limit exceeded" );
          }
       }
 

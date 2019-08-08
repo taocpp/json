@@ -54,17 +54,17 @@ namespace tao::json::cbor::events
          else if( v < 65536 ) {
             os.put( char( std::uint8_t( m ) + 25 ) );
             const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
-            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
+            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else if( v < 4294967296ULL ) {
             os.put( char( std::uint8_t( m ) + 26 ) );
             const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
-            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
+            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else {
             os.put( char( std::uint8_t( m ) + 27 ) );
             const std::uint64_t x = json::internal::h_to_be( v );
-            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
+            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
       }
 
@@ -89,7 +89,7 @@ namespace tao::json::cbor::events
          std::memcpy( &n, &v, sizeof( n ) );
          n = json::internal::h_to_be( n );
          os.put( char( std::uint8_t( internal::major::OTHER ) + 27 ) );
-         os.write( reinterpret_cast< const char* >( &n ), sizeof( n ) );  // NOLINT
+         os.write( reinterpret_cast< const char* >( &n ), sizeof( n ) );
       }
 
       void string( const std::string_view v )
@@ -101,7 +101,7 @@ namespace tao::json::cbor::events
       void binary( const tao::binary_view v )
       {
          number( internal::major::BINARY, v.size() );
-         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );  // NOLINT
+         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
       }
 
       void begin_array()

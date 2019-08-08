@@ -59,25 +59,25 @@ namespace tao::json::internal
    };
 
    // clang-format off
-   template<> inline const std::string errors< rules::text >::error_message = "no valid JSON";  // NOLINT
+   template<> inline const std::string errors< rules::text >::error_message = "no valid JSON";
 
-   template<> inline const std::string errors< rules::end_array >::error_message = "incomplete array, expected ']'";  // NOLINT
-   template<> inline const std::string errors< rules::end_object >::error_message = "incomplete object, expected '}'";  // NOLINT
-   template<> inline const std::string errors< rules::member >::error_message = "expected member";  // NOLINT
-   template<> inline const std::string errors< rules::name_separator >::error_message = "expected ':'";  // NOLINT
-   template<> inline const std::string errors< rules::array_element >::error_message = "expected value";  // NOLINT
-   template<> inline const std::string errors< rules::value >::error_message = "expected value";  // NOLINT
-   template<> inline const std::string errors< rules::sor_value >::error_message = "expected value";  // NOLINT
+   template<> inline const std::string errors< rules::end_array >::error_message = "incomplete array, expected ']'";
+   template<> inline const std::string errors< rules::end_object >::error_message = "incomplete object, expected '}'";
+   template<> inline const std::string errors< rules::member >::error_message = "expected member";
+   template<> inline const std::string errors< rules::name_separator >::error_message = "expected ':'";
+   template<> inline const std::string errors< rules::array_element >::error_message = "expected value";
+   template<> inline const std::string errors< rules::value >::error_message = "expected value";
+   template<> inline const std::string errors< rules::sor_value >::error_message = "expected value";
 
-   template<> inline const std::string errors< rules::edigits >::error_message = "expected at least one exponent digit";  // NOLINT
-   template<> inline const std::string errors< rules::fdigits >::error_message = "expected at least one fraction digit";  // NOLINT
-   template<> inline const std::string errors< rules::xdigit >::error_message = "incomplete universal character name";  // NOLINT
-   template<> inline const std::string errors< rules::escaped >::error_message = "unknown escape sequence";  // NOLINT
-   template<> inline const std::string errors< rules::unescaped >::error_message = "invalid unescaped character";  // NOLINT
-   template<> inline const std::string errors< rules::string::content >::error_message = "unterminated string";  // NOLINT
-   template<> inline const std::string errors< rules::key::content >::error_message = "unterminated key";  // NOLINT
+   template<> inline const std::string errors< rules::edigits >::error_message = "expected at least one exponent digit";
+   template<> inline const std::string errors< rules::fdigits >::error_message = "expected at least one fraction digit";
+   template<> inline const std::string errors< rules::xdigit >::error_message = "incomplete universal character name";
+   template<> inline const std::string errors< rules::escaped >::error_message = "unknown escape sequence";
+   template<> inline const std::string errors< rules::unescaped >::error_message = "invalid unescaped character";
+   template<> inline const std::string errors< rules::string::content >::error_message = "unterminated string";
+   template<> inline const std::string errors< rules::key::content >::error_message = "unterminated key";
 
-   template<> inline const std::string errors< pegtl::eof >::error_message = "unexpected character after JSON value";  // NOLINT
+   template<> inline const std::string errors< pegtl::eof >::error_message = "unexpected character after JSON value";
    // clang-format on
 
 }  // namespace tao::json::internal

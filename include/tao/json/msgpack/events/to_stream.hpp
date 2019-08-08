@@ -48,14 +48,14 @@ namespace tao::json::msgpack::events
       {
          os.put( char( tag ) );
          const Integer x = json::internal::h_to_be( Integer( v ) );
-         os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
+         os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
       }
 
       void number( const std::int64_t v )
       {
          if( ( v >= -32 ) && ( v <= -1 ) ) {
             const auto x = static_cast< std::int8_t >( v );
-            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
+            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else if( ( v >= -128 ) && ( v <= 127 ) ) {
             number_impl< std::uint8_t >( 0xd0, v );
@@ -75,7 +75,7 @@ namespace tao::json::msgpack::events
       {
          if( v <= 127 ) {
             const auto x = static_cast< std::int8_t >( v );
-            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
+            os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else if( v <= 255 ) {
             number_impl< std::uint8_t >( 0xcc, v );
@@ -95,7 +95,7 @@ namespace tao::json::msgpack::events
       {
          os.put( char( 0xcb ) );
          const auto x = json::internal::h_to_be( v );
-         os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );  // NOLINT
+         os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
       }
 
       void string( const std::string_view v )
@@ -113,7 +113,7 @@ namespace tao::json::msgpack::events
             number_impl< std::uint32_t >( 0xdb, v.size() );
          }
          else {
-            throw std::runtime_error( "string too long for msgpack" );  // NOLINT
+            throw std::runtime_error( "string too long for msgpack" );
          }
          os.write( v.data(), v.size() );
       }
@@ -130,14 +130,14 @@ namespace tao::json::msgpack::events
             number_impl< std::uint32_t >( 0xc6, v.size() );
          }
          else {
-            throw std::runtime_error( "binary too long for msgpack" );  // NOLINT
+            throw std::runtime_error( "binary too long for msgpack" );
          }
-         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );  // NOLINT
+         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
       }
 
       void begin_array()
       {
-         throw std::runtime_error( "msgpack requires array size" );  // NOLINT
+         throw std::runtime_error( "msgpack requires array size" );
       }
 
       void begin_array( const std::size_t size )
@@ -152,7 +152,7 @@ namespace tao::json::msgpack::events
             number_impl< std::uint32_t >( 0xdd, size );
          }
          else {
-            throw std::runtime_error( "array too large for msgpack" );  // NOLINT
+            throw std::runtime_error( "array too large for msgpack" );
          }
       }
 
@@ -169,7 +169,7 @@ namespace tao::json::msgpack::events
 
       void begin_object()
       {
-         throw std::runtime_error( "msgpack requires object size" );  // NOLINT
+         throw std::runtime_error( "msgpack requires object size" );
       }
 
       void begin_object( const std::size_t size )
@@ -184,7 +184,7 @@ namespace tao::json::msgpack::events
             number_impl< std::uint32_t >( 0xdf, size );
          }
          else {
-            throw std::runtime_error( "array too large for msgpack" );  // NOLINT
+            throw std::runtime_error( "array too large for msgpack" );
          }
       }
 

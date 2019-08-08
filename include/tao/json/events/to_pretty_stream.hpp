@@ -113,7 +113,7 @@ namespace tao::json::events
          next();
          if( !std::isfinite( v ) ) {
             // if this throws, consider using non_finite_to_* transformers
-            throw std::runtime_error( "non-finite double value invalid for JSON string representation" );  // NOLINT
+            throw std::runtime_error( "non-finite double value invalid for JSON string representation" );
          }
          ryu::d2s_stream( os, v );
       }
@@ -129,7 +129,7 @@ namespace tao::json::events
       void binary( const tao::binary_view /*unused*/ )
       {
          // if this throws, consider using binary_to_* transformers
-         throw std::runtime_error( "binary data invalid for JSON string representation" );  // NOLINT
+         throw std::runtime_error( "binary data invalid for JSON string representation" );
       }
 
       void begin_array( const std::size_t /*unused*/ = 0 )

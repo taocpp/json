@@ -11,11 +11,11 @@ namespace tao::json::jaxn
 {
    [[nodiscard]] inline bool is_identifier( const std::string_view v ) noexcept
    {
-      if( v.empty() || std::isdigit( v[ 0 ] ) ) {  // NOLINT
+      if( v.empty() || std::isdigit( v[ 0 ] ) ) {
          return false;
       }
       for( const auto c : v ) {
-         if( !std::isalnum( c ) && c != '_' ) {  // NOLINT
+         if( !std::isalnum( c ) && c != '_' ) {
             return false;
          }
       }

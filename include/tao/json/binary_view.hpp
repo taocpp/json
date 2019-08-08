@@ -19,7 +19,7 @@ namespace tao
 {
    // modelled after C++17's basic_string_view
    template< class byteT >
-   class basic_binary_view  // NOLINT
+   class basic_binary_view
    {
    public:
       using value_type = byteT;
@@ -48,7 +48,7 @@ namespace tao
          : data_( b ), size_( e - b )
       {}
 
-      constexpr basic_binary_view( const std::vector< byteT >& str ) noexcept  // NOLINT
+      constexpr basic_binary_view( const std::vector< byteT >& str ) noexcept
          : data_( str.data() ), size_( str.size() )
       {}
 
@@ -123,7 +123,7 @@ namespace tao
       [[nodiscard]] constexpr const_reference at( size_type pos ) const
       {
          if( pos >= size() ) {
-            throw std::out_of_range( "index out of range in tao::basic_binary_view::at" );  // NOLINT
+            throw std::out_of_range( "index out of range in tao::basic_binary_view::at" );
          }
          return data_[ pos ];
       }
@@ -163,7 +163,7 @@ namespace tao
       size_type copy( byteT* s, size_type n, size_type pos = 0 ) const
       {
          if( pos > size() ) {
-            throw std::out_of_range( "index out of range in tao::basic_binary_view::copy" );  // NOLINT
+            throw std::out_of_range( "index out of range in tao::basic_binary_view::copy" );
          }
          const size_type rlen = ( std::min )( n, size() - pos );
          std::memcpy( s, data() + pos, rlen );
@@ -172,7 +172,7 @@ namespace tao
 
       [[nodiscard]] constexpr basic_binary_view substr( size_type pos = 0, size_type n = npos ) const
       {
-         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::substr" ) : basic_binary_view( data() + pos, ( std::min )( n, size() - pos ) );  // NOLINT
+         return ( pos > size() ) ? throw std::out_of_range( "index out of range in tao::basic_binary_view::substr" ) : basic_binary_view( data() + pos, ( std::min )( n, size() - pos ) );
       }
 
       [[nodiscard]] constexpr int compare( basic_binary_view s ) const noexcept
@@ -325,7 +325,7 @@ namespace tao
 
    private:
       const_pointer data_;
-      size_type size_;  // NOLINT
+      size_type size_;
    };
 
    template< class byteT >

@@ -19,7 +19,7 @@ namespace tao::json::events
       void number( const double v )
       {
          if( !std::isfinite( v ) ) {
-            if( std::isnan( v ) ) {  // NOLINT
+            if( std::isnan( v ) ) {
                Consumer::string( "NaN" );
             }
             else if( v > 0 ) {

@@ -28,7 +28,7 @@ namespace tao::json::binding::internal
       {
          const auto& a = v.get_array();
          if( a.size() != sizeof...( As ) ) {
-            throw std::runtime_error( json::internal::format( "array size mismatch for type ", pegtl::internal::demangle< C >(), " -- expected ", sizeof...( As ), " received ", a.size(), json::message_extension( v ) ) );  // NOLINT
+            throw std::runtime_error( json::internal::format( "array size mismatch for type ", pegtl::internal::demangle< C >(), " -- expected ", sizeof...( As ), " received ", a.size(), json::message_extension( v ) ) );
          }
          ( As::to( a.at( Is ), x ), ... );
       }

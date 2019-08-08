@@ -34,7 +34,7 @@ namespace tao::json
       TEST_ASSERT( !( b <= a ) );
    }
 
-   void test_null()  // NOLINT
+   void test_null()
    {
       const value a = null;
       const value b( null );

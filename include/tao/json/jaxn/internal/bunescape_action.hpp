@@ -71,7 +71,7 @@ namespace tao::json::jaxn::internal
                break;
 
             default:
-               throw pegtl::parse_error( "invalid character in unescape", in );  // NOLINT, LCOV_EXCL_LINE
+               throw pegtl::parse_error( "invalid character in unescape", in );  // LCOV_EXCL_LINE
          }
       }
    };
@@ -93,7 +93,7 @@ namespace tao::json::jaxn::internal
       template< typename Input >
       static void apply( const Input& in, std::vector< std::byte >& value )
       {
-         const auto begin = reinterpret_cast< const std::byte* >( in.begin() );  // NOLINT
+         const auto begin = reinterpret_cast< const std::byte* >( in.begin() );
          const auto end = begin + in.size();
          value.insert( value.end(), begin, end );
       }

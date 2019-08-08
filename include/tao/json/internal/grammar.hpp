@@ -12,7 +12,7 @@ namespace tao::json::internal
    // clang-format off
    namespace rules
    {
-      using namespace pegtl;  // NOLINT
+      using namespace pegtl;
 
       struct ws : one< ' ', '\t', '\n', '\r' > {};
 

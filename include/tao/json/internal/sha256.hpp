@@ -61,14 +61,14 @@ namespace tao::json::internal
 
          // step 1
          for( std::size_t t = 0, i = 0; t != 16; ++t, i += 4 ) {
-            W[ t ] = ( M[ i ] << 24 ) | ( M[ i + 1 ] << 16 ) | ( M[ i + 2 ] << 8 ) | ( M[ i + 3 ] );  // NOLINT
+            W[ t ] = ( M[ i ] << 24 ) | ( M[ i + 1 ] << 16 ) | ( M[ i + 2 ] << 8 ) | ( M[ i + 3 ] );
          }
          for( std::size_t t = 16; t != 64; ++t ) {
-            W[ t ] = SSIG1( W[ t - 2 ] ) + W[ t - 7 ] + SSIG0( W[ t - 15 ] ) + W[ t - 16 ];  // NOLINT
+            W[ t ] = SSIG1( W[ t - 2 ] ) + W[ t - 7 ] + SSIG0( W[ t - 15 ] ) + W[ t - 16 ];
          }
 
          // step 2
-         std::uint32_t a, b, c, d, e, f, g, h;  // NOLINT
+         std::uint32_t a, b, c, d, e, f, g, h;
          a = H[ 0 ];
          b = H[ 1 ];
          c = H[ 2 ];
@@ -80,7 +80,7 @@ namespace tao::json::internal
 
          // step 3
          for( std::size_t t = 0; t != 64; ++t ) {
-            const std::uint32_t T1 = h + BSIG1( e ) + CH( e, f, g ) + K[ t ] + W[ t ];  // NOLINT
+            const std::uint32_t T1 = h + BSIG1( e ) + CH( e, f, g ) + K[ t ] + W[ t ];
             const std::uint32_t T2 = BSIG0( a ) + MAJ( a, b, c );
             h = g;
             g = f;
@@ -104,7 +104,7 @@ namespace tao::json::internal
       }
 
    public:
-      sha256() noexcept  // NOLINT
+      sha256() noexcept
       {
          reset();
       }
@@ -134,7 +134,7 @@ namespace tao::json::internal
 
       void feed( const unsigned char c ) noexcept
       {
-         M[ size++ % 64 ] = c;  // NOLINT
+         M[ size++ % 64 ] = c;
          if( ( size % 64 ) == 0 ) {
             process();
          }
@@ -159,22 +159,22 @@ namespace tao::json::internal
       {
          std::size_t i = size % 64;
          if( i < 56 ) {
-            M[ i++ ] = 0x80;  // NOLINT
+            M[ i++ ] = 0x80;
 #if defined( __GNUC__ ) && ( __GNUC__ >= 9 )
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Waggressive-loop-optimizations"
 #endif
             while( i < 56 ) {
-               M[ i++ ] = 0x00;  // NOLINT
+               M[ i++ ] = 0x00;
             }
 #if defined( __GNUC__ ) && ( __GNUC__ >= 9 )
 #pragma GCC diagnostic pop
 #endif
          }
          else {
-            M[ i++ ] = 0x80;  // NOLINT
+            M[ i++ ] = 0x80;
             while( i < 64 ) {
-               M[ i++ ] = 0x00;  // NOLINT
+               M[ i++ ] = 0x00;
             }
             process();
             std::memset( M, 0, 56 );
@@ -208,7 +208,7 @@ namespace tao::json::internal
       [[nodiscard]] std::string get()
       {
          std::string result( 32, '\0' );
-         store_unsafe( reinterpret_cast< unsigned char* >( result.data() ) );  // NOLINT
+         store_unsafe( reinterpret_cast< unsigned char* >( result.data() ) );
          return result;
       }
    };

@@ -19,7 +19,7 @@ namespace tao::json::internal
       mutable basic_value< Traits > value;
 
       template< typename U >
-      pair( U&& v )  // NOLINT
+      pair( U&& v )
          : key( Traits< std::decay_t< U > >::template default_key< Traits >::as_string() ),
            value( std::forward< U >( v ) )
       {}

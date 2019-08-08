@@ -52,7 +52,7 @@ namespace tao::json
       {};
 
       template< typename Rule >
-      [[nodiscard]] bool parse( const std::string_view v )  // NOLINT
+      [[nodiscard]] bool parse( const std::string_view v )
       {
          pegtl::memory_input in( v.data(), v.size(), "" );
          return pegtl::parse< pegtl::seq< Rule, pegtl::eof > >( in );
@@ -224,7 +224,7 @@ namespace tao::json
          void add_type( const schema_flags v )
          {
             if( ( m_flags & v ) != 0 ) {
-               throw std::runtime_error( "invalid JSON Schema: duplicate primitive type" );  // NOLINT
+               throw std::runtime_error( "invalid JSON Schema: duplicate primitive type" );
             }
             m_flags = m_flags | v;
          }
@@ -268,7 +268,7 @@ namespace tao::json
                      break;
                }
             }
-            throw std::runtime_error( "invalid JSON Schema: invalid primitive type '" + v + '\'' );  // NOLINT
+            throw std::runtime_error( "invalid JSON Schema: invalid primitive type '" + v + '\'' );
          }
 
          [[nodiscard]] const basic_value< Traits >* find( const char* s ) const
@@ -280,26 +280,26 @@ namespace tao::json
             return p;
          }
 
-         schema_node( const schema_container< Traits >* c, const basic_value< Traits >& v )  // NOLINT
+         schema_node( const schema_container< Traits >* c, const basic_value< Traits >& v )
             : m_container( c ),
               m_value( &v )
          {
             // general
             if( !m_value->is_object() ) {
-               throw std::runtime_error( "invalid JSON Schema: a schema must be of type 'object'" );  // NOLINT
+               throw std::runtime_error( "invalid JSON Schema: a schema must be of type 'object'" );
             }
 
             // title
             if( const auto* p = find( "title" ) ) {
                if( !p->is_string() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"title\" must be of type 'string'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"title\" must be of type 'string'" );
                }
             }
 
             // description
             if( const auto* p = find( "description" ) ) {
                if( !p->is_string() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"description\" must be of type 'string'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"description\" must be of type 'string'" );
                }
             }
 
@@ -312,13 +312,13 @@ namespace tao::json
                   case type::ARRAY:
                      for( const auto& e : p->unsafe_get_array() ) {
                         if( !e.is_string() ) {
-                           throw std::runtime_error( "invalid JSON Schema: elements in array \"type\" must be of type 'string'" );  // NOLINT
+                           throw std::runtime_error( "invalid JSON Schema: elements in array \"type\" must be of type 'string'" );
                         }
                         add_type( e.unsafe_get_string() );
                      }
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"type\" must be of type 'string' or 'array'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"type\" must be of type 'string' or 'array'" );
                }
                m_flags = m_flags | HAS_TYPE;
             }
@@ -326,7 +326,7 @@ namespace tao::json
             // enum
             if( const auto* p = find( "enum" ) ) {
                if( !p->is_array() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"enum\" must be of type 'array'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"enum\" must be of type 'array'" );
                }
                m_flags = m_flags | HAS_ENUM;
             }
@@ -334,10 +334,10 @@ namespace tao::json
             // allOf
             if( const auto* p = find( "allOf" ) ) {
                if( !p->is_array() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"allOf\" must be of type 'array'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"allOf\" must be of type 'array'" );
                }
                if( p->unsafe_get_array().empty() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"allOf\" must have at least one element" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"allOf\" must have at least one element" );
                }
                for( const auto& e : p->unsafe_get_array() ) {
                   m_referenced_pointers.insert( &e.skip_value_ptr() );
@@ -348,10 +348,10 @@ namespace tao::json
             // anyOf
             if( const auto* p = find( "anyOf" ) ) {
                if( !p->is_array() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"anyOf\" must be of type 'array'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"anyOf\" must be of type 'array'" );
                }
                if( p->unsafe_get_array().empty() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"anyOf\" must have at least one element" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"anyOf\" must have at least one element" );
                }
                for( const auto& e : p->unsafe_get_array() ) {
                   m_referenced_pointers.insert( &e.skip_value_ptr() );
@@ -362,10 +362,10 @@ namespace tao::json
             // oneOf
             if( const auto* p = find( "oneOf" ) ) {
                if( !p->is_array() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"oneOf\" must be of type 'array'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"oneOf\" must be of type 'array'" );
                }
                if( p->unsafe_get_array().empty() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"oneOf\" must have at least one element" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"oneOf\" must have at least one element" );
                }
                for( const auto& e : p->unsafe_get_array() ) {
                   m_referenced_pointers.insert( &e.skip_value_ptr() );
@@ -382,7 +382,7 @@ namespace tao::json
             // definitions
             if( const auto* p = find( "definitions" ) ) {
                if( !p->is_object() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"definitions\" must be of type 'object'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"definitions\" must be of type 'object'" );
                }
                for( const auto& e : p->unsafe_get_object() ) {
                   m_referenced_pointers.insert( &e.second.skip_value_ptr() );
@@ -395,29 +395,29 @@ namespace tao::json
                   case type::SIGNED: {
                      const auto i = p->unsafe_get_signed();
                      if( i <= 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );
                      }
-                     m_multiple_of.u = i;  // NOLINT
+                     m_multiple_of.u = i;
                      m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                   } break;
                   case type::UNSIGNED: {
                      const auto u = p->unsafe_get_unsigned();
                      if( u == 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );
                      }
-                     m_multiple_of.u = u;  // NOLINT
+                     m_multiple_of.u = u;
                      m_flags = m_flags | HAS_MULTIPLE_OF_UNSIGNED;
                   } break;
                   case type::DOUBLE: {
                      const auto d = p->unsafe_get_double();
                      if( d <= 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be strictly greater than zero" );
                      }
-                     m_multiple_of.d = d;  // NOLINT
+                     m_multiple_of.d = d;
                      m_flags = m_flags | HAS_MULTIPLE_OF_DOUBLE;
                   } break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be of type 'number'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"multipleOf\" must be of type 'number'" );
                }
             }
 
@@ -425,29 +425,29 @@ namespace tao::json
             if( const auto* p = find( "maximum" ) ) {
                switch( p->type() ) {
                   case type::SIGNED:
-                     m_maximum.i = p->unsafe_get_signed();  // NOLINT
+                     m_maximum.i = p->unsafe_get_signed();
                      m_flags = m_flags | HAS_MAXIMUM_SIGNED;
                      break;
                   case type::UNSIGNED:
-                     m_maximum.u = p->unsafe_get_unsigned();  // NOLINT
+                     m_maximum.u = p->unsafe_get_unsigned();
                      m_flags = m_flags | HAS_MAXIMUM_UNSIGNED;
                      break;
                   case type::DOUBLE:
-                     m_maximum.d = p->unsafe_get_double();  // NOLINT
+                     m_maximum.d = p->unsafe_get_double();
                      m_flags = m_flags | HAS_MAXIMUM_DOUBLE;
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"maximum\" must be of type 'number'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"maximum\" must be of type 'number'" );
                }
             }
 
             // exclusiveMaximum
             if( const auto* p = find( "exclusiveMaximum" ) ) {
                if( !p->is_boolean() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMaximum\" must be of type 'boolean'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMaximum\" must be of type 'boolean'" );
                }
                if( ( m_flags & HAS_MAXIMUM ) == 0 ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMaximum\" requires presence of \"maximum\"" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMaximum\" requires presence of \"maximum\"" );
                }
                if( p->get_boolean() ) {
                   m_flags = m_flags | EXCLUSIVE_MAXIMUM;
@@ -458,29 +458,29 @@ namespace tao::json
             if( const auto* p = find( "minimum" ) ) {
                switch( p->type() ) {
                   case type::SIGNED:
-                     m_minimum.i = p->unsafe_get_signed();  // NOLINT
+                     m_minimum.i = p->unsafe_get_signed();
                      m_flags = m_flags | HAS_MINIMUM_SIGNED;
                      break;
                   case type::UNSIGNED:
-                     m_minimum.u = p->unsafe_get_unsigned();  // NOLINT
+                     m_minimum.u = p->unsafe_get_unsigned();
                      m_flags = m_flags | HAS_MINIMUM_UNSIGNED;
                      break;
                   case type::DOUBLE:
-                     m_minimum.d = p->unsafe_get_double();  // NOLINT
+                     m_minimum.d = p->unsafe_get_double();
                      m_flags = m_flags | HAS_MINIMUM_DOUBLE;
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"minimum\" must be of type 'number'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"minimum\" must be of type 'number'" );
                }
             }
 
             // exclusiveMinimum
             if( const auto* p = find( "exclusiveMinimum" ) ) {
                if( !p->is_boolean() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMinimum\" must be of type 'boolean'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMinimum\" must be of type 'boolean'" );
                }
                if( ( m_flags & HAS_MINIMUM ) == 0 ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMinimum\" requires presence of \"minimum\"" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"exclusiveMinimum\" requires presence of \"minimum\"" );
                }
                if( p->get_boolean() ) {
                   m_flags = m_flags | EXCLUSIVE_MINIMUM;
@@ -493,7 +493,7 @@ namespace tao::json
                   case type::SIGNED: {
                      const auto i = p->unsafe_get_signed();
                      if( i < 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"maxLength\" must be greater than or equal to zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"maxLength\" must be greater than or equal to zero" );
                      }
                      m_max_length = i;
                      m_flags = m_flags | HAS_MAX_LENGTH;
@@ -503,7 +503,7 @@ namespace tao::json
                      m_flags = m_flags | HAS_MAX_LENGTH;
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"maxLength\" must be of type 'integer'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"maxLength\" must be of type 'integer'" );
                }
             }
 
@@ -513,7 +513,7 @@ namespace tao::json
                   case type::SIGNED: {
                      const auto i = p->unsafe_get_signed();
                      if( i < 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"minLength\" must be greater than or equal to zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"minLength\" must be greater than or equal to zero" );
                      }
                      if( i > 0 ) {
                         m_min_length = i;
@@ -528,20 +528,20 @@ namespace tao::json
                      }
                   } break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"minLength\" must be of type 'integer'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"minLength\" must be of type 'integer'" );
                }
             }
 
             // pattern
             if( const auto* p = find( "pattern" ) ) {
                if( !p->is_string() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be of type 'string'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be of type 'string'" );
                }
                try {
                   m_pattern = std::make_unique< std::regex >( p->unsafe_get_string() );
                }
                catch( const std::regex_error& e ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be a regular expression: " + std::string( e.what() ) );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"pattern\" must be a regular expression: " + std::string( e.what() ) );
                }
             }
 
@@ -549,7 +549,7 @@ namespace tao::json
             // TODO: offer an option to disable "format" support?
             if( const auto* p = find( "format" ) ) {
                if( !p->is_string() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"format\" must be of type 'string'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"format\" must be of type 'string'" );
                }
                const auto& s = p->unsafe_get_string();
                if( s == "date-time" ) {
@@ -584,7 +584,7 @@ namespace tao::json
                   m_referenced_pointers.insert( p );
                }
                else {
-                  throw std::runtime_error( "invalid JSON Schema: \"items\" must be of type 'object' or 'array'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"items\" must be of type 'object' or 'array'" );
                }
                m_items = p;
             }
@@ -595,7 +595,7 @@ namespace tao::json
                   m_referenced_pointers.insert( p );
                }
                else if( !p->is_boolean() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"additionalItems\" must be of type 'boolean' or 'object'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"additionalItems\" must be of type 'boolean' or 'object'" );
                }
                m_additional_items = p;
             }
@@ -606,7 +606,7 @@ namespace tao::json
                   case type::SIGNED: {
                      const auto i = p->unsafe_get_signed();
                      if( i < 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"maxItems\" must be greater than or equal to zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"maxItems\" must be greater than or equal to zero" );
                      }
                      m_max_items = i;
                      m_flags = m_flags | HAS_MAX_ITEMS;
@@ -616,7 +616,7 @@ namespace tao::json
                      m_flags = m_flags | HAS_MAX_ITEMS;
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"maxItems\" must be of type 'integer'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"maxItems\" must be of type 'integer'" );
                }
             }
 
@@ -626,7 +626,7 @@ namespace tao::json
                   case type::SIGNED: {
                      const auto i = p->unsafe_get_signed();
                      if( i < 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"minItems\" must be greater than or equal to zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"minItems\" must be greater than or equal to zero" );
                      }
                      m_min_items = i;
                      m_flags = m_flags | HAS_MIN_ITEMS;
@@ -636,7 +636,7 @@ namespace tao::json
                      m_flags = m_flags | HAS_MIN_ITEMS;
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"minItems\" must be of type 'integer'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"minItems\" must be of type 'integer'" );
                }
             }
 
@@ -653,7 +653,7 @@ namespace tao::json
                   case type::SIGNED: {
                      const auto i = p->unsafe_get_signed();
                      if( i < 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"maxProperties\" must be greater than or equal to zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"maxProperties\" must be greater than or equal to zero" );
                      }
                      m_max_properties = i;
                      m_flags = m_flags | HAS_MAX_PROPERTIES;
@@ -663,7 +663,7 @@ namespace tao::json
                      m_flags = m_flags | HAS_MAX_PROPERTIES;
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"maxProperties\" must be of type 'integer'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"maxProperties\" must be of type 'integer'" );
                }
             }
 
@@ -673,7 +673,7 @@ namespace tao::json
                   case type::SIGNED: {
                      const auto i = p->unsafe_get_signed();
                      if( i < 0 ) {
-                        throw std::runtime_error( "invalid JSON Schema: \"minProperties\" must be greater than or equal to zero" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: \"minProperties\" must be greater than or equal to zero" );
                      }
                      m_min_properties = i;
                      m_flags = m_flags | HAS_MIN_PROPERTIES;
@@ -683,21 +683,21 @@ namespace tao::json
                      m_flags = m_flags | HAS_MIN_PROPERTIES;
                      break;
                   default:
-                     throw std::runtime_error( "invalid JSON Schema: \"minProperties\" must be of type 'integer'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: \"minProperties\" must be of type 'integer'" );
                }
             }
 
             // required
             if( const auto* p = find( "required" ) ) {
                if( !p->is_array() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"required\" must be of type 'array'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"required\" must be of type 'array'" );
                }
                if( p->unsafe_get_array().empty() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"required\" must have at least one element" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"required\" must have at least one element" );
                }
                for( const auto& e : p->unsafe_get_array() ) {
                   if( !m_required.insert( e.get_string() ).second ) {
-                     throw std::runtime_error( "invalid JSON Schema: duplicate required key" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: duplicate required key" );
                   }
                }
             }
@@ -705,7 +705,7 @@ namespace tao::json
             // properties
             if( const auto* p = find( "properties" ) ) {
                if( !p->is_object() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"properties\" must be of type 'object'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"properties\" must be of type 'object'" );
                }
                for( const auto& e : p->unsafe_get_object() ) {
                   m_referenced_pointers.insert( &e.second.skip_value_ptr() );
@@ -716,14 +716,14 @@ namespace tao::json
             // patternProperties
             if( const auto* p = find( "patternProperties" ) ) {
                if( !p->is_object() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"patternProperties\" must be of type 'object'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"patternProperties\" must be of type 'object'" );
                }
                for( const auto& e : p->unsafe_get_object() ) {
                   try {
                      m_pattern_properties.emplace_back( std::regex( e.first ), &e.second.skip_value_ptr() );
                   }
                   catch( const std::regex_error& ex ) {
-                     throw std::runtime_error( "invalid JSON Schema: keys in object \"patternProperties\" must be regular expressions: " + std::string( ex.what() ) );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: keys in object \"patternProperties\" must be regular expressions: " + std::string( ex.what() ) );
                   }
                   m_referenced_pointers.insert( &e.second.skip_value_ptr() );
                }
@@ -736,7 +736,7 @@ namespace tao::json
                   m_referenced_pointers.insert( p );
                }
                else if( t != type::BOOLEAN ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"additionalProperties\" must be of type 'boolean' or 'object'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"additionalProperties\" must be of type 'boolean' or 'object'" );
                }
                m_additional_properties = p;
             }
@@ -744,7 +744,7 @@ namespace tao::json
             // dependencies
             if( const auto* p = find( "dependencies" ) ) {
                if( !p->is_object() ) {
-                  throw std::runtime_error( "invalid JSON Schema: \"dependencies\" must be of type 'object'" );  // NOLINT
+                  throw std::runtime_error( "invalid JSON Schema: \"dependencies\" must be of type 'object'" );
                }
                for( const auto& e : p->unsafe_get_object() ) {
                   const auto* p2 = &e.second.skip_value_ptr();
@@ -754,21 +754,21 @@ namespace tao::json
                   }
                   else if( p2->is_array() ) {
                      if( p2->unsafe_get_array().empty() ) {
-                        throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must have at least one element" );  // NOLINT
+                        throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must have at least one element" );
                      }
                      std::set< std::string > s;
                      for( const auto& r : p2->unsafe_get_array() ) {
                         if( !r.is_string() ) {
-                           throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must contain elements of type 'string'" );  // NOLINT
+                           throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must contain elements of type 'string'" );
                         }
                         if( !s.emplace( r.unsafe_get_string() ).second ) {
-                           throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must contain unique elements of type 'string'" );  // NOLINT
+                           throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" of type 'array' must contain unique elements of type 'string'" );
                         }
                      }
                      m_property_dependencies.emplace( e.first, std::move( s ) );
                   }
                   else {
-                     throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" must be of type 'object' or 'array'" );  // NOLINT
+                     throw std::runtime_error( "invalid JSON Schema: values in object \"dependencies\" must be of type 'object' or 'array'" );
                   }
                }
                if( !p->unsafe_get_object().empty() ) {
@@ -1798,7 +1798,7 @@ namespace tao::json
          {
             const auto it = m_nodes.find( p );
             if( it == m_nodes.end() ) {
-               throw std::logic_error( "invalid node ptr, no schema registered" );  // NOLINT
+               throw std::logic_error( "invalid node ptr, no schema registered" );
             }
             return std::make_unique< schema_consumer< Traits > >( this->shared_from_this(), *it->second );
          }

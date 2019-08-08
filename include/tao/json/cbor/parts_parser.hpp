@@ -63,7 +63,7 @@ namespace tao::json::cbor
                in.bump_in_this_line( 1 );
                return bool( b - std::uint8_t( major::OTHER ) - 20 );
             default:
-               throw pegtl::parse_error( "expected boolean", in );  // NOLINT
+               throw pegtl::parse_error( "expected boolean", in );
          }
          std::abort();
       }
@@ -107,7 +107,7 @@ namespace tao::json::cbor
       {
          const auto b = internal::peek_first_major( m_input );
          if( b != m ) {
-            throw pegtl::parse_error( e, m_input );  // NOLINT
+            throw pegtl::parse_error( e, m_input );
          }
       }
 
@@ -141,7 +141,7 @@ namespace tao::json::cbor
       {
          const auto b = json::internal::peek_uint8( m_input );
          if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
-            throw pegtl::parse_error( "expected definitive string", m_input );  // NOLINT
+            throw pegtl::parse_error( "expected definitive string", m_input );
          }
          return internal::read_string_1< V, std::string_view >( m_input );
       }
@@ -150,7 +150,7 @@ namespace tao::json::cbor
       {
          const auto b = json::internal::peek_uint8( m_input );
          if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
-            throw pegtl::parse_error( "expected definitive binary", m_input );  // NOLINT
+            throw pegtl::parse_error( "expected definitive binary", m_input );
          }
          return internal::read_string_1< utf8_mode::trust, tao::binary_view >( m_input );
       }
@@ -165,7 +165,7 @@ namespace tao::json::cbor
       {
          const auto u = internal::read_unsigned_unsafe( m_input );
          if( u > 9223372036854775807ULL ) {
-            throw pegtl::parse_error( "positive integer overflow", m_input );  // NOLINT
+            throw pegtl::parse_error( "positive integer overflow", m_input );
          }
          return std::int64_t( u );
       }
@@ -174,7 +174,7 @@ namespace tao::json::cbor
       {
          const auto u = internal::read_unsigned_unsafe( m_input );
          if( u > 9223372036854775808ULL ) {
-            throw pegtl::parse_error( "negative integer overflow", m_input );  // NOLINT
+            throw pegtl::parse_error( "negative integer overflow", m_input );
          }
          return std::int64_t( ~u );
       }
@@ -193,7 +193,7 @@ namespace tao::json::cbor
             case internal::major::NEGATIVE:
                return number_signed_negative();
             default:
-               throw pegtl::parse_error( "expected integer", m_input );  // NOLINT
+               throw pegtl::parse_error( "expected integer", m_input );
          }
          std::abort();
       }
@@ -218,7 +218,7 @@ namespace tao::json::cbor
             case std::uint8_t( internal::major::OTHER ) + 27:
                return json::internal::read_big_endian_number< double >( m_input + 1 );
             default:
-               throw pegtl::parse_error( "expected floating point number", m_input );  // NOLINT
+               throw pegtl::parse_error( "expected floating point number", m_input );
          }
       }
 
@@ -261,14 +261,14 @@ namespace tao::json::cbor
       void end_container_sized( const state_t& p )
       {
          if( *p.size != p.i ) {
-            throw pegtl::parse_error( "container size mismatch", m_input );  // NOLINT
+            throw pegtl::parse_error( "container size mismatch", m_input );
          }
       }
 
       void end_container_indefinite()
       {
          if( json::internal::peek_uint8( m_input ) != 0xff ) {
-            throw pegtl::parse_error( "container not at end", m_input );  // NOLINT
+            throw pegtl::parse_error( "container not at end", m_input );
          }
          m_input.bump_in_this_line( 1 );
       }
@@ -298,14 +298,14 @@ namespace tao::json::cbor
       void next_in_container_sized( state_t& p )
       {
          if( p.i++ >= *p.size ) {
-            throw pegtl::parse_error( "unexpected end of sized container", m_input );  // NOLINT
+            throw pegtl::parse_error( "unexpected end of sized container", m_input );
          }
       }
 
       void next_in_container_indefinite()
       {
          if( json::internal::peek_uint8( m_input ) == 0xff ) {
-            throw pegtl::parse_error( "unexpected end of indefinite container", m_input );  // NOLINT
+            throw pegtl::parse_error( "unexpected end of indefinite container", m_input );
          }
       }
 

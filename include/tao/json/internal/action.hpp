@@ -153,7 +153,7 @@ namespace tao::json::internal
          }
 
          if( s > ( 1 << 20 ) ) {
-            throw pegtl::parse_error( "JSON number with 1 megabyte digits", in );  // NOLINT
+            throw pegtl::parse_error( "JSON number with 1 megabyte digits", in );
          }
 
          const auto c = ( std::min )( s, max_mantissa_digits );
@@ -218,7 +218,7 @@ namespace tao::json::internal
             ++b;
          }
          if( ( in.end() - b ) > 9 ) {
-            throw pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );  // NOLINT
+            throw pegtl::parse_error( "JSON exponent has more than 9 significant digits", in );
          }
          int exponent10 = 0;
 

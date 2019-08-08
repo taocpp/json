@@ -29,7 +29,7 @@ namespace tao::json::events
             Consumer::string( std::move( v ) );
          }
          else {
-            throw std::runtime_error( "invalid UTF8 string: $" + internal::hexdump( v ) );  // NOLINT
+            throw std::runtime_error( "invalid UTF8 string: $" + internal::hexdump( v ) );
          }
       }
 
@@ -39,7 +39,7 @@ namespace tao::json::events
             Consumer::string( v );
          }
          else {
-            throw std::runtime_error( "invalid UTF8 string: $" + internal::hexdump( v ) );  // NOLINT
+            throw std::runtime_error( "invalid UTF8 string: $" + internal::hexdump( v ) );
          }
       }
    };

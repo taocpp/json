@@ -86,10 +86,10 @@ namespace tao::json
             return;
 
          case type::DISCARDED:
-            throw std::logic_error( "attempt to use a discarded json value" );  // NOLINT
+            throw std::logic_error( "attempt to use a discarded json value" );
 
          case type::DESTROYED:
-            throw std::logic_error( "attempt to use a destroyed json value" );  // NOLINT
+            throw std::logic_error( "attempt to use a destroyed json value" );
 
          case type::NULL_:
          case type::BOOLEAN:
@@ -137,7 +137,7 @@ namespace tao::json
             return;
          }
       }
-      throw std::logic_error( "invalid value for tao::json::type" );  // NOLINT, LCOV_EXCL_LINE
+      throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
    }
 
    template< template< typename... > class Traits >
