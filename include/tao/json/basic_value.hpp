@@ -72,8 +72,7 @@ namespace tao::json
       template< typename T,
                 typename = std::enable_if_t< internal::enable_implicit_constructor< Traits, std::decay_t< T > > >,
                 typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
-      basic_value( T&& v, public_base_t b = public_base_t() )
-         noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          : public_base_t( std::move( b ) )
       {
          if constexpr( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) ) {
