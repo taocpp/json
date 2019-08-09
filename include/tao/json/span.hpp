@@ -648,11 +648,11 @@ namespace tao
 
       template< std::size_t Offset, std::size_t Count = dynamic_extent >
       constexpr auto subspan() const
-         -> span< element_type, Count != dynamic_extent ? Count : Extent - Offset >
+         -> span< element_type, ( Count != dynamic_extent ) ? Count : Extent - Offset >
       {
          static_assert( Offset <= Extent );
          static_assert( ( Count == dynamic_extent ) || ( Count <= ( Extent - Offset ) ) );
-         return { data() + Offset, ( Count == dynamic_extent ) ? ( Extent - Offset ) : Count };
+         return { data() + Offset, ( Count != dynamic_extent ) ? Count : ( Extent - Offset ) };
       }
 
       constexpr span< element_type, dynamic_extent > first( index_type count ) const
