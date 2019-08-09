@@ -708,21 +708,23 @@ namespace tao
 
 namespace std
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wmismatched-tags"
    template< typename ElementType, size_t Extent >
-   class tuple_size< tao::span< ElementType, Extent > >
-      : public integral_constant< size_t, Extent >
+   struct tuple_size< tao::span< ElementType, Extent > >
+      : integral_constant< size_t, Extent >
    {};
 
    template< typename ElementType >
-   class tuple_size< tao::span< ElementType, tao::dynamic_extent > >;  // not defined
+   struct tuple_size< tao::span< ElementType, tao::dynamic_extent > >;  // not defined
 
    template< size_t I, typename ElementType, size_t Extent >
-   class tuple_element< I, tao::span< ElementType, Extent > >
+   struct tuple_element< I, tao::span< ElementType, Extent > >
    {
-   public:
       static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
       using type = ElementType;
    };
+#pragma clang diagnostic pop
 
    // TODO: this is probably illegal. keep it?
    template< size_t I, typename ElementType, size_t Extent >
