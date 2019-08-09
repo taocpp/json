@@ -624,7 +624,7 @@ namespace tao::json
             case type::BINARY:
                return p.unsafe_get_binary() == rhs;
             case type::BINARY_VIEW:
-               return p.unsafe_get_binary_view() == rhs;
+               return tao::internal::binary_equal( p.unsafe_get_binary_view(), rhs );
             default:
                return false;
          }
@@ -638,7 +638,7 @@ namespace tao::json
             case type::BINARY:
                return p.unsafe_get_binary() < rhs;
             case type::BINARY_VIEW:
-               return p.unsafe_get_binary_view() < rhs;
+               return tao::internal::binary_less( p.unsafe_get_binary_view(), rhs );
             default:
                return p.type() < type::BINARY;
          }
@@ -652,7 +652,7 @@ namespace tao::json
             case type::BINARY:
                return p.unsafe_get_binary() > rhs;
             case type::BINARY_VIEW:
-               return p.unsafe_get_binary_view() > rhs;
+               return tao::internal::binary_less( rhs, p.unsafe_get_binary_view() );
             default:
                return p.type() > type::BINARY;
          }
@@ -693,9 +693,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return p.unsafe_get_binary() == rhs;
+               return tao::internal::binary_equal( p.unsafe_get_binary(), rhs );
             case type::BINARY_VIEW:
-               return p.unsafe_get_binary_view() == rhs;
+               return tao::internal::binary_equal( p.unsafe_get_binary_view(), rhs );
             default:
                return false;
          }
@@ -707,9 +707,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return p.unsafe_get_binary() < rhs;
+               return tao::internal::binary_less( p.unsafe_get_binary(), rhs );
             case type::BINARY_VIEW:
-               return p.unsafe_get_binary_view() < rhs;
+               return tao::internal::binary_less( p.unsafe_get_binary_view(), rhs );
             default:
                return p.type() < type::BINARY;
          }
@@ -721,9 +721,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return p.unsafe_get_binary() > rhs;
+               return tao::internal::binary_less( rhs, p.unsafe_get_binary() );
             case type::BINARY_VIEW:
-               return p.unsafe_get_binary_view() > rhs;
+               return tao::internal::binary_less( rhs, p.unsafe_get_binary_view() );
             default:
                return p.type() > type::BINARY;
          }

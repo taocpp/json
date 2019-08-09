@@ -64,13 +64,13 @@ namespace tao::json
 
             case type::BINARY:
                if( rhs.type() == type::BINARY_VIEW ) {
-                  return lhs.unsafe_get_binary() == rhs.unsafe_get_binary_view();
+                  return tao::internal::binary_equal( lhs.unsafe_get_binary(), rhs.unsafe_get_binary_view() );
                }
                break;
 
             case type::BINARY_VIEW:
                if( rhs.type() == type::BINARY ) {
-                  return lhs.unsafe_get_binary_view() == rhs.unsafe_get_binary();
+                  return tao::internal::binary_equal( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary() );
                }
                break;
 
@@ -134,7 +134,7 @@ namespace tao::json
             return lhs.unsafe_get_binary() == rhs.unsafe_get_binary();
 
          case type::BINARY_VIEW:
-            return lhs.unsafe_get_binary_view() == rhs.unsafe_get_binary_view();
+            return tao::internal::binary_equal( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary_view() );
 
          case type::ARRAY:
             return lhs.unsafe_get_array() == rhs.unsafe_get_array();
@@ -279,13 +279,13 @@ namespace tao::json
 
             case type::BINARY:
                if( rhs.type() == type::BINARY_VIEW ) {
-                  return lhs.unsafe_get_binary() < rhs.unsafe_get_binary_view();
+                  return tao::internal::binary_less( lhs.unsafe_get_binary(), rhs.unsafe_get_binary_view() );
                }
                break;
 
             case type::BINARY_VIEW:
                if( rhs.type() == type::BINARY ) {
-                  return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary();
+                  return tao::internal::binary_less( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary() );
                }
                break;
 
@@ -349,7 +349,7 @@ namespace tao::json
             return lhs.unsafe_get_binary() < rhs.unsafe_get_binary();
 
          case type::BINARY_VIEW:
-            return lhs.unsafe_get_binary_view() < rhs.unsafe_get_binary_view();
+            return tao::internal::binary_less( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary_view() );
 
          case type::ARRAY:
             return lhs.unsafe_get_array() < rhs.unsafe_get_array();
