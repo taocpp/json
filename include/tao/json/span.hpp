@@ -241,11 +241,11 @@ namespace tao
       }
 
       template< std::size_t Offset, std::size_t Count = dynamic_extent >
-      constexpr span< element_type, Count != dynamic_extent ? Count : dynamic_extent > subspan() const
+      constexpr span< element_type, ( Count != dynamic_extent ) ? Count : dynamic_extent > subspan() const
       {
          assert( Offset <= size() );
          assert( ( Count == dynamic_extent ) || ( Count <= ( size() - Offset ) ) );
-         return { data() + Offset, ( Count == dynamic_extent ) ? ( size() - Offset ) : Count };
+         return { data() + Offset, ( Count != dynamic_extent ) ? Count : ( size() - Offset ) };
       }
 
       constexpr span< element_type, dynamic_extent > first( index_type count ) const
@@ -264,7 +264,7 @@ namespace tao
       {
          assert( offset <= size() );
          assert( ( count == dynamic_extent ) || ( count <= ( size() - offset ) ) );
-         return { data() + offset, ( count == dynamic_extent ) ? ( size() - offset ) : count };
+         return { data() + offset, ( count != dynamic_extent ) ? count : ( size() - offset ) };
       }
 
    private:
