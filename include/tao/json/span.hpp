@@ -679,13 +679,15 @@ namespace tao
    };
 
    template< typename ElementType, std::size_t Extent >
-   span< const std::byte, ( Extent == dynamic_extent ) ? dynamic_extent : ( sizeof( ElementType ) * Extent ) > as_bytes( span< ElementType, Extent > s ) noexcept
+   auto as_bytes( span< ElementType, Extent > s ) noexcept
+      -> span< const std::byte, ( ( Extent == dynamic_extent ) ? dynamic_extent : ( sizeof( ElementType ) * Extent ) ) >
    {
       return { reinterpret_cast< const std::byte* >( s.data() ), s.size_bytes() };
    }
 
    template< typename ElementType, std::size_t Extent >
-   span< std::byte, ( Extent == dynamic_extent ) ? dynamic_extent : ( sizeof( ElementType ) * Extent ) > as_writeable_bytes( span< ElementType, Extent > s ) noexcept
+   auto as_writeable_bytes( span< ElementType, Extent > s ) noexcept
+      -> span< std::byte, ( ( Extent == dynamic_extent ) ? dynamic_extent : ( sizeof( ElementType ) * Extent ) ) >
    {
       return { reinterpret_cast< std::byte* >( s.data() ), s.size_bytes() };
    }
