@@ -708,8 +708,11 @@ namespace tao
 
 namespace std
 {
+#if defined( __clang__ )
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmismatched-tags"
+#endif
+
    template< typename ElementType, size_t Extent >
    struct tuple_size< tao::span< ElementType, Extent > >
       : integral_constant< size_t, Extent >
@@ -724,7 +727,10 @@ namespace std
       static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
       using type = ElementType;
    };
+
+#if defined( __clang__ )
 #pragma clang diagnostic pop
+#endif
 
    // TODO: this is probably illegal. keep it?
    template< size_t I, typename ElementType, size_t Extent >
