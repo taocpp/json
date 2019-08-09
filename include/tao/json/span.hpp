@@ -709,16 +709,17 @@ namespace tao
 namespace std
 {
    template< typename ElementType, size_t Extent >
-   struct tuple_size< tao::span< ElementType, Extent > >
-      : integral_constant< size_t, Extent >
+   class tuple_size< tao::span< ElementType, Extent > >
+      : public integral_constant< size_t, Extent >
    {};
 
    template< typename ElementType >
-   struct tuple_size< tao::span< ElementType, tao::dynamic_extent > >;  // not defined
+   class tuple_size< tao::span< ElementType, tao::dynamic_extent > >;  // not defined
 
    template< size_t I, typename ElementType, size_t Extent >
-   struct tuple_element< I, tao::span< ElementType, Extent > >
+   class tuple_element< I, tao::span< ElementType, Extent > >
    {
+   public:
       static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
       using type = ElementType;
    };
