@@ -466,7 +466,7 @@ namespace tao
       {
          assert( offset <= Extent );
          assert( ( count == dynamic_extent ) || ( count <= ( Extent - offset ) ) );
-         return { data() + offset, ( count == dynamic_extent ) ? ( Extent - offset ) : count };
+         return { data() + offset, ( count != dynamic_extent ) ? count : ( Extent - offset ) };
       }
 
    private:
