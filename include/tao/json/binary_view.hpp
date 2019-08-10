@@ -14,12 +14,12 @@ namespace tao
 
    namespace internal
    {
-      [[nodiscard]] inline bool binary_equal( const binary_view lhs, const binary_view rhs )
+      [[nodiscard]] inline bool binary_equal( const binary_view lhs, const binary_view rhs ) noexcept
       {
          return std::equal( lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend() );
       }
 
-      [[nodiscard]] inline bool binary_less( const binary_view lhs, const binary_view rhs )
+      [[nodiscard]] inline bool binary_less( const binary_view lhs, const binary_view rhs ) noexcept
       {
          return std::lexicographical_compare( lhs.cbegin(), lhs.cend(), rhs.cbegin(), rhs.cend() );
       }
