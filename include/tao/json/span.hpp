@@ -76,6 +76,8 @@ namespace tao
    class span< ElementType, dynamic_extent >
    {
    public:
+      static_assert( !std::is_abstract_v< ElementType > );
+
       using element_type = ElementType;
       using value_type = std::remove_cv_t< ElementType >;
       using index_type = std::size_t;
@@ -274,199 +276,12 @@ namespace tao
       index_type m_size;
    };
 
-   template< typename ElementType >
-   class span< ElementType, 0 >
-   {
-   public:
-      using element_type = ElementType;
-      using value_type = std::remove_cv_t< ElementType >;
-      using index_type = std::size_t;
-      using difference_type = std::ptrdiff_t;
-      using pointer = element_type*;
-      using const_pointer = const element_type*;
-      using reference = element_type&;
-      using const_reference = const element_type&;
-      using iterator = pointer;
-      using const_iterator = const_pointer;
-      using reverse_iterator = std::reverse_iterator< iterator >;
-      using const_reverse_iterator = std::reverse_iterator< const_iterator >;
-
-      static constexpr index_type extent = 0;
-
-      constexpr span() noexcept
-         : m_data( nullptr )
-      {}
-
-      constexpr span( pointer ptr, index_type count ) noexcept
-         : m_data( ptr )
-      {
-         assert( count == 0 );
-      }
-
-      constexpr span( pointer first, pointer last ) noexcept
-         : m_data( first )
-      {
-         assert( std::distance( first, last ) == 0 );
-      }
-
-      template< std::size_t N, typename = std::enable_if_t< ( N == 0 ) && tao::internal::is_span_compatible_ptr< value_type, ElementType >::value > >
-      constexpr span( std::array< value_type, N >& arr ) noexcept
-         : m_data( arr.data() )
-      {}
-
-      template< std::size_t N, typename = std::enable_if_t< ( N == 0 ) && tao::internal::is_span_compatible_ptr< const value_type, ElementType >::value > >
-      constexpr span( const std::array< value_type, N >& arr ) noexcept
-         : m_data( arr.data() )
-      {}
-
-      constexpr span( const span& other ) noexcept = default;
-
-      template< typename OtherElementType, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType >::value > >
-      constexpr span( const span< OtherElementType, 0 >& s ) noexcept
-         : m_data( s.data() )
-      {}
-
-      ~span() noexcept = default;
-
-      constexpr span& operator=( const span& ) noexcept = default;
-
-      constexpr index_type size() const noexcept
-      {
-         return 0;
-      }
-
-      constexpr index_type size_bytes() const noexcept
-      {
-         return 0;
-      }
-
-      [[nodiscard]] constexpr bool empty() const noexcept
-      {
-         return true;
-      }
-
-      constexpr reference operator[]( index_type idx ) const noexcept
-      {
-         assert( false );
-         return *( data() + idx );
-      }
-
-      constexpr reference front() const noexcept
-      {
-         assert( false );
-         return *data();
-      }
-
-      constexpr reference back() const noexcept
-      {
-         assert( false );
-         return *data();
-      }
-
-      constexpr pointer data() const noexcept
-      {
-         return m_data;
-      }
-
-      constexpr iterator begin() const noexcept
-      {
-         return data();
-      }
-
-      constexpr const_iterator cbegin() const noexcept
-      {
-         return data();
-      }
-
-      constexpr iterator end() const noexcept
-      {
-         return data();
-      }
-
-      constexpr const_iterator cend() const noexcept
-      {
-         return data();
-      }
-
-      constexpr reverse_iterator rbegin() const noexcept
-      {
-         return reverse_iterator( end() );
-      }
-
-      constexpr reverse_iterator rend() const noexcept
-      {
-         return reverse_iterator( begin() );
-      }
-
-      constexpr const_reverse_iterator crbegin() const noexcept
-      {
-         return const_reverse_iterator( cend() );
-      }
-
-      constexpr const_reverse_iterator crend() const noexcept
-      {
-         return const_reverse_iterator( cbegin() );
-      }
-
-      friend constexpr iterator begin( span s ) noexcept
-      {
-         return s.begin();
-      }
-
-      friend constexpr iterator end( span s ) noexcept
-      {
-         return s.end();
-      }
-
-      template< std::size_t Count >
-      constexpr span< element_type, 0 > first() const noexcept
-      {
-         static_assert( Count == 0 );
-         return { data(), 0 };
-      }
-
-      template< std::size_t Count >
-      constexpr span< element_type, 0 > last() const noexcept
-      {
-         static_assert( Count == 0 );
-         return { data(), 0 };
-      }
-
-      template< std::size_t Offset, std::size_t Count = dynamic_extent >
-      constexpr span< element_type, 0 > subspan() const
-      {
-         static_assert( Offset == 0 );
-         static_assert( ( Count == dynamic_extent ) || ( Count == 0 ) );
-         return { data(), 0 };
-      }
-
-      constexpr span< element_type, dynamic_extent > first( index_type count ) const
-      {
-         assert( count == 0 );
-         return { data(), 0 };
-      }
-
-      constexpr span< element_type, dynamic_extent > last( index_type count ) const
-      {
-         assert( count == 0 );
-         return { data(), 0 };
-      }
-
-      constexpr span< element_type, dynamic_extent > subspan( index_type offset, index_type count = dynamic_extent ) const
-      {
-         assert( offset == 0 );
-         assert( ( count == dynamic_extent ) || ( count == 0 ) );
-         return { data(), 0 };
-      }
-
-   private:
-      pointer m_data;
-   };
-
    template< typename ElementType, std::size_t Extent >
    class span
    {
    public:
+      static_assert( !std::is_abstract_v< ElementType > );
+
       using element_type = ElementType;
       using value_type = std::remove_cv_t< ElementType >;
       using index_type = std::size_t;
@@ -481,6 +296,11 @@ namespace tao
       using const_reverse_iterator = std::reverse_iterator< const_iterator >;
 
       static constexpr index_type extent = Extent;
+
+      template< typename T = void, typename = std::enable_if_t< Extent == 0, T > >
+      constexpr span() noexcept
+         : m_data( nullptr )
+      {}
 
       constexpr span( pointer ptr, index_type count ) noexcept
          : m_data( ptr )
@@ -531,7 +351,7 @@ namespace tao
 
       [[nodiscard]] constexpr bool empty() const noexcept
       {
-         return false;
+         return Extent == 0;
       }
 
       constexpr reference operator[]( index_type idx ) const noexcept
@@ -542,11 +362,13 @@ namespace tao
 
       constexpr reference front() const noexcept
       {
+         assert( Extent != 0 );
          return *data();
       }
 
       constexpr reference back() const noexcept
       {
+         assert( Extent != 0 );
          return *( data() + ( Extent - 1 ) );
       }
 
