@@ -481,7 +481,7 @@ namespace tao
    }
 
    template< typename ElementType, std::size_t Extent, typename = std::enable_if_t< !std::is_const_v< ElementType > > >
-   auto as_writeable_bytes( span< ElementType, Extent > s ) noexcept
+   auto as_writable_bytes( span< ElementType, Extent > s ) noexcept
       -> span< std::byte, ( ( Extent == dynamic_extent ) ? dynamic_extent : ( sizeof( ElementType ) * Extent ) ) >
    {
       return { reinterpret_cast< std::byte* >( s.data() ), s.size_bytes() };
@@ -551,7 +551,7 @@ namespace tao
    using std::span;
 
    using std::as_bytes;
-   using std::as_writeable_bytes;
+   using std::as_writable_bytes;
 
 }  // namespace tao
 
