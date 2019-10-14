@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -1450,27 +1451,27 @@ namespace tao::json
                return;
 
             case json::type::STRING:
-               m_union.s.~basic_string();
+               std::destroy_at( std::addressof( m_union.s ) );
                return;
 
             case json::type::STRING_VIEW:
-               m_union.sv.~basic_string_view();
+               std::destroy_at( std::addressof( m_union.sv ) );
                return;
 
             case json::type::BINARY:
-               m_union.x.~vector();
+               std::destroy_at( std::addressof( m_union.x ) );
                return;
 
             case json::type::BINARY_VIEW:
-               m_union.xv.~binary_view();
+               std::destroy_at( std::addressof( m_union.xv ) );
                return;
 
             case json::type::ARRAY:
-               m_union.a.~vector();
+               std::destroy_at( std::addressof( m_union.a ) );
                return;
 
             case json::type::OBJECT:
-               m_union.o.~map();
+               std::destroy_at( std::addressof( m_union.o ) );
                return;
          }
          assert( false );  // LCOV_EXCL_LINE
