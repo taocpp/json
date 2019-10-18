@@ -74,7 +74,7 @@ namespace tao::json::internal
 
    template< typename T >
    struct object_traits
-      : public object_multi_traits< T >
+      : object_multi_traits< T >
    {
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T& o )

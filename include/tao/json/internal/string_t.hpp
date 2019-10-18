@@ -13,7 +13,7 @@ namespace tao::json::internal
 {
    template< char... Cs >
    struct string_t
-      : public pegtl::string< Cs... >
+      : pegtl::string< Cs... >
    {
       static constexpr const char value[] = { Cs..., 0 };
 

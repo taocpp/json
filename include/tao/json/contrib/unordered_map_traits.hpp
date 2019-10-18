@@ -16,7 +16,7 @@ namespace tao::json
 {
    template< typename T, typename... Ts >
    struct unordered_map_traits
-      : public internal::object_traits< std::unordered_map< std::string, T, Ts... > >
+      : internal::object_traits< std::unordered_map< std::string, T, Ts... > >
    {
       template< template< typename... > class Traits, typename... With >
       static void to( const basic_value< Traits >& v, std::unordered_map< std::string, T, Ts... >& r, With&... with )

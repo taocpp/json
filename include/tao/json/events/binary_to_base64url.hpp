@@ -13,7 +13,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct binary_to_base64url
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

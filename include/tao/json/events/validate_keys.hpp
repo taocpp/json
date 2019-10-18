@@ -15,7 +15,7 @@ namespace tao::json::events
 {
    template< typename Consumer, typename Rule >
    struct validate_keys
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

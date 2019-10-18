@@ -862,7 +862,7 @@ namespace tao::json
 
    template< template< typename... > class Traits >
    struct traits< basic_value< Traits >* >
-      : public traits< const basic_value< Traits >* >
+      : traits< const basic_value< Traits >* >
    {
    };
 

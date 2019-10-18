@@ -59,7 +59,7 @@ namespace tao::json
 
    template< typename T, typename U = T >
    struct shared_ptr_traits
-      : public internal::shared_ptr_traits< T, U >
+      : internal::shared_ptr_traits< T, U >
    {
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::shared_ptr< U >& o )
@@ -78,8 +78,8 @@ namespace tao::json
 
    template< typename T >
    struct shared_ptr_traits< T, T >
-      : public internal::shared_ptr_traits< T, T >,
-        public internal::indirect_traits< std::shared_ptr< T > >
+      : internal::shared_ptr_traits< T, T >,
+        internal::indirect_traits< std::shared_ptr< T > >
    {
       template< typename V >
       using with_base = shared_ptr_traits< T, V >;

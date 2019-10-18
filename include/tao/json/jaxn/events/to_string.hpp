@@ -14,7 +14,7 @@ namespace tao::json::jaxn::events
    // Events consumer to build a JAXN string representation.
 
    struct to_string
-      : public to_stream
+      : to_stream
    {
       std::ostringstream oss;
 

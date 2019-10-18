@@ -11,7 +11,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct non_finite_to_exception
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

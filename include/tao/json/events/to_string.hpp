@@ -14,7 +14,7 @@ namespace tao::json::events
    // Events consumer to build a JSON string representation.
 
    struct to_string
-      : public to_stream
+      : to_stream
    {
       std::ostringstream oss;
 

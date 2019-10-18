@@ -15,7 +15,7 @@ namespace tao::json
 {
    template< typename T, typename... Ts >
    struct multiset_traits
-      : public internal::array_traits< std::multiset< T, Ts... > >
+      : internal::array_traits< std::multiset< T, Ts... > >
    {
       template< template< typename... > class Traits, typename... With >
       static void to( const basic_value< Traits >& v, std::multiset< T, Ts... >& r, With&... with )

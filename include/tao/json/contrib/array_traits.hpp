@@ -15,7 +15,7 @@ namespace tao::json
 {
    template< typename T, std::size_t N >
    struct array_traits
-      : public internal::array_traits< std::array< T, N > >
+      : internal::array_traits< std::array< T, N > >
    {
       template< template< typename... > class Traits, typename... With >
       static void to( const basic_value< Traits >& v, std::array< T, N >& r, With&... with )

@@ -149,7 +149,7 @@ namespace tao::json
 
       template< typename Rule >
       struct pointer_action
-         : public pegtl::nothing< Rule >
+         : pegtl::nothing< Rule >
       {};
 
       template<>

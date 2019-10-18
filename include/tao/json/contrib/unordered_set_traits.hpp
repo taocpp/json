@@ -15,7 +15,7 @@ namespace tao::json
 {
    template< typename T, typename... Ts >
    struct unordered_set_traits
-      : public internal::array_traits< std::unordered_set< T, Ts... > >
+      : internal::array_traits< std::unordered_set< T, Ts... > >
    {
       template< template< typename... > class Traits, typename... With >
       static void to( const basic_value< Traits >& v, std::unordered_set< T, Ts... >& r, With&... with )

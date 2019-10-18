@@ -13,7 +13,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct invalid_string_to_hex
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

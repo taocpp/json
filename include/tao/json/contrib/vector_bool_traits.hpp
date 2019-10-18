@@ -14,7 +14,7 @@
 namespace tao::json
 {
    struct vector_bool_traits
-      : public vector_traits< bool >
+      : vector_traits< bool >
    {
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::vector< bool >& o )

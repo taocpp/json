@@ -58,7 +58,7 @@ namespace tao::json
 
    template< typename T, typename U = T >
    struct unique_ptr_traits
-      : public internal::unique_ptr_traits< T, U >
+      : internal::unique_ptr_traits< T, U >
    {
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::unique_ptr< U >& o )
@@ -77,8 +77,8 @@ namespace tao::json
 
    template< typename T >
    struct unique_ptr_traits< T, T >
-      : public internal::unique_ptr_traits< T, T >,
-        public internal::indirect_traits< std::unique_ptr< T > >
+      : internal::unique_ptr_traits< T, T >,
+        internal::indirect_traits< std::unique_ptr< T > >
    {
       template< typename V >
       using with_base = unique_ptr_traits< T, V >;

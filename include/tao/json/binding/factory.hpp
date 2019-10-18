@@ -42,7 +42,7 @@ namespace tao::json::binding
 
       template< typename K, typename T, typename Base, template< typename... > class Pointer >
       struct factory_type
-         : public type_key< K, T >
+         : type_key< K, T >
       {
          [[nodiscard]] static const std::type_info* type()
          {

@@ -17,7 +17,7 @@ namespace tao::json::jaxn::events
    // Events consumer to build a JAXN string representation.
 
    struct to_pretty_stream
-      : public json::events::to_pretty_stream
+      : json::events::to_pretty_stream
    {
       using json::events::to_pretty_stream::to_pretty_stream;
 

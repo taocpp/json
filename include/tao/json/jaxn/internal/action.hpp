@@ -22,7 +22,7 @@ namespace tao::json::jaxn::internal
 {
    template< typename Rule >
    struct action
-      : public pegtl::nothing< Rule >
+      : pegtl::nothing< Rule >
    {};
 
    template<>

@@ -93,7 +93,7 @@ namespace tao::json
    {
       template< typename Rule >
       struct position_action
-         : public action< Rule >
+         : action< Rule >
       {
       };
 

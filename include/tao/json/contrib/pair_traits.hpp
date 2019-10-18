@@ -12,8 +12,8 @@ namespace tao::json
 {
    template< typename U, typename V >
    struct pair_traits
-      : public binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
-                               TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
+      : binding::array< TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::first ),
+                        TAO_JSON_BIND_ELEMENT( &std::pair< U, V >::second ) >
    {};
 
 }  // namespace tao::json

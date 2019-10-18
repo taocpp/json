@@ -15,8 +15,8 @@ namespace tao::json::binding
 {
    template< member_kind R, typename K, auto P >
    struct member
-      : public element< P >,
-        public internal::type_key< K, typename binding::element< P >::internal_t >
+      : element< P >,
+        internal::type_key< K, typename binding::element< P >::internal_t >
    {
       static constexpr member_kind kind = R;
 

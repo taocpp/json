@@ -12,7 +12,7 @@
 namespace tao::json::msgpack::events
 {
    struct to_string
-      : public to_stream
+      : to_stream
    {
       std::ostringstream oss;
 

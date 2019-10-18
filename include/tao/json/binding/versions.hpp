@@ -18,12 +18,12 @@ namespace tao::json::binding
 
    template< typename V >
    struct versions< V >
-      : public V
+      : V
    {};
 
    template< typename V, typename... Vs >
    struct versions< V, Vs... >
-      : public V
+      : V
    {
       template< typename C >
       static void throw_on_error( const bool ok, const std::exception_ptr& e )

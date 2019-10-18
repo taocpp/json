@@ -12,7 +12,7 @@
 namespace tao::json::ubjson::events
 {
    struct to_string
-      : public to_stream
+      : to_stream
    {
       std::ostringstream oss;
 

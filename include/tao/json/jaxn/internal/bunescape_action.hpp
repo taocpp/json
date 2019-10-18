@@ -16,7 +16,7 @@ namespace tao::json::jaxn::internal
 {
    template< typename Rule >
    struct bunescape_action
-      : public pegtl::nothing< Rule >
+      : pegtl::nothing< Rule >
    {};
 
    template<>

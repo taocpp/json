@@ -28,7 +28,7 @@ namespace tao::json::internal
 
    template< typename... Vs, typename... Ws, typename... Rs >
    struct merge_type_lists_t< type_list< Vs... >, type_list< Ws... >, Rs... >
-      : public merge_type_lists_t< type_list< Vs..., Ws... >, Rs... >
+      : merge_type_lists_t< type_list< Vs..., Ws... >, Rs... >
    {};
 
    template< typename... Ts >

@@ -10,7 +10,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct prefer_unsigned
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

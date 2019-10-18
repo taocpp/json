@@ -33,87 +33,87 @@ namespace tao::json
 {
    template< typename U, typename V >
    struct traits< std::pair< U, V > >
-      : public pair_traits< U, V >
+      : pair_traits< U, V >
    {};
 
    template< typename... Ts >
    struct traits< std::tuple< Ts... > >
-      : public tuple_traits< Ts... >
+      : tuple_traits< Ts... >
    {};
 
    template<>
    struct traits< token >
-      : public token_traits
+      : token_traits
    {};
 
    template<>
    struct traits< pointer >
-      : public pointer_traits
+      : pointer_traits
    {};
 
    template< typename T, std::size_t N >
    struct traits< std::array< T, N > >
-      : public array_traits< T, N >
+      : array_traits< T, N >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::deque< T, Ts... > >
-      : public deque_traits< T, Ts... >
+      : deque_traits< T, Ts... >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::list< T, Ts... > >
-      : public list_traits< T, Ts... >
+      : list_traits< T, Ts... >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::set< T, Ts... > >
-      : public set_traits< T, Ts... >
+      : set_traits< T, Ts... >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::unordered_set< T, Ts... > >
-      : public unordered_set_traits< T, Ts... >
+      : unordered_set_traits< T, Ts... >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::vector< T, Ts... > >
-      : public vector_traits< T, Ts... >
+      : vector_traits< T, Ts... >
    {};
 
    template<>
    struct traits< std::vector< bool > >
-      : public vector_bool_traits
+      : vector_bool_traits
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::map< std::string, T, Ts... > >
-      : public map_traits< T, Ts... >
+      : map_traits< T, Ts... >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::unordered_map< std::string, T, Ts... > >
-      : public unordered_map_traits< T, Ts... >
+      : unordered_map_traits< T, Ts... >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::multiset< T, Ts... > >
-      : public multiset_traits< T, Ts... >
+      : multiset_traits< T, Ts... >
    {};
 
    template< typename T, typename... Ts >
    struct traits< std::multimap< std::string, T, Ts... > >
-      : public multimap_traits< T, Ts... >
+      : multimap_traits< T, Ts... >
    {};
 
    template< typename T >
    struct traits< std::shared_ptr< T > >
-      : public shared_ptr_traits< T >
+      : shared_ptr_traits< T >
    {};
 
    template< typename T >
    struct traits< std::unique_ptr< T > >
-      : public unique_ptr_traits< T >
+      : unique_ptr_traits< T >
    {};
 
 }  // namespace tao::json

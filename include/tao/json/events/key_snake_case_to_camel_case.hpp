@@ -12,7 +12,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct key_snake_case_to_camel_case
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

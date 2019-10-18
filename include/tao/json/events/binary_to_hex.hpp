@@ -11,7 +11,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct binary_to_hex
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

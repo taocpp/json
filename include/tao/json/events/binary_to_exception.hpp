@@ -12,7 +12,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct binary_to_exception
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 

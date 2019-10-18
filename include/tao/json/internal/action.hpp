@@ -17,7 +17,7 @@ namespace tao::json::internal
 {
    template< typename Rule >
    struct action
-      : public pegtl::nothing< Rule >
+      : pegtl::nothing< Rule >
    {};
 
    template<>

@@ -11,7 +11,7 @@
 namespace tao::json::cbor::events
 {
    struct to_string
-      : public to_stream
+      : to_stream
    {
       std::ostringstream oss;
 

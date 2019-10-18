@@ -10,7 +10,7 @@ namespace tao::json::events
 {
    template< typename Consumer >
    struct non_finite_to_null
-      : public Consumer
+      : Consumer
    {
       using Consumer::Consumer;
 
