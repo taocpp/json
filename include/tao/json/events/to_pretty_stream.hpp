@@ -29,26 +29,12 @@ namespace tao::json::events
    class to_pretty_stream
    {
    protected:
-      char buffer[ 32 ];
       std::ostream& os;
       const std::size_t indent;
-      const std::string eol;
-
-      std::size_t current_indent = 0;
+      std::string eol;
 
       bool first = true;
       bool after_key = true;
-
-      void next_line()
-      {
-         os << eol;
-         std::size_t len = current_indent;
-         while( len != 0 ) {
-            const auto chunk = ( std::min )( indent, sizeof( buffer ) );
-            os.write( buffer, chunk );
-            len -= chunk;
-         }
-      }
 
       void next()
       {
@@ -59,25 +45,21 @@ namespace tao::json::events
             after_key = false;
          }
          else {
-            next_line();
+            os << eol;
          }
       }
 
    public:
       template< typename S >
       to_pretty_stream( std::ostream& in_os, const std::size_t in_indent, S&& in_eol )
-         : buffer(),
-           os( in_os ),
+         : os( in_os ),
            indent( in_indent ),
            eol( std::forward< S >( in_eol ) )
-      {
-         std::memset( buffer, os.fill(), sizeof( buffer ) );
-      }
+      {}
 
       to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
          : to_pretty_stream( in_os, in_indent, "\n" )
-      {
-      }
+      {}
 
       void null()
       {
@@ -136,7 +118,7 @@ namespace tao::json::events
       {
          next();
          os.put( '[' );
-         current_indent += indent;
+         eol.resize( eol.size() + indent, os.fill() );
          first = true;
       }
 
@@ -147,9 +129,9 @@ namespace tao::json::events
 
       void end_array( const std::size_t /*unused*/ = 0 )
       {
-         current_indent -= indent;
+         eol.resize( eol.size() - indent );
          if( !first ) {
-            next_line();
+            os << eol;
          }
          os.put( ']' );
       }
@@ -158,7 +140,7 @@ namespace tao::json::events
       {
          next();
          os.put( '{' );
-         current_indent += indent;
+         eol.resize( eol.size() + indent, os.fill() );
          first = true;
       }
 
@@ -177,9 +159,9 @@ namespace tao::json::events
 
       void end_object( const std::size_t /*unused*/ = 0 )
       {
-         current_indent -= indent;
+         eol.resize( eol.size() - indent );
          if( !first ) {
-            next_line();
+            os << eol;
          }
          os.put( '}' );
       }
