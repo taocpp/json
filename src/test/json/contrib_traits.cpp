@@ -12,6 +12,55 @@
 
 namespace tao::json
 {
+   struct pair_ctor_test
+   {
+      pair_ctor_test() = delete;
+
+      explicit pair_ctor_test( const std::int64_t i )
+         : v( i )
+      { }
+
+      std::int64_t v;
+   };
+
+   template<>
+   struct traits< pair_ctor_test >
+   {
+      template< template< typename... > class Traits >
+      [[nodiscard]] static pair_ctor_test as( const basic_value< Traits >& v )
+      {
+         return pair_ctor_test( v.get_signed() );
+      }
+   };
+
+   void test_pair()
+   {
+      {
+         using t = std::pair< std::string, int >;
+         const t p( "foo", 42 );
+         const value v = p;
+         TEST_ASSERT( v == p );
+         TEST_ASSERT( v.is_array() );
+         const auto q = v.as< t >();
+         TEST_ASSERT( p == q );
+         t r;
+         v.to( r );
+         TEST_ASSERT( p == r );
+         parts_parser s( "[\"foo\",42]", __FUNCTION__ );
+         const auto u = consume< t >( s );
+         TEST_ASSERT( u == p );
+         const value w = produce::to_value( u );
+         TEST_ASSERT( w == v );
+      }
+      {
+         using t = std::pair< pair_ctor_test, pair_ctor_test >;
+         const value v = value::array( { -1, -2 } );
+         const auto p = v.as< t >();
+         TEST_ASSERT( p.first.v == -1 );
+         TEST_ASSERT( p.second.v == -2 );
+      }
+   }
+
    void test_shared()
    {
       using namespace test;
@@ -188,6 +237,8 @@ namespace tao::json
 
    void unit_test()
    {
+      test_pair();
+
       test_shared();
       test_unique();
 

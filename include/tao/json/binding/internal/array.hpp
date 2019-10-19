@@ -24,13 +24,27 @@ namespace tao::json::binding::internal
       using elements = json::internal::type_list< As... >;
 
       template< template< typename... > class Traits, typename C >
-      static void to( const basic_value< Traits >& v, C& x )
+      static const std::vector< basic_value< Traits > >& get_array_impl( const basic_value< Traits >& v )
       {
          const auto& a = v.get_array();
          if( a.size() != sizeof...( As ) ) {
             throw std::runtime_error( json::internal::format( "array size mismatch for type ", pegtl::internal::demangle< C >(), " -- expected ", sizeof...( As ), " received ", a.size(), json::message_extension( v ) ) );
          }
-         ( As::to( a.at( Is ), x ), ... );
+         return a;
+      }
+
+      template< template< typename... > class Traits, typename C >
+      static C as_type( const basic_value< Traits >& v )  // TODO: std::enable_if_t< WHAT?, C >
+      {
+         const auto& a = get_array_impl< Traits, C >( v );
+         return C( a[ Is ].template as< typename As::value_t >()... );
+      }
+
+      template< template< typename... > class Traits, typename C >
+      static void to( const basic_value< Traits >& v, C& x ) // TODO: std::enable_if_t< WHAT?, void >
+      {
+         const auto& a = get_array_impl< Traits, C >( v );
+         ( As::to( a[ Is ], x ), ... );
       }
 
       template< template< typename... > class Traits, typename C >

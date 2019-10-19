@@ -1267,21 +1267,29 @@ namespace tao::json
       }
 
       template< typename T >
-      [[nodiscard]] std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && internal::has_to< Traits< T >, basic_value, T >, T > as() const
+      [[nodiscard]] std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && internal::has_as_type< Traits, T, basic_value >, T > as() const
       {
-         T v;
+         return Traits< T >::template as_type< Traits, T >( *this );
+      }
+
+      template< typename T >
+      [[nodiscard]] std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && !internal::has_as_type< Traits, T, basic_value > && internal::has_to< Traits< T >, basic_value, T >, T > as() const
+      {
+         T v;  // TODO: Should is_default_constructible< T > be part of the enable_if, static_assert()ed here, or this line allowed to error?
          Traits< T >::to( *this, v );
          return v;
       }
 
       template< typename T >
-      std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && !internal::has_to< Traits< T >, basic_value, T > > as() const = delete;
+      std::enable_if_t< !internal::has_as< Traits< T >, basic_value > && !internal::has_as_type< Traits, T, basic_value > && !internal::has_to< Traits< T >, basic_value, T > > as() const = delete;
 
       template< typename T, typename K >
       [[nodiscard]] T as( const K& key ) const
       {
          return this->at( key ).template as< T >();
       }
+
+      // TODO: Incorporate has_as_type in the following functions (and throughout the library) (if we decide keep it)!
 
       template< typename T, typename... With >
       [[nodiscard]] std::enable_if_t< internal::has_as< Traits< T >, basic_value, With... >, T > as_with( With&&... with ) const
@@ -1292,7 +1300,7 @@ namespace tao::json
       template< typename T, typename... With >
       [[nodiscard]] std::enable_if_t< !internal::has_as< Traits< T >, basic_value, With... > && internal::has_to< Traits< T >, basic_value, T, With... >, T > as_with( With&&... with ) const
       {
-         T v;
+         T v;  // TODO: Should is_default_constructible< T > be part of the enable_if, static_assert()ed here, or this line allowed to error?
          Traits< T >::to( *this, v, with... );
          return v;
       }

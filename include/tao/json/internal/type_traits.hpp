@@ -42,23 +42,32 @@ namespace tao::json::internal
       }
    };
 
-   template< typename, typename... >
+   template< typename... >
    inline constexpr bool has_as_impl = false;
 
-   template< typename T, typename... Args >
-   inline constexpr bool has_as_impl< decltype( (void)T::as( std::declval< Args >()... ), void() ), T, Args... > = true;
+   template< typename Trait, typename... Args >
+   inline constexpr bool has_as_impl< decltype( (void)Trait::as( std::declval< Args >()... ), void() ), Trait, Args... > = true;
 
-   template< typename T, typename V, typename... With >
-   inline constexpr bool has_as = has_as_impl< void, T, const V&, With&... >;
+   template< typename Trait, typename Value, typename... With >
+   inline constexpr bool has_as = has_as_impl< void, Trait, const Value&, With&... >;
 
-   template< typename, typename... >
+   template< typename, template< typename... > typename, typename, typename... >
+   inline constexpr bool has_as_type_impl = false;
+
+   template< template< typename... > typename Traits, typename T, typename... Args >
+   inline constexpr bool has_as_type_impl< decltype( (void)Traits< T >::template as_type< Traits, T >( std::declval< Args >()... ), void() ), Traits, T, Args... > = true;
+
+   template< template< typename... > typename Traits, typename T, typename Value, typename... With >
+   inline constexpr bool has_as_type = has_as_type_impl< void, Traits, T, const Value&, With&... >;
+
+   template< typename... >
    inline constexpr bool has_to_impl = false;
 
-   template< typename T, typename... Args >
-   inline constexpr bool has_to_impl< decltype( T::to( std::declval< Args >()... ), void() ), T, Args... > = true;
+   template< typename Trait, typename... Args >
+   inline constexpr bool has_to_impl< decltype( Trait::to( std::declval< Args >()... ), void() ), Trait, Args... > = true;
 
-   template< typename T, typename V, typename... With >
-   inline constexpr bool has_to = has_to_impl< void, T, const V&, With&... >;
+   template< typename Trait, typename Value, typename... With >
+   inline constexpr bool has_to = has_to_impl< void, Trait, const Value&, With&... >;
 
    template< template< typename... > class, typename, typename, typename = void >
    inline constexpr bool has_consume_one = false;
