@@ -398,12 +398,12 @@ namespace tao::json
 
       void assign_string( const std::string& s )
       {
-         emplace_string( s );
+         m_variant = s;
       }
 
       void assign_string( std::string&& s ) noexcept
       {
-         emplace_string( std::move( s ) );
+         m_variant = std::move( s );
       }
 
       void assign_string_view( const std::string_view sv ) noexcept
@@ -419,12 +419,12 @@ namespace tao::json
 
       void assign_binary( const binary& x )
       {
-         emplace_binary( x );
+         m_variant = x;
       }
 
       void assign_binary( binary&& x ) noexcept
       {
-         emplace_binary( std::move( x ) );
+         m_variant = std::move( x );
       }
 
       void assign_binary_view( const tao::binary_view xv ) noexcept
@@ -440,12 +440,12 @@ namespace tao::json
 
       void assign_array( const array_t& a )
       {
-         emplace_array( a );
+         m_variant = a;
       }
 
       void assign_array( array_t&& a ) noexcept
       {
-         emplace_array( std::move( a ) );
+         m_variant = std::move( a );
       }
 
       decltype( auto ) prepare_array()
@@ -480,12 +480,12 @@ namespace tao::json
 
       void assign_object( const object_t& o )
       {
-         emplace_object( o );
+         m_variant = o;
       }
 
       void assign_object( object_t&& o ) noexcept
       {
-         emplace_object( std::move( o ) );
+         m_variant = std::move( o );
       }
 
       decltype( auto ) prepare_object()
@@ -525,6 +525,8 @@ namespace tao::json
       template< typename T >
       void assign_opaque_ptr( const T* data, const producer_t producer ) noexcept
       {
+         assert( data );
+         assert( producer );
          internal::opaque_ptr_t op;
          op.data = data;
          op.producer = producer;
