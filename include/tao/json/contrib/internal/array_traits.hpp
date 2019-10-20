@@ -40,21 +40,35 @@ namespace tao::json::internal
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_array() && ( p.get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), p.get_array().begin() );
+         if( !p.is_array() ) {
+            return false;
+         }
+         const auto& a = p.get_array();
+         return ( a.size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), a.begin() );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_array() ? std::lexicographical_compare( p.get_array().begin(), p.get_array().end(), rhs.begin(), rhs.end() ) : ( p.type() < type::ARRAY );
+         const auto t = p.type();
+         if( t != type::ARRAY ) {
+            return t < type::ARRAY;
+         }
+         const auto& a = p.get_array();
+         return std::lexicographical_compare( a.begin(), a.end(), rhs.begin(), rhs.end() );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p.get_array().begin(), p.get_array().end() ) : ( p.type() > type::ARRAY );
+         const auto t = p.type();
+         if( t != type::ARRAY ) {
+            return t > type::ARRAY;
+         }
+         const auto& a = p.get_array();
+         return std::lexicographical_compare( rhs.begin(), rhs.end(), a.begin(), a.end() );
       }
    };
 

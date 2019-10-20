@@ -149,24 +149,30 @@ namespace tao::json::events
             consumer.binary( v.get_binary_view() );
             return;
 
-         case type::ARRAY:
-            consumer.begin_array( v.get_array().size() );
-            for( auto&& e : v.get_array() ) {
+         case type::ARRAY: {
+            const auto& a = v.get_array();
+            const auto s = a.size();
+            consumer.begin_array( s );
+            for( auto&& e : a ) {
                Recurse( consumer, std::move( e ) );
                consumer.element();
             }
-            consumer.end_array( v.get_array().size() );
+            consumer.end_array( s );
             return;
+         }
 
-         case type::OBJECT:
-            consumer.begin_object( v.get_object().size() );
-            for( auto&& e : v.get_object() ) {
+         case type::OBJECT: {
+            const auto& o = v.get_object();
+            const auto s = o.size();
+            consumer.begin_object( s );
+            for( auto&& e : o ) {
                consumer.key( e.first );
                Recurse( consumer, std::move( e.second ) );
                consumer.member();
             }
-            consumer.end_object( v.get_object().size() );
+            consumer.end_object( s );
             return;
+         }
 
          case type::VALUE_PTR:
             Recurse( consumer, *v.get_value_ptr() );

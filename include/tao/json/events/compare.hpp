@@ -115,11 +115,14 @@ namespace tao::json
                   m_match = false;
                   m_current.push_back( nullptr );
                }
-               else if( !a.get_array().empty() ) {
-                  push( &a.get_array().front() );
-               }
                else {
-                  m_current.push_back( nullptr );
+                  const auto& v = a.get_array();
+                  if( !v.empty() ) {
+                     push( &v.front() );
+                  }
+                  else {
+                     m_current.push_back( nullptr );
+                  }
                }
             }
             m_array_index.push_back( 0 );

@@ -41,7 +41,7 @@ namespace tao::json::binding::internal
       }
 
       template< template< typename... > class Traits, typename C >
-      static void to( const basic_value< Traits >& v, C& x ) // TODO: std::enable_if_t< WHAT?, void >
+      static void to( const basic_value< Traits >& v, C& x )  // TODO: std::enable_if_t< WHAT?, void >
       {
          const auto& a = get_array_impl< Traits, C >( v );
          ( As::to( a[ Is ], x ), ... );
@@ -88,9 +88,11 @@ namespace tao::json::binding::internal
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         if( p.is_array() && ( p.get_array().size() == sizeof...( As ) ) ) {
+         if( p.is_array() ) {
             const auto& a = p.get_array();
-            return ( ( a[ Is ] == As::read( rhs ) ) && ... );
+            if( a.size() == sizeof...( As ) ) {
+               return ( ( a[ Is ] == As::read( rhs ) ) && ... );
+            }
          }
          return false;
       }

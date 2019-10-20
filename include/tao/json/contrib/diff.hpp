@@ -43,13 +43,14 @@ namespace tao::json
                              { "value", destination } } );
       }
       else {
+         auto& a = result.get_array();
          switch( source.type() ) {
             case type::ARRAY: {
                const auto ss = source.get_array().size();
                const auto ds = destination.get_array().size();
                std::size_t i = 0;
                while( ( i < ss ) && ( i < ds ) ) {
-                  internal::move_append( result.get_array(), diff( source.at( i ), destination.at( i ), path + i ).get_array() );
+                  internal::move_append( a, diff( source.at( i ), destination.at( i ), path + i ).get_array() );
                   ++i;
                }
                const auto s = ss + i - 1;
@@ -84,7 +85,7 @@ namespace tao::json
                      ++sit;
                   }
                   else {
-                     internal::move_append( result.get_array(), diff( sit->second, dit->second, path + sit->first ).get_array() );
+                     internal::move_append( a, diff( sit->second, dit->second, path + sit->first ).get_array() );
                      ++sit;
                      ++dit;
                   }

@@ -248,9 +248,11 @@ namespace tao::json::binding::internal
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         if( p.is_object() && ( p.get_object().size() == sizeof...( As ) ) ) {
+         if( p.is_object() ) {
             const auto& a = p.get_object();
-            return ( equal_member< As >( a, rhs ) && ... );
+            if( p.get_object().size() == sizeof...( As ) ) {
+               return ( equal_member< As >( a, rhs ) && ... );
+            }
          }
          return false;
       }

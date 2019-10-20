@@ -45,7 +45,11 @@ namespace tao::json::internal
             return ( l.first == r.first ) && ( l.second == r.second );
          };
          const auto& p = lhs.skip_value_ptr();
-         return p.is_object() && ( p.get_object().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), p.get_object().begin(), eq );
+         if( !p.is_object() ) {
+            return false;
+         }
+         const auto& o = p.get_object();
+         return ( o.size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), o.begin(), eq );
       }
 
       struct pair_less
@@ -61,14 +65,24 @@ namespace tao::json::internal
       [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_object() ? std::lexicographical_compare( p.get_object().begin(), p.get_object().end(), rhs.begin(), rhs.end(), pair_less() ) : ( p.type() < type::OBJECT );
+         const auto t = p.type();
+         if( t != type::OBJECT ) {
+            return t < type::OBJECT;
+         }
+         const auto& o = p.get_object();
+         return std::lexicographical_compare( o.begin(), o.end(), rhs.begin(), rhs.end(), pair_less() );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_object() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p.get_object().begin(), p.get_object().end(), pair_less() ) : ( p.type() > type::OBJECT );
+         const auto t = p.type();
+         if( t != type::OBJECT ) {
+            return t > type::OBJECT;
+         }
+         const auto& o = p.get_object();
+         return std::lexicographical_compare( rhs.begin(), rhs.end(), o.begin(), o.end(), pair_less() );
       }
    };
 

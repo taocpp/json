@@ -65,10 +65,9 @@ namespace tao::json
       static constexpr const bool enable_implicit_constructor = true;
 
       template< template< typename... > class Traits >
-      [[nodiscard]] static null_t as( const basic_value< Traits >& v ) noexcept
+      [[nodiscard]] static null_t as( const basic_value< Traits >& v )
       {
-         v.json_type( type::NULL_ );
-         return tao::json::null;
+         return v.get_null();
       }
 
       template< template< typename... > class Traits >
