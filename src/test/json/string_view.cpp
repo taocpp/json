@@ -53,7 +53,7 @@ namespace tao::json
 
       // storing a string_view is possible
       value v;
-      v.unsafe_assign_string_view( sv );
+      v.assign_string_view( sv );
 
       TEST_ASSERT( v.type() == type::STRING_VIEW );
 

@@ -42,8 +42,6 @@
 
 namespace tao::json
 {
-   // NOTE: traits< ... >::assign() is always called with needs_discard(v) == false
-
    namespace internal
    {
       struct empty_base
@@ -69,14 +67,14 @@ namespace tao::json
       template< template< typename... > class Traits >
       [[nodiscard]] static null_t as( const basic_value< Traits >& v ) noexcept
       {
-         v.validate_json_type( type::NULL_ );
+         v.json_type( type::NULL_ );
          return tao::json::null;
       }
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, null_t /*unused*/ ) noexcept
       {
-         v.unsafe_assign_null();
+         v.assign_null();
       }
 
       template< template< typename... > class Traits, typename Consumer >
@@ -116,7 +114,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const bool b ) noexcept
       {
-         v.unsafe_assign_boolean( b );
+         v.assign_boolean( b );
       }
 
       template< template< typename... > class, typename Producer >
@@ -135,21 +133,21 @@ namespace tao::json
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const bool rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_boolean() && ( p.unsafe_get_boolean() == rhs );
+         return p.is_boolean() && ( p.get_boolean() == rhs );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return ( p.type() < type::BOOLEAN ) || ( p.is_boolean() && ( p.unsafe_get_boolean() < rhs ) );
+         return ( p.type() < type::BOOLEAN ) || ( p.is_boolean() && ( p.get_boolean() < rhs ) );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const bool rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return ( p.type() > type::BOOLEAN ) || ( p.is_boolean() && ( p.unsafe_get_boolean() > rhs ) );
+         return ( p.type() > type::BOOLEAN ) || ( p.is_boolean() && ( p.get_boolean() > rhs ) );
       }
    };
 
@@ -178,7 +176,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_string_t /*unused*/ ) noexcept
       {
-         v.unsafe_emplace_string();
+         v.emplace_string();
       }
 
       template< template< typename... > class Traits >
@@ -187,9 +185,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string().empty();
+               return p.get_string().empty();
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view().empty();
+               return p.get_string_view().empty();
             default:
                return false;
          }
@@ -214,9 +212,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return !p.unsafe_get_string().empty();
+               return !p.get_string().empty();
             case type::STRING_VIEW:
-               return !p.unsafe_get_string_view().empty();
+               return !p.get_string_view().empty();
             default:
                return p.type() > type::STRING;
          }
@@ -231,7 +229,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_binary_t /*unused*/ ) noexcept
       {
-         v.unsafe_emplace_binary();
+         v.emplace_binary();
       }
 
       template< template< typename... > class Traits >
@@ -240,9 +238,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return p.unsafe_get_binary().empty();
+               return p.get_binary().empty();
             case type::BINARY_VIEW:
-               return p.unsafe_get_binary_view().empty();
+               return p.get_binary_view().empty();
             default:
                return false;
          }
@@ -267,9 +265,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return !p.unsafe_get_binary().empty();
+               return !p.get_binary().empty();
             case type::BINARY_VIEW:
-               return !p.unsafe_get_binary_view().empty();
+               return !p.get_binary_view().empty();
             default:
                return p.type() > type::BINARY;
          }
@@ -284,14 +282,14 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_array_t /*unused*/ ) noexcept
       {
-         v.unsafe_emplace_array();
+         v.emplace_array();
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_array() && p.unsafe_get_array().empty();
+         return p.is_array() && p.get_array().empty();
       }
 
       template< template< typename... > class Traits >
@@ -304,7 +302,7 @@ namespace tao::json
       [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, empty_array_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return ( p.type() > type::ARRAY ) || ( p.is_array() && !p.unsafe_get_array().empty() );
+         return ( p.type() > type::ARRAY ) || ( p.is_array() && !p.get_array().empty() );
       }
    };
 
@@ -316,14 +314,14 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_object_t /*unused*/ ) noexcept
       {
-         v.unsafe_emplace_object();
+         v.emplace_object();
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_object() && p.unsafe_get_object().empty();
+         return p.is_object() && p.get_object().empty();
       }
 
       template< template< typename... > class Traits >
@@ -336,7 +334,7 @@ namespace tao::json
       [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, empty_object_t /*unused*/ ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return ( p.type() > type::OBJECT ) || ( p.is_object() && !p.unsafe_get_object().empty() );
+         return ( p.type() > type::OBJECT ) || ( p.is_object() && !p.get_object().empty() );
       }
    };
 
@@ -348,9 +346,9 @@ namespace tao::json
       {
          switch( v.type() ) {
             case type::STRING:
-               return v.unsafe_get_string();
+               return v.get_string();
             case type::STRING_VIEW:
-               return std::string( v.unsafe_get_string_view() );
+               return std::string( v.get_string_view() );
             default:
                throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string", json::message_extension( v ) ) );
          }
@@ -359,13 +357,13 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::string& s )
       {
-         v.unsafe_assign_string( s );
+         v.assign_string( s );
       }
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, std::string&& s ) noexcept
       {
-         v.unsafe_assign_string( std::move( s ) );
+         v.assign_string( std::move( s ) );
       }
 
       template< template< typename... > class, typename Producer >
@@ -392,9 +390,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() == rhs;
+               return p.get_string() == rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() == rhs;
+               return p.get_string_view() == rhs;
             default:
                return false;
          }
@@ -406,9 +404,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() < rhs;
+               return p.get_string() < rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() < rhs;
+               return p.get_string_view() < rhs;
             default:
                return p.type() < type::STRING;
          }
@@ -420,9 +418,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() > rhs;
+               return p.get_string() > rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() > rhs;
+               return p.get_string_view() > rhs;
             default:
                return p.type() > type::STRING;
          }
@@ -437,9 +435,9 @@ namespace tao::json
       {
          switch( v.type() ) {
             case type::STRING:
-               return v.unsafe_get_string();
+               return v.get_string();
             case type::STRING_VIEW:
-               return v.unsafe_get_string_view();
+               return v.get_string_view();
             default:
                throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to std::string_view", json::message_extension( v ) ) );
          }
@@ -448,7 +446,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::string_view sv )
       {
-         v.unsafe_emplace_string( sv );
+         v.emplace_string( sv );
       }
 
       template< template< typename... > class Traits, typename Consumer >
@@ -463,9 +461,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() == rhs;
+               return p.get_string() == rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() == rhs;
+               return p.get_string_view() == rhs;
             default:
                return false;
          }
@@ -477,9 +475,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() < rhs;
+               return p.get_string() < rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() < rhs;
+               return p.get_string_view() < rhs;
             default:
                return p.type() < type::STRING;
          }
@@ -491,9 +489,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() > rhs;
+               return p.get_string() > rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() > rhs;
+               return p.get_string_view() > rhs;
             default:
                return p.type() > type::STRING;
          }
@@ -512,7 +510,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const char* s )
       {
-         v.unsafe_emplace_string( s );
+         v.emplace_string( s );
       }
 
       template< template< typename... > class Traits >
@@ -521,9 +519,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() == rhs;
+               return p.get_string() == rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() == rhs;
+               return p.get_string_view() == rhs;
             default:
                return false;
          }
@@ -535,9 +533,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() < rhs;
+               return p.get_string() < rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() < rhs;
+               return p.get_string_view() < rhs;
             default:
                return p.type() < type::STRING;
          }
@@ -549,9 +547,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::STRING:
-               return p.unsafe_get_string() > rhs;
+               return p.get_string() > rhs;
             case type::STRING_VIEW:
-               return p.unsafe_get_string_view() > rhs;
+               return p.get_string_view() > rhs;
             default:
                return p.type() > type::STRING;
          }
@@ -576,9 +574,9 @@ namespace tao::json
       {
          switch( v.type() ) {
             case type::BINARY:
-               return v.unsafe_get_binary();
+               return v.get_binary();
             case type::BINARY_VIEW: {
-               const auto xv = v.unsafe_get_binary_view();
+               const auto xv = v.get_binary_view();
                return std::vector< std::byte >( xv.begin(), xv.end() );
             }
             default:
@@ -589,13 +587,13 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::vector< std::byte >& x )
       {
-         v.unsafe_assign_binary( x );
+         v.assign_binary( x );
       }
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, std::vector< std::byte >&& x ) noexcept
       {
-         v.unsafe_assign_binary( std::move( x ) );
+         v.assign_binary( std::move( x ) );
       }
 
       template< template< typename... > class, typename Producer >
@@ -622,9 +620,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return p.unsafe_get_binary() == rhs;
+               return p.get_binary() == rhs;
             case type::BINARY_VIEW:
-               return tao::internal::binary_equal( p.unsafe_get_binary_view(), rhs );
+               return tao::internal::binary_equal( p.get_binary_view(), rhs );
             default:
                return false;
          }
@@ -636,9 +634,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return p.unsafe_get_binary() < rhs;
+               return p.get_binary() < rhs;
             case type::BINARY_VIEW:
-               return tao::internal::binary_less( p.unsafe_get_binary_view(), rhs );
+               return tao::internal::binary_less( p.get_binary_view(), rhs );
             default:
                return p.type() < type::BINARY;
          }
@@ -650,9 +648,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return p.unsafe_get_binary() > rhs;
+               return p.get_binary() > rhs;
             case type::BINARY_VIEW:
-               return tao::internal::binary_less( rhs, p.unsafe_get_binary_view() );
+               return tao::internal::binary_less( rhs, p.get_binary_view() );
             default:
                return p.type() > type::BINARY;
          }
@@ -667,9 +665,9 @@ namespace tao::json
       {
          switch( v.type() ) {
             case type::BINARY:
-               return v.unsafe_get_binary();
+               return v.get_binary();
             case type::BINARY_VIEW:
-               return v.unsafe_get_binary_view();
+               return v.get_binary_view();
             default:
                throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to tao::binary_view", json::message_extension( v ) ) );
          }
@@ -678,7 +676,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const tao::binary_view xv ) noexcept
       {
-         v.unsafe_emplace_binary( xv.begin(), xv.end() );
+         v.emplace_binary( xv.begin(), xv.end() );
       }
 
       template< template< typename... > class Traits, typename Consumer >
@@ -693,9 +691,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return tao::internal::binary_equal( p.unsafe_get_binary(), rhs );
+               return tao::internal::binary_equal( p.get_binary(), rhs );
             case type::BINARY_VIEW:
-               return tao::internal::binary_equal( p.unsafe_get_binary_view(), rhs );
+               return tao::internal::binary_equal( p.get_binary_view(), rhs );
             default:
                return false;
          }
@@ -707,9 +705,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return tao::internal::binary_less( p.unsafe_get_binary(), rhs );
+               return tao::internal::binary_less( p.get_binary(), rhs );
             case type::BINARY_VIEW:
-               return tao::internal::binary_less( p.unsafe_get_binary_view(), rhs );
+               return tao::internal::binary_less( p.get_binary_view(), rhs );
             default:
                return p.type() < type::BINARY;
          }
@@ -721,9 +719,9 @@ namespace tao::json
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::BINARY:
-               return tao::internal::binary_less( rhs, p.unsafe_get_binary() );
+               return tao::internal::binary_less( rhs, p.get_binary() );
             case type::BINARY_VIEW:
-               return tao::internal::binary_less( rhs, p.unsafe_get_binary_view() );
+               return tao::internal::binary_less( rhs, p.get_binary_view() );
             default:
                return p.type() > type::BINARY;
          }
@@ -761,12 +759,12 @@ namespace tao::json
    {
       static void assign( basic_value< Traits >& v, const std::vector< basic_value< Traits > >& a )
       {
-         v.unsafe_assign_array( a );
+         v.assign_array( a );
       }
 
       static void assign( basic_value< Traits >& v, std::vector< basic_value< Traits > >&& a ) noexcept
       {
-         v.unsafe_assign_array( std::move( a ) );
+         v.assign_array( std::move( a ) );
       }
 
       template< template< typename... > class, typename Consumer >
@@ -797,12 +795,12 @@ namespace tao::json
    {
       static void assign( basic_value< Traits >& v, const std::map< std::string, basic_value< Traits >, std::less<> >& o )
       {
-         v.unsafe_assign_object( std::move( o ) );
+         v.assign_object( std::move( o ) );
       }
 
       static void assign( basic_value< Traits >& v, std::map< std::string, basic_value< Traits >, std::less<> >&& o ) noexcept
       {
-         v.unsafe_assign_object( std::move( o ) );
+         v.assign_object( std::move( o ) );
       }
 
       template< template< typename... > class, typename Consumer >
@@ -835,7 +833,7 @@ namespace tao::json
    {
       static void assign( basic_value< Traits >& v, const basic_value< Traits >* p ) noexcept
       {
-         v.unsafe_assign_value_ptr( p );
+         v.assign_value_ptr( p );
       }
 
       template< template< typename... > class TraitsLL >
@@ -891,10 +889,10 @@ namespace tao::json
       static void assign( basic_value< Traits >& v, const std::optional< T >& o )
       {
          if( o ) {
-            v.unsafe_assign( *o );
+            v.assign( *o );
          }
          else {
-            v.unsafe_assign_null();
+            v.assign_null();
          }
       }
 

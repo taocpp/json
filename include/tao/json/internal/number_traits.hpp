@@ -28,11 +28,11 @@ namespace tao::json::internal
       {
          switch( v.type() ) {
             case type::SIGNED:
-               return static_cast< T >( v.unsafe_get_signed() );
+               return static_cast< T >( v.get_signed() );
             case type::UNSIGNED:
-               return static_cast< T >( v.unsafe_get_unsigned() );
+               return static_cast< T >( v.get_unsigned() );
             case type::DOUBLE:
-               return static_cast< T >( v.unsafe_get_double() );
+               return static_cast< T >( v.get_double() );
             default:
                throw std::logic_error( internal::format( "invalid json type '", v.type(), "' for conversion to number", json::message_extension( v ) ) );
          }
@@ -58,7 +58,7 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T i ) noexcept
       {
-         v.unsafe_assign_signed( i );
+         v.assign_signed( i );
       }
 
       template< template< typename... > class Traits >
@@ -67,11 +67,11 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED:
-               return p.unsafe_get_signed() == rhs;
+               return p.get_signed() == rhs;
             case type::UNSIGNED:
-               return ( rhs >= 0 ) && ( p.unsafe_get_unsigned() == static_cast< std::uint64_t >( rhs ) );
+               return ( rhs >= 0 ) && ( p.get_unsigned() == static_cast< std::uint64_t >( rhs ) );
             case type::DOUBLE:
-               return p.unsafe_get_double() == rhs;
+               return p.get_double() == rhs;
             default:
                return false;
          }
@@ -83,11 +83,11 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED:
-               return p.unsafe_get_signed() < rhs;
+               return p.get_signed() < rhs;
             case type::UNSIGNED:
-               return ( rhs >= 0 ) && ( p.unsafe_get_unsigned() < static_cast< std::uint64_t >( rhs ) );
+               return ( rhs >= 0 ) && ( p.get_unsigned() < static_cast< std::uint64_t >( rhs ) );
             case type::DOUBLE:
-               return p.unsafe_get_double() < rhs;
+               return p.get_double() < rhs;
             default:
                return p.type() < type::SIGNED;
          }
@@ -99,11 +99,11 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED:
-               return p.unsafe_get_signed() > rhs;
+               return p.get_signed() > rhs;
             case type::UNSIGNED:
-               return ( rhs < 0 ) || ( p.unsafe_get_unsigned() > static_cast< std::uint64_t >( rhs ) );
+               return ( rhs < 0 ) || ( p.get_unsigned() > static_cast< std::uint64_t >( rhs ) );
             case type::DOUBLE:
-               return p.unsafe_get_double() > rhs;
+               return p.get_double() > rhs;
             default:
                return p.type() > type::SIGNED;
          }
@@ -129,7 +129,7 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T i ) noexcept
       {
-         v.unsafe_assign_unsigned( i );
+         v.assign_unsigned( i );
       }
 
       template< template< typename... > class Traits >
@@ -138,13 +138,13 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED: {
-               const auto v = p.unsafe_get_signed();
+               const auto v = p.get_signed();
                return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs );
             }
             case type::UNSIGNED:
-               return p.unsafe_get_unsigned() == rhs;
+               return p.get_unsigned() == rhs;
             case type::DOUBLE:
-               return p.unsafe_get_double() == rhs;
+               return p.get_double() == rhs;
             default:
                return false;
          }
@@ -156,13 +156,13 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED: {
-               const auto v = p.unsafe_get_signed();
+               const auto v = p.get_signed();
                return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs );
             }
             case type::UNSIGNED:
-               return p.unsafe_get_unsigned() < rhs;
+               return p.get_unsigned() < rhs;
             case type::DOUBLE:
-               return p.unsafe_get_double() < rhs;
+               return p.get_double() < rhs;
             default:
                return p.type() < type::UNSIGNED;
          }
@@ -174,13 +174,13 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED: {
-               const auto v = p.unsafe_get_signed();
+               const auto v = p.get_signed();
                return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) > rhs );
             }
             case type::UNSIGNED:
-               return p.unsafe_get_unsigned() > rhs;
+               return p.get_unsigned() > rhs;
             case type::DOUBLE:
-               return p.unsafe_get_double() > rhs;
+               return p.get_double() > rhs;
             default:
                return p.type() > type::UNSIGNED;
          }
@@ -206,7 +206,7 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T f ) noexcept
       {
-         v.unsafe_assign_double( f );
+         v.assign_double( f );
       }
 
       template< template< typename... > class Traits >
@@ -215,11 +215,11 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED:
-               return p.unsafe_get_signed() == rhs;
+               return p.get_signed() == rhs;
             case type::UNSIGNED:
-               return p.unsafe_get_unsigned() == rhs;
+               return p.get_unsigned() == rhs;
             case type::DOUBLE:
-               return p.unsafe_get_double() == rhs;  // TODO: Is it ok for overall semantics that NaN != NaN?
+               return p.get_double() == rhs;  // TODO: Is it ok for overall semantics that NaN != NaN?
             default:
                return false;
          }
@@ -231,11 +231,11 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED:
-               return p.unsafe_get_signed() < rhs;
+               return p.get_signed() < rhs;
             case type::UNSIGNED:
-               return p.unsafe_get_unsigned() < rhs;
+               return p.get_unsigned() < rhs;
             case type::DOUBLE:
-               return p.unsafe_get_double() < rhs;
+               return p.get_double() < rhs;
             default:
                return p.type() < type::DOUBLE;
          }
@@ -247,11 +247,11 @@ namespace tao::json::internal
          const auto& p = lhs.skip_value_ptr();
          switch( p.type() ) {
             case type::SIGNED:
-               return p.unsafe_get_signed() > rhs;
+               return p.get_signed() > rhs;
             case type::UNSIGNED:
-               return p.unsafe_get_unsigned() > rhs;
+               return p.get_unsigned() > rhs;
             case type::DOUBLE:
-               return p.unsafe_get_double() > rhs;
+               return p.get_double() > rhs;
             default:
                return p.type() > type::DOUBLE;
          }

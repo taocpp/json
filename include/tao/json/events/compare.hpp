@@ -48,7 +48,7 @@ namespace tao::json
          [[nodiscard]] static const basic_value< Traits >* skip_pointer( const basic_value< Traits >* p ) noexcept
          {
             while( p && p->is_value_ptr() ) {
-               p = p->unsafe_get_value_ptr();
+               p = p->get_value_ptr();
             }
             return p;
          }
@@ -115,8 +115,8 @@ namespace tao::json
                   m_match = false;
                   m_current.push_back( nullptr );
                }
-               else if( !a.unsafe_get_array().empty() ) {
-                  push( &a.unsafe_get_array().front() );
+               else if( !a.get_array().empty() ) {
+                  push( &a.get_array().front() );
                }
                else {
                   m_current.push_back( nullptr );
@@ -130,7 +130,7 @@ namespace tao::json
             const auto i = ++m_array_index.back();
             if( m_match ) {
                if( m_current.back() != nullptr ) {
-                  const auto& a = ( *( m_current.end() - 2 ) )->unsafe_get_array();
+                  const auto& a = ( *( m_current.end() - 2 ) )->get_array();
                   if( i < a.size() ) {
                      m_current.back() = skip_pointer( &a[ i ] );
                   }
@@ -145,7 +145,7 @@ namespace tao::json
          {
             m_current.pop_back();
             if( m_match ) {
-               if( m_array_index.back() != current().unsafe_get_array().size() ) {
+               if( m_array_index.back() != current().get_array().size() ) {
                   m_match = false;
                }
             }
@@ -171,7 +171,7 @@ namespace tao::json
             if( !m_match ) {
                m_current.push_back( nullptr );
             }
-            else if( const auto* p = current().unsafe_find( v ) ) {
+            else if( const auto* p = current().find( v ) ) {
                if( !m_object_keys.back().insert( p ).second ) {
                   m_match = false;  // duplicate key found! -> fail
                   m_current.push_back( nullptr );
@@ -204,7 +204,7 @@ namespace tao::json
          void end_object( const std::size_t /*unused*/ = 0 ) noexcept
          {
             if( m_match ) {
-               if( m_object_keys.back().size() != current().unsafe_get_object().size() ) {
+               if( m_object_keys.back().size() != current().get_object().size() ) {
                   m_match = false;
                }
             }

@@ -22,50 +22,44 @@ namespace tao::json::events
          case type::UNINITIALIZED:
             throw std::logic_error( "unable to produce events from uninitialized values" );
 
-         case type::DISCARDED:
-            throw std::logic_error( "unable to produce events from discarded values" );
-
-         case type::DESTROYED:
-            throw std::logic_error( "unable to produce events from destroyed values" );
-
          case type::NULL_:
             consumer.null();
             return;
 
          case type::BOOLEAN:
-            consumer.boolean( v.unsafe_get_boolean() );
+            consumer.boolean( v.get_boolean() );
             return;
 
          case type::SIGNED:
-            consumer.number( v.unsafe_get_signed() );
+            consumer.number( v.get_signed() );
             return;
 
          case type::UNSIGNED:
-            consumer.number( v.unsafe_get_unsigned() );
+            consumer.number( v.get_unsigned() );
             return;
 
          case type::DOUBLE:
-            consumer.number( v.unsafe_get_double() );
+            consumer.number( v.get_double() );
             return;
 
          case type::STRING:
-            consumer.string( v.unsafe_get_string() );
+            consumer.string( v.get_string() );
             return;
 
          case type::STRING_VIEW:
-            consumer.string( v.unsafe_get_string_view() );
+            consumer.string( v.get_string_view() );
             return;
 
          case type::BINARY:
-            consumer.binary( v.unsafe_get_binary() );
+            consumer.binary( v.get_binary() );
             return;
 
          case type::BINARY_VIEW:
-            consumer.binary( v.unsafe_get_binary_view() );
+            consumer.binary( v.get_binary_view() );
             return;
 
          case type::ARRAY: {
-            const auto& a = v.unsafe_get_array();
+            const auto& a = v.get_array();
             const auto s = a.size();
             consumer.begin_array( s );
             for( const auto& e : a ) {
@@ -77,7 +71,7 @@ namespace tao::json::events
          }
 
          case type::OBJECT: {
-            const auto& o = v.unsafe_get_object();
+            const auto& o = v.get_object();
             const auto s = o.size();
             consumer.begin_object( s );
             for( const auto& e : o ) {
@@ -90,11 +84,11 @@ namespace tao::json::events
          }
 
          case type::VALUE_PTR:
-            Recurse( consumer, *v.unsafe_get_value_ptr() );
+            Recurse( consumer, *v.get_value_ptr() );
             return;
 
          case type::OPAQUE_PTR: {
-            const auto& q = v.unsafe_get_opaque_ptr();
+            const auto& q = v.get_opaque_ptr();
             virtual_ref< Consumer > ref( consumer );
             q.producer( ref, q.data );
             return;
@@ -119,73 +113,67 @@ namespace tao::json::events
          case type::UNINITIALIZED:
             throw std::logic_error( "unable to produce events from uninitialized values" );
 
-         case type::DISCARDED:
-            throw std::logic_error( "unable to produce events from discarded values" );
-
-         case type::DESTROYED:
-            throw std::logic_error( "unable to produce events from destroyed values" );
-
          case type::NULL_:
             consumer.null();
             return;
 
          case type::BOOLEAN:
-            consumer.boolean( v.unsafe_get_boolean() );
+            consumer.boolean( v.get_boolean() );
             return;
 
          case type::SIGNED:
-            consumer.number( v.unsafe_get_signed() );
+            consumer.number( v.get_signed() );
             return;
 
          case type::UNSIGNED:
-            consumer.number( v.unsafe_get_unsigned() );
+            consumer.number( v.get_unsigned() );
             return;
 
          case type::DOUBLE:
-            consumer.number( v.unsafe_get_double() );
+            consumer.number( v.get_double() );
             return;
 
          case type::STRING:
-            consumer.string( std::move( v.unsafe_get_string() ) );
+            consumer.string( std::move( v.get_string() ) );
             return;
 
          case type::STRING_VIEW:
-            consumer.string( v.unsafe_get_string_view() );
+            consumer.string( v.get_string_view() );
             return;
 
          case type::BINARY:
-            consumer.binary( std::move( v.unsafe_get_binary() ) );
+            consumer.binary( std::move( v.get_binary() ) );
             return;
 
          case type::BINARY_VIEW:
-            consumer.binary( v.unsafe_get_binary_view() );
+            consumer.binary( v.get_binary_view() );
             return;
 
          case type::ARRAY:
-            consumer.begin_array( v.unsafe_get_array().size() );
-            for( auto&& e : v.unsafe_get_array() ) {
+            consumer.begin_array( v.get_array().size() );
+            for( auto&& e : v.get_array() ) {
                Recurse( consumer, std::move( e ) );
                consumer.element();
             }
-            consumer.end_array( v.unsafe_get_array().size() );
+            consumer.end_array( v.get_array().size() );
             return;
 
          case type::OBJECT:
-            consumer.begin_object( v.unsafe_get_object().size() );
-            for( auto&& e : v.unsafe_get_object() ) {
+            consumer.begin_object( v.get_object().size() );
+            for( auto&& e : v.get_object() ) {
                consumer.key( e.first );
                Recurse( consumer, std::move( e.second ) );
                consumer.member();
             }
-            consumer.end_object( v.unsafe_get_object().size() );
+            consumer.end_object( v.get_object().size() );
             return;
 
          case type::VALUE_PTR:
-            Recurse( consumer, *v.unsafe_get_value_ptr() );
+            Recurse( consumer, *v.get_value_ptr() );
             return;
 
          case type::OPAQUE_PTR: {
-            const auto& q = v.unsafe_get_opaque_ptr();
+            const auto& q = v.get_opaque_ptr();
             virtual_ref< Consumer > ref( consumer );
             q.producer( ref, q.data );
             return;

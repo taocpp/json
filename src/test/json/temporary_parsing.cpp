@@ -175,22 +175,22 @@ namespace tao::json
          test_suppress w;
          basic_value< my_traits > v = w;
          TEST_ASSERT( v.is_object() );
-         TEST_ASSERT( v.unsafe_get_object().empty() );
+         TEST_ASSERT( v.get_object().empty() );
       }
       {
          test_empty w;
          basic_value< my_traits > v = w;
          TEST_ASSERT( v.is_object() );
-         TEST_ASSERT( v.unsafe_get_object().size() == 1 );
-         TEST_ASSERT( v.unsafe_get_object().at( "list" ).is_array() );
-         TEST_ASSERT( v.unsafe_get_object().at( "list" ).unsafe_get_array().empty() );
+         TEST_ASSERT( v.get_object().size() == 1 );
+         TEST_ASSERT( v.get_object().at( "list" ).is_array() );
+         TEST_ASSERT( v.get_object().at( "list" ).get_array().empty() );
          w.list.push_back( 3 );
          basic_value< my_traits > x = w;
          TEST_ASSERT( x.is_object() );
-         TEST_ASSERT( x.unsafe_get_object().size() == 1 );
-         TEST_ASSERT( x.unsafe_get_object().at( "list" ).is_array() );
-         TEST_ASSERT( x.unsafe_get_object().at( "list" ).unsafe_get_array().size() == 1 );
-         TEST_ASSERT( x.unsafe_get_object().at( "list" ).unsafe_get_array()[ 0 ] == 3 );
+         TEST_ASSERT( x.get_object().size() == 1 );
+         TEST_ASSERT( x.get_object().at( "list" ).is_array() );
+         TEST_ASSERT( x.get_object().at( "list" ).get_array().size() == 1 );
+         TEST_ASSERT( x.get_object().at( "list" ).get_array()[ 0 ] == 3 );
       }
       {
          const basic_value< my_traits > v = basic_value< my_traits >::array( { "a", "b", 3 } );
@@ -203,7 +203,7 @@ namespace tao::json
          const std::tuple< int, std::string, double > b{ 42, "hallo", 3.0 };
          basic_value< my_traits > v = b;
          TEST_ASSERT( v.is_array() );
-         TEST_ASSERT( v.unsafe_get_array().size() == 3 );
+         TEST_ASSERT( v.get_array().size() == 3 );
          TEST_ASSERT( v[ 0 ] == 42 );
          TEST_ASSERT( v[ 1 ] == std::string( "hallo" ) );
          TEST_ASSERT( v[ 2 ] == 3.0 );
@@ -214,7 +214,7 @@ namespace tao::json
          baz b;
          basic_value< my_traits > v = b;
          TEST_ASSERT( v.is_array() );
-         TEST_ASSERT( v.unsafe_get_array().size() == 2 );
+         TEST_ASSERT( v.get_array().size() == 2 );
          TEST_ASSERT( v[ 0 ] == -1 );
          TEST_ASSERT( v[ 1 ] == -2 );
       }

@@ -15,8 +15,6 @@ namespace tao::json
    enum class type : std::uint8_t
    {
       UNINITIALIZED,
-      DISCARDED,
-      DESTROYED,
       NULL_,
       BOOLEAN,
       SIGNED,
@@ -32,32 +30,11 @@ namespace tao::json
       OPAQUE_PTR
    };
 
-   [[nodiscard]] constexpr bool needs_discard( const type t )
-   {
-      switch( t ) {
-         case type::STRING:
-         case type::BINARY:
-         case type::ARRAY:
-         case type::OBJECT:
-            return true;
-         case type::STRING_VIEW:
-            return !std::is_trivially_destructible_v< std::string_view >;
-         case type::BINARY_VIEW:
-            return !std::is_trivially_destructible_v< tao::binary_view >;
-         default:
-            return false;
-      }
-   }
-
    constexpr std::string_view to_string( const type t )
    {
       switch( t ) {
          case type::UNINITIALIZED:
             return "uninitialized";
-         case type::DISCARDED:
-            return "discarded";
-         case type::DESTROYED:
-            return "destroyed";
          case type::NULL_:
             return "null";
          case type::BOOLEAN:
@@ -114,9 +91,7 @@ namespace tao::json
    };
 
    struct uninitialized_t
-   {
-      constexpr explicit uninitialized_t( int /*unused*/ ) {}
-   };
+   {};
 
    constexpr null_t null{ 0 };
 
@@ -125,7 +100,7 @@ namespace tao::json
    constexpr empty_array_t empty_array{ 0 };
    constexpr empty_object_t empty_object{ 0 };
 
-   constexpr uninitialized_t uninitialized{ 0 };
+   constexpr uninitialized_t uninitialized;
 
 }  // namespace tao::json
 

@@ -52,25 +52,25 @@ namespace tao::json
          const type_1 a;
          const value v = { a };
          TEST_ASSERT( v.is_object() );
-         TEST_ASSERT( v.unsafe_get_object().size() == 1 );
-         TEST_ASSERT( v.unsafe_get_object().begin()->first == "type_1" );
-         TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
+         TEST_ASSERT( v.get_object().size() == 1 );
+         TEST_ASSERT( v.get_object().begin()->first == "type_1" );
+         TEST_ASSERT( v.get_object().begin()->second.as< int >() == 42 );
       }
       {
          const std::optional< type_1 > a = type_1();
          const value v = { a };
          TEST_ASSERT( v.is_object() );
-         TEST_ASSERT( v.unsafe_get_object().size() == 1 );
-         TEST_ASSERT( v.unsafe_get_object().begin()->first == "type_1" );
-         TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
+         TEST_ASSERT( v.get_object().size() == 1 );
+         TEST_ASSERT( v.get_object().begin()->first == "type_1" );
+         TEST_ASSERT( v.get_object().begin()->second.as< int >() == 42 );
       }
       {
          const std::optional< std::optional< type_1 > > a = std::optional< type_1 >( type_1() );
          const value v = { a };
          TEST_ASSERT( v.is_object() );
-         TEST_ASSERT( v.unsafe_get_object().size() == 1 );
-         TEST_ASSERT( v.unsafe_get_object().begin()->first == "type_1" );
-         TEST_ASSERT( v.unsafe_get_object().begin()->second.as< int >() == 42 );
+         TEST_ASSERT( v.get_object().size() == 1 );
+         TEST_ASSERT( v.get_object().begin()->first == "type_1" );
+         TEST_ASSERT( v.get_object().begin()->second.as< int >() == 42 );
       }
    }
 

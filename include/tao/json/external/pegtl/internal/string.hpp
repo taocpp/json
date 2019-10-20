@@ -18,7 +18,7 @@
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
-   [[nodiscard]] inline bool unsafe_equals( const char* s, const std::initializer_list< char >& l ) noexcept
+   [[nodiscard]] inline bool equals( const char* s, const std::initializer_list< char >& l ) noexcept
    {
       return std::memcmp( s, &*l.begin(), l.size() ) == 0;
    }
@@ -41,7 +41,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       [[nodiscard]] static bool match( Input& in ) noexcept( noexcept( in.size( 0 ) ) )
       {
          if( in.size( sizeof...( Cs ) ) >= sizeof...( Cs ) ) {
-            if( unsafe_equals( in.current(), { Cs... } ) ) {
+            if( equals( in.current(), { Cs... } ) ) {
                bump_help< result_on_found::success, Input, char, Cs... >( in, sizeof...( Cs ) );
                return true;
             }

@@ -142,7 +142,7 @@ namespace tao::json::binding::internal
       static void assign_member( basic_value< Traits >& v, const C& x )
       {
          if( ( N == for_nothing_value::encode ) || ( !A::template is_nothing< Traits >( x ) ) ) {
-            v.unsafe_try_emplace( A::template key< Traits >(), A::read( x ) );
+            v.try_emplace( A::template key< Traits >(), A::read( x ) );
          }
       }
 #ifdef _MSC_VER
@@ -152,7 +152,7 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits, typename C >
       static void assign( basic_value< Traits >& v, const C& x )
       {
-         v.unsafe_emplace_object();
+         v.emplace_object();
          ( assign_member< As >( v, x ), ... );
       }
 
@@ -248,8 +248,8 @@ namespace tao::json::binding::internal
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         if( p.is_object() && ( p.unsafe_get_object().size() == sizeof...( As ) ) ) {
-            const auto& a = p.unsafe_get_object();
+         if( p.is_object() && ( p.get_object().size() == sizeof...( As ) ) ) {
+            const auto& a = p.get_object();
             return ( equal_member< As >( a, rhs ) && ... );
          }
          return false;

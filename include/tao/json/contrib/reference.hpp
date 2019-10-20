@@ -34,10 +34,6 @@ namespace tao::json
          switch( v.type() ) {
             case type::UNINITIALIZED:
                return;
-            case type::DISCARDED:
-               throw std::logic_error( "attempt to use a discarded value" );
-            case type::DESTROYED:
-               throw std::logic_error( "attempt to use a destroyed value" );
             case type::NULL_:
             case type::BOOLEAN:
             case type::SIGNED:
@@ -49,18 +45,18 @@ namespace tao::json
             case type::BINARY_VIEW:
                return;
             case type::ARRAY:
-               for( auto& e : v.unsafe_get_array() ) {
+               for( auto& e : v.get_array() ) {
                   resolve_references( r, e );
                }
                return;
             case type::OBJECT:
-               for( auto& e : v.unsafe_get_object() ) {
+               for( auto& e : v.get_object() ) {
                   resolve_references( r, e.second );
                }
                if( const auto* ref = v.find( "$ref" ) ) {
                   ref = &ref->skip_value_ptr();
                   if( ref->is_string_type() ) {
-                     const std::string_view s = ref->unsafe_get_string_type();
+                     const std::string_view s = ref->get_string_type();
                      if( !s.empty() && s[ 0 ] == '#' ) {
                         const pointer ptr = internal::uri_fragment_to_pointer( s );
                         const auto* p = &r;

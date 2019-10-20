@@ -389,10 +389,10 @@ namespace tao::json
          for( auto it = begin; v && ( it != end ); ++it ) {
             switch( v->type() ) {
                case type::ARRAY:
-                  v = v->unsafe_find( it->index() );
+                  v = v->find( it->index() );
                   break;
                case type::OBJECT:
-                  v = v->unsafe_find( it->key() );
+                  v = v->find( it->key() );
                   break;
                default:
                   throw invalid_type( begin, std::next( it ) );

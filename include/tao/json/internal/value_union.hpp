@@ -9,10 +9,12 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <variant>
 #include <vector>
 
 #include "../binary_view.hpp"
 #include "../forward.hpp"
+#include "../type.hpp"
 
 namespace tao::json::internal
 {
@@ -23,38 +25,20 @@ namespace tao::json::internal
    };
 
    template< typename T >
-   union value_union
-   {
-      value_union() noexcept
-      {}
-
-      value_union( const value_union& ) = delete;
-      value_union( value_union&& ) = delete;
-
-      ~value_union() noexcept
-      {}
-
-      void operator=( const value_union& ) = delete;
-      void operator=( value_union&& ) = delete;
-
-      bool b;
-
-      std::int64_t i;
-      std::uint64_t u;
-      double d;
-
-      std::string s;
-      std::string_view sv;
-
-      std::vector< std::byte > x;
-      tao::binary_view xv;
-
-      std::vector< T > a;
-      std::map< std::string, T, std::less<> > o;
-
-      const T* p;
-      opaque_ptr_t q;
-   };
+   using value_union = std::variant< uninitialized_t,
+                                     null_t,
+                                     bool,
+                                     std::int64_t,
+                                     std::uint64_t,
+                                     double,
+                                     std::string,
+                                     std::string_view,
+                                     std::vector< std::byte >,
+                                     tao::binary_view,
+                                     std::vector< T >,
+                                     std::map< std::string, T, std::less<> >,
+                                     const T*,
+                                     opaque_ptr_t >;
 
 }  // namespace tao::json::internal
 

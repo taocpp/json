@@ -155,7 +155,7 @@ namespace tao::json
    {
       static void assign( value& v, const employee* e )
       {
-         v.unsafe_assign_opaque_ptr( e );
+         v.assign_opaque_ptr( e );
       }
    };
 

@@ -22,16 +22,6 @@ namespace tao::json
          case type::UNINITIALIZED:
             return true;
 
-         // LCOV_EXCL_START
-         case type::DISCARDED:
-            assert( v.type() != type::DISCARDED );
-            return false;
-
-         case type::DESTROYED:
-            assert( v.type() != type::DESTROYED );
-            return false;
-            // LCOV_EXCL_STOP
-
          case type::NULL_:
          case type::BOOLEAN:
          case type::SIGNED:
@@ -46,7 +36,7 @@ namespace tao::json
             return false;
 
          case type::ARRAY:
-            for( auto& e : v.unsafe_get_array() ) {
+            for( auto& e : v.get_array() ) {
                if( !is_self_contained( e ) ) {
                   return false;
                }
@@ -54,7 +44,7 @@ namespace tao::json
             return true;
 
          case type::OBJECT:
-            for( auto& e : v.unsafe_get_object() ) {
+            for( auto& e : v.get_object() ) {
                if( !is_self_contained( e.second ) ) {
                   return false;
                }
@@ -85,12 +75,6 @@ namespace tao::json
          case type::UNINITIALIZED:
             return;
 
-         case type::DISCARDED:
-            throw std::logic_error( "attempt to use a discarded json value" );
-
-         case type::DESTROYED:
-            throw std::logic_error( "attempt to use a destroyed json value" );
-
          case type::NULL_:
          case type::BOOLEAN:
          case type::SIGNED:
@@ -101,34 +85,34 @@ namespace tao::json
             return;
 
          case type::STRING_VIEW:
-            v.unsafe_emplace_string( v.unsafe_get_string_view() );
+            v.emplace_string( v.get_string_view() );
             return;
 
          case type::BINARY_VIEW: {
-            const auto xv = v.unsafe_get_binary_view();
-            v.unsafe_emplace_binary( xv.begin(), xv.end() );
+            const auto xv = v.get_binary_view();
+            v.emplace_binary( xv.begin(), xv.end() );
             return;
          }
 
          case type::ARRAY:
-            for( auto& e : v.unsafe_get_array() ) {
+            for( auto& e : v.get_array() ) {
                make_self_contained( e );
             }
             return;
 
          case type::OBJECT:
-            for( auto& e : v.unsafe_get_object() ) {
+            for( auto& e : v.get_object() ) {
                make_self_contained( e.second );
             }
             return;
 
          case type::VALUE_PTR:
-            v = *v.unsafe_get_value_ptr();
+            v = *v.get_value_ptr();
             make_self_contained( v );
             return;
 
          case type::OPAQUE_PTR: {
-            const auto& q = v.unsafe_get_opaque_ptr();
+            const auto& q = v.get_opaque_ptr();
             events::to_basic_value< Traits > consumer;
             events::virtual_ref< events::to_basic_value< Traits > > ref( consumer );
             q.producer( ref, q.data );

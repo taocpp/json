@@ -59,24 +59,9 @@ namespace tao::json
       TEST_ASSERT( !( w < v ) );
       TEST_ASSERT( !( w > v ) );
 
-#ifndef NDEBUG
-      TEST_ASSERT( u.type() == type::DISCARDED );
-      TEST_THROWS( u = u );
-#endif
-
       u.reset();
       TEST_ASSERT( u.type() == type::UNINITIALIZED );
       TEST_ASSERT( u == v );
-
-#ifndef NDEBUG
-      {
-         char memory[ sizeof( value ) ];
-         auto* ptr = static_cast< value* >( static_cast< void* >( memory ) );
-         new( ptr ) value( "dummy" );
-         ptr->~value();
-         TEST_ASSERT( ptr->type() == type::DESTROYED );
-      }
-#endif
    }
 
    void test_null()
@@ -144,7 +129,7 @@ namespace tao::json
 
       TEST_ASSERT( v.type() == type::BOOLEAN );
       TEST_ASSERT( v.get_boolean() == b );
-      TEST_ASSERT( v.unsafe_get_boolean() == b );
+      TEST_ASSERT( v.get_boolean() == b );
 
       TEST_ASSERT( v == v );
       TEST_ASSERT( value( b ) == v );
@@ -182,7 +167,7 @@ namespace tao::json
 
       TEST_ASSERT( v.type() == type::SIGNED );
       TEST_ASSERT( v.get_signed() == t );
-      TEST_ASSERT( v.unsafe_get_signed() == t );
+      TEST_ASSERT( v.get_signed() == t );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -228,7 +213,7 @@ namespace tao::json
 
       TEST_ASSERT( v.type() == type::UNSIGNED );
       TEST_ASSERT( v.get_unsigned() == t );
-      TEST_ASSERT( v.unsafe_get_unsigned() == t );
+      TEST_ASSERT( v.get_unsigned() == t );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -270,7 +255,7 @@ namespace tao::json
 
       TEST_ASSERT( v.type() == type::DOUBLE );
       TEST_ASSERT( v.get_double() == d );
-      TEST_ASSERT( v.unsafe_get_double() == d );
+      TEST_ASSERT( v.get_double() == d );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -303,7 +288,7 @@ namespace tao::json
 
       TEST_ASSERT( v.type() == type::STRING );
       TEST_ASSERT( v.get_string() == s );
-      TEST_ASSERT( v.unsafe_get_string() == s );
+      TEST_ASSERT( v.get_string() == s );
 
       const std::string t = s;
 
@@ -342,7 +327,7 @@ namespace tao::json
 
       TEST_ASSERT( v.type() == type::ARRAY );
       TEST_ASSERT( v.get_array().empty() );
-      TEST_ASSERT( v.unsafe_get_array().empty() );
+      TEST_ASSERT( v.get_array().empty() );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -373,7 +358,7 @@ namespace tao::json
 
       TEST_ASSERT( v.type() == type::OBJECT );
       TEST_ASSERT( v.get_object().empty() );
-      TEST_ASSERT( v.unsafe_get_object().empty() );
+      TEST_ASSERT( v.get_object().empty() );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -559,10 +544,10 @@ namespace tao::json
       {
          value v2 = { { "foo", { { "bar", { { "baz", 42 } } } } } };
          TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).is_signed() );
-         TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).unsafe_get_signed() == 42 );
+         TEST_ASSERT( v2.at( "foo" ).at( "bar" ).at( "baz" ).get_signed() == 42 );
          v2 = v2.at( "foo" ).at( "bar" );
          TEST_ASSERT( v2.at( "baz" ).is_signed() );
-         TEST_ASSERT( v2.at( "baz" ).unsafe_get_signed() == 42 );
+         TEST_ASSERT( v2.at( "baz" ).get_signed() == 42 );
       }
 
       std::optional< value > ov = std::nullopt;

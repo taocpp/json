@@ -50,8 +50,8 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits, typename C >
       static void assign( basic_value< Traits >& v, const C& x )
       {
-         v.unsafe_emplace_array();
-         ( v.unsafe_emplace_back( As::read( x ) ), ... );
+         v.emplace_array();
+         ( v.emplace_back( As::read( x ) ), ... );
       }
 
       template< typename A, template< typename... > class Traits = traits, typename Producer, typename C, typename State >
@@ -88,8 +88,8 @@ namespace tao::json::binding::internal
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const C& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         if( p.is_array() && ( p.unsafe_get_array().size() == sizeof...( As ) ) ) {
-            const auto& a = p.unsafe_get_array();
+         if( p.is_array() && ( p.get_array().size() == sizeof...( As ) ) ) {
+            const auto& a = p.get_array();
             return ( ( a[ Is ] == As::read( rhs ) ) && ... );
          }
          return false;

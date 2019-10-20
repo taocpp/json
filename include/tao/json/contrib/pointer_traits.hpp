@@ -37,10 +37,10 @@ namespace tao::json
       static void assign( basic_value< Traits >& v, const pointer& p )
       {
          v.prepare_array();
-         v.unsafe_get_array().reserve( p.size() );
+         v.get_array().reserve( p.size() );
 
          for( const auto& i : p ) {
-            v.unsafe_emplace_back( i );
+            v.emplace_back( i );
          }
       }
 

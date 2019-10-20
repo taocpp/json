@@ -27,52 +27,52 @@ namespace tao::json::events
 
       void null()
       {
-         value.unsafe_assign_null();
+         value.assign_null();
       }
 
       void boolean( const bool v )
       {
-         value.unsafe_assign_boolean( v );
+         value.assign_boolean( v );
       }
 
       void number( const std::int64_t v )
       {
-         value.unsafe_assign_signed( v );
+         value.assign_signed( v );
       }
 
       void number( const std::uint64_t v )
       {
-         value.unsafe_assign_unsigned( v );
+         value.assign_unsigned( v );
       }
 
       void number( const double v )
       {
-         value.unsafe_assign_double( v );
+         value.assign_double( v );
       }
 
       void string( const std::string_view v )
       {
-         value.unsafe_emplace_string( v );
+         value.emplace_string( v );
       }
 
       void string( const char* v )
       {
-         value.unsafe_emplace_string( v );
+         value.emplace_string( v );
       }
 
       void string( std::string&& v )
       {
-         value.unsafe_assign_string( std::move( v ) );
+         value.emplace_string( std::move( v ) );
       }
 
       void binary( const tao::binary_view v )
       {
-         value.unsafe_emplace_binary( v.begin(), v.end() );
+         value.emplace_binary( v.begin(), v.end() );
       }
 
       void binary( std::vector< std::byte >&& v )
       {
-         value.unsafe_assign_binary( std::move( v ) );
+         value.emplace_binary( std::move( v ) );
       }
 
       void begin_array()
@@ -83,13 +83,12 @@ namespace tao::json::events
       void begin_array( const std::size_t size )
       {
          begin_array();
-         stack_.back().unsafe_get_array().reserve( size );
+         stack_.back().get_array().reserve( size );
       }
 
       void element()
       {
-         stack_.back().unsafe_emplace_back( std::move( value ) );
-         value.discard();
+         stack_.back().emplace_back( std::move( value ) );
       }
 
       void end_array( const std::size_t /*unused*/ = 0 )
@@ -120,8 +119,7 @@ namespace tao::json::events
 
       void member()
       {
-         stack_.back().unsafe_try_emplace( std::move( keys_.back() ), std::move( value ) );
-         value.discard();
+         stack_.back().try_emplace( std::move( keys_.back() ), std::move( value ) );
          keys_.pop_back();
       }
 
