@@ -10,9 +10,12 @@
 
 int main( int /*unused*/, char** /*unused*/ )
 {
-   PRINT_SIZE( std::string );
-   PRINT_SIZE( tao::json::internal::value_union< tao::json::value > );
    PRINT_SIZE( tao::json::value );
+   PRINT_SIZE( std::vector< tao::json::value > );
+   PRINT_SIZE( std::string );
+   PRINT_SIZE( std::string_view );
+   PRINT_SIZE( tao::binary );
+   PRINT_SIZE( tao::binary_view );
    PRINT_SIZE( std::vector< tao::json::value > );
    PRINT_SIZE( std::map< std::string, tao::json::value > );
    PRINT_SIZE( tao::json::token );

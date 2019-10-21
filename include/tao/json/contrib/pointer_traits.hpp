@@ -36,11 +36,9 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const pointer& p )
       {
-         v.prepare_array();
-         v.unsafe_get_array().reserve( p.size() );
-
+         v.prepare_array().reserve( p.size() );
          for( const auto& i : p ) {
-            v.unsafe_emplace_back( i );
+            v.emplace_back( i );
          }
       }
 
@@ -48,7 +46,6 @@ namespace tao::json
       static void produce( Consumer& c, const pointer& p )
       {
          c.begin_array( p.size() );
-
          for( const auto& i : p ) {
             json::events::produce< Traits >( c, i );
             c.element();

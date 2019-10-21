@@ -19,16 +19,6 @@ namespace tao
 
       }  // namespace events
 
-      namespace internal
-      {
-         template< template< typename... > class Traits >
-         struct single;
-
-         template< template< typename... > class Traits >
-         struct pair;
-
-      }  // namespace internal
-
       template< typename T, typename = void >
       struct traits
       {};
@@ -37,6 +27,22 @@ namespace tao
       class basic_value;
 
       using producer_t = void ( * )( events::virtual_base&, const void* );
+
+      namespace internal
+      {
+         struct opaque_ptr_t
+         {
+            const void* data;
+            producer_t producer;
+         };
+
+         template< template< typename... > class Traits >
+         struct single;
+
+         template< template< typename... > class Traits >
+         struct pair;
+
+      }  // namespace internal
 
    }  // namespace json
 

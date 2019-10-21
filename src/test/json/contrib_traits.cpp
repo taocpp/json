@@ -100,7 +100,7 @@ namespace tao::json
       value v = f;
       TEST_ASSERT( v == f );
       TEST_ASSERT( v.is_array() );
-      TEST_ASSERT( v.unsafe_get_array().size() == 4 );
+      TEST_ASSERT( v.get_array().size() == 4 );
       TEST_ASSERT( v[ 0 ] == 1 );
       TEST_ASSERT( v[ 1 ] == 2 );
       TEST_ASSERT( v[ 2 ] == 3 );
@@ -115,7 +115,7 @@ namespace tao::json
       value v = f;
       TEST_ASSERT( v == f );
       TEST_ASSERT( v.is_array() );
-      TEST_ASSERT( v.unsafe_get_array().size() == 4 );
+      TEST_ASSERT( v.get_array().size() == 4 );
       TEST_ASSERT( v[ 0 ] == 1 );
       TEST_ASSERT( v[ 1 ] == 2 );
       TEST_ASSERT( v[ 2 ] == 3 );
@@ -130,7 +130,7 @@ namespace tao::json
       value v = f;
       TEST_ASSERT( v == f );
       TEST_ASSERT( v.is_array() );
-      TEST_ASSERT( v.unsafe_get_array().size() == 4 );
+      TEST_ASSERT( v.get_array().size() == 4 );
       TEST_ASSERT( v[ 0 ] == 1 );
       TEST_ASSERT( v[ 1 ] == 2 );
       TEST_ASSERT( v[ 2 ] == 3 );
@@ -150,7 +150,7 @@ namespace tao::json
       TEST_ASSERT( f >= v );
       TEST_ASSERT( f <= v );
       TEST_ASSERT( v.is_array() );
-      TEST_ASSERT( v.unsafe_get_array().size() == 4 );
+      TEST_ASSERT( v.get_array().size() == 4 );
       TEST_ASSERT( v[ 0 ] == 1 );
       TEST_ASSERT( v[ 1 ] == 2 );
       TEST_ASSERT( v[ 2 ] == 3 );
@@ -179,7 +179,7 @@ namespace tao::json
       value v = f;
       TEST_ASSERT( v == f );
       TEST_ASSERT( v.is_object() );
-      TEST_ASSERT( v.unsafe_get_object().size() == 3 );
+      TEST_ASSERT( v.get_object().size() == 3 );
       TEST_ASSERT( v[ "a" ] == 1 );
       TEST_ASSERT( v[ "b" ] == 2 );
       TEST_ASSERT( v[ "c" ] == 3 );

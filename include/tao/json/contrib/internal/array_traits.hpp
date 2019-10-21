@@ -40,21 +40,35 @@ namespace tao::json::internal
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_array() && ( p.unsafe_get_array().size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), p.unsafe_get_array().begin() );
+         if( !p.is_array() ) {
+            return false;
+         }
+         const auto& a = p.get_array();
+         return ( a.size() == rhs.size() ) && std::equal( rhs.begin(), rhs.end(), a.begin() );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_array() ? std::lexicographical_compare( p.unsafe_get_array().begin(), p.unsafe_get_array().end(), rhs.begin(), rhs.end() ) : ( p.type() < type::ARRAY );
+         const auto t = p.type();
+         if( t != type::ARRAY ) {
+            return t < type::ARRAY;
+         }
+         const auto& a = p.get_array();
+         return std::lexicographical_compare( a.begin(), a.end(), rhs.begin(), rhs.end() );
       }
 
       template< template< typename... > class Traits >
       [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, const T& rhs ) noexcept
       {
          const auto& p = lhs.skip_value_ptr();
-         return p.is_array() ? std::lexicographical_compare( rhs.begin(), rhs.end(), p.unsafe_get_array().begin(), p.unsafe_get_array().end() ) : ( p.type() > type::ARRAY );
+         const auto t = p.type();
+         if( t != type::ARRAY ) {
+            return t > type::ARRAY;
+         }
+         const auto& a = p.get_array();
+         return std::lexicographical_compare( rhs.begin(), rhs.end(), a.begin(), a.end() );
       }
    };
 
@@ -65,10 +79,10 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T& o )
       {
-         v.unsafe_emplace_array();
-         v.unsafe_get_array().reserve( o.size() );
+         v.emplace_array();
+         v.get_array().reserve( o.size() );
          for( const auto& e : o ) {
-            v.unsafe_emplace_back( e );
+            v.emplace_back( e );
          }
       }
    };

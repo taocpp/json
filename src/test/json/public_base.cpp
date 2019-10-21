@@ -32,18 +32,6 @@ namespace tao::json
                case json::type::UNINITIALIZED:
                   return true;
 
-               case json::type::DISCARDED: {  // LCOV_EXCL_START
-                  assert( self().type() != json::type::DISCARDED );
-                  return true;
-                  // LCOV_EXCL_STOP
-               }
-
-               case json::type::DESTROYED: {  // LCOV_EXCL_START
-                  assert( self().type() != json::type::DESTROYED );
-                  return true;
-                  // LCOV_EXCL_STOP
-               }
-
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
@@ -54,22 +42,22 @@ namespace tao::json
                   return false;
 
                case json::type::STRING:
-                  return self().unsafe_get_string().empty();
+                  return self().get_string().empty();
 
                case json::type::STRING_VIEW:
-                  return self().unsafe_get_string_view().empty();
+                  return self().get_string_view().empty();
 
                case json::type::BINARY:
-                  return self().unsafe_get_binary().empty();
+                  return self().get_binary().empty();
 
                case json::type::BINARY_VIEW:
-                  return self().unsafe_get_binary_view().empty();
+                  return self().get_binary_view().empty();
 
                case json::type::ARRAY:
-                  return self().unsafe_get_array().empty();
+                  return self().get_array().empty();
 
                case json::type::OBJECT:
-                  return self().unsafe_get_object().empty();
+                  return self().get_object().empty();
             }
             // LCOV_EXCL_START
             assert( false );
@@ -83,18 +71,6 @@ namespace tao::json
                case json::type::UNINITIALIZED:
                   return 0;
 
-               case json::type::DISCARDED: {  // LCOV_EXCL_START
-                  assert( self().type() != json::type::DISCARDED );
-                  return 0;
-                  // LCOV_EXCL_STOP
-               }
-
-               case json::type::DESTROYED: {  // LCOV_EXCL_START
-                  assert( self().type() != json::type::DESTROYED );
-                  return 0;
-                  // LCOV_EXCL_STOP
-               }
-
                case json::type::NULL_:
                case json::type::BOOLEAN:
                case json::type::SIGNED:
@@ -105,22 +81,22 @@ namespace tao::json
                   return 1;
 
                case json::type::STRING:
-                  return self().unsafe_get_string().size();
+                  return self().get_string().size();
 
                case json::type::STRING_VIEW:
-                  return self().unsafe_get_string_view().size();
+                  return self().get_string_view().size();
 
                case json::type::BINARY:
-                  return self().unsafe_get_binary().size();
+                  return self().get_binary().size();
 
                case json::type::BINARY_VIEW:
-                  return self().unsafe_get_binary_view().size();
+                  return self().get_binary_view().size();
 
                case json::type::ARRAY:
-                  return self().unsafe_get_array().size();
+                  return self().get_array().size();
 
                case json::type::OBJECT:
-                  return self().unsafe_get_object().size();
+                  return self().get_object().size();
             }
             // LCOV_EXCL_START
             assert( false );

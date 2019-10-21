@@ -43,13 +43,14 @@ namespace tao::json
                              { "value", destination } } );
       }
       else {
+         auto& a = result.get_array();
          switch( source.type() ) {
             case type::ARRAY: {
-               const auto ss = source.unsafe_get_array().size();
-               const auto ds = destination.unsafe_get_array().size();
+               const auto ss = source.get_array().size();
+               const auto ds = destination.get_array().size();
                std::size_t i = 0;
                while( ( i < ss ) && ( i < ds ) ) {
-                  internal::move_append( result.unsafe_get_array(), diff( source.unsafe_at( i ), destination.unsafe_at( i ), path + i ).unsafe_get_array() );
+                  internal::move_append( a, diff( source.at( i ), destination.at( i ), path + i ).get_array() );
                   ++i;
                }
                const auto s = ss + i - 1;
@@ -61,14 +62,14 @@ namespace tao::json
                while( i < ds ) {
                   result.push_back( { { "op", "add" },
                                       { "path", to_string( path + i ) },
-                                      { "value", destination.unsafe_at( i ) } } );
+                                      { "value", destination.at( i ) } } );
                   ++i;
                }
             } break;
 
             case type::OBJECT: {
-               const auto& sm = source.unsafe_get_object();
-               const auto& dm = destination.unsafe_get_object();
+               const auto& sm = source.get_object();
+               const auto& dm = destination.get_object();
                auto sit = sm.begin();
                auto dit = dm.begin();
                while( ( sit != sm.end() ) || ( dit != dm.end() ) ) {
@@ -84,7 +85,7 @@ namespace tao::json
                      ++sit;
                   }
                   else {
-                     internal::move_append( result.unsafe_get_array(), diff( sit->second, dit->second, path + sit->first ).unsafe_get_array() );
+                     internal::move_append( a, diff( sit->second, dit->second, path + sit->first ).get_array() );
                      ++sit;
                      ++dit;
                   }

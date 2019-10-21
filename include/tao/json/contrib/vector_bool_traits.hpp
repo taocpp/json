@@ -19,10 +19,10 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::vector< bool >& o )
       {
-         v.unsafe_emplace_array();
-         v.unsafe_get_array().reserve( o.size() );
+         v.emplace_array();
+         v.get_array().reserve( o.size() );
          for( const auto& e : o ) {
-            v.unsafe_emplace_back( bool( e ) );
+            v.emplace_back( bool( e ) );
          }
       }
 

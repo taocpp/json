@@ -23,63 +23,55 @@ namespace tao::json
 
             case type::SIGNED:
                if( rhs.type() == type::UNSIGNED ) {
-                  const auto v = lhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs.unsafe_get_unsigned() );
+                  const auto v = lhs.get_signed();
+                  return ( v >= 0 ) && ( static_cast< std::uint64_t >( v ) == rhs.get_unsigned() );
                }
                if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_signed() == rhs.unsafe_get_double();
+                  return lhs.get_signed() == rhs.get_double();
                }
                break;
 
             case type::UNSIGNED:
                if( rhs.type() == type::SIGNED ) {
-                  const auto v = rhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() == static_cast< std::uint64_t >( v ) );
+                  const auto v = rhs.get_signed();
+                  return ( v >= 0 ) && ( lhs.get_unsigned() == static_cast< std::uint64_t >( v ) );
                }
                if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_unsigned() == rhs.unsafe_get_double();
+                  return lhs.get_unsigned() == rhs.get_double();
                }
                break;
 
             case type::DOUBLE:
                if( rhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_double() == rhs.unsafe_get_signed();
+                  return lhs.get_double() == rhs.get_signed();
                }
                if( rhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_double() == rhs.unsafe_get_unsigned();
+                  return lhs.get_double() == rhs.get_unsigned();
                }
                break;
 
             case type::STRING:
                if( rhs.type() == type::STRING_VIEW ) {
-                  return lhs.unsafe_get_string() == rhs.unsafe_get_string_view();
+                  return lhs.get_string() == rhs.get_string_view();
                }
                break;
 
             case type::STRING_VIEW:
                if( rhs.type() == type::STRING ) {
-                  return lhs.unsafe_get_string_view() == rhs.unsafe_get_string();
+                  return lhs.get_string_view() == rhs.get_string();
                }
                break;
 
             case type::BINARY:
                if( rhs.type() == type::BINARY_VIEW ) {
-                  return tao::internal::binary_equal( lhs.unsafe_get_binary(), rhs.unsafe_get_binary_view() );
+                  return tao::internal::binary_equal( lhs.get_binary(), rhs.get_binary_view() );
                }
                break;
 
             case type::BINARY_VIEW:
                if( rhs.type() == type::BINARY ) {
-                  return tao::internal::binary_equal( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary() );
+                  return tao::internal::binary_equal( lhs.get_binary_view(), rhs.get_binary() );
                }
-               break;
-
-            case type::DISCARDED:
-               assert( lhs.type() != type::DISCARDED );
-               break;
-
-            case type::DESTROYED:
-               assert( lhs.type() != type::DESTROYED );
                break;
 
             case type::OPAQUE_PTR:
@@ -89,8 +81,6 @@ namespace tao::json
             default:
                break;
          }
-         assert( rhs.type() != type::DISCARDED );
-         assert( rhs.type() != type::DESTROYED );
          assert( rhs.type() != type::OPAQUE_PTR );
          return false;
       }
@@ -99,48 +89,38 @@ namespace tao::json
          case type::UNINITIALIZED:
             return true;
 
-         // LCOV_EXCL_START
-         case type::DISCARDED:
-            assert( lhs.type() != type::DISCARDED );
-            break;
-
-         case type::DESTROYED:
-            assert( lhs.type() != type::DESTROYED );
-            break;
-            // LCOV_EXCL_STOP
-
          case type::NULL_:
             return true;
 
          case type::BOOLEAN:
-            return lhs.unsafe_get_boolean() == rhs.unsafe_get_boolean();
+            return lhs.get_boolean() == rhs.get_boolean();
 
          case type::SIGNED:
-            return lhs.unsafe_get_signed() == rhs.unsafe_get_signed();
+            return lhs.get_signed() == rhs.get_signed();
 
          case type::UNSIGNED:
-            return lhs.unsafe_get_unsigned() == rhs.unsafe_get_unsigned();
+            return lhs.get_unsigned() == rhs.get_unsigned();
 
          case type::DOUBLE:
-            return lhs.unsafe_get_double() == rhs.unsafe_get_double();
+            return lhs.get_double() == rhs.get_double();
 
          case type::STRING:
-            return lhs.unsafe_get_string() == rhs.unsafe_get_string();
+            return lhs.get_string() == rhs.get_string();
 
          case type::STRING_VIEW:
-            return lhs.unsafe_get_string_view() == rhs.unsafe_get_string_view();
+            return lhs.get_string_view() == rhs.get_string_view();
 
          case type::BINARY:
-            return lhs.unsafe_get_binary() == rhs.unsafe_get_binary();
+            return lhs.get_binary() == rhs.get_binary();
 
          case type::BINARY_VIEW:
-            return tao::internal::binary_equal( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary_view() );
+            return tao::internal::binary_equal( lhs.get_binary_view(), rhs.get_binary_view() );
 
          case type::ARRAY:
-            return lhs.unsafe_get_array() == rhs.unsafe_get_array();
+            return lhs.get_array() == rhs.get_array();
 
          case type::OBJECT:
-            return lhs.unsafe_get_object() == rhs.unsafe_get_object();
+            return lhs.get_object() == rhs.get_object();
 
          case type::VALUE_PTR:
             assert( lhs.type() != type::VALUE_PTR );
@@ -238,63 +218,55 @@ namespace tao::json
 
             case type::SIGNED:
                if( rhs.type() == type::UNSIGNED ) {
-                  const auto v = lhs.unsafe_get_signed();
-                  return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs.unsafe_get_unsigned() );
+                  const auto v = lhs.get_signed();
+                  return ( v < 0 ) || ( static_cast< std::uint64_t >( v ) < rhs.get_unsigned() );
                }
                if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_signed() < rhs.unsafe_get_double();
+                  return lhs.get_signed() < rhs.get_double();
                }
                break;
 
             case type::UNSIGNED:
                if( rhs.type() == type::SIGNED ) {
-                  const auto v = rhs.unsafe_get_signed();
-                  return ( v >= 0 ) && ( lhs.unsafe_get_unsigned() < static_cast< std::uint64_t >( v ) );
+                  const auto v = rhs.get_signed();
+                  return ( v >= 0 ) && ( lhs.get_unsigned() < static_cast< std::uint64_t >( v ) );
                }
                if( rhs.type() == type::DOUBLE ) {
-                  return lhs.unsafe_get_unsigned() < rhs.unsafe_get_double();
+                  return lhs.get_unsigned() < rhs.get_double();
                }
                break;
 
             case type::DOUBLE:
                if( rhs.type() == type::SIGNED ) {
-                  return lhs.unsafe_get_double() < rhs.unsafe_get_signed();
+                  return lhs.get_double() < rhs.get_signed();
                }
                if( rhs.type() == type::UNSIGNED ) {
-                  return lhs.unsafe_get_double() < rhs.unsafe_get_unsigned();
+                  return lhs.get_double() < rhs.get_unsigned();
                }
                break;
 
             case type::STRING:
                if( rhs.type() == type::STRING_VIEW ) {
-                  return lhs.unsafe_get_string() < rhs.unsafe_get_string_view();
+                  return lhs.get_string() < rhs.get_string_view();
                }
                break;
 
             case type::STRING_VIEW:
                if( rhs.type() == type::STRING ) {
-                  return lhs.unsafe_get_string_view() < rhs.unsafe_get_string();
+                  return lhs.get_string_view() < rhs.get_string();
                }
                break;
 
             case type::BINARY:
                if( rhs.type() == type::BINARY_VIEW ) {
-                  return tao::internal::binary_less( lhs.unsafe_get_binary(), rhs.unsafe_get_binary_view() );
+                  return tao::internal::binary_less( lhs.get_binary(), rhs.get_binary_view() );
                }
                break;
 
             case type::BINARY_VIEW:
                if( rhs.type() == type::BINARY ) {
-                  return tao::internal::binary_less( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary() );
+                  return tao::internal::binary_less( lhs.get_binary_view(), rhs.get_binary() );
                }
-               break;
-
-            case type::DISCARDED:
-               assert( lhs.type() != type::DISCARDED );
-               break;
-
-            case type::DESTROYED:
-               assert( lhs.type() != type::DESTROYED );
                break;
 
             case type::OPAQUE_PTR:
@@ -304,8 +276,6 @@ namespace tao::json
             default:
                break;
          }
-         assert( rhs.type() != type::DISCARDED );
-         assert( rhs.type() != type::DESTROYED );
          assert( rhs.type() != type::OPAQUE_PTR );
          return lhs.type() < rhs.type();
       }
@@ -314,48 +284,38 @@ namespace tao::json
          case type::UNINITIALIZED:
             return false;
 
-         // LCOV_EXCL_START
-         case type::DISCARDED:
-            assert( lhs.type() != type::DISCARDED );
-            break;
-
-         case type::DESTROYED:
-            assert( lhs.type() != type::DESTROYED );
-            break;
-            // LCOV_EXCL_STOP
-
          case type::NULL_:
             return false;
 
          case type::BOOLEAN:
-            return lhs.unsafe_get_boolean() < rhs.unsafe_get_boolean();
+            return lhs.get_boolean() < rhs.get_boolean();
 
          case type::SIGNED:
-            return lhs.unsafe_get_signed() < rhs.unsafe_get_signed();
+            return lhs.get_signed() < rhs.get_signed();
 
          case type::UNSIGNED:
-            return lhs.unsafe_get_unsigned() < rhs.unsafe_get_unsigned();
+            return lhs.get_unsigned() < rhs.get_unsigned();
 
          case type::DOUBLE:
-            return lhs.unsafe_get_double() < rhs.unsafe_get_double();
+            return lhs.get_double() < rhs.get_double();
 
          case type::STRING:
-            return lhs.unsafe_get_string() < rhs.unsafe_get_string();
+            return lhs.get_string() < rhs.get_string();
 
          case type::STRING_VIEW:
-            return lhs.unsafe_get_string_view() < rhs.unsafe_get_string_view();
+            return lhs.get_string_view() < rhs.get_string_view();
 
          case type::BINARY:
-            return lhs.unsafe_get_binary() < rhs.unsafe_get_binary();
+            return lhs.get_binary() < rhs.get_binary();
 
          case type::BINARY_VIEW:
-            return tao::internal::binary_less( lhs.unsafe_get_binary_view(), rhs.unsafe_get_binary_view() );
+            return tao::internal::binary_less( lhs.get_binary_view(), rhs.get_binary_view() );
 
          case type::ARRAY:
-            return lhs.unsafe_get_array() < rhs.unsafe_get_array();
+            return lhs.get_array() < rhs.get_array();
 
          case type::OBJECT:
-            return lhs.unsafe_get_object() < rhs.unsafe_get_object();
+            return lhs.get_object() < rhs.get_object();
 
          case type::VALUE_PTR:
             assert( lhs.type() != type::VALUE_PTR );

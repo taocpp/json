@@ -137,9 +137,9 @@ namespace tao::json
       TEST_ASSERT( v.at( "d" ).is_double() );
       TEST_ASSERT( v.as< double >( "d" ) == 44.2 );
       TEST_ASSERT( v.at( "z" ).is_array() );
-      TEST_ASSERT( v.at( "z" ).unsafe_get_array().size() == 2 );
-      TEST_ASSERT( v.at( "z" ).unsafe_get_array()[ 0 ].as< int >() == 8 );
-      TEST_ASSERT( v.at( "z" ).unsafe_get_array()[ 1 ].as< int >() == 9 );
+      TEST_ASSERT( v.at( "z" ).get_array().size() == 2 );
+      TEST_ASSERT( v.at( "z" ).get_array()[ 0 ].as< int >() == 8 );
+      TEST_ASSERT( v.at( "z" ).get_array()[ 1 ].as< int >() == 9 );
       const value w = produce::to_value( a );
       TEST_ASSERT( v == w );
    }
