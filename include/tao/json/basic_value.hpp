@@ -14,6 +14,7 @@
 #include <string_view>
 #include <type_traits>
 #include <utility>
+#include <variant>
 #include <vector>
 
 #include "events/virtual_base.hpp"
@@ -24,9 +25,9 @@
 #include "internal/pair.hpp"
 #include "internal/single.hpp"
 #include "internal/type_traits.hpp"
-#include "internal/value_union.hpp"
 
 #include "binary_view.hpp"
+#include "forward.hpp"
 #include "message_extension.hpp"
 #include "pointer.hpp"
 #include "type.hpp"
@@ -48,7 +49,22 @@ namespace tao::json
       using object_t = std::map< std::string, basic_value, std::less<> >;
 
    private:
-      internal::value_union< basic_value > m_variant;
+      using variant_t = std::variant< uninitialized_t,
+                                      null_t,
+                                      bool,
+                                      std::int64_t,
+                                      std::uint64_t,
+                                      double,
+                                      std::string,
+                                      std::string_view,
+                                      tao::binary,
+                                      tao::binary_view,
+                                      array_t,
+                                      object_t,
+                                      const basic_value*,
+                                      internal::opaque_ptr_t >;
+
+      variant_t m_variant;
 
    public:
       basic_value() noexcept = default;
