@@ -466,7 +466,7 @@ namespace tao::json
 
       decltype( auto ) prepare_array()
       {
-         if( __builtin_expect( is_uninitialized(), false ) ) {
+         if( is_uninitialized() ) {
             emplace_array();
          }
          return get_array();
@@ -506,7 +506,7 @@ namespace tao::json
 
       decltype( auto ) prepare_object()
       {
-         if( __builtin_expect( is_uninitialized(), false ) ) {
+         if( is_uninitialized() ) {
             emplace_object();
          }
          return get_object();
