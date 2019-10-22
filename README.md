@@ -33,7 +33,7 @@ taoJSON is a zero-dependency C++ header-only JSON library that provides a generi
   * JSON data model extended with non-finite number values and binary data.
   * Construction of objects and arrays via `std::initializer_list`.
   * Conversion from and to arbitrary *user-defined types* via [Type Traits](doc/Type-Traits.md).
-  * Built around STL containers `std::string`, `std::map` and `std::vector`.
+  * Built around STL containers `std::variant`, `std::string`, `std::map`, `std::vector`, etc.
   * No memory allocations by the Value class itself (the wrapped containers allocate normally).
   * Instance sharing for string, binary, Value, and *user-defined types* via non-owning pointers.
   * C++11 literal operator for Values, including binary data.
