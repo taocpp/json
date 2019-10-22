@@ -62,10 +62,7 @@ Note that all Type Traits functions are `static` member functions, and that, dep
 
 ## Create Value from Type
 
-The traits' `assign()` functions are used to create Value instances from any type `T`.
-The first argument is always a default-initialised `tao::json::basic_value<>` that reports `tao::json::UNINITIALIZED` as type, wherefore it is safe to call the `unsafe_assign_foo()` methods on it.
-
-We will use the implementation of `assign()` in the specialisation of `my_traits` for `my_type` as example.
+The traits' `assign()` functions are used to create Value instances from any type `T`. We will use the implementation of `assign()` in the specialisation of `my_traits` for `my_type` as example.
 
 ```c++
 template<>
@@ -205,7 +202,7 @@ struct my_traits< my_type >
       if( !v.is_object() ) {
          return false;
       }
-      const auto& o = v.unsafe_get_object();
+      const auto& o = v.get_object();
       const auto i = o.find( "title" );
       const auto j = o.find( "values" );
       return ( o.size() == 2 )

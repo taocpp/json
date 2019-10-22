@@ -7,7 +7,6 @@ In order to speed up the creation of Values there are multiple possibilities of 
 * [Value Pointers](#value-pointers)
 * [Opaque Pointers](#opaque-pointers)
 * [Self Contained](#self-contained)
-* [Unsafe Functions](#unsafe-functions)
 
 ## String Views
 
@@ -86,9 +85,9 @@ The requirements to create an Opaque pointer to `my_data` are:
 1. A `produce()` function in the traits for `my_data` (as shown [here](Type-Traits.md)).
 2. An `assign()` function in the traits for `const my_data*` (as shown below).
 
-As an alternative to 1, a function with the same signature as `produce()` can be supplied to `tao::json::basic_value::unsafe_assign_opaque_ptr()` as second argument.
+As an alternative to 1, a function with the same signature as `produce()` can be supplied to `tao::json::basic_value::assign_opaque_ptr()` as second argument.
 
-As an alternative to 2, `unsafe_assign_opaque_ptr()` can be called in other ways.
+As an alternative to 2, `assign_opaque_ptr()` can be called in other ways.
 Or, when dealing with mutable `my_data` instances , it might be necessary to specialise the traits for `my_data*`, too.
 
 ```c++
@@ -98,12 +97,10 @@ struct my_traits< const my_data* >
    template< template< typename... > class Traits >
    static void assign( basic_value< Traits >& v, const my_data* const d )
    {
-      v.unsafe_assign_opaque_ptr( d );
+      v.assign_opaque_ptr( d );
    }
 };
 ```
-
-Remember that the `unsafe` in `unsafe_assign_opaque_ptr()` refers to it blindly assuming that `v` is not currently owning any memory, a safe assumption because traits' `assign()` functions are always called with default-initialised value instances as first argument.
 
 Just as for Value Pointers, the key to creating an Opaque pointer is again the address-of operator `&`, creating this more efficient code.
 
@@ -138,7 +135,7 @@ struct my_traits< my_data >
    template< template< typename... > class Traits >
    static void assign( basic_value< Traits >& v, my_data& d )
    {
-      v.unsafe_assign_opaque_ptr( &d );  // NOT recommended!
+      v.assign_opaque_ptr( &d );  // NOT recommended!
    }
 };
 ```
@@ -161,17 +158,6 @@ The function `tao::json::make_self_contained()` can be used to make a JSON Value
 Sub-values of type `STRING_VIEW` and `BINARY_VIEW` are transformed into `STRING` and `BINARY`, respectively.
 Occurrences of `VALUE_PTR` are replaced with a deep copy of the pointee.
 
-Occurrences of `OPAQUE_PTR` are replaced with a JSON Value created by using the `produce()` function from the traits as Events producer (or the function supplied as second argument to `basic_value::unsafe_assign_opaque_ptr()`) together with `tao::json::events::to_basic_value` as Events consumer.
-
-## Unsafe Functions
-
-Some of the member functions of class `tao::json::value` are also available in an "unsafe" version that, in the name of efficiency, makes certain assumptions or omits certain checks.
-
-The accessors like `tao::json::value::get_boolean()` have an unsafe version `tao::json::value::unsafe_get_boolean()` that does **not** check the type.
-Instead of throwing an exception on type mismatch it will return bogus data, crash the application or do some other *undefined* behaviour.
-
-The assign methods like `tao::json::value::assign_boolean()` have an unsafe version `tao::json::value::unsafe_assign_boolean()` that does not check whether the previous value has a non-trivial destructor that needs to be called before being overwritten.
-
-TODO: List all other unsafe functions.
+Occurrences of `OPAQUE_PTR` are replaced with a JSON Value created by using the `produce()` function from the traits as Events producer (or the function supplied as second argument to `basic_value::assign_opaque_ptr()`) together with `tao::json::events::to_basic_value` as Events consumer.
 
 Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey

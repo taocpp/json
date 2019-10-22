@@ -71,7 +71,7 @@ void example( const std::string& filename )
 {
    const auto v = tao::json::parse_file_with_position( filename );
    if( v.is_array() ) {
-      for( const auto& i : v.unsafe_get_array() ) {
+      for( const auto& i : v.get_array() ) {
          std::cout << "element on line " << i.base().line << std::endl;
       }
    }
