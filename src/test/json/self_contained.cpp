@@ -12,8 +12,7 @@ namespace tao::json
    {
       value e;
 
-      value d = { { "foo", 1 } };
-      value v = std::move( d );
+      value v = { { "foo", 1 } };
 
       value v1 = { { "bar", v }, { "baz", value::array( { 2, v, 3 } ) } };
       value v2 = { { "bar", &v }, { "baz", value::array( { 2, &v, 3 } ) } };
@@ -36,9 +35,6 @@ namespace tao::json
       TEST_ASSERT( is_self_contained( v4 ) );
 
       make_self_contained( e );
-#ifndef NDEBUG
-      TEST_THROWS( make_self_contained( d ) );
-#endif
       make_self_contained( v1 );
       make_self_contained( v2 );
 

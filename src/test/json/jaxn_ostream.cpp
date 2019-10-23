@@ -24,14 +24,9 @@ namespace tao::json
    void unit_test()
    {
       value e;
-      value d = 42;
-
-      const value v = std::move( d );
+      const value v = 42;
 
       TEST_THROWS( jaxn::to_string( e ) );
-#ifndef NDEBUG
-      TEST_THROWS( jaxn::to_string( d ) );
-#endif
 
       test_simple( null, "null" );
       test_simple( true, "true" );
