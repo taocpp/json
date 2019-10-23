@@ -60,6 +60,7 @@ namespace tao::json::binding
       struct element< T C::*, P, std::enable_if_t< std::is_member_function_pointer_v< T C::* > > >
       {
          using class_t = C;
+         using value_t = T;
 
          using internal_t = std::decay_t< decltype( ( std::declval< const C >().*P )() ) >;
 
@@ -79,6 +80,7 @@ namespace tao::json::binding
       struct element< T ( * )( const C& ), P >
       {
          using class_t = C;
+         using value_t = T;
 
          [[nodiscard]] static decltype( auto ) read( const C& v )
          {

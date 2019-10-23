@@ -23,6 +23,8 @@ namespace tao::json::binding
    template< bool V >
    struct element_b
    {
+      using value_t = bool;
+
       template< typename C >
       [[nodiscard]] static bool read( const C& /*unused*/ )
       {
@@ -57,6 +59,8 @@ namespace tao::json::binding
    template< std::int64_t V >
    struct element_i
    {
+      using value_t = std::int64_t;
+
       template< typename C >
       [[nodiscard]] static std::int64_t read( const C& /*unused*/ )
       {
@@ -91,6 +95,8 @@ namespace tao::json::binding
    template< std::uint64_t V >
    struct element_u
    {
+      using value_t = std::uint64_t;
+
       template< typename C >
       [[nodiscard]] static std::uint64_t read( const C& /*unused*/ )
       {
@@ -128,6 +134,8 @@ namespace tao::json::binding
    template< char... Cs >
    struct element_s< json::internal::string_t< Cs... > >
    {
+      using value_t = std::string;  // TODO: Or std::string_view? Something else? Nothing?
+
       using string = json::internal::string_t< Cs... >;
 
       template< typename C >

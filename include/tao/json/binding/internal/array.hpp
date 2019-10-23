@@ -34,7 +34,7 @@ namespace tao::json::binding::internal
       }
 
       template< template< typename... > class Traits, typename C >
-      static C as_type( const basic_value< Traits >& v )  // TODO: std::enable_if_t< WHAT?, C >
+      static std::enable_if_t< std::is_constructible_v< C, typename As::value_t... >, C > as_type( const basic_value< Traits >& v )
       {
          const auto& a = get_array_impl< Traits, C >( v );
          return C( a[ Is ].template as< typename As::value_t >()... );
