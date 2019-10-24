@@ -12,7 +12,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    struct iterator
    {
-      iterator() noexcept = default;
+      iterator() = default;
 
       explicit iterator( const char* in_data ) noexcept
          : data( in_data )
