@@ -18,7 +18,7 @@ namespace tao::json
 
       explicit pair_ctor_test( const std::int64_t i )
          : v( i )
-      { }
+      {}
 
       std::int64_t v;
    };
