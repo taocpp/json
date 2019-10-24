@@ -67,10 +67,10 @@ namespace tao::json
       variant_t m_variant;
 
    public:
-      basic_value() noexcept = default;
+      basic_value() = default;
 
       basic_value( const basic_value& r ) = default;
-      basic_value( basic_value&& r ) noexcept = default;
+      basic_value( basic_value&& r ) = default;
 
       basic_value( const uninitialized_t /*unused*/, public_base_t b ) noexcept
          : public_base_t( std::move( b ) )
@@ -114,7 +114,7 @@ namespace tao::json
          : basic_value( static_cast< const std::initializer_list< internal::pair< Traits > >& >( l ), std::move( b ) )
       {}
 
-      ~basic_value() noexcept = default;
+      ~basic_value() = default;
 
       [[nodiscard]] static basic_value array( std::initializer_list< internal::single< Traits > >&& l, public_base_t b = public_base_t() )
       {

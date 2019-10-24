@@ -124,16 +124,16 @@ namespace tao
          : m_data( arr.data() )
       {}
 
-      constexpr span( const span& other ) noexcept = default;
+      constexpr span( const span& other ) = default;
 
       template< typename OtherElementType, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType >::value > >
       constexpr span( const span< OtherElementType, Extent >& s ) noexcept
          : m_data( s.data() )
       {}
 
-      ~span() noexcept = default;
+      ~span() = default;
 
-      constexpr span& operator=( const span& ) noexcept = default;
+      constexpr span& operator=( const span& ) = default;
 
       constexpr index_type size() const noexcept
       {
@@ -327,16 +327,16 @@ namespace tao
          : m_data( std::data( cont ) ), m_size( std::size( cont ) )
       {}
 
-      constexpr span( const span& other ) noexcept = default;
+      constexpr span( const span& other ) = default;
 
       template< typename OtherElementType, std::size_t OtherExtent, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType >::value > >
       constexpr span( const span< OtherElementType, OtherExtent >& s ) noexcept
          : m_data( s.data() ), m_size( s.size() )
       {}
 
-      ~span() noexcept = default;
+      ~span() = default;
 
-      constexpr span& operator=( const span& ) noexcept = default;
+      constexpr span& operator=( const span& ) = default;
 
       constexpr index_type size() const noexcept
       {
