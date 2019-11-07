@@ -129,6 +129,10 @@ namespace tao::json
          case type::OPAQUE_PTR:
             assert( lhs.type() != type::OPAQUE_PTR );
             break;  // LCOV_EXCL_LINE
+
+         case type::VALUELESS_BY_EXCEPTION:
+            assert( lhs.type() != type::VALUELESS_BY_EXCEPTION );
+            break;  // LCOV_EXCL_LINE
       }
       // LCOV_EXCL_START
       assert( false );
@@ -323,6 +327,10 @@ namespace tao::json
 
          case type::OPAQUE_PTR:
             assert( lhs.type() != type::OPAQUE_PTR );
+            break;  // LCOV_EXCL_LINE
+
+         case type::VALUELESS_BY_EXCEPTION:
+            assert( lhs.type() != type::VALUELESS_BY_EXCEPTION );
             break;  // LCOV_EXCL_LINE
       }
       // LCOV_EXCL_START

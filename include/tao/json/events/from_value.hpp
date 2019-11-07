@@ -93,6 +93,9 @@ namespace tao::json::events
             q.producer( ref, q.data );
             return;
          }
+
+         case type::VALUELESS_BY_EXCEPTION:
+            throw std::logic_error( "unable to produce events from valueless-by-exception value" );
       }
       throw std::logic_error( internal::format( "invalid value '", static_cast< std::uint8_t >( v.type() ), "' for tao::json::type" ) );  // LCOV_EXCL_LINE
    }

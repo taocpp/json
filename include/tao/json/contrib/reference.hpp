@@ -96,6 +96,8 @@ namespace tao::json
                return;
             case type::OPAQUE_PTR:
                return;
+            case type::VALUELESS_BY_EXCEPTION:
+               return;
          }
          throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
       }

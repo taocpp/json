@@ -56,6 +56,9 @@ namespace tao::json
 
          case type::OPAQUE_PTR:
             return false;
+
+         case type::VALUELESS_BY_EXCEPTION:
+            return true;
       }
       // LCOV_EXCL_START
       assert( false );
@@ -120,6 +123,9 @@ namespace tao::json
             v = std::move( consumer.value );
             return;
          }
+
+         case type::VALUELESS_BY_EXCEPTION:
+            return;
       }
       throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
    }

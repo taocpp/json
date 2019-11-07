@@ -7,14 +7,15 @@
 #include <cstdint>
 #include <string_view>
 #include <type_traits>
+#include <variant>
 
 #include "binary_view.hpp"
 
 namespace tao::json
 {
-   enum class type : std::uint8_t
+   enum class type : std::size_t
    {
-      UNINITIALIZED,
+      UNINITIALIZED = 0,
       NULL_,
       BOOLEAN,
       SIGNED,
@@ -27,7 +28,9 @@ namespace tao::json
       ARRAY,
       OBJECT,
       VALUE_PTR,
-      OPAQUE_PTR
+      OPAQUE_PTR,
+
+      VALUELESS_BY_EXCEPTION = std::variant_npos
    };
 
    constexpr std::string_view to_string( const type t )
@@ -61,6 +64,8 @@ namespace tao::json
             return "value_ptr";
          case type::OPAQUE_PTR:
             return "opaque_ptr";
+         case type::VALUELESS_BY_EXCEPTION:
+            return "valueless_by_exception";
       }
       return "unknown";
    }

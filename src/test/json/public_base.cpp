@@ -30,6 +30,7 @@ namespace tao::json
          {
             switch( self().type() ) {
                case json::type::UNINITIALIZED:
+               case json::type::VALUELESS_BY_EXCEPTION:
                   return true;
 
                case json::type::NULL_:
@@ -69,6 +70,7 @@ namespace tao::json
          {
             switch( self().type() ) {
                case json::type::UNINITIALIZED:
+               case json::type::VALUELESS_BY_EXCEPTION:
                   return 0;
 
                case json::type::NULL_:

@@ -9,8 +9,6 @@ namespace tao::json
 {
    void unit_test()
    {
-      static_assert( sizeof( type ) == 1 );
-
       TEST_ASSERT( to_string( type::UNINITIALIZED ) == std::string( "uninitialized" ) );
 
       TEST_ASSERT( to_string( type::NULL_ ) == std::string( "null" ) );
