@@ -574,15 +574,13 @@ namespace tao::json
       template< typename T >
       void assign( T&& v ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
       {
-         using D = std::decay_t< T >;
-         Traits< D >::assign( *this, std::forward< T >( v ) );
+         Traits< std::decay_t< T > >::assign( *this, std::forward< T >( v ) );
       }
 
       template< typename T >
       void assign( T&& v, public_base_t b ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
       {
-         using D = std::decay_t< T >;
-         Traits< D >::assign( *this, std::forward< T >( v ) );
+         Traits< std::decay_t< T > >::assign( *this, std::forward< T >( v ) );
          public_base() = std::move( b );
       }
 
