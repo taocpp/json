@@ -77,26 +77,42 @@ namespace tao::json
       {
       }
 
+#if( __cplusplus > 201703L )
+
       template< typename T,
-                typename = std::enable_if_t< internal::enable_implicit_constructor< Traits, std::decay_t< T > > >,
-                typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
-      basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+                typename D = std::decay_t< T >,
+                typename = decltype( Traits< D >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
+      explicit( !internal::enable_implicit_constructor< Traits, D > )
+         basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          : public_base_t( std::move( b ) )
       {
-         using D = std::decay_t< T >;
+         Traits< D >::assign( *this, std::forward< T >( v ) );
+      }
+
+#else
+
+      template< typename T,
+                typename D = std::decay_t< T >,
+                typename = std::enable_if_t< internal::enable_implicit_constructor< Traits, D > >,
+                typename = decltype( Traits< D >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
+      basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+         : public_base_t( std::move( b ) )
+      {
          Traits< D >::assign( *this, std::forward< T >( v ) );
       }
 
       template< typename T,
-                typename = std::enable_if_t< !internal::enable_implicit_constructor< Traits, std::decay_t< T > > >,
-                typename = decltype( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ),
+                typename D = std::decay_t< T >,
+                typename = std::enable_if_t< !internal::enable_implicit_constructor< Traits, D > >,
+                typename = decltype( Traits< D >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ),
                 int = 0 >
-      explicit basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      explicit basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
          : public_base_t( std::move( b ) )
       {
-         using D = std::decay_t< T >;
          Traits< D >::assign( *this, std::forward< T >( v ) );
       }
+
+#endif
 
       basic_value( std::initializer_list< internal::pair< Traits > >&& l, public_base_t b = public_base_t() )
          : public_base_t( std::move( b ) )
