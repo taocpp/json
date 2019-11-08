@@ -568,7 +568,7 @@ namespace tao::json
       template< typename T >
       void assign_opaque_ptr( const T* data ) noexcept
       {
-         assign_opaque_ptr( data, &basic_value::producer_wrapper< T > );
+         assign_opaque_ptr( data, &basic_value::produce_from_opaque_ptr< T > );
       }
 
       template< typename T >
@@ -966,7 +966,7 @@ namespace tao::json
 
    private:
       template< typename T >
-      static void producer_wrapper( events::virtual_base& consumer, const void* raw )
+      static void produce_from_opaque_ptr( events::virtual_base& consumer, const void* raw )
       {
          Traits< T >::template produce< Traits >( consumer, *static_cast< const T* >( raw ) );
       }
