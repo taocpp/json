@@ -957,9 +957,10 @@ namespace tao::json
          throw internal::invalid_type( b, std::next( e ) );
       }
 
-      void reset() noexcept
+      template< typename... Ts >
+      void reset( Ts&&... ts ) noexcept( noexcept( std::declval< basic_value& >() = basic_value( std::forward< Ts >( ts )... ) ) )
       {
-         m_variant = uninitialized;
+         *this = basic_value( std::forward< Ts >( ts )... );
       }
 
    private:
