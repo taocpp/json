@@ -26,12 +26,14 @@ namespace tao::json::internal
 
       template< typename U >
       pair( U&& k, basic_value< Traits >&& v )
-         : key( std::forward< U >( k ) ), value( std::move( v ) )
+         : key( std::forward< U >( k ) ),
+           value( std::move( v ) )
       {}
 
       template< typename U >
       pair( U&& k, const basic_value< Traits >& v )
-         : key( std::forward< U >( k ) ), value( v )
+         : key( std::forward< U >( k ) ),
+           value( v )
       {}
    };
 
