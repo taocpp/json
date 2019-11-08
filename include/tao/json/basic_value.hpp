@@ -41,9 +41,9 @@ namespace tao::json
    public:
       using public_base_t = typename Traits< void >::template public_base< basic_value< Traits > >;
 
-      static_assert( !std::is_default_constructible_v< public_base_t > || std::is_nothrow_default_constructible_v< public_base_t > );
-      static_assert( std::is_nothrow_move_constructible_v< public_base_t > );
+      // static_assert( std::is_nothrow_move_constructible_v< public_base_t > );
       static_assert( std::is_nothrow_move_assignable_v< public_base_t > );
+      static_assert( std::is_nothrow_destructible_v< public_base_t > );
 
       using array_t = std::vector< basic_value >;
       using object_t = std::map< std::string, basic_value, std::less<> >;
@@ -63,6 +63,10 @@ namespace tao::json
                                       object_t,
                                       const basic_value*,
                                       internal::opaque_ptr_t >;
+
+      // static_assert( std::is_nothrow_move_constructible_v< variant_t > );
+      static_assert( std::is_nothrow_move_assignable_v< variant_t > );
+      static_assert( std::is_nothrow_destructible_v< variant_t > );
 
       variant_t m_variant;
 
@@ -160,7 +164,7 @@ namespace tao::json
          return v;
       }
 
-      basic_value& operator=( basic_value v ) noexcept( std::is_nothrow_move_assignable_v< variant_t > )
+      basic_value& operator=( basic_value v ) noexcept
       {
          m_variant = std::move( v.m_variant );
          public_base_t::operator=( static_cast< public_base_t&& >( v ) );
