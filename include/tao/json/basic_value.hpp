@@ -160,14 +160,14 @@ namespace tao::json
          return v;
       }
 
-      basic_value& operator=( basic_value v ) noexcept
+      basic_value& operator=( basic_value v ) noexcept( std::is_nothrow_move_assignable_v< variant_t > )
       {
          m_variant = std::move( v.m_variant );
          public_base_t::operator=( static_cast< public_base_t&& >( v ) );
          return *this;
       }
 
-      void swap( basic_value& r ) noexcept
+      void swap( basic_value& r ) noexcept( std::is_nothrow_move_constructible_v< basic_value >&& std::is_nothrow_move_assignable_v< basic_value > )
       {
          basic_value t( std::move( r ) );
          r = std::move( *this );
@@ -515,7 +515,7 @@ namespace tao::json
          m_variant = o;
       }
 
-      void assign_object( object_t&& o ) noexcept
+      void assign_object( object_t&& o ) noexcept( std::is_nothrow_move_assignable_v< object_t > )
       {
          m_variant = std::move( o );
       }
