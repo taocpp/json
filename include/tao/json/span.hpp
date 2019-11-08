@@ -4,7 +4,27 @@
 #ifndef TAO_JSON_SPAN_HPP
 #define TAO_JSON_SPAN_HPP
 
-#if( __cplusplus <= 201703L )
+#if !defined( TAO_JSON_USE_STD_SPAN ) && defined( __has_include )
+#if __has_include( <span> )
+#define TAO_JSON_USE_STD_SPAN
+#endif
+#endif
+
+#if defined( TAO_JSON_USE_STD_SPAN )
+
+#include <span>
+
+namespace tao
+{
+   using std::dynamic_extent;
+   using std::span;
+
+   using std::as_bytes;
+   using std::as_writable_bytes;
+
+}  // namespace tao
+
+#else
 
 #include <array>
 #include <cassert>
@@ -540,20 +560,6 @@ namespace std
    }
 
 }  // namespace std
-
-#else
-
-#include <span>
-
-namespace tao
-{
-   using std::dynamic_extent;
-   using std::span;
-
-   using std::as_bytes;
-   using std::as_writable_bytes;
-
-}  // namespace tao
 
 #endif
 
