@@ -11,7 +11,7 @@
 #include "json/from_input.hpp"
 #include "json/from_stream.hpp"
 #include "json/from_string.hpp"
-#include "json/parse_file.hpp"
+#include "json/from_file.hpp"
 #include "json/parts_parser.hpp"
 
 // Value Writing

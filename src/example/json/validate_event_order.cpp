@@ -9,7 +9,7 @@
 #include <utility>
 
 #include <tao/json/events/from_value.hpp>
-#include <tao/json/events/parse_file.hpp>
+#include <tao/json/events/from_file.hpp>
 #include <tao/json/events/to_value.hpp>
 #include <tao/json/events/validate_event_order.hpp>
 
@@ -17,9 +17,9 @@ int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       tao::json::events::validate_event_order c1;
-      tao::json::events::parse_file( c1, argv[ i ] );
+      tao::json::events::from_file( c1, argv[ i ] );
       tao::json::events::to_value c2;
-      tao::json::events::parse_file( c2, argv[ i ] );
+      tao::json::events::from_file( c2, argv[ i ] );
       tao::json::events::validate_event_order c3;
       tao::json::events::from_value( c3, c2.value );
    }

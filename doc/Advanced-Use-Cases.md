@@ -56,7 +56,7 @@ The application can use the public base for whatever it wants, for example to ad
 
 A natural use case for [custom base classes for Values](#custom-base-class-for-values) is to add the filename, line number, and starting byte position to every (sub-)value during parsing.
 
-The two functions `tao::json::parse_file_with_position()` and `tao::json::basic_parse_file_with_position()` in `include/tao/json/contrib/position.hpp` do just that and can be directly used, or customised as required.
+The two functions `tao::json::from_file_with_position()` and `tao::json::basic_from_file_with_position()` in `include/tao/json/contrib/position.hpp` do just that and can be directly used, or customised as required.
 
 The public base class of type `tao::json::position`, and a helper to add the base class definition to any traits class template, is defined in the same header.
 The following example shows how to read a filename, and, if the file contains a JSON array, prints the line numbers each array element starts on.
@@ -69,7 +69,7 @@ The following example shows how to read a filename, and, if the file contains a 
 
 void example( const std::string& filename )
 {
-   const auto v = tao::json::parse_file_with_position( filename );
+   const auto v = tao::json::from_file_with_position( filename );
    if( v.is_array() ) {
       for( const auto& i : v.get_array() ) {
          std::cout << "element on line " << i.base().line << std::endl;

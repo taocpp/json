@@ -9,13 +9,13 @@ int main( int argc, char** argv )
 {
    for( int i = 1; i < argc; ++i ) {
       tao::json::events::to_value consumer;
-      tao::json::events::parse_file( consumer, argv[ i ] );
+      tao::json::events::from_file( consumer, argv[ i ] );
       tao::json::events::to_value consumer2;
-      tao::json::events::parse_file( consumer2, argv[ i ] );
+      tao::json::events::from_file( consumer2, argv[ i ] );
 
       tao::bench::mark( "parse", argv[ i ], [&]() {
          tao::json::events::to_value tmp;
-         tao::json::events::parse_file( tmp, argv[ i ] );
+         tao::json::events::from_file( tmp, argv[ i ] );
       } );
 
       tao::bench::mark( "compare", argv[ i ], [&]() {

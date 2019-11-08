@@ -12,7 +12,7 @@
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
 #include "../message_extension.hpp"
-#include "../parse_file.hpp"
+#include "../from_file.hpp"
 #include "../value.hpp"
 
 namespace tao::json
@@ -147,7 +147,7 @@ namespace tao::json
    };
 
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   [[nodiscard]] auto basic_parse_file_with_position( const std::string& filename )
+   [[nodiscard]] auto basic_from_file_with_position( const std::string& filename )
    {
       events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
       pegtl::file_input< pegtl::tracking_mode::eager > in( filename );
@@ -156,9 +156,9 @@ namespace tao::json
    }
 
    template< template< typename... > class... Transformers >
-   [[nodiscard]] auto parse_file_with_position( const std::string& filename )
+   [[nodiscard]] auto from_file_with_position( const std::string& filename )
    {
-      return basic_parse_file_with_position< make_position_traits< traits >::template type, Transformers... >( filename );
+      return basic_from_file_with_position< make_position_traits< traits >::template type, Transformers... >( filename );
    }
 
 }  // namespace tao::json

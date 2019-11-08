@@ -23,7 +23,7 @@ Additionally, it might be useful to include `<tao/json/contrib/traits.hpp>` to a
 ## Read any JSON file
 
 ```c++
-const tao::json::value v = tao::json::parse_file( "filename.json" );
+const tao::json::value v = tao::json::from_file( "filename.json" );
 ```
 
 ## Parse any JSON string

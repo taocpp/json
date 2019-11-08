@@ -243,7 +243,7 @@ int main( int argc, char** argv )
    }
    std::cout << "const tao::json::value change_me_please = ";
    tao::json::cplusplus::events::to_pretty_stream consumer( std::cout, 3 );
-   tao::json::jaxn::events::parse_file( consumer, argv[ 1 ] );
+   tao::json::jaxn::events::from_file( consumer, argv[ 1 ] );
    std::cout << ";" << std::endl;
    return 0;
 }

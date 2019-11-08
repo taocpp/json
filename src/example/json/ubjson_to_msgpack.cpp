@@ -13,6 +13,6 @@ int main( int argc, char** argv )
       return 1;
    }
    tao::json::msgpack::events::to_stream consumer( std::cout );
-   tao::json::ubjson::events::parse_file( consumer, argv[ 1 ] );
+   tao::json::ubjson::events::from_file( consumer, argv[ 1 ] );
    return 0;
 }

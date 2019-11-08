@@ -11,7 +11,7 @@ namespace tao::json
    {
       const std::string f = "tests/taocpp/position.json";
 
-      auto v = parse_file_with_position( f );
+      auto v = from_file_with_position( f );
 
       TEST_ASSERT( v.source() == f );
       TEST_ASSERT( v.line() == 1 );

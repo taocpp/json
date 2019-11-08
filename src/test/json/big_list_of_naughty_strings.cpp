@@ -4,7 +4,7 @@
 #include "test.hpp"
 
 #include <tao/json/from_string.hpp>
-#include <tao/json/parse_file.hpp>
+#include <tao/json/from_file.hpp>
 #include <tao/json/to_string.hpp>
 #include <tao/json/value.hpp>
 
@@ -30,7 +30,7 @@ namespace tao::json
 {
    void unit_test()
    {
-      const auto v = parse_file( "tests/blns.json" );
+      const auto v = from_file( "tests/blns.json" );
       TEST_ASSERT( v.get_array().size() == 494 );
       const auto s = to_string( v, 2 ) + '\n';
       TEST_ASSERT( s == get_file_contents( "tests/blns.json" ) );

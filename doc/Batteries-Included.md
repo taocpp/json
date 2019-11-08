@@ -68,16 +68,16 @@ Events Producers are functions that take some input from which they generate Eve
 | `events::from_stream` | Reads JSON from a `std::istream`. |
 | `events::from_string` | Reads JSON from a `std::string`. |
 | `events::from_value` | Generates Events for a `basic_value<>`. |
-| `events::parse_file` | Reads JSON from the file. |
+| `events::from_file` | Reads JSON from the file. |
 | `jaxn::events::from_stream` | Reads JAXN from a `std::istream`. |
 | `jaxn::events::from_string` | Reads JAXN from a `std::string`. |
-| `jaxn::events::parse_file` | Reads JAXN from the file. |
+| `jaxn::events::from_file` | Reads JAXN from the file. |
 | `cbor::events::from_string` | Reads CBOR from a `std::string`. |
-| `cbor::events::parse_file` | Reads CBOR from the file. |
+| `cbor::events::from_file` | Reads CBOR from the file. |
 | `msgpack::events::from_string` | Reads MSGPACK from a `std::string`. |
-| `msgpack::events::parse_file` | Reads MSGPACK from the file. |
+| `msgpack::events::from_file` | Reads MSGPACK from the file. |
 | `ubjson::events::from_string` | Reads UBJSON from a `std::string`. |
-| `ubjson::events::parse_file` | Reads UBJSON from the file. |
+| `ubjson::events::from_file` | Reads UBJSON from the file. |
 
 ## Events Consumers
 
@@ -143,16 +143,16 @@ Functions that combine the similarly named Events Producer from above with an Ev
 | -------- | ----------- |
 | `from_stream` | Reads JSON from a `std::istream`. |
 | `from_string` | Reads JSON from a `std::string`. |
-| `parse_file` | Reads JSON from the file. |
+| `from_file` | Reads JSON from the file. |
 | `jaxn::from_stream` | Reads JAXN from a `std::istream`. |
 | `jaxn::from_string` | Reads JAXN from a `std::string`. |
-| `jaxn::parse_file` | Reads JAXN from the file. |
+| `jaxn::from_file` | Reads JAXN from the file. |
 | `cbor::from_string` | Reads CBOR from a `std::string`. |
-| `cbor::parse_file` | Reads CBOR from the file. |
+| `cbor::from_file` | Reads CBOR from the file. |
 | `msgpack::from_string` | Reads MSGPACK from a `std::string`. |
-| `msgpack::parse_file` | Reads MSGPACK from the file. |
+| `msgpack::from_file` | Reads MSGPACK from the file. |
 | `ubjson::from_string` | Reads UBJSON from a `std::string`. |
-| `ubjson::parse_file` | Reads UBJSON from the file. |
+| `ubjson::from_file` | Reads UBJSON from the file. |
 
 Functions that combine the similarly named Events Consumers with a Producer that generates Events from a Value.
 

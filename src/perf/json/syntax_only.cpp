@@ -19,7 +19,7 @@ int main( int argc, char** argv )
       } );
       tao::bench::mark( "json", argv[ i ], [&]() {
          tao::json::events::discard consumer;
-         tao::json::events::parse_file( consumer, argv[ i ] );
+         tao::json::events::from_file( consumer, argv[ i ] );
       },
       r );
    }

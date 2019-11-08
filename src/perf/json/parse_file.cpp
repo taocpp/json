@@ -10,7 +10,7 @@ int main( int argc, char** argv )
    for( int i = 1; i < argc; ++i ) {
       tao::bench::mark( "json", argv[ i ], [&]() {
          tao::json::events::to_value consumer;
-         tao::json::events::parse_file( consumer, argv[ i ] );
+         tao::json::events::from_file( consumer, argv[ i ] );
       } );
    }
    return 0;

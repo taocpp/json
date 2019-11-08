@@ -17,7 +17,7 @@ namespace tao::json
       {
          // if this static assert is triggered there is a high chance that 'T' is
          // a traits class template and you intended to call a method starting with "basic_*",
-         // e.g. basic_parse_file< my_traits >( ... ) instead of parse_file< my_traits >( ... ).
+         // e.g. basic_from_file< my_traits >( ... ) instead of from_file< my_traits >( ... ).
          static_assert( pegtl::internal::always_false< invalid_transformer< T > >::value, "T is not a valid transformer" );
       };
 

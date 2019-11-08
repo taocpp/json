@@ -13,6 +13,6 @@ int main( int argc, char** argv )
       return 1;
    }
    tao::json::jaxn::events::to_pretty_stream consumer( std::cout, 3 );
-   tao::json::msgpack::events::parse_file( consumer, argv[ 1 ] );
+   tao::json::msgpack::events::from_file( consumer, argv[ 1 ] );
    return 0;
 }
