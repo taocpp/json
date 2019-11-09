@@ -4,8 +4,10 @@
 #ifndef TAO_JSON_SPAN_HPP
 #define TAO_JSON_SPAN_HPP
 
-#if !defined( TAO_JSON_USE_STD_SPAN ) && defined( __has_include )
-#if __has_include( <span> )
+#if !defined( TAO_JSON_USE_STD_SPAN ) && ( __cplusplus > 201703L ) && defined( __has_include )
+// clang-format off
+#if __has_include(<span>)
+// clang-format on
 #define TAO_JSON_USE_STD_SPAN
 #endif
 #endif
