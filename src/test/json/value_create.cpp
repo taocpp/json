@@ -59,7 +59,7 @@ namespace tao::json
       TEST_ASSERT( !( w < v ) );
       TEST_ASSERT( !( w > v ) );
 
-      u.reset();
+      u = uninitialized;
       TEST_ASSERT( u.type() == type::UNINITIALIZED );
       TEST_ASSERT( u == v );
    }

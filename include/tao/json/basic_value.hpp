@@ -41,8 +41,6 @@ namespace tao::json
    public:
       using public_base_t = typename Traits< void >::template public_base< basic_value< Traits > >;
 
-      // static_assert( std::is_nothrow_move_constructible_v< public_base_t > );
-      static_assert( std::is_nothrow_move_assignable_v< public_base_t > );
       static_assert( std::is_nothrow_destructible_v< public_base_t > );
 
       using array_t = std::vector< basic_value >;
@@ -64,8 +62,6 @@ namespace tao::json
                                       const basic_value*,
                                       internal::opaque_ptr_t >;
 
-      // static_assert( std::is_nothrow_move_constructible_v< variant_t > );
-      static_assert( std::is_nothrow_move_assignable_v< variant_t > );
       static_assert( std::is_nothrow_destructible_v< variant_t > );
 
       variant_t m_variant;
@@ -76,7 +72,7 @@ namespace tao::json
       basic_value( const basic_value& r ) = default;
       basic_value( basic_value&& r ) = default;
 
-      basic_value( const uninitialized_t /*unused*/, public_base_t b ) noexcept
+      basic_value( const uninitialized_t /*unused*/, public_base_t b = public_base_t() ) noexcept( std::is_nothrow_move_assignable_v< public_base_t > )
          : public_base_t( std::move( b ) )
       {
       }
@@ -86,8 +82,7 @@ namespace tao::json
       template< typename T,
                 typename D = std::decay_t< T >,
                 typename = decltype( Traits< D >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
-      explicit( !internal::enable_implicit_constructor< Traits, D > )
-         basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      explicit( !internal::enable_implicit_constructor< Traits, D > ) basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) && std::is_nothrow_move_assignable_v< public_base_t > )
          : public_base_t( std::move( b ) )
       {
          Traits< D >::assign( *this, std::forward< T >( v ) );
@@ -99,7 +94,7 @@ namespace tao::json
                 typename D = std::decay_t< T >,
                 typename = std::enable_if_t< internal::enable_implicit_constructor< Traits, D > >,
                 typename = decltype( Traits< D >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ) >
-      basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) && std::is_nothrow_move_assignable_v< public_base_t > )
          : public_base_t( std::move( b ) )
       {
          Traits< D >::assign( *this, std::forward< T >( v ) );
@@ -110,7 +105,7 @@ namespace tao::json
                 typename = std::enable_if_t< !internal::enable_implicit_constructor< Traits, D > >,
                 typename = decltype( Traits< D >::assign( std::declval< basic_value& >(), std::declval< T&& >() ) ),
                 int = 0 >
-      explicit basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      explicit basic_value( T&& v, public_base_t b = public_base_t() ) noexcept( noexcept( Traits< D >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) && std::is_nothrow_move_assignable_v< public_base_t > )
          : public_base_t( std::move( b ) )
       {
          Traits< D >::assign( *this, std::forward< T >( v ) );
@@ -164,7 +159,7 @@ namespace tao::json
          return v;
       }
 
-      basic_value& operator=( basic_value v ) noexcept
+      basic_value& operator=( basic_value v ) noexcept( std::is_nothrow_move_assignable_v< variant_t > )
       {
          m_variant = std::move( v.m_variant );
          public_base_t::operator=( static_cast< public_base_t&& >( v ) );
@@ -479,7 +474,7 @@ namespace tao::json
          m_variant = a;
       }
 
-      void assign_array( array_t&& a ) noexcept
+      void assign_array( array_t&& a ) noexcept( std::is_nothrow_move_assignable_v< array_t > )
       {
          m_variant = std::move( a );
       }
@@ -582,7 +577,7 @@ namespace tao::json
       }
 
       template< typename T >
-      void assign( T&& v, public_base_t b ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) )
+      void assign( T&& v, public_base_t b ) noexcept( noexcept( Traits< std::decay_t< T > >::assign( std::declval< basic_value& >(), std::forward< T >( v ) ) ) && std::is_nothrow_move_assignable_v< public_base_t > )
       {
          Traits< std::decay_t< T > >::assign( *this, std::forward< T >( v ) );
          public_base() = std::move( b );
@@ -959,12 +954,6 @@ namespace tao::json
             return a.at( i );
          }
          throw internal::invalid_type( b, std::next( e ) );
-      }
-
-      template< typename... Ts >
-      void reset( Ts&&... ts ) noexcept( noexcept( std::declval< basic_value& >() = basic_value( std::forward< Ts >( ts )... ) ) )
-      {
-         *this = basic_value( std::forward< Ts >( ts )... );
       }
 
    private:
