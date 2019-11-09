@@ -5,11 +5,11 @@
 #define TAO_JSON_EVENTS_HPP
 
 // Events producers
+#include "events/from_file.hpp"
 #include "events/from_input.hpp"
 #include "events/from_stream.hpp"
 #include "events/from_string.hpp"
 #include "events/from_value.hpp"
-#include "events/from_file.hpp"
 #include "events/produce.hpp"
 
 // Events consumers

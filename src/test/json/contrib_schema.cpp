@@ -8,8 +8,8 @@
 #include <iostream>
 
 #include <tao/json/contrib/schema.hpp>
-#include <tao/json/from_stream.hpp>
 #include <tao/json/from_file.hpp>
+#include <tao/json/from_stream.hpp>
 #include <tao/json/pointer.hpp>
 #include <tao/json/value.hpp>
 

@@ -11,8 +11,8 @@
 
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
-#include "../message_extension.hpp"
 #include "../from_file.hpp"
+#include "../message_extension.hpp"
 #include "../value.hpp"
 
 namespace tao::json

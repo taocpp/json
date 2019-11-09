@@ -8,8 +8,8 @@
 #include <string>
 #include <utility>
 
-#include <tao/json/events/from_value.hpp>
 #include <tao/json/events/from_file.hpp>
+#include <tao/json/events/from_value.hpp>
 #include <tao/json/events/to_value.hpp>
 #include <tao/json/events/validate_event_order.hpp>
 
