@@ -53,16 +53,46 @@ namespace tao::json
    template<>
    struct traits< void >
    {
-      static constexpr const bool enable_implicit_constructor = true;
+      static constexpr bool enable_implicit_constructor = true;
 
       template< typename >
       using public_base = internal::empty_base;
    };
 
    template<>
+   struct traits< uninitialized_t >
+   {
+      static constexpr bool enable_implicit_constructor = true;
+
+      template< template< typename... > class Traits >
+      static void assign( basic_value< Traits >& v, uninitialized_t /*unused*/ ) noexcept
+      {
+         assert( v.is_uninitialized() );
+      }
+
+      template< template< typename... > class Traits >
+      [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, uninitialized_t /*unused*/ ) noexcept
+      {
+         return lhs.skip_value_ptr().is_uninitialized();
+      }
+
+      template< template< typename... > class Traits >
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, uninitialized_t /*unused*/ ) noexcept
+      {
+         return lhs.skip_value_ptr().type() < type::UNINITIALIZED;
+      }
+
+      template< template< typename... > class Traits >
+      [[nodiscard]] static bool greater_than( const basic_value< Traits >& lhs, uninitialized_t /*unused*/ ) noexcept
+      {
+         return lhs.skip_value_ptr().type() > type::UNINITIALIZED;
+      }
+   };
+
+   template<>
    struct traits< null_t >
    {
-      static constexpr const bool enable_implicit_constructor = true;
+      static constexpr bool enable_implicit_constructor = true;
 
       template< template< typename... > class Traits >
       [[nodiscard]] static null_t as( const basic_value< Traits >& v )
@@ -170,7 +200,7 @@ namespace tao::json
    template<>
    struct traits< empty_string_t >
    {
-      static constexpr const bool enable_implicit_constructor = true;
+      static constexpr bool enable_implicit_constructor = true;
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_string_t /*unused*/ ) noexcept
@@ -223,7 +253,7 @@ namespace tao::json
    template<>
    struct traits< empty_binary_t >
    {
-      static constexpr const bool enable_implicit_constructor = true;
+      static constexpr bool enable_implicit_constructor = true;
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_binary_t /*unused*/ ) noexcept
@@ -276,7 +306,7 @@ namespace tao::json
    template<>
    struct traits< empty_array_t >
    {
-      static constexpr const bool enable_implicit_constructor = true;
+      static constexpr bool enable_implicit_constructor = true;
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_array_t /*unused*/ ) noexcept
@@ -308,7 +338,7 @@ namespace tao::json
    template<>
    struct traits< empty_object_t >
    {
-      static constexpr const bool enable_implicit_constructor = true;
+      static constexpr bool enable_implicit_constructor = true;
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, empty_object_t /*unused*/ ) noexcept

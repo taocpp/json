@@ -72,11 +72,6 @@ namespace tao::json
       basic_value( const basic_value& r ) = default;
       basic_value( basic_value&& r ) = default;
 
-      basic_value( const uninitialized_t /*unused*/, public_base_t b = public_base_t() ) noexcept( std::is_nothrow_move_assignable_v< public_base_t > )
-         : public_base_t( std::move( b ) )
-      {
-      }
-
 #if( __cplusplus > 201703L )
 
       template< typename T,
@@ -539,10 +534,7 @@ namespace tao::json
       {
          assert( data );
          assert( producer );
-         internal::opaque_ptr_t op;
-         op.data = data;
-         op.producer = producer;
-         m_variant = op;
+         m_variant = internal::opaque_ptr_t{ data, producer };
       }
 
       template< typename T >
