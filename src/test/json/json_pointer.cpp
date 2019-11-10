@@ -130,8 +130,8 @@ namespace tao::json
       TEST_ASSERT( v[ "/007"_json_pointer ] == 12 );
 
       TEST_THROWS( v.at( "/o\0r"_json_pointer ) );
-      TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_null() );
-      TEST_ASSERT( v.at( "/o\0r"_json_pointer ).is_null() );
+      TEST_ASSERT( v[ "/o\0r"_json_pointer ].is_uninitialized() );
+      TEST_ASSERT( v.at( "/o\0r"_json_pointer ).is_uninitialized() );
 
       const value v2( { { "x~y/z", 0 } } );
       TEST_ASSERT( v2.at( "/x~0y~1z"_json_pointer ) == 0 );

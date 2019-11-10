@@ -754,15 +754,7 @@ namespace tao::json
          const auto e = std::prev( k.end() );
          basic_value& v = internal::pointer_at( this, b, e );
          if( v.is_object() ) {
-            const auto& key = e->key();
-            auto& o = v.get_object();
-            const auto it = o.find( key );
-            if( it != o.end() ) {
-               return it->second;
-            }
-            const auto r = v.try_emplace( key, null );
-            assert( r.second );
-            return r.first->second;
+            return v.get_object()[ e->key() ];
          }
          if( v.is_array() ) {
             if( e->key() == "-" ) {
@@ -922,16 +914,7 @@ namespace tao::json
          const auto e = std::prev( k.end() );
          basic_value& v = internal::pointer_at( this, b, e );
          if( v.is_object() ) {
-            auto& o = v.get_object();
-            const auto& key = e->key();
-            const auto it = o.find( key );
-            if( it == o.end() ) {
-               const auto r = v.try_emplace( key, std::move( value ) );
-               assert( r.second );
-               return r.first->second;
-            }
-            it->second = std::move( value );
-            return it->second;
+            return v.get_object().insert_or_assign( e->key(), std::move( value ) ).first->second;
          }
          if( v.is_array() ) {
             auto& a = v.get_array();
