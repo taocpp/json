@@ -389,27 +389,27 @@ namespace tao::json
       }
 
    public:
-      void assign_null() noexcept
+      void set_null() noexcept
       {
          m_variant = null;
       }
 
-      void assign_boolean( const bool b ) noexcept
+      void set_boolean( const bool b ) noexcept
       {
          m_variant = b;
       }
 
-      void assign_signed( const std::int64_t i ) noexcept
+      void set_signed( const std::int64_t i ) noexcept
       {
          m_variant = i;
       }
 
-      void assign_unsigned( const std::uint64_t u ) noexcept
+      void set_unsigned( const std::uint64_t u ) noexcept
       {
          m_variant = u;
       }
 
-      void assign_double( const double d ) noexcept
+      void set_double( const double d ) noexcept
       {
          m_variant = d;
       }
@@ -420,17 +420,17 @@ namespace tao::json
          m_variant.template emplace< std::string >( std::forward< Ts >( ts )... );
       }
 
-      void assign_string( const std::string& s )
+      void set_string( const std::string& s )
       {
          m_variant = s;
       }
 
-      void assign_string( std::string&& s ) noexcept
+      void set_string( std::string&& s ) noexcept
       {
          m_variant = std::move( s );
       }
 
-      void assign_string_view( const std::string_view sv ) noexcept
+      void set_string_view( const std::string_view sv ) noexcept
       {
          m_variant = sv;
       }
@@ -441,17 +441,17 @@ namespace tao::json
          m_variant.template emplace< binary >( std::forward< Ts >( ts )... );
       }
 
-      void assign_binary( const binary& x )
+      void set_binary( const binary& x )
       {
          m_variant = x;
       }
 
-      void assign_binary( binary&& x ) noexcept
+      void set_binary( binary&& x ) noexcept
       {
          m_variant = std::move( x );
       }
 
-      void assign_binary_view( const tao::binary_view xv ) noexcept
+      void set_binary_view( const tao::binary_view xv ) noexcept
       {
          m_variant = xv;
       }
@@ -462,12 +462,12 @@ namespace tao::json
          m_variant.template emplace< array_t >( std::forward< Ts >( ts )... );
       }
 
-      void assign_array( const array_t& a )
+      void set_array( const array_t& a )
       {
          m_variant = a;
       }
 
-      void assign_array( array_t&& a ) noexcept( std::is_nothrow_move_assignable_v< array_t > )
+      void set_array( array_t&& a ) noexcept( std::is_nothrow_move_assignable_v< array_t > )
       {
          m_variant = std::move( a );
       }
@@ -502,12 +502,12 @@ namespace tao::json
          m_variant.template emplace< object_t >( std::forward< Ts >( ts )... );
       }
 
-      void assign_object( const object_t& o )
+      void set_object( const object_t& o )
       {
          m_variant = o;
       }
 
-      void assign_object( object_t&& o ) noexcept( std::is_nothrow_move_assignable_v< object_t > )
+      void set_object( object_t&& o ) noexcept( std::is_nothrow_move_assignable_v< object_t > )
       {
          m_variant = std::move( o );
       }
@@ -540,14 +540,14 @@ namespace tao::json
          return prepare_object().emplace( t );
       }
 
-      void assign_value_ptr( const basic_value* p ) noexcept
+      void set_value_ptr( const basic_value* p ) noexcept
       {
          assert( p );
          m_variant = p;
       }
 
       template< typename T >
-      void assign_opaque_ptr( const T* data, const producer_t producer ) noexcept
+      void set_opaque_ptr( const T* data, const producer_t producer ) noexcept
       {
          assert( data );
          assert( producer );
@@ -558,9 +558,9 @@ namespace tao::json
       }
 
       template< typename T >
-      void assign_opaque_ptr( const T* data ) noexcept
+      void set_opaque_ptr( const T* data ) noexcept
       {
-         assign_opaque_ptr( data, &basic_value::produce_from_opaque_ptr< T > );
+         set_opaque_ptr( data, &basic_value::produce_from_opaque_ptr< T > );
       }
 
       template< typename T >

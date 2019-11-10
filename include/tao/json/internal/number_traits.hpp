@@ -58,7 +58,7 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T i ) noexcept
       {
-         v.assign_signed( i );
+         v.set_signed( i );
       }
 
       template< template< typename... > class Traits >
@@ -129,7 +129,7 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T i ) noexcept
       {
-         v.assign_unsigned( i );
+         v.set_unsigned( i );
       }
 
       template< template< typename... > class Traits >
@@ -206,7 +206,7 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T f ) noexcept
       {
-         v.assign_double( f );
+         v.set_double( f );
       }
 
       template< template< typename... > class Traits >

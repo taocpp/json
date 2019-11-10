@@ -82,7 +82,7 @@ namespace tao::json
                         if( p == &v ) {
                            throw std::runtime_error( "JSON Reference: invalid self reference" );
                         }
-                        v.assign_value_ptr( p );
+                        v.set_value_ptr( p );
                         resolve_references( r, v );
                      }
                      else {

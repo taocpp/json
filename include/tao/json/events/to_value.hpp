@@ -27,27 +27,27 @@ namespace tao::json::events
 
       void null()
       {
-         value.assign_null();
+         value.set_null();
       }
 
       void boolean( const bool v )
       {
-         value.assign_boolean( v );
+         value.set_boolean( v );
       }
 
       void number( const std::int64_t v )
       {
-         value.assign_signed( v );
+         value.set_signed( v );
       }
 
       void number( const std::uint64_t v )
       {
-         value.assign_unsigned( v );
+         value.set_unsigned( v );
       }
 
       void number( const double v )
       {
-         value.assign_double( v );
+         value.set_double( v );
       }
 
       void string( const std::string_view v )

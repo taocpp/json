@@ -73,7 +73,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, null_t /*unused*/ ) noexcept
       {
-         v.assign_null();
+         v.set_null();
       }
 
       template< template< typename... > class Traits, typename Consumer >
@@ -113,7 +113,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const bool b ) noexcept
       {
-         v.assign_boolean( b );
+         v.set_boolean( b );
       }
 
       template< template< typename... > class, typename Producer >
@@ -356,13 +356,13 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::string& s )
       {
-         v.assign_string( s );
+         v.set_string( s );
       }
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, std::string&& s ) noexcept
       {
-         v.assign_string( std::move( s ) );
+         v.set_string( std::move( s ) );
       }
 
       template< template< typename... > class, typename Producer >
@@ -586,13 +586,13 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::vector< std::byte >& x )
       {
-         v.assign_binary( x );
+         v.set_binary( x );
       }
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, std::vector< std::byte >&& x ) noexcept
       {
-         v.assign_binary( std::move( x ) );
+         v.set_binary( std::move( x ) );
       }
 
       template< template< typename... > class, typename Producer >
@@ -758,12 +758,12 @@ namespace tao::json
    {
       static void assign( basic_value< Traits >& v, const std::vector< basic_value< Traits > >& a )
       {
-         v.assign_array( a );
+         v.set_array( a );
       }
 
       static void assign( basic_value< Traits >& v, std::vector< basic_value< Traits > >&& a ) noexcept
       {
-         v.assign_array( std::move( a ) );
+         v.set_array( std::move( a ) );
       }
 
       template< template< typename... > class, typename Consumer >
@@ -794,12 +794,12 @@ namespace tao::json
    {
       static void assign( basic_value< Traits >& v, const std::map< std::string, basic_value< Traits >, std::less<> >& o )
       {
-         v.assign_object( std::move( o ) );
+         v.set_object( std::move( o ) );
       }
 
       static void assign( basic_value< Traits >& v, std::map< std::string, basic_value< Traits >, std::less<> >&& o ) noexcept
       {
-         v.assign_object( std::move( o ) );
+         v.set_object( std::move( o ) );
       }
 
       template< template< typename... > class, typename Consumer >
@@ -832,7 +832,7 @@ namespace tao::json
    {
       static void assign( basic_value< Traits >& v, const basic_value< Traits >* p ) noexcept
       {
-         v.assign_value_ptr( p );
+         v.set_value_ptr( p );
       }
 
       template< template< typename... > class TraitsLL >
@@ -891,7 +891,7 @@ namespace tao::json
             v.assign( *o );
          }
          else {
-            v.assign_null();
+            v.set_null();
          }
       }
 
