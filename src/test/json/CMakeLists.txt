@@ -10,7 +10,12 @@ set(testsources
   cbor_parts_parser.cpp
   contrib_diff.cpp
   contrib_get.cpp
-  contrib_patch.cpp
+  contrib_patch_add.cpp
+  contrib_patch_copy.cpp
+  contrib_patch_move.cpp
+  contrib_patch_remove.cpp
+  contrib_patch_replace.cpp
+  contrib_patch_test.cpp
   contrib_position.cpp
   contrib_reference.cpp
   contrib_schema.cpp
