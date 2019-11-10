@@ -313,10 +313,7 @@ namespace tao::json
 
       [[nodiscard]] std::string_view get_string_type() const
       {
-         if( is_string() ) {
-            return get_string();
-         }
-         return get_string_view();
+         return is_string() ? get_string() : get_string_view();
       }
 
       [[nodiscard]] binary& get_binary()
@@ -336,10 +333,7 @@ namespace tao::json
 
       [[nodiscard]] tao::binary_view get_binary_type() const
       {
-         if( is_binary() ) {
-            return get_binary();
-         }
-         return get_binary_view();
+         return is_binary() ? get_binary() : get_binary_view();
       }
 
       [[nodiscard]] array_t& get_array()
@@ -415,9 +409,9 @@ namespace tao::json
       }
 
       template< typename... Ts >
-      void emplace_string( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
+      std::string& emplace_string( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
       {
-         m_variant.template emplace< std::string >( std::forward< Ts >( ts )... );
+         return m_variant.template emplace< std::string >( std::forward< Ts >( ts )... );
       }
 
       void set_string( const std::string& s )
@@ -436,9 +430,9 @@ namespace tao::json
       }
 
       template< typename... Ts >
-      void emplace_binary( Ts&&... ts ) noexcept( noexcept( binary( std::forward< Ts >( ts )... ) ) )
+      binary& emplace_binary( Ts&&... ts ) noexcept( noexcept( binary( std::forward< Ts >( ts )... ) ) )
       {
-         m_variant.template emplace< binary >( std::forward< Ts >( ts )... );
+         return m_variant.template emplace< binary >( std::forward< Ts >( ts )... );
       }
 
       void set_binary( const binary& x )
@@ -457,9 +451,9 @@ namespace tao::json
       }
 
       template< typename... Ts >
-      void emplace_array( Ts&&... ts ) noexcept( noexcept( array_t( std::forward< Ts >( ts )... ) ) )
+      array_t& emplace_array( Ts&&... ts ) noexcept( noexcept( array_t( std::forward< Ts >( ts )... ) ) )
       {
-         m_variant.template emplace< array_t >( std::forward< Ts >( ts )... );
+         return m_variant.template emplace< array_t >( std::forward< Ts >( ts )... );
       }
 
       void set_array( const array_t& a )
@@ -472,12 +466,9 @@ namespace tao::json
          m_variant = std::move( a );
       }
 
-      decltype( auto ) prepare_array()
+      array_t& prepare_array()
       {
-         if( is_uninitialized() ) {
-            emplace_array();
-         }
-         return get_array();
+         return is_uninitialized() ? emplace_array() : get_array();
       }
 
       void push_back( const basic_value& v )
@@ -497,9 +488,9 @@ namespace tao::json
       }
 
       template< typename... Ts >
-      void emplace_object( Ts&&... ts ) noexcept( noexcept( object_t( std::forward< Ts >( ts )... ) ) )
+      object_t& emplace_object( Ts&&... ts ) noexcept( noexcept( object_t( std::forward< Ts >( ts )... ) ) )
       {
-         m_variant.template emplace< object_t >( std::forward< Ts >( ts )... );
+         return m_variant.template emplace< object_t >( std::forward< Ts >( ts )... );
       }
 
       void set_object( const object_t& o )
@@ -512,12 +503,9 @@ namespace tao::json
          m_variant = std::move( o );
       }
 
-      decltype( auto ) prepare_object()
+      object_t& prepare_object()
       {
-         if( is_uninitialized() ) {
-            emplace_object();
-         }
-         return get_object();
+         return is_uninitialized() ? emplace_object() : get_object();
       }
 
       template< typename... Ts >
