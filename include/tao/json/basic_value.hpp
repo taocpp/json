@@ -378,6 +378,11 @@ namespace tao::json
       }
 
    public:
+      void set_uninitialized() noexcept
+      {
+         m_variant = uninitialized;
+      }
+
       void set_null() noexcept
       {
          m_variant = null;
