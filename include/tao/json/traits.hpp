@@ -75,7 +75,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      [[nodiscard]] static bool less_than( const basic_value< Traits >& lhs, uninitialized_t /*unused*/ ) noexcept
+      [[nodiscard]] static bool less_than( const basic_value< Traits >& /*unused*/, uninitialized_t /*unused*/ ) noexcept
       {
          return false;
       }
