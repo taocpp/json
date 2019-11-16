@@ -181,7 +181,7 @@ namespace tao::json
          v = w;
          TEST_ASSERT( v == true );
          TEST_ASSERT( w == true );
-         TEST_ASSERT( v.public_base().s == base::move_assigned );  // From by-value parameter to basic_value::operator=.
+         TEST_ASSERT( v.public_base().s == base::move_assigned );          // From by-value parameter to basic_value::operator=.
          TEST_ASSERT( w.public_base().s == base::copy_constructed_from );  // To by-value parameter to basic_value::operator=.
          TEST_ASSERT( v.public_base().number == 2 );
          TEST_ASSERT( w.public_base().number == 2 );
