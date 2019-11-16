@@ -56,6 +56,7 @@ set(testsources
   validate_event_interfaces.cpp
   validate_utf8.cpp
   value_access.cpp
+  value_basics.cpp
   value_create.cpp
   value_ptr.cpp
   value_subscript.cpp
