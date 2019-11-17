@@ -77,7 +77,7 @@ namespace tao::json
       template< template< typename... > class Traits >
       [[nodiscard]] static bool less_than( const basic_value< Traits >& /*unused*/, uninitialized_t /*unused*/ ) noexcept
       {
-         return false;
+         return false;  // Because std::underlying_type_t< tao::json::type > is unsigned and type::uninitialized is 0.
       }
 
       template< template< typename... > class Traits >
@@ -701,7 +701,7 @@ namespace tao::json
       }
 
       template< template< typename... > class Traits >
-      static void assign( basic_value< Traits >& v, const tao::binary_view xv ) noexcept
+      static void assign( basic_value< Traits >& v, const tao::binary_view xv )
       {
          v.emplace_binary( xv.begin(), xv.end() );
       }
