@@ -3,10 +3,11 @@
 
 #include <limits>
 
-#include "test.hpp"
-
 #include <tao/json/from_string.hpp>
 #include <tao/json/value.hpp>
+
+#include "test.hpp"
+#include "test_types.hpp"
 
 namespace tao::json
 {
@@ -14,35 +15,15 @@ namespace tao::json
    {
       const value v{};
 
-      TEST_ASSERT( !v );
-
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_value_ptr() );
-      TEST_ASSERT( !v.is_integer() );
-      TEST_ASSERT( !v.is_number() );
-
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_object() );
-
-      TEST_ASSERT( v.type() == type::UNINITIALIZED );
+      assert_uninitialized( v );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
 
       value u = v;
-      TEST_ASSERT( u.type() == type::UNINITIALIZED );
+
+      assert_uninitialized( u );
+
       TEST_ASSERT( u == v );
       TEST_ASSERT( u <= v );
       TEST_ASSERT( u >= v );
@@ -51,7 +32,9 @@ namespace tao::json
       TEST_ASSERT( !( u > v ) );
 
       const value w = std::move( u );
-      TEST_ASSERT( w.type() == type::UNINITIALIZED );
+
+      assert_uninitialized( w );
+
       TEST_ASSERT( w == v );
       TEST_ASSERT( w <= v );
       TEST_ASSERT( w >= v );
@@ -60,7 +43,9 @@ namespace tao::json
       TEST_ASSERT( !( w > v ) );
 
       u = uninitialized;
-      TEST_ASSERT( u.type() == type::UNINITIALIZED );
+
+      assert_uninitialized( u );
+
       TEST_ASSERT( u == v );
    }
 
@@ -69,67 +54,26 @@ namespace tao::json
       const value v = null;
       const value v2( v );
 
-      TEST_ASSERT( v );
-
-      TEST_ASSERT( v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_value_ptr() );
-      TEST_ASSERT( !v.is_integer() );
-      TEST_ASSERT( !v.is_number() );
-
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_object() );
-
-      TEST_ASSERT( v.type() == type::NULL_ );
+      assert_null( v );
+      assert_null( v2 );
 
       const value u( null );
 
-      TEST_ASSERT( u.type() == type::NULL_ );
+      assert_null( u );
+
       TEST_ASSERT( u == v );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
    }
 
-   void test_bool( const bool b )
+   void test_boolean( const bool b )
    {
       const value v( b );
       const value v2( v );
 
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_value_ptr() );
-      TEST_ASSERT( !v.is_integer() );
-      TEST_ASSERT( !v.is_number() );
-
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_object() );
-      TEST_THROWS( v.get_value_ptr() );
-
-      TEST_ASSERT( v.type() == type::BOOLEAN );
-      TEST_ASSERT( v.get_boolean() == b );
-      TEST_ASSERT( v.get_boolean() == b );
+      assert_boolean( v, b );
+      assert_boolean( v2, b );
 
       TEST_ASSERT( v == v );
       TEST_ASSERT( value( b ) == v );
@@ -145,27 +89,9 @@ namespace tao::json
       const value v( t );
       const value v2( v );
 
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_value_ptr() );
-      TEST_ASSERT( v.is_integer() );
-      TEST_ASSERT( v.is_number() );
+      assert_signed( v );
+      assert_signed( v2 );
 
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_object() );
-      TEST_THROWS( v.get_value_ptr() );
-
-      TEST_ASSERT( v.type() == type::SIGNED );
       TEST_ASSERT( v.get_signed() == t );
       TEST_ASSERT( v.get_signed() == t );
 
@@ -191,27 +117,9 @@ namespace tao::json
       const value v( t );
       const value v2( v );
 
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_value_ptr() );
-      TEST_ASSERT( v.is_integer() );
-      TEST_ASSERT( v.is_number() );
+      assert_unsigned( v );
+      assert_unsigned( v2 );
 
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_object() );
-      TEST_THROWS( v.get_value_ptr() );
-
-      TEST_ASSERT( v.type() == type::UNSIGNED );
       TEST_ASSERT( v.get_unsigned() == t );
       TEST_ASSERT( v.get_unsigned() == t );
 
@@ -234,26 +142,9 @@ namespace tao::json
       const value v( d );
       const value v2( v );
 
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_integer() );
-      TEST_ASSERT( v.is_number() );
+      assert_double( v );
+      assert_double( v2 );
 
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_object() );
-      TEST_THROWS( v.get_value_ptr() );
-
-      TEST_ASSERT( v.type() == type::DOUBLE );
       TEST_ASSERT( v.get_double() == d );
       TEST_ASSERT( v.get_double() == d );
 
@@ -412,8 +303,8 @@ namespace tao::json
 
       test_null();
 
-      test_bool( true );
-      test_bool( false );
+      test_boolean( true );
+      test_boolean( false );
 
       test_signed< signed char >();
       test_signed< signed short >();

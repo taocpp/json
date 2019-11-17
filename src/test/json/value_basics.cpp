@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "test.hpp"
+#include "test_types.hpp"
 
 #include <tao/json/value.hpp>
 
@@ -93,7 +94,24 @@ namespace tao::json
    {
       {
          value v;
-         TEST_ASSERT( v.is_uninitialized() );
+         assert_uninitialized( v );
+         v.set_null();
+         assert_null( v );
+         v.set_uninitialized();
+         assert_uninitialized( v );
+         v.set_boolean( true );
+         assert_boolean( v, true );
+         v.set_signed( -1 );
+         assert_signed( v );
+         TEST_ASSERT( v.get_signed() == -1 );
+         v.set_unsigned( 2 );
+         assert_unsigned( v );
+         TEST_ASSERT( v.get_unsigned() == 2 );
+         v.set_double( 42.0 );
+         assert_double( v );
+         TEST_ASSERT( v.get_double() == 42.0 );
+         v.set_boolean( false );
+         assert_boolean( v, false );
       }
       {
          value v = 42;
