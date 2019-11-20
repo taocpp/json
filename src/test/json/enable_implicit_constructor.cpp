@@ -2,6 +2,7 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include "test.hpp"
+#include "test_types.hpp"
 
 #include <tao/json/value.hpp>
 
@@ -23,29 +24,29 @@ namespace tao::json
       static constexpr const bool enable_implicit_constructor = false;
    };
 
-   [[nodiscard]] type test( const basic_value< my_traits >& v )
+   [[nodiscard]] auto force( const basic_value< my_traits >& v )
    {
-      return v.type();
+      return v;
    }
 
    void unit_test()
    {
-      TEST_ASSERT( test( null ) == type::NULL_ );
-      TEST_ASSERT( test( empty_string ) == type::STRING );
-      TEST_ASSERT( test( empty_binary ) == type::BINARY );
-      TEST_ASSERT( test( empty_array ) == type::ARRAY );
-      TEST_ASSERT( test( empty_object ) == type::OBJECT );
+      assert_null( force( null ) );
+      assert_string( force( empty_string ), "" );
+      assert_binary( force( empty_binary ), binary() );
+      assert_array( force( empty_array ), 0 );
+      assert_object( force( empty_object ), 0 );
 
       basic_value< my_traits > v = null;
-      TEST_ASSERT( v.is_null() );
+      assert_null( v );
       v = empty_string;
-      TEST_ASSERT( v.is_string() );
+      assert_string( v, "" );
       v = empty_binary;
-      TEST_ASSERT( v.is_binary() );
+      assert_binary( v, binary() );
       v = empty_array;
-      TEST_ASSERT( v.is_array() );
+      assert_array( v, 0 );
       v = empty_object;
-      TEST_ASSERT( v.is_object() );
+      assert_object( v, 0 );
    }
 
 }  // namespace tao::json

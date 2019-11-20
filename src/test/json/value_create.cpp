@@ -89,11 +89,8 @@ namespace tao::json
       const value v( t );
       const value v2( v );
 
-      assert_signed( v );
-      assert_signed( v2 );
-
-      TEST_ASSERT( v.get_signed() == t );
-      TEST_ASSERT( v.get_signed() == t );
+      assert_signed( v, t );
+      assert_signed( v2, t );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -117,11 +114,8 @@ namespace tao::json
       const value v( t );
       const value v2( v );
 
-      assert_unsigned( v );
-      assert_unsigned( v2 );
-
-      TEST_ASSERT( v.get_unsigned() == t );
-      TEST_ASSERT( v.get_unsigned() == t );
+      assert_unsigned( v, t );
+      assert_unsigned( v2, t );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -142,11 +136,8 @@ namespace tao::json
       const value v( d );
       const value v2( v );
 
-      assert_double( v );
-      assert_double( v2 );
-
-      TEST_ASSERT( v.get_double() == d );
-      TEST_ASSERT( v.get_double() == d );
+      assert_double( v, d );
+      assert_double( v2, d );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -155,33 +146,13 @@ namespace tao::json
    template< unsigned N >
    void test_string( const char ( &s )[ N ] )
    {
+      const std::string t = s;
+
       const value v( s );
       const value v2( v );
 
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_integer() );
-      TEST_ASSERT( !v.is_number() );
-
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_object() );
-      TEST_THROWS( v.get_value_ptr() );
-
-      TEST_ASSERT( v.type() == type::STRING );
-      TEST_ASSERT( v.get_string() == s );
-      TEST_ASSERT( v.get_string() == s );
-
-      const std::string t = s;
+      assert_string( v, t );
+      assert_string( v2, t );
 
       TEST_ASSERT( v.get_string() == value( t ).get_string() );
       TEST_ASSERT( v.get_string() == value( std::string( s ) ).get_string() );
@@ -196,29 +167,10 @@ namespace tao::json
    {
       const value v2( v );
 
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( v.is_array() );
-      TEST_ASSERT( !v.is_object() );
-      TEST_ASSERT( !v.is_value_ptr() );
-      TEST_ASSERT( !v.is_integer() );
-      TEST_ASSERT( !v.is_number() );
+      assert_array( v, 0 );
+      assert_array( v2, 0 );
 
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_object() );
-      TEST_THROWS( v.get_value_ptr() );
-
-      TEST_ASSERT( v.type() == type::ARRAY );
-      TEST_ASSERT( v.get_array().empty() );
-      TEST_ASSERT( v.get_array().empty() );
+      TEST_ASSERT( v == v2 );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -228,28 +180,10 @@ namespace tao::json
    {
       const value v2( v );
 
-      TEST_ASSERT( !v.is_null() );
-      TEST_ASSERT( !v.is_boolean() );
-      TEST_ASSERT( !v.is_signed() );
-      TEST_ASSERT( !v.is_unsigned() );
-      TEST_ASSERT( !v.is_double() );
-      TEST_ASSERT( !v.is_string() );
-      TEST_ASSERT( !v.is_array() );
-      TEST_ASSERT( v.is_object() );
-      TEST_ASSERT( !v.is_integer() );
-      TEST_ASSERT( !v.is_number() );
+      assert_object( v, 0 );
+      assert_object( v2, 0 );
 
-      TEST_THROWS( v.get_boolean() );
-      TEST_THROWS( v.get_signed() );
-      TEST_THROWS( v.get_unsigned() );
-      TEST_THROWS( v.get_double() );
-      TEST_THROWS( v.get_string() );
-      TEST_THROWS( v.get_array() );
-      TEST_THROWS( v.get_value_ptr() );
-
-      TEST_ASSERT( v.type() == type::OBJECT );
-      TEST_ASSERT( v.get_object().empty() );
-      TEST_ASSERT( v.get_object().empty() );
+      TEST_ASSERT( v == v2 );
 
       TEST_THROWS( v.at( 0 ) );
       TEST_THROWS( v.at( "foo" ) );
@@ -260,9 +194,7 @@ namespace tao::json
       const value v = value::array( { 1, 2, 3, 4 } );
       const value v2( v );
 
-      TEST_ASSERT( v.is_array() );
-      TEST_ASSERT( !v.is_number() );
-      TEST_ASSERT( v.type() == type::ARRAY );
+      assert_array( v, 4 );
 
       const std::vector< value > r = { value( 1 ), value( 2 ), value( 3 ), value( 4 ) };
 
@@ -288,9 +220,7 @@ namespace tao::json
       const value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
       const value v2( v );
 
-      TEST_ASSERT( v.is_object() );
-      TEST_ASSERT( !v.is_number() );
-      TEST_ASSERT( v.type() == type::OBJECT );
+      assert_object( v, 3 );
 
       // TODO: Add more tests
 
@@ -329,56 +259,48 @@ namespace tao::json
 
          v = null;
 
-         TEST_ASSERT( v.type() == type::NULL_ );
+         assert_null( v );
 
          v = true;
 
-         TEST_ASSERT( v.type() == type::BOOLEAN );
-         TEST_ASSERT( v.get_boolean() );
+         assert_boolean( v, true );
 
          v = 1;
 
-         TEST_ASSERT( v.type() == type::SIGNED );
-         TEST_ASSERT( v.get_signed() == 1 );
+         assert_signed( v, 1 );
 
          v = 1U;
 
-         TEST_ASSERT( v.type() == type::UNSIGNED );
-         TEST_ASSERT( v.get_unsigned() == 1U );
+         assert_unsigned( v, 1 );
 
          v = 2.0;
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
-         TEST_ASSERT( v.get_double() == 2.0 );
+         assert_double( v, 2.0 );
 
          v = "hallo";
 
-         TEST_ASSERT( v.type() == type::STRING );
-         TEST_ASSERT( v.get_string() == "hallo" );
+         assert_string( v, "hallo" );
 
          v = a;
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
-         TEST_ASSERT( v.get_double() == a );
+         assert_double( v, a );
 
          v = std::vector< value >();
 
-         TEST_ASSERT( v.type() == type::ARRAY );
-         TEST_ASSERT( v.get_array().empty() );
+         assert_array( v, 0 );
 
          v = b;
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
+         assert_double( v, std::nullopt );
          TEST_ASSERT( std::isnan( v.get_double() ) );
 
          v = std::map< std::string, value, std::less<> >();
 
-         TEST_ASSERT( v.type() == type::OBJECT );
-         TEST_ASSERT( v.get_object().empty() );
+         assert_object( v, 0 );
 
          v = c;
 
-         TEST_ASSERT( v.type() == type::DOUBLE );
+         assert_double( v, std::nullopt );
          TEST_ASSERT( std::isnan( v.get_double() ) );
       }
 
