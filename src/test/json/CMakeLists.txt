@@ -23,6 +23,7 @@ set(testsources
   double.cpp
   enable_implicit_constructor.cpp
   escape.cpp
+  events_binary_to.cpp
   events_compare.cpp
   events_debug.cpp
   events_hash.cpp
