@@ -24,6 +24,7 @@ set (examplesources
   msgpack_to_pretty_jaxn.cpp
   msgpack_to_pretty_json.cpp
   msgpack_to_ubjson.cpp
+  printf_doubles.cpp
   ubjson_to_cbor.cpp
   ubjson_to_jaxn.cpp
   ubjson_to_json.cpp
