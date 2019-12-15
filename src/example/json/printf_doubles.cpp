@@ -24,6 +24,16 @@ namespace tao::json::events
          const std::size_t n = std::snprintf( buffer, sizeof( buffer ), "%0.2f", v );
          os.write( buffer, n );
       }
+
+      void number( const std::int64_t v )
+      {
+         to_stream::number( v );
+      }
+
+      void number( const std::uint64_t v )
+      {
+         to_stream::number( v );
+      }
    };
 
 }  // namespace tao::json::events
