@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2019 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2020 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAO_JSON_INTERNAL_UNESCAPE_ACTION_HPP

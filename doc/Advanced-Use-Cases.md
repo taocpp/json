@@ -80,4 +80,4 @@ void example( const std::string& filename )
 
 Writing a recursive function that takes any value with positions and prints the types and line numbers of all sub-values is left as an exercise to the reader.
 
-Copyright (c) 2018-2019 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2020 Dr. Colin Hirsch and Daniel Frey

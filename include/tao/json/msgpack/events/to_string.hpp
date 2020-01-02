@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2019 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2020 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAO_JSON_MSGPACK_EVENTS_TO_STRING_HPP
