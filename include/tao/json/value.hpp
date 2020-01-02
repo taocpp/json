@@ -5,13 +5,8 @@
 #define TAO_JSON_VALUE_HPP
 
 #include "basic_value.hpp"
+#include "forward.hpp"
 #include "operators.hpp"
 #include "traits.hpp"
-
-namespace tao::json
-{
-   using value = basic_value< traits >;
-
-}  // namespace tao::json
 
 #endif

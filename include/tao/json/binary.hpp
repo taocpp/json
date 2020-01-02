@@ -9,6 +9,12 @@
 
 #include "external/pegtl/internal/always_false.hpp"
 
+namespace tao
+{
+   using binary = std::vector< std::byte >;
+
+}  // namespace tao
+
 namespace tao::json
 {
    namespace internal

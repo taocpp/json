@@ -26,6 +26,7 @@
 #include "internal/single.hpp"
 #include "internal/type_traits.hpp"
 
+#include "binary.hpp"
 #include "binary_view.hpp"
 #include "forward.hpp"
 #include "message_extension.hpp"

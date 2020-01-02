@@ -4,48 +4,41 @@
 #ifndef TAO_JSON_FORWARD_HPP
 #define TAO_JSON_FORWARD_HPP
 
-#include <cstddef>
-#include <vector>
-
-namespace tao
+namespace tao::json
 {
-   using binary = std::vector< std::byte >;
-
-   namespace json
+   namespace events
    {
-      namespace events
+      class virtual_base;
+
+   }  // namespace events
+
+   template< typename T, typename = void >
+   struct traits
+   {};
+
+   template< template< typename... > class Traits >
+   class basic_value;
+
+   using value = basic_value< traits >;
+
+   using producer_t = void ( * )( events::virtual_base&, const void* );
+
+   namespace internal
+   {
+      struct opaque_ptr_t
       {
-         class virtual_base;
-
-      }  // namespace events
-
-      template< typename T, typename = void >
-      struct traits
-      {};
+         const void* data;
+         producer_t producer;
+      };
 
       template< template< typename... > class Traits >
-      class basic_value;
+      struct single;
 
-      using producer_t = void ( * )( events::virtual_base&, const void* );
+      template< template< typename... > class Traits >
+      struct pair;
 
-      namespace internal
-      {
-         struct opaque_ptr_t
-         {
-            const void* data;
-            producer_t producer;
-         };
+   }  // namespace internal
 
-         template< template< typename... > class Traits >
-         struct single;
-
-         template< template< typename... > class Traits >
-         struct pair;
-
-      }  // namespace internal
-
-   }  // namespace json
-
-}  // namespace tao
+}  // namespace tao::json
 
 #endif
