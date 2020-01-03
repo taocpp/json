@@ -890,29 +890,29 @@ namespace tao::json
          }
       }
 
-      basic_value& insert( const pointer& k, basic_value value )
+      basic_value& insert( const pointer& k, basic_value in )
       {
          if( !k ) {
-            *this = std::move( value );
+            *this = std::move( in );
             return *this;
          }
          const auto b = k.begin();
          const auto e = std::prev( k.end() );
          basic_value& v = internal::pointer_at( this, b, e );
          if( v.is_object() ) {
-            return v.get_object().insert_or_assign( e->key(), std::move( value ) ).first->second;
+            return v.get_object().insert_or_assign( e->key(), std::move( in ) ).first->second;
          }
          if( v.is_array() ) {
             auto& a = v.get_array();
             if( e->key() == "-" ) {
-               v.emplace_back( std::move( value ) );
+               v.emplace_back( std::move( in ) );
                return a.back();
             }
             const auto i = e->index();
             if( i >= a.size() ) {
                throw std::out_of_range( internal::format( "invalid JSON Pointer \"", internal::tokens_to_string( b, std::next( e ) ), "\", array index '", i, "' out of bound '", a.size(), '\'', json::message_extension( *this ) ) );
             }
-            a.insert( a.begin() + i, std::move( value ) );
+            a.insert( a.begin() + i, std::move( in ) );
             return a.at( i );
          }
          throw internal::invalid_type( b, std::next( e ) );
