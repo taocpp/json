@@ -21,18 +21,18 @@ namespace tao::json
       std::int64_t i = 0;
       value v = 4;
 
-      v.visit( overloaded{
+      std::visit( overloaded{
          [&]( const std::int64_t a ) { i = a; },
-         []( auto&& t ) { std::cerr << typeid( t ).name() << std::endl; } } );
+         []( auto&& t ) { std::cerr << typeid( t ).name() << std::endl; } }, v.variant() );
 
       TEST_ASSERT( i == 4 );
 
       std::string s;
       const value w = "dalek";
 
-      w.visit( overloaded{
+      std::visit( overloaded{
          [&]( const std::string& a ) { s = a; },
-         []( auto&& t ) { std::cerr << typeid( t ).name() << std::endl; } } );
+         []( auto&& t ) { std::cerr << typeid( t ).name() << std::endl; } }, w.variant() );
 
       TEST_ASSERT( s == "dalek" );
    }

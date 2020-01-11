@@ -918,16 +918,14 @@ namespace tao::json
          throw internal::invalid_type( b, std::next( e ) );
       }
 
-      template< typename Visitor >
-      auto visit( Visitor&& vis )
+      variant_t& variant() noexcept
       {
-         return std::visit( std::forward< Visitor >( vis ), m_variant );
+         return m_variant;
       }
 
-      template< typename Visitor >
-      auto visit( Visitor&& vis ) const
+      const variant_t& variant() const noexcept
       {
-         return std::visit( std::forward< Visitor >( vis ), m_variant );
+         return m_variant;
       }
 
    private:
