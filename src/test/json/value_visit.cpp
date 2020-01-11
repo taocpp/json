@@ -7,30 +7,32 @@
 
 namespace tao::json
 {
-   template< class... Fs > struct overloaded : Fs... { using Fs::operator()...; };
-   template< class... Fs > overloaded( Fs... ) -> overloaded< Fs... >;
+   template< class... Fs >
+   struct overloaded : Fs...
+   {
+      using Fs::operator()...;
+   };
+
+   template< class... Fs >
+   overloaded( Fs... )->overloaded< Fs... >;
 
    void unit_test()
    {
-      int i = 0;
+      std::int64_t i = 0;
       value v = 4;
 
-      v.visit( overloaded
-               {
-                  [&]( const std::int64_t a ) { i = a; },
-                  []( auto&& t ){ std::cerr << typeid( t ).name() << std::endl; }
-               } );
+      v.visit( overloaded{
+         [&]( const std::int64_t a ) { i = a; },
+         []( auto&& t ) { std::cerr << typeid( t ).name() << std::endl; } } );
 
       TEST_ASSERT( i == 4 );
 
       std::string s;
       const value w = "dalek";
 
-      w.visit( overloaded
-               {
-                  [&]( const std::string& a ) { s = a; },
-                  []( auto&& t ){ std::cerr << typeid( t ).name() << std::endl; }
-               } );
+      w.visit( overloaded{
+         [&]( const std::string& a ) { s = a; },
+         []( auto&& t ) { std::cerr << typeid( t ).name() << std::endl; } } );
 
       TEST_ASSERT( s == "dalek" );
    }

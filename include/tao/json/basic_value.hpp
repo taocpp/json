@@ -921,13 +921,13 @@ namespace tao::json
       template< typename Visitor >
       auto visit( Visitor&& vis )
       {
-         return std::visit( vis, m_variant );
+         return std::visit( std::forward< Visitor >( vis ), m_variant );
       }
 
       template< typename Visitor >
       auto visit( Visitor&& vis ) const
       {
-         return std::visit( vis, m_variant );
+         return std::visit( std::forward< Visitor >( vis ), m_variant );
       }
 
    private:
