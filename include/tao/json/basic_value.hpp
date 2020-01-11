@@ -918,6 +918,18 @@ namespace tao::json
          throw internal::invalid_type( b, std::next( e ) );
       }
 
+      template< typename Visitor >
+      auto visit( Visitor&& vis )
+      {
+         return std::visit( vis, m_variant );
+      }
+
+      template< typename Visitor >
+      auto visit( Visitor&& vis ) const
+      {
+         return std::visit( vis, m_variant );
+      }
+
    private:
       template< typename T >
       static void produce_from_opaque_ptr( events::virtual_base& consumer, const void* raw )
