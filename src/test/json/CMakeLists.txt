@@ -61,7 +61,6 @@ set(testsources
   value_create.cpp
   value_ptr.cpp
   value_subscript.cpp
-  value_visit.cpp
   with_arguments.cpp
 )
 
