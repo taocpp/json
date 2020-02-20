@@ -432,28 +432,28 @@ The following member functions of class `tao::json::value` bypass the Type Trait
 
 | Value Class Member Function | Remarks |
 |-----------------------------|---------|
-| `void assign_null() noexcept` ||
-| `void assign_boolean( const bool ) noexcept` ||
-| `void assign_signed( const std::int64_t ) noexcept` ||
-| `void assign_unsigned( const std::uint64_t ) noexcept` ||
-| `void assign_double( const double ) noexcept` ||
-| `void assign_string( std::string&& ) noexcept` ||
-| `void assign_string( const std::string& )` ||
-| `void assign_string_view( const tao::string_view ) noexcept` ||
+| `void set_null() noexcept` ||
+| `void set_boolean( const bool ) noexcept` ||
+| `void set_signed( const std::int64_t ) noexcept` ||
+| `void set_unsigned( const std::uint64_t ) noexcept` ||
+| `void set_double( const double ) noexcept` ||
+| `void set_string( std::string&& ) noexcept` ||
+| `void set_string( const std::string& )` ||
+| `void set_string_view( const tao::string_view ) noexcept` ||
 | `template< typename... Ts > void emplace_string( Ts&&... )` | `noexcept` depending on arguments |
-| `void assign_binary( std::vector< tao::byte >&& ) noexcept` ||
-| `void assign_binary( const std::vector< tao::byte >& )` ||
-| `void assign_binary_view( const tao::binary_view ) noexcept` ||
+| `void set_binary( std::vector< tao::byte >&& ) noexcept` ||
+| `void set_binary( const std::vector< tao::byte >& )` ||
+| `void set_binary_view( const tao::binary_view ) noexcept` ||
 | `template< typename... Ts > void emplace_binary( Ts&&... )` | `noexcept` depending on arguments |
-| `void assign_array( std::vector< value >&& ) noexcept` ||
-| `void assign_array( const std::vector< value >& )` ||
+| `void set_array( std::vector< value >&& ) noexcept` ||
+| `void set_array( const std::vector< value >& )` ||
 | `template< typename... Ts > void emplace_array( Ts&&... )` | `noexcept` depending on arguments |
-| `void assign_object( std::map< std::string, value >&& ) noexcept` ||
-| `void assign_object( const std::map< std::string, value >& )` ||
+| `void set_object( std::map< std::string, value >&& ) noexcept` ||
+| `void set_object( const std::map< std::string, value >& )` ||
 | `template< typename... Ts > void emplace_object( Ts&&... )` | `noexcept` depending on arguments |
-| `void assign_value_ptr( const value* ) noexcept` ||
-| `template< typename T > void assign_opaque_ptr( T* ) noexcept` ||
-| `template< typename T > void assign_opaque_ptr( T*, const producer_t ) noexcept` ||
+| `void set_value_ptr( const value* ) noexcept` ||
+| `template< typename T > void set_opaque_ptr( T* ) noexcept` ||
+| `template< typename T > void set_opaque_ptr( T*, const producer_t ) noexcept` ||
 
 Remember that the functions `tao::json::value::get_array()` and `tao::json::value::get_object()` are actually `tao::json::basic_value< Traits, Base >::get_array()` and `tao::json::basic_value< Traits, Base >::get_object()`, and that the sub-values of the returned containers have the same `Traits` and `Base` class as the Value on which the method was invoked.
 
