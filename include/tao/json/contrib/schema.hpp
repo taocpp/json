@@ -229,7 +229,7 @@ namespace tao::json
             m_flags = m_flags | v;
          }
 
-         void add_type( const std::string& v )
+         void add_type( const std::string_view v )
          {
             if( !v.empty() ) {
                switch( v[ 0 ] ) {
@@ -268,7 +268,7 @@ namespace tao::json
                      break;
                }
             }
-            throw std::runtime_error( "invalid JSON Schema: invalid primitive type '" + v + '\'' );
+            throw std::runtime_error( "invalid JSON Schema: invalid primitive type '" + std::string( v ) + '\'' );
          }
 
          [[nodiscard]] const basic_value< Traits >* find( const char* s ) const
@@ -307,14 +307,14 @@ namespace tao::json
             if( const auto* p = find( "type" ) ) {
                switch( p->type() ) {
                   case type::STRING:
-                     add_type( p->get_string() );
+                     add_type( p->get_string_type() );
                      break;
                   case type::ARRAY:
                      for( const auto& e : p->get_array() ) {
                         if( !e.is_string() ) {
                            throw std::runtime_error( "invalid JSON Schema: elements in array \"type\" must be of type 'string'" );
                         }
-                        add_type( e.get_string() );
+                        add_type( e.get_string_type() );
                      }
                      break;
                   default:
