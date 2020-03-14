@@ -14,6 +14,11 @@
                 "valid": true
             },
             {
+                "description": "exact length for unicode strings is valid",
+                "data": "ää",
+                "valid": true
+            },
+            {
                 "description": "too long is invalid",
                 "data": "foo",
                 "valid": false
