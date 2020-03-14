@@ -108,6 +108,15 @@ namespace tao::json
          return true;
       }
 
+      [[nodiscard]] std::size_t unicode_size( const std::string_view v ) noexcept
+      {
+         std::size_t r = 0;
+         for( char c : v ) {
+            r += ( ( c & 0xC0 ) != 0x80 );
+         }
+         return r;
+      }
+
       enum schema_flags
       {
          NONE = 0,
@@ -1226,10 +1235,10 @@ namespace tao::json
 
          void validate_string( const std::string_view v )
          {
-            if( m_node->m_flags & HAS_MAX_LENGTH && v.size() > m_node->m_max_length ) {
+            if( ( m_node->m_flags & HAS_MAX_LENGTH ) && ( unicode_size( v ) > m_node->m_max_length ) ) {
                m_match = false;
             }
-            if( m_node->m_flags & HAS_MIN_LENGTH && v.size() < m_node->m_min_length ) {
+            if( ( m_node->m_flags & HAS_MIN_LENGTH ) && ( unicode_size( v ) < m_node->m_min_length ) ) {
                m_match = false;
             }
             if( m_match && m_node->m_pattern ) {
