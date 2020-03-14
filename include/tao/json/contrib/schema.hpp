@@ -108,7 +108,7 @@ namespace tao::json
          return true;
       }
 
-      [[nodiscard]] std::size_t unicode_size( const std::string_view v ) noexcept
+      [[nodiscard]] inline std::size_t unicode_size( const std::string_view v ) noexcept
       {
          std::size_t r = 0;
          for( char c : v ) {
