@@ -133,18 +133,6 @@ matrix:
         - CXX=clang++-8
         - CPPFLAGS=-fsanitize=address
 
-    - language: python
-      python:
-        - "3.6"
-      sudo: required
-      install:
-        - pip install conan conan-package-tools
-      env:
-        - CONAN_GCC_VERSIONS=7
-        - CONAN_DOCKER_IMAGE=lasote/conangcc7
-      script:
-        - python .conan/build.py
-
     - compiler: gcc
       addons:
         apt:
