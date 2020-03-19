@@ -97,7 +97,7 @@ namespace tao::json::jaxn::internal
    template<> inline const std::string errors< rules::bchars< '\'' > >::error_message = "invalid character in binary string";
    template<> inline const std::string errors< rules::bqstring_content< '"' > >::error_message = "unterminated binary string";
    template<> inline const std::string errors< rules::bqstring_content< '\'' > >::error_message = "unterminated binary string";
-   template<> inline const std::string errors< rules::bvalue >::error_message = "expected binary";
+   template<> inline const std::string errors< rules::binary_fragment >::error_message = "expected binary";
    template<> inline const std::string errors< rules::bpart >::error_message = "expected a pair of hexadecimal digits";
 
    template<> inline const std::string errors< pegtl::eof >::error_message = "unexpected character after JAXN value";

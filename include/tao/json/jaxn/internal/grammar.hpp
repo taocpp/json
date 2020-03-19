@@ -191,9 +191,9 @@ namespace tao::json::jaxn::internal
 
       struct bdirect : list_must< bpart, one< '.' > > {};
 
-      struct bvalue : seq< binary_prefix, opt< sor< bstring, bdirect > > > {};
+      struct binary_fragment : seq< binary_prefix, opt< sor< bstring, bdirect > > > {};
 
-      struct binary : list_must< bvalue, value_concat > {};
+      struct binary : list_must< binary_fragment, value_concat > {};
 
       struct value;
 
