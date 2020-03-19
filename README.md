@@ -1,7 +1,7 @@
 # Welcome to taoJSON
 
 [![Release](https://img.shields.io/github/release/taocpp/json.svg)](https://github.com/taocpp/json/releases/latest)
-[![Download](https://api.bintray.com/packages/taocpp/public-conan/json%3Ataocpp/images/download.svg)](https://bintray.com/taocpp/public-conan/json%3Ataocpp/_latestVersion)
+[![Download](https://api.bintray.com/packages/conan/conan-center/taocpp-json%3A_/images/download.svg)](https://bintray.com/conan/conan-center/taocpp-json%3A_/_latestVersion)
 [![TravisCI](https://travis-ci.org/taocpp/json.svg)](https://travis-ci.org/taocpp/json)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
 [![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
@@ -57,6 +57,15 @@ The library is stable as in "works correctly" over months of multiple real-world
 The library is not stable as in "under construction"; some parts of the API are under discussion and development and might change and/or be extended before version 1.0.
 
 This library also serves as a real-world example application of the [Parsing Expression Grammar Template Library (PEGTL)], which is used for parsing the JSON and JAXN representation formats.
+
+## Package Managers
+
+You can download and install taoJSON using the [Conan](https://github.com/conan-io/conan) package manager:
+
+    conan install taocpp-json/1.0.0-beta.11@
+
+The taocpp-json package in conan is kept up to date by Conan team members and community contributors.
+If the version is out-of-date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the Conan Center Index repository.
 
 ## Contact
 
