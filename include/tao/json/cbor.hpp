@@ -8,6 +8,7 @@
 
 #include "cbor/consume_file.hpp"
 #include "cbor/consume_string.hpp"
+#include "cbor/from_binary.hpp"
 #include "cbor/from_file.hpp"
 #include "cbor/from_input.hpp"
 #include "cbor/from_string.hpp"
