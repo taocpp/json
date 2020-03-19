@@ -60,11 +60,12 @@ This library also serves as a real-world example application of the [Parsing Exp
 
 ## Package Managers
 
-You can download and install taopq using the [Conan](https://github.com/conan-io/conan) package manager:
+You can download and install taoJSON using the [Conan](https://github.com/conan-io/conan) package manager:
 
     conan install taocpp-json/1.0.0-beta.11@
 
-The taopq package in conan is kept up to date by Conan team members and community contributors. If the version is out-of-date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the Conan Center Index repository.
+The taocpp-json package in conan is kept up to date by Conan team members and community contributors.
+If the version is out-of-date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the Conan Center Index repository.
 
 ## Contact
 

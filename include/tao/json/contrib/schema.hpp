@@ -340,6 +340,9 @@ namespace tao::json
                m_flags = m_flags | HAS_ENUM;
             }
 
+            // const
+            // TODO: Implement me!
+
             // allOf
             if( const auto* p = find( "allOf" ) ) {
                if( !p->is_array() ) {
@@ -387,6 +390,9 @@ namespace tao::json
                m_referenced_pointers.insert( p );
                m_not = p;
             }
+
+            // dependentSchemas
+            // TODO: Implement me!
 
             // definitions
             if( const auto* p = find( "definitions" ) ) {
@@ -609,6 +615,12 @@ namespace tao::json
                m_additional_items = p;
             }
 
+            // unevaluatedItems
+            // TODO: Implement me!
+
+            // contains
+            // TODO: Implement me!
+
             // maxItems
             if( const auto* p = find( "maxItems" ) ) {
                switch( p->type() ) {
@@ -655,6 +667,12 @@ namespace tao::json
                   m_flags = m_flags | HAS_UNIQUE_ITEMS;
                }
             }
+
+            // maxContains
+            // TODO: Implement me!
+
+            // minContains
+            // TODO: Implement me!
 
             // maxProperties
             if( const auto* p = find( "maxProperties" ) ) {
@@ -711,6 +729,9 @@ namespace tao::json
                }
             }
 
+            // dependentRequired
+            // TODO: Implement me!
+
             // properties
             if( const auto* p = find( "properties" ) ) {
                if( !p->is_object() ) {
@@ -749,6 +770,9 @@ namespace tao::json
                }
                m_additional_properties = p;
             }
+
+            // unevaluatedProperties
+            // TODO: Implement me!
 
             // dependencies
             if( const auto* p = find( "dependencies" ) ) {
