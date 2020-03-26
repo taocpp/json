@@ -20,5 +20,6 @@ int main( int /*unused*/, char** /*unused*/ )
    PRINT_SIZE( std::map< std::string, tao::json::value > );
    PRINT_SIZE( tao::json::token );
    PRINT_SIZE( tao::json::pointer );
+   PRINT_SIZE( tao::json::internal::opaque_ptr_t );
    return 0;
 }
