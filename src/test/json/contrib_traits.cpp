@@ -74,6 +74,8 @@ namespace tao::json
          TEST_ASSERT( g != f );
          TEST_ASSERT( *g == *f );
          std::shared_ptr< std::uint64_t > h;
+         value w = h;
+         TEST_ASSERT( w.is_null() );
          v.to( h );
          TEST_ASSERT( h != f );
          TEST_ASSERT( g != h );
@@ -92,6 +94,11 @@ namespace tao::json
       const auto g = v.as< std::unique_ptr< std::uint64_t > >();
       TEST_ASSERT( g != f );
       TEST_ASSERT( *g == *f );
+      const std::unique_ptr< std::uint64_t > n;
+      value w = n;
+      TEST_ASSERT( w.is_null() );
+      TEST_ASSERT( v != w );
+      TEST_ASSERT( n != v );
    }
 
    void test_deque()

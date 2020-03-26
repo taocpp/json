@@ -27,22 +27,29 @@ namespace tao::json::internal
       template< template< typename... > class Traits >
       [[nodiscard]] static bool is_nothing( const T& o )
       {
-         assert( o );
-         return internal::is_nothing< Traits >( add_const( *o ) );
+         return bool( o ) && internal::is_nothing< Traits >( add_const( *o ) );
       }
 
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const T& o )
       {
-         assert( o );
-         v = add_const( *o );
+         if( o ) {
+            v = add_const( *o );
+         }
+         else {
+            v = null;
+         }
       }
 
       template< template< typename... > class Traits, typename Consumer >
       static void produce( Consumer& c, const T& o )
       {
-         assert( o );
-         json::events::produce< Traits >( c, add_const( *o ) );
+         if( o ) {
+            json::events::produce< Traits >( c, add_const( *o ) );
+         }
+         else {
+            c.null();
+         }
       }
 
       template< template< typename... > class Traits >

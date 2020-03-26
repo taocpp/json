@@ -64,15 +64,23 @@ namespace tao::json
       template< template< typename... > class Traits >
       static void assign( basic_value< Traits >& v, const std::shared_ptr< U >& o )
       {
-         assert( o );
-         v = static_cast< const T& >( *o );
+         if( o ) {
+            v = static_cast< const T& >( *o );
+         }
+         else {
+            v = null;
+         }
       }
 
       template< template< typename... > class Traits, typename Consumer >
       static void produce( Consumer& c, const std::shared_ptr< U >& o )
       {
-         assert( o );
-         json::events::produce< Traits >( c, static_cast< const T& >( *o ) );
+         if( o ) {
+            json::events::produce< Traits >( c, static_cast< const T& >( *o ) );
+         }
+         else {
+            c.null();
+         }
       }
    };
 
