@@ -46,33 +46,33 @@ namespace tao
    namespace internal
    {
       template< typename >
-      struct is_span_impl
+      struct is_span
          : std::false_type
       {};
 
       template< typename ElementType, std::size_t Extent >
-      struct is_span_impl< span< ElementType, Extent > >
+      struct is_span< span< ElementType, Extent > >
          : std::true_type
       {};
 
       template< typename T >
-      using is_span = is_span_impl< std::remove_cv_t< T > >;
+      constexpr bool is_span_v = is_span< std::remove_cv_t< T > >::value;
 
       template< typename >
-      struct is_std_array_impl
+      struct is_std_array
          : std::false_type
       {};
 
       template< typename T, std::size_t N >
-      struct is_std_array_impl< std::array< T, N > >
+      struct is_std_array< std::array< T, N > >
          : std::true_type
       {};
 
       template< typename T >
-      using is_std_array = is_std_array_impl< std::remove_cv_t< T > >;
+      constexpr bool is_std_array_v = is_std_array< std::remove_cv_t< T > >::value;
 
       template< typename T, typename ElementType >
-      using is_span_compatible_ptr = std::is_convertible< T ( * )[], ElementType ( * )[] >;
+      constexpr bool is_span_compatible_ptr_v = std::is_convertible_v< T ( * )[], ElementType ( * )[] >;
 
       template< typename, typename, typename = void >
       struct is_span_compatible_container
@@ -83,19 +83,22 @@ namespace tao
       struct is_span_compatible_container< Container,
                                            ElementType,
                                            std::void_t<
-                                              std::enable_if_t< !is_span< Container >::value >,
-                                              std::enable_if_t< !is_std_array< Container >::value >,
+                                              std::enable_if_t< !is_span_v< Container > >,
+                                              std::enable_if_t< !is_std_array_v< Container > >,
                                               std::enable_if_t< !std::is_array_v< Container > >,
                                               decltype( std::data( std::declval< Container >() ) ),
                                               decltype( std::size( std::declval< Container >() ) ),
-                                              std::enable_if_t< is_span_compatible_ptr< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) >, ElementType >::value > > >
+                                              std::enable_if_t< is_span_compatible_ptr_v< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) >, ElementType > > > >
          : std::true_type
       {};
+
+      template< typename Container, typename ElementType >
+      constexpr bool is_span_compatible_container_v = is_span_compatible_container< Container, ElementType >::value;
 
    }  // namespace internal
 
    template< typename ElementType, std::size_t Extent >
-   class span
+   class span  // NOLINT(cppcoreguidelines-special-member-functions)
    {
    public:
       static_assert( !std::is_abstract_v< ElementType > );
@@ -134,104 +137,96 @@ namespace tao
          : m_data( arr )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr< OtherElementType, ElementType >::value > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
       constexpr span( std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr< const OtherElementType, ElementType >::value > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr_v< const OtherElementType, ElementType > > >
       constexpr span( const std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) )
       {}
 
-      constexpr span( const span& other ) = default;
+      constexpr span( const span& ) = default;
 
-      template< typename OtherElementType, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType >::value > >
+      template< typename OtherElementType, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
       constexpr span( const span< OtherElementType, Extent >& s ) noexcept
          : m_data( s.data() )
       {}
 
       ~span() = default;
 
-      constexpr span& operator=( const span& ) = default;
+      constexpr auto operator=( const span& ) -> span& = default;
 
-      constexpr size_type size() const noexcept
+      constexpr auto size() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return Extent;
       }
 
-      constexpr size_type size_bytes() const noexcept
+      constexpr auto size_bytes() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return Extent * sizeof( element_type );
       }
 
-      [[nodiscard]] constexpr bool empty() const noexcept
+      [[nodiscard]] constexpr auto empty() const noexcept -> bool
       {
          return Extent == 0;
       }
 
-      constexpr reference operator[]( size_type idx ) const noexcept
+      constexpr auto operator[]( size_type idx ) const noexcept -> reference
       {
          assert( idx < Extent );
          return *( data() + idx );
       }
 
-      constexpr reference front() const noexcept
+      constexpr auto front() const noexcept -> reference
       {
          assert( Extent != 0 );
          return *data();
       }
 
-      constexpr reference back() const noexcept
+      constexpr auto back() const noexcept -> reference
       {
          assert( Extent != 0 );
          return *( data() + ( Extent - 1 ) );
       }
 
-      constexpr pointer data() const noexcept
+      constexpr auto data() const noexcept -> pointer
       {
          return m_data;
       }
 
-      constexpr iterator begin() const noexcept
+      constexpr auto begin() const noexcept -> iterator
       {
          return data();
       }
 
-      constexpr iterator end() const noexcept
+      constexpr auto end() const noexcept -> iterator
       {
          return data() + Extent;
       }
 
-      constexpr reverse_iterator rbegin() const noexcept
+      constexpr auto rbegin() const noexcept -> reverse_iterator
       {
          return reverse_iterator( end() );
       }
 
-      constexpr reverse_iterator rend() const noexcept
+      constexpr auto rend() const noexcept -> reverse_iterator
       {
          return reverse_iterator( begin() );
       }
 
-      friend constexpr iterator begin( span s ) noexcept
-      {
-         return s.begin();
-      }
-
-      friend constexpr iterator end( span s ) noexcept
-      {
-         return s.end();
-      }
-
       template< std::size_t Count >
-      constexpr span< element_type, Count > first() const noexcept
+      constexpr auto first() const noexcept
+         -> span< element_type, Count >
       {
          static_assert( Count <= Extent );
          return { data(), Count };
       }
 
       template< std::size_t Count >
-      constexpr span< element_type, Count > last() const noexcept
+      constexpr auto last() const noexcept
+         -> span< element_type, Count >
       {
          static_assert( Count <= Extent );
          return { data() + ( Extent - Count ), Count };
@@ -246,19 +241,22 @@ namespace tao
          return { data() + Offset, ( Count != dynamic_extent ) ? Count : ( Extent - Offset ) };
       }
 
-      constexpr span< element_type, dynamic_extent > first( size_type count ) const
+      constexpr auto first( size_type count ) const
+         -> span< element_type, dynamic_extent >
       {
          assert( count <= Extent );
          return { data(), count };
       }
 
-      constexpr span< element_type, dynamic_extent > last( size_type count ) const
+      constexpr auto last( size_type count ) const
+         -> span< element_type, dynamic_extent >
       {
          assert( count <= Extent );
          return { data() + Extent - count, count };
       }
 
-      constexpr span< element_type, dynamic_extent > subspan( size_type offset, size_type count = dynamic_extent ) const
+      constexpr auto subspan( size_type offset, size_type count = dynamic_extent ) const
+         -> span< element_type, dynamic_extent >
       {
          assert( offset <= Extent );
          assert( ( count == dynamic_extent ) || ( count <= ( Extent - offset ) ) );
@@ -270,7 +268,7 @@ namespace tao
    };
 
    template< typename ElementType >
-   class span< ElementType, dynamic_extent >
+   class span< ElementType, dynamic_extent >  // NOLINT(cppcoreguidelines-special-member-functions)
    {
    public:
       static_assert( !std::is_abstract_v< ElementType > );
@@ -305,114 +303,106 @@ namespace tao
          : m_data( arr ), m_size( N )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType >::value > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
       constexpr span( std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) ), m_size( N )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< const OtherElementType, ElementType >::value > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< const OtherElementType, ElementType > > >
       constexpr span( const std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) ), m_size( N )
       {}
 
-      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container< Container, ElementType >::value > >
+      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container_v< Container, ElementType > > >
       constexpr span( Container& cont )
          : m_data( static_cast< pointer >( std::data( cont ) ) ), m_size( std::size( cont ) )
       {}
 
-      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container< const Container, ElementType >::value > >
+      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container_v< const Container, ElementType > > >
       constexpr span( const Container& cont )
          : m_data( static_cast< pointer >( std::data( cont ) ) ), m_size( std::size( cont ) )
       {}
 
-      constexpr span( const span& other ) = default;
+      constexpr span( const span& ) = default;
 
-      template< typename OtherElementType, std::size_t OtherExtent, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType >::value > >
+      template< typename OtherElementType, std::size_t OtherExtent, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
       constexpr span( const span< OtherElementType, OtherExtent >& s ) noexcept
          : m_data( s.data() ), m_size( s.size() )
       {}
 
       ~span() = default;
 
-      constexpr span& operator=( const span& ) = default;
+      constexpr auto operator=( const span& ) -> span& = default;
 
-      constexpr size_type size() const noexcept
+      constexpr auto size() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return m_size;
       }
 
-      constexpr size_type size_bytes() const noexcept
+      constexpr auto size_bytes() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return size() * sizeof( element_type );
       }
 
-      [[nodiscard]] constexpr bool empty() const noexcept
+      [[nodiscard]] constexpr auto empty() const noexcept -> bool
       {
          return size() == 0;
       }
 
-      constexpr reference operator[]( size_type idx ) const noexcept
+      constexpr auto operator[]( size_type idx ) const noexcept -> reference
       {
          assert( idx < size() );
          return *( data() + idx );
       }
 
-      constexpr reference front() const noexcept
+      constexpr auto front() const noexcept -> reference
       {
          assert( !empty() );
          return *data();
       }
 
-      constexpr reference back() const noexcept
+      constexpr auto back() const noexcept -> reference
       {
          assert( !empty() );
          return *( data() + ( size() - 1 ) );
       }
 
-      constexpr pointer data() const noexcept
+      constexpr auto data() const noexcept -> pointer
       {
          return m_data;
       }
 
-      constexpr iterator begin() const noexcept
+      constexpr auto begin() const noexcept -> iterator
       {
          return data();
       }
 
-      constexpr iterator end() const noexcept
+      constexpr auto end() const noexcept -> iterator
       {
          return data() + size();
       }
 
-      constexpr reverse_iterator rbegin() const noexcept
+      constexpr auto rbegin() const noexcept -> reverse_iterator
       {
          return reverse_iterator( end() );
       }
 
-      constexpr reverse_iterator rend() const noexcept
+      constexpr auto rend() const noexcept -> reverse_iterator
       {
          return reverse_iterator( begin() );
       }
 
-      friend constexpr iterator begin( span s ) noexcept
-      {
-         return s.begin();
-      }
-
-      friend constexpr iterator end( span s ) noexcept
-      {
-         return s.end();
-      }
-
       template< std::size_t Count >
-      constexpr span< element_type, Count > first() const noexcept
+      constexpr auto first() const noexcept
+         -> span< element_type, Count >
       {
          assert( Count <= size() );
          return { data(), Count };
       }
 
       template< std::size_t Count >
-      constexpr span< element_type, Count > last() const noexcept
+      constexpr auto last() const noexcept
+         -> span< element_type, Count >
       {
          assert( Count <= size() );
          return { data() + ( size() - Count ), Count };
@@ -427,19 +417,22 @@ namespace tao
          return { data() + Offset, ( Count != dynamic_extent ) ? Count : ( size() - Offset ) };
       }
 
-      constexpr span< element_type, dynamic_extent > first( size_type count ) const
+      constexpr auto first( size_type count ) const
+         -> span< element_type, dynamic_extent >
       {
          assert( count <= size() );
          return { data(), count };
       }
 
-      constexpr span< element_type, dynamic_extent > last( size_type count ) const
+      constexpr auto last( size_type count ) const
+         -> span< element_type, dynamic_extent >
       {
          assert( count <= size() );
          return { data() + size() - count, count };
       }
 
-      constexpr span< element_type, dynamic_extent > subspan( size_type offset, size_type count = dynamic_extent ) const
+      constexpr auto subspan( size_type offset, size_type count = dynamic_extent ) const
+         -> span< element_type, dynamic_extent >
       {
          assert( offset <= size() );
          assert( ( count == dynamic_extent ) || ( count <= ( size() - offset ) ) );
@@ -448,7 +441,7 @@ namespace tao
 
    private:
       pointer m_data;
-      size_type m_size;
+      size_type m_size;  // NOLINT(modernize-use-default-member-init)
    };
 
    template< typename ElementType, std::size_t Extent >
@@ -511,7 +504,7 @@ namespace std
 
    // TODO: this is probably illegal. keep it?
    template< size_t I, typename ElementType, size_t Extent >
-   constexpr ElementType& get( tao::span< ElementType, Extent > s ) noexcept
+   constexpr auto get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&
    {
       static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
       return s[ I ];
