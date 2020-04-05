@@ -155,7 +155,7 @@ jobs:
           sources: *clang-9-sources
           packages: [ clang-format-9, g++-9 ]
       script:
-        - clang-format-9 -i -style=file $(find . -name '[^.]*.[hc]pp')
+        - clang-format-9 -i -style=file $(find . -name '[^.]*.[hc]pp'|grep -v contrib/nlohmann/json.hpp)
         - git diff --exit-code
 
 script:
