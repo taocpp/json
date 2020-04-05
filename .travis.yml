@@ -139,17 +139,6 @@ jobs:
       script:
         - scan-build-10 --use-c++=clang++-10 --status-bugs make -kj3
 
-    - compiler: gcc
-      addons:
-        apt:
-          sources: [ ubuntu-toolchain-r-test ]
-          packages: [ g++-9, valgrind ]
-      env:
-        - CXX=g++-9
-        - SPECIAL=valgrind
-      script:
-        - make -kj3 valgrind
-
     - <<: *gcc-7
       env:
         - CXX=g++-7

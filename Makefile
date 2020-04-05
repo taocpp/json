@@ -53,14 +53,6 @@ compile: $(BINARIES)
 check: $(UNIT_TESTS)
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T > /dev/null; done
 
-build/%.valgrind: build/%
-	valgrind --error-exitcode=1 --leak-check=full $<
-	@touch $@
-
-.PHONY: valgrind
-valgrind: $(UNIT_TESTS:%=%.valgrind)
-	@echo "All $(words $(UNIT_TESTS)) valgrind tests passed."
-
 build/%.clang-tidy: % .clang-tidy
 	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) 2>/dev/null
 	@mkdir -p $(@D)
