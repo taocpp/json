@@ -74,7 +74,7 @@ namespace tao::json
    namespace internal
    {
       // clang-format off
-      template<> inline const std::string errors< ubjson::internal::number >::error_message = "invalid ubjson high-precision number";
+      template<> inline const char* errors< ubjson::internal::number >::error_message = "invalid ubjson high-precision number";
       // clang-format on
 
    }  // namespace internal
