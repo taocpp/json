@@ -27,9 +27,9 @@ namespace tao::json::internal
       struct value_separator : padr< one< ',' > > {};
       struct element_separator : padr< one< ',' > > {};
 
-      struct false_ : pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
-      struct null : pegtl::string< 'n', 'u', 'l', 'l' > {};
-      struct true_ : pegtl::string< 't', 'r', 'u', 'e' > {};
+      struct kw_false : pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
+      struct kw_null : pegtl::string< 'n', 'u', 'l', 'l' > {};
+      struct kw_true : pegtl::string< 't', 'r', 'u', 'e' > {};
 
       struct digits : plus< abnf::DIGIT > {};
 
@@ -115,7 +115,7 @@ namespace tao::json::internal
 
       struct sor_value
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, false_, true_, null >;
+         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, kw_false, kw_true, kw_null >;
 
          template< bool NEG,
                    apply_mode A,
@@ -181,9 +181,9 @@ namespace tao::json::internal
             case '"': return Control< string >::template match< A, M, Action, Control >( in, st... );
             case '{': return Control< object >::template match< A, M, Action, Control >( in, st... );
             case '[': return Control< array >::template match< A, M, Action, Control >( in, st... );
-            case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
-            case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
-            case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
+            case 'n': return Control< kw_null >::template match< A, M, Action, Control >( in, st... );
+            case 't': return Control< kw_true >::template match< A, M, Action, Control >( in, st... );
+            case 'f': return Control< kw_false >::template match< A, M, Action, Control >( in, st... );
 
             case '-':
                in.bump_in_this_line();

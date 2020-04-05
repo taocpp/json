@@ -56,7 +56,7 @@ namespace tao
       {};
 
       template< typename T >
-      constexpr bool is_span_v = is_span< std::remove_cv_t< T > >::value;
+      inline constexpr bool is_span_v = is_span< std::remove_cv_t< T > >::value;
 
       template< typename >
       struct is_std_array
@@ -69,10 +69,10 @@ namespace tao
       {};
 
       template< typename T >
-      constexpr bool is_std_array_v = is_std_array< std::remove_cv_t< T > >::value;
+      inline constexpr bool is_std_array_v = is_std_array< std::remove_cv_t< T > >::value;
 
       template< typename T, typename ElementType >
-      constexpr bool is_span_compatible_ptr_v = std::is_convertible_v< T ( * )[], ElementType ( * )[] >;
+      inline constexpr bool is_span_compatible_ptr_v = std::is_convertible_v< T ( * )[], ElementType ( * )[] >;
 
       template< typename, typename, typename = void >
       struct is_span_compatible_container
@@ -93,7 +93,7 @@ namespace tao
       {};
 
       template< typename Container, typename ElementType >
-      constexpr bool is_span_compatible_container_v = is_span_compatible_container< Container, ElementType >::value;
+      inline constexpr bool is_span_compatible_container_v = is_span_compatible_container< Container, ElementType >::value;
 
    }  // namespace internal
 

@@ -13,7 +13,7 @@
 #include <tao/json/events/to_value.hpp>
 #include <tao/json/events/validate_event_order.hpp>
 
-int main( int argc, char** argv )
+int main( int argc, char** argv )  // NOLINT(bugprone-exception-escape)
 {
    for( int i = 1; i < argc; ++i ) {
       tao::json::events::validate_event_order c1;

@@ -233,7 +233,7 @@ namespace tao::json
       class tee
       {
       private:
-         static constexpr std::size_t S = sizeof...( Ts );
+         static inline constexpr std::size_t S = sizeof...( Ts );  // NOLINT(readability-identifier-naming)
 
          using I = std::make_index_sequence< S >;
          using H = std::make_index_sequence< S - 1 >;

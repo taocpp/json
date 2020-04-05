@@ -93,8 +93,8 @@ namespace tao::json::jaxn::internal
       template< typename Input >
       static void apply( const Input& in, std::vector< std::byte >& value )
       {
-         const auto begin = reinterpret_cast< const std::byte* >( in.begin() );
-         const auto end = begin + in.size();
+         const auto* const begin = reinterpret_cast< const std::byte* >( in.begin() );
+         const auto* const end = begin + in.size();
          value.insert( value.end(), begin, end );
       }
    };

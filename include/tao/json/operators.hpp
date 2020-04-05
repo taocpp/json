@@ -87,8 +87,6 @@ namespace tao::json
 
       switch( lhs.type() ) {
          case type::UNINITIALIZED:
-            return true;
-
          case type::NULL_:
             return true;
 
@@ -286,8 +284,6 @@ namespace tao::json
 
       switch( lhs.type() ) {
          case type::UNINITIALIZED:
-            return false;
-
          case type::NULL_:
             return false;
 

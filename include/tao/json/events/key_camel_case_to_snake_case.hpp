@@ -21,7 +21,7 @@ namespace tao::json::events
          std::string t;
          bool last_upper = false;
          for( const auto c : v ) {
-            if( std::isupper( c ) ) {
+            if( std::isupper( c ) != 0 ) {
                last_upper = true;
                t += c;
             }
@@ -41,7 +41,7 @@ namespace tao::json::events
          std::string r;
          bool last_lower = false;
          for( const auto c : t ) {
-            if( std::isupper( c ) ) {
+            if( std::isupper( c ) != 0 ) {
                if( last_lower ) {
                   r += '_';
                }
@@ -49,7 +49,7 @@ namespace tao::json::events
                r += static_cast< char >( std::tolower( c ) );
             }
             else {
-               last_lower = static_cast< bool >( std::islower( c ) );
+               last_lower = ( std::islower( c ) != 0 );
                r += c;
             }
          }

@@ -26,7 +26,7 @@ namespace tao::json::jaxn::internal
    {};
 
    template<>
-   struct action< rules::null >
+   struct action< rules::kw_null >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )
@@ -36,7 +36,7 @@ namespace tao::json::jaxn::internal
    };
 
    template<>
-   struct action< rules::true_ >
+   struct action< rules::kw_true >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )
@@ -46,7 +46,7 @@ namespace tao::json::jaxn::internal
    };
 
    template<>
-   struct action< rules::false_ >
+   struct action< rules::kw_false >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )
@@ -177,7 +177,7 @@ namespace tao::json::jaxn::internal
    };
 
    template<>
-   struct action< rules::nan >
+   struct action< rules::kw_nan >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )
@@ -187,7 +187,7 @@ namespace tao::json::jaxn::internal
    };
 
    template<>
-   struct action< rules::infinity< false > >
+   struct action< rules::kw_infinity< false > >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )
@@ -197,7 +197,7 @@ namespace tao::json::jaxn::internal
    };
 
    template<>
-   struct action< rules::infinity< true > >
+   struct action< rules::kw_infinity< true > >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )

@@ -47,7 +47,7 @@ namespace tao::json
 
 }  // namespace tao::json
 
-int main( int /*unused*/, char** /*unused*/ )
+int main()  // NOLINT(bugprone-exception-escape)
 {
    tao::json::value v = { { "a", 20 }, { "b", 30 } };
    tao::json::validate_integer< tao::json::events::discard, 10, 40 > consumer;

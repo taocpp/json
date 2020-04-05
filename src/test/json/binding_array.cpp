@@ -15,9 +15,9 @@ namespace tao::json
    class type_3
    {
    public:
-      [[nodiscard]] int get_int() const noexcept
+      [[nodiscard]] std::size_t get_size() const noexcept
       {
-         return 7;
+         return m_string.size();
       }
 
       [[nodiscard]] const std::string& get_string() const noexcept
@@ -31,7 +31,7 @@ namespace tao::json
 
    template<>
    struct traits< type_3 >
-      : binding::array< TAO_JSON_BIND_ELEMENT( &type_3::get_int ),
+      : binding::array< TAO_JSON_BIND_ELEMENT( &type_3::get_size ),
                         TAO_JSON_BIND_ELEMENT( &type_3::get_string ) >
    {};
 
@@ -277,7 +277,7 @@ namespace tao::json
       TEST_ASSERT( v.is_array() );
       TEST_ASSERT( v.get_array().size() == 2 );
       TEST_ASSERT( v.get_array()[ 0 ].is_integer() );
-      TEST_ASSERT( v.get_array()[ 0 ].as< int >() == 7 );
+      TEST_ASSERT( v.get_array()[ 0 ].as< int >() == 9 );
       TEST_ASSERT( v.get_array()[ 1 ].is_string_type() );
       TEST_ASSERT( v.get_array()[ 1 ].as< std::string >() == "dangerous" );
       const auto w = produce::to_value( a );

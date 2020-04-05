@@ -20,8 +20,6 @@ namespace tao::json
    {
       switch( v.type() ) {
          case type::UNINITIALIZED:
-            return true;
-
          case type::NULL_:
          case type::BOOLEAN:
          case type::SIGNED:
@@ -29,14 +27,17 @@ namespace tao::json
          case type::DOUBLE:
          case type::STRING:
          case type::BINARY:
+         case type::VALUELESS_BY_EXCEPTION:
             return true;
 
          case type::STRING_VIEW:
          case type::BINARY_VIEW:
+         case type::VALUE_PTR:
+         case type::OPAQUE_PTR:
             return false;
 
          case type::ARRAY:
-            for( auto& e : v.get_array() ) {
+            for( const auto& e : v.get_array() ) {
                if( !is_self_contained( e ) ) {
                   return false;
                }
@@ -44,20 +45,11 @@ namespace tao::json
             return true;
 
          case type::OBJECT:
-            for( auto& e : v.get_object() ) {
+            for( const auto& e : v.get_object() ) {
                if( !is_self_contained( e.second ) ) {
                   return false;
                }
             }
-            return true;
-
-         case type::VALUE_PTR:
-            return false;
-
-         case type::OPAQUE_PTR:
-            return false;
-
-         case type::VALUELESS_BY_EXCEPTION:
             return true;
       }
       // LCOV_EXCL_START
@@ -76,8 +68,6 @@ namespace tao::json
    {
       switch( v.type() ) {
          case type::UNINITIALIZED:
-            return;
-
          case type::NULL_:
          case type::BOOLEAN:
          case type::SIGNED:
@@ -85,6 +75,7 @@ namespace tao::json
          case type::DOUBLE:
          case type::STRING:
          case type::BINARY:
+         case type::VALUELESS_BY_EXCEPTION:
             return;
 
          case type::STRING_VIEW:
@@ -123,9 +114,6 @@ namespace tao::json
             v = std::move( consumer.value );
             return;
          }
-
-         case type::VALUELESS_BY_EXCEPTION:
-            return;
       }
       throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE
    }

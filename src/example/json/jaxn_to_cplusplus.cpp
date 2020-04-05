@@ -201,7 +201,7 @@ namespace tao::json::cplusplus::events
          os.put( '"' );
       }
 
-      std::string make_delimiter( const std::string_view v )
+      static std::string make_delimiter( const std::string_view v )
       {
          for( std::string r; r.size() <= 16; r += '$' ) {
             if( v.find( ')' + r + '"' ) == std::string::npos ) {

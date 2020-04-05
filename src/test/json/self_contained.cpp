@@ -19,7 +19,7 @@ namespace tao::json
       : traits< std::string_view >
    {
       template< template< typename... > class Traits >
-      static void assign( basic_value< Traits >& v, const std::string_view sv ) noexcept
+      static void assign( basic_value< Traits >& v, const std::string_view sv ) noexcept  // NOLINT(bugprone-exception-escape)
       {
          v.set_string_view( sv );
       }
@@ -30,7 +30,7 @@ namespace tao::json
       : traits< tao::binary_view >
    {
       template< template< typename... > class Traits >
-      static void assign( basic_value< Traits >& v, const tao::binary_view xv ) noexcept
+      static void assign( basic_value< Traits >& v, const tao::binary_view xv ) noexcept  // NOLINT(bugprone-exception-escape)
       {
          v.set_binary_view( xv );
       }

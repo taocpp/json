@@ -21,7 +21,7 @@ namespace tao::json::internal
    {};
 
    template<>
-   struct action< rules::null >
+   struct action< rules::kw_null >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )
@@ -31,7 +31,7 @@ namespace tao::json::internal
    };
 
    template<>
-   struct action< rules::true_ >
+   struct action< rules::kw_true >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )
@@ -41,7 +41,7 @@ namespace tao::json::internal
    };
 
    template<>
-   struct action< rules::false_ >
+   struct action< rules::kw_false >
    {
       template< typename Consumer >
       static void apply0( Consumer& consumer )

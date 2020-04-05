@@ -39,14 +39,14 @@ namespace tao::json::jaxn::internal
       struct element_separator : padr< one< ',' > > {};
       struct value_concat : pad< one< '+' >, ws > {};
 
-      struct false_ : pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
-      struct null : pegtl::string< 'n', 'u', 'l', 'l' > {};
-      struct true_ : pegtl::string< 't', 'r', 'u', 'e' > {};
+      struct kw_false : pegtl::string< 'f', 'a', 'l', 's', 'e' > {};
+      struct kw_null : pegtl::string< 'n', 'u', 'l', 'l' > {};
+      struct kw_true : pegtl::string< 't', 'r', 'u', 'e' > {};
 
-      struct nan : pegtl::string< 'N', 'a', 'N' > {};
+      struct kw_nan : pegtl::string< 'N', 'a', 'N' > {};
 
       template< bool NEG >
-      struct infinity : pegtl::string< 'I', 'n', 'f', 'i', 'n', 'i', 't', 'y' > {};
+      struct kw_infinity : pegtl::string< 'I', 'n', 'f', 'i', 'n', 'i', 't', 'y' > {};
 
       template< bool NEG >
       struct hexnum : plus< abnf::HEXDIG > {};
@@ -225,7 +225,7 @@ namespace tao::json::jaxn::internal
 
       struct sor_value
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, false_, true_, null >;
+         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, kw_false, kw_true, kw_null >;
 
          template< typename Rule,
                    apply_mode A,
@@ -286,10 +286,10 @@ namespace tao::json::jaxn::internal
          {
             switch( in.peek_char() ) {
             case 'N':
-               return Control< must< nan > >::template match< A, M, Action, Control >( in, st... );
+               return Control< must< kw_nan > >::template match< A, M, Action, Control >( in, st... );
 
             case 'I':
-               return Control< must< infinity< NEG > > >::template match< A, M, Action, Control >( in, st... );
+               return Control< must< kw_infinity< NEG > > >::template match< A, M, Action, Control >( in, st... );
 
             case '0':
                if( !match_zero< NEG, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
@@ -313,9 +313,9 @@ namespace tao::json::jaxn::internal
             switch( in.peek_char() ) {
             case '{': return Control< object >::template match< A, M, Action, Control >( in, st... );
             case '[': return Control< array >::template match< A, M, Action, Control >( in, st... );
-            case 'n': return Control< null >::template match< A, M, Action, Control >( in, st... );
-            case 't': return Control< true_ >::template match< A, M, Action, Control >( in, st... );
-            case 'f': return Control< false_ >::template match< A, M, Action, Control >( in, st... );
+            case 'n': return Control< kw_null >::template match< A, M, Action, Control >( in, st... );
+            case 't': return Control< kw_true >::template match< A, M, Action, Control >( in, st... );
+            case 'f': return Control< kw_false >::template match< A, M, Action, Control >( in, st... );
 
             case '"':
             case '\'':

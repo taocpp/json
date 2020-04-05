@@ -71,7 +71,7 @@ namespace tao::json
       basic_value() = default;
 
       basic_value( const basic_value& r ) = default;
-      basic_value( basic_value&& r ) = default;
+      basic_value( basic_value&& r ) = default;  // NOLINT(performance-noexcept-move-constructor)
 
 #if( __cplusplus > 201703L )
 

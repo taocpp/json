@@ -44,7 +44,7 @@ namespace tao::json::events
             : expected( in_expected )
          {}
 
-         void check( const std::size_t in_expected )
+         void check( const std::size_t in_expected ) const
          {
             if( expected != in_expected ) {
                throw std::logic_error( "inconsistent size" );
@@ -249,7 +249,7 @@ namespace tao::json::events
             default:
                break;
          }
-         assert( sizes.size() );
+         assert( !sizes.empty() );
          sizes.back().check( expected );
          sizes.pop_back();
          end_array();
@@ -399,7 +399,7 @@ namespace tao::json::events
             default:
                break;
          }
-         assert( sizes.size() );
+         assert( !sizes.empty() );
          sizes.back().check( expected );
          sizes.pop_back();
          end_object();

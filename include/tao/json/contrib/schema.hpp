@@ -112,7 +112,7 @@ namespace tao::json
       {
          std::size_t r = 0;
          for( char c : v ) {
-            r += ( ( c & 0xC0 ) != 0x80 );
+            r += static_cast< std::size_t >( ( c & 0xC0 ) != 0x80 );
          }
          return r;
       }

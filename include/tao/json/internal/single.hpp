@@ -18,7 +18,7 @@ namespace tao::json::internal
       mutable basic_value< Traits > value;
 
       template< typename U >
-      single( U&& v )
+      single( U&& v )  // NOLINT(bugprone-forwarding-reference-overload)
          : value( std::forward< U >( v ) )
       {}
 

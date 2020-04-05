@@ -157,7 +157,7 @@ namespace tao::json
 
       [[nodiscard]] bool null()
       {
-         return pegtl::parse< pegtl::seq< internal::rules::null, internal::rules::wss > >( m_input );
+         return pegtl::parse< pegtl::seq< internal::rules::kw_null, internal::rules::wss > >( m_input );
       }
 
       [[nodiscard]] bool boolean()

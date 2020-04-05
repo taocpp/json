@@ -33,7 +33,6 @@ namespace tao::json
       {
          switch( v.type() ) {
             case type::UNINITIALIZED:
-               return;
             case type::NULL_:
             case type::BOOLEAN:
             case type::SIGNED:
@@ -43,12 +42,17 @@ namespace tao::json
             case type::STRING_VIEW:
             case type::BINARY:
             case type::BINARY_VIEW:
+            case type::VALUE_PTR:
+            case type::OPAQUE_PTR:
+            case type::VALUELESS_BY_EXCEPTION:
                return;
+
             case type::ARRAY:
                for( auto& e : v.get_array() ) {
                   resolve_references( r, e );
                }
                return;
+
             case type::OBJECT:
                for( auto& e : v.get_object() ) {
                   resolve_references( r, e.second );
@@ -91,12 +95,6 @@ namespace tao::json
                      }
                   }
                }
-               return;
-            case type::VALUE_PTR:
-               return;
-            case type::OPAQUE_PTR:
-               return;
-            case type::VALUELESS_BY_EXCEPTION:
                return;
          }
          throw std::logic_error( "invalid value for tao::json::type" );  // LCOV_EXCL_LINE

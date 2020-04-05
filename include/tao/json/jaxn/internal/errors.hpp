@@ -74,9 +74,9 @@ namespace tao::json::jaxn::internal
 
    template<> inline const char* errors< rules::edigits >::error_message = "expected at least one exponent digit";
    template<> inline const char* errors< rules::fdigits >::error_message = "expected at least one fraction digit";
-   template<> inline const char* errors< rules::nan >::error_message = "invalid numeric literal";
-   template<> inline const char* errors< rules::infinity< false > >::error_message = "invalid numeric literal";
-   template<> inline const char* errors< rules::infinity< true > >::error_message = "invalid numeric literal";
+   template<> inline const char* errors< rules::kw_nan >::error_message = "invalid numeric literal";
+   template<> inline const char* errors< rules::kw_infinity< false > >::error_message = "invalid numeric literal";
+   template<> inline const char* errors< rules::kw_infinity< true > >::error_message = "invalid numeric literal";
    template<> inline const char* errors< rules::hexnum< false > >::error_message = "expected at least one hexadecimal digit";
    template<> inline const char* errors< rules::hexnum< true > >::error_message = "expected at least one hexadecimal digit";
 

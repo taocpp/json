@@ -26,7 +26,7 @@ namespace tao::json::internal
 {
    // RFC 6234, 5.1
    // clang-format off
-   static std::uint32_t K[ 64 ] = {
+   static std::uint32_t K[ 64 ] = {  // NOLINT(readability-identifier-naming)
       0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
       0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
       0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -49,15 +49,15 @@ namespace tao::json::internal
    class sha256
    {
    private:
-      unsigned char M[ 64 ];
+      unsigned char M[ 64 ];  // NOLINT(readability-identifier-naming)
       std::uint64_t size;
 
-      std::uint32_t H[ 8 ];
+      std::uint32_t H[ 8 ];  // NOLINT(readability-identifier-naming)
 
       // RFC 6234, 6.2
       void process() noexcept
       {
-         std::uint32_t W[ 64 ];
+         std::uint32_t W[ 64 ];  // NOLINT(readability-identifier-naming)
 
          // step 1
          for( std::size_t t = 0, i = 0; t != 16; ++t, i += 4 ) {
@@ -68,7 +68,7 @@ namespace tao::json::internal
          }
 
          // step 2
-         std::uint32_t a, b, c, d, e, f, g, h;
+         std::uint32_t a, b, c, d, e, f, g, h;  // NOLINT(readability-isolate-declaration)
          a = H[ 0 ];
          b = H[ 1 ];
          c = H[ 2 ];
@@ -80,8 +80,8 @@ namespace tao::json::internal
 
          // step 3
          for( std::size_t t = 0; t != 64; ++t ) {
-            const std::uint32_t T1 = h + BSIG1( e ) + CH( e, f, g ) + K[ t ] + W[ t ];
-            const std::uint32_t T2 = BSIG0( a ) + MAJ( a, b, c );
+            const std::uint32_t T1 = h + BSIG1( e ) + CH( e, f, g ) + K[ t ] + W[ t ];  // NOLINT(readability-identifier-naming)
+            const std::uint32_t T2 = BSIG0( a ) + MAJ( a, b, c );                       // NOLINT(readability-identifier-naming)
             h = g;
             g = f;
             f = e;
@@ -142,7 +142,7 @@ namespace tao::json::internal
 
       void feed( const void* p, std::size_t s ) noexcept
       {
-         auto* q = static_cast< const unsigned char* >( p );
+         const auto* q = static_cast< const unsigned char* >( p );
          while( s != 0 ) {
             feed( *q++ );
             --s;

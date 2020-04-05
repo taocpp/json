@@ -108,7 +108,7 @@ namespace tao::json::events
          os.put( '"' );
       }
 
-      void binary( const tao::binary_view /*unused*/ )
+      void binary( const tao::binary_view /*unused*/ )  // NOLINT(readability-convert-member-functions-to-static)
       {
          // if this throws, consider using binary_to_* transformers
          throw std::runtime_error( "binary data invalid for JSON string representation" );

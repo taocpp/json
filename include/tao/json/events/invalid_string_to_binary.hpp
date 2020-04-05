@@ -29,7 +29,7 @@ namespace tao::json::events
             Consumer::string( std::move( v ) );
          }
          else {
-            const std::byte* data = reinterpret_cast< const std::byte* >( v.data() );
+            const auto data = reinterpret_cast< const std::byte* >( v.data() );
             Consumer::binary( std::vector< std::byte >( data, data + v.size() ) );
          }
       }

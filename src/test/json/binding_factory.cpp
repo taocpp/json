@@ -109,7 +109,7 @@ namespace tao::json
       parts_parser p( to_string( v ), __FUNCTION__ );
       const auto c = consume< std::unique_ptr< base_1 > >( p );
       TEST_ASSERT( c );
-      const auto d = dynamic_cast< derived_1* >( c.get() );
+      auto* const d = dynamic_cast< derived_1* >( c.get() );
       TEST_ASSERT( d );
       TEST_ASSERT( d->s == "foo" );
    }

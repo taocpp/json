@@ -52,7 +52,7 @@ namespace tao::json
    void test_null()
    {
       const value v = null;
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_null( v );
       assert_null( v2 );
@@ -70,7 +70,7 @@ namespace tao::json
    void test_boolean( const bool b )
    {
       const value v( b );
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_boolean( v, b );
       assert_boolean( v2, b );
@@ -87,7 +87,7 @@ namespace tao::json
    void test_signed( const T t )
    {
       const value v( t );
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_signed( v, t );
       assert_signed( v2, t );
@@ -112,7 +112,7 @@ namespace tao::json
    void test_unsigned( const T t )
    {
       const value v( t );
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_unsigned( v, t );
       assert_unsigned( v2, t );
@@ -134,7 +134,7 @@ namespace tao::json
    void test_double( const double d )
    {
       const value v( d );
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_double( v, d );
       assert_double( v2, d );
@@ -149,7 +149,7 @@ namespace tao::json
       const std::string t = s;
 
       const value v( s );
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_string( v, t );
       assert_string( v2, t );
@@ -165,7 +165,7 @@ namespace tao::json
 
    void test_empty_array( const value& v )
    {
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_array( v, 0 );
       assert_array( v2, 0 );
@@ -178,7 +178,7 @@ namespace tao::json
 
    void test_empty_object( const value& v )
    {
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_object( v, 0 );
       assert_object( v2, 0 );
@@ -192,7 +192,7 @@ namespace tao::json
    void test_array_1234()
    {
       const value v = value::array( { 1, 2, 3, 4 } );
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_array( v, 4 );
 
@@ -218,7 +218,7 @@ namespace tao::json
    void test_object_1234()
    {
       const value v{ { "foo", "bar" }, { "bar", 42 }, { "baz", { { "baz", value::array( { true, false, 0 } ) } } } };
-      const value v2( v );
+      const value v2( v );  // NOLINT(performance-unnecessary-copy-initialization)
 
       assert_object( v, 3 );
 
@@ -342,7 +342,7 @@ namespace tao::json
       }
       {
          const value a( "foo" );
-         const value b( a );
+         const value b( a );  // NOLINT(performance-unnecessary-copy-initialization)
          TEST_ASSERT( a.get_string() == b.get_string() );
       }
       {

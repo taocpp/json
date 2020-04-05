@@ -135,7 +135,7 @@ namespace tao::json::msgpack::events
          os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
       }
 
-      void begin_array()
+      void begin_array()  // NOLINT(readability-convert-member-functions-to-static)
       {
          throw std::runtime_error( "msgpack requires array size" );
       }
@@ -159,7 +159,7 @@ namespace tao::json::msgpack::events
       void element() noexcept
       {}
 
-      void end_array()
+      void end_array()  // NOLINT(readability-convert-member-functions-to-static)
       {
          assert( false );  // LCOV_EXCL_LINE
       }
@@ -167,7 +167,7 @@ namespace tao::json::msgpack::events
       void end_array( const std::size_t /*unused*/ ) noexcept
       {}
 
-      void begin_object()
+      void begin_object()  // NOLINT(readability-convert-member-functions-to-static)
       {
          throw std::runtime_error( "msgpack requires object size" );
       }
@@ -196,7 +196,7 @@ namespace tao::json::msgpack::events
       void member() noexcept
       {}
 
-      void end_object()
+      void end_object()  // NOLINT(readability-convert-member-functions-to-static)
       {
          assert( false );  // LCOV_EXCL_LINE
       }

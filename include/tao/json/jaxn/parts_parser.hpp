@@ -106,7 +106,7 @@ namespace tao::json::jaxn
 
       [[nodiscard]] bool null()
       {
-         return pegtl::parse< pegtl::seq< json::internal::rules::null, json::internal::rules::wss > >( m_input );
+         return pegtl::parse< pegtl::seq< json::internal::rules::kw_null, json::internal::rules::wss > >( m_input );
       }
 
       [[nodiscard]] bool boolean()
