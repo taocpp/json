@@ -46,8 +46,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
               m_current( in_begin ),
               m_end( in_end ),
               m_source( std::forward< T >( in_source ) )
-         {
-         }
+         {}
 
          template< typename T >
          memory_input_base( const char* in_begin, const char* in_end, T&& in_source ) noexcept( std::is_nothrow_constructible_v< Source, T&& > )
@@ -55,8 +54,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
               m_current( in_begin ),
               m_end( in_end ),
               m_source( std::forward< T >( in_source ) )
-         {
-         }
+         {}
 
          memory_input_base( const memory_input_base& ) = delete;
          memory_input_base( memory_input_base&& ) = delete;
@@ -124,15 +122,6 @@ namespace TAO_JSON_PEGTL_NAMESPACE
             m_current.byte_in_line = in_byte_in_line;
          }
 
-         template< rewind_mode M >
-         void restart( const internal::marker< iterator_t, M >& m )
-         {
-            m_current.data = m.iterator().data;
-            m_current.byte = m.iterator().byte;
-            m_current.line = m.iterator().line;
-            m_current.byte_in_line = m.iterator().byte_in_line;
-         }
-
       protected:
          const char* const m_begin;
          iterator_t m_current;
@@ -152,8 +141,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
               m_current( in_begin.data ),
               m_end( in_end ),
               m_source( std::forward< T >( in_source ) )
-         {
-         }
+         {}
 
          template< typename T >
          memory_input_base( const char* in_begin, const char* in_end, T&& in_source ) noexcept( std::is_nothrow_constructible_v< Source, T&& > )
@@ -161,8 +149,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
               m_current( in_begin ),
               m_end( in_end ),
               m_source( std::forward< T >( in_source ) )
-         {
-         }
+         {}
 
          memory_input_base( const memory_input_base& ) = delete;
          memory_input_base( memory_input_base&& ) = delete;
@@ -219,12 +206,6 @@ namespace TAO_JSON_PEGTL_NAMESPACE
             m_current = m_begin.data;
          }
 
-         template< rewind_mode M >
-         void restart( const internal::marker< iterator_t, M >& m )
-         {
-            m_current = m.iterator();
-         }
-
       protected:
          const internal::iterator m_begin;
          iterator_t m_current;
@@ -253,20 +234,17 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template< typename T >
       memory_input( const char* in_begin, const std::size_t in_size, T&& in_source ) noexcept( std::is_nothrow_constructible_v< Source, T&& > )
          : memory_input( in_begin, in_begin + in_size, std::forward< T >( in_source ) )
-      {
-      }
+      {}
 
       template< typename T >
       memory_input( const std::string& in_string, T&& in_source ) noexcept( std::is_nothrow_constructible_v< Source, T&& > )
          : memory_input( in_string.data(), in_string.size(), std::forward< T >( in_source ) )
-      {
-      }
+      {}
 
       template< typename T >
       memory_input( const std::string_view in_string, T&& in_source ) noexcept( std::is_nothrow_constructible_v< Source, T&& > )
          : memory_input( in_string.data(), in_string.size(), std::forward< T >( in_source ) )
-      {
-      }
+      {}
 
       template< typename T >
       memory_input( std::string&&, T&& ) = delete;
@@ -274,14 +252,12 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template< typename T >
       memory_input( const char* in_begin, T&& in_source ) noexcept( std::is_nothrow_constructible_v< Source, T&& > )
          : memory_input( in_begin, std::strlen( in_begin ), std::forward< T >( in_source ) )
-      {
-      }
+      {}
 
       template< typename T >
       memory_input( const char* in_begin, const char* in_end, T&& in_source, const std::size_t in_byte, const std::size_t in_line, const std::size_t in_byte_in_line ) noexcept( std::is_nothrow_constructible_v< Source, T&& > )
          : memory_input( { in_begin, in_byte, in_line, in_byte_in_line }, in_end, std::forward< T >( in_source ) )
-      {
-      }
+      {}
 
       memory_input( const memory_input& ) = delete;
       memory_input( memory_input&& ) = delete;
@@ -326,6 +302,14 @@ namespace TAO_JSON_PEGTL_NAMESPACE
          return this->m_current;
       }
 
+      using internal::memory_input_base< P, Eol, Source >::restart;
+
+      template< rewind_mode M >
+      void restart( const internal::marker< iterator_t, M >& m ) noexcept
+      {
+         iterator() = m.iterator();
+      }
+
       using internal::memory_input_base< P, Eol, Source >::position;
 
       [[nodiscard]] TAO_JSON_PEGTL_NAMESPACE::position position() const
@@ -333,13 +317,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE
          return position( iterator() );
       }
 
-      void discard() const noexcept
-      {
-      }
+      void discard() const noexcept {}
 
-      void require( const std::size_t /*unused*/ ) const noexcept
-      {
-      }
+      void require( const std::size_t /*unused*/ ) const noexcept {}
 
       template< rewind_mode M >
       [[nodiscard]] internal::marker< iterator_t, M > mark() noexcept
@@ -369,7 +349,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       [[nodiscard]] std::string_view line_at( const TAO_JSON_PEGTL_NAMESPACE::position& p ) const noexcept
       {
          const char* b = begin_of_line( p );
-         return std::string_view( b, end_of_line( p ) - b );
+         return std::string_view( b, static_cast< std::size_t >( end_of_line( p ) - b ) );
       }
    };
 

@@ -24,6 +24,8 @@
 #include "../analysis/generic.hpp"
 #include "../internal/demangle.hpp"
 #include "../internal/iterator.hpp"
+#include "../internal/skip_control.hpp"
+#include "../internal/try_catch_type.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
 {
@@ -130,8 +132,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       // if parsing of the rule failed, this method is called
       template< typename Rule, typename Input, typename... States >
       void failure( const Input& /*unused*/, States&&... /*unused*/ ) noexcept
-      {
-      }
+      {}
 
       // if parsing succeeded and the (optional) transform call
       // did not discard the node, it is appended to its parent.
@@ -147,11 +148,20 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
 
    struct node
       : basic_node< node >
-   {
-   };
+   {};
 
    namespace internal
    {
+      template< typename >
+      struct is_try_catch_type
+         : std::false_type
+      {};
+
+      template< typename Exception, typename... Rules >
+      struct is_try_catch_type< TAO_JSON_PEGTL_NAMESPACE::internal::try_catch_type< Exception, Rules... > >
+         : std::true_type
+      {};
+
       template< typename Node >
       struct state
       {
@@ -182,8 +192,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
 
       template< typename Selector, typename... Parameters >
       void transform( Parameters&&... /*unused*/ ) noexcept
-      {
-      }
+      {}
 
       template< typename Selector, typename Input, typename Node, typename... States >
       auto transform( const Input& in, std::unique_ptr< Node >& n, States&&... st ) noexcept( noexcept( Selector::transform( in, n, st... ) ) )
@@ -202,47 +211,40 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
       template< unsigned Level, typename Analyse, template< typename... > class Selector >
       struct is_leaf
          : std::false_type
-      {
-      };
+      {};
 
       template< analysis::rule_type Type, template< typename... > class Selector >
       struct is_leaf< 0, analysis::generic< Type >, Selector >
          : std::true_type
-      {
-      };
+      {};
 
       template< analysis::rule_type Type, std::size_t Count, template< typename... > class Selector >
       struct is_leaf< 0, analysis::counted< Type, Count >, Selector >
          : std::true_type
-      {
-      };
+      {};
 
       template< analysis::rule_type Type, typename... Rules, template< typename... > class Selector >
       struct is_leaf< 0, analysis::generic< Type, Rules... >, Selector >
          : std::false_type
-      {
-      };
+      {};
 
       template< analysis::rule_type Type, std::size_t Count, typename... Rules, template< typename... > class Selector >
       struct is_leaf< 0, analysis::counted< Type, Count, Rules... >, Selector >
          : std::false_type
-      {
-      };
+      {};
 
       template< unsigned Level, typename Rule, template< typename... > class Selector >
-      inline constexpr bool is_unselected_leaf = !Selector< Rule >::value && is_leaf< Level, typename Rule::analyze_t, Selector >::value;
+      inline constexpr bool is_unselected_leaf = ( TAO_JSON_PEGTL_NAMESPACE::internal::skip_control< Rule > || !Selector< Rule >::value ) && is_leaf< Level, typename Rule::analyze_t, Selector >::value;
 
       template< unsigned Level, analysis::rule_type Type, typename... Rules, template< typename... > class Selector >
       struct is_leaf< Level, analysis::generic< Type, Rules... >, Selector >
          : std::bool_constant< ( is_unselected_leaf< Level - 1, Rules, Selector > && ... ) >
-      {
-      };
+      {};
 
       template< unsigned Level, analysis::rule_type Type, std::size_t Count, typename... Rules, template< typename... > class Selector >
       struct is_leaf< Level, analysis::counted< Type, Count, Rules... >, Selector >
          : std::bool_constant< ( is_unselected_leaf< Level - 1, Rules, Selector > && ... ) >
-      {
-      };
+      {};
 
       template< typename T >
       struct control
@@ -344,7 +346,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
          struct state_handler;
 
          template< typename Rule >
-         using type = control< state_handler< Rule, Selector< Rule >::value, is_leaf< 8, typename Rule::analyze_t, Selector >::value > >;
+         using type = control< state_handler< Rule, !TAO_JSON_PEGTL_NAMESPACE::internal::skip_control< Rule > && Selector< Rule >::value, is_leaf< 8, typename Rule::analyze_t, Selector >::value > >;
       };
 
       template< typename Node, template< typename... > class Selector, template< typename... > class Control >
@@ -377,28 +379,62 @@ namespace TAO_JSON_PEGTL_NAMESPACE::parse_tree
          : Control< Rule >
       {
          template< typename Input, typename... States >
-         static void start( const Input& in, state< Node >& state, States&&... st )
+         static void start( const Input& in, state< Node >& /*unused*/, States&&... st ) noexcept( noexcept( Control< Rule >::start( in, st... ) ) )
          {
             Control< Rule >::start( in, st... );
-            state.emplace_back();
          }
 
          template< typename Input, typename... States >
-         static void success( const Input& in, state< Node >& state, States&&... st )
+         static void success( const Input& in, state< Node >& /*unused*/, States&&... st ) noexcept( noexcept( Control< Rule >::success( in, st... ) ) )
          {
             Control< Rule >::success( in, st... );
-            auto n = std::move( state.back() );
-            state.pop_back();
-            for( auto& c : n->children ) {
-               state.back()->children.emplace_back( std::move( c ) );
-            }
          }
 
          template< typename Input, typename... States >
-         static void failure( const Input& in, state< Node >& state, States&&... st ) noexcept( noexcept( Control< Rule >::failure( in, st... ) ) )
+         static void failure( const Input& in, state< Node >& /*unused*/, States&&... st ) noexcept( noexcept( Control< Rule >::failure( in, st... ) ) )
          {
             Control< Rule >::failure( in, st... );
-            state.pop_back();
+         }
+
+         template< apply_mode A,
+                   rewind_mode M,
+                   template< typename... >
+                   class Action,
+                   template< typename... >
+                   class Control2,
+                   typename Input,
+                   typename... States >
+         [[nodiscard]] static bool match( Input& in, States&&... st )
+         {
+            auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
+            if constexpr( is_try_catch_type< Rule >::value ) {
+               internal::state< Node > tmp;
+               tmp.emplace_back();
+               tmp.stack.swap( state.stack );
+               const bool result = Control< Rule >::template match< A, M, Action, Control2 >( in, st... );
+               tmp.stack.swap( state.stack );
+               if( result ) {
+                  for( auto& c : tmp.back()->children ) {
+                     state.back()->children.emplace_back( std::move( c ) );
+                  }
+               }
+               return result;
+            }
+            else {
+               state.emplace_back();
+               const bool result = Control< Rule >::template match< A, M, Action, Control2 >( in, st... );
+               if( result ) {
+                  auto n = std::move( state.back() );
+                  state.pop_back();
+                  for( auto& c : n->children ) {
+                     state.back()->children.emplace_back( std::move( c ) );
+                  }
+               }
+               else {
+                  state.pop_back();
+               }
+               return result;
+            }
          }
       };
 

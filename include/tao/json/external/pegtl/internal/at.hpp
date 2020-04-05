@@ -6,6 +6,7 @@
 
 #include "../config.hpp"
 
+#include "seq.hpp"
 #include "skip_control.hpp"
 #include "trivial.hpp"
 
@@ -17,18 +18,19 @@
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< typename... Rules >
-   struct at;
+   struct at
+      : at< seq< Rules... > >
+   {};
 
    template<>
    struct at<>
       : trivial< true >
-   {
-   };
+   {};
 
-   template< typename... Rules >
-   struct at
+   template< typename Rule >
+   struct at< Rule >
    {
-      using analyze_t = analysis::generic< analysis::rule_type::opt, Rules... >;
+      using analyze_t = analysis::generic< analysis::rule_type::opt, Rule >;
 
       template< apply_mode,
                 rewind_mode,
@@ -41,7 +43,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       [[nodiscard]] static bool match( Input& in, States&&... st )
       {
          const auto m = in.template mark< rewind_mode::required >();
-         return ( Control< Rules >::template match< apply_mode::nothing, rewind_mode::active, Action, Control >( in, st... ) && ... );
+         return Control< Rule >::template match< apply_mode::nothing, rewind_mode::active, Action, Control >( in, st... );
       }
    };
 

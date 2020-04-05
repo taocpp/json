@@ -6,7 +6,6 @@
 
 #include "../config.hpp"
 
-#include "duseltronik.hpp"
 #include "seq.hpp"
 #include "skip_control.hpp"
 
@@ -19,8 +18,13 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< template< typename... > class Control, typename... Rules >
    struct control
+      : control< Control, seq< Rules... > >
+   {};
+
+   template< template< typename... > class Control, typename Rule >
+   struct control< Control, Rule >
    {
-      using analyze_t = analysis::generic< analysis::rule_type::seq, Rules... >;
+      using analyze_t = analysis::generic< analysis::rule_type::seq, Rule >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -32,7 +36,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 typename... States >
       [[nodiscard]] static bool match( Input& in, States&&... st )
       {
-         return duseltronik< seq< Rules... >, A, M, Action, Control >::match( in, st... );
+         return Control< Rule >::template match< A, M, Action, Control >( in, st... );
       }
    };
 

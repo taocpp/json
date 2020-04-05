@@ -7,6 +7,7 @@
 #include "../config.hpp"
 
 #include "raise.hpp"
+#include "seq.hpp"
 #include "skip_control.hpp"
 
 #include "../apply_mode.hpp"
@@ -21,22 +22,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
 
    template< typename... Rules >
    struct must
-   {
-      using analyze_t = analysis::generic< analysis::rule_type::seq, Rules... >;
-
-      template< apply_mode A,
-                rewind_mode M,
-                template< typename... >
-                class Action,
-                template< typename... >
-                class Control,
-                typename Input,
-                typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
-      {
-         return ( Control< must< Rules > >::template match< A, M, Action, Control >( in, st... ) && ... );
-      }
-   };
+      : seq< must< Rules >... >
+   {};
 
    // While in theory the implementation for a single rule could
    // be simplified to must< Rule > = sor< Rule, raise< Rule > >, this
