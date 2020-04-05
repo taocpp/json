@@ -36,7 +36,7 @@
 namespace tao::json
 {
    template< template< typename... > class Traits >
-   class basic_value
+   class basic_value  // NOLINT(cppcoreguidelines-special-member-functions)
       : public Traits< void >::template public_base< basic_value< Traits > >
    {
    public:
