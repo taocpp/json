@@ -72,7 +72,7 @@ namespace tao
       inline constexpr bool is_std_array_v = is_std_array< std::remove_cv_t< T > >::value;
 
       template< typename T, typename ElementType >
-      inline constexpr bool is_span_compatible_ptr_v = std::conjunction_v< std::negation< std::is_void< T > >, std::is_convertible< T ( * )[], ElementType ( * )[] > >;
+      inline constexpr bool is_span_compatible_ptr_v = std::is_convertible_v< T ( * )[], ElementType ( * )[] >;
 
       template< typename, typename, typename = void >
       struct is_span_compatible_container
@@ -88,7 +88,7 @@ namespace tao
                                               std::enable_if_t< !std::is_array_v< Container > >,
                                               decltype( std::data( std::declval< Container >() ) ),
                                               decltype( std::size( std::declval< Container >() ) ),
-                                              std::enable_if_t< is_span_compatible_ptr_v< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) >, ElementType > > > >
+                                              std::enable_if_t< std::is_convertible_v< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) > ( * )[], ElementType ( * )[] > > > >
          : std::true_type
       {};
 
