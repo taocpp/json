@@ -73,7 +73,7 @@ namespace tao
 
       template< typename T, typename ElementType, typename = void >
       struct is_span_compatible_ptr
-         : std::is_convertible_v< T ( * )[], ElementType ( * )[] >
+         : std::is_convertible< T ( * )[], ElementType ( * )[] >
       {};
 
       template< typename T, typename ElementType >
