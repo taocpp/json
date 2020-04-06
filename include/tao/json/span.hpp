@@ -71,18 +71,8 @@ namespace tao
       template< typename T >
       inline constexpr bool is_std_array_v = is_std_array< std::remove_cv_t< T > >::value;
 
-      template< typename T, typename ElementType, typename = void >
-      struct is_span_compatible_ptr
-         : std::is_convertible< T ( * )[], ElementType ( * )[] >
-      {};
-
       template< typename T, typename ElementType >
-      struct is_span_compatible_ptr< T, ElementType, std::enable_if_t< std::is_void_v< T > > >
-         : std::false_type
-      {};
-
-      template< typename T, typename ElementType >
-      inline constexpr bool is_span_compatible_ptr_v = is_span_compatible_ptr< T, ElementType >::value;
+      inline constexpr bool is_span_compatible_ptr_v = std::conjunction_v< std::negation< std::is_void< T > >, std::is_convertible< T ( * )[], ElementType ( * )[] > >;
 
       template< typename, typename, typename = void >
       struct is_span_compatible_container
