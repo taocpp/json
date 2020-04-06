@@ -25,7 +25,7 @@ namespace tao::json
       std::string m_source;
 
    public:
-      position() noexcept = default;
+      position() = default;
 
       position( std::string in_source, const std::size_t in_line, const std::size_t in_byte_in_line )
          : m_line( in_line ),
