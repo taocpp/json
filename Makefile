@@ -64,7 +64,7 @@ clang-tidy: $(CLANG_TIDY_HEADERS:%=build/%.clang-tidy) $(SOURCES:%=build/%.clang
 
 .PHONY: clean
 clean:
-	@rm -rf build/src
+	@rm -rf build/*
 	@find . -name '*~' -delete
 
 build/%.d: %.cpp Makefile
