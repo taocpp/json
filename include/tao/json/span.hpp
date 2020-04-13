@@ -46,54 +46,33 @@ namespace tao
    namespace internal
    {
       template< typename >
-      struct is_span
-         : std::false_type
-      {};
+      inline constexpr bool is_span = false;
 
       template< typename ElementType, std::size_t Extent >
-      struct is_span< span< ElementType, Extent > >
-         : std::true_type
-      {};
-
-      template< typename T >
-      inline constexpr bool is_span_v = is_span< std::remove_cv_t< T > >::value;
+      inline constexpr bool is_span< span< ElementType, Extent > > = true;
 
       template< typename >
-      struct is_std_array
-         : std::false_type
-      {};
+      inline constexpr bool is_std_array = false;
 
       template< typename T, std::size_t N >
-      struct is_std_array< std::array< T, N > >
-         : std::true_type
-      {};
-
-      template< typename T >
-      inline constexpr bool is_std_array_v = is_std_array< std::remove_cv_t< T > >::value;
+      inline constexpr bool is_std_array< std::array< T, N > > = true;
 
       template< typename T, typename ElementType >
-      inline constexpr bool is_span_compatible_ptr_v = std::is_convertible_v< T ( * )[], ElementType ( * )[] >;
+      inline constexpr bool is_span_compatible_ptr = std::is_convertible_v< T ( * )[], ElementType ( * )[] >;
 
       template< typename, typename, typename = void >
-      struct is_span_compatible_container
-         : std::false_type
-      {};
+      inline constexpr bool is_span_compatible_container = false;
 
       template< typename Container, typename ElementType >
-      struct is_span_compatible_container< Container,
-                                           ElementType,
-                                           std::void_t<
-                                              std::enable_if_t< !is_span_v< Container > >,
-                                              std::enable_if_t< !is_std_array_v< Container > >,
-                                              std::enable_if_t< !std::is_array_v< Container > >,
-                                              decltype( std::data( std::declval< Container >() ) ),
-                                              decltype( std::size( std::declval< Container >() ) ),
-                                              std::enable_if_t< std::is_convertible_v< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) > ( * )[], ElementType ( * )[] > > > >
-         : std::true_type
-      {};
-
-      template< typename Container, typename ElementType >
-      inline constexpr bool is_span_compatible_container_v = is_span_compatible_container< Container, ElementType >::value;
+      inline constexpr bool is_span_compatible_container< Container,
+                                                          ElementType,
+                                                          std::void_t<
+                                                             std::enable_if_t< !is_span< std::remove_cv_t< Container > > >,
+                                                             std::enable_if_t< !is_std_array< std::remove_cv_t< Container > > >,
+                                                             std::enable_if_t< !std::is_array_v< Container > >,
+                                                             decltype( std::data( std::declval< Container >() ) ),
+                                                             decltype( std::size( std::declval< Container >() ) ),
+                                                             std::enable_if_t< std::is_convertible_v< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) > ( * )[], ElementType ( * )[] > > > > = true;
 
    }  // namespace internal
 
@@ -137,19 +116,19 @@ namespace tao
          : m_data( arr )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr_v< const OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr< const OtherElementType, ElementType > > >
       constexpr span( const std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) )
       {}
 
       constexpr span( const span& ) = default;
 
-      template< typename OtherElementType, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
+      template< typename OtherElementType, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( const span< OtherElementType, Extent >& s ) noexcept
          : m_data( s.data() )
       {}
@@ -303,29 +282,29 @@ namespace tao
          : m_data( arr ), m_size( N )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) ), m_size( N )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< const OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< const OtherElementType, ElementType > > >
       constexpr span( const std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) ), m_size( N )
       {}
 
-      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container_v< Container, ElementType > > >
+      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container< Container, ElementType > > >
       constexpr span( Container& cont )
          : m_data( static_cast< pointer >( std::data( cont ) ) ), m_size( std::size( cont ) )
       {}
 
-      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container_v< const Container, ElementType > > >
+      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container< const Container, ElementType > > >
       constexpr span( const Container& cont )
          : m_data( static_cast< pointer >( std::data( cont ) ) ), m_size( std::size( cont ) )
       {}
 
       constexpr span( const span& ) = default;
 
-      template< typename OtherElementType, std::size_t OtherExtent, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr_v< OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t OtherExtent, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( const span< OtherElementType, OtherExtent >& s ) noexcept
          : m_data( s.data() ), m_size( s.size() )
       {}
