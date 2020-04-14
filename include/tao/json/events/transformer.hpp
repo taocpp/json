@@ -4,9 +4,9 @@
 #ifndef TAO_JSON_EVENTS_TRANSFORMER_HPP
 #define TAO_JSON_EVENTS_TRANSFORMER_HPP
 
-#include <type_traits>
+#include <utility>
 
-#include "../external/pegtl/internal/always_false.hpp"
+#include "../internal/dependent_false.hpp"
 
 namespace tao::json
 {
@@ -18,7 +18,7 @@ namespace tao::json
          // if this static assert is triggered there is a high chance that 'T' is
          // a traits class template and you intended to call a method starting with "basic_*",
          // e.g. basic_from_file< my_traits >( ... ) instead of from_file< my_traits >( ... ).
-         static_assert( pegtl::internal::always_false< invalid_transformer< T > >::value, "T is not a valid transformer" );
+         static_assert( internal::dependent_false< invalid_transformer< T > >, "T is not a valid transformer" );
       };
 
       template< typename B, template< typename... > class T, typename = void >

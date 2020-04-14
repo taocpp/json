@@ -7,7 +7,7 @@
 #include <cstddef>
 #include <vector>
 
-#include "external/pegtl/internal/always_false.hpp"
+#include "internal/dependent_false.hpp"
 
 namespace tao
 {
@@ -43,7 +43,7 @@ namespace tao::json
       struct unhex_helper< T, vlist< V, Vs... >, C >
          : unhex_helper< T, vlist< V > >
       {
-         static_assert( pegtl::internal::always_false< T >::value, "digits must occur in pairs" );
+         static_assert( internal::dependent_false< T >, "digits must occur in pairs" );
       };
 
       template< typename T, typename V, V... Vs, char C1, char... Cs >
@@ -56,7 +56,7 @@ namespace tao::json
       struct unhex_helper< T, vlist< V, Vs... >, C0, '\'', Cs... >
          : unhex_helper< T, vlist< V > >
       {
-         static_assert( pegtl::internal::always_false< T >::value, "digit separator only allowed between pairs of digits" );
+         static_assert( internal::dependent_false< T >, "digit separator only allowed between pairs of digits" );
       };
 
       template< typename T, typename V, V... Vs, char C0, char C1, char... Cs >
@@ -68,7 +68,7 @@ namespace tao::json
       template< typename T, typename V, char C >
       [[nodiscard]] constexpr T unhex()
       {
-         static_assert( pegtl::internal::always_false< T >::value, "not a hex literal" );
+         static_assert( internal::dependent_false< T >, "not a hex literal" );
          return T{};
       }
 
