@@ -8,7 +8,7 @@
 
 namespace tao::json::internal
 {
-   using pegtl::internal::demangle;
+   using pegtl::internal::demangle;  // NOLINT(misc-unused-using-decls)
 
 }  // namespace tao::json::internal
 
