@@ -7,32 +7,15 @@
 #include <type_traits>
 #include <typeinfo>
 
+#include "../external/pegtl/type_list.hpp"
 #include "../forward.hpp"
 
 namespace tao::json::internal
 {
-   template< typename... Ts >
-   struct type_list
-   {
-      static constexpr std::size_t size = sizeof...( Ts );
-   };
-
-   template< typename... >
-   struct merge_type_lists_t;
-
-   template< typename... Ts >
-   struct merge_type_lists_t< type_list< Ts... > >
-   {
-      using list = type_list< Ts... >;
-   };
-
-   template< typename... Vs, typename... Ws, typename... Rs >
-   struct merge_type_lists_t< type_list< Vs... >, type_list< Ws... >, Rs... >
-      : merge_type_lists_t< type_list< Vs..., Ws... >, Rs... >
-   {};
-
-   template< typename... Ts >
-   using merge_type_lists = typename merge_type_lists_t< Ts... >::list;
+   using pegtl::type_list;
+   using pegtl::empty_list;
+   using pegtl::type_list_concat;
+   using pegtl::type_list_concat_t;
 
    struct type_info_less
    {

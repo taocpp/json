@@ -24,7 +24,7 @@ namespace tao::json::binding
       template< typename... As >
       struct make_array
       {
-         using list = json::internal::merge_type_lists< internal::inherit_elements< As >... >;
+         using list = json::internal::type_list_concat_t< internal::inherit_elements< As >... >;
          using type = internal::array< list >;
       };
 
@@ -34,7 +34,7 @@ namespace tao::json::binding
    using array = typename internal::make_array< As... >::type;
 
    template< for_unknown_key E, for_nothing_value N, typename... As >
-   using basic_object = internal::basic_object< E, N, json::internal::merge_type_lists< internal::inherit_members< As >... > >;
+   using basic_object = internal::basic_object< E, N, json::internal::type_list_concat_t< internal::inherit_members< As >... > >;
 
    template< typename... As >
    using object = basic_object< for_unknown_key::fail, for_nothing_value::encode, As... >;
