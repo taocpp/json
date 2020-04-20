@@ -41,7 +41,8 @@ namespace tao::json::msgpack::internal
    template< utf8_mode V >
    struct data
    {
-      using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+      using rule_t = data;
+      using subs_t = pegtl::empty_list;  // TODO?
 
       template< pegtl::apply_mode A,
                 pegtl::rewind_mode M,

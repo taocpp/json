@@ -8,13 +8,12 @@
 
 #include "../config.hpp"
 
-#include "skip_control.hpp"
-#include "trivial.hpp"
+#include "enable_control.hpp"
+#include "failure.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
-
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
@@ -23,18 +22,14 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
 
    template<>
    struct sor<>
-      : trivial< false >
+      : failure
    {};
 
    template< typename... Rules >
    struct sor
-      : sor< std::index_sequence_for< Rules... >, Rules... >
-   {};
-
-   template< std::size_t... Indices, typename... Rules >
-   struct sor< std::index_sequence< Indices... >, Rules... >
    {
-      using analyze_t = analysis::generic< analysis::rule_type::sor, Rules... >;
+      using rule_t = sor;
+      using subs_t = type_list< Rules... >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -42,16 +37,30 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                std::size_t... Indices,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( std::index_sequence< Indices... > /*unused*/, ParseInput& in, States&&... st )
       {
          return ( Control< Rules >::template match< A, ( ( Indices == ( sizeof...( Rules ) - 1 ) ) ? M : rewind_mode::required ), Action, Control >( in, st... ) || ... );
+      }
+
+      template< apply_mode A,
+                rewind_mode M,
+                template< typename... >
+                class Action,
+                template< typename... >
+                class Control,
+                typename ParseInput,
+                typename... States >
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
+      {
+         return match< A, M, Action, Control >( std::index_sequence_for< Rules... >(), in, st... );
       }
    };
 
    template< typename... Rules >
-   inline constexpr bool skip_control< sor< Rules... > > = true;
+   inline constexpr bool enable_control< sor< Rules... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

@@ -28,7 +28,8 @@ namespace tao::json
    {
       struct number
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+         using rule_t = number;
+         using subs_t = pegtl::empty_list;
 
          template< pegtl::apply_mode A,
                    pegtl::rewind_mode M,
@@ -153,7 +154,8 @@ namespace tao::json
       template< std::size_t L, utf8_mode V >
       struct data
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+         using rule_t = data;
+         using subs_t = pegtl::empty_list;  // TODO?
 
          template< pegtl::apply_mode A,
                    pegtl::rewind_mode M,

@@ -7,16 +7,15 @@
 #include "../config.hpp"
 
 #include "bytes.hpp"
+#include "enable_control.hpp"
 #include "eof.hpp"
 #include "not_at.hpp"
 #include "seq.hpp"
-#include "skip_control.hpp"
 #include "star.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
-
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
@@ -28,7 +27,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< typename Cond >
    struct until< Cond >
    {
-      using analyze_t = analysis::generic< analysis::rule_type::seq, star< not_at< Cond >, not_at< eof >, bytes< 1 > >, Cond >;
+      using rule_t = until;
+      using subs_t = type_list< Cond >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -36,9 +36,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          auto m = in.template mark< M >();
 
@@ -55,7 +55,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< typename Cond, typename Rule >
    struct until< Cond, Rule >
    {
-      using analyze_t = analysis::generic< analysis::rule_type::seq, star< not_at< Cond >, not_at< eof >, Rule >, Cond >;
+      using rule_t = until;
+      using subs_t = type_list< Cond, Rule >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -63,9 +64,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          auto m = in.template mark< M >();
          using m_t = decltype( m );
@@ -80,7 +81,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    };
 
    template< typename Cond, typename... Rules >
-   inline constexpr bool skip_control< until< Cond, Rules... > > = true;
+   inline constexpr bool enable_control< until< Cond, Rules... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

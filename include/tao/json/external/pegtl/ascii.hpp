@@ -5,9 +5,8 @@
 #define TAO_JSON_PEGTL_ASCII_HPP
 
 #include "config.hpp"
-#include "eol.hpp"
 
-#include "internal/always_false.hpp"
+#include "internal/dependent_false.hpp"
 #include "internal/result_on_found.hpp"
 #include "internal/rules.hpp"
 
@@ -22,7 +21,6 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       struct blank : internal::one< internal::result_on_found::success, internal::peek_char, ' ', '\t' > {};
       struct digit : internal::range< internal::result_on_found::success, internal::peek_char, '0', '9' > {};
       struct ellipsis : internal::string< '.', '.', '.' > {};
-      struct eolf : internal::eolf {};
       template< char... Cs > struct forty_two : internal::rep< 42, internal::one< internal::result_on_found::success, internal::peek_char, Cs... > > {};
       struct identifier_first : internal::identifier_first {};
       struct identifier_other : internal::identifier_other {};
@@ -50,10 +48,10 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template<>
       struct keyword<>
       {
-         template< typename Input >
-         [[nodiscard]] static bool match( Input& /*unused*/ ) noexcept
+         template< typename ParseInput >
+         [[nodiscard]] static bool match( ParseInput& /*unused*/ ) noexcept
          {
-            static_assert( internal::always_false< Input >::value, "empty keywords not allowed" );
+            static_assert( internal::dependent_false< ParseInput >, "empty keywords not allowed" );
             return false;
          }
       };

@@ -11,6 +11,7 @@
 #include "../utf8.hpp"
 
 #include "abnf.hpp"
+#include "forward.hpp"
 #include "remove_first_state.hpp"
 #include "uri.hpp"
 
@@ -125,7 +126,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::http
    // clang-format on
    struct chunk_size
    {
-      using analyze_t = plus< abnf::HEXDIG >::analyze_t;
+      using rule_t = plus< abnf::HEXDIG >::rule_t;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -133,9 +134,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::http
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, std::size_t& size, States&&... /*unused*/ )
+      [[nodiscard]] static bool match( ParseInput& in, std::size_t& size, States&&... /*unused*/ )
       {
          size = 0;
          std::size_t i = 0;
@@ -174,7 +175,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::http
    // clang-format on
    struct chunk_data
    {
-      using analyze_t = star< abnf::OCTET >::analyze_t;
+      using rule_t = star< abnf::OCTET >::rule_t;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -182,9 +183,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::http
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, const std::size_t size, States&&... /*unused*/ )
+      [[nodiscard]] static bool match( ParseInput& in, const std::size_t size, States&&... /*unused*/ )
       {
          if( in.size( size ) >= size ) {
             in.bump( size );
@@ -196,26 +197,43 @@ namespace TAO_JSON_PEGTL_NAMESPACE::http
 
    namespace internal::chunk_helper
    {
-      template< typename Rule, template< typename... > class Control >
-      struct control
-         : remove_self_and_first_state< Rule, Control >
+      template< typename Base >
+      struct control;
+
+      template< template< typename... > class Control, typename Rule >
+      struct control< Control< Rule > >
+         : Control< Rule >
+      {
+         template< apply_mode A,
+                   rewind_mode M,
+                   template< typename... >
+                   class Action,
+                   template< typename... >
+                   class,
+                   typename ParseInput,
+                   typename State,
+                   typename... States >
+         [[nodiscard]] static bool match( ParseInput& in, State&& /*unused*/, States&&... st )
+         {
+            return Control< Rule >::template match< A, M, Action, Control >( in, st... );
+         }
+      };
+
+      template< template< typename... > class Control >
+      struct control< Control< chunk_size > >
+         : remove_first_state< Control< chunk_size > >
       {};
 
       template< template< typename... > class Control >
-      struct control< chunk_size, Control >
-         : remove_first_state_after_match< chunk_size, Control >
-      {};
-
-      template< template< typename... > class Control >
-      struct control< chunk_data, Control >
-         : remove_first_state_after_match< chunk_data, Control >
+      struct control< Control< chunk_data > >
+         : remove_first_state< Control< chunk_data > >
       {};
 
       template< template< typename... > class Control >
       struct bind
       {
          template< typename Rule >
-         using type = control< Rule, Control >;
+         using type = control< Control< Rule > >;
       };
 
    }  // namespace internal::chunk_helper
@@ -223,7 +241,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::http
    struct chunk
    {
       using impl = seq< chunk_size, chunk_ext, abnf::CRLF, chunk_data, abnf::CRLF >;
-      using analyze_t = impl::analyze_t;
+
+      using rule_t = impl::rule_t;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -231,9 +250,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::http
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          std::size_t size{};
          return impl::template match< A, M, Action, internal::chunk_helper::bind< Control >::template type >( in, size, st... );

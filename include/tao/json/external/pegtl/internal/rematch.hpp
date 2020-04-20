@@ -6,11 +6,12 @@
 
 #include "../config.hpp"
 
-#include "skip_control.hpp"
+#include "enable_control.hpp"
 
 #include "../apply_mode.hpp"
 #include "../memory_input.hpp"
 #include "../rewind_mode.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
@@ -20,7 +21,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< typename Head >
    struct rematch< Head >
    {
-      using analyze_t = typename Head::analyze_t;
+      using rule_t = rematch;
+      using subs_t = type_list< Head >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -28,9 +30,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          return Control< Head >::template match< A, M, Action, Control >( in, st... );
       }
@@ -39,7 +41,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< typename Head, typename Rule, typename... Rules >
    struct rematch< Head, Rule, Rules... >
    {
-      using analyze_t = typename Head::analyze_t;  // NOTE: Rule and Rules are ignored for analyze().
+      using rule_t = rematch;
+      using subs_t = type_list< Head, Rule, Rules... >;
 
       template< apply_mode A,
                 rewind_mode,
@@ -47,14 +50,14 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          auto m = in.template mark< rewind_mode::required >();
 
          if( Control< Head >::template match< A, rewind_mode::active, Action, Control >( in, st... ) ) {
-            memory_input< Input::tracking_mode_v, typename Input::eol_t, typename Input::source_t > i2( m.iterator(), in.current(), in.source() );
+            memory_input< ParseInput::tracking_mode_v, typename ParseInput::eol_t, typename ParseInput::source_t > i2( m.iterator(), in.current(), in.source() );
             return m( ( Control< Rule >::template match< A, rewind_mode::active, Action, Control >( i2, st... ) && ... && ( i2.restart( m ), Control< Rules >::template match< A, rewind_mode::active, Action, Control >( i2, st... ) ) ) );
          }
          return false;
@@ -62,7 +65,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    };
 
    template< typename Head, typename... Rules >
-   inline constexpr bool skip_control< rematch< Head, Rules... > > = true;
+   inline constexpr bool enable_control< rematch< Head, Rules... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

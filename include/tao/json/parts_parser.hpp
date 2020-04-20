@@ -26,8 +26,6 @@ namespace tao::json
 
          struct boolean
          {
-            using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
-
             template< pegtl::apply_mode,
                       pegtl::rewind_mode,
                       template< typename... >
@@ -58,8 +56,6 @@ namespace tao::json
 
          struct double_rule
          {
-            using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
-
             template< apply_mode A,
                       rewind_mode M,
                       template< typename... >
@@ -177,14 +173,14 @@ namespace tao::json
       [[nodiscard]] std::int64_t number_signed()
       {
          std::int64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
-         pegtl::parse< pegtl::must< pegtl::integer::signed_rule_with_action, internal::rules::wss > >( m_input, st );
+         pegtl::parse< pegtl::must< pegtl::signed_rule_with_action, internal::rules::wss > >( m_input, st );
          return st;
       }
 
       [[nodiscard]] std::uint64_t number_unsigned()
       {
          std::uint64_t st = 0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
-         pegtl::parse< pegtl::must< pegtl::integer::unsigned_rule_with_action, internal::rules::wss > >( m_input, st );
+         pegtl::parse< pegtl::must< pegtl::unsigned_rule_with_action, internal::rules::wss > >( m_input, st );
          return st;
       }
 

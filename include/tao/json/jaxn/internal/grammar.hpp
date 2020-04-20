@@ -77,7 +77,8 @@ namespace tao::json::jaxn::internal
       template< char D >
       struct unescaped
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+         using rule_t = unescaped;
+         using subs_t = pegtl::empty_list;
 
          template< typename Input >
          [[nodiscard]] static bool match( Input& in )
@@ -110,7 +111,8 @@ namespace tao::json::jaxn::internal
       template< char D >
       struct mchars_non_eol
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+         using rule_t = mchars_non_eol;
+         using subs_t = pegtl::empty_list;
 
          template< typename Input >
          [[nodiscard]] static bool match( Input& in )
@@ -154,7 +156,8 @@ namespace tao::json::jaxn::internal
       template< char D >
       struct bunescaped
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+         using rule_t = bunescaped;
+         using subs_t = pegtl::empty_list;
 
          template< typename Input >
          [[nodiscard]] static bool match( Input& in )
@@ -225,7 +228,8 @@ namespace tao::json::jaxn::internal
 
       struct sor_value
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, kw_false, kw_true, kw_null >;
+         using rule_t = sor_value;
+         using subs_t = pegtl::type_list< string, number< false >, object, array, kw_false, kw_true, kw_null >;
 
          template< typename Rule,
                    apply_mode A,

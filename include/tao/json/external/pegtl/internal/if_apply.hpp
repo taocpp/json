@@ -7,18 +7,19 @@
 #include "../config.hpp"
 
 #include "apply_single.hpp"
-#include "skip_control.hpp"
+#include "enable_control.hpp"
 
-#include "../analysis/counted.hpp"
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< typename Rule, typename... Actions >
    struct if_apply
    {
-      using analyze_t = typename Rule::analyze_t;
+      using rule_t = if_apply;
+      using subs_t = type_list< Rule >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -26,12 +27,12 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          if constexpr( ( A == apply_mode::action ) && ( sizeof...( Actions ) != 0 ) ) {
-            using action_t = typename Input::action_t;
+            using action_t = typename ParseInput::action_t;
             auto m = in.template mark< rewind_mode::required >();
             if( Control< Rule >::template match< apply_mode::action, rewind_mode::active, Action, Control >( in, st... ) ) {
                const action_t i2( m.iterator(), in );
@@ -46,7 +47,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    };
 
    template< typename Rule, typename... Actions >
-   inline constexpr bool skip_control< if_apply< Rule, Actions... > > = true;
+   inline constexpr bool enable_control< if_apply< Rule, Actions... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

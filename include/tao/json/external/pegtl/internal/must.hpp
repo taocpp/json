@@ -6,14 +6,13 @@
 
 #include "../config.hpp"
 
-#include "raise.hpp"
+#include "enable_control.hpp"
 #include "seq.hpp"
-#include "skip_control.hpp"
+#include "success.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
-
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
@@ -25,6 +24,11 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       : seq< must< Rules >... >
    {};
 
+   template<>
+   struct must<>
+      : success
+   {};
+
    // While in theory the implementation for a single rule could
    // be simplified to must< Rule > = sor< Rule, raise< Rule > >, this
    // would result in some unnecessary run-time overhead.
@@ -32,7 +36,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< typename Rule >
    struct must< Rule >
    {
-      using analyze_t = typename Rule::analyze_t;
+      using rule_t = must;
+      using subs_t = type_list< Rule >;
 
       template< apply_mode A,
                 rewind_mode,
@@ -40,19 +45,19 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          if( !Control< Rule >::template match< A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
-            (void)raise< Rule >::template match< A, rewind_mode::dontcare, Action, Control >( in, st... );
+            Control< Rule >::raise( static_cast< const ParseInput& >( in ), st... );
          }
          return true;
       }
    };
 
    template< typename... Rules >
-   inline constexpr bool skip_control< must< Rules... > > = true;
+   inline constexpr bool enable_control< must< Rules... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

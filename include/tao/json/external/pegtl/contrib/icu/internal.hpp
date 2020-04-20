@@ -8,8 +8,7 @@
 
 #include "../../config.hpp"
 
-#include "../../analysis/generic.hpp"
-#include "../../internal/skip_control.hpp"
+#include "../../internal/enable_control.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
@@ -18,10 +17,10 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       template< typename Peek, UProperty P, bool V = true >
       struct binary_property
       {
-         using analyze_t = analysis::generic< analysis::rule_type::any >;
+         using rule_t = binary_property;
 
-         template< typename Input >
-         [[nodiscard]] static bool match( Input& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
+         template< typename ParseInput >
+         [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
          {
             if( const std::size_t s = in.size( Peek::max_input_size ); s >= Peek::min_input_size ) {
                if( const auto r = Peek::peek( in, s ) ) {
@@ -38,10 +37,10 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       template< typename Peek, UProperty P, int V >
       struct property_value
       {
-         using analyze_t = analysis::generic< analysis::rule_type::any >;
+         using rule_t = property_value;
 
-         template< typename Input >
-         [[nodiscard]] static bool match( Input& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
+         template< typename ParseInput >
+         [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
          {
             if( const std::size_t s = in.size( Peek::max_input_size ); s >= Peek::min_input_size ) {
                if( const auto r = Peek::peek( in, s ) ) {
@@ -58,10 +57,10 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    }  // namespace icu
 
    template< typename Peek, UProperty P, bool V >
-   inline constexpr bool skip_control< icu::binary_property< Peek, P, V > > = true;
+   inline constexpr bool enable_control< icu::binary_property< Peek, P, V > > = false;
 
    template< typename Peek, UProperty P, int V >
-   inline constexpr bool skip_control< icu::property_value< Peek, P, V > > = true;
+   inline constexpr bool enable_control< icu::property_value< Peek, P, V > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

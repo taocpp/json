@@ -6,36 +6,36 @@
 
 #include "../config.hpp"
 
+#include "enable_control.hpp"
 #include "seq.hpp"
-#include "skip_control.hpp"
-#include "trivial.hpp"
+#include "success.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
-
-#include "../analysis/counted.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
-   template< unsigned Num, typename... Rules >
+   template< unsigned Cnt, typename... Rules >
    struct rep
-      : rep< Num, seq< Rules... > >
+      : rep< Cnt, seq< Rules... > >
    {};
 
-   template< unsigned Num >
-   struct rep< Num >
-      : trivial< true >
+   template< unsigned Cnt >
+   struct rep< Cnt >
+      : success
    {};
 
    template< typename Rule >
    struct rep< 0, Rule >
-      : trivial< true >
+      : success
    {};
 
-   template< unsigned Num, typename Rule >
-   struct rep< Num, Rule >
+   template< unsigned Cnt, typename Rule >
+   struct rep< Cnt, Rule >
    {
-      using analyze_t = analysis::counted< analysis::rule_type::seq, Num, Rule >;
+      using rule_t = rep;
+      using subs_t = type_list< Rule >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -43,14 +43,14 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          auto m = in.template mark< M >();
          using m_t = decltype( m );
 
-         for( unsigned i = 0; i != Num; ++i ) {
+         for( unsigned i = 0; i != Cnt; ++i ) {
             if( !Control< Rule >::template match< A, m_t::next_rewind_mode, Action, Control >( in, st... ) ) {
                return false;
             }
@@ -59,8 +59,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       }
    };
 
-   template< unsigned Num, typename... Rules >
-   inline constexpr bool skip_control< rep< Num, Rules... > > = true;
+   template< unsigned Cnt, typename... Rules >
+   inline constexpr bool enable_control< rep< Cnt, Rules... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

@@ -6,30 +6,37 @@
 
 #include "../config.hpp"
 
-#include "skip_control.hpp"
+#include "enable_control.hpp"
+#include "success.hpp"
 
-#include "../analysis/counted.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
-   template< unsigned Num >
+   template< unsigned Cnt >
    struct bytes
    {
-      using analyze_t = analysis::counted< analysis::rule_type::any, Num >;
+      using rule_t = bytes;
+      using subs_t = empty_list;
 
-      template< typename Input >
-      [[nodiscard]] static bool match( Input& in ) noexcept( noexcept( in.size( 0 ) ) )
+      template< typename ParseInput >
+      [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( 0 ) ) )
       {
-         if( in.size( Num ) >= Num ) {
-            in.bump( Num );
+         if( in.size( Cnt ) >= Cnt ) {
+            in.bump( Cnt );
             return true;
          }
          return false;
       }
    };
 
-   template< unsigned Num >
-   inline constexpr bool skip_control< bytes< Num > > = true;
+   template<>
+   struct bytes< 0 >
+      : success
+   {};
+
+   template< unsigned Cnt >
+   inline constexpr bool enable_control< bytes< Cnt > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

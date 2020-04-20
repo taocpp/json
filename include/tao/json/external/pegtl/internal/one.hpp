@@ -9,25 +9,26 @@
 #include "../config.hpp"
 
 #include "bump_help.hpp"
+#include "enable_control.hpp"
 #include "result_on_found.hpp"
-#include "skip_control.hpp"
 
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< result_on_found R, typename Peek, typename Peek::data_t... Cs >
    struct one
    {
-      using analyze_t = analysis::generic< analysis::rule_type::any >;
+      using rule_t = one;
+      using subs_t = empty_list;
 
-      template< typename Input >
-      [[nodiscard]] static bool match( Input& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
+      template< typename ParseInput >
+      [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
       {
          if( const std::size_t s = in.size( Peek::max_input_size ); s >= Peek::min_input_size ) {
             if( const auto t = Peek::peek( in, s ) ) {
                if( ( ( t.data == Cs ) || ... ) == bool( R ) ) {
-                  bump_help< R, Input, typename Peek::data_t, Cs... >( in, t.size );
+                  bump_help< R, ParseInput, typename Peek::data_t, Cs... >( in, t.size );
                   return true;
                }
             }
@@ -37,7 +38,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    };
 
    template< result_on_found R, typename Peek, typename Peek::data_t... Cs >
-   inline constexpr bool skip_control< one< R, Peek, Cs... > > = true;
+   inline constexpr bool enable_control< one< R, Peek, Cs... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

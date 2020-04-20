@@ -6,10 +6,10 @@
 
 #include "../config.hpp"
 
-#include "skip_control.hpp"
-#include "trivial.hpp"
+#include "enable_control.hpp"
+#include "success.hpp"
 
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
@@ -18,23 +18,24 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
 
    template<>
    struct require< 0 >
-      : trivial< true >
+      : success
    {};
 
    template< unsigned Amount >
    struct require
    {
-      using analyze_t = analysis::generic< analysis::rule_type::opt >;
+      using rule_t = require;
+      using subs_t = empty_list;
 
-      template< typename Input >
-      [[nodiscard]] static bool match( Input& in ) noexcept( noexcept( in.size( 0 ) ) )
+      template< typename ParseInput >
+      [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( 0 ) ) )
       {
          return in.size( Amount ) >= Amount;
       }
    };
 
    template< unsigned Amount >
-   inline constexpr bool skip_control< require< Amount > > = true;
+   inline constexpr bool enable_control< require< Amount > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

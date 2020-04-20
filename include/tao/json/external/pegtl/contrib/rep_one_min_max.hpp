@@ -5,13 +5,17 @@
 #define TAO_JSON_PEGTL_CONTRIB_REP_ONE_MIN_MAX_HPP
 
 #include <algorithm>
+#include <type_traits>
 
 #include "../config.hpp"
-
-#include "../analysis/counted.hpp"
+#include "../type_list.hpp"
 
 #include "../internal/bump_help.hpp"
-#include "../internal/skip_control.hpp"
+#include "../internal/bytes.hpp"
+#include "../internal/enable_control.hpp"
+#include "../internal/opt.hpp"
+
+#include "analyze_traits.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
@@ -20,12 +24,13 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template< unsigned Min, unsigned Max, char C >
       struct rep_one_min_max
       {
-         using analyze_t = analysis::counted< analysis::rule_type::any, Min >;
+         using rule_t = rep_one_min_max;
+         using subs_t = empty_list;
 
          static_assert( Min <= Max );
 
-         template< typename Input >
-         [[nodiscard]] static bool match( Input& in )
+         template< typename ParseInput >
+         [[nodiscard]] static bool match( ParseInput& in )
          {
             const auto size = in.size( Max + 1 );
             if( size < Min ) {
@@ -36,7 +41,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                ++i;
             }
             if( ( Min <= i ) && ( i <= Max ) ) {
-               bump_help< result_on_found::success, Input, char, C >( in, i );
+               bump_help< result_on_found::success, ParseInput, char, C >( in, i );
                return true;
             }
             return false;
@@ -44,7 +49,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       };
 
       template< unsigned Min, unsigned Max, char C >
-      inline constexpr bool skip_control< rep_one_min_max< Min, Max, C > > = true;
+      inline constexpr bool enable_control< rep_one_min_max< Min, Max, C > > = false;
 
    }  // namespace internal
 
@@ -56,6 +61,11 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       {};
 
    }  // namespace ascii
+
+   template< typename Name, unsigned Min, unsigned Max, char C >
+   struct analyze_traits< Name, internal::rep_one_min_max< Min, Max, C > >
+      : std::conditional_t< ( Min != 0 ), analyze_any_traits<>, analyze_opt_traits<> >
+   {};
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 

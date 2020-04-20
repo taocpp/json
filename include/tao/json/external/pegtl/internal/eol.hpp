@@ -6,25 +6,26 @@
 
 #include "../config.hpp"
 
-#include "skip_control.hpp"
+#include "enable_control.hpp"
 
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    struct eol
    {
-      using analyze_t = analysis::generic< analysis::rule_type::any >;
+      using rule_t = eol;
+      using subs_t = empty_list;
 
-      template< typename Input >
-      [[nodiscard]] static bool match( Input& in ) noexcept( noexcept( Input::eol_t::match( in ) ) )
+      template< typename ParseInput >
+      [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( ParseInput::eol_t::match( in ) ) )
       {
-         return Input::eol_t::match( in ).first;
+         return ParseInput::eol_t::match( in ).first;
       }
    };
 
    template<>
-   inline constexpr bool skip_control< eol > = true;
+   inline constexpr bool enable_control< eol > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

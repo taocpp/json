@@ -6,14 +6,13 @@
 
 #include "../config.hpp"
 
+#include "enable_control.hpp"
 #include "seq.hpp"
-#include "skip_control.hpp"
-#include "trivial.hpp"
+#include "success.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
-
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
@@ -24,13 +23,14 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
 
    template<>
    struct at<>
-      : trivial< true >
+      : success
    {};
 
    template< typename Rule >
    struct at< Rule >
    {
-      using analyze_t = analysis::generic< analysis::rule_type::opt, Rule >;
+      using rule_t = at;
+      using subs_t = type_list< Rule >;
 
       template< apply_mode,
                 rewind_mode,
@@ -38,9 +38,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          const auto m = in.template mark< rewind_mode::required >();
          return Control< Rule >::template match< apply_mode::nothing, rewind_mode::active, Action, Control >( in, st... );
@@ -48,7 +48,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    };
 
    template< typename... Rules >
-   inline constexpr bool skip_control< at< Rules... > > = true;
+   inline constexpr bool enable_control< at< Rules... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

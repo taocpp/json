@@ -6,22 +6,22 @@
 
 #include "../config.hpp"
 
+#include "enable_control.hpp"
 #include "not_at.hpp"
 #include "seq.hpp"
-#include "skip_control.hpp"
 #include "sor.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
-
-#include "../analysis/generic.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< typename Cond, typename Then, typename Else >
    struct if_then_else
    {
-      using analyze_t = analysis::generic< analysis::rule_type::sor, seq< Cond, Then >, seq< not_at< Cond >, Else > >;
+      using rule_t = if_then_else;
+      using subs_t = type_list< Cond, Then, Else >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -29,9 +29,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          auto m = in.template mark< M >();
          using m_t = decltype( m );
@@ -44,7 +44,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    };
 
    template< typename Cond, typename Then, typename Else >
-   inline constexpr bool skip_control< if_then_else< Cond, Then, Else > > = true;
+   inline constexpr bool enable_control< if_then_else< Cond, Then, Else > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

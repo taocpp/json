@@ -8,19 +8,20 @@
 #include <type_traits>
 
 #include "../apply_mode.hpp"
+#include "../ascii.hpp"
 #include "../config.hpp"
 #include "../rewind_mode.hpp"
 
 #include "../internal/bytes.hpp"
+#include "../internal/enable_control.hpp"
 #include "../internal/eof.hpp"
 #include "../internal/eol.hpp"
 #include "../internal/must.hpp"
 #include "../internal/not_at.hpp"
 #include "../internal/seq.hpp"
-#include "../internal/skip_control.hpp"
 #include "../internal/star.hpp"
 
-#include "../analysis/generic.hpp"
+#include "analyze_traits.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
@@ -29,7 +30,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template< char Open, char Marker >
       struct raw_string_open
       {
-         using analyze_t = analysis::generic< analysis::rule_type::any >;
+         using rule_t = raw_string_open;
+         using subs_t = empty_list;
 
          template< apply_mode A,
                    rewind_mode,
@@ -37,9 +39,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                    class Action,
                    template< typename... >
                    class Control,
-                   typename Input,
+                   typename ParseInput,
                    typename... States >
-         [[nodiscard]] static bool match( Input& in, std::size_t& marker_size, States&&... /*unused*/ ) noexcept( noexcept( in.size( 0 ) ) )
+         [[nodiscard]] static bool match( ParseInput& in, std::size_t& marker_size, States&&... /*unused*/ ) noexcept( noexcept( in.size( 0 ) ) )
          {
             if( in.empty() || ( in.peek_char( 0 ) != Open ) ) {
                return false;
@@ -62,12 +64,13 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       };
 
       template< char Open, char Marker >
-      inline constexpr bool skip_control< raw_string_open< Open, Marker > > = true;
+      inline constexpr bool enable_control< raw_string_open< Open, Marker > > = false;
 
       template< char Marker, char Close >
       struct at_raw_string_close
       {
-         using analyze_t = analysis::generic< analysis::rule_type::opt >;
+         using rule_t = at_raw_string_close;
+         using subs_t = empty_list;
 
          template< apply_mode A,
                    rewind_mode,
@@ -75,9 +78,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                    class Action,
                    template< typename... >
                    class Control,
-                   typename Input,
+                   typename ParseInput,
                    typename... States >
-         [[nodiscard]] static bool match( Input& in, const std::size_t& marker_size, States&&... /*unused*/ ) noexcept( noexcept( in.size( 0 ) ) )
+         [[nodiscard]] static bool match( ParseInput& in, const std::size_t& marker_size, States&&... /*unused*/ ) noexcept( noexcept( in.size( 0 ) ) )
          {
             if( in.size( marker_size ) < marker_size ) {
                return false;
@@ -98,7 +101,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       };
 
       template< char Marker, char Close >
-      inline constexpr bool skip_control< at_raw_string_close< Marker, Close > > = true;
+      inline constexpr bool enable_control< at_raw_string_close< Marker, Close > > = false;
 
       template< typename Cond, typename... Rules >
       struct raw_string_until
@@ -108,7 +111,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template< typename Cond >
       struct raw_string_until< Cond >
       {
-         using analyze_t = analysis::generic< analysis::rule_type::seq, star< not_at< Cond >, not_at< eof >, bytes< 1 > >, Cond >;
+         using rule_t = raw_string_until;
+         using subs_t = type_list< Cond >;
 
          template< apply_mode A,
                    rewind_mode M,
@@ -116,9 +120,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                    class Action,
                    template< typename... >
                    class Control,
-                   typename Input,
+                   typename ParseInput,
                    typename... States >
-         [[nodiscard]] static bool match( Input& in, const std::size_t& marker_size, States&&... st )
+         [[nodiscard]] static bool match( ParseInput& in, const std::size_t& marker_size, States&&... st )
          {
             auto m = in.template mark< M >();
 
@@ -135,7 +139,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       template< typename Cond, typename Rule >
       struct raw_string_until< Cond, Rule >
       {
-         using analyze_t = analysis::generic< analysis::rule_type::seq, star< not_at< Cond >, not_at< eof >, Rule >, Cond >;
+         using rule_t = raw_string_until;
+         using subs_t = type_list< Cond, Rule >;
 
          template< apply_mode A,
                    rewind_mode M,
@@ -143,15 +148,15 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                    class Action,
                    template< typename... >
                    class Control,
-                   typename Input,
+                   typename ParseInput,
                    typename... States >
-         [[nodiscard]] static bool match( Input& in, const std::size_t& marker_size, States&&... st )
+         [[nodiscard]] static bool match( ParseInput& in, const std::size_t& marker_size, States&&... st )
          {
             auto m = in.template mark< M >();
             using m_t = decltype( m );
 
             while( !Control< Cond >::template match< A, rewind_mode::required, Action, Control >( in, marker_size, st... ) ) {
-               if( in.empty() || !Control< Rule >::template match< A, m_t::next_rewind_mode, Action, Control >( in, st... ) ) {
+               if( !Control< Rule >::template match< A, m_t::next_rewind_mode, Action, Control >( in, st... ) ) {
                   return false;
                }
             }
@@ -160,7 +165,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       };
 
       template< typename Cond, typename... Rules >
-      inline constexpr bool skip_control< raw_string_until< Cond, Rules... > > = true;
+      inline constexpr bool enable_control< raw_string_until< Cond, Rules... > > = false;
 
    }  // namespace internal
 
@@ -198,7 +203,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
          : internal::raw_string_until< internal::at_raw_string_close< Marker, Close >, Contents... >
       {};
 
-      using analyze_t = typename internal::seq< internal::bytes< 1 >, content, internal::bytes< 1 > >::analyze_t;
+      using rule_t = raw_string;
+      using subs_t = type_list< internal::raw_string_open< Open, Marker >, internal::must< content > >;
 
       template< apply_mode A,
                 rewind_mode M,
@@ -206,20 +212,30 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          std::size_t marker_size;
-         if( internal::raw_string_open< Open, Marker >::template match< A, M, Action, Control >( in, marker_size, st... ) ) {
+         if( Control< internal::raw_string_open< Open, Marker > >::template match< A, M, Action, Control >( in, marker_size, st... ) ) {
             // TODO: Do not rely on must<>
-            (void)internal::must< content >::template match< A, M, Action, Control >( in, marker_size, st... );
+            (void)Control< internal::must< content > >::template match< A, M, Action, Control >( in, marker_size, st... );
             in.bump_in_this_line( marker_size );
             return true;
          }
          return false;
       }
    };
+
+   template< typename Name, char Open, char Marker, char Close >
+   struct analyze_traits< Name, raw_string< Open, Marker, Close > >
+      : analyze_any_traits<>
+   {};
+
+   template< typename Name, char Open, char Marker, char Close, typename... Contents >
+   struct analyze_traits< Name, raw_string< Open, Marker, Close, Contents... > >
+      : analyze_traits< Name, typename seq< any, star< Contents... >, any >::rule_t >
+   {};
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 

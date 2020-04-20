@@ -8,26 +8,27 @@
 
 #include "../config.hpp"
 
+#include "enable_control.hpp"
+#include "failure.hpp"
 #include "not_at.hpp"
 #include "seq.hpp"
-#include "skip_control.hpp"
-#include "trivial.hpp"
 
 #include "../apply_mode.hpp"
 #include "../rewind_mode.hpp"
-
-#include "../analysis/counted.hpp"
+#include "../type_list.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< unsigned Min, unsigned Max, typename... Rules >
    struct rep_min_max
       : rep_min_max< Min, Max, seq< Rules... > >
-   {};
+   {
+      static_assert( Min <= Max );
+   };
 
    template< unsigned Min, unsigned Max >
    struct rep_min_max< Min, Max >
-      : trivial< false >
+      : failure
    {
       static_assert( Min <= Max );
    };
@@ -40,7 +41,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< unsigned Min, unsigned Max, typename Rule >
    struct rep_min_max< Min, Max, Rule >
    {
-      using analyze_t = analysis::counted< analysis::rule_type::seq, Min, Rule >;
+      using rule_t = rep_min_max;
+      using subs_t = type_list< Rule >;
 
       static_assert( Min <= Max );
 
@@ -50,9 +52,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
                 class Action,
                 template< typename... >
                 class Control,
-                typename Input,
+                typename ParseInput,
                 typename... States >
-      [[nodiscard]] static bool match( Input& in, States&&... st )
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
       {
          auto m = in.template mark< M >();
          using m_t = decltype( m );
@@ -72,7 +74,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    };
 
    template< unsigned Min, unsigned Max, typename... Rules >
-   inline constexpr bool skip_control< rep_min_max< Min, Max, Rules... > > = true;
+   inline constexpr bool enable_control< rep_min_max< Min, Max, Rules... > > = false;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal
 

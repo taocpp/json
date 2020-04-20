@@ -10,6 +10,8 @@
 #include "opt.hpp"
 #include "seq.hpp"
 
+#include "../type_list.hpp"
+
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< typename Rule, typename Sep >

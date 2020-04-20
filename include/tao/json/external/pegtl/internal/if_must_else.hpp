@@ -9,6 +9,8 @@
 #include "if_then_else.hpp"
 #include "must.hpp"
 
+#include "../type_list.hpp"
+
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
    template< typename Cond, typename Then, typename Else >

@@ -53,7 +53,8 @@ namespace tao::json::internal
 
       struct unescaped
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
+         using rule_t = unescaped;
+         using subs_t = pegtl::empty_list;
 
          template< typename Input >
          [[nodiscard]] static bool match( Input& in )
@@ -115,7 +116,8 @@ namespace tao::json::internal
 
       struct sor_value
       {
-         using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::sor, string, number< false >, object, array, kw_false, kw_true, kw_null >;
+         using rule_t = sor_value;
+         using subs_t = pegtl::type_list< string, number< false >, object, array, kw_false, kw_true, kw_null >;
 
          template< bool NEG,
                    apply_mode A,

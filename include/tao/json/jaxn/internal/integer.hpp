@@ -118,7 +118,7 @@ namespace tao::json::jaxn::internal::integer
       return convert_hex_positive< Signed >( result, std::string_view( input.data() + offset, input.size() - offset ) );
    }
 
-   using unsigned_dec_action = pegtl::integer::unsigned_action;
+   using unsigned_dec_action = pegtl::unsigned_action;
 
    struct unsigned_hex_action
    {
@@ -138,14 +138,12 @@ namespace tao::json::jaxn::internal::integer
    template< typename Rule >
    struct unsigned_action_action
       : pegtl::nothing< Rule >
-   {
-   };
+   {};
 
    template<>
    struct unsigned_action_action< pegtl::plus< pegtl::digit > >
       : unsigned_dec_action
-   {
-   };
+   {};
 
    template<>
    struct unsigned_action_action< pegtl::plus< pegtl::xdigit > >
@@ -161,7 +159,8 @@ namespace tao::json::jaxn::internal::integer
 
    struct unsigned_rule_with_action
    {
-      using analyze_t = unsigned_rule::analyze_t;
+      using rule_t = unsigned_rule_with_action;
+      using subs_t = pegtl::empty_list;
 
       template< pegtl::apply_mode,
                 pegtl::rewind_mode,
@@ -176,7 +175,7 @@ namespace tao::json::jaxn::internal::integer
       }
    };
 
-   using signed_dec_action = pegtl::integer::signed_action;
+   using signed_dec_action = pegtl::signed_action;
 
    struct signed_hex_action
    {
@@ -196,8 +195,7 @@ namespace tao::json::jaxn::internal::integer
    template< typename Rule >
    struct signed_action_action
       : pegtl::nothing< Rule >
-   {
-   };
+   {};
 
    template<>
    struct signed_action_action< pegtl::one< '-', '+' > >
@@ -215,7 +213,7 @@ namespace tao::json::jaxn::internal::integer
       template< typename Input, typename Signed >
       static void apply( const Input& in, const bool negative, Signed& st )
       {
-         if( !( negative ? pegtl::integer::internal::convert_negative< Signed >( st, in.string_view() ) : pegtl::integer::internal::convert_positive< Signed >( st, in.string_view() ) ) ) {
+         if( !( negative ? pegtl::internal::convert_negative< Signed >( st, in.string_view() ) : pegtl::internal::convert_positive< Signed >( st, in.string_view() ) ) ) {
             throw pegtl::parse_error( "signed dec integer overflow", in );
          }
       }
@@ -235,7 +233,8 @@ namespace tao::json::jaxn::internal::integer
 
    struct signed_rule_with_action
    {
-      using analyze_t = signed_rule::analyze_t;
+      using rule_t = signed_rule_with_action;
+      using subs_t = pegtl::empty_list;
 
       template< pegtl::apply_mode,
                 pegtl::rewind_mode,

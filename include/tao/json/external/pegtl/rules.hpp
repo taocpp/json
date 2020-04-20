@@ -24,7 +24,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    struct discard : internal::discard {};
    template< typename... Rules > struct enable : internal::enable< Rules... > {};
    struct eof : internal::eof {};
-   struct failure : internal::trivial< false > {};
+   struct eolf : internal::eolf {};
+   struct failure : internal::failure {};
    template< typename Rule, typename... Actions > struct if_apply : internal::if_apply< Rule, Actions... > {};
    template< typename Cond, typename... Thens > struct if_must : internal::if_must< false, Cond, Thens... > {};
    template< typename Cond, typename Then, typename Else > struct if_must_else : internal::if_must_else< Cond, Then, Else > {};
@@ -35,7 +36,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    template< typename Rule, typename Sep > struct list_must< Rule, Sep, void > : internal::list_must< Rule, Sep > {};
    template< typename Rule, typename Sep, typename Pad = void > struct list_tail : internal::list_tail_pad< Rule, Sep, Pad > {};
    template< typename Rule, typename Sep > struct list_tail< Rule, Sep, void > : internal::list_tail< Rule, Sep > {};
-   template< typename M, typename S > struct minus : internal::rematch< M, internal::not_at< S, internal::eof > > {};
+   template< typename M, typename S > struct minus : internal::minus< M, S > {};
    template< typename... Rules > struct must : internal::must< Rules... > {};
    template< typename... Rules > struct not_at : internal::not_at< Rules... > {};
    template< typename... Rules > struct opt : internal::opt< Rules... > {};
@@ -56,7 +57,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    template< typename Rule, typename... Rules > struct star : internal::star< Rule, Rules... > {};
    template< typename Cond, typename... Rules > struct star_must : internal::star_must< Cond, Rules... > {};
    template< typename State, typename... Rules > struct state : internal::state< State, Rules... > {};
-   struct success : internal::trivial< true > {};
+   struct success : internal::success {};
    template< typename... Rules > struct try_catch : internal::seq< internal::try_catch_type< parse_error, Rules... > > {};
    template< typename Exception, typename... Rules > struct try_catch_type : internal::seq< internal::try_catch_type< Exception, Rules... > > {};
    template< typename Cond, typename... Rules > struct until : internal::until< Cond, Rules... > {};

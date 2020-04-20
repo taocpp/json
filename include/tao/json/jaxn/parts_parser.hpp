@@ -20,8 +20,6 @@ namespace tao::json::jaxn
       {
          struct double_rule
          {
-            using analyze_t = pegtl::analysis::generic< pegtl::analysis::rule_type::any >;
-
             template< apply_mode A,
                       rewind_mode M,
                       template< typename... >
