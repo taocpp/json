@@ -11,9 +11,6 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    template< typename Name, typename Rule, typename = void >
    struct analyze_traits;
 
-   template< typename Name, typename Rule, typename = void >
-   struct pretty_traits;
-
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 #endif
