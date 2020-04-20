@@ -12,10 +12,10 @@
 
 namespace tao::json::internal
 {
-   using pegtl::type_list;
-   using pegtl::empty_list;
-   using pegtl::type_list_concat;
-   using pegtl::type_list_concat_t;
+   using pegtl::type_list;           // NOLINT(misc-unused-using-decls)
+   using pegtl::empty_list;          // NOLINT(misc-unused-using-decls)
+   using pegtl::type_list_concat;    // NOLINT(misc-unused-using-decls)
+   using pegtl::type_list_concat_t;  // NOLINT(misc-unused-using-decls)
 
    struct type_info_less
    {
