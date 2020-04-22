@@ -24,7 +24,7 @@ namespace tao::json
       {
          std::size_t i = 0;
          while( i < todo ) {
-            const auto p = pegtl::internal::peek_utf8::peek( in, pegtl::internal::peek_utf8::max_input_size ).size;
+            const auto p = pegtl::internal::peek_utf8::peek( in ).size;
             if( ( p == 0 ) || ( ( i += p ) > todo ) ) {
                return false;
             }

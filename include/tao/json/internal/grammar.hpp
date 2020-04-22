@@ -60,16 +60,14 @@ namespace tao::json::internal
          [[nodiscard]] static bool match( Input& in )
          {
             bool result = false;
-
-            while( const std::size_t s = in.size( 4 ) ) {
-               if( const auto t = pegtl::internal::peek_utf8::peek( in, s ) ) {
-                  if( ( 0x20 <= t.data ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
-                     in.bump_in_this_line( t.size );
-                     result = true;
-                     continue;
-                  }
+            while( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
+               if( ( 0x20 <= t.data ) && ( t.data != '\\' ) && ( t.data != '"' ) ) {
+                  in.bump_in_this_line( t.size );
+                  result = true;
                }
-               break;
+               else {
+                  break;
+               }
             }
             return result;
          }

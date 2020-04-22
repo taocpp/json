@@ -84,18 +84,16 @@ namespace tao::json::jaxn::internal
          [[nodiscard]] static bool match( Input& in )
          {
             bool result = false;
-
-            while( const std::size_t s = in.size( 4 ) ) {
-               if( const auto t = pegtl::internal::peek_utf8::peek( in, s ) ) {
-                  if( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != '\\' ) && ( t.data != D ) && ( t.data != 0x7F ) ) {
-                     in.bump_in_this_line( t.size );
-                     result = true;
-                     continue;
-                  }
+            while( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
+               if( ( 0x20 <= t.data ) && ( t.data != '\\' ) && ( t.data != D ) && ( t.data != 0x7F ) ) {
+                  in.bump_in_this_line( t.size );
+                  result = true;
                }
-               return result;
+               else {
+                  break;
+               }
             }
-            throw pegtl::parse_error( "invalid character in string", in );
+            return result;
          }
       };
 
@@ -118,18 +116,16 @@ namespace tao::json::jaxn::internal
          [[nodiscard]] static bool match( Input& in )
          {
             bool result = false;
-
-            while( const std::size_t s = in.size( 4 ) ) {
-               if( const auto t = pegtl::internal::peek_utf8::peek( in, s ) ) {
-                  if( ( ( 0x20 <= t.data ) && ( t.data <= 0x10FFFF ) && ( t.data != D ) && ( t.data != 0x7F ) ) || ( t.data == '\t' ) ) {
-                     in.bump_in_this_line( t.size );
-                     result = true;
-                     continue;
-                  }
+            while( const auto t = pegtl::internal::peek_utf8::peek( in ) ) {
+               if( ( ( 0x20 <= t.data ) && ( t.data != D ) && ( t.data != 0x7F ) ) || ( t.data == '\t' ) ) {
+                  in.bump_in_this_line( t.size );
+                  result = true;
                }
-               return result;
+               else {
+                  break;
+               }
             }
-            throw pegtl::parse_error( "invalid character in string", in );
+            return result;
          }
       };
 
