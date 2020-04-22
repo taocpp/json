@@ -7,6 +7,8 @@
 #include "../config.hpp"
 
 #include "enable_control.hpp"
+#include "failure.hpp"
+#include "one.hpp"
 #include "range.hpp"
 
 #include "../type_list.hpp"
@@ -61,19 +63,17 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       static constexpr bool can_match_eol = ranges_impl< Eol, typename Peek::data_t, Cs... >::can_match_eol;
 
       template< typename ParseInput >
-      [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
+      [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( Peek::peek( in ) ) )
       {
-         if( const std::size_t s = in.size( Peek::max_input_size ); s >= Peek::min_input_size ) {
-            if( const auto t = Peek::peek( in, s ) ) {
-               if( ranges_impl< ParseInput::eol_t::ch, typename Peek::data_t, Cs... >::match( t.data ) ) {
-                  if constexpr( can_match_eol< ParseInput::eol_t::ch > ) {
-                     in.bump( t.size );
-                  }
-                  else {
-                     in.bump_in_this_line( t.size );
-                  }
-                  return true;
+         if( const auto t = Peek::peek( in ) ) {
+            if( ranges_impl< ParseInput::eol_t::ch, typename Peek::data_t, Cs... >::match( t.data ) ) {
+               if constexpr( can_match_eol< ParseInput::eol_t::ch > ) {
+                  in.bump( t.size );
                }
+               else {
+                  in.bump_in_this_line( t.size );
+               }
+               return true;
             }
          }
          return false;
@@ -83,10 +83,17 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
    template< typename Peek, typename Peek::data_t Lo, typename Peek::data_t Hi >
    struct ranges< Peek, Lo, Hi >
       : range< result_on_found::success, Peek, Lo, Hi >
-   {
-      using rule_t = ranges;
-      using subs_t = empty_list;
-   };
+   {};
+
+   template< typename Peek, typename Peek::data_t C >
+   struct ranges< Peek, C >
+      : one< result_on_found::success, Peek, C >
+   {};
+
+   template< typename Peek >
+   struct ranges< Peek >
+      : failure
+   {};
 
    template< typename Peek, typename Peek::data_t... Cs >
    inline constexpr bool enable_control< ranges< Peek, Cs... > > = false;

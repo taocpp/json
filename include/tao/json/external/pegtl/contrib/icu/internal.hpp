@@ -7,6 +7,7 @@
 #include <unicode/uchar.h>
 
 #include "../../config.hpp"
+#include "../../type_list.hpp"
 
 #include "../../internal/enable_control.hpp"
 
@@ -18,16 +19,15 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       struct binary_property
       {
          using rule_t = binary_property;
+         using subs_t = empty_list;
 
          template< typename ParseInput >
-         [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
+         [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( Peek::peek( in ) ) )
          {
-            if( const std::size_t s = in.size( Peek::max_input_size ); s >= Peek::min_input_size ) {
-               if( const auto r = Peek::peek( in, s ) ) {
-                  if( u_hasBinaryProperty( r.data, P ) == V ) {
-                     in.bump( r.size );
-                     return true;
-                  }
+            if( const auto r = Peek::peek( in ) ) {
+               if( u_hasBinaryProperty( r.data, P ) == V ) {
+                  in.bump( r.size );
+                  return true;
                }
             }
             return false;
@@ -38,16 +38,15 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       struct property_value
       {
          using rule_t = property_value;
+         using subs_t = empty_list;
 
          template< typename ParseInput >
-         [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( in.size( Peek::max_input_size ) ) )
+         [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( Peek::peek( in ) ) )
          {
-            if( const std::size_t s = in.size( Peek::max_input_size ); s >= Peek::min_input_size ) {
-               if( const auto r = Peek::peek( in, s ) ) {
-                  if( u_getIntPropertyValue( r.data, P ) == V ) {
-                     in.bump( r.size );
-                     return true;
-                  }
+            if( const auto r = Peek::peek( in ) ) {
+               if( u_getIntPropertyValue( r.data, P ) == V ) {
+                  in.bump( r.size );
+                  return true;
                }
             }
             return false;
