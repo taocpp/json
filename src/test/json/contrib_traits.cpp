@@ -238,8 +238,10 @@ namespace tao::json
       g.push_back( true );
       g.push_back( true );
       g.push_back( false );
-      value v = g;
+      const value v = g;
       TEST_ASSERT( v.is_array() );
+      TEST_ASSERT( v.get_array().size() == 3 );
+      const std::vector< bool > f = v.as< std::vector< bool > >();
    }
 
    void unit_test()

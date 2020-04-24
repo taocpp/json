@@ -23,7 +23,7 @@ namespace tao::json
       {
          const auto& o = v.get_object();
          for( const auto& i : o ) {
-            r.try_emplace( i.first, Traits< T >::as( i.second, with... ) );
+            r.try_emplace( i.first, i.second.template as_with< T >( with... ) );
          }
       }
 
