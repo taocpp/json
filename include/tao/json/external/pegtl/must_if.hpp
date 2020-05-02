@@ -27,7 +27,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
          : Base< Rule >
       {
          template< typename ParseInput, typename... States >
-         static void failure( const ParseInput& in, States&&... st ) noexcept( !internal::raise_on_failure< T, Rule > && noexcept( Base< Rule >::failure( in, st... ) ) )
+         static void failure( const ParseInput& in, States&&... st ) noexcept( !internal::raise_on_failure< T, Rule >&& noexcept( Base< Rule >::failure( in, st... ) ) )
          {
             if constexpr( internal::raise_on_failure< T, Rule > ) {
                raise( in, st... );

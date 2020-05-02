@@ -25,7 +25,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    };
 
    template< typename... Ts >
-   cstream_input( Ts&&... )->cstream_input<>;
+   cstream_input( Ts&&... ) -> cstream_input<>;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 

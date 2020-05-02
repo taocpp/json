@@ -64,7 +64,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    };
 
    template< typename... Ts >
-   explicit read_input( Ts&&... )->read_input<>;
+   explicit read_input( Ts&&... ) -> read_input<>;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 
