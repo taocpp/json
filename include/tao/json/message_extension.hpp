@@ -25,7 +25,7 @@ namespace tao::json
    };
 
    template< typename T >
-   struct message_extension< T, decltype( std::declval< const T& >().public_base().append_message_extension( std::declval< std::ostream& >() ), void() ) >
+   struct message_extension< T, decltype( (void)std::declval< const T& >().public_base().append_message_extension( std::declval< std::ostream& >() ) ) >
    {
       const T& m_v;
 
@@ -42,7 +42,7 @@ namespace tao::json
    };
 
    template< typename T >
-   message_extension( const T& )->message_extension< T >;
+   message_extension( const T& ) -> message_extension< T >;
 
 }  // namespace tao::json
 
