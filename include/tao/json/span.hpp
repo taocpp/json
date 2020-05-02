@@ -439,19 +439,19 @@ namespace tao
 
    // deduction guides
    template< typename T, std::size_t N >
-   span( T ( & )[ N ] )->span< T, N >;
+   span( T ( & )[ N ] ) -> span< T, N >;
 
    template< typename T, std::size_t N >
-   span( std::array< T, N >& )->span< T, N >;
+   span( std::array< T, N >& ) -> span< T, N >;
 
    template< typename T, std::size_t N >
-   span( const std::array< T, N >& )->span< const T, N >;
+   span( const std::array< T, N >& ) -> span< const T, N >;
 
    template< typename Container >
-   span( Container& )->span< typename Container::value_type >;
+   span( Container& ) -> span< typename Container::value_type >;
 
    template< typename Container >
-   span( const Container& )->span< const typename Container::value_type >;
+   span( const Container& ) -> span< const typename Container::value_type >;
 
 }  // namespace tao
 

@@ -869,7 +869,7 @@ namespace tao::json
          {
             assert( m_match );
             if( m_node->m_flags & HAS_ENUM ) {
-               m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [&]( const std::unique_ptr< events_compare< Traits > >& p ) { return f( *p ); } ), m_enum.end() );
+               m_enum.erase( std::remove_if( m_enum.begin(), m_enum.end(), [ & ]( const std::unique_ptr< events_compare< Traits > >& p ) { return f( *p ); } ), m_enum.end() );
                if( m_enum.empty() ) {
                   m_match = false;
                }
@@ -959,7 +959,7 @@ namespace tao::json
          void validate_collections( F&& f )
          {
             assert( m_match );
-            const auto f2 = [&]( const std::unique_ptr< schema_consumer >& p ) { return f( *p ); };
+            const auto f2 = [ & ]( const std::unique_ptr< schema_consumer >& p ) { return f( *p ); };
             if( m_match ) {
                validate_item( f2 );
             }
@@ -1442,10 +1442,10 @@ namespace tao::json
                validate_type( BOOLEAN );
             }
             if( m_match ) {
-               validate_enum( [=]( events_compare< Traits >& c ) { c.boolean( v ); return ! c.match(); } );
+               validate_enum( [ = ]( events_compare< Traits >& c ) { c.boolean( v ); return ! c.match(); } );
             }
             if( m_match ) {
-               validate_collections( [=]( schema_consumer& c ) { c.boolean( v ); return ! c.match(); } );
+               validate_collections( [ = ]( schema_consumer& c ) { c.boolean( v ); return ! c.match(); } );
             }
             if( m_match && m_hash ) {
                m_hash->boolean( v );
@@ -1458,10 +1458,10 @@ namespace tao::json
                validate_type( INTEGER | NUMBER );
             }
             if( m_match ) {
-               validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
+               validate_enum( [ = ]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
             }
             if( m_match ) {
-               validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
+               validate_collections( [ = ]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
             }
             if( m_match && m_count.empty() ) {
                validate_number( v );
@@ -1477,10 +1477,10 @@ namespace tao::json
                validate_type( INTEGER | NUMBER );
             }
             if( m_match ) {
-               validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
+               validate_enum( [ = ]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
             }
             if( m_match ) {
-               validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
+               validate_collections( [ = ]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
             }
             if( m_match && m_count.empty() ) {
                validate_number( v );
@@ -1496,10 +1496,10 @@ namespace tao::json
                validate_type( NUMBER );
             }
             if( m_match ) {
-               validate_enum( [=]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
+               validate_enum( [ = ]( events_compare< Traits >& c ) { c.number( v ); return ! c.match(); } );
             }
             if( m_match ) {
-               validate_collections( [=]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
+               validate_collections( [ = ]( schema_consumer& c ) { c.number( v ); return ! c.match(); } );
             }
             if( m_match && m_count.empty() ) {
                validate_number( v );
@@ -1515,10 +1515,10 @@ namespace tao::json
                validate_type( STRING );
             }
             if( m_match ) {
-               validate_enum( [&]( events_compare< Traits >& c ) { c.string( v ); return ! c.match(); } );
+               validate_enum( [ & ]( events_compare< Traits >& c ) { c.string( v ); return ! c.match(); } );
             }
             if( m_match ) {
-               validate_collections( [&]( schema_consumer& c ) { c.string( v ); return ! c.match(); } );
+               validate_collections( [ & ]( schema_consumer& c ) { c.string( v ); return ! c.match(); } );
             }
             if( m_match && m_count.empty() ) {
                validate_string( v );
@@ -1679,10 +1679,10 @@ namespace tao::json
          void key( const std::string_view sv )
          {
             if( m_match ) {
-               validate_enum( [&]( events_compare< Traits >& c ) { c.key( sv ); return ! c.match(); } );
+               validate_enum( [ & ]( events_compare< Traits >& c ) { c.key( sv ); return ! c.match(); } );
             }
             if( m_match ) {
-               validate_collections( [&]( schema_consumer& c ) { c.key( sv ); return ! c.match(); } );
+               validate_collections( [ & ]( schema_consumer& c ) { c.key( sv ); return ! c.match(); } );
             }
             if( m_match && m_hash ) {
                m_hash->key( sv );

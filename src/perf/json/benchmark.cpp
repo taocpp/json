@@ -13,20 +13,20 @@ int main( int argc, char** argv )
       tao::json::events::to_value consumer2;
       tao::json::events::from_file( consumer2, argv[ i ] );
 
-      tao::bench::mark( "parse", argv[ i ], [&]() {
+      tao::bench::mark( "parse", argv[ i ], [ & ]() {
          tao::json::events::to_value tmp;
          tao::json::events::from_file( tmp, argv[ i ] );
       } );
 
-      tao::bench::mark( "compare", argv[ i ], [&]() {
+      tao::bench::mark( "compare", argv[ i ], [ & ]() {
          (void)( consumer.value == consumer2.value );
       } );
 
-      tao::bench::mark( "stringify", argv[ i ], [&]() {
+      tao::bench::mark( "stringify", argv[ i ], [ & ]() {
          (void)tao::json::to_string( consumer.value );
       } );
 
-      tao::bench::mark( "prettify", argv[ i ], [&]() {
+      tao::bench::mark( "prettify", argv[ i ], [ & ]() {
          (void)tao::json::to_string( consumer.value, 4 );
       } );
    }
