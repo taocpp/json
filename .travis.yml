@@ -66,7 +66,7 @@ jobs:
     - compiler: clang
       addons:
         apt:
-          sources: &clang-9-sources
+          sources:
             - ubuntu-toolchain-r-test
             - sourceline: deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main
               key_url: https://apt.llvm.org/llvm-snapshot.gpg.key
@@ -99,7 +99,7 @@ jobs:
         - CXX=clang++
 
     - <<: *osx
-      osx_image: xcode11.3
+      osx_image: xcode11.4
 
     - <<: *gcc-9
       env:
@@ -153,10 +153,10 @@ jobs:
     - compiler: clang
       addons:
         apt:
-          sources: *clang-9-sources
-          packages: [ clang-format-9, g++-9 ]
+          sources: *clang-10-sources
+          packages: [ clang-format-10, g++-9 ]
       script:
-        - clang-format-9 -i -style=file $(find . -name '[^.]*.[hc]pp'|grep -v contrib/nlohmann/json.hpp)
+        - clang-format-10 -i -style=file $(find . -name '[^.]*.[hc]pp'|grep -v contrib/nlohmann/json.hpp)
         - git diff --exit-code
 
 script:
