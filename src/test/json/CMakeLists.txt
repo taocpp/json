@@ -29,6 +29,7 @@ set(testsources
   events_hash.cpp
   events_to_stream.cpp
   events_to_string.cpp
+  events_prefer.cpp
   include_json.cpp
   integer.cpp
   jaxn_ostream.cpp
