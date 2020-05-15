@@ -10,7 +10,7 @@ namespace tao::json
 {
    void test_prefer_signed( const value& v, const std::string& j )
    {
-      TEST_ASSERT( to_string< events::prefer_signed>( v ) == j );
+      TEST_ASSERT( to_string< events::prefer_signed >( v ) == j );
    }
 
    void test_prefer_unsigned( const value& v, const std::string& j )
@@ -18,15 +18,14 @@ namespace tao::json
       TEST_ASSERT( to_string< events::prefer_unsigned >( v ) == j );
    }
 
-  
    void unit_test()
-   {    
+   {
       std::int64_t val = 1;
       value v = val;
 
       test_prefer_signed( v, "1" );
       test_prefer_unsigned( v, "1" );
-      
+
       val = -1;
       v = val;
 
