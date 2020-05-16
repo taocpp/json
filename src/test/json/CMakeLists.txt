@@ -30,6 +30,7 @@ set(testsources
   events_to_stream.cpp
   events_to_string.cpp
   events_prefer.cpp
+  events_non_finite_to.cpp
   include_json.cpp
   integer.cpp
   jaxn_ostream.cpp
