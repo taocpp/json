@@ -14,12 +14,12 @@ namespace tao::json
 {
    value test_non_finite_to_string( const value& v, const std::string& s )
    {
-      return to_string< events::non_finite_to_null >( v ) == s;
+      return to_string< events::non_finite_to_string >( v ) == s;
    }
 
    value test_non_finite_to_exception( const value& v, const std::string& s )
    {
-      return to_string< events::non_finite_to_null >( v ) == s;
+      return to_string< events::non_finite_to_exception >( v ) == s;
    }
 
    value test_non_finite_to_null( const value& v, const std::string& s )
