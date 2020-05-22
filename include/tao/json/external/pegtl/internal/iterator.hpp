@@ -4,6 +4,7 @@
 #ifndef TAO_JSON_PEGTL_INTERNAL_ITERATOR_HPP
 #define TAO_JSON_PEGTL_INTERNAL_ITERATOR_HPP
 
+#include <cassert>
 #include <cstdlib>
 
 #include "../config.hpp"
@@ -23,7 +24,10 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
            byte( in_byte ),
            line( in_line ),
            byte_in_line( in_byte_in_line )
-      {}
+      {
+         assert( in_line != 0 );
+         assert( in_byte_in_line != 0 );
+      }
 
       iterator( const iterator& ) = default;
       iterator( iterator&& ) = default;
@@ -33,16 +37,11 @@ namespace TAO_JSON_PEGTL_NAMESPACE::internal
       iterator& operator=( const iterator& ) = default;
       iterator& operator=( iterator&& ) = default;
 
-      void reset() noexcept
-      {
-         *this = iterator();
-      }
-
       const char* data = nullptr;
 
       std::size_t byte = 0;
       std::size_t line = 1;
-      std::size_t byte_in_line = 0;
+      std::size_t byte_in_line = 1;
    };
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE::internal

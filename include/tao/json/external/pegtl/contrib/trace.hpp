@@ -1,153 +1,226 @@
-// Copyright (c) 2014-2020 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2020 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
 #ifndef TAO_JSON_PEGTL_CONTRIB_TRACE_HPP
 #define TAO_JSON_PEGTL_CONTRIB_TRACE_HPP
 
-#include <cassert>
+#include <cstddef>
 #include <iomanip>
 #include <iostream>
-#include <utility>
-#include <vector>
+#include <string_view>
+#include <tuple>
 
+#include "state_control.hpp"
+
+#include "../apply_mode.hpp"
 #include "../config.hpp"
+#include "../demangle.hpp"
 #include "../normal.hpp"
-
-#include "../internal/demangle.hpp"
+#include "../nothing.hpp"
+#include "../parse.hpp"
+#include "../rewind_mode.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
-   namespace internal
+   template< bool HideInternal = false, bool UseColor = true, std::size_t IndentIncrement = 2, std::size_t InitialIndent = 8 >
+   struct tracer_traits
    {
+      template< typename Rule >
+      static constexpr bool enable = ( HideInternal ? normal< Rule >::enable : true );
+
+      static constexpr std::size_t initial_indent = InitialIndent;
+      static constexpr std::size_t indent_increment = IndentIncrement;
+
+      static constexpr std::string_view ansi_reset = UseColor ? "\033[m" : "";
+      static constexpr std::string_view ansi_rule = UseColor ? "\033[36m" : "";
+      static constexpr std::string_view ansi_hide = UseColor ? "\033[37m" : "";
+
+      static constexpr std::string_view ansi_position = UseColor ? "\033[1;34m" : "";
+      static constexpr std::string_view ansi_success = UseColor ? "\033[32m" : "";
+      static constexpr std::string_view ansi_failure = UseColor ? "\033[31m" : "";
+      static constexpr std::string_view ansi_raise = UseColor ? "\033[1;31m" : "";
+      static constexpr std::string_view ansi_unwind = UseColor ? "\033[31m" : "";
+      static constexpr std::string_view ansi_apply = UseColor ? "\033[1;36m" : "";
+   };
+
+   using standard_tracer_traits = tracer_traits< true >;
+   using complete_tracer_traits = tracer_traits< false >;
+
+   template< typename TracerTraits >
+   struct tracer
+   {
+      const std::ios_base::fmtflags m_flags;
+      std::size_t m_count = 0;
+      std::vector< std::size_t > m_stack;
+      position m_position;
+
+      template< typename Rule >
+      static constexpr bool enable = TracerTraits::template enable< Rule >;
+
       template< typename ParseInput >
-      void print_current( const ParseInput& in )
+      explicit tracer( const ParseInput& in )
+         : m_flags( std::cerr.flags() ),
+           m_position( in.position() )
       {
-         if( in.empty() ) {
-            std::cerr << "<eof>";
+         std::cerr << std::left;
+         print_position();
+      }
+
+      tracer( const tracer& ) = delete;
+      tracer( tracer&& ) = delete;
+
+      ~tracer()
+      {
+         std::cerr.flags( m_flags );
+      }
+
+      tracer& operator=( const tracer& ) = delete;
+      tracer& operator=( tracer&& ) = delete;
+
+      [[nodiscard]] std::size_t indent() const noexcept
+      {
+         return TracerTraits::initial_indent + TracerTraits::indent_increment * m_stack.size();
+      }
+
+      void print_position() const
+      {
+         std::cerr << std::setw( indent() ) << ' ' << TracerTraits::ansi_position << "position" << TracerTraits::ansi_reset << ' ' << m_position << '\n';
+      }
+
+      void update_position( const position& p )
+      {
+         if( m_position != p ) {
+            m_position = p;
+            print_position();
+         }
+      }
+
+      template< typename Rule, typename ParseInput, typename... States >
+      void start( const ParseInput& /*unused*/, States&&... /*unused*/ )
+      {
+         std::cerr << '#' << std::setw( indent() - 1 ) << ++m_count << TracerTraits::ansi_rule << demangle< Rule >() << TracerTraits::ansi_reset << '\n';
+         m_stack.push_back( m_count );
+      }
+
+      template< typename Rule, typename ParseInput, typename... States >
+      void success( const ParseInput& in, States&&... /*unused*/ )
+      {
+         const auto prev = m_stack.back();
+         m_stack.pop_back();
+         std::cerr << std::setw( indent() ) << ' ' << TracerTraits::ansi_success << "success" << TracerTraits::ansi_reset;
+         if( m_count != prev ) {
+            std::cerr << " #" << prev << ' ' << TracerTraits::ansi_hide << demangle< Rule >() << TracerTraits::ansi_reset;
+         }
+         std::cerr << '\n';
+         update_position( in.position() );
+      }
+
+      template< typename Rule, typename ParseInput, typename... States >
+      void failure( const ParseInput& in, States&&... /*unused*/ )
+      {
+         const auto prev = m_stack.back();
+         m_stack.pop_back();
+         std::cerr << std::setw( indent() ) << ' ' << TracerTraits::ansi_failure << "failure" << TracerTraits::ansi_reset;
+         if( m_count != prev ) {
+            std::cerr << " #" << prev << ' ' << TracerTraits::ansi_hide << demangle< Rule >() << TracerTraits::ansi_reset;
+         }
+         std::cerr << '\n';
+         update_position( in.position() );
+      }
+
+      template< typename Rule, typename ParseInput, typename... States >
+      void raise( const ParseInput& /*unused*/, States&&... /*unused*/ )
+      {
+         std::cerr << std::setw( indent() ) << ' ' << TracerTraits::ansi_raise << "raise" << TracerTraits::ansi_reset << ' ' << TracerTraits::ansi_rule << demangle< Rule >() << TracerTraits::ansi_reset << '\n';
+      }
+
+      template< typename Rule, typename ParseInput, typename... States >
+      void unwind( const ParseInput& in, States&&... /*unused*/ )
+      {
+         const auto prev = m_stack.back();
+         m_stack.pop_back();
+         std::cerr << std::setw( indent() ) << ' ' << TracerTraits::ansi_unwind << "unwind" << TracerTraits::ansi_reset;
+         if( m_count != prev ) {
+            std::cerr << " #" << prev << ' ' << TracerTraits::ansi_hide << demangle< Rule >() << TracerTraits::ansi_reset;
+         }
+         std::cerr << '\n';
+         update_position( in.position() );
+      }
+
+      template< typename Rule, typename ParseInput, typename... States >
+      void apply( const ParseInput& /*unused*/, States&&... /*unused*/ )
+      {
+         std::cerr << std::setw( static_cast< int >( indent() - TracerTraits::indent_increment ) ) << ' ' << TracerTraits::ansi_apply << "apply" << TracerTraits::ansi_reset << '\n';
+      }
+
+      template< typename Rule, typename ParseInput, typename... States >
+      void apply0( const ParseInput& /*unused*/, States&&... /*unused*/ )
+      {
+         std::cerr << std::setw( static_cast< int >( indent() - TracerTraits::indent_increment ) ) << ' ' << TracerTraits::ansi_apply << "apply0" << TracerTraits::ansi_reset << '\n';
+      }
+
+      template< typename Rule,
+                template< typename... > class Action = nothing,
+                template< typename... > class Control = normal,
+                typename ParseInput,
+                typename... States >
+      bool parse( ParseInput&& in, States&&... st )
+      {
+         return TAO_JSON_PEGTL_NAMESPACE::parse< Rule, Action, state_control< Control >::template type >( in, st..., *this );
+      }
+   };
+
+   template< typename Rule,
+             template< typename... > class Action = nothing,
+             template< typename... > class Control = normal,
+             typename ParseInput,
+             typename... States >
+   bool standard_trace( ParseInput&& in, States&&... st )
+   {
+      tracer< standard_tracer_traits > tr( in );
+      return tr.parse< Rule, Action, Control >( in, st... );
+   }
+
+   template< typename Rule,
+             template< typename... > class Action = nothing,
+             template< typename... > class Control = normal,
+             typename ParseInput,
+             typename... States >
+   bool complete_trace( ParseInput&& in, States&&... st )
+   {
+      tracer< complete_tracer_traits > tr( in );
+      return tr.parse< Rule, Action, Control >( in, st... );
+   }
+
+   template< typename Tracer >
+   struct trace
+      : maybe_nothing
+   {
+      template< typename Rule,
+                apply_mode A,
+                rewind_mode M,
+                template< typename... >
+                class Action,
+                template< typename... >
+                class Control,
+                typename ParseInput,
+                typename... States >
+      [[nodiscard]] static bool match( ParseInput& in, States&&... st )
+      {
+         if constexpr( sizeof...( st ) == 0 ) {
+            return TAO_JSON_PEGTL_NAMESPACE::match< Rule, A, M, Action, state_control< Control >::template type >( in, st..., Tracer( in ) );
+         }
+         else if constexpr( !std::is_same_v< std::tuple_element_t< sizeof...( st ) - 1, std::tuple< States... > >, Tracer& > ) {
+            return TAO_JSON_PEGTL_NAMESPACE::match< Rule, A, M, Action, state_control< Control >::template type >( in, st..., Tracer( in ) );
          }
          else {
-            const auto c = in.peek_uint8();
-            switch( c ) {
-               case 0:
-                  std::cerr << "<nul> = ";
-                  break;
-               case 9:
-                  std::cerr << "<ht> = ";
-                  break;
-               case 10:
-                  std::cerr << "<lf> = ";
-                  break;
-               case 13:
-                  std::cerr << "<cr> = ";
-                  break;
-               default:
-                  if( isprint( c ) ) {
-                     std::cerr << '\'' << c << "' = ";
-                  }
-            }
-            std::cerr << "(char)" << unsigned( c );
+            return TAO_JSON_PEGTL_NAMESPACE::match< Rule, A, M, Action, Control >( in, st... );
          }
       }
-
-   }  // namespace internal
-
-   struct trace_state
-   {
-      unsigned rule = 0;
-      unsigned line = 0;
-      std::vector< unsigned > stack;
    };
 
-   template< typename Rule, template< typename... > class Control >
-   struct basic_trace_control
-      : Control< Rule >
-   {
-      template< typename ParseInput, typename... States >
-      static void start( const ParseInput& in, States&&... st )
-      {
-         std::cerr << in.position() << "  start  " << internal::demangle< Rule >() << "; current ";
-         print_current( in );
-         std::cerr << std::endl;
-         Control< Rule >::start( in, st... );
-      }
-
-      template< typename ParseInput, typename... States >
-      static void start( const ParseInput& in, trace_state& ts, States&&... st )
-      {
-         std::cerr << std::setw( 6 ) << ++ts.line << " " << std::setw( 6 ) << ++ts.rule << " ";
-         start( in, st... );
-         ts.stack.push_back( ts.rule );
-      }
-
-      template< typename ParseInput, typename... States >
-      static void success( const ParseInput& in, States&&... st )
-      {
-         std::cerr << in.position() << " success " << internal::demangle< Rule >() << "; next ";
-         print_current( in );
-         std::cerr << std::endl;
-         Control< Rule >::success( in, st... );
-      }
-
-      template< typename ParseInput, typename... States >
-      static void success( const ParseInput& in, trace_state& ts, States&&... st )
-      {
-         assert( !ts.stack.empty() );
-         std::cerr << std::setw( 6 ) << ++ts.line << " " << std::setw( 6 ) << ts.stack.back() << " ";
-         success( in, st... );
-         ts.stack.pop_back();
-      }
-
-      template< typename ParseInput, typename... States >
-      static void failure( const ParseInput& in, States&&... st )
-      {
-         std::cerr << in.position() << " failure " << internal::demangle< Rule >() << std::endl;
-         Control< Rule >::failure( in, st... );
-      }
-
-      template< typename ParseInput, typename... States >
-      static void failure( const ParseInput& in, trace_state& ts, States&&... st )
-      {
-         assert( !ts.stack.empty() );
-         std::cerr << std::setw( 6 ) << ++ts.line << " " << std::setw( 6 ) << ts.stack.back() << " ";
-         failure( in, st... );
-         ts.stack.pop_back();
-      }
-
-      template< template< typename... > class Action, typename Iterator, typename ParseInput, typename... States >
-      static auto apply( const Iterator& begin, const ParseInput& in, States&&... st )
-         -> decltype( Control< Rule >::template apply< Action >( begin, in, st... ) )
-      {
-         std::cerr << in.position() << "  apply  " << internal::demangle< Rule >() << std::endl;
-         return Control< Rule >::template apply< Action >( begin, in, st... );
-      }
-
-      template< template< typename... > class Action, typename Iterator, typename ParseInput, typename... States >
-      static auto apply( const Iterator& begin, const ParseInput& in, trace_state& ts, States&&... st )
-         -> decltype( apply< Action >( begin, in, st... ) )
-      {
-         std::cerr << std::setw( 6 ) << ++ts.line << "        ";
-         return apply< Action >( begin, in, st... );
-      }
-
-      template< template< typename... > class Action, typename ParseInput, typename... States >
-      static auto apply0( const ParseInput& in, States&&... st )
-         -> decltype( Control< Rule >::template apply0< Action >( in, st... ) )
-      {
-         std::cerr << in.position() << "  apply0 " << internal::demangle< Rule >() << std::endl;
-         return Control< Rule >::template apply0< Action >( in, st... );
-      }
-
-      template< template< typename... > class Action, typename ParseInput, typename... States >
-      static auto apply0( const ParseInput& in, trace_state& ts, States&&... st )
-         -> decltype( apply0< Action >( in, st... ) )
-      {
-         std::cerr << std::setw( 6 ) << ++ts.line << "        ";
-         return apply0< Action >( in, st... );
-      }
-   };
-
-   template< typename Rule >
-   using trace_control = basic_trace_control< Rule, normal >;
+   using trace_standard = trace< tracer< standard_tracer_traits > >;
+   using trace_complete = trace< tracer< complete_tracer_traits > >;
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE
 

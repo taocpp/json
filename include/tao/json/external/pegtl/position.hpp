@@ -56,9 +56,19 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       std::string source;
    };
 
-   inline std::ostream& operator<<( std::ostream& o, const position& p )
+   inline bool operator==( const position& lhs, const position& rhs ) noexcept
    {
-      return o << p.source << ':' << p.line << ':' << p.byte_in_line << '(' << p.byte << ')';
+      return ( lhs.byte == rhs.byte ) && ( lhs.source == rhs.source );
+   }
+
+   inline bool operator!=( const position& lhs, const position& rhs ) noexcept
+   {
+      return !( lhs == rhs );
+   }
+
+   inline std::ostream& operator<<( std::ostream& os, const position& p )
+   {
+      return os << p.source << ':' << p.line << ':' << p.byte_in_line;
    }
 
    [[nodiscard]] inline std::string to_string( const position& p )

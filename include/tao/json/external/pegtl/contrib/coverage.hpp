@@ -4,24 +4,22 @@
 #ifndef TAO_JSON_PEGTL_CONTRIB_COVERAGE_HPP
 #define TAO_JSON_PEGTL_CONTRIB_COVERAGE_HPP
 
-#include <cassert>
 #include <cstddef>
 #include <map>
-#include <string>
 #include <string_view>
 #include <vector>
 
-#include "remove_first_state.hpp"
-#include "shuffle_states.hpp"
+#include "state_control.hpp"
 
+#include "../apply_mode.hpp"
 #include "../config.hpp"
+#include "../demangle.hpp"
 #include "../normal.hpp"
 #include "../nothing.hpp"
 #include "../parse.hpp"
+#include "../rewind_mode.hpp"
 #include "../type_list.hpp"
 #include "../visit.hpp"
-
-#include "../internal/demangle.hpp"
 
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
@@ -29,8 +27,8 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    {
       std::size_t start = 0;
       std::size_t success = 0;
-      std::size_t local_failure = 0;
-      std::size_t global_failure = 0;
+      std::size_t failure = 0;
+      std::size_t unwind = 0;
       std::size_t raise = 0;
    };
 
@@ -40,94 +38,98 @@ namespace TAO_JSON_PEGTL_NAMESPACE
       std::map< std::string_view, coverage_info > branches;
    };
 
-   struct coverage_state
-   {
-      std::string_view grammar;
-      std::string source;
-
-      std::map< std::string_view, coverage_entry > map;
-      bool result;
-
-      std::vector< std::string_view > stack;
-   };
+   using coverage_result = std::map< std::string_view, coverage_entry >;
 
    namespace internal
    {
       template< typename Rule >
       struct coverage_insert
       {
-         static void visit( coverage_state& state )
+         static void visit( std::map< std::string_view, coverage_entry >& map )
          {
-            visit_branches( state.map.try_emplace( internal::demangle< Rule >() ).first->second.branches, typename Rule::subs_t() );
+            visit_branches( map.try_emplace( demangle< Rule >() ).first->second.branches, typename Rule::subs_t() );
          }
 
          template< typename... Ts >
          static void visit_branches( std::map< std::string_view, coverage_info >& branches, type_list< Ts... > /*unused*/ )
          {
-            ( branches.try_emplace( internal::demangle< Ts >() ), ... );
+            ( branches.try_emplace( demangle< Ts >() ), ... );
          }
       };
 
-      template< template< typename... > class Control = normal >
-      struct make_coverage_control
+      struct coverage_state
       {
          template< typename Rule >
-         struct control
-            : remove_first_state< Control< Rule > >
+         static constexpr bool enable = true;
+
+         explicit coverage_state( coverage_result& in_result )
+            : result( in_result )
+         {}
+
+         coverage_result& result;
+         std::vector< std::string_view > stack;
+
+         template< typename Rule, typename ParseInput, typename... States >
+         void start( const ParseInput& /*unused*/, States&&... /*unused*/ )
          {
-            template< typename ParseInput, typename... States >
-            [[noreturn]] static void raise( const ParseInput& in, coverage_state& state, States&&... st )
-            {
-               const auto name = internal::demangle< Rule >();
-               ++state.map.at( name ).raise;
-               if( state.stack.size() > 1 ) {
-                  ++state.map.at( state.stack.at( state.stack.size() - 2 ) ).branches.at( name ).raise;
-               }
-               Control< Rule >::raise( in, st... );
+            const auto name = demangle< Rule >();
+            ++result.at( name ).start;
+            if( !stack.empty() ) {
+               ++result.at( stack.back() ).branches.at( name ).start;
             }
+            stack.push_back( name );
+         }
 
-            template< apply_mode A,
-                      rewind_mode M,
-                      template< typename... >
-                      class Action,
-                      template< typename... >
-                      class Control2,
-                      typename ParseInput,
-                      typename... States >
-            [[nodiscard]] static bool match( ParseInput& in, States&&... st )
-            {
-               coverage_entry dummy;
-               auto& state = std::get< sizeof...( st ) - 1 >( std::tie( st... ) );
-               const auto name = internal::demangle< Rule >();
-               auto& entry = state.map.at( name );
-               auto& previous = state.stack.empty() ? dummy : state.map.at( state.stack.back() ).branches.at( name );
-               ++entry.start;
-               ++previous.start;
-               state.stack.push_back( name );
-               try {
-                  const bool result = Control< Rule >::template match< A, M, Action, Control2 >( in, st... );
-                  state.stack.pop_back();
-                  if( result ) {
-                     ++entry.success;
-                     ++previous.success;
-                  }
-                  else {
-                     ++entry.local_failure;
-                     ++previous.local_failure;
-                  }
-                  return result;
-               }
-               catch( ... ) {
-                  state.stack.pop_back();
-                  ++entry.global_failure;
-                  ++previous.global_failure;
-                  throw;
-               }
+         template< typename Rule, typename ParseInput, typename... States >
+         void success( const ParseInput& /*unused*/, States&&... /*unused*/ )
+         {
+            stack.pop_back();
+            const auto name = demangle< Rule >();
+            ++result.at( name ).success;
+            if( !stack.empty() ) {
+               ++result.at( stack.back() ).branches.at( name ).success;
             }
-         };
+         }
 
-         template< typename Rule >
-         using type = rotate_states_right< control< Rule > >;
+         template< typename Rule, typename ParseInput, typename... States >
+         void failure( const ParseInput& /*unused*/, States&&... /*unused*/ )
+         {
+            stack.pop_back();
+            const auto name = demangle< Rule >();
+            ++result.at( name ).failure;
+            if( !stack.empty() ) {
+               ++result.at( stack.back() ).branches.at( name ).failure;
+            }
+         }
+
+         template< typename Rule, typename ParseInput, typename... States >
+         void raise( const ParseInput& /*unused*/, States&&... /*unused*/ )
+         {
+            const auto name = demangle< Rule >();
+            ++result.at( name ).raise;
+            if( !stack.empty() ) {
+               ++result.at( stack.back() ).branches.at( name ).raise;
+            }
+         }
+
+         template< typename Rule, typename ParseInput, typename... States >
+         void unwind( const ParseInput& /*unused*/, States&&... /*unused*/ )
+         {
+            stack.pop_back();
+            const auto name = demangle< Rule >();
+            ++result.at( name ).unwind;
+            if( !stack.empty() ) {
+               ++result.at( stack.back() ).branches.at( name ).unwind;
+            }
+         }
+
+         template< typename Rule, typename ParseInput, typename... States >
+         void apply( const ParseInput& /*unused*/, States&&... /*unused*/ ) noexcept
+         {}
+
+         template< typename Rule, typename ParseInput, typename... States >
+         void apply0( const ParseInput& /*unused*/, States&&... /*unused*/ ) noexcept
+         {}
       };
 
    }  // namespace internal
@@ -137,21 +139,11 @@ namespace TAO_JSON_PEGTL_NAMESPACE
              template< typename... > class Control = normal,
              typename ParseInput,
              typename... States >
-   coverage_state coverage( ParseInput&& in, States&&... st )
+   bool coverage( ParseInput&& in, coverage_result& result, States&&... st )
    {
-      coverage_state state;
-
-      state.grammar = internal::demangle< Rule >();
-      state.source = in.source();
-
-      // populate state
-      visit< Rule, internal::coverage_insert >( state );
-
-      // parse
-      state.result = parse< Rule, Action, internal::make_coverage_control<>::template type >( in, st..., state );
-      assert( state.stack.empty() );
-
-      return state;
+      internal::coverage_state state( result );
+      visit< Rule, internal::coverage_insert >( state.result );  // Fill map with all sub-rules of the grammar.
+      return parse< Rule, Action, state_control< Control >::template type >( in, st..., state );
    }
 
 }  // namespace TAO_JSON_PEGTL_NAMESPACE

@@ -7,7 +7,10 @@
 #include <cstdint>
 #include <cstdlib>
 
+#include <limits>
+#include <string_view>
 #include <type_traits>
+#include <vector>
 
 #include "../ascii.hpp"
 #include "../parse.hpp"
@@ -175,7 +178,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
                }
                do {
                   if( !accumulate_digit< Unsigned, Maximum >( st, c ) ) {
-                     throw parse_error( "integer overflow", in );  // Consistent with "as if" an action was doing the conversion.
+                     throw TAO_JSON_PEGTL_NAMESPACE::parse_error( "integer overflow", in );  // Consistent with "as if" an action was doing the conversion.
                   }
                   in.bump_in_this_line();
                } while( ( !in.empty() ) && is_digit( c = in.peek_char() ) );

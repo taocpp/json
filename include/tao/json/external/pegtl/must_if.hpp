@@ -4,6 +4,8 @@
 #ifndef TAO_JSON_PEGTL_MUST_IF_HPP
 #define TAO_JSON_PEGTL_MUST_IF_HPP
 
+#include <type_traits>
+
 #include "config.hpp"
 #include "normal.hpp"
 
@@ -11,15 +13,15 @@ namespace TAO_JSON_PEGTL_NAMESPACE
 {
    namespace internal
    {
-      template< typename T, typename Rule, typename = void >
-      inline constexpr bool raise_on_failure = ( T::template message< Rule > != nullptr );
+      template< typename Errors, typename Rule, typename = void >
+      inline constexpr bool raise_on_failure = ( Errors::template message< Rule > != nullptr );
 
-      template< typename T, typename Rule >
-      inline constexpr bool raise_on_failure< T, Rule, decltype( T::template raise_on_failure< Rule >, void() ) > = T::template raise_on_failure< Rule >;
+      template< typename Errors, typename Rule >
+      inline constexpr bool raise_on_failure< Errors, Rule, std::void_t< decltype( Errors::template raise_on_failure< Rule > ) > > = Errors::template raise_on_failure< Rule >;
 
    }  // namespace internal
 
-   template< typename T, template< typename... > class Base = normal, bool RequireMessage = true >
+   template< typename Errors, template< typename... > class Base = normal, bool RequireMessage = true >
    struct must_if
    {
       template< typename Rule >
@@ -27,9 +29,9 @@ namespace TAO_JSON_PEGTL_NAMESPACE
          : Base< Rule >
       {
          template< typename ParseInput, typename... States >
-         static void failure( const ParseInput& in, States&&... st ) noexcept( !internal::raise_on_failure< T, Rule >&& noexcept( Base< Rule >::failure( in, st... ) ) )
+         static void failure( const ParseInput& in, States&&... st ) noexcept( noexcept( Base< Rule >::failure( in, st... ) ) && !internal::raise_on_failure< Errors, Rule > )
          {
-            if constexpr( internal::raise_on_failure< T, Rule > ) {
+            if constexpr( internal::raise_on_failure< Errors, Rule > ) {
                raise( in, st... );
             }
             else {
@@ -38,16 +40,16 @@ namespace TAO_JSON_PEGTL_NAMESPACE
          }
 
          template< typename ParseInput, typename... States >
-         [[noreturn]] static void raise( const ParseInput& in, States&&... st )
+         [[noreturn]] static void raise( const ParseInput& in, [[maybe_unused]] States&&... st )
          {
             if constexpr( RequireMessage ) {
-               static_assert( T::template message< Rule > != nullptr );
+               static_assert( Errors::template message< Rule > != nullptr );
             }
-            if constexpr( T::template message< Rule > != nullptr ) {
-               constexpr const char* p = T::template message< Rule >;
+            if constexpr( Errors::template message< Rule > != nullptr ) {
+               constexpr const char* p = Errors::template message< Rule >;
                throw parse_error( p, in );
 #if defined( _MSC_VER )
-               (void)( (void)st, ... );
+               ( (void)st, ... );
 #endif
             }
             else {

@@ -8,7 +8,7 @@
 #include <stdexcept>
 
 #include "../forward.hpp"
-#include "../internal/demangle.hpp"
+#include "../external/pegtl/demangle.hpp"
 #include "../internal/format.hpp"
 #include "../internal/type_traits.hpp"
 
@@ -34,7 +34,7 @@ namespace tao::json::binding
                std::rethrow_exception( e );  // TODO: Did I miss a way to avoid the throw?
             }
             catch( ... ) {
-               std::throw_with_nested( std::runtime_error( json::internal::format( "all versions failed for type ", json::internal::demangle< C >(), " -- see nested for first error" ) ) );
+               std::throw_with_nested( std::runtime_error( json::internal::format( "all versions failed for type ", demangle< C >(), " -- see nested for first error" ) ) );
             }
          }
       }

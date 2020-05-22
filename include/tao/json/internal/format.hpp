@@ -14,8 +14,6 @@
 #include "../message_extension.hpp"
 #include "../type.hpp"
 
-#include "../external/pegtl/internal/demangle.hpp"
-
 namespace tao::json::internal
 {
    inline void to_stream( std::ostream& os, const bool v )

@@ -13,7 +13,7 @@
 namespace tao::json::ubjson::events
 {
    template< typename Consumer >
-   void from_binary( Consumer& consumer, const void* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 0 )
+   void from_binary( Consumer& consumer, const void* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 1 )
    {
       const char* cast = static_cast< const char* >( data );
       pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( cast, cast + size, source ? source : "tao::json::ubjson::events::from_binary", byte, line, byte_in_line );
@@ -21,7 +21,7 @@ namespace tao::json::ubjson::events
    }
 
    template< typename Consumer >
-   void from_binary( Consumer& consumer, const void* data, const std::size_t size, const std::string& source, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 0 )
+   void from_binary( Consumer& consumer, const void* data, const std::size_t size, const std::string& source, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 1 )
    {
       ubjson::events::from_binary( consumer, data, size, source.c_str(), byte, line, byte_in_line );
    }

@@ -15,27 +15,27 @@ namespace tao::json
 
       TEST_ASSERT( v.source() == f );
       TEST_ASSERT( v.line() == 1 );
-      TEST_ASSERT( v.byte_in_line() == 0 );
+      TEST_ASSERT( v.byte_in_line() == 1 );
 
       TEST_ASSERT( v.at( 0 ).source() == f );
       TEST_ASSERT( v.at( 0 ).line() == 2 );
-      TEST_ASSERT( v.at( 0 ).byte_in_line() == 8 );
+      TEST_ASSERT( v.at( 0 ).byte_in_line() == 9 );
 
       TEST_ASSERT( v.at( 1 ).source() == f );
       TEST_ASSERT( v.at( 1 ).line() == 3 );
-      TEST_ASSERT( v.at( 1 ).byte_in_line() == 8 );
+      TEST_ASSERT( v.at( 1 ).byte_in_line() == 9 );
 
       TEST_ASSERT( v.at( 2 ).source() == f );
       TEST_ASSERT( v.at( 2 ).line() == 4 );
-      TEST_ASSERT( v.at( 2 ).byte_in_line() == 8 );
+      TEST_ASSERT( v.at( 2 ).byte_in_line() == 9 );
 
       TEST_ASSERT( v.at( 3 ).source() == f );
       TEST_ASSERT( v.at( 3 ).line() == 5 );
-      TEST_ASSERT( v.at( 3 ).byte_in_line() == 8 );
+      TEST_ASSERT( v.at( 3 ).byte_in_line() == 9 );
 
       TEST_ASSERT( v.at( 3 ).at( "hello" ).source() == f );
       TEST_ASSERT( v.at( 3 ).at( "hello" ).line() == 6 );
-      TEST_ASSERT( v.at( 3 ).at( "hello" ).byte_in_line() == 26 );
+      TEST_ASSERT( v.at( 3 ).at( "hello" ).byte_in_line() == 27 );
    }
 
    void unit_test()
