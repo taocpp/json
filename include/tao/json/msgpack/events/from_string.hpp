@@ -14,16 +14,16 @@
 namespace tao::json::msgpack::events
 {
    template< typename Consumer >
-   void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 1 )
+   void from_string( Consumer& consumer, const char* data, const std::size_t size, const char* source = nullptr, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 1 )
    {
-      pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::msgpack::from_string", byte, line, byte_in_line );
+      pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > in( data, data + size, source ? source : "tao::json::msgpack::from_string", byte, line, column );
       msgpack::events::from_input( consumer, std::move( in ) );
    }
 
    template< typename Consumer >
-   void from_string( Consumer& consumer, const char* data, const std::size_t size, const std::string& source, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t byte_in_line = 1 )
+   void from_string( Consumer& consumer, const char* data, const std::size_t size, const std::string& source, const std::size_t byte = 0, const std::size_t line = 1, const std::size_t column = 1 )
    {
-      msgpack::events::from_string( consumer, data, size, source.c_str(), byte, line, byte_in_line );
+      msgpack::events::from_string( consumer, data, size, source.c_str(), byte, line, column );
    }
 
    template< typename Consumer, typename... Ts >

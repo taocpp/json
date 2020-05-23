@@ -21,15 +21,15 @@ namespace tao::json
    {
    private:
       std::size_t m_line = 0;
-      std::size_t m_byte_in_line = 0;
+      std::size_t m_column = 0;
       std::string m_source;
 
    public:
       position() = default;
 
-      position( std::string in_source, const std::size_t in_line, const std::size_t in_byte_in_line )
+      position( std::string in_source, const std::size_t in_line, const std::size_t in_column )
          : m_line( in_line ),
-           m_byte_in_line( in_byte_in_line ),
+           m_column( in_column ),
            m_source( std::move( in_source ) )
       {}
 
@@ -38,7 +38,7 @@ namespace tao::json
       position( position&& p ) noexcept
       {
          m_line = p.m_line;
-         m_byte_in_line = p.m_byte_in_line;
+         m_column = p.m_column;
          m_source = std::move( p.m_source );
       }
 
@@ -49,7 +49,7 @@ namespace tao::json
       position& operator=( position&& p ) noexcept
       {
          m_line = p.m_line;
-         m_byte_in_line = p.m_byte_in_line;
+         m_column = p.m_column;
          m_source = std::move( p.m_source );
          return *this;
       }
@@ -64,9 +64,9 @@ namespace tao::json
          return m_line;
       }
 
-      [[nodiscard]] std::size_t byte_in_line() const noexcept
+      [[nodiscard]] std::size_t column() const noexcept
       {
-         return m_byte_in_line;
+         return m_column;
       }
 
       void set_source( const std::string& s )
@@ -78,13 +78,13 @@ namespace tao::json
       void set_position( const T& p )
       {
          m_line = p.line;
-         m_byte_in_line = p.byte_in_line;
+         m_column = p.column;
          m_source = p.source;
       }
 
       void append_message_extension( std::ostream& os ) const
       {
-         os << '[' << m_source << ':' << m_line << ':' << m_byte_in_line << ']';
+         os << '[' << m_source << ':' << m_line << ':' << m_column << ']';
       }
    };
 
