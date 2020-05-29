@@ -12,7 +12,7 @@ The Events Interface is a calling convention, a kind of abstract (in the concept
 
 The Events Interface is modelled after the SAX-interface for XML and has functions like `begin_object()` and `boolean( const bool )`.
 
-We distinguish betwen *Event Producers* that usually take some input and generate calls to the Events Interface from it, and *Event Consumers* which implement the functions of the Events Interface to usually produce some output.
+We distinguish between *Event Producers* that usually take some input and generate calls to the Events Interface from it, and *Event Consumers* which implement the functions of the Events Interface to usually produce some output.
 *Event Transformers* occupy both roles, accepting calls to the Events Interface and transforming them into (other) calls to another Events Consumer.
 
 For example the `tao::json::events::from_value()` function is an Events Producer that takes a Value object of type `tao::json::basic_value< Traits, Base >` for any Type Traits class `Traits` and Value base class `Base` as input, and generates Events depending on the contents.
