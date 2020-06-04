@@ -54,7 +54,7 @@ check: $(UNIT_TESTS)
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T > /dev/null; done
 
 build/%.clang-tidy: % .clang-tidy
-	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) 2>/dev/null
+	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) 2>/dev/null
 	@mkdir -p $(@D)
 	@touch $@
 
@@ -72,7 +72,7 @@ build/%.d: %.cpp Makefile
 	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) -MM -MQ $@ $< -o $@
 
 build/%: %.cpp build/%.d
-	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) $< -o $@
+	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) $< $(LDFLAGS) -o $@
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)
 -include $(DEPENDS)

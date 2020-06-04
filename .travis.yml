@@ -4,15 +4,6 @@ dist: xenial
 
 jobs:
   include:
-    - &gcc-7
-      compiler: gcc
-      addons:
-        apt:
-          sources: [ ubuntu-toolchain-r-test ]
-          packages: [ g++-7 ]
-      env:
-        - CXX=g++-7
-
     - compiler: gcc
       addons:
         apt:
@@ -20,6 +11,7 @@ jobs:
           packages: [ g++-8 ]
       env:
         - CXX=g++-8
+        - LDFLAGS="-lstdc++fs"
 
     - compiler: gcc
       addons:
@@ -39,11 +31,16 @@ jobs:
       env:
         - CXX=g++-10
 
+    - <<: *gcc-10
+      env:
+        - CXX=g++-10
+        - CXXSTD="-std=c++20"
+
     - compiler: clang
       addons:
         apt:
           sources: [ ubuntu-toolchain-r-test, llvm-toolchain-xenial-5 ]
-          packages: [ clang-5.0, g++-7 ]
+          packages: [ clang-5.0, g++-9 ]
       env:
         - CXX=clang++-5.0
 
@@ -51,7 +48,7 @@ jobs:
       addons:
         apt:
           sources: [ ubuntu-toolchain-r-test, llvm-toolchain-xenial-6 ]
-          packages: [ clang-6.0, g++-7 ]
+          packages: [ clang-6.0, g++-9 ]
       env:
         - CXX=clang++-6.0
 
@@ -59,7 +56,7 @@ jobs:
       addons:
         apt:
           sources: [ ubuntu-toolchain-r-test, llvm-toolchain-xenial-7 ]
-          packages: [ clang-7, g++-7 ]
+          packages: [ clang-7, g++-9 ]
       env:
         - CXX=clang++-7
 
@@ -67,7 +64,7 @@ jobs:
       addons:
         apt:
           sources: [ ubuntu-toolchain-r-test, llvm-toolchain-xenial-8 ]
-          packages: [ clang-8, g++-8 ]
+          packages: [ clang-8, g++-9 ]
       env:
         - CXX=clang++-8
 
@@ -98,17 +95,18 @@ jobs:
     - <<: *clang-10
       env:
         - CXX=clang++-10
+        - CXXSTD="-std=c++20"
+
+    - <<: *clang-10
+      env:
+        - CXX=clang++-10
         - CPPFLAGS="-fms-extensions"
 
-    - &osx
-      os: osx
-      osx_image: xcode10.3
+    - os: osx
+      osx_image: xcode11.4
       compiler: clang
       env:
         - CXX=clang++
-
-    - <<: *osx
-      osx_image: xcode11.4
 
     - <<: *gcc-10
       env:
@@ -151,15 +149,15 @@ jobs:
       script:
         - scan-build-10 --use-c++=clang++-10 --status-bugs make -kj3
 
-    - <<: *gcc-7
+    - <<: *gcc-10
       env:
-        - CXX=g++-7
+        - CXX=g++-10
         - CXXFLAGS="-O0 --coverage"
       before_script:
         - pip install --user cpp-coveralls
       script:
         - make -kj3 check
-        - coveralls --gcov gcov-7 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
+        - coveralls --gcov gcov-10 --gcov-options '\-lp' --exclude src --exclude include/tao/json/external
 
     - dist: bionic
       compiler: clang
