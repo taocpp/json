@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_UBJSON_FROM_FILE_HPP
 #define TAO_JSON_UBJSON_FROM_FILE_HPP
 
-#include <string>
+#include <filesystem>
 #include <utility>
 
 #include "../events/to_value.hpp"
@@ -15,17 +15,17 @@
 namespace tao::json::ubjson
 {
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   [[nodiscard]] basic_value< Traits > basic_from_file( const std::string& filename )
+   [[nodiscard]] basic_value< Traits > basic_from_file( const std::filesystem::path& path )
    {
       json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
-      events::from_file( consumer, filename );
+      events::from_file( consumer, path );
       return std::move( consumer.value );
    }
 
    template< template< typename... > class... Transformers >
-   [[nodiscard]] value from_file( const std::string& filename )
+   [[nodiscard]] value from_file( const std::filesystem::path& path )
    {
-      return basic_from_file< traits, Transformers... >( filename );
+      return basic_from_file< traits, Transformers... >( path );
    }
 
 }  // namespace tao::json::ubjson

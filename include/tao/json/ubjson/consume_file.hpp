@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_UBJSON_CONSUME_FILE_HPP
 #define TAO_JSON_UBJSON_CONSUME_FILE_HPP
 
-#include <utility>
+#include <filesystem>
 
 #include "../external/pegtl/file_input.hpp"
 
@@ -15,17 +15,17 @@
 
 namespace tao::json::ubjson
 {
-   template< typename T, template< typename... > class Traits = traits, typename F >
-   [[nodiscard]] T consume_file( F&& filename )
+   template< typename T, template< typename... > class Traits = traits >
+   [[nodiscard]] T consume_file( const std::filesystem::path& path )
    {
-      ubjson::basic_parts_parser< 1 << 24, utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+      ubjson::basic_parts_parser< 1 << 24, utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( path );
       return json::consume< T, Traits >( pp );
    }
 
-   template< template< typename... > class Traits = traits, typename F, typename T >
-   void consume_file( F&& filename, T& t )
+   template< template< typename... > class Traits = traits, typename T >
+   void consume_file( const std::filesystem::path& path, T& t )
    {
-      ubjson::basic_parts_parser< 1 << 24, utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( std::forward< F >( filename ) );
+      ubjson::basic_parts_parser< 1 << 24, utf8_mode::check, pegtl::file_input< pegtl::tracking_mode::lazy > > pp( path );
       json::consume< Traits >( pp, t );
    }
 

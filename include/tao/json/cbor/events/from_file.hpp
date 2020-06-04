@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_CBOR_EVENTS_FROM_FILE_HPP
 #define TAO_JSON_CBOR_EVENTS_FROM_FILE_HPP
 
-#include <utility>
+#include <filesystem>
 
 #include "../../external/pegtl/file_input.hpp"
 #include "../../external/pegtl/parse.hpp"
@@ -15,10 +15,10 @@ namespace tao::json::cbor::events
 {
    // Events producer to parse a file containing a CBOR string representation.
 
-   template< typename T, typename Consumer >
-   void from_file( Consumer& consumer, T&& filename )
+   template< typename Consumer >
+   void from_file( Consumer& consumer, const std::filesystem::path& path )
    {
-      pegtl::file_input< pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
+      pegtl::file_input< pegtl::tracking_mode::lazy > in( path );
       pegtl::parse< internal::grammar >( in, consumer );
    }
 

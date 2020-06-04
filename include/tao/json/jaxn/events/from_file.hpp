@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_JAXN_EVENTS_FROM_FILE_HPP
 #define TAO_JSON_JAXN_EVENTS_FROM_FILE_HPP
 
-#include <utility>
+#include <filesystem>
 
 #include "../internal/action.hpp"
 #include "../internal/errors.hpp"
@@ -16,10 +16,10 @@ namespace tao::json::jaxn::events
 {
    // Events producer to parse a file containing a JAXN string representation.
 
-   template< typename T, typename Consumer >
-   void from_file( Consumer& consumer, T&& filename )
+   template< typename Consumer >
+   void from_file( Consumer& consumer, const std::filesystem::path& path )
    {
-      pegtl::file_input< pegtl::tracking_mode::lazy > in( std::forward< T >( filename ) );
+      pegtl::file_input< pegtl::tracking_mode::lazy > in( path );
       pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );
    }
 
