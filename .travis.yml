@@ -39,22 +39,6 @@ jobs:
     - compiler: clang
       addons:
         apt:
-          sources: [ ubuntu-toolchain-r-test, llvm-toolchain-xenial-5 ]
-          packages: [ clang-5.0, g++-9 ]
-      env:
-        - CXX=clang++-5.0
-
-    - compiler: clang
-      addons:
-        apt:
-          sources: [ ubuntu-toolchain-r-test, llvm-toolchain-xenial-6 ]
-          packages: [ clang-6.0, g++-9 ]
-      env:
-        - CXX=clang++-6.0
-
-    - compiler: clang
-      addons:
-        apt:
           sources: [ ubuntu-toolchain-r-test, llvm-toolchain-xenial-7 ]
           packages: [ clang-7, g++-9 ]
       env:
