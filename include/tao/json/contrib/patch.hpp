@@ -35,8 +35,14 @@ namespace tao::json
          }
          else if( op == "move" ) {
             const pointer from( entry.at( "from" ).get_string() );
+            if( from == path_pointer ) {
+               continue;
+            }
+            if( from.is_prefix_of( path_pointer ) ) {
+               throw std::runtime_error( internal::format( "json patch 'test' failed for '", path, '\'', json::message_extension( v ) ) );
+            }
             auto t = std::move( v.at( from ) );
-            v.erase( from );  // NOLINT
+            v.erase( from );
             v.insert( path_pointer, std::move( t ) );
          }
          else if( op == "copy" ) {
@@ -72,6 +78,12 @@ namespace tao::json
          }
          else if( op == "move" ) {
             const pointer from( entry.at( "from" ).get_string() );
+            if( from == path_pointer ) {
+               continue;
+            }
+            if( from.is_prefix_of( path_pointer ) ) {
+               throw std::runtime_error( internal::format( "json patch 'test' failed for '", path, '\'', json::message_extension( v ) ) );
+            }
             auto t = std::move( v.at( from ) );
             v.erase( from );
             v.insert( path_pointer, std::move( t ) );

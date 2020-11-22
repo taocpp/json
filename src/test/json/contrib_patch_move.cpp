@@ -36,7 +36,7 @@ namespace tao::json
 
       TEST_THROWS( patch( n, value::array( { { { "op", "foo" }, { "path", "" } } } ) ) );
 
-      TEST_THROWS( patch( a, value::array( { { { "op", "move" }, { "from", "" }, { "path", "" } } } ) ) );
+      TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "" }, { "path", "" } } } ) ) == a );
       TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "" } } } ) ) == value( { { "foo", 1 } } ) );
       TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "/a" } } } ) ) == a );
       TEST_ASSERT( patch( a, value::array( { { { "op", "move" }, { "from", "/a/foo" }, { "path", "/a/foo" } } } ) ) == a );
@@ -54,7 +54,7 @@ namespace tao::json
       TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/2" }, { "path", "/b/-" } } } ) ) == value( { { "b", value::array( { 1, 2, 4, 3 } ) } } ) );
       TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/3" }, { "path", "/b/-" } } } ) ) == b );
       TEST_THROWS( patch( b, value::array( { { { "op", "move" }, { "from", "/b/4" }, { "path", "/b/-" } } } ) ) );
-      TEST_THROWS( patch( b, value::array( { { { "op", "move" }, { "from", "/b/-" }, { "path", "/b/-" } } } ) ) );
+      TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/-" }, { "path", "/b/-" } } } ) ) == b );
       TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/0" }, { "path", "/a" } } } ) ) == value( { { "a", 1 }, { "b", value::array( { 2, 3, 4 } ) } } ) );
       TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/2" }, { "path", "/a" } } } ) ) == value( { { "a", 3 }, { "b", value::array( { 1, 2, 4 } ) } } ) );
       TEST_ASSERT( patch( b, value::array( { { { "op", "move" }, { "from", "/b/3" }, { "path", "/a" } } } ) ) == value( { { "a", 4 }, { "b", value::array( { 1, 2, 3 } ) } } ) );
@@ -68,7 +68,7 @@ namespace tao::json
 
       TEST_THROWS( cpatch( n, value::array( { { { "op", "foo" }, { "path", "" } } } ) ) );
 
-      TEST_THROWS( cpatch( a, value::array( { { { "op", "move" }, { "from", "" }, { "path", "" } } } ) ) );
+      TEST_ASSERT( cpatch( a, value::array( { { { "op", "move" }, { "from", "" }, { "path", "" } } } ) ) == a );
       TEST_ASSERT( cpatch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "" } } } ) ) == value( { { "foo", 1 } } ) );
       TEST_ASSERT( cpatch( a, value::array( { { { "op", "move" }, { "from", "/a" }, { "path", "/a" } } } ) ) == a );
       TEST_ASSERT( cpatch( a, value::array( { { { "op", "move" }, { "from", "/a/foo" }, { "path", "/a/foo" } } } ) ) == a );
@@ -86,7 +86,7 @@ namespace tao::json
       TEST_ASSERT( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/2" }, { "path", "/b/-" } } } ) ) == value( { { "b", value::array( { 1, 2, 4, 3 } ) } } ) );
       TEST_ASSERT( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/3" }, { "path", "/b/-" } } } ) ) == b );
       TEST_THROWS( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/4" }, { "path", "/b/-" } } } ) ) );
-      TEST_THROWS( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/-" }, { "path", "/b/-" } } } ) ) );
+      TEST_ASSERT( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/-" }, { "path", "/b/-" } } } ) ) == b );
       TEST_ASSERT( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/0" }, { "path", "/a" } } } ) ) == value( { { "a", 1 }, { "b", value::array( { 2, 3, 4 } ) } } ) );
       TEST_ASSERT( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/2" }, { "path", "/a" } } } ) ) == value( { { "a", 3 }, { "b", value::array( { 1, 2, 4 } ) } } ) );
       TEST_ASSERT( cpatch( b, value::array( { { { "op", "move" }, { "from", "/b/3" }, { "path", "/a" } } } ) ) == value( { { "a", 4 }, { "b", value::array( { 1, 2, 3 } ) } } ) );
