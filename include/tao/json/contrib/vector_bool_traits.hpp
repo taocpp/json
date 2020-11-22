@@ -22,7 +22,7 @@ namespace tao::json
          v.emplace_array();
          v.get_array().reserve( o.size() );
          for( const auto e : o ) {
-            v.push_back( e );
+            v.emplace_back( e );
          }
       }
 
