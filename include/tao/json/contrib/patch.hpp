@@ -36,7 +36,7 @@ namespace tao::json
          else if( op == "move" ) {
             const pointer from( entry.at( "from" ).get_string() );
             auto t = std::move( v.at( from ) );
-            v.erase( from );
+            v.erase( from );  // NOLINT(cplusplus.Move) // this is a false positive from clang-11!
             v.insert( path_pointer, std::move( t ) );
          }
          else if( op == "copy" ) {
