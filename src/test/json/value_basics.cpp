@@ -164,9 +164,9 @@ namespace tao::json
          TEST_ASSERT( v.public_base().number == 1 );
          based w = std::move( v );
          TEST_ASSERT( w == 42 );
-         TEST_ASSERT( v.public_base().s == base::move_constructed_from );  // NOLINT(bugprone-use-after-move)
+         TEST_ASSERT( v.public_base().s == base::move_constructed_from );  // NOLINT(bugprone-use-after-move,clang-analyzer-cplusplus.Move)
          TEST_ASSERT( w.public_base().s == base::move_constructed );
-         TEST_ASSERT( v.public_base().number == 0 );  // NOLINT(bugprone-use-after-move)
+         TEST_ASSERT( v.public_base().number == 0 );  // NOLINT(bugprone-use-after-move,clang-analyzer-cplusplus.Move)
          TEST_ASSERT( w.public_base().number == 1 );
       }
       {
@@ -214,9 +214,9 @@ namespace tao::json
          v = std::move( w );
          TEST_ASSERT( v == true );
          TEST_ASSERT( v.public_base().s == base::move_assigned );
-         TEST_ASSERT( w.public_base().s == base::move_constructed_from );  // NOLINT(bugprone-use-after-move)
+         TEST_ASSERT( w.public_base().s == base::move_constructed_from );  // NOLINT(bugprone-use-after-move,clang-analyzer-cplusplus.Move)
          TEST_ASSERT( v.public_base().number == 2 );
-         TEST_ASSERT( w.public_base().number == 0 );  // NOLINT(bugprone-use-after-move)
+         TEST_ASSERT( w.public_base().number == 0 );  // NOLINT(bugprone-use-after-move,clang-analyzer-cplusplus.Move)
       }
       {
          counter = 0;
