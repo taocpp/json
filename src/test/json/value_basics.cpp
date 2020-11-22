@@ -20,11 +20,9 @@ namespace tao::json
          copy_assigned,
          copy_assigned_from,
          move_assigned,
-         move_assigned_from,
          copy_constructed,
          copy_constructed_from,
          move_constructed,
-         move_constructed_from,
          default_constructed
       };
 
@@ -38,10 +36,7 @@ namespace tao::json
       base( base&& b ) noexcept
          : number( b.number ),
            s( move_constructed )
-      {
-         b.s = move_constructed_from;
-         b.number = 0;
-      }
+      {}
 
       base( const base& b ) noexcept
          : number( b.number ),
@@ -53,9 +48,7 @@ namespace tao::json
       base& operator=( base&& b ) noexcept
       {
          s = move_assigned;
-         b.s = move_assigned_from;
          number = b.number;
-         b.number = 0;
          return *this;
       }
 
@@ -164,9 +157,7 @@ namespace tao::json
          TEST_ASSERT( v.public_base().number == 1 );
          based w = std::move( v );
          TEST_ASSERT( w == 42 );
-         TEST_ASSERT( v.public_base().s == base::move_constructed_from );  // NOLINT
          TEST_ASSERT( w.public_base().s == base::move_constructed );
-         TEST_ASSERT( v.public_base().number == 0 );  // NOLINT
          TEST_ASSERT( w.public_base().number == 1 );
       }
       {
@@ -214,9 +205,7 @@ namespace tao::json
          v = std::move( w );
          TEST_ASSERT( v == true );
          TEST_ASSERT( v.public_base().s == base::move_assigned );
-         TEST_ASSERT( w.public_base().s == base::move_constructed_from );  // NOLINT
          TEST_ASSERT( v.public_base().number == 2 );
-         TEST_ASSERT( w.public_base().number == 0 );  // NOLINT
       }
       {
          counter = 0;
