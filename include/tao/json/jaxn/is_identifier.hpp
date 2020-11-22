@@ -4,6 +4,7 @@
 #ifndef TAO_JSON_JAXN_IS_IDENTIFIER_HPP
 #define TAO_JSON_JAXN_IS_IDENTIFIER_HPP
 
+#include <algorithm>
 #include <cctype>
 #include <string_view>
 
@@ -14,12 +15,7 @@ namespace tao::json::jaxn
       if( v.empty() || ( std::isdigit( v[ 0 ] ) != 0 ) ) {
          return false;
       }
-      for( const auto c : v ) {
-         if( ( std::isalnum( c ) == 0 ) && ( c != '_' ) ) {
-            return false;
-         }
-      }
-      return true;
+      return std::all_of( v.begin(), v.end(), []( const char c ) { return ( std::isalnum( c ) != 0 ) || ( c == '_' ); } );
    }
 
 }  // namespace tao::json::jaxn
