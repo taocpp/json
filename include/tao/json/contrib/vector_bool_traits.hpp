@@ -21,8 +21,8 @@ namespace tao::json
       {
          v.emplace_array();
          v.get_array().reserve( o.size() );
-         for( const auto& e : o ) {
-            v.emplace_back( bool( e ) );
+         for( const auto e : o ) {
+            v.push_back( e );
          }
       }
 
@@ -30,7 +30,7 @@ namespace tao::json
       static void produce( Consumer& c, const std::vector< bool >& o )
       {
          c.begin_array( o.size() );
-         for( const auto& i : o ) {
+         for( const auto i : o ) {
             json::events::produce< Traits >( c, bool( i ) );
             c.element();
          }
