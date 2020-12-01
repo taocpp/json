@@ -277,7 +277,7 @@ namespace tao::json
 
       void skip_value()
       {
-         pegtl::parse< pegtl::must< pegtl::json::value > >( m_input );  // Includes standard JSON right-padding.
+         pegtl::parse< pegtl::must< pegtl::json::value, internal::rules::wss > >( m_input );
       }
 
       [[nodiscard]] auto mark()
