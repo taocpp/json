@@ -6,6 +6,7 @@
 
 #include "../config.hpp"
 
+#include "bump_help.hpp"
 #include "enable_control.hpp"
 #include "failure.hpp"
 #include "one.hpp"
@@ -15,64 +16,61 @@
 
 namespace TAO_JSON_PEGTL_NAMESPACE::internal
 {
-   template< int Eol, typename Char, Char... Cs >
+   template< typename Char, Char... Cs >
    struct ranges_impl;
 
-   template< int Eol, typename Char >
-   struct ranges_impl< Eol, Char >
+   template< typename Char >
+   struct ranges_impl< Char >
    {
-      static constexpr bool can_match_eol = false;
-
-      [[nodiscard]] static bool match( const Char /*unused*/ ) noexcept
+      [[nodiscard]] static constexpr bool test( const Char /*unused*/ ) noexcept
       {
          return false;
       }
    };
 
-   template< int Eol, typename Char, Char Eq >
-   struct ranges_impl< Eol, Char, Eq >
+   template< typename Char, Char Eq >
+   struct ranges_impl< Char, Eq >
    {
-      static constexpr bool can_match_eol = ( Eq == Eol );
-
-      [[nodiscard]] static bool match( const Char c ) noexcept
+      [[nodiscard]] static constexpr bool test( const Char c ) noexcept
       {
          return c == Eq;
       }
    };
 
-   template< int Eol, typename Char, Char Lo, Char Hi, Char... Cs >
-   struct ranges_impl< Eol, Char, Lo, Hi, Cs... >
+   template< typename Char, Char Lo, Char Hi, Char... Cs >
+   struct ranges_impl< Char, Lo, Hi, Cs... >
    {
       static_assert( Lo <= Hi, "invalid range detected" );
 
-      static constexpr bool can_match_eol = ( ( ( Lo <= Eol ) && ( Eol <= Hi ) ) || ranges_impl< Eol, Char, Cs... >::can_match_eol );
-
-      [[nodiscard]] static bool match( const Char c ) noexcept
+      [[nodiscard]] static constexpr bool test( const Char c ) noexcept
       {
-         return ( ( Lo <= c ) && ( c <= Hi ) ) || ranges_impl< Eol, Char, Cs... >::match( c );
+         return ( ( Lo <= c ) && ( c <= Hi ) ) || ranges_impl< Char, Cs... >::test( c );
       }
    };
 
    template< typename Peek, typename Peek::data_t... Cs >
    struct ranges
    {
+      using peek_t = Peek;
+      using data_t = typename Peek::data_t;
+
       using rule_t = ranges;
       using subs_t = empty_list;
 
+      [[nodiscard]] static constexpr bool test( const data_t c ) noexcept
+      {
+         return ranges_impl< data_t, Cs... >::test( c );
+      }
+
       template< int Eol >
-      static constexpr bool can_match_eol = ranges_impl< Eol, typename Peek::data_t, Cs... >::can_match_eol;
+      static constexpr bool can_match_eol = test( Eol );
 
       template< typename ParseInput >
       [[nodiscard]] static bool match( ParseInput& in ) noexcept( noexcept( Peek::peek( in ) ) )
       {
          if( const auto t = Peek::peek( in ) ) {
-            if( ranges_impl< ParseInput::eol_t::ch, typename Peek::data_t, Cs... >::match( t.data ) ) {
-               if constexpr( can_match_eol< ParseInput::eol_t::ch > ) {
-                  in.bump( t.size );
-               }
-               else {
-                  in.bump_in_this_line( t.size );
-               }
+            if( test( t.data ) ) {
+               bump_help< ranges >( in, t.size );
                return true;
             }
          }
