@@ -236,7 +236,7 @@ namespace tao::json::jaxn
 
       void skip_value()
       {
-         pegtl::parse< pegtl::must< pegtl::json::value, json::internal::rules::wss > >( m_input );
+         pegtl::parse< pegtl::disable< pegtl::must< jaxn::internal::rules::sor_value, json::internal::rules::wss > > >( m_input );
       }
 
       [[nodiscard]] auto mark()  // noexcept( noexcept( m_input.template mark< pegtl::rewind_mode::required >() ) )

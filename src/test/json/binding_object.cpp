@@ -150,20 +150,20 @@ namespace tao::json
    };
 
    struct type_4
-      : public type_3
+      : type_3
    {
       int j = 4;
    };
 
    template<>
    struct traits< type_3 >
-      : public binding::object< TAO_JSON_BIND_REQUIRED( "i", &type_3::i ) >
+      : binding::object< TAO_JSON_BIND_REQUIRED( "i", &type_3::i ) >
    {};
 
    template<>
    struct traits< type_4 >
-      : public binding::object< binding::inherit< traits< type_3 > >,
-                                TAO_JSON_BIND_REQUIRED( "j", &type_4::j ) >
+      : binding::object< binding::inherit< traits< type_3 > >,
+                         TAO_JSON_BIND_REQUIRED( "j", &type_4::j ) >
    {};
 
    void unit_test_4()
@@ -179,10 +179,10 @@ namespace tao::json
 
    template<>
    struct traits< type_5 >
-      : public binding::object< TAO_JSON_BIND_REQUIRED_BOOL( "bool", true ),
-                                TAO_JSON_BIND_REQUIRED_SIGNED( "signed", -4 ),
-                                TAO_JSON_BIND_REQUIRED_UNSIGNED( "unsigned", 32 ),
-                                TAO_JSON_BIND_REQUIRED_STRING( "string", "servus" ) >
+      : binding::object< TAO_JSON_BIND_REQUIRED_BOOL( "bool", true ),
+                         TAO_JSON_BIND_REQUIRED_SIGNED( "signed", -4 ),
+                         TAO_JSON_BIND_REQUIRED_UNSIGNED( "unsigned", 32 ),
+                         TAO_JSON_BIND_REQUIRED_STRING( "string", "servus" ) >
    {};
 
    void unit_test_5()
@@ -191,7 +191,27 @@ namespace tao::json
       (void)v.as< type_5 >();
    }
 
-   // TODO: Test with different for_unknown_key.
+   struct type_6
+   {
+      int i;
+   };
+
+   template<>
+   struct traits< type_6 >
+      : binding::basic_object< binding::for_unknown_key::skip,
+                               binding::for_nothing_value::encode,
+                               TAO_JSON_BIND_REQUIRED( "i", &type_6::i ) >
+   {};
+
+   void unit_test_6()
+   {
+      const std::string j = R"({ "a" : [ true, false ], "b" : { "c" : "d", "e" : "f" }, "i" : 42, "j" : 43 })";
+      const type_6 t = json::consume_string< type_6 >( j );
+      TEST_ASSERT( t.i == 42 );
+      const type_6 s = jaxn::consume_string< type_6 >( j );
+      TEST_ASSERT( s.i == 42 );
+   }
+
    // TODO: Test with different for_nothing_value (incl. consistency of size to consumer).
 
    void unit_test()
@@ -201,6 +221,7 @@ namespace tao::json
       unit_test_3();
       unit_test_4();
       unit_test_5();
+      unit_test_6();
    }
 
 }  // namespace tao::json

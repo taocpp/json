@@ -147,7 +147,9 @@ namespace tao::json::internal
                }
             }
             in.bump_in_this_line();
-            Control< zero< NEG > >::template apply0< Action >( in, st... );
+            if constexpr( A == apply_mode::action ) {
+               Control< zero< NEG > >::template apply0< Action >( in, st... );
+            }
             return true;
          }
 

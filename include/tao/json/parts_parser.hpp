@@ -93,6 +93,8 @@ namespace tao::json
             }
          };
 
+         using dumb_string = seq< one< '"' >, until< one< '"' > > >;
+
       }  // namespace rules
 
       template< typename Rule >
@@ -129,6 +131,21 @@ namespace tao::json
          }
 
          double converted = 0.0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.
+      };
+
+      template< typename Rule >
+      struct dumb_string_action
+         : pegtl::nothing< Rule >
+      {};
+
+      template<>
+      struct dumb_string_action< rules::dumb_string >
+      {
+         template< typename Input >
+         static void apply( const Input& in, std::string_view& string )
+         {
+            string = std::string_view( in.begin() + 1, in.size() - 2 );  // The grammar ensures that in contains at least two '"'.
+         }
       };
 
    }  // namespace internal
@@ -191,6 +208,13 @@ namespace tao::json
          return unescaped;
       }
 
+      [[nodiscard]] std::string_view dumb_string()
+      {
+         std::string_view result;
+         pegtl::parse< pegtl::must< internal::rules::dumb_string, internal::rules::wss >, internal::dumb_string_action >( m_input, result );
+         return result;
+      }
+
       [[nodiscard]] std::vector< std::byte > binary()
       {
          throw std::runtime_error( "json format does not support binary" );
@@ -201,6 +225,13 @@ namespace tao::json
          std::string unescaped;
          pegtl::parse< pegtl::must< internal::rules::string, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::unescape_action >( m_input, unescaped );
          return unescaped;
+      }
+
+      [[nodiscard]] std::string_view dumb_key()
+      {
+         std::string_view result;
+         pegtl::parse< pegtl::must< internal::rules::dumb_string, internal::rules::wss, pegtl::one< ':' >, internal::rules::wss >, internal::dumb_string_action >( m_input, result );
+         return result;
       }
 
       template< char C >
@@ -277,7 +308,7 @@ namespace tao::json
 
       void skip_value()
       {
-         pegtl::parse< pegtl::must< pegtl::json::value, internal::rules::wss > >( m_input );
+         pegtl::parse< pegtl::disable< pegtl::must< internal::rules::sor_value, internal::rules::wss > > >( m_input );
       }
 
       [[nodiscard]] auto mark()
