@@ -140,6 +140,7 @@ namespace tao::json::jaxn::internal
 
       struct string_fragment : sor< mqstring< '"' >, mqstring< '\'' >, qstring< '"' >, qstring< '\'' > > {};
 
+      struct single_string : string_fragment {};
       struct string : list_must< string_fragment, value_concat > {};
 
       struct binary_prefix : one< '$' > {};
@@ -192,6 +193,7 @@ namespace tao::json::jaxn::internal
 
       struct binary_fragment : seq< binary_prefix, opt< sor< bstring, bdirect > > > {};
 
+      struct single_binary : binary_fragment {};
       struct binary : list_must< binary_fragment, value_concat > {};
 
       struct value;
@@ -222,10 +224,11 @@ namespace tao::json::jaxn::internal
       template< bool NEG >
       struct zero : one< '0' > {};
 
-      struct sor_value
+      template< typename String, typename Binary >
+      struct sor_value_impl
       {
-         using rule_t = sor_value;
-         using subs_t = pegtl::type_list< string, number< false >, object, array, kw_false, kw_true, kw_null >;
+         using rule_t = sor_value_impl;
+         using subs_t = pegtl::type_list< String, Binary, number< false >, object, array, kw_false, kw_true, kw_null >;
 
          template< typename Rule,
                    apply_mode A,
@@ -319,10 +322,10 @@ namespace tao::json::jaxn::internal
 
             case '"':
             case '\'':
-               return Control< string >::template match< A, M, Action, Control >( in, st... );
+               return Control< String >::template match< A, M, Action, Control >( in, st... );
 
             case '$':
-               return Control< binary >::template match< A, M, Action, Control >( in, st... );
+               return Control< Binary >::template match< A, M, Action, Control >( in, st... );
 
             case '+':
                in.bump_in_this_line();
@@ -358,6 +361,9 @@ namespace tao::json::jaxn::internal
             return false;
          }
       };
+
+      struct sor_single_value : sor_value_impl< single_string, single_binary > {};
+      struct sor_value : sor_value_impl< string, binary > {};
 
       struct value : padr< sor_value > {};
       struct array_element : value {};
