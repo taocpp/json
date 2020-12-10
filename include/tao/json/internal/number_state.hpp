@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <stdexcept>
+#include <utility>
 
 #include "../external/double.hpp"
 
@@ -38,8 +39,8 @@ namespace tao::json::internal
       bool drop = false;
       char mantissa[ max_mantissa_digits + 1 ];
 
-      template< typename Consumer >
-      void success( Consumer& consumer )
+      template< typename Consumer, typename... Arguments >
+      void success( Consumer& consumer, Arguments&&... as )
       {
          if( !isfp && msize <= 20 ) {
             mantissa[ msize ] = 0;
@@ -49,16 +50,16 @@ namespace tao::json::internal
             if( ( errno != ERANGE ) && ( p == mantissa + msize ) ) {
                if constexpr( NEG ) {
                   if( ull < 9223372036854775808ULL ) {
-                     consumer.number( -static_cast< std::int64_t >( ull ) );
+                     consumer.number( -static_cast< std::int64_t >( ull ), std::forward< Arguments >( as )... );
                      return;
                   }
                   if( ull == 9223372036854775808ULL ) {
-                     consumer.number( static_cast< std::int64_t >( -9223372036854775807LL - 1 ) );
+                     consumer.number( static_cast< std::int64_t >( -9223372036854775807LL - 1 ), std::forward< Arguments >( as )... );
                      return;
                   }
                }
                else {
-                  consumer.number( ull );
+                  consumer.number( ull, std::forward< Arguments >( as )... );
                   return;
                }
             }
@@ -71,7 +72,7 @@ namespace tao::json::internal
          if( !std::isfinite( d ) ) {
             throw std::runtime_error( "invalid double value" );
          }
-         consumer.number( NEG ? -d : d );
+         consumer.number( NEG ? -d : d, std::forward< Arguments >( as )... );
       }
    };
 

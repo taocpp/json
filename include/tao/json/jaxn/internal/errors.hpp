@@ -71,6 +71,7 @@ namespace tao::json::jaxn::internal
    template<> inline const char* errors< rules::name_separator >::error_message = "expected ':'";
    template<> inline const char* errors< rules::value >::error_message = "expected value";
    template<> inline const char* errors< rules::sor_value >::error_message = "expected value";
+   template<> inline const char* errors< rules::sor_single_value >::error_message = "expected value";
 
    template<> inline const char* errors< rules::edigits >::error_message = "expected at least one exponent digit";
    template<> inline const char* errors< rules::fdigits >::error_message = "expected at least one fraction digit";
