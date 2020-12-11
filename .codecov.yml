@@ -1,0 +1,4 @@
+ignore:
+  - include/tao/json/external/**/*
+  - src/example/**/*
+  - contrib/**/*
