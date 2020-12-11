@@ -100,13 +100,13 @@ namespace tao
          : m_data( nullptr )
       {}
 
-      constexpr span( pointer ptr, size_type count ) noexcept
+      constexpr span( pointer ptr, [[maybe_unused]] size_type count ) noexcept
          : m_data( ptr )
       {
          assert( count == Extent );
       }
 
-      constexpr span( pointer first, pointer last ) noexcept
+      constexpr span( pointer first, [[maybe_unused]] pointer last ) noexcept
          : m_data( first )
       {
          assert( std::distance( first, last ) == Extent );
