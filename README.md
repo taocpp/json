@@ -1,11 +1,14 @@
 # Welcome to taoJSON
 
-[![Release](https://img.shields.io/github/release/taocpp/json.svg)](https://github.com/taocpp/json/releases/latest)
-[![Download](https://api.bintray.com/packages/conan/conan-center/taocpp-json%3A_/images/download.svg)](https://bintray.com/conan/conan-center/taocpp-json%3A_/_latestVersion)
-[![TravisCI](https://travis-ci.org/taocpp/json.svg)](https://travis-ci.org/taocpp/json)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/json?svg=true)](https://ci.appveyor.com/project/taocpp/json)
-[![Coverage](https://img.shields.io/coveralls/taocpp/json.svg)](https://coveralls.io/github/taocpp/json)
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/taocpp/json.svg)](https://lgtm.com/projects/g/taocpp/json/context:cpp)
+[![Windows CI](https://github.com/taocpp/json/workflows/Windows/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3AWindows)
+[![macOS CI](https://github.com/taocpp/json/workflows/macOS/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3AmacOS)
+[![Linux CI](https://github.com/taocpp/json/workflows/Linux/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3ALinux)
+<br>
+[![clang-analyze](https://github.com/taocpp/json/workflows/clang-analyze/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3Aclang-analyze)
+[![clang-tidy](https://github.com/taocpp/json/workflows/clang-tidy/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3Aclang-tidy)
+[![Sanitizer](https://github.com/taocpp/json/workflows/Sanitizer/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3ASanitizer)
+[![CodeQL](https://github.com/taocpp/json/workflows/CodeQL/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3ACodeQL)
+[![Code Coverage](https://codecov.io/gh/taocpp/json/branch/master/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/json)
 
 taoJSON is a zero-dependency C++ header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, uses an [Events Interface](doc/Events-Interface.md) to convert from and to JSON, JAXN, CBOR, MsgPack and UBJSON, and much more...
 
