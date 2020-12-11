@@ -13,7 +13,6 @@ jobs:
           - gcc8
           - gcc9
           - gcc10
-          - clang50
           - clang60
           - clang7
           - clang8
