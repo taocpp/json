@@ -77,12 +77,6 @@
 #error Target architecture was not detected as supported by Double-Conversion.
 #endif
 
-#if defined(__GNUC__)
-#define TAO_JSON_DOUBLE_CONVERSION_UNUSED __attribute__((unused))
-#else
-#define TAO_JSON_DOUBLE_CONVERSION_UNUSED
-#endif
-
 #if defined(_WIN32) && !defined(__MINGW32__)
 
 typedef signed char int8_t;
@@ -138,8 +132,7 @@ namespace tao::json::double_conversion
 
    template <class Dest, class Source>
    inline Dest BitCast(const Source& source) {
-      TAO_JSON_DOUBLE_CONVERSION_UNUSED
-         typedef char VerifySizesAreEqual[sizeof(Dest) == sizeof(Source) ? 1 : -1];
+      static_assert(sizeof(Dest) == sizeof(Source));
 
       Dest dest;
       std::memmove(&dest, &source, sizeof(dest));
