@@ -206,9 +206,9 @@ namespace tao::json
    void unit_test_6()
    {
       const std::string j = R"({ "a" : [ true, false ], "b" : { "c" : "d", "e" : "f" }, "i" : 42, "j" : 43 })";
-      const type_6 t = json::consume_string< type_6 >( j );
+      const auto t = json::consume_string< type_6 >( j );
       TEST_ASSERT( t.i == 42 );
-      const type_6 s = jaxn::consume_string< type_6 >( j );
+      const auto s = jaxn::consume_string< type_6 >( j );
       TEST_ASSERT( s.i == 42 );
    }
 
