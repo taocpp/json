@@ -4,9 +4,8 @@
 #ifndef TAO_JSON_UBJSON_EVENTS_FROM_FILE_HPP
 #define TAO_JSON_UBJSON_EVENTS_FROM_FILE_HPP
 
-#include <filesystem>
-
 #include "../../external/pegtl/file_input.hpp"
+#include "../../external/pegtl/internal/filesystem.hpp"
 #include "../../external/pegtl/parse.hpp"
 
 #include "../internal/grammar.hpp"
@@ -16,7 +15,7 @@ namespace tao::json::ubjson::events
    // Events producer to parse a file containing a UBJSON string representation.
 
    template< typename Consumer >
-   void from_file( Consumer& consumer, const std::filesystem::path& path )
+   void from_file( Consumer& consumer, const pegtl::internal::filesystem::path& path )
    {
       pegtl::file_input< pegtl::tracking_mode::lazy > in( path );
       pegtl::parse< internal::grammar >( in, consumer );

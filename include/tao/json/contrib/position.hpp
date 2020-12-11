@@ -4,7 +4,6 @@
 #ifndef TAO_JSON_CONTRIB_POSITION_HPP
 #define TAO_JSON_CONTRIB_POSITION_HPP
 
-#include <filesystem>
 #include <ostream>
 #include <string>
 #include <type_traits>
@@ -12,6 +11,7 @@
 
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
+#include "../external/pegtl/internal/filesystem.hpp"
 #include "../from_file.hpp"
 #include "../message_extension.hpp"
 #include "../value.hpp"
@@ -147,7 +147,7 @@ namespace tao::json
    };
 
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   [[nodiscard]] auto basic_from_file_with_position( const std::filesystem::path& path )
+   [[nodiscard]] auto basic_from_file_with_position( const pegtl::internal::filesystem::path& path )
    {
       events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
       pegtl::file_input< pegtl::tracking_mode::eager > in( path );
@@ -156,7 +156,7 @@ namespace tao::json
    }
 
    template< template< typename... > class... Transformers >
-   [[nodiscard]] auto from_file_with_position( const std::filesystem::path& path )
+   [[nodiscard]] auto from_file_with_position( const pegtl::internal::filesystem::path& path )
    {
       return basic_from_file_with_position< make_position_traits< traits >::template type, Transformers... >( path );
    }
