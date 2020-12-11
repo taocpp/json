@@ -13,7 +13,7 @@
 
 [[nodiscard]] std::string get_file_contents( const char* filename )
 {
-   std::ifstream in( filename, std::ios::in | std::ios::binary );
+   std::ifstream in( filename, std::ios::in );
    if( !in.fail() ) {
       std::string contents;
       in.seekg( 0, std::ios::end );
