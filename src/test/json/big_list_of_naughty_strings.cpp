@@ -13,7 +13,7 @@
 
 [[nodiscard]] std::string get_file_contents( const char* filename )
 {
-   std::ifstream in( filename, std::ios::in );
+   std::ifstream in( filename, std::ios::in | std::ios::binary );
    if( !in.fail() ) {
       std::string contents;
       in.seekg( 0, std::ios::end );
@@ -33,7 +33,9 @@ namespace tao::json
       const auto v = from_file( "tests/blns.json" );
       TEST_ASSERT( v.get_array().size() == 494 );
       const auto s = to_string( v, 2 ) + '\n';
+#if !defined( _WIN32 )
       TEST_ASSERT( s == get_file_contents( "tests/blns.json" ) );
+#endif
       const auto v2 = from_string( s );
       TEST_ASSERT( v2 == v );
    }
