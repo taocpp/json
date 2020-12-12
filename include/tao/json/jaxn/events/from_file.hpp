@@ -9,14 +9,14 @@
 #include "../internal/grammar.hpp"
 
 #include "../../external/pegtl/file_input.hpp"
-#include "../../external/pegtl/internal/filesystem.hpp"
+#include "../../internal/filesystem.hpp"
 
 namespace tao::json::jaxn::events
 {
    // Events producer to parse a file containing a JAXN string representation.
 
    template< typename Consumer >
-   void from_file( Consumer& consumer, const pegtl::internal::filesystem::path& path )
+   void from_file( Consumer& consumer, const json::internal::filesystem::path& path )
    {
       pegtl::file_input< pegtl::tracking_mode::lazy > in( path );
       pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );

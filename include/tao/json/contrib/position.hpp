@@ -11,7 +11,8 @@
 
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
-#include "../external/pegtl/internal/filesystem.hpp"
+#include "../internal/filesystem.hpp"
+
 #include "../from_file.hpp"
 #include "../message_extension.hpp"
 #include "../value.hpp"
@@ -94,8 +95,7 @@ namespace tao::json
       template< typename Rule >
       struct position_action
          : action< Rule >
-      {
-      };
+      {};
 
       template<>
       struct position_action< rules::object::begin >
@@ -147,7 +147,7 @@ namespace tao::json
    };
 
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   [[nodiscard]] auto basic_from_file_with_position( const pegtl::internal::filesystem::path& path )
+   [[nodiscard]] auto basic_from_file_with_position( const internal::filesystem::path& path )
    {
       events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
       pegtl::file_input< pegtl::tracking_mode::eager > in( path );
@@ -156,7 +156,7 @@ namespace tao::json
    }
 
    template< template< typename... > class... Transformers >
-   [[nodiscard]] auto from_file_with_position( const pegtl::internal::filesystem::path& path )
+   [[nodiscard]] auto from_file_with_position( const internal::filesystem::path& path )
    {
       return basic_from_file_with_position< make_position_traits< traits >::template type, Transformers... >( path );
    }

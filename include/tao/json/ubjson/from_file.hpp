@@ -8,14 +8,14 @@
 
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
-#include "../external/pegtl/internal/filesystem.hpp"
+#include "../internal/filesystem.hpp"
 
 #include "events/from_file.hpp"
 
 namespace tao::json::ubjson
 {
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   [[nodiscard]] basic_value< Traits > basic_from_file( const pegtl::internal::filesystem::path& path )
+   [[nodiscard]] basic_value< Traits > basic_from_file( const json::internal::filesystem::path& path )
    {
       json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
       events::from_file( consumer, path );
@@ -23,7 +23,7 @@ namespace tao::json::ubjson
    }
 
    template< template< typename... > class... Transformers >
-   [[nodiscard]] value from_file( const pegtl::internal::filesystem::path& path )
+   [[nodiscard]] value from_file( const json::internal::filesystem::path& path )
    {
       return basic_from_file< traits, Transformers... >( path );
    }
