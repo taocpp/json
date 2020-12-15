@@ -9,6 +9,8 @@
 #include "pair_traits.hpp"
 #include "tuple_traits.hpp"
 
+#include "variant_traits.hpp"
+
 #include "pointer_traits.hpp"
 
 #include "array_traits.hpp"
@@ -39,6 +41,11 @@ namespace tao::json
    template< typename... Ts >
    struct traits< std::tuple< Ts... > >
       : tuple_traits< Ts... >
+   {};
+
+   template< typename... Ts >
+   struct traits< std::variant< Ts... > >
+      : variant_traits< Ts... >
    {};
 
    template<>
