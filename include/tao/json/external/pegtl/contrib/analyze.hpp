@@ -22,8 +22,6 @@
 #include "internal/set_stack_guard.hpp"
 #include "internal/vector_stack_guard.hpp"
 
-#include "../internal/dependent_false.hpp"
-
 namespace TAO_JSON_PEGTL_NAMESPACE
 {
    namespace internal
@@ -181,7 +179,7 @@ namespace TAO_JSON_PEGTL_NAMESPACE
    }  // namespace internal
 
    template< typename Grammar >
-   [[nodiscard]] std::size_t analyze( const int verbose = 0 )
+   [[nodiscard]] std::size_t analyze( const int verbose = 1 )
    {
       return internal::analyze_cycles< Grammar >( verbose ).problems();
    }
