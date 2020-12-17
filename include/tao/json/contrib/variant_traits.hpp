@@ -34,7 +34,7 @@ namespace tao::json
    namespace internal
    {
       template< typename Consumer, typename... Ts >
-      using variant_produce_t = void( * )( Consumer&, const std::variant< Ts... >& );
+      using variant_produce_t = void ( * )( Consumer&, const std::variant< Ts... >& );
 
       template< typename Consumer, template< typename... > class Traits, typename... Ts, std::size_t... Is >
       constexpr std::array< variant_produce_t< Consumer, Ts... >, sizeof...( Ts ) > make_variant_produce_array( const std::index_sequence< Is... > /*unused*/ )
