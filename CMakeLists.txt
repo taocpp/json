@@ -23,7 +23,7 @@ option(TAOCPP_JSON_PEGTL_USE_BOOST_FILESYSTEM "Override the auto-detection of st
 # Try compiling a test program with std::filesystem or one of its alternatives
 function(check_filesystem_impl FILESYSTEM_HEADER FILESYSTEM_NAMESPACE OPTIONAL_LIBS OUT_RESULT)
   set(TEST_FILE "test_${OUT_RESULT}.cpp")
-  configure_file(cmake/test_filesystem.cpp.in ${TEST_FILE} @ONLY)
+  configure_file(.cmake/test_filesystem.cpp.in ${TEST_FILE} @ONLY)
 
   try_compile(TEST_RESULT
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -94,6 +94,12 @@ option (TAOCPP_JSON_BUILD_EXAMPLES "Build example programs" ON)
 if (TAOCPP_JSON_BUILD_EXAMPLES)
   add_subdirectory (src/example/json)
 endif ()
+
+# Make package findable
+configure_file(.cmake/taocpp-json-config.cmake.in taocpp-json-config.cmake @ONLY)
+
+# Ignore pointer width differences since this is a header-only library
+unset(CMAKE_SIZEOF_VOID_P)
 
 # install and export target
 install (TARGETS json EXPORT taocpp-json-targets)
