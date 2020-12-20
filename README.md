@@ -19,6 +19,12 @@ taoJSON is a zero-dependency C++ header-only JSON library that provides a generi
 
 *Warning: The documentation is currently not quite keeping pace with what will hopefully be the last large pre-1.0.0 development burst.*
 
+## Contact
+
+<a href="https://discord.gg/VQYkppcgqN"><img align="right" src="https://discordapp.com/api/guilds/790164930083028993/embed.png?style=banner2" alt="Join us on Discord"></a>
+
+For questions and suggestions regarding taoJSON, success or failure stories, and any other kind of feedback, please feel free to join our [Discord](https://discord.gg/VQYkppcgqN) server, open a [discussion](https://github.com/taocpp/json/discussions), an [issue](https://github.com/taocpp/json/issues) or a [pull request](https://github.com/taocpp/json/pulls) on GitHub or contact the authors at `taocpp(at)icemx.net`.
+
 ## Features
 
 * Supported Standards
@@ -71,16 +77,18 @@ You can download and install taoJSON using the [Conan](https://github.com/conan-
 The taocpp-json package in conan is kept up to date by Conan team members and community contributors.
 If the version is out-of-date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the Conan Center Index repository.
 
-## Contact
-
-taoJSON is part of [The Art of C++](https://taocpp.github.io/).
-
-For questions and suggestions about taoJSON please contact the authors at `taocpp(at)icemx.net`.
-
 ## Thank You
 
 * Niels Lohmann and his [JSON library](https://github.com/nlohmann/json) for the inspiration.
 * Milo Yip and his [Native JSON Benchmark] for a reference to measure progress against.
+
+## The Art of C++
+
+taoJSON is part of [The Art of C++](https://taocpp.github.io/).
+
+[<img alt="colinh" src="https://avatars.githubusercontent.com/u/113184" width="120">](https://github.com/colinh)
+[<img alt="d-frey" src="https://avatars.githubusercontent.com/u/3956325" width="120">](https://github.com/d-frey)
+[<img alt="uilianries" src="https://avatars.githubusercontent.com/u/4870173" width="120">](https://github.com/uilianries)
 
 ## License
 
