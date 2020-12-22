@@ -7,7 +7,9 @@
 #include <ciso646>
 #include <string_view>
 
-namespace tao
+#include "config.hpp"
+
+namespace TAO_JSON_PEGTL_NAMESPACE
 {
 #if defined( __clang__ )
 
@@ -133,6 +135,6 @@ namespace tao
 
 #endif
 
-}  // namespace tao
+}  // namespace TAO_JSON_PEGTL_NAMESPACE
 
 #endif
