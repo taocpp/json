@@ -35,7 +35,7 @@ namespace tao::json::binding
                std::rethrow_exception( e );  // TODO: Did I miss a way to avoid the throw?
             }
             catch( ... ) {
-               std::throw_with_nested( std::runtime_error( json::internal::format( "all versions failed for type ", demangle< C >(), " -- see nested for first error" ) ) );
+               std::throw_with_nested( std::runtime_error( json::internal::format( "all versions failed for type ", pegtl::demangle< C >(), " -- see nested for first error" ) ) );
             }
          }
       }
