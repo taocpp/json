@@ -7,7 +7,7 @@ find_program(CLANG_TIDY
 if(CLANG_TIDY)
     if(ENABLE_CLANG_TIDY)
         message(STATUS "set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY})")
-        set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_CMD} CACHE STRING "forced!" FORCE)
+        set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY} CACHE STRING "forced!" FORCE)
     else()
         set(CMAKE_CXX_CLANG_TIDY "" CACHE STRING "forced!" FORCE) # delete it
     endif()
