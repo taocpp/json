@@ -158,45 +158,45 @@ namespace tao
          return *( data() + idx );
       }
 
-      constexpr auto front() const noexcept -> reference
+      constexpr auto front() const noexcept -> reference  // NOLINT(modernize-use-nodiscard)
       {
          assert( Extent != 0 );
          return *data();
       }
 
-      constexpr auto back() const noexcept -> reference
+      constexpr auto back() const noexcept -> reference  // NOLINT(modernize-use-nodiscard)
       {
          assert( Extent != 0 );
          return *( data() + ( Extent - 1 ) );
       }
 
-      constexpr auto data() const noexcept -> pointer
+      constexpr auto data() const noexcept -> pointer  // NOLINT(modernize-use-nodiscard)
       {
          return m_data;
       }
 
-      constexpr auto begin() const noexcept -> iterator
+      constexpr auto begin() const noexcept -> iterator  // NOLINT(modernize-use-nodiscard)
       {
          return data();
       }
 
-      constexpr auto end() const noexcept -> iterator
+      constexpr auto end() const noexcept -> iterator  // NOLINT(modernize-use-nodiscard)
       {
          return data() + Extent;
       }
 
-      constexpr auto rbegin() const noexcept -> reverse_iterator
+      constexpr auto rbegin() const noexcept -> reverse_iterator  // NOLINT(modernize-use-nodiscard)
       {
          return reverse_iterator( end() );
       }
 
-      constexpr auto rend() const noexcept -> reverse_iterator
+      constexpr auto rend() const noexcept -> reverse_iterator  // NOLINT(modernize-use-nodiscard)
       {
          return reverse_iterator( begin() );
       }
 
       template< std::size_t Count >
-      constexpr auto first() const noexcept
+      constexpr auto first() const noexcept  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, Count >
       {
          static_assert( Count <= Extent );
@@ -204,7 +204,7 @@ namespace tao
       }
 
       template< std::size_t Count >
-      constexpr auto last() const noexcept
+      constexpr auto last() const noexcept  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, Count >
       {
          static_assert( Count <= Extent );
@@ -212,7 +212,7 @@ namespace tao
       }
 
       template< std::size_t Offset, std::size_t Count = dynamic_extent >
-      constexpr auto subspan() const
+      constexpr auto subspan() const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, ( ( Count != dynamic_extent ) ? Count : ( Extent - Offset ) ) >
       {
          static_assert( Offset <= Extent );
@@ -220,21 +220,21 @@ namespace tao
          return { data() + Offset, ( Count != dynamic_extent ) ? Count : ( Extent - Offset ) };
       }
 
-      constexpr auto first( size_type count ) const
+      constexpr auto first( size_type count ) const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, dynamic_extent >
       {
          assert( count <= Extent );
          return { data(), count };
       }
 
-      constexpr auto last( size_type count ) const
+      constexpr auto last( size_type count ) const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, dynamic_extent >
       {
          assert( count <= Extent );
          return { data() + Extent - count, count };
       }
 
-      constexpr auto subspan( size_type offset, size_type count = dynamic_extent ) const
+      constexpr auto subspan( size_type offset, size_type count = dynamic_extent ) const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, dynamic_extent >
       {
          assert( offset <= Extent );
@@ -328,51 +328,51 @@ namespace tao
          return size() == 0;
       }
 
-      constexpr auto operator[]( size_type idx ) const noexcept -> reference
+      constexpr auto operator[]( size_type idx ) const noexcept -> reference  // NOLINT(modernize-use-nodiscard)
       {
          assert( idx < size() );
          return *( data() + idx );
       }
 
-      constexpr auto front() const noexcept -> reference
+      constexpr auto front() const noexcept -> reference  // NOLINT(modernize-use-nodiscard)
       {
          assert( !empty() );
          return *data();
       }
 
-      constexpr auto back() const noexcept -> reference
+      constexpr auto back() const noexcept -> reference  // NOLINT(modernize-use-nodiscard)
       {
          assert( !empty() );
          return *( data() + ( size() - 1 ) );
       }
 
-      constexpr auto data() const noexcept -> pointer
+      constexpr auto data() const noexcept -> pointer  // NOLINT(modernize-use-nodiscard)
       {
          return m_data;
       }
 
-      constexpr auto begin() const noexcept -> iterator
+      constexpr auto begin() const noexcept -> iterator  // NOLINT(modernize-use-nodiscard)
       {
          return data();
       }
 
-      constexpr auto end() const noexcept -> iterator
+      constexpr auto end() const noexcept -> iterator  // NOLINT(modernize-use-nodiscard)
       {
          return data() + size();
       }
 
-      constexpr auto rbegin() const noexcept -> reverse_iterator
+      constexpr auto rbegin() const noexcept -> reverse_iterator  // NOLINT(modernize-use-nodiscard)
       {
          return reverse_iterator( end() );
       }
 
-      constexpr auto rend() const noexcept -> reverse_iterator
+      constexpr auto rend() const noexcept -> reverse_iterator  // NOLINT(modernize-use-nodiscard)
       {
          return reverse_iterator( begin() );
       }
 
       template< std::size_t Count >
-      constexpr auto first() const noexcept
+      constexpr auto first() const noexcept  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, Count >
       {
          assert( Count <= size() );
@@ -380,7 +380,7 @@ namespace tao
       }
 
       template< std::size_t Count >
-      constexpr auto last() const noexcept
+      constexpr auto last() const noexcept  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, Count >
       {
          assert( Count <= size() );
@@ -388,7 +388,7 @@ namespace tao
       }
 
       template< std::size_t Offset, std::size_t Count = dynamic_extent >
-      constexpr auto subspan() const
+      constexpr auto subspan() const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, ( ( Count != dynamic_extent ) ? Count : dynamic_extent ) >
       {
          assert( Offset <= size() );
@@ -396,21 +396,21 @@ namespace tao
          return { data() + Offset, ( Count != dynamic_extent ) ? Count : ( size() - Offset ) };
       }
 
-      constexpr auto first( size_type count ) const
+      constexpr auto first( size_type count ) const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, dynamic_extent >
       {
          assert( count <= size() );
          return { data(), count };
       }
 
-      constexpr auto last( size_type count ) const
+      constexpr auto last( size_type count ) const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, dynamic_extent >
       {
          assert( count <= size() );
          return { data() + size() - count, count };
       }
 
-      constexpr auto subspan( size_type offset, size_type count = dynamic_extent ) const
+      constexpr auto subspan( size_type offset, size_type count = dynamic_extent ) const  // NOLINT(modernize-use-nodiscard)
          -> span< element_type, dynamic_extent >
       {
          assert( offset <= size() );
@@ -424,14 +424,14 @@ namespace tao
    };
 
    template< typename ElementType, std::size_t Extent >
-   auto as_bytes( span< ElementType, Extent > s ) noexcept
+   auto as_bytes( span< ElementType, Extent > s ) noexcept  // NOLINT(modernize-use-nodiscard)
       -> span< const std::byte, ( ( Extent == dynamic_extent ) ? dynamic_extent : ( sizeof( ElementType ) * Extent ) ) >
    {
       return { reinterpret_cast< const std::byte* >( s.data() ), s.size_bytes() };
    }
 
    template< typename ElementType, std::size_t Extent, typename = std::enable_if_t< !std::is_const_v< ElementType > > >
-   auto as_writable_bytes( span< ElementType, Extent > s ) noexcept
+   auto as_writable_bytes( span< ElementType, Extent > s ) noexcept  // NOLINT(modernize-use-nodiscard)
       -> span< std::byte, ( ( Extent == dynamic_extent ) ? dynamic_extent : ( sizeof( ElementType ) * Extent ) ) >
    {
       return { reinterpret_cast< std::byte* >( s.data() ), s.size_bytes() };
@@ -483,7 +483,7 @@ namespace std
 
    // TODO: this is probably illegal. keep it?
    template< size_t I, typename ElementType, size_t Extent >
-   constexpr auto get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&
+   constexpr auto get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&  // NOLINT(modernize-use-nodiscard)
    {
       static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
       return s[ I ];

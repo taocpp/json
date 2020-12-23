@@ -919,12 +919,12 @@ namespace tao::json
          throw internal::invalid_type( b, std::next( e ) );
       }
 
-      variant_t& variant() noexcept
+      [[nodiscard]] variant_t& variant() noexcept
       {
          return m_variant;
       }
 
-      const variant_t& variant() const noexcept
+      [[nodiscard]] const variant_t& variant() const noexcept
       {
          return m_variant;
       }
