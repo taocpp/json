@@ -29,4 +29,4 @@ CheckOptions:
   - { key: readability-identifier-naming.StructCase,    value: aNy_CasE   } # PEGTL rules
   - { key: readability-identifier-naming.VariableCase,  value: lower_case }
 
-WarningsAsErrors: '*'
+WarningsAsErrors: ''

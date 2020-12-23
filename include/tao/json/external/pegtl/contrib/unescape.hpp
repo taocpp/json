@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2020 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_CONTRIB_UNESCAPE_HPP
-#define TAO_JSON_PEGTL_CONTRIB_UNESCAPE_HPP
+#ifndef TAO_JSON_EXTERNAL_PEGTL_CONTRIB_UNESCAPE_HPP
+#define TAO_JSON_EXTERNAL_PEGTL_CONTRIB_UNESCAPE_HPP
 
 #include <cassert>
 #include <string>

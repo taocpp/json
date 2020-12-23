@@ -1,8 +1,8 @@
 // Copyright (c) 2014-2020 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/PEGTL/
 
-#ifndef TAO_JSON_PEGTL_CONTRIB_JSON_HPP
-#define TAO_JSON_PEGTL_CONTRIB_JSON_HPP
+#ifndef TAO_JSON_EXTERNAL_PEGTL_CONTRIB_JSON_HPP
+#define TAO_JSON_EXTERNAL_PEGTL_CONTRIB_JSON_HPP
 
 #include "../ascii.hpp"
 #include "../config.hpp"
