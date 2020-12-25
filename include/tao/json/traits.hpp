@@ -29,7 +29,7 @@
 #include "internal/string_t.hpp"
 #include "internal/type_traits.hpp"
 
-#include "external/pegtl/internal/pegtl_string.hpp"
+#include "tao/pegtl/internal/pegtl_string.hpp"
 
 #define TAO_JSON_DEFAULT_KEY( x )                   \
    template< template< typename... > class Traits > \

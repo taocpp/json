@@ -4,8 +4,8 @@
 #ifndef TAO_JSON_JAXN_INTERNAL_UNESCAPE_ACTION_HPP
 #define TAO_JSON_JAXN_INTERNAL_UNESCAPE_ACTION_HPP
 
-#include "../../external/pegtl/contrib/unescape.hpp"
-#include "../../external/pegtl/nothing.hpp"
+#include "tao/pegtl/contrib/unescape.hpp"
+#include "tao/pegtl/nothing.hpp"
 
 #include "grammar.hpp"
 

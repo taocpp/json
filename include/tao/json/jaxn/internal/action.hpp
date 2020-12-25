@@ -9,7 +9,7 @@
 #include <utility>
 #include <vector>
 
-#include "../../external/pegtl/nothing.hpp"
+#include "tao/pegtl/nothing.hpp"
 
 #include "../../internal/number_state.hpp"
 #include "../../internal/parse_util.hpp"

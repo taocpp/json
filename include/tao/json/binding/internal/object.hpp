@@ -18,10 +18,10 @@
 #include "../../forward.hpp"
 
 #include "../../basic_value.hpp"
-#include "../../external/pegtl/demangle.hpp"
 #include "../../internal/escape.hpp"
 #include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"
+#include "tao/pegtl/demangle.hpp"
 
 #ifdef _MSC_VER
 #pragma warning( push )

@@ -7,7 +7,7 @@
 #include <string>
 #include <string_view>
 
-#include "../external/pegtl/internal/pegtl_string.hpp"
+#include "tao/pegtl/internal/pegtl_string.hpp"
 
 namespace tao::json::internal
 {

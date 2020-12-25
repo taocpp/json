@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <typeinfo>
 
-#include "../external/pegtl/type_list.hpp"
+#include "tao/pegtl/type_list.hpp"
 #include "../forward.hpp"
 
 namespace tao::json::internal

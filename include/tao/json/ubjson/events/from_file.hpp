@@ -4,8 +4,8 @@
 #ifndef TAO_JSON_UBJSON_EVENTS_FROM_FILE_HPP
 #define TAO_JSON_UBJSON_EVENTS_FROM_FILE_HPP
 
-#include "../../external/pegtl/file_input.hpp"
-#include "../../external/pegtl/parse.hpp"
+#include "tao/pegtl/file_input.hpp"
+#include "tao/pegtl/parse.hpp"
 #include "../../internal/filesystem.hpp"
 
 #include "../internal/grammar.hpp"

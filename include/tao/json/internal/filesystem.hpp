@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_INTERNAL_FILESYSTEM_HPP
 #define TAO_JSON_INTERNAL_FILESYSTEM_HPP
 
-#include "../external/pegtl/internal/filesystem.hpp"
+#include "tao/pegtl/internal/filesystem.hpp"
 
 namespace tao::json::internal
 {

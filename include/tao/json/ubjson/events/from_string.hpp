@@ -7,7 +7,7 @@
 #include <string>
 #include <string_view>
 
-#include "../../external/pegtl/memory_input.hpp"
+#include "tao/pegtl/memory_input.hpp"
 
 #include "from_input.hpp"
 

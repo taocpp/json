@@ -4,10 +4,10 @@
 #ifndef TAO_JSON_UTF8_HPP
 #define TAO_JSON_UTF8_HPP
 
-#include "external/pegtl/memory_input.hpp"
-#include "external/pegtl/parse.hpp"
-#include "external/pegtl/rules.hpp"
-#include "external/pegtl/utf8.hpp"
+#include "tao/pegtl/memory_input.hpp"
+#include "tao/pegtl/parse.hpp"
+#include "tao/pegtl/rules.hpp"
+#include "tao/pegtl/utf8.hpp"
 
 namespace tao::json
 {

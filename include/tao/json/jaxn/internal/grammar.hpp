@@ -6,8 +6,8 @@
 
 #include <cctype>
 
-#include "../../external/pegtl.hpp"
-#include "../../external/pegtl/contrib/abnf.hpp"
+#include "tao/pegtl.hpp"
+#include "tao/pegtl/contrib/abnf.hpp"
 
 namespace tao::json::jaxn::internal
 {

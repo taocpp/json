@@ -23,8 +23,8 @@
 #include "../pointer.hpp"
 #include "../value.hpp"
 
-#include "../external/pegtl/contrib/uri.hpp"
-#include "../external/pegtl/parse.hpp"
+#include "tao/pegtl/contrib/uri.hpp"
+#include "tao/pegtl/parse.hpp"
 
 namespace tao::json
 {

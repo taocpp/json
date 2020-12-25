@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_JAXN_CONSUME_FILE_HPP
 #define TAO_JSON_JAXN_CONSUME_FILE_HPP
 
-#include "../external/pegtl/file_input.hpp"
+#include "tao/pegtl/file_input.hpp"
 #include "../internal/filesystem.hpp"
 
 #include "../consume.hpp"

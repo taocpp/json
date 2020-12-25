@@ -7,7 +7,7 @@
 #include <string>
 #include <utility>
 
-#include "../external/pegtl/nothing.hpp"
+#include "tao/pegtl/nothing.hpp"
 
 #include "grammar.hpp"
 #include "number_state.hpp"
