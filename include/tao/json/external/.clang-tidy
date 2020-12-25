@@ -1,0 +1,9 @@
+# prevent strict checks
+Checks: >-
+  -*,
+  cert-*,
+  portability-*,
+  performance-*,
+
+WarningsAsErrors: ''
+
