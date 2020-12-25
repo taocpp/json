@@ -11,14 +11,17 @@ set(TAOCPP_JSON_INSTALL_CMAKE_DIR "share/taocpp-json/cmake" CACHE STRING "The in
 include(FetchContent)
 # ============================================================
 
-find_package(PEGTL CONFIG)
+find_package(PEGTL 3.2 CONFIG)
 if(NOT PEGTL_CONFIG)
   # NOTE: many clang-tidy warnings! CK
   message(WARNING "Try to build cereal with FetchContent ...")
+  option(PEGTL_BUILD_TESTS "Build test programs" OFF)
+  option(PEGTL_BUILD_EXAMPLES "Build example programs" OFF)
+
   fetchcontent_declare(
     PEGTL
     GIT_REPOSITORY https://github.com/taocpp/PEGTL.git
-    GIT_TAG        0cc3128e07734fb72e23e2eeee70b9f1fc13ca5f # XXX 3.1.0
+    GIT_TAG        0cc3128e07734fb72e23e2eeee70b9f1fc13ca5f # TODO 3.2.0
   )
   fetchcontent_makeavailable(PEGTL)
 endif()
@@ -32,9 +35,11 @@ target_include_directories(json INTERFACE
   $<INSTALL_INTERFACE:${TAOCPP_JSON_INSTALL_INCLUDE_DIR}>
 )
 
+target_link_libraries(json INTERFACE taocpp::pegtl)
+target_compile_definitions(json INTERFACE TAO_PEGTL_NAMESPACE=tao::json::pegtl)
+
 # require C++17
 target_compile_features(json INTERFACE cxx_std_17)
-target_link_libraries(json INTERFACE taocpp::pegtl)
 
 option(TAOCPP_JSON_PEGTL_USE_BOOST_FILESYSTEM "Override the auto-detection of std::filesystem and use Boost.Filesystem" OFF)
 

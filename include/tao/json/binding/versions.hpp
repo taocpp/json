@@ -9,9 +9,10 @@
 
 #include "../forward.hpp"
 
+#include "tao/pegtl/demangle.hpp"
+
 #include "../internal/format.hpp"
 #include "../internal/type_traits.hpp"
-#include "tao/pegtl/demangle.hpp"
 
 namespace tao::json::binding
 {

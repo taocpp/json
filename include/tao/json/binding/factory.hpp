@@ -13,11 +13,13 @@
 #include "../forward.hpp"
 
 #include "../basic_value.hpp"
+
+#include "tao/pegtl/demangle.hpp"
+#include "tao/pegtl/internal/pegtl_string.hpp"
+
 #include "../internal/escape.hpp"
 #include "../internal/format.hpp"
 #include "../internal/string_t.hpp"
-#include "tao/pegtl/demangle.hpp"
-#include "tao/pegtl/internal/pegtl_string.hpp"
 
 #include "internal/type_key.hpp"
 

@@ -8,7 +8,9 @@
 #include <optional>
 
 #include "../events/discard.hpp"
+
 #include "tao/pegtl/string_input.hpp"
+
 #include "../utf8.hpp"
 
 #include "internal/grammar.hpp"

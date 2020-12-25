@@ -345,7 +345,7 @@ namespace tao::json::double_conversion
          return;
       }
       if (used_digits_ == 0) return;
-      assert(kDoubleChunkSize >= kBigitSize + 32 + 1);
+      static_assert(kDoubleChunkSize >= kBigitSize + 32 + 1, "");
       DoubleChunk carry = 0;
       for (int i = 0; i < used_digits_; ++i) {
          DoubleChunk product = static_cast<DoubleChunk>(factor) * bigits_[i] + carry;
@@ -366,7 +366,7 @@ namespace tao::json::double_conversion
          Zero();
          return;
       }
-      assert(kBigitSize < 32);
+      static_assert(kBigitSize < 32, "");
       uint64_t carry = 0;
       uint64_t low = factor & 0xFFFFFFFF;
       uint64_t high = factor >> 32;
@@ -1138,7 +1138,7 @@ namespace tao::json::double_conversion
    inline DiyFp AdjustmentPowerOfTen(int exponent) {
       assert(0 < exponent);
       assert(exponent < PowersOfTenCache::kDecimalExponentDistance);
-      assert(PowersOfTenCache::kDecimalExponentDistance == 8);
+      static_assert(PowersOfTenCache::kDecimalExponentDistance == 8, "");
       switch (exponent) {
          case 1: return DiyFp(TAO_JSON_UINT64_2PART_C(0xa0000000, 00000000), -60);
          case 2: return DiyFp(TAO_JSON_UINT64_2PART_C(0xc8000000, 00000000), -57);
@@ -1183,7 +1183,7 @@ namespace tao::json::double_conversion
          DiyFp adjustment_power = AdjustmentPowerOfTen(adjustment_exponent);
          input.Multiply(adjustment_power);
          if (kMaxUint64DecimalDigits - buffer.length() >= adjustment_exponent) {
-            assert(DiyFp::kSignificandSize == 64);
+            static_assert(DiyFp::kSignificandSize == 64, "");
          } else {
             error += kDenominator / 2;
          }
@@ -1212,7 +1212,7 @@ namespace tao::json::double_conversion
          error = (error >> shift_amount) + 1 + kDenominator;
          precision_digits_count -= shift_amount;
       }
-      assert(DiyFp::kSignificandSize == 64);
+      static_assert(DiyFp::kSignificandSize == 64, "");
       assert(precision_digits_count < 64);
       uint64_t one64 = 1;
       uint64_t precision_bits_mask = (one64 << precision_digits_count) - 1;
@@ -1239,7 +1239,7 @@ namespace tao::json::double_conversion
       assert(buffer.length() + exponent <= kMaxDecimalPower + 1);
       assert(buffer.length() + exponent > kMinDecimalPower);
       assert(buffer.length() <= kMaxSignificantDecimalDigits);
-      assert(((kMaxDecimalPower + 1) * 333 / 100) < Bignum::kMaxSignificantBits);
+      static_assert(((kMaxDecimalPower + 1) * 333 / 100) < Bignum::kMaxSignificantBits, "");
       Bignum buffer_bignum;
       Bignum diy_fp_bignum;
       buffer_bignum.AssignDecimalString(buffer);
