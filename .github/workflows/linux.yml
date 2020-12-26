@@ -12,6 +12,7 @@ jobs:
           - g++-8
           - g++-9
           - g++-10
+          - clang++-6.0
           - clang++-8
           - clang++-9
           - clang++-10
@@ -65,7 +66,7 @@ jobs:
     - working-directory: build/
       run: ctest --output-on-failure
 
-  linux-clang-6:
+  linux-clang-old:
     strategy:
       fail-fast: false
       matrix:
@@ -82,7 +83,7 @@ jobs:
 
     - working-directory: build/
       env:
-        CXX: clang++-6
+        CXX: clang++-6.0
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - working-directory: build/
