@@ -15,7 +15,7 @@ jobs:
 
     - working-directory: build/
       env:
-        CXX: "-coverage"
+        CXX_FLAGS: "-coverage"
       run: cmake $GITHUB_WORKSPACE
 
     - working-directory: build/
