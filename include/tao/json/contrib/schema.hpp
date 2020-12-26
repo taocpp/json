@@ -15,6 +15,9 @@
 #include <string>
 #include <type_traits>
 
+#include <tao/pegtl.hpp>
+#include <tao/pegtl/contrib/uri.hpp>
+
 #include "reference.hpp"
 
 #include "../events/compare.hpp"
@@ -22,9 +25,6 @@
 #include "../events/hash.hpp"
 #include "../pointer.hpp"
 #include "../value.hpp"
-
-#include "../external/pegtl/contrib/uri.hpp"
-#include "../external/pegtl/parse.hpp"
 
 namespace tao::json
 {

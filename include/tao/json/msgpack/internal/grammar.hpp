@@ -8,8 +8,9 @@
 #include <cstdint>
 #include <string_view>
 
+#include <tao/pegtl.hpp>
+
 #include "../../binary_view.hpp"
-#include "../../external/pegtl.hpp"
 #include "../../internal/format.hpp"
 #include "../../internal/parse_util.hpp"
 #include "../../utf8.hpp"

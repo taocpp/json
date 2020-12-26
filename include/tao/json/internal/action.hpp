@@ -7,7 +7,10 @@
 #include <string>
 #include <utility>
 
-#include "../external/pegtl/nothing.hpp"
+#include <tao/pegtl/change_action_and_states.hpp>
+#include <tao/pegtl/change_states.hpp>
+#include <tao/pegtl/nothing.hpp>
+#include <tao/pegtl/parse_error.hpp>
 
 #include "grammar.hpp"
 #include "number_state.hpp"

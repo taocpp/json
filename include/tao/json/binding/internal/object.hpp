@@ -11,6 +11,8 @@
 #include <string>
 #include <utility>
 
+#include <tao/pegtl/demangle.hpp>
+
 #include "../for_nothing_value.hpp"
 #include "../for_unknown_key.hpp"
 #include "../member_kind.hpp"
@@ -18,7 +20,6 @@
 #include "../../forward.hpp"
 
 #include "../../basic_value.hpp"
-#include "../../external/pegtl/demangle.hpp"
 #include "../../internal/escape.hpp"
 #include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"

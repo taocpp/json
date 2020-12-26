@@ -6,8 +6,8 @@
 
 #include <istream>
 
-#include "../../external/pegtl/internal/istream_reader.hpp"
-#include "../../external/pegtl/parse.hpp"
+#include <tao/pegtl/istream_input.hpp>
+#include <tao/pegtl/parse.hpp>
 
 #include "../internal/action.hpp"
 #include "../internal/errors.hpp"

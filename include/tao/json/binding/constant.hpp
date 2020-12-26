@@ -7,7 +7,6 @@
 #include <cstdint>
 #include <string>
 
-#include "../external/pegtl/internal/pegtl_string.hpp"
 #include "../internal/escape.hpp"
 #include "../internal/format.hpp"
 #include "../internal/string_t.hpp"

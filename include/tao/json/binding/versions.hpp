@@ -7,9 +7,10 @@
 #include <exception>
 #include <stdexcept>
 
+#include <tao/pegtl/demangle.hpp>
+
 #include "../forward.hpp"
 
-#include "../external/pegtl/demangle.hpp"
 #include "../internal/format.hpp"
 #include "../internal/type_traits.hpp"
 
