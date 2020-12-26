@@ -18,7 +18,8 @@ jobs:
 
     - run: cmake -E make_directory build
 
-    - working-directory: build/
+    - shell: bash
+      working-directory: build/
       run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019"
 
     - working-directory: build/
@@ -42,7 +43,8 @@ jobs:
 
     - run: cmake -E make_directory build
 
-    - working-directory: build/
+    - shell: bash
+      working-directory: build/
       run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -T ClangCL
 
     - working-directory: build/
@@ -69,7 +71,8 @@ jobs:
 
     - run: cmake -E make_directory build
 
-    - working-directory: build/
+    - shell: bash
+      working-directory: build/
       run: cmake $GITHUB_WORKSPACE -G "${{ matrix.visual_studio }}"
 
     - working-directory: build/
