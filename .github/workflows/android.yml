@@ -3,16 +3,16 @@ name: Android
 on: [push, pull_request]
 
 jobs:
-  build:
+  android:
     strategy:
       fail-fast: false
       matrix:
         image:
           - r22
-        android_platform:
+        platform:
           - android-27
           - android-29
-        android_abi:
+        abi:
           - armeabi-v7a
           - arm64-v8a
         build_type: [Debug, Release]
@@ -28,6 +28,6 @@ jobs:
         with:
           submodules: recursive
 
-      - run: cmake -H$GITHUB_WORKSPACE -B/home/developer/build -GNinja -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=${{ matrix.android_abi }} -DANDROID_PLATFORM=${{ matrix.android_platform }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+      - run: cmake -H$GITHUB_WORKSPACE -B/home/developer/build -GNinja -DCMAKE_TOOLCHAIN_FILE=$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake -DANDROID_ABI=${{ matrix.abi }} -DANDROID_PLATFORM=${{ matrix.platform }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
       - run: cmake --build /home/developer/build

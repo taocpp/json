@@ -4,9 +4,6 @@ on: [push, pull_request]
 
 jobs:
   clang-analyze:
-    strategy:
-      fail-fast: false
-
     runs-on: ubuntu-20.04
 
     steps:
@@ -14,7 +11,7 @@ jobs:
       with:
         submodules: recursive
 
-    - run: sudo apt-get update && sudo apt-get install -yq clang-tools
+    - run: sudo apt-get install -yq clang-tools
 
     - run: scan-build cmake -E make_directory build
 
