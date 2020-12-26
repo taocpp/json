@@ -3,7 +3,7 @@ name: Sanitizer
 on: [push, pull_request]
 
 jobs:
-  linux:
+  sanitizer:
     strategy:
       fail-fast: false
       matrix:
@@ -17,19 +17,16 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Create Build Environment
-      run: cmake -E make_directory build
+    - run: cmake -E make_directory build
 
-    - name: Configure
-      working-directory: build/
+    - working-directory: build/
       env:
         CXX: ${{ matrix.cxx }}
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }}"
+        CXX_FLAGS: "-fsanitize=${{ matrix.sanitizer }}"
+      run: cmake $GITHUB_WORKSPACE
 
-    - name: Build
-      working-directory: build/
+    - working-directory: build/
       run: cmake --build .
 
-    - name: Test
-      working-directory: build/
+    - working-directory: build/
       run: ctest --output-on-failure

@@ -14,16 +14,12 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install clang-tools
-      run: sudo apt-get update && sudo apt-get install -yq clang-tools
+    - run: sudo apt-get update && sudo apt-get install -yq clang-tools
 
-    - name: Create Build Environment
-      run: scan-build cmake -E make_directory build
+    - run: scan-build cmake -E make_directory build
 
-    - name: Configure
-      working-directory: build/
+    - working-directory: build/
       run: scan-build cmake $GITHUB_WORKSPACE
 
-    - name: Build
-      working-directory: build/
+    - working-directory: build/
       run: scan-build cmake --build .

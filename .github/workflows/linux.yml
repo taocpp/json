@@ -24,21 +24,17 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Create Build Environment
-      run: cmake -E make_directory build
+    - run: cmake -E make_directory build
 
-    - name: Configure
-      working-directory: build/
+    - working-directory: build/
       env:
         CXX: ${{ matrix.compiler }}
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
-    - name: Build
-      working-directory: build/
+    - working-directory: build/
       run: cmake --build .
 
-    - name: Test
-      working-directory: build/
+    - working-directory: build/
       run: ctest --output-on-failure
 
   linux-clang-extra:
@@ -54,20 +50,16 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Create Build Environment
-      run: cmake -E make_directory build
+    - run: cmake -E make_directory build
 
-    - name: Configure
-      working-directory: build/
+    - working-directory: build/
       env:
-        CXX: clang++-10
+        CXX: clang++
         CXX_FLAGS: "-fms-extensions"
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.flags }}"
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
-    - name: Build
-      working-directory: build/
+    - working-directory: build/
       run: cmake --build .
 
-    - name: Test
-      working-directory: build/
+    - working-directory: build/
       run: ctest --output-on-failure
