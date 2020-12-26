@@ -2,11 +2,11 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include <tao/json.hpp>
-#include <tao/json/external/pegtl/contrib/json.hpp>
+#include <tao/pegtl/contrib/json.hpp>
 
 #include "bench_mark.hpp"
 
-namespace pegtl = tao::json::pegtl;
+namespace pegtl = tao::pegtl;
 
 // clang-format off
 

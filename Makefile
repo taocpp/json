@@ -29,7 +29,7 @@ endif
 # Ensure strict standard compliance and no warnings, can be
 # changed if desired.
 
-CPPFLAGS ?= -pedantic
+CPPFLAGS ?= -pedantic -Iinclude -Iexternal/PEGTL/include
 CXXFLAGS ?= -Wall -Wextra -Wshadow -Werror -O3 $(MINGW_CXXFLAGS)
 
 HEADERS := $(shell find include -name '*.hpp')
@@ -56,10 +56,10 @@ clean:
 
 build/%.d: %.cpp Makefile
 	@mkdir -p $(@D)
-	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) -MM -MQ $@ $< -o $@
+	$(CXX) $(CXXSTD) $(CPPFLAGS) -MM -MQ $@ $< -o $@
 
 build/%: %.cpp build/%.d
-	$(CXX) $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) $< $(LDFLAGS) -o $@
+	$(CXX) $(CXXSTD) $(CPPFLAGS) $(CXXFLAGS) $< $(LDFLAGS) -o $@
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)
 -include $(DEPENDS)
