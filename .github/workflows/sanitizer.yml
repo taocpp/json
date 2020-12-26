@@ -7,14 +7,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [gcc10, clang11]
         sanitizer: [address, undefined]
 
     runs-on: ubuntu-latest
-
-    container:
-      image: conanio/${{ matrix.image }}
-      options: --user root
 
     steps:
     - uses: actions/checkout@v2
