@@ -6,6 +6,9 @@ jobs:
   code-coverage:
     runs-on: ubuntu-latest
 
+    env:
+      CXX_FLAGS: "-coverage"
+
     steps:
     - uses: actions/checkout@v2
       with:
@@ -14,8 +17,6 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      env:
-        CXX_FLAGS: "-coverage"
       run: cmake $GITHUB_WORKSPACE
 
     - working-directory: build/

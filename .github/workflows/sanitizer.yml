@@ -12,6 +12,10 @@ jobs:
 
     runs-on: ubuntu-20.04
 
+    env:
+      CXX: ${{ matrix.cxx }}
+      CXX_FLAGS: "-fsanitize=${{ matrix.sanitizer }}"
+
     steps:
     - uses: actions/checkout@v2
       with:
@@ -20,9 +24,6 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      env:
-        CXX: ${{ matrix.cxx }}
-        CXX_FLAGS: "-fsanitize=${{ matrix.sanitizer }}"
       run: cmake $GITHUB_WORKSPACE
 
     - working-directory: build/
