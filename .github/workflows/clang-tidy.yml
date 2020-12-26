@@ -11,6 +11,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: recursive
 
     - name: Install clang-tidy-10
       run: sudo apt-get update && sudo apt-get install -yq clang-tidy-10
