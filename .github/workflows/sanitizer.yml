@@ -24,7 +24,7 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE
+      run: cmake $GITHUB_WORKSPACE -DTAOCPP_JSON_BUILD_EXAMPLES=OFF
 
     - working-directory: build/
       run: cmake --build .
