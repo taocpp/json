@@ -76,6 +76,7 @@ jobs:
 
     env:
       CXX: clang++-6.0
+      CXX_FLAGS: "-stdlib=c++"
 
     steps:
     - uses: actions/checkout@v2
