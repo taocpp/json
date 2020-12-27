@@ -13,7 +13,6 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-        fetch-depth: 2
 
     - run: cmake -E make_directory build
 
