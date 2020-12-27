@@ -70,13 +70,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler: [clang++-5.0, clang++-6.0, clang++-7]
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-16.04
 
     env:
-      CXX: ${{ matrix.compiler }}
+      CXX: clang++-6.0
 
     steps:
     - uses: actions/checkout@v2
