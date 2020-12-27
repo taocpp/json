@@ -6,19 +6,15 @@ jobs:
   code-coverage:
     runs-on: ubuntu-latest
 
-    env:
-      CXX_FLAGS: "-coverage"
-
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
-        fetch-depth: 2
 
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DTAOCPP_JSON_BUILD_EXAMPLES=OFF
+      run: cmake $GITHUB_WORKSPACE -DTAOCPP_JSON_BUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="-coverage"
 
     - working-directory: build/
       run: cmake --build .
