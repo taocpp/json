@@ -6,7 +6,8 @@
 
 #include <cassert>
 
-#include "../external/pegtl/parse_error.hpp"
+#include <tao/pegtl/parse_error.hpp>
+
 #include "../utf8.hpp"
 
 #include "endian.hpp"

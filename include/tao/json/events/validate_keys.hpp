@@ -9,7 +9,8 @@
 #include <string_view>
 #include <utility>
 
-#include "../external/pegtl.hpp"
+#include <tao/pegtl/memory_input.hpp>
+#include <tao/pegtl/parse.hpp>
 
 namespace tao::json::events
 {

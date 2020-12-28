@@ -6,7 +6,7 @@
 
 #include <utility>
 
-#include "../../external/pegtl/parse.hpp"
+#include <tao/pegtl/parse.hpp>
 
 #include "../internal/action.hpp"
 #include "../internal/errors.hpp"

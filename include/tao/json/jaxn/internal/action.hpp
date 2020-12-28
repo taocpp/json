@@ -9,7 +9,10 @@
 #include <utility>
 #include <vector>
 
-#include "../../external/pegtl/nothing.hpp"
+#include <tao/pegtl/change_action_and_states.hpp>
+#include <tao/pegtl/change_states.hpp>
+#include <tao/pegtl/nothing.hpp>
+#include <tao/pegtl/parse_error.hpp>
 
 #include "../../internal/number_state.hpp"
 #include "../../internal/parse_util.hpp"

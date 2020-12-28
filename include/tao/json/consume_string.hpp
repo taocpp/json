@@ -4,7 +4,7 @@
 #ifndef TAO_JSON_CONSUME_STRING_HPP
 #define TAO_JSON_CONSUME_STRING_HPP
 
-#include "external/pegtl/string_input.hpp"
+#include <tao/pegtl/string_input.hpp>
 
 #include "consume.hpp"
 #include "forward.hpp"

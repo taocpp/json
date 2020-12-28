@@ -12,9 +12,10 @@
 #include <utility>
 #include <vector>
 
+#include <tao/pegtl.hpp>
+
 #include "type.hpp"
 
-#include "external/pegtl.hpp"
 #include "internal/format.hpp"
 
 namespace tao::json

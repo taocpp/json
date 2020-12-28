@@ -4,9 +4,10 @@
 #ifndef TAO_JSON_UBJSON_EVENTS_FROM_BINARY_HPP
 #define TAO_JSON_UBJSON_EVENTS_FROM_BINARY_HPP
 
+#include <tao/pegtl/memory_input.hpp>
+
 #include "../../binary.hpp"
 #include "../../binary_view.hpp"
-#include "../../external/pegtl/memory_input.hpp"
 
 #include "from_input.hpp"
 

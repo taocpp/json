@@ -7,8 +7,9 @@
 #include <cstddef>
 #include <vector>
 
-#include "../../external/pegtl/contrib/unescape.hpp"
-#include "../../external/pegtl/nothing.hpp"
+#include <tao/pegtl/contrib/unescape.hpp>
+#include <tao/pegtl/nothing.hpp>
+#include <tao/pegtl/parse_error.hpp>
 
 #include "grammar.hpp"
 

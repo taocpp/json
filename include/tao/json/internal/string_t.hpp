@@ -7,7 +7,7 @@
 #include <string>
 #include <string_view>
 
-#include "../external/pegtl/internal/pegtl_string.hpp"
+#include <tao/pegtl/internal/pegtl_string.hpp>
 
 namespace tao::json::internal
 {
@@ -30,6 +30,6 @@ namespace tao::json::internal
 
 }  // namespace tao::json::internal
 
-#define TAO_JSON_STRING_T( VaLue ) TAO_JSON_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, VaLue )
+#define TAO_JSON_STRING_T( x ) TAO_PEGTL_INTERNAL_STRING( tao::json::internal::string_t, x )
 
 #endif

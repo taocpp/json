@@ -6,8 +6,9 @@
 
 #include <string>
 
-#include "../../external/pegtl/normal.hpp"
-#include "../../external/pegtl/parse_error.hpp"
+#include <tao/pegtl/normal.hpp>
+#include <tao/pegtl/parse_error.hpp>
+#include <tao/pegtl/rules.hpp>
 
 #include "grammar.hpp"
 

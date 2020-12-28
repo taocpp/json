@@ -10,11 +10,12 @@
 #include <stdexcept>
 #include <string>
 
+#include <tao/pegtl/demangle.hpp>
+// #include <tao/pegtl/internal/pegtl_string.hpp>
+
 #include "../forward.hpp"
 
 #include "../basic_value.hpp"
-#include "../external/pegtl/demangle.hpp"
-#include "../external/pegtl/internal/pegtl_string.hpp"
 #include "../internal/escape.hpp"
 #include "../internal/format.hpp"
 #include "../internal/string_t.hpp"

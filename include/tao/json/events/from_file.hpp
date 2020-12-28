@@ -9,7 +9,8 @@
 #include "../internal/filesystem.hpp"
 #include "../internal/grammar.hpp"
 
-#include "../external/pegtl/file_input.hpp"
+#include <tao/pegtl/file_input.hpp>
+#include <tao/pegtl/parse.hpp>
 
 namespace tao::json::events
 {

@@ -4,9 +4,9 @@
 #ifndef TAO_JSON_PARTS_PARSER_HPP
 #define TAO_JSON_PARTS_PARSER_HPP
 
-#include "external/pegtl.hpp"
-#include "external/pegtl/contrib/integer.hpp"
-#include "external/pegtl/contrib/json.hpp"
+#include <tao/pegtl.hpp>
+#include <tao/pegtl/contrib/integer.hpp>
+#include <tao/pegtl/contrib/json.hpp>
 
 #include "internal/action.hpp"
 #include "internal/format.hpp"

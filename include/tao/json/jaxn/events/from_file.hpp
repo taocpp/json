@@ -4,11 +4,13 @@
 #ifndef TAO_JSON_JAXN_EVENTS_FROM_FILE_HPP
 #define TAO_JSON_JAXN_EVENTS_FROM_FILE_HPP
 
+#include <tao/pegtl/file_input.hpp>
+#include <tao/pegtl/parse.hpp>
+
 #include "../internal/action.hpp"
 #include "../internal/errors.hpp"
 #include "../internal/grammar.hpp"
 
-#include "../../external/pegtl/file_input.hpp"
 #include "../../internal/filesystem.hpp"
 
 namespace tao::json::jaxn::events

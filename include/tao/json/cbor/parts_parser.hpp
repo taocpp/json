@@ -7,8 +7,11 @@
 #include <cstdint>
 #include <optional>
 
+#include <tao/pegtl/parse_error.hpp>
+#include <tao/pegtl/rules.hpp>
+#include <tao/pegtl/string_input.hpp>
+
 #include "../events/discard.hpp"
-#include "../external/pegtl/string_input.hpp"
 #include "../utf8.hpp"
 
 #include "internal/grammar.hpp"

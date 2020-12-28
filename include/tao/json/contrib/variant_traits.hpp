@@ -8,7 +8,7 @@
 #include <utility>
 #include <variant>
 
-#include "../external/pegtl/demangle.hpp"
+#include <tao/pegtl/demangle.hpp>
 
 #include "../events/produce.hpp"
 

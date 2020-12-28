@@ -4,8 +4,8 @@
 #ifndef TAO_JSON_INTERNAL_GRAMMAR_HPP
 #define TAO_JSON_INTERNAL_GRAMMAR_HPP
 
-#include "../external/pegtl.hpp"
-#include "../external/pegtl/contrib/abnf.hpp"
+#include <tao/pegtl.hpp>
+#include <tao/pegtl/contrib/abnf.hpp>
 
 namespace tao::json::internal
 {

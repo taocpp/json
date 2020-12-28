@@ -11,8 +11,8 @@
 #include <string_view>
 #include <type_traits>
 
-#include "../../external/pegtl.hpp"
-#include "../../external/pegtl/contrib/integer.hpp"
+#include <tao/pegtl.hpp>
+#include <tao/pegtl/contrib/integer.hpp>
 
 #include "../../internal/parse_util.hpp"
 
