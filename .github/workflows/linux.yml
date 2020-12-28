@@ -88,9 +88,11 @@ jobs:
         submodules: recursive
 
     - run: |
-       printf "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main\n" | sudo tee -i /etc/apt/sources.list
-       sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
-       sudo apt-get update
+       sudo apt-get -qq update
+       sudo apt-get -qq install -y --no-install-recommends gnupg
+       printf "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" | sudo tee -i /etc/apt/sources.list
+       sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
+       sudo apt-get -qq update
        sudo apt-get -qq upgrade -y git
 
     - run: cmake -E make_directory build
