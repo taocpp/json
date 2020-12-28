@@ -87,9 +87,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: git submodule init
+    - working-directory: $GITHUB_WORKSPACE
+      run: git submodule init
 
-    - run: git submodule update
+    - working-directory: $GITHUB_WORKSPACE
+      run: git submodule update
 
     - run: cmake -E make_directory build
 
