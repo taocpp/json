@@ -79,7 +79,6 @@ jobs:
 
     container:
       image: conanio/${{ matrix.image }}
-      options: --user root
 
     runs-on: ubuntu-latest
 
