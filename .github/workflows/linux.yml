@@ -88,11 +88,11 @@ jobs:
         submodules: recursive
 
     - run: |
-       apt-get update
-       apt-get -qq install -y --no-install-recommends software-properties-common
-       add-apt-repository ppa:git-core/ppa -y
-       apt-get -qq update
-       apt-get -qq upgrade -y git
+       sudo apt-get update
+       sudo apt-get -qq install -y --no-install-recommends software-properties-common
+       sudo add-apt-repository ppa:git-core/ppa -y
+       sudo apt-get -qq update
+       sudo apt-get -qq upgrade -y git
 
     - run: cmake -E make_directory build
 
