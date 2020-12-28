@@ -94,8 +94,7 @@ jobs:
        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
        sudo apt-get -qq update
        sudo apt-get -qq upgrade -y git
-
-    - run: cmake -E make_directory build
+       cmake -E make_directory build
 
     - working-directory: build/
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
