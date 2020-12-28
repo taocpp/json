@@ -65,13 +65,12 @@ jobs:
     - working-directory: build/
       run: ctest --output-on-failure
 
-  linux-clang-old:
+  clang-conanio:
     strategy:
       fail-fast: false
       matrix:
         image:
           # List: https://github.com/conan-io/conan-docker-tools
-          - clang50
           - clang60
           - clang7
           - clang9-x86
@@ -86,10 +85,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-
-    - run: git submodule init
-
-    - run: git submodule update
+      with:
+        submodules: recursive
 
     - run: cmake -E make_directory build
 
