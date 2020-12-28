@@ -79,6 +79,7 @@ jobs:
 
     container:
       image: conanio/${{ matrix.image }}
+      options: --user root
 
     runs-on: ubuntu-latest
 
@@ -88,12 +89,12 @@ jobs:
         submodules: recursive
 
     - run: |
-       sudo apt-get -qq update
-       sudo apt-get -qq install -y --no-install-recommends gnupg
-       printf "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" | sudo tee -i /etc/apt/sources.list
-       sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
-       sudo apt-get -qq update
-       sudo apt-get -qq upgrade -y git
+       apt-get -qq update
+       apt-get -qq install -y --no-install-recommends gnupg
+       printf "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main\n" >> /etc/apt/sources.list
+       apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
+       apt-get -qq update
+       apt-get -qq upgrade -y git
        cmake -E make_directory build
 
     - working-directory: build/
