@@ -65,26 +65,36 @@ jobs:
     - working-directory: build/
       run: ctest --output-on-failure
 
-  linux-clang-6:
+  linux-clang-old:
     strategy:
       fail-fast: false
       matrix:
+        image:
+          # List: https://github.com/conan-io/conan-docker-tools
+          - clang50
+          - clang60
+          - clang7
+          - clang9-x86
+          - clang11
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-18.04
+    container:
+      image: conanio/${{ matrix.image }}
+      options: --user root
 
-    env:
-      CXX: clang++-6.0
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-      with:
-        submodules: recursive
+
+    - run: git submodule init
+
+    - run: git submodule update
 
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="-stdlib=libc++"
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - working-directory: build/
       run: cmake --build .
