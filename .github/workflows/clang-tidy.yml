@@ -1,0 +1,18 @@
+name: clang-tidy
+
+on: [push, pull_request]
+
+jobs:
+  clang-tidy:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - run: sudo apt-get install -yq clang-tidy
+
+    - run: find include/ -name '*.hpp' | grep -vF include/tao/json/external/ | grep -vF endian_win.hpp | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++17 -Iinclude -Iexternal/PEGTL/include
+
+    - run: find src/ -name '*.cpp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++17 -Iinclude -Iexternal/PEGTL/include
