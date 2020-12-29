@@ -2,13 +2,12 @@ cmake_minimum_required(VERSION 3.8...3.19)
 
 project(taocpp-json VERSION 1.0.0 LANGUAGES CXX)
 
-# Determine if taocpp-json is built as a subproject (using add_subdirectory)
-# or if it is the master project.
-set(MASTER_PROJECT OFF)
-if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  set(MASTER_PROJECT ON)
+get_directory_property(TAOCPP_JSON_HAS_PARENT PARENT_DIRECTORY)
+if(TAOCPP_JSON_HAS_PARENT)
+  set(TAOCPP_JSON_IS_MAIN_PROJECT OFF)
+else()
+  set(TAOCPP_JSON_IS_MAIN_PROJECT ON)
 endif()
-
 
 # installation directories
 include(GNUInstallDirs)
@@ -28,13 +27,11 @@ target_include_directories(json INTERFACE
 target_compile_features(json INTERFACE cxx_std_17)
 
 # find a suitable PEGTL
-set(PEGTL_MIN_VERSION 3.1.0)
+set(TAOCPP_JSON_PEGTL_MIN_VERSION 3.1.0)
 find_package(pegtl ${PEGTL_MIN_VERSION} QUIET CONFIG)
 if(NOT pegtl_FOUND)
   # if a compatible version of PEGTL is not already installed, build and install it from the submodule directory
-  message(STATUS "Adding PEGTL as submodule from external/PEGTL.")
-  set(PEGTL_BUILD_TESTS OFF CACHE BOOL "Disable PEGTL tests")
-  set(PEGTL_BUILD_EXAMPLES OFF CACHE BOOL "Disable PEGTL examples")
+  message(STATUS "Adding PEGTL as submodule from external/PEGTL")
   set(PEGTL_INSTALL_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE STRING "Override PEGTL include install directory")
   set(PEGTL_INSTALL_CMAKE_DIR ${CMAKE_INSTALL_DATAROOTDIR}/pegtl/cmake CACHE STRING "Override PEGTL cmake install directory")
   add_subdirectory(external/PEGTL)
@@ -44,19 +41,19 @@ endif()
 target_link_libraries(json INTERFACE taocpp::pegtl)
 
 # testing
-option(TAOCPP_JSON_BUILD_TESTS "Build test programs" ${MASTER_PROJECT})
+option(TAOCPP_JSON_BUILD_TESTS "Build test programs" ${TAOCPP_JSON_IS_MAIN_PROJECT})
 if(TAOCPP_JSON_BUILD_TESTS)
   enable_testing()
   add_subdirectory(src/test/json)
 endif()
 
 # examples
-option(TAOCPP_JSON_BUILD_EXAMPLES "Build example programs" ${MASTER_PROJECT})
+option(TAOCPP_JSON_BUILD_EXAMPLES "Build example programs" ${TAOCPP_JSON_IS_MAIN_PROJECT})
 if(TAOCPP_JSON_BUILD_EXAMPLES)
   add_subdirectory(src/example/json)
 endif()
 
-option(TAOCPP_JSON_INSTALL "Generate the install target" ${MASTER_PROJECT})
+option(TAOCPP_JSON_INSTALL "Generate the install target" ${TAOCPP_JSON_IS_MAIN_PROJECT})
 if(TAOCPP_JSON_INSTALL)
   include(CMakePackageConfigHelpers)
 

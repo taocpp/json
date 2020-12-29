@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.8...3.19)
 
 set(examplesources
   cbor_to_jaxn.cpp
@@ -58,10 +58,10 @@ foreach(examplesourcefile ${examplesources})
   else()
     target_compile_options(${exename} PRIVATE -pedantic -Wall -Wextra -Wshadow -Werror)
   endif()
-endforeach(examplesourcefile)
+endforeach()
 
 if(glob_example_sources)
   foreach(ignored_source_file ${glob_example_sources})
     message(SEND_ERROR "File ${ignored_source_file} in src/example/json is ignored")
-  endforeach(ignored_source_file)
+  endforeach()
 endif()

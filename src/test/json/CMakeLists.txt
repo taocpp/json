@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.8...3.19)
 
 set(testsources
   big_list_of_naughty_strings.cpp
@@ -88,10 +88,10 @@ foreach(testsourcefile ${testsources})
     target_compile_options(${exename} PRIVATE -pedantic -Wall -Wextra -Wshadow -Werror)
   endif()
   add_test(NAME ${exename} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../.. COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${exename})
-endforeach(testsourcefile)
+endforeach()
 
 if(glob_test_sources)
   foreach(ignored_source_file ${glob_test_sources})
     message(SEND_ERROR "File ${ignored_source_file} in src/test/json is ignored")
-  endforeach(ignored_source_file)
+  endforeach()
 endif()
