@@ -28,7 +28,7 @@ target_compile_features(json INTERFACE cxx_std_17)
 
 # find a suitable PEGTL
 set(TAOCPP_JSON_PEGTL_MIN_VERSION 3.1.0)
-find_package(pegtl ${PEGTL_MIN_VERSION} QUIET CONFIG)
+find_package(pegtl ${TAOCPP_JSON_PEGTL_MIN_VERSION} QUIET CONFIG)
 if(NOT pegtl_FOUND)
   # if a compatible version of PEGTL is not already installed, build and install it from the submodule directory
   message(STATUS "Adding PEGTL as submodule from external/PEGTL")
