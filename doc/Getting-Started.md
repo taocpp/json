@@ -16,4 +16,4 @@ The taocpp/json library is built around two main concepts, the [*Value class*](V
 
 See also the page on [common use cases](Common-Use-Cases.md) for how to do some frequently required things.
 
-Copyright (c) 2018-2020 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2021 Dr. Colin Hirsch and Daniel Frey

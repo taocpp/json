@@ -21,4 +21,4 @@ The main parts of the JSON library are
 * The [Value Class](Value-Class.md) can use pointers to other Value Class instances to re-use (parts of) other Values.
 * The [Value Class](Value-Class.md) can use pointers to arbitrary objects (restricts the set of functions on the Value).
 
-Copyright (c) 2018-2020 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2021 Dr. Colin Hirsch and Daniel Frey

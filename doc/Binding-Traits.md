@@ -316,4 +316,4 @@ struct my_traits< person >
 
 Note that `binding::versions` uses the traits' `to()` method to fill-in an existing or default-constructed object, and that it does *not* clear or reset the target object between attempts!
 
-Copyright (c) 2018-2020 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2021 Dr. Colin Hirsch and Daniel Frey

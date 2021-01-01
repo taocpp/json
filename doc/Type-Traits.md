@@ -361,4 +361,4 @@ Given that `std::string`, `int`, `std::tuple`, `std::vector`, `std::shared_ptr`,
 std::map< std::string, std::shared_ptr< std::vector< std::tuple< int, int, int > > >
 ```
 
-Copyright (c) 2018-2020 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2021 Dr. Colin Hirsch and Daniel Frey
