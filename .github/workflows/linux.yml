@@ -15,9 +15,10 @@ jobs:
           - clang++-8
           - clang++-9
           - clang++-10
+          - clang++-11
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     env:
       CXX: ${{ matrix.compiler }}
@@ -44,7 +45,7 @@ jobs:
       matrix:
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     env:
       CXX: clang++
@@ -74,7 +75,6 @@ jobs:
           - clang60
           - clang7
           - clang9-x86
-          - clang11
         build_type: [Debug, Release]
 
     container:
