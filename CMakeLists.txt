@@ -14,15 +14,15 @@ set(TAOCPP_JSON_INSTALL_DOC_DIR "${CMAKE_INSTALL_DOCDIR}/tao/json" CACHE STRING 
 set(TAOCPP_JSON_INSTALL_CMAKE_DIR "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake" CACHE STRING "The installation cmake directory")
 
 # define a header-only library
-add_library(json INTERFACE)
-add_library(taocpp::json ALIAS json)
-target_include_directories(json INTERFACE
+add_library(taocpp-json INTERFACE)
+add_library(taocpp::json ALIAS taocpp-json)
+target_include_directories(taocpp-json INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 # require C++17
-target_compile_features(json INTERFACE cxx_std_17)
+target_compile_features(taocpp-json INTERFACE cxx_std_17)
 
 # find a suitable PEGTL
 set(TAOCPP_JSON_PEGTL_MIN_VERSION 3.1.0)
@@ -36,7 +36,7 @@ if(NOT pegtl_FOUND)
 endif()
 
 # add pegtl as a dependency
-target_link_libraries(json INTERFACE taocpp::pegtl)
+target_link_libraries(taocpp-json INTERFACE taocpp::pegtl)
 
 # testing
 option(TAOCPP_JSON_BUILD_TESTS "Build test programs" ${TAOCPP_JSON_IS_MAIN_PROJECT})
@@ -69,7 +69,7 @@ if(TAOCPP_JSON_INSTALL)
   write_basic_package_version_file(${PROJECT_NAME}-config-version.cmake COMPATIBILITY SameMajorVersion)
 
   # install and export target
-  install(TARGETS json EXPORT ${PROJECT_NAME}-targets)
+  install(TARGETS taocpp-json EXPORT ${PROJECT_NAME}-targets)
   install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
