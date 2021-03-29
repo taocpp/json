@@ -82,4 +82,9 @@ if(TAOCPP_JSON_INSTALL)
 
   install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   install(FILES LICENSE DESTINATION ${TAOCPP_JSON_INSTALL_DOC_DIR})
+
+  export(EXPORT ${PROJECT_NAME}-targets
+    FILE ${taocpp-json_BINARY_DIR}/${PROJECT_NAME}-targets.cmake
+    NAMESPACE taocpp::
+  )
 endif()
