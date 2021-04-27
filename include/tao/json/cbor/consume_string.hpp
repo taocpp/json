@@ -16,14 +16,14 @@ namespace tao::json::cbor
    template< typename T, template< typename... > class Traits = traits, typename F >
    [[nodiscard]] T consume_string( F&& string )
    {
-      cbor::basic_parts_parser< utf8_mode::check, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
+      cbor::basic_parts_parser< utf8_mode::check, 8, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
       return json::consume< T, Traits >( pp );
    }
 
    template< template< typename... > class Traits = traits, typename F, typename T >
    void consume_string( F&& string, T& t )
    {
-      cbor::basic_parts_parser< utf8_mode::check, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
+      cbor::basic_parts_parser< utf8_mode::check, 8, pegtl::memory_input< pegtl::tracking_mode::lazy, pegtl::eol::lf_crlf, const char* > > pp( string, __FUNCTION__ );
       json::consume< Traits >( pp, t );
    }
 

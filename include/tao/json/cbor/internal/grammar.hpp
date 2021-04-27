@@ -163,7 +163,7 @@ namespace tao::json::cbor::internal
       return result;
    }
 
-   template< utf8_mode V >
+   template< utf8_mode V, std::size_t N >
    struct data
    {
       using rule_t = data;
@@ -188,7 +188,7 @@ namespace tao::json::cbor::internal
 
    private:
       template< typename Input, typename Consumer >
-      static void parse_unsafe( Input& in, Consumer& consumer )
+      static void parse_unsafe( Input& in, Consumer& consumer, std::size_t n = 0 )
       {
          switch( peek_major_unsafe( in ) ) {
             case major::UNSIGNED:
@@ -210,7 +210,12 @@ namespace tao::json::cbor::internal
                parse_object_unsafe( in, consumer );
                return;
             case major::TAG:
+               if( ++n > N ) {
+                  throw pegtl::parse_error( "excessive cbor tag nesting", in );  // When N == 0 we allow no tags at all.
+               }
                parse_tag_unsafe( in, consumer );
+               json::internal::throw_on_empty( in );
+               parse_unsafe( in, consumer, n );  // TODO: Check whether a "decent" compiler performs TCO here?
                return;
             case major::OTHER:
                parse_other_unsafe( in, consumer );
@@ -395,18 +400,20 @@ namespace tao::json::cbor::internal
       }
    };
 
-   template< utf8_mode V >
+   template< utf8_mode V, std::size_t N >
    struct basic_grammar
-      : pegtl::must< data< V >, pegtl::eof >
+      : pegtl::must< data< V, N >, pegtl::eof >
    {};
 
-   template< utf8_mode V >
+   template< utf8_mode V, std::size_t N >
    struct basic_embedded
-      : pegtl::must< data< V > >
+      : pegtl::must< data< V, N > >
    {};
 
-   using grammar = basic_grammar< utf8_mode::check >;
-   using embedded = basic_embedded< utf8_mode::check >;
+   // The second parameter determines how long a sequence of CBOR tags (major 6) is allowed to be.
+
+   using grammar = basic_grammar< utf8_mode::check, 8 >;
+   using embedded = basic_embedded< utf8_mode::check, 8 >;
 
 }  // namespace tao::json::cbor::internal
 

@@ -76,7 +76,7 @@ namespace tao::json::cbor
 
    }  // namespace internal
 
-   template< utf8_mode V = utf8_mode::check, typename Input = pegtl::string_input< pegtl::tracking_mode::lazy > >
+   template< utf8_mode V = utf8_mode::check, std::size_t N = 8, typename Input = pegtl::string_input< pegtl::tracking_mode::lazy > >
    class basic_parts_parser
    {
    public:
@@ -370,7 +370,7 @@ namespace tao::json::cbor
       void skip_value()
       {
          json::events::discard consumer;  // TODO: Optimise to not generate events (which requires preparing their - discarded - arguments)?
-         pegtl::parse< pegtl::must< internal::data< V > > >( m_input, consumer );
+         pegtl::parse< pegtl::must< internal::data< V, N > > >( m_input, consumer );
       }
 
       [[nodiscard]] auto mark()
