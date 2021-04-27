@@ -1,6 +1,4 @@
-#include <iostream>
 #include <stddef.h>
-#include <stdint.h>
 #include <tao/json.hpp>
 
 // extern "C" int FUZZ_INIT_WITH_ARGS(int *argc, char ***argv) {
@@ -11,21 +9,17 @@ extern "C" int FUZZ_INIT()
    return 0;  // Non-zero return values are reserved for future use.
 }
 
-extern "C" int FUZZ( const char* Data, size_t Size )
+extern "C" int FUZZ( const char* data, size_t size )
 {
-   // process fuzzer input (*Data) and setup local objects necessary to call the function under test
-
-   std::string input( Data, Size );
+   // process fuzzer input (*data) and setup local objects necessary to call the function under test
 
    try {
-      tao::json::events::limit_nesting_depth< tao::json::events::validate_event_order, 15 > lnd;
-      tao::json::msgpack::events::from_string( lnd, input );
+      tao::json::events::limit_nesting_depth< tao::json::events::validate_event_order, 15 > consumer;
+      tao::json::msgpack::events::from_string( consumer, data, size );
    }
    catch( const tao::pegtl::parse_error& ) {
    }
-   catch( const std::logic_error& ) {
-   }
-   catch( const std::runtime_error& rtex ) {
+   catch( const std::runtime_error& ) {
    }
 
    // reset state and free all locally allocated resources
