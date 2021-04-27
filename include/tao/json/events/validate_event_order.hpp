@@ -136,12 +136,11 @@ namespace tao::json::events
          atom( "binary(...)" );
       }
 
-      void begin_array()
+      void begin_array_impl()
       {
          switch( state ) {
             case EXPECT_TOP_LEVEL_VALUE:
                stack.push_back( EXPECT_NOTHING );
-               state = EXPECT_ARRAY_VALUE_OR_END;
                return;
             case EXPECT_ARRAY_VALUE_OR_END:
                stack.push_back( EXPECT_ARRAY_ELEMENT );
@@ -157,11 +156,9 @@ namespace tao::json::events
                throw std::logic_error( "expected key() or end_object(...), but begin_array(...) was called" );
             case EXPECT_OBJECT_VALUE:
                stack.push_back( EXPECT_OBJECT_MEMBER );
-               state = EXPECT_ARRAY_VALUE_OR_END;
                return;
             case EXPECT_SIZED_OBJECT_VALUE:
                stack.push_back( EXPECT_SIZED_OBJECT_MEMBER );
-               state = EXPECT_ARRAY_VALUE_OR_END;
                return;
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
@@ -172,9 +169,15 @@ namespace tao::json::events
          throw std::logic_error( "invalid state" );
       }
 
+      void begin_array()
+      {
+         begin_array_impl();
+         state = EXPECT_ARRAY_VALUE_OR_END;
+      }
+
       void begin_array( const std::size_t expected )
       {
-         begin_array();
+         begin_array_impl();
          sizes.emplace_back( expected );
          state = EXPECT_SIZED_ARRAY_VALUE_OR_END;
       }
@@ -255,20 +258,17 @@ namespace tao::json::events
          end_array();
       }
 
-      void begin_object()
+      void begin_object_impl()
       {
          switch( state ) {
             case EXPECT_TOP_LEVEL_VALUE:
                stack.push_back( EXPECT_NOTHING );
-               state = EXPECT_OBJECT_KEY_OR_END;
                return;
             case EXPECT_ARRAY_VALUE_OR_END:
                stack.push_back( EXPECT_ARRAY_ELEMENT );
-               state = EXPECT_OBJECT_KEY_OR_END;
                return;
             case EXPECT_SIZED_ARRAY_VALUE_OR_END:
                stack.push_back( EXPECT_SIZED_ARRAY_ELEMENT );
-               state = EXPECT_OBJECT_KEY_OR_END;
                return;
             case EXPECT_ARRAY_ELEMENT:
             case EXPECT_SIZED_ARRAY_ELEMENT:
@@ -278,11 +278,9 @@ namespace tao::json::events
                throw std::logic_error( "expected key() or end_object(...), but begin_object(...) was called" );
             case EXPECT_OBJECT_VALUE:
                stack.push_back( EXPECT_OBJECT_MEMBER );
-               state = EXPECT_OBJECT_KEY_OR_END;
                return;
             case EXPECT_SIZED_OBJECT_VALUE:
                stack.push_back( EXPECT_SIZED_OBJECT_MEMBER );
-               state = EXPECT_OBJECT_KEY_OR_END;
                return;
             case EXPECT_OBJECT_MEMBER:
             case EXPECT_SIZED_OBJECT_MEMBER:
@@ -293,9 +291,15 @@ namespace tao::json::events
          throw std::logic_error( "invalid state" );
       }
 
+      void begin_object()
+      {
+         begin_object_impl();
+         state = EXPECT_OBJECT_KEY_OR_END;
+      }
+
       void begin_object( const std::size_t expected )
       {
-         begin_object();
+         begin_object_impl();
          sizes.emplace_back( expected );
          state = EXPECT_SIZED_OBJECT_KEY_OR_END;
       }
