@@ -8,11 +8,8 @@ type: "c++"
 
 ## Additional arguments to pass to the compiler during build
 compiler_extra_args:
-  - "-Ibuild/src/example/json"
   - "-Iinclude"
   - "-Iexternal/PEGTL/include"
-  - "-Iinclude/tao/json/events"
-  - "-Lbuild/src/example/json"
   - "-std=c++17"
 
 ## Additional arguments to pass to the fuzz target when it is executed
