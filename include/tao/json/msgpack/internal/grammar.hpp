@@ -117,17 +117,9 @@ namespace tao::json::msgpack::internal
                consumer.binary( json::internal::read_string< utf8_mode::trust, tao::binary_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) ) );
                return;
             case format::EXT8:
-               throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) + 1 );
-               // return;
             case format::EXT16:
-               throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, json::internal::read_big_endian_number< std::size_t, std::uint16_t >( in, 1 ) + 1 );
-               // return;
             case format::EXT32:
                throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, json::internal::read_big_endian_number< std::size_t, std::uint32_t >( in, 1 ) + 1 );
-               // return;
             case format::FLOAT32:
                consumer.number( json::internal::read_big_endian_number< double, float >( in, 1 ) );
                return;
@@ -159,25 +151,11 @@ namespace tao::json::msgpack::internal
                consumer.number( json::internal::read_big_endian_number< std::int64_t >( in, 1 ) );
                return;
             case format::FIXEXT1:
-               throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, 3 );
-               // return;
             case format::FIXEXT2:
-               throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, 4 );
-               // return;
             case format::FIXEXT4:
-               throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, 6 );
-               // return;
             case format::FIXEXT8:
-               throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, 10 );
-               // return;
             case format::FIXEXT16:
                throw pegtl::parse_error( "msgpack extensions are unsupported", in );
-               // discard( in, 18 );
-               // return;
             case format::STR8:
                consumer.string( json::internal::read_string< V, std::string_view >( in, json::internal::read_big_endian_number< std::size_t, std::uint8_t >( in, 1 ) ) );
                return;
@@ -205,13 +183,6 @@ namespace tao::json::msgpack::internal
                // LCOV_EXCL_STOP
          }
       }
-
-      // template< typename Input >
-      // static void discard( Input& in, const std::size_t count )
-      // {
-      //    json::internal::throw_on_empty( in, count );
-      //    in.bump_in_this_line( count );
-      // }
 
       template< typename Input, typename Consumer >
       static void parse_array( Input& in, Consumer& consumer, const std::size_t size )
