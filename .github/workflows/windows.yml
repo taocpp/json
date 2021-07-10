@@ -80,3 +80,4 @@ jobs:
 
     - working-directory: build/
       run: ctest -C ${{ matrix.build_type }} --output-on-failure
+
