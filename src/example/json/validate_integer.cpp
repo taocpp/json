@@ -19,7 +19,7 @@ namespace tao::json
       : public Consumer
    {
       static_assert( Max >= Min );
-      static_assert( Max <= std::uint64_t( ( std::numeric_limits< std::int64_t >::max )() ), "Max may not be larger than 2^63-1" );
+      static_assert( Max <= std::uint64_t( (std::numeric_limits< std::int64_t >::max)() ), "Max may not be larger than 2^63-1" );
 
       using Consumer::Consumer;
 

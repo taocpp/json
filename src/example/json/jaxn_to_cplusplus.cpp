@@ -25,7 +25,7 @@ namespace tao::json::cplusplus::events
          os << eol;
          std::size_t len = current_indent;
          while( len != 0 ) {
-            const auto chunk = ( std::min )( indent, sizeof( buffer ) );
+            const auto chunk = (std::min)( indent, sizeof( buffer ) );
             os.write( buffer, chunk );
             len -= chunk;
          }

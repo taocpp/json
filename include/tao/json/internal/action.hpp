@@ -159,7 +159,7 @@ namespace tao::json::internal
             throw pegtl::parse_error( "JSON number with 1 megabyte digits", in );
          }
 
-         const auto c = ( std::min )( s, max_mantissa_digits );
+         const auto c = (std::min)( s, max_mantissa_digits );
          std::memcpy( result.mantissa, in.begin(), c );
          result.exponent10 += static_cast< typename number_state< NEG >::exponent10_t >( s - c );
          result.msize = static_cast< typename number_state< NEG >::msize_t >( c );
@@ -193,7 +193,7 @@ namespace tao::json::internal
                --result.exponent10;
             }
          }
-         const auto c = ( std::min )( std::size_t( e - b ), max_mantissa_digits - result.msize );
+         const auto c = (std::min)( std::size_t( e - b ), max_mantissa_digits - result.msize );
          std::memcpy( result.mantissa + result.msize, b, c );
          result.exponent10 -= static_cast< typename number_state< NEG >::exponent10_t >( c );
          result.msize += static_cast< typename number_state< NEG >::msize_t >( c );
