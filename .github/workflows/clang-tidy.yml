@@ -13,6 +13,6 @@ jobs:
 
     - run: sudo apt-get install -yq clang-tidy
 
-    - run: find include/ -name '*.hpp' | grep -vF endian_win.hpp | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++17 -Iinclude -Iexternal/PEGTL/include
+    - run: find include/ -name '*.hpp' | grep -vF include/tao/json/external/ | grep -vF endian_win.hpp | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++17 -Iinclude -Iexternal/PEGTL/include
 
     - run: find src/ -name '*.cpp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++17 -Iinclude -Iexternal/PEGTL/include
