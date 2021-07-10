@@ -33,7 +33,7 @@
    template< template< typename... > class Traits > \
    using default_key = TAO_JSON_STRING_T( x )
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4702 )
 #endif
@@ -968,7 +968,7 @@ namespace tao::json
 
 }  // namespace tao::json
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 

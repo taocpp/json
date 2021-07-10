@@ -24,7 +24,7 @@
 #include "../../internal/parse_util.hpp"
 #include "../../utf8.hpp"
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4702 )
 #endif
@@ -417,7 +417,7 @@ namespace tao::json::cbor::internal
 
 }  // namespace tao::json::cbor::internal
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 

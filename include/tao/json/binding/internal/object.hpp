@@ -24,7 +24,7 @@
 #include "../../internal/format.hpp"
 #include "../../internal/type_traits.hpp"
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4702 )
 #endif
@@ -136,7 +136,7 @@ namespace tao::json::binding::internal
          }
       }
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4127 )
 #endif
@@ -147,7 +147,7 @@ namespace tao::json::binding::internal
             v.try_emplace( A::template key< Traits >(), A::read( x ) );
          }
       }
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 
@@ -205,7 +205,7 @@ namespace tao::json::binding::internal
          return ( std::size_t( !As::template is_nothing< Traits >( x ) ) + ... );
       }
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4127 )
 #endif
@@ -220,7 +220,7 @@ namespace tao::json::binding::internal
          }
       }
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 
@@ -262,7 +262,7 @@ namespace tao::json::binding::internal
 
 }  // namespace tao::json::binding::internal
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 

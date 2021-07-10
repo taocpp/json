@@ -15,7 +15,7 @@
 
 #include "../../internal/endian.hpp"
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4310 )
 #endif
@@ -154,7 +154,7 @@ namespace tao::json::cbor::events
 
 }  // namespace tao::json::cbor::events
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 

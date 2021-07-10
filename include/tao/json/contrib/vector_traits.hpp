@@ -26,7 +26,7 @@ namespace tao::json
          }
       }
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4127 )
 #endif
@@ -41,7 +41,7 @@ namespace tao::json
             v.emplace_back( json::consume< T, Traits >( parser ) );
          }
       }
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
    };

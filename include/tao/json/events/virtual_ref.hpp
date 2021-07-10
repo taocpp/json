@@ -9,7 +9,7 @@
 
 #include "virtual_base.hpp"
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4373 )
 #endif
@@ -169,7 +169,7 @@ namespace tao::json::events
 
 }  // namespace tao::json::events
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 

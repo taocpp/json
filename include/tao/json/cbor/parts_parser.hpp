@@ -52,7 +52,7 @@ namespace tao::json::cbor
          return peek_major( in );
       }
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4702 )
 #endif
@@ -70,7 +70,7 @@ namespace tao::json::cbor
          }
          std::abort();
       }
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 
@@ -182,7 +182,7 @@ namespace tao::json::cbor
          return std::int64_t( ~u );
       }
 
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4702 )
 #endif
@@ -200,7 +200,7 @@ namespace tao::json::cbor
          }
          std::abort();
       }
-#ifdef _MSC_VER
+#if defined( _MSC_VER )
 #pragma warning( pop )
 #endif
 
