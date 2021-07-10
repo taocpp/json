@@ -538,6 +538,12 @@ namespace tao::json
          v.emplace_string( s );
       }
 
+      template< template< typename... > class Traits, typename Consumer >
+      static void produce( Consumer& c, const char* s )
+      {
+         c.string( s );
+      }
+
       template< template< typename... > class Traits >
       [[nodiscard]] static bool equal( const basic_value< Traits >& lhs, const char* rhs ) noexcept
       {
