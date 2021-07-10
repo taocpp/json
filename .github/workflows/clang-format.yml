@@ -14,6 +14,6 @@ jobs:
     - uses: DoozyX/clang-format-lint-action@v0.11
       with:
         source: './include ./src'
-        exclude: './include/tao/json/external'
+        exclude: './external'
         extensions: 'hpp,cpp'
         clangFormatVersion: 11
