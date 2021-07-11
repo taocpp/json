@@ -100,4 +100,3 @@ jobs:
 
     - working-directory: build/
       run: ctest --output-on-failure
-
