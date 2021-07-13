@@ -2,9 +2,9 @@ name: Code Intelligence Fuzzing
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 env:
   FUZZING_SERVER_ADDRESS: taocpp.app.code-intelligence.com:6773
