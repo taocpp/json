@@ -17,20 +17,16 @@ namespace tao::json::internal
 
       const char* p = s.data();
       const char* l = p;
-      const char* const e = s.data() + s.size();
+      const char* const e = p + s.size();
       while( p != e ) {
          const unsigned char c = *p;
-         if( c == '\\' ) {
+         if( c == '\\' || c == '"' ) {
             os.write( l, p - l );
             l = ++p;
-            os << "\\\\";
+            os.put( '\\' );
+            os.put( c );
          }
-         else if( c == '"' ) {
-            os.write( l, p - l );
-            l = ++p;
-            os << "\\\"";
-         }
-         else if( c < 32 ) {
+         else if( c < 32 || c == 127 ) {
             os.write( l, p - l );
             l = ++p;
             switch( c ) {
@@ -52,11 +48,6 @@ namespace tao::json::internal
                default:
                   os << "\\u00" << h[ ( c & 0xf0 ) >> 4 ] << h[ c & 0x0f ];
             }
-         }
-         else if( c == 127 ) {
-            os.write( l, p - l );
-            l = ++p;
-            os << "\\u007f";
          }
          else {
             ++p;
