@@ -3,8 +3,14 @@ name: Code Intelligence Fuzzing
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - 'doc/**'
   pull_request:
     branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - 'doc/**'
 
 env:
   FUZZING_SERVER_ADDRESS: taocpp.app.code-intelligence.com:6773
