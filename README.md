@@ -9,7 +9,7 @@
 [![clang-tidy](https://github.com/taocpp/json/workflows/clang-tidy/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3Aclang-tidy)
 [![Sanitizer](https://github.com/taocpp/json/workflows/Sanitizer/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3ASanitizer)
 [![CodeQL](https://github.com/taocpp/json/workflows/CodeQL/badge.svg)](https://github.com/taocpp/json/actions?query=workflow%3ACodeQL)
-[![Code Coverage](https://codecov.io/gh/taocpp/json/branch/master/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/json)
+[![Code Coverage](https://codecov.io/gh/taocpp/json/branch/main/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/json)
 
 taoJSON is a C++ header-only JSON library that provides a generic [Value Class](doc/Value-Class.md), uses [Type Traits](doc/Type-Traits.md) to interoperate with C++ types, uses an [Events Interface](doc/Events-Interface.md) to convert from and to JSON, JAXN, CBOR, MsgPack and UBJSON, and much more...
 
