@@ -5,6 +5,7 @@
 #define TAO_JSON_MSGPACK_TO_STRING_HPP
 
 #include <string>
+#include <utility>
 
 #include "../value.hpp"
 
@@ -20,7 +21,7 @@ namespace tao::json::msgpack
    {
       json::events::transformer< events::to_string, Transformers... > consumer;
       json::events::from_value( consumer, v );
-      return consumer.value();
+      return std::move( consumer ).value();
    }
 
 }  // namespace tao::json::msgpack

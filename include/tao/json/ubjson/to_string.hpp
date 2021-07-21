@@ -5,6 +5,7 @@
 #define TAO_JSON_UBJSON_TO_STRING_HPP
 
 #include <string>
+#include <utility>
 
 #include "../value.hpp"
 
@@ -21,7 +22,7 @@ namespace tao::json::ubjson
    {
       json::events::transformer< events::to_string, Transformers..., json::events::non_finite_to_null > consumer;
       json::events::from_value( consumer, v );
-      return consumer.value();
+      return std::move( consumer ).value();
    }
 
 }  // namespace tao::json::ubjson
