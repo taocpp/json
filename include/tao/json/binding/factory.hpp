@@ -9,6 +9,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include <tao/pegtl/demangle.hpp>
 // #include <tao/pegtl/internal/pegtl_string.hpp>
@@ -145,7 +146,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type \"", json::internal::escape( b->first ), "\" -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::demangle< Base >(), json::message_extension( v ) );
-            throw std::runtime_error( oss.str() );
+            throw std::runtime_error( std::move( oss ).str() );
          }
          r = i->second.function( b->second, with... );
       }
@@ -174,7 +175,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type ", pegtl::demangle< decltype( *p ) >(), " -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::demangle< Base >() );
-            throw std::runtime_error( oss.str() );
+            throw std::runtime_error( std::move( oss ).str() );
          }
          i->second.function( v, p );
          v = {
@@ -207,7 +208,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type \"", json::internal::escape( k ), "\" -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::demangle< Base >() );
-            throw std::runtime_error( oss.str() );
+            throw std::runtime_error( std::move( oss ).str() );
          }
          r = i->second.function( parser );
          parser.end_object( s );
@@ -237,7 +238,7 @@ namespace tao::json::binding
             json::internal::format_to( oss, "unknown factory type ", pegtl::demangle< decltype( *p ) >(), " -- known are" );
             internal::list_all_types( oss, m );
             json::internal::format_to( oss, " for base class ", pegtl::demangle< Base >() );
-            throw std::runtime_error( oss.str() );
+            throw std::runtime_error( std::move( oss ).str() );
          }
          consumer.begin_object( 1 );
          consumer.key( i->second.name );

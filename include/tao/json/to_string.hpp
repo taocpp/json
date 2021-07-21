@@ -5,6 +5,8 @@
 #define TAO_JSON_TO_STRING_HPP
 
 #include <sstream>
+#include <string>
+#include <utility>
 
 #include "to_stream.hpp"
 
@@ -13,9 +15,9 @@ namespace tao::json
    template< template< typename... > class... Transformers, typename... Ts >
    [[nodiscard]] std::string to_string( Ts&&... ts )
    {
-      std::ostringstream o;
-      json::to_stream< Transformers... >( o, std::forward< Ts >( ts )... );
-      return o.str();
+      std::ostringstream oss;
+      json::to_stream< Transformers... >( oss, std::forward< Ts >( ts )... );
+      return std::move( oss ).str();
    }
 
 }  // namespace tao::json

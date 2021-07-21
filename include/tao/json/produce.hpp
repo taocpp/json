@@ -53,7 +53,7 @@ namespace tao::json::produce
    {
       std::ostringstream oss;
       to_stream< Traits >( oss, std::forward< Ts >( ts )... );
-      return oss.str();
+      return std::move( oss ).str();
    }
 
 }  // namespace tao::json::produce

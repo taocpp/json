@@ -5,6 +5,8 @@
 #define TAO_JSON_INTERNAL_HEXDUMP_HPP
 
 #include <sstream>
+#include <string>
+#include <utility>
 
 namespace tao::json::internal
 {
@@ -21,9 +23,9 @@ namespace tao::json::internal
    template< typename T >
    [[nodiscard]] std::string hexdump( const T& v )
    {
-      std::ostringstream os;
-      internal::hexdump( os, v );
-      return os.str();
+      std::ostringstream oss;
+      internal::hexdump( oss, v );
+      return std::move( oss ).str();
    }
 
 }  // namespace tao::json::internal

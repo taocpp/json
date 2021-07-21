@@ -5,6 +5,7 @@
 #define TAO_JSON_JAXN_TO_STRING_HPP
 
 #include <sstream>
+#include <utility>
 
 #include "../value.hpp"
 
@@ -15,17 +16,17 @@ namespace tao::json::jaxn
    template< template< typename... > class... Transformers, template< typename... > class Traits >
    [[nodiscard]] std::string to_string( const basic_value< Traits >& v )
    {
-      std::ostringstream o;
-      jaxn::to_stream< Transformers... >( o, v );
-      return o.str();
+      std::ostringstream oss;
+      jaxn::to_stream< Transformers... >( oss, v );
+      return std::move( oss ).str();
    }
 
    template< template< typename... > class... Transformers, template< typename... > class Traits >
    [[nodiscard]] std::string to_string( const basic_value< Traits >& v, const unsigned indent )
    {
-      std::ostringstream o;
-      jaxn::to_stream< Transformers... >( o, v, indent );
-      return o.str();
+      std::ostringstream oss;
+      jaxn::to_stream< Transformers... >( oss, v, indent );
+      return std::move( oss ).str();
    }
 
 }  // namespace tao::json::jaxn

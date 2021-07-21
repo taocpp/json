@@ -121,7 +121,7 @@ namespace tao::json::binding::internal
                json::internal::format_to( oss, "unknown object key \"", json::internal::escape( k ), "\" -- known are" );
                list_all_keys( oss, m );
                json::internal::format_to( oss, " for type ", pegtl::demangle< C >(), json::message_extension( v ) );
-               throw std::runtime_error( oss.str() );
+               throw std::runtime_error( std::move( oss ).str() );
             }
             i->second.function( p.second, x );
             b.set( i->second.index );
@@ -178,7 +178,7 @@ namespace tao::json::binding::internal
                json::internal::format_to( oss, "unknown object key \"", json::internal::escape( k ), "\" -- known are" );
                list_all_keys( oss, m );
                json::internal::format_to( oss, " for type ", pegtl::demangle< C >() );
-               parser.throw_parse_error( oss.str() );
+               parser.throw_parse_error( std::move( oss ).str() );
             }
             if( b.test( i->second.index ) ) {
                parser.throw_parse_error( json::internal::format( "duplicate object key \"", json::internal::escape( k ), "\" for type ", pegtl::demangle< C >() ) );
@@ -192,7 +192,7 @@ namespace tao::json::binding::internal
             json::internal::format_to( oss, "missing required key(s)" );
             list_missing_keys( oss, b, m );
             json::internal::format_to( oss, " for type ", pegtl::demangle< C >() );
-            parser.throw_parse_error( oss.str() );
+            parser.throw_parse_error( std::move( oss ).str() );
          }
       }
 

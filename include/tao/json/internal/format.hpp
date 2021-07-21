@@ -6,7 +6,9 @@
 
 #include <ostream>
 #include <sstream>
+#include <string>
 #include <typeinfo>
+#include <utility>
 
 #include "escape.hpp"
 
@@ -49,7 +51,7 @@ namespace tao::json::internal
    {
       std::ostringstream oss;
       format_to( oss, ts... );
-      return oss.str();
+      return std::move( oss ).str();
    }
 
 }  // namespace tao::json::internal

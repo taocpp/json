@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <string_view>
+#include <utility>
 
 namespace tao::json::internal
 {
@@ -58,9 +59,9 @@ namespace tao::json::internal
 
    [[nodiscard]] inline std::string escape( const std::string_view s )
    {
-      std::ostringstream o;
-      escape( o, s );
-      return o.str();
+      std::ostringstream oss;
+      escape( oss, s );
+      return std::move( oss ).str();
    }
 
 }  // namespace tao::json::internal

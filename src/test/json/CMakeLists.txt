@@ -49,7 +49,6 @@ set(testsources
   public_base.cpp
   self_contained.cpp
   sha256.cpp
-  string_view.cpp
   temporary_parsing.cpp
   type.cpp
   ubjson.cpp

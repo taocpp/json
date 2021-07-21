@@ -6,6 +6,7 @@
 
 #include <sstream>
 #include <string>
+#include <utility>
 
 #include "to_stream.hpp"
 
@@ -22,9 +23,14 @@ namespace tao::json::events
          : to_stream( oss )
       {}
 
-      [[nodiscard]] std::string value() const
+      [[nodiscard]] std::string value() const&
       {
          return oss.str();
+      }
+
+      [[nodiscard]] std::string value() &&
+      {
+         return std::move( oss ).str();
       }
    };
 
