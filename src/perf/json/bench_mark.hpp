@@ -18,16 +18,16 @@ namespace tao::bench
 
       using clock = std::chrono::high_resolution_clock;
 
+      std::uint64_t e = 0;
+      std::uint64_t i = 0;
       for( std::uint64_t r = 0; r < 42; ++r ) {
          const std::uint64_t c = std::uint64_t( 1 ) << r;
          const auto start = clock::now();
-
-         for( std::uint64_t i = 0; i < c; ++i ) {
+         for( ; i < c; ++i ) {
             func();
          }
          const auto finish = clock::now();
-         const std::uint64_t e = std::chrono::duration_cast< std::chrono::nanoseconds >( finish - start ).count();
-
+         e += std::chrono::duration_cast< std::chrono::nanoseconds >( finish - start ).count();
          if( e > 1000000000 ) {
             const auto q = e / c;
             std::cout << "bench '" << std::setw( 10 ) << name << "' with '" << type << "':  iterations " << std::setw( 10 ) << c << "   elapsed " << std::setw( 10 ) << e << "   result " << std::setw( 10 ) << q << " nanos per iteration (" << ( ( 100 * q ) / ( bool( ref ) ? ref : q ) ) << "%)" << std::endl;
