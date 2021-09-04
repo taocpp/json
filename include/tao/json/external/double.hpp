@@ -919,7 +919,7 @@ namespace tao::json::double_conversion
       int16_t decimal_exponent;
    };
 
-   static const CachedPower kCachedPowers[] = {
+   constexpr inline CachedPower kCachedPowers[] = {
       {TAO_JSON_UINT64_2PART_C(0xfa8fd5a0, 081c0288), -1220, -348},
       {TAO_JSON_UINT64_2PART_C(0xbaaee17f, a23ebf76), -1193, -340},
       {TAO_JSON_UINT64_2PART_C(0x8b16fb20, 3055ac76), -1166, -332},
@@ -1035,7 +1035,7 @@ namespace tao::json::double_conversion
 
    static const uint64_t kMaxUint64 = TAO_JSON_UINT64_2PART_C(0xFFFFFFFF, FFFFFFFF);
 
-   static const double exact_powers_of_ten[] = {
+   constexpr inline double exact_powers_of_ten[] = {
       1.0,  // 10^0
       10.0,
       100.0,

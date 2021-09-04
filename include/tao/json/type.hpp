@@ -98,14 +98,14 @@ namespace tao::json
    struct uninitialized_t
    {};
 
-   constexpr null_t null{ 0 };
+   constexpr inline null_t null{ 0 };
 
-   constexpr empty_string_t empty_string{ 0 };
-   constexpr empty_binary_t empty_binary{ 0 };
-   constexpr empty_array_t empty_array{ 0 };
-   constexpr empty_object_t empty_object{ 0 };
+   constexpr inline empty_string_t empty_string{ 0 };
+   constexpr inline empty_binary_t empty_binary{ 0 };
+   constexpr inline empty_array_t empty_array{ 0 };
+   constexpr inline empty_object_t empty_object{ 0 };
 
-   constexpr uninitialized_t uninitialized;
+   constexpr inline uninitialized_t uninitialized;
 
 }  // namespace tao::json
 

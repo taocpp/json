@@ -14,7 +14,7 @@
 
 namespace tao::json::internal
 {
-   static const std::size_t max_mantissa_digits = 772;
+   constexpr inline std::size_t max_mantissa_digits = 772;
 
    template< bool NEG >
    struct number_state
