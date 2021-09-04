@@ -56,7 +56,7 @@ namespace tao::json::itoa
 #define TAO_JSON_ITOA_P( T ) { T, '0' }, { T, '1' }, { T, '2' }, { T, '3' }, { T, '4' }, { T, '5' }, { T, '6' }, { T, '7' }, { T, '8' }, { T, '9' }
    // clang-format on
 
-   static const pair s_pairs[] = { TAO_JSON_ITOA_P( '0' ),
+   constexpr inline pair s_pairs[] = { TAO_JSON_ITOA_P( '0' ),
                                    TAO_JSON_ITOA_P( '1' ),
                                    TAO_JSON_ITOA_P( '2' ),
                                    TAO_JSON_ITOA_P( '3' ),
