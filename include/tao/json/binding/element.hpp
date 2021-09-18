@@ -82,6 +82,8 @@ namespace tao::json::binding
          using class_t = C;
          using value_t = T;
 
+         using internal_t = std::decay_t< decltype( P( std::declval< const C >() ) ) >;
+
          [[nodiscard]] static decltype( auto ) read( const C& v )
          {
             return P( v );
@@ -102,6 +104,8 @@ namespace tao::json::binding
       {
          using class_t = A;
          using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
 
          [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept
          {
@@ -138,6 +142,8 @@ namespace tao::json::binding
       {
          using class_t = A;
          using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
 
          [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept
          {

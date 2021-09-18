@@ -27,6 +27,20 @@ namespace tao::json::binding
       }
    };
 
+   template< member_kind R, typename K, auto CP, auto P >
+   struct member2
+      : element2< CP, P >,
+        internal::type_key< K, typename binding::element2< CP, P >::internal_t >
+   {
+      static constexpr member_kind kind = R;
+
+      template< template< typename... > class Traits, typename C >
+      [[nodiscard]] static bool is_nothing( const C& x )
+      {
+         return json::internal::is_nothing< Traits >( binding::element2< CP, P >::read( x ) );
+      }
+   };
+
 }  // namespace tao::json::binding
 
 #endif

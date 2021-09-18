@@ -4,6 +4,7 @@ set(testsources
   big_list_of_naughty_strings.cpp
   binding_array.cpp
   binding_factory.cpp
+  binding_function.cpp
   binding_object.cpp
   binding_versions.cpp
   cbor.cpp
