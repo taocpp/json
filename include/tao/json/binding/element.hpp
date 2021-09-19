@@ -76,8 +76,8 @@ namespace tao::json::binding
          }
       };
 
-      template< typename C, typename T, T ( *P )( const C& ) >
-      struct element< T ( * )( const C& ), P >
+      template< bool N, typename C, typename T, T ( *P )( const C& ) noexcept( N ) >
+      struct element< T ( * )( const C& ) noexcept( N ), P >
       {
          using class_t = C;
          using value_t = T;
@@ -99,8 +99,8 @@ namespace tao::json::binding
       template< typename CT, CT CP, typename T, T P >
       struct element2;
 
-      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept, typename R, R ( *P )( A& ) noexcept >
-      struct element2< CR ( * )( const A& ) noexcept, CP, R ( * )( A& ) noexcept, P >
+      template< bool CN, bool N, typename A, typename CR, CR ( *CP )( const A& ) noexcept( CN ), typename R, R ( *P )( A& ) noexcept( N ) >
+      struct element2< CR ( * )( const A& ) noexcept( CN ), CP, R ( * )( A& ) noexcept( N ), P >
       {
          using class_t = A;
          using value_t = std::decay_t< R >;
@@ -137,8 +137,8 @@ namespace tao::json::binding
          }
       };
 
-      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept, typename R, void ( *P )( A&, R&& ) noexcept >
-      struct element2< CR ( * )( const A& ) noexcept, CP, void ( * )( A&, R&& ) noexcept, P >
+      template< bool CN, bool N, typename A, typename CR, CR ( *CP )( const A& ) noexcept( CN ), typename R, void ( *P )( A&, R&& ) noexcept( N ) >
+      struct element2< CR ( * )( const A& ) noexcept( CN ), CP, void ( * )( A&, R&& ) noexcept( N ), P >
       {
          using class_t = A;
          using value_t = std::decay_t< R >;
