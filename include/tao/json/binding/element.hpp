@@ -84,7 +84,7 @@ namespace tao::json::binding
 
          using internal_t = std::decay_t< decltype( P( std::declval< const C >() ) ) >;
 
-         [[nodiscard]] static decltype( auto ) read( const C& v )
+         [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( N )
          {
             return P( v );
          }
@@ -107,13 +107,13 @@ namespace tao::json::binding
 
          using internal_t = value_t;
 
-         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( CN )
          {
             return CP( v );
          }
 
          template< typename W >
-         static void write( A& v, W&& w )
+         static void write( A& v, W&& w ) noexcept( N )
          {
             P( v ) = std::forward< W >( w );
          }
@@ -145,13 +145,13 @@ namespace tao::json::binding
 
          using internal_t = value_t;
 
-         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( CN )
          {
             return CP( v );
          }
 
          template< typename W >
-         static void write( A& v, W&& w )
+         static void write( A& v, W&& w ) noexcept( N )
          {
             P( v, std::forward< W >( w ) );
          }
