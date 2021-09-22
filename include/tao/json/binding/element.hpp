@@ -76,6 +76,8 @@ namespace tao::json::binding
          }
       };
 
+#if defined(__GNUC__) || defined(__clang__)
+
       template< bool N, typename C, typename T, T ( *P )( const C& ) noexcept( N ) >
       struct element< T ( * )( const C& ) noexcept( N ), P >
       {
@@ -96,8 +98,54 @@ namespace tao::json::binding
          }
       };
 
+#else  // TODO: Check MSVC occasionally. Others?
+
+      template< typename C, typename T, T ( *P )( const C& ) noexcept( true ) >
+      struct element< T ( * )( const C& ) noexcept( true ), P >
+      {
+         using class_t = C;
+         using value_t = T;
+
+         using internal_t = std::decay_t< decltype( P( std::declval< const C >() ) ) >;
+
+         [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( true )
+         {
+            return P( v );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const C& v )
+         {
+            events::produce< Traits >( consumer, P( v ) );
+         }
+      };
+
+      template< typename C, typename T, T ( *P )( const C& ) noexcept( false ) >
+      struct element< T ( * )( const C& ) noexcept( false ), P >
+      {
+         using class_t = C;
+         using value_t = T;
+
+         using internal_t = std::decay_t< decltype( P( std::declval< const C >() ) ) >;
+
+         [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( false )
+         {
+            return P( v );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const C& v )
+         {
+            events::produce< Traits >( consumer, P( v ) );
+         }
+      };
+
+#endif
+
       template< typename CT, CT CP, typename T, T P >
       struct element2;
+
+#if defined(__GNUC__) || defined(__clang__)
 
       template< bool CN, bool N, typename A, typename CR, CR ( *CP )( const A& ) noexcept( CN ), typename R, R ( *P )( A& ) noexcept( N ) >
       struct element2< CR ( * )( const A& ) noexcept( CN ), CP, R ( * )( A& ) noexcept( N ), P >
@@ -174,6 +222,314 @@ namespace tao::json::binding
             events::produce< Traits >( consumer, CP( v ) );
          }
       };
+
+#else  // TODO: Check MSVC occasionally. Others?
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( true ), typename R, R ( *P )( A& ) noexcept( true ) >
+      struct element2< CR ( * )( const A& ) noexcept( true ), CP, R ( * )( A& ) noexcept( true ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( true )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( true )
+         {
+            P( v ) = std::forward< W >( w );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            v.to( P( x ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            json::consume< Traits >( parser, P( v ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( true ), typename R, R ( *P )( A& ) noexcept( false ) >
+      struct element2< CR ( * )( const A& ) noexcept( true ), CP, R ( * )( A& ) noexcept( false ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( true )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( false )
+         {
+            P( v ) = std::forward< W >( w );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            v.to( P( x ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            json::consume< Traits >( parser, P( v ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( false ), typename R, R ( *P )( A& ) noexcept( true ) >
+      struct element2< CR ( * )( const A& ) noexcept( false ), CP, R ( * )( A& ) noexcept( true ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( false )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( true )
+         {
+            P( v ) = std::forward< W >( w );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            v.to( P( x ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            json::consume< Traits >( parser, P( v ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( false ), typename R, R ( *P )( A& ) noexcept( false ) >
+      struct element2< CR ( * )( const A& ) noexcept( false ), CP, R ( * )( A& ) noexcept( false ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( false )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( false )
+         {
+            P( v ) = std::forward< W >( w );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            v.to( P( x ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            json::consume< Traits >( parser, P( v ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( true ), typename R, void ( *P )( A&, R ) noexcept( true ) >
+      struct element2< CR ( * )( const A& ) noexcept( true ), CP, void ( * )( A&, R ) noexcept( true ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( true )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( true )
+         {
+            P( v, std::forward< W >( w ) );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            P( x, v.template as< std::decay_t< R > >() );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            P( v, json::consume< Traits >( parser ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( true ), typename R, void ( *P )( A&, R ) noexcept( false ) >
+      struct element2< CR ( * )( const A& ) noexcept( true ), CP, void ( * )( A&, R ) noexcept( false ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( true )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( false )
+         {
+            P( v, std::forward< W >( w ) );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            P( x, v.template as< std::decay_t< R > >() );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            P( v, json::consume< Traits >( parser ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( false ), typename R, void ( *P )( A&, R ) noexcept( true ) >
+      struct element2< CR ( * )( const A& ) noexcept( false ), CP, void ( * )( A&, R ) noexcept( true ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( false )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( true )
+         {
+            P( v, std::forward< W >( w ) );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            P( x, v.template as< std::decay_t< R > >() );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            P( v, json::consume< Traits >( parser ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+      template< typename A, typename CR, CR ( *CP )( const A& ) noexcept( false ), typename R, void ( *P )( A&, R ) noexcept( false ) >
+      struct element2< CR ( * )( const A& ) noexcept( false ), CP, void ( * )( A&, R ) noexcept( false ), P >
+      {
+         using class_t = A;
+         using value_t = std::decay_t< R >;
+
+         using internal_t = value_t;
+
+         [[nodiscard]] static decltype( auto ) read( const A& v ) noexcept( false )
+         {
+            return CP( v );
+         }
+
+         template< typename W >
+         static void write( A& v, W&& w ) noexcept( false )
+         {
+            P( v, std::forward< W >( w ) );
+         }
+
+         template< template< typename... > class Traits >
+         static void to( const basic_value< Traits >& v, A& x )
+         {
+            P( x, v.template as< std::decay_t< R > >() );
+         }
+
+         template< template< typename... > class Traits = traits, typename Producer >
+         static void consume( Producer& parser, A& v )
+         {
+            P( v, json::consume< Traits >( parser ) );
+         }
+
+         template< template< typename... > class Traits = traits, typename Consumer >
+         static void produce( Consumer& consumer, const A& v )
+         {
+            events::produce< Traits >( consumer, CP( v ) );
+         }
+      };
+
+#endif
 
    }  // namespace internal
 
