@@ -76,7 +76,7 @@ namespace tao::json::binding
          }
       };
 
-#if defined(__GNUC__) || defined(__clang__)
+#if defined( __GNUC__ ) || defined( __clang__ )
 
       template< bool N, typename C, typename T, T ( *P )( const C& ) noexcept( N ) >
       struct element< T ( * )( const C& ) noexcept( N ), P >
@@ -145,7 +145,7 @@ namespace tao::json::binding
       template< typename CT, CT CP, typename T, T P >
       struct element2;
 
-#if defined(__GNUC__) || defined(__clang__)
+#if defined( __GNUC__ ) || defined( __clang__ )
 
       template< bool CN, bool N, typename A, typename CR, CR ( *CP )( const A& ) noexcept( CN ), typename R, R ( *P )( A& ) noexcept( N ) >
       struct element2< CR ( * )( const A& ) noexcept( CN ), CP, R ( * )( A& ) noexcept( N ), P >
