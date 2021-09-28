@@ -235,6 +235,7 @@ namespace tao::json
    void test_vector_bool()
    {
       std::vector< bool > g;
+      g.reserve( 3 );
       g.push_back( true );
       g.push_back( true );
       g.push_back( false );
