@@ -6,6 +6,7 @@
 
 #include "binding/constant.hpp"
 #include "binding/element.hpp"
+#include "binding/element2.hpp"
 #include "binding/factory.hpp"
 #include "binding/for_nothing_value.hpp"
 #include "binding/for_unknown_key.hpp"
@@ -42,6 +43,8 @@ namespace tao::json::binding
 }  // namespace tao::json::binding
 
 #define TAO_JSON_BIND_ELEMENT( ... ) tao::json::binding::element< __VA_ARGS__ >
+
+// No macro for element2 which does read and write with separate functions.
 
 #define TAO_JSON_BIND_ELEMENT_BOOL( VaLue ) tao::json::binding::element_b< VaLue >
 #define TAO_JSON_BIND_ELEMENT_SIGNED( VaLue ) tao::json::binding::element_i< VaLue >
