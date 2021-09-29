@@ -42,7 +42,7 @@ namespace tao::json::binding::internal
    };
 
    template< bool N, typename C, typename T, T& ( *P )( C& ) noexcept( N ) >
-   struct elementw< T& ( * )( C& ) noexcept( N ), P >
+   struct elementw< T& (*)( C& ) noexcept( N ), P >
    {
       using class_t = C;
       using value_t = T;
@@ -138,7 +138,7 @@ namespace tao::json::binding::internal
    };
 
    template< typename C, typename T, T& ( *P )( C& ) noexcept( true ) >
-   struct elementw< T& ( * )( C& ) noexcept( true ), P >
+   struct elementw< T& (*)( C& ) noexcept( true ), P >
    {
       using class_t = C;
       using value_t = T;
@@ -163,7 +163,7 @@ namespace tao::json::binding::internal
    };
 
    template< typename C, typename T, T& ( *P )( C& ) noexcept( false ) >
-   struct elementw< T& ( * )( C& ) noexcept( false ), P >
+   struct elementw< T& (*)( C& ) noexcept( false ), P >
    {
       using class_t = C;
       using value_t = T;
