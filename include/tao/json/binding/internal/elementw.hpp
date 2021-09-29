@@ -19,9 +19,6 @@ namespace tao::json::binding::internal
    template< bool N, typename C, typename T, void ( *P )( C&, T ) noexcept( N ) >
    struct elementw< void ( * )( C&, T ) noexcept( N ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( N )
       {
@@ -31,7 +28,7 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits >
       static void to( const basic_value< Traits >& v, C& c )
       {
-         P( c, v.template as< value_t >() );
+         P( c, v.template as< std::decay_t< T > >() );
       }
 
       template< template< typename... > class Traits = traits, typename Producer >
@@ -44,9 +41,6 @@ namespace tao::json::binding::internal
    template< bool N, typename C, typename T, T& ( *P )( C& ) noexcept( N ) >
    struct elementw< T& (*)( C& ) noexcept( N ), P >
    {
-      using class_t = C;
-      using value_t = T;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( N )
       {
@@ -69,9 +63,6 @@ namespace tao::json::binding::internal
    template< bool N, typename C, typename T, void ( C::*P )( T ) noexcept( N ) >
    struct elementw< void ( C::* )( T ) noexcept( N ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( N )
       {
@@ -81,7 +72,7 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits >
       static void to( const basic_value< Traits >( v ), C& c )
       {
-         ( c.*P )( v.template as< value_t >() );
+         ( c.*P )( v.template as< std::decay_t< T > >() );
       }
    };
 
@@ -90,9 +81,6 @@ namespace tao::json::binding::internal
    template< typename C, typename T, void ( *P )( C&, T ) noexcept( true ) >
    struct elementw< void ( * )( C&, T ) noexcept( true ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( true )
       {
@@ -102,7 +90,7 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits >
       static void to( const basic_value< Traits >& v, C& c )
       {
-         P( c, v.template as< value_t >() );
+         P( c, v.template as< std::decay_t< T > >() );
       }
 
       template< template< typename... > class Traits = traits, typename Producer >
@@ -115,9 +103,6 @@ namespace tao::json::binding::internal
    template< typename C, typename T, void ( *P )( C&, T ) noexcept( false ) >
    struct elementw< void ( * )( C&, T ) noexcept( false ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( false )
       {
@@ -127,7 +112,7 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits >
       static void to( const basic_value< Traits >& v, C& c )
       {
-         P( c, v.template as< value_t >() );
+         P( c, v.template as< std::decay_t< T > >() );
       }
 
       template< template< typename... > class Traits = traits, typename Producer >
@@ -140,9 +125,6 @@ namespace tao::json::binding::internal
    template< typename C, typename T, T& ( *P )( C& ) noexcept( true ) >
    struct elementw< T& (*)( C& ) noexcept( true ), P >
    {
-      using class_t = C;
-      using value_t = T;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( true )
       {
@@ -165,9 +147,6 @@ namespace tao::json::binding::internal
    template< typename C, typename T, T& ( *P )( C& ) noexcept( false ) >
    struct elementw< T& (*)( C& ) noexcept( false ), P >
    {
-      using class_t = C;
-      using value_t = T;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( false )
       {
@@ -190,9 +169,6 @@ namespace tao::json::binding::internal
    template< typename C, typename T, void ( C::*P )( T ) noexcept( true ) >
    struct elementw< void ( C::* )( T ) noexcept( true ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( true )
       {
@@ -202,16 +178,13 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits >
       static void to( const basic_value< Traits >( v ), C& c )
       {
-         ( c.*P )( v.template as< value_t >() );
+         ( c.*P )( v.template as< std::decay_t< T > >() );
       }
    };
 
    template< typename C, typename T, void ( C::*P )( T ) noexcept( false ) >
    struct elementw< void ( C::* )( T ) noexcept( false ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
-
       template< typename W >
       static void write( C& c, W&& w ) noexcept( false )
       {
@@ -221,7 +194,7 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits >
       static void to( const basic_value< Traits >( v ), C& c )
       {
-         ( c.*P )( v.template as< value_t >() );
+         ( c.*P )( v.template as< std::decay_t< T > >() );
       }
    };
 
