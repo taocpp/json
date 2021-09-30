@@ -20,8 +20,8 @@ namespace tao::json::binding::internal
    template< bool N, typename C, typename T, T ( *P )( const C& ) noexcept( N ) >
    struct elementr< T ( * )( const C& ) noexcept( N ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
+      using read_class_t = C;
+      using read_value_t = std::decay_t< T >;
 
       [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( N )
       {
@@ -38,8 +38,8 @@ namespace tao::json::binding::internal
    template< bool N, typename C, typename T, T ( C::*P )() const noexcept( N ) >
    struct elementr< T ( C::* )() const noexcept( N ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
+      using read_class_t = C;
+      using read_value_t = std::decay_t< T >;
 
       [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( N )
       {
@@ -58,8 +58,8 @@ namespace tao::json::binding::internal
    template< typename C, typename T, T ( *P )( const C& ) noexcept( true ) >
    struct elementr< T ( * )( const C& ) noexcept( true ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
+      using read_class_t = C;
+      using read_value_t = std::decay_t< T >;
 
       [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( true )
       {
@@ -76,8 +76,8 @@ namespace tao::json::binding::internal
    template< typename C, typename T, T ( *P )( const C& ) noexcept( false ) >
    struct elementr< T ( * )( const C& ) noexcept( false ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
+      using read_class_t = C;
+      using read_value_t = std::decay_t< T >;
 
       [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( false )
       {
@@ -94,8 +94,8 @@ namespace tao::json::binding::internal
    template< typename C, typename T, T ( C::*P )() const noexcept( true ) >
    struct elementr< T ( C::* )() const noexcept( true ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
+      using read_class_t = C;
+      using read_value_t = std::decay_t< T >;
 
       [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( true )
       {
@@ -112,8 +112,8 @@ namespace tao::json::binding::internal
    template< typename C, typename T, T ( C::*P )() const noexcept( false ) >
    struct elementr< T ( C::* )() const noexcept( false ), P >
    {
-      using class_t = C;
-      using value_t = std::decay_t< T >;
+      using read_class_t = C;
+      using read_value_t = std::decay_t< T >;
 
       [[nodiscard]] static decltype( auto ) read( const C& v ) noexcept( false )
       {

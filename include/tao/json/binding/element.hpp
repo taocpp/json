@@ -19,9 +19,10 @@ namespace tao::json::binding
    {
       template< typename T, T F, typename = void >
       struct element
-         : elementr< T, F >
+         : elementr< T, F >  // TODO: Do we want to keep the fall-back to elementr?
       {
-         // TODO: Do we want to keep the fall-back to elementr?
+         using class_t = typename elementr< T, F >::read_class_t;
+         using value_t = typename elementr< T, F >::read_value_t;
       };
 
       template< typename C, typename T, T C::*P >
