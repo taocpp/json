@@ -38,7 +38,7 @@ namespace tao
 
 namespace tao
 {
-   inline constexpr std::size_t dynamic_extent = (std::numeric_limits< std::size_t >::max)();
+   inline constexpr std::size_t dynamic_extent = ( std::numeric_limits< std::size_t >::max )();
 
    template< typename ElementType, std::size_t Extent = dynamic_extent >
    class span;
@@ -455,41 +455,37 @@ namespace tao
 
 }  // namespace tao
 
-namespace std
-{
 #if defined( __clang__ )
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmismatched-tags"
 #endif
 
-   template< typename ElementType, size_t Extent >
-   struct tuple_size< tao::span< ElementType, Extent > >
-      : integral_constant< size_t, Extent >
-   {};
+template< typename ElementType, std::size_t Extent >
+struct std::tuple_size< tao::span< ElementType, Extent > >
+   : std::integral_constant< std::size_t, Extent >
+{};
 
-   template< typename ElementType >
-   struct tuple_size< tao::span< ElementType, tao::dynamic_extent > >;  // not defined
+template< typename ElementType >
+struct std::tuple_size< tao::span< ElementType, tao::dynamic_extent > >;  // not defined
 
-   template< size_t I, typename ElementType, size_t Extent >
-   struct tuple_element< I, tao::span< ElementType, Extent > >
-   {
-      static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
-      using type = ElementType;
-   };
+template< std::size_t I, typename ElementType, std::size_t Extent >
+struct std::tuple_element< I, tao::span< ElementType, Extent > >
+{
+   static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
+   using type = ElementType;
+};
 
 #if defined( __clang__ )
 #pragma clang diagnostic pop
 #endif
 
-   // TODO: this is probably illegal. keep it?
-   template< size_t I, typename ElementType, size_t Extent >
-   constexpr auto get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&  // NOLINT(modernize-use-nodiscard)
-   {
-      static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
-      return s[ I ];
-   }
-
-}  // namespace std
+// TODO: this is probably illegal. keep it?
+template< std::size_t I, typename ElementType, std::size_t Extent >
+constexpr auto std::get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&  // NOLINT(modernize-use-nodiscard)
+{
+   static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
+   return s[ I ];
+}
 
 #endif
 
