@@ -7,6 +7,7 @@
 #include <string>
 
 #include "element.hpp"
+#include "element2.hpp"
 #include "member_kind.hpp"
 
 #include "internal/type_key.hpp"
@@ -16,7 +17,7 @@ namespace tao::json::binding
    template< member_kind R, typename K, auto P >
    struct member
       : element< P >,
-        internal::type_key< K, typename binding::element< P >::internal_t >
+        internal::type_key< K, typename binding::element< P >::value_t >
    {
       static constexpr member_kind kind = R;
 
@@ -27,17 +28,17 @@ namespace tao::json::binding
       }
    };
 
-   template< member_kind R, typename K, auto CP, auto P >
+   template< member_kind R, typename K, auto G, auto S >
    struct member2
-      : element2< CP, P >,
-        internal::type_key< K, typename binding::element2< CP, P >::internal_t >
+      : element2< G, S >,
+        internal::type_key< K, typename binding::element2< G, S >::value_t >
    {
       static constexpr member_kind kind = R;
 
       template< template< typename... > class Traits, typename C >
       [[nodiscard]] static bool is_nothing( const C& x )
       {
-         return json::internal::is_nothing< Traits >( binding::element2< CP, P >::read( x ) );
+         return json::internal::is_nothing< Traits >( binding::element2< G, S >::read( x ) );
       }
    };
 
