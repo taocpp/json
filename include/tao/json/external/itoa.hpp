@@ -57,15 +57,15 @@ namespace tao::json::itoa
    // clang-format on
 
    constexpr inline pair s_pairs[] = { TAO_JSON_ITOA_P( '0' ),
-                                   TAO_JSON_ITOA_P( '1' ),
-                                   TAO_JSON_ITOA_P( '2' ),
-                                   TAO_JSON_ITOA_P( '3' ),
-                                   TAO_JSON_ITOA_P( '4' ),
-                                   TAO_JSON_ITOA_P( '5' ),
-                                   TAO_JSON_ITOA_P( '6' ),
-                                   TAO_JSON_ITOA_P( '7' ),
-                                   TAO_JSON_ITOA_P( '8' ),
-                                   TAO_JSON_ITOA_P( '9' ) };
+                                       TAO_JSON_ITOA_P( '1' ),
+                                       TAO_JSON_ITOA_P( '2' ),
+                                       TAO_JSON_ITOA_P( '3' ),
+                                       TAO_JSON_ITOA_P( '4' ),
+                                       TAO_JSON_ITOA_P( '5' ),
+                                       TAO_JSON_ITOA_P( '6' ),
+                                       TAO_JSON_ITOA_P( '7' ),
+                                       TAO_JSON_ITOA_P( '8' ),
+                                       TAO_JSON_ITOA_P( '9' ) };
 
 #define TAO_JSON_ITOA_W( N, I ) *(pair*)&b[ N ] = s_pairs[ I ]
 #define TAO_JSON_ITOA_A( N ) t = ( std::uint64_t( 1 ) << ( 32 + N / 5 * N * 53 / 16 ) ) / std::uint32_t( 1e##N ) + 1 + N / 6 - N / 8, t *= u, t >>= N / 5 * N * 53 / 16, t += N / 6 * 4, TAO_JSON_ITOA_W( 0, t >> 32 )
@@ -85,7 +85,9 @@ namespace tao::json::itoa
 
 #define TAO_JSON_ITOA_LN( N ) ( TAO_JSON_ITOA_L##N, b += N + 1 )
 
+   // clang-format off
 #define TAO_JSON_ITOA_LG( F ) ( u < 100 ? u < 10 ? F( 0 ) : F( 1 ) : u < 1000000 ? u < 10000 ? u < 1000 ? F( 2 ) : F( 3 ) : u < 100000 ? F( 4 ) : F( 5 ) : u < 100000000 ? u < 10000000 ? F( 6 ) : F( 7 ) : u < 1000000000 ? F( 8 ) : F( 9 ) )
+   // clang-format on
 
    inline char* u32toa( const std::uint32_t u, char* b )
    {
