@@ -479,13 +479,17 @@ struct std::tuple_element< I, tao::span< ElementType, Extent > >
 #pragma clang diagnostic pop
 #endif
 
-// TODO: this is probably illegal. keep it?
-template< std::size_t I, typename ElementType, std::size_t Extent >
-constexpr auto std::get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&  // NOLINT(modernize-use-nodiscard)
+namespace std
 {
-   static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
-   return s[ I ];
-}
+   // TODO: this is probably illegal. keep it?
+   template< std::size_t I, typename ElementType, std::size_t Extent >
+   constexpr auto get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&  // NOLINT(modernize-use-nodiscard)
+   {
+      static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
+      return s[ I ];
+   }
+
+}  // namespace std
 
 #endif
 
