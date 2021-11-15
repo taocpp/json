@@ -38,7 +38,7 @@ namespace tao::json::jaxn::internal::integer
       return ( ( '0' <= c ) && ( c <= '9' ) ) || ( ( 'a' <= c ) && ( c <= 'f' ) ) || ( ( 'A' <= c ) && ( c <= 'F' ) );
    }
 
-   template< typename Integer, Integer Maximum = (std::numeric_limits< Integer >::max)() >
+   template< typename Integer, Integer Maximum = ( std::numeric_limits< Integer >::max )() >
    [[nodiscard]] constexpr bool accumulate_hex_digit( Integer& result, const char xdigit ) noexcept
    {
       // Assumes that xdigit is an xdigit as per is_hex_digit(); returns false on overflow.
@@ -58,7 +58,7 @@ namespace tao::json::jaxn::internal::integer
       return true;
    }
 
-   template< typename Integer, Integer Maximum = (std::numeric_limits< Integer >::max)() >
+   template< typename Integer, Integer Maximum = ( std::numeric_limits< Integer >::max )() >
    [[nodiscard]] constexpr bool accumulate_hex_digits( Integer& result, const std::string_view input ) noexcept
    {
       // Assumes input is a non-empty sequence of hex-digits; returns false on overflow.
@@ -71,7 +71,7 @@ namespace tao::json::jaxn::internal::integer
       return true;
    }
 
-   template< typename Integer, Integer Maximum = (std::numeric_limits< Integer >::max)() >
+   template< typename Integer, Integer Maximum = ( std::numeric_limits< Integer >::max )() >
    [[nodiscard]] constexpr bool convert_hex_positive( Integer& result, const std::string_view input ) noexcept
    {
       // Assumes result == 0 and that input is a non-empty sequence of hex-digits; returns false on overflow.
@@ -87,7 +87,7 @@ namespace tao::json::jaxn::internal::integer
 
       static_assert( std::is_signed_v< Signed > );
       using Unsigned = std::make_unsigned_t< Signed >;
-      constexpr Unsigned maximum = static_cast< Unsigned >( (std::numeric_limits< Signed >::max)() ) + 1;
+      constexpr Unsigned maximum = static_cast< Unsigned >( ( std::numeric_limits< Signed >::max )() ) + 1;
       Unsigned temporary = 0;
       if( accumulate_hex_digits< Unsigned, maximum >( temporary, input ) ) {
          result = static_cast< Signed >( ~temporary ) + 1;
@@ -96,7 +96,7 @@ namespace tao::json::jaxn::internal::integer
       return false;
    }
 
-   template< typename Unsigned, Unsigned Maximum = (std::numeric_limits< Unsigned >::max)() >
+   template< typename Unsigned, Unsigned Maximum = ( std::numeric_limits< Unsigned >::max )() >
    [[nodiscard]] constexpr bool convert_hex_unsigned( Unsigned& result, const std::string_view input ) noexcept
    {
       // Assumes result == 0 and that input is a non-empty sequence of hex-digits; returns false on overflow.

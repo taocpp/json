@@ -125,7 +125,7 @@ namespace tao::json::cbor::internal
    [[nodiscard]] std::size_t read_size_unsafe( Input& in )
    {
       const auto s = read_unsigned_unsafe( in );
-      if( s > static_cast< std::uint64_t >( (std::numeric_limits< std::size_t >::max)() ) ) {
+      if( s > static_cast< std::uint64_t >( ( std::numeric_limits< std::size_t >::max )() ) ) {
          throw pegtl::parse_error( "cbor size exceeds size_t " + std::to_string( s ), in );
       }
       return static_cast< std::size_t >( s );
