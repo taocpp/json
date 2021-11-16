@@ -84,6 +84,12 @@ namespace tao::json::binding::internal
       {
          ( c.*P )( v.template as< std::decay_t< T > >() );
       }
+
+      template< template< typename... > class Traits = traits, typename Producer >
+      static void consume( Producer& parser, C& c )
+      {
+         ( c.*P )( json::consume< Traits >( parser ) );
+      }
    };
 
 #else
@@ -205,6 +211,12 @@ namespace tao::json::binding::internal
       {
          ( c.*P )( v.template as< std::decay_t< T > >() );
       }
+
+      template< template< typename... > class Traits = traits, typename Producer >
+      static void consume( Producer& parser, C& c )
+      {
+         ( c.*P )( json::consume< Traits >( parser ) );
+      }
    };
 
    template< typename C, typename T, void ( C::*P )( T ) noexcept( false ) >
@@ -223,6 +235,12 @@ namespace tao::json::binding::internal
       static void to( const basic_value< Traits >( v ), C& c )
       {
          ( c.*P )( v.template as< std::decay_t< T > >() );
+      }
+
+      template< template< typename... > class Traits = traits, typename Producer >
+      static void consume( Producer& parser, C& c )
+      {
+         ( c.*P )( json::consume< Traits >( parser ) );
       }
    };
 
