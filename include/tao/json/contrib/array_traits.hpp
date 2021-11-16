@@ -22,7 +22,7 @@ namespace tao::json
       {
          const auto& a = v.get_array();
          for( std::size_t i = 0; i < N; ++i ) {
-            a[i].to_with(r[i], with...);
+            a[ i ].to_with( r[ i ], with... );
          }
       }
 
