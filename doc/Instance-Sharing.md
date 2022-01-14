@@ -160,4 +160,4 @@ Occurrences of `VALUE_PTR` are replaced with a deep copy of the pointee.
 
 Occurrences of `OPAQUE_PTR` are replaced with a JSON Value created by using the `produce()` function from the traits as Events producer (or the function supplied as second argument to `basic_value::assign_opaque_ptr()`) together with `tao::json::events::to_basic_value` as Events consumer.
 
-Copyright (c) 2018-2021 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2022 Dr. Colin Hirsch and Daniel Frey

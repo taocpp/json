@@ -33,4 +33,4 @@ Class `tao::json::value` has neither a `size()` nor an `empty()` method due to t
 * Should a Value Pointer have size `1`, or should it forward `size()` and `empty()` to the pointee Value?
 * Should an Opaque Pointer have size `1`, or should it report the size of the JSON representation of the pointee?
 
-Copyright (c) 2018-2021 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2022 Dr. Colin Hirsch and Daniel Frey

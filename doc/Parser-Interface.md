@@ -81,4 +81,4 @@ Additional functions for the CBOR parts parser that throw when they encounter an
    tao::string_view key_view();
 ```
 
-Copyright (c) 2018-2021 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2022 Dr. Colin Hirsch and Daniel Frey
