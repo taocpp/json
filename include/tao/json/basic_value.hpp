@@ -1,4 +1,4 @@
-// Copyright (c) 2017-2021 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2017-2022 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAO_JSON_BASIC_VALUE_HPP
@@ -293,12 +293,17 @@ namespace tao::json
          return std::get< double >( m_variant );
       }
 
-      [[nodiscard]] std::string& get_string()
+      [[nodiscard]] std::string& get_string() &
       {
          return std::get< std::string >( m_variant );
       }
 
-      [[nodiscard]] const std::string& get_string() const
+      [[nodiscard]] std::string&& get_string() &&
+      {
+         return std::get< std::string >( std::move( m_variant ) );
+      }
+
+      [[nodiscard]] const std::string& get_string() const&
       {
          return std::get< std::string >( m_variant );
       }
@@ -313,12 +318,17 @@ namespace tao::json
          return is_string() ? get_string() : get_string_view();
       }
 
-      [[nodiscard]] binary& get_binary()
+      [[nodiscard]] binary& get_binary() &
       {
          return std::get< binary >( m_variant );
       }
 
-      [[nodiscard]] const binary& get_binary() const
+      [[nodiscard]] binary&& get_binary() &&
+      {
+         return std::get< binary >( std::move( m_variant ) );
+      }
+
+      [[nodiscard]] const binary& get_binary() const&
       {
          return std::get< binary >( m_variant );
       }
@@ -333,22 +343,32 @@ namespace tao::json
          return is_binary() ? get_binary() : get_binary_view();
       }
 
-      [[nodiscard]] array_t& get_array()
+      [[nodiscard]] array_t& get_array() &
       {
          return std::get< array_t >( m_variant );
       }
 
-      [[nodiscard]] const array_t& get_array() const
+      [[nodiscard]] array_t&& get_array() &&
+      {
+         return std::get< array_t >( std::move( m_variant ) );
+      }
+
+      [[nodiscard]] const array_t& get_array() const&
       {
          return std::get< array_t >( m_variant );
       }
 
-      [[nodiscard]] object_t& get_object()
+      [[nodiscard]] object_t& get_object() &
       {
          return std::get< object_t >( m_variant );
       }
 
-      [[nodiscard]] const object_t& get_object() const
+      [[nodiscard]] object_t&& get_object() &&
+      {
+         return std::get< object_t >( std::move( m_variant ) );
+      }
+
+      [[nodiscard]] const object_t& get_object() const&
       {
          return std::get< object_t >( m_variant );
       }

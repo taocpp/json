@@ -1,4 +1,4 @@
-// Copyright (c) 2019-2021 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2019-2022 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAO_JSON_CONTRIB_DIFF_HPP
@@ -17,7 +17,7 @@ namespace tao::json
    namespace internal
    {
       template< typename... Ts >
-      void move_append( std::vector< Ts... >& lhs, std::vector< Ts... >& rhs )
+      void move_append( std::vector< Ts... >& lhs, std::vector< Ts... >&& rhs )
       {
          if( lhs.empty() ) {
             lhs = std::move( rhs );
