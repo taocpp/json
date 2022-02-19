@@ -106,6 +106,9 @@ namespace tao::json::events
       }
    };
 
+   template< typename Consumer >
+   ref( Consumer& ) -> ref< Consumer >;
+
 }  // namespace tao::json::events
 
 #endif

@@ -167,6 +167,9 @@ namespace tao::json::events
       }
    };
 
+   template< typename Consumer >
+   virtual_ref( Consumer& ) -> virtual_ref< Consumer >;
+
 }  // namespace tao::json::events
 
 #if defined( _MSC_VER )
