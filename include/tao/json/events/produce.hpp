@@ -21,13 +21,10 @@ namespace tao::json::events
    }
 
    template< template< typename... > class Traits = traits, typename Consumer = virtual_base >
-   struct value;
-
-   template< template< typename... > class Traits, typename Consumer >
-   using element = value< Traits, Consumer >;
+   class value;
 
    template< template< typename... > class Traits = traits, typename Consumer = virtual_base >
-   using array = std::initializer_list< element< Traits, Consumer > >;
+   using array = std::initializer_list< value< Traits, Consumer > >;
 
    template< template< typename... > class Traits, typename Consumer >
    struct member;
@@ -57,7 +54,7 @@ namespace tao::json::events
    {
       c.begin_object( o.size() );
       for( const auto& m : o ) {
-         c.key( m.m_key );
+         c.key( m.key );
          m.produce( c );
          c.member();
       }
@@ -65,7 +62,7 @@ namespace tao::json::events
    }
 
    template< template< typename... > class Traits, typename Consumer >
-   struct value
+   class value
    {
    private:
       const void* const m_value;
@@ -99,12 +96,12 @@ namespace tao::json::events
    struct member
       : value< Traits, Consumer >
    {
-      const std::string_view m_key;
+      const std::string_view key;
 
       template< typename T >
       member( const std::string_view k, const T& v ) noexcept
          : value< Traits, Consumer >( v ),
-           m_key( k )
+           key( k )
       {}
 
       template< typename T >
@@ -114,7 +111,7 @@ namespace tao::json::events
 
       member( const std::string_view k, const object< Traits, Consumer >& il ) noexcept
          : value< Traits, Consumer >( il ),
-           m_key( k )
+           key( k )
       {}
    };
 
