@@ -21,14 +21,14 @@ namespace tao::json
 
    using value = basic_value< traits >;
 
-   using producer_t = void ( * )( events::virtual_base&, const void* );
+   using producer_t = void( events::virtual_base&, const void* );
 
    namespace internal
    {
       struct opaque_ptr_t
       {
          const void* data;
-         producer_t producer;
+         producer_t* producer;
       };
 
       template< template< typename... > class Traits >
