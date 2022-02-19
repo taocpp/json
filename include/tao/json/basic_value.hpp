@@ -557,7 +557,7 @@ namespace tao::json
       }
 
       template< typename T >
-      void set_opaque_ptr( const T* data, const producer_t producer ) noexcept
+      void set_opaque_ptr( const T* data, producer_t* producer ) noexcept
       {
          assert( data );
          assert( producer );

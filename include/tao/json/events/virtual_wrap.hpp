@@ -1,179 +1,166 @@
-// Copyright (c) 2018-2022 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2022 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_EVENTS_VIRTUAL_REF_HPP
-#define TAO_JSON_EVENTS_VIRTUAL_REF_HPP
-
-#include <cstddef>
-#include <utility>
+#ifndef TAO_JSON_EVENTS_VIRTUAL_WRAP_HPP
+#define TAO_JSON_EVENTS_VIRTUAL_WRAP_HPP
 
 #include "virtual_base.hpp"
 
-#if defined( _MSC_VER )
-#pragma warning( push )
-#pragma warning( disable : 4373 )
-#endif
+// #if defined( _MSC_VER )
+// #pragma warning( push )
+// #pragma warning( disable : 4373 )
+// #endif
 
 namespace tao::json::events
 {
    template< typename Consumer >
-   class virtual_ref
+   class virtual_wrap
       : public virtual_base
    {
    public:
-      explicit virtual_ref( Consumer& r ) noexcept
-         : m_r( r )
+      Consumer wrapped;
+
+      template< typename... Ts >
+      virtual_wrap( Ts&&... ts ) noexcept( noexcept( Consumer( std::forward< Ts >( ts )... ) ) )
+         : wrapped( std::forward< Ts >( ts )... )
       {}
 
-      virtual_ref( const virtual_ref& ) = delete;
-      virtual_ref( virtual_ref&& ) = delete;
-
-      virtual ~virtual_ref() = default;
-
-      virtual_ref& operator=( const virtual_ref& ) = delete;
-      virtual_ref& operator=( virtual_ref&& ) = delete;
-
-   private:
-      Consumer& m_r;
-
+   protected:
       void v_null() override
       {
-         m_r.null();
+         wrapped.null();
       }
 
       void v_boolean( const bool v ) override
       {
-         m_r.boolean( v );
+         wrapped.boolean( v );
       }
 
       void v_number( const std::int64_t v ) override
       {
-         m_r.number( v );
+         wrapped.number( v );
       }
 
       void v_number( const std::uint64_t v ) override
       {
-         m_r.number( v );
+         wrapped.number( v );
       }
 
       void v_number( const double v ) override
       {
-         m_r.number( v );
+         wrapped.number( v );
       }
 
       void v_string( const char* v ) override
       {
-         m_r.string( v );
+         wrapped.string( v );
       }
 
       void v_string( std::string&& v ) override
       {
-         m_r.string( std::move( v ) );
+         wrapped.string( std::move( v ) );
       }
 
       void v_string( const std::string& v ) override
       {
-         m_r.string( v );
+         wrapped.string( v );
       }
 
       void v_string( const std::string_view v ) override
       {
-         m_r.string( v );
+         wrapped.string( v );
       }
 
       void v_binary( std::vector< std::byte >&& v ) override
       {
-         m_r.binary( std::move( v ) );
+         wrapped.binary( std::move( v ) );
       }
 
       void v_binary( const std::vector< std::byte >& v ) override
       {
-         m_r.binary( v );
+         wrapped.binary( v );
       }
 
       void v_binary( const tao::binary_view v ) override
       {
-         m_r.binary( v );
+         wrapped.binary( v );
       }
 
       void v_begin_array() override
       {
-         m_r.begin_array();
+         wrapped.begin_array();
       }
 
       void v_begin_array( const std::size_t v ) override
       {
-         m_r.begin_array( v );
+         wrapped.begin_array( v );
       }
 
       void v_element() override
       {
-         m_r.element();
+         wrapped.element();
       }
 
       void v_end_array() override
       {
-         m_r.end_array();
+         wrapped.end_array();
       }
 
       void v_end_array( const std::size_t v ) override
       {
-         m_r.end_array( v );
+         wrapped.end_array( v );
       }
 
       void v_begin_object() override
       {
-         m_r.begin_object();
+         wrapped.begin_object();
       }
 
       void v_begin_object( const std::size_t v ) override
       {
-         m_r.begin_object( v );
+         wrapped.begin_object( v );
       }
 
       void v_key( const char* v ) override
       {
-         m_r.key( v );
+         wrapped.key( v );
       }
 
       void v_key( std::string&& v ) override
       {
-         m_r.key( std::move( v ) );
+         wrapped.key( std::move( v ) );
       }
 
       void v_key( const std::string& v ) override
       {
-         m_r.key( v );
+         wrapped.key( v );
       }
 
       void v_key( const std::string_view v ) override
       {
-         m_r.key( v );
+         wrapped.key( v );
       }
 
       void v_member() override
       {
-         m_r.member();
+         wrapped.member();
       }
 
       void v_end_object() override
       {
-         m_r.end_object();
+         wrapped.end_object();
       }
 
       void v_end_object( const std::size_t v ) override
       {
-         m_r.end_object( v );
+         wrapped.end_object( v );
       }
    };
 
-   template< typename Consumer >
-   virtual_ref( Consumer& ) -> virtual_ref< Consumer >;
-
 }  // namespace tao::json::events
 
-#if defined( _MSC_VER )
-#pragma warning( pop )
-#endif
+// #if defined( _MSC_VER )
+// #pragma warning( pop )
+// #endif
 
 #endif

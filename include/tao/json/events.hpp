@@ -36,6 +36,11 @@
 #include "events/prefer_signed.hpp"
 #include "events/prefer_unsigned.hpp"
 
+// Virtual interface
+#include "events/virtual_base.hpp"
+#include "events/virtual_ref.hpp"
+#include "events/virtual_wrap.hpp"
+
 // Events other
 #include "events/debug.hpp"
 #include "events/discard.hpp"

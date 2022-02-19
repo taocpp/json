@@ -5,7 +5,7 @@
 #define TAO_JSON_SELF_CONTAINED_HPP
 
 #include "events/to_value.hpp"
-#include "events/virtual_ref.hpp"
+#include "events/virtual_wrap.hpp"
 
 #include "value.hpp"
 
@@ -107,11 +107,10 @@ namespace tao::json
 
          case type::OPAQUE_PTR: {
             const auto& q = v.get_opaque_ptr();
-            events::to_basic_value< Traits > consumer;
-            events::virtual_ref< events::to_basic_value< Traits > > ref( consumer );
-            q.producer( ref, q.data );
-            consumer.value.public_base() = std::move( v.public_base() );
-            v = std::move( consumer.value );
+            events::virtual_wrap< events::to_basic_value< Traits > > consumer;
+            q.producer( consumer, q.data );
+            consumer.wrapped.value.public_base() = std::move( v.public_base() );
+            v = std::move( consumer.wrapped.value );
             return;
          }
       }
