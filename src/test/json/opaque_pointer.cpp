@@ -95,13 +95,13 @@ namespace tao::json
       };
 
       template< template< typename... > class Traits, typename Consumer >
-      [[nodiscard]] array_t< Traits, Consumer > array( Consumer& c ) noexcept( noexcept( array_t< Traits, Consumer >( c ) ) )
+      [[nodiscard]] array_t< Traits, Consumer > array_consumer( Consumer& c ) noexcept( noexcept( array_t< Traits, Consumer >( c ) ) )
       {
          return array_t< Traits, Consumer >( c );
       }
 
       template< template< typename... > class Traits, typename Consumer >
-      [[nodiscard]] object_t< Traits, Consumer > object( Consumer& c ) noexcept( noexcept( object_t< Traits, Consumer >( c ) ) )
+      [[nodiscard]] object_t< Traits, Consumer > object_consumer( Consumer& c ) noexcept( noexcept( object_t< Traits, Consumer >( c ) ) )
       {
          return object_t< Traits, Consumer >( c );
       }
@@ -120,7 +120,7 @@ namespace tao::json
       template< template< typename... > class Traits, typename Consumer >
       static void produce( Consumer& consumer, const point& data )
       {
-         auto a = events::array< Traits >( consumer );
+         auto a = events::array_consumer< Traits >( consumer );
          a.push_back( data.x );
          a.push_back( data.y );
       }
@@ -140,7 +140,7 @@ namespace tao::json
       template< template< typename... > class Traits, typename Consumer >
       static void produce( Consumer& consumer, const employee& data )
       {
-         auto o = events::object< Traits >( consumer );
+         auto o = events::object_consumer< Traits >( consumer );
          o.insert( "name", data.name );
          if( !data.position.empty() ) {
             o.insert( "position", data.position );
