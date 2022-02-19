@@ -89,7 +89,7 @@ namespace tao::json::events
 
          case type::OPAQUE_PTR: {
             const auto& q = v.get_opaque_ptr();
-            virtual_ref< Consumer > ref( consumer );
+            virtual_ref ref( consumer );
             q.producer( ref, q.data );
             return;
          }
@@ -183,7 +183,7 @@ namespace tao::json::events
 
          case type::OPAQUE_PTR: {
             const auto& q = v.get_opaque_ptr();
-            virtual_ref< Consumer > ref( consumer );
+            virtual_ref ref( consumer );
             q.producer( ref, q.data );
             return;
          }
