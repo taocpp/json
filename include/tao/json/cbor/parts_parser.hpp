@@ -375,7 +375,7 @@ namespace tao::json::cbor
 
       [[nodiscard]] auto mark()
       {
-         return m_input.template mark< pegtl::rewind_mode::required >();
+         return m_input.template auto_rewind< pegtl::rewind_mode::required >();
       }
 
       template< typename T >
