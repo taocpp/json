@@ -1,3 +1,4 @@
 [submodule "external/PEGTL"]
 	path = external/PEGTL
 	url = https://github.com/taocpp/PEGTL
+	branch = 3.x

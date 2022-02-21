@@ -239,9 +239,9 @@ namespace tao::json::jaxn
          pegtl::parse< pegtl::disable< pegtl::must< jaxn::internal::rules::sor_value, json::internal::rules::wss > > >( m_input );
       }
 
-      [[nodiscard]] auto mark()  // noexcept( noexcept( m_input.template auto_rewind< pegtl::rewind_mode::required >() ) )
+      [[nodiscard]] auto mark()  // noexcept( noexcept( m_input.template mark< pegtl::rewind_mode::required >() ) )
       {
-         return m_input.template auto_rewind< pegtl::rewind_mode::required >();
+         return m_input.template mark< pegtl::rewind_mode::required >();
       }
 
       template< typename T >

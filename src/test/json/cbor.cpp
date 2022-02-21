@@ -17,7 +17,7 @@ namespace tao::json
    {
       cbor::events::to_string t;
       test::make_events( t );
-      const auto r = pegtl::internal::read_file_stdio( "tests/taocpp/make_events.cbor" ).read_string();
+      const auto r = pegtl::internal::file_reader( "tests/taocpp/make_events.cbor" ).read();
       TEST_ASSERT( r == t.value() );
    }
 
