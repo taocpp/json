@@ -140,7 +140,7 @@ namespace tao::json::events
       {
          using underlying_t = std::underlying_type_t< T >;
 
-         [[nodiscard]] static auto to_underlying( const T v ) noexcept
+         [[nodiscard]] static underlying_t to_underlying( const T v ) noexcept
          {
             return static_cast< underlying_t >( v );
          }
