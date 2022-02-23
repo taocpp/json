@@ -65,6 +65,22 @@ namespace tao::json::events
    {
       union union_t
       {
+         const void* p;
+         bool b;
+         char c;
+         signed char sc;
+         unsigned char uc;
+         signed short ss;
+         unsigned short us;
+         signed int si;
+         unsigned int ui;
+         signed long sl;
+         unsigned long ul;
+         signed long long sll;
+         unsigned long long ull;
+         float f;
+         double d;
+
          explicit union_t( const void* v ) noexcept
             : p( v )
          {}
@@ -125,22 +141,6 @@ namespace tao::json::events
             : d( v )
          {}
 
-         const void* p;
-         bool b;
-         char c;
-         signed char sc;
-         unsigned char uc;
-         signed short ss;
-         unsigned short us;
-         signed int si;
-         unsigned int ui;
-         signed long sl;
-         unsigned long ul;
-         signed long long sll;
-         unsigned long long ull;
-         float f;
-         double d;
-
          template< typename T >
          [[nodiscard]] T get() const noexcept
          {
@@ -198,6 +198,21 @@ namespace tao::json::events
       {};
 
       template< typename T >
+      struct traits< T, std::enable_if_t< std::is_arithmetic_v< T > > >
+         : std::true_type
+      {
+         [[nodiscard]] static T to_underlying( const T v ) noexcept
+         {
+            return v;
+         }
+
+         [[nodiscard]] static T from_underlying( const union_t& v ) noexcept
+         {
+            return v.get< T >();
+         }
+      };
+
+      template< typename T >
       struct traits< T, std::enable_if_t< std::is_enum_v< T > > >
          : std::true_type
       {
@@ -224,104 +239,6 @@ namespace tao::json::events
          producer_t* const m_producer;
 
       public:
-         value( const bool v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.b );
-              } )
-         {}
-
-         value( const char v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.c );
-              } )
-         {}
-
-         value( const signed char v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.sc );
-              } )
-         {}
-
-         value( const unsigned char v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.uc );
-              } )
-         {}
-
-         value( const signed short v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.ss );
-              } )
-         {}
-
-         value( const unsigned short v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.us );
-              } )
-         {}
-
-         value( const signed int v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.si );
-              } )
-         {}
-
-         value( const unsigned int v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.ui );
-              } )
-         {}
-
-         value( const signed long v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.sl );
-              } )
-         {}
-
-         value( const unsigned long v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.ul );
-              } )
-         {}
-
-         value( const signed long long v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.sll );
-              } )
-         {}
-
-         value( const unsigned long long v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.ull );
-              } )
-         {}
-
-         value( const float v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.f );
-              } )
-         {}
-
-         value( const double v ) noexcept
-            : m_value( v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, u.d );
-              } )
-         {}
-
          template< typename T, typename = std::enable_if_t< traits< T >::value > >
          value( const T v ) noexcept
             : m_value( traits< T >::to_underlying( v ) ),
