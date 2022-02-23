@@ -12,7 +12,6 @@
 #include "virtual_base.hpp"
 
 #include "../forward.hpp"
-#include "../internal/dependent_false.hpp"
 
 namespace tao::json::events
 {
@@ -81,115 +80,38 @@ namespace tao::json::events
          float f;
          double d;
 
-         explicit union_t( const void* v ) noexcept
-            : p( v )
-         {}
+         // clang-format off
+         explicit union_t( const void* v ) noexcept : p( v ) {}
+         explicit union_t( const bool v ) noexcept : b( v ) {}
+         explicit union_t( const char v ) noexcept : c( v ) {}
+         explicit union_t( const signed char v ) noexcept : sc( v ) {}
+         explicit union_t( const unsigned char v ) noexcept : uc( v ) {}
+         explicit union_t( const signed short v ) noexcept : ss( v ) {}
+         explicit union_t( const unsigned short v ) noexcept : us( v ) {}
+         explicit union_t( const signed int v ) noexcept : si( v ) {}
+         explicit union_t( const unsigned int v ) noexcept : ui( v ) {}
+         explicit union_t( const signed long v ) noexcept : sl( v ) {}
+         explicit union_t( const unsigned long v ) noexcept : ul( v ) {}
+         explicit union_t( const signed long long v ) noexcept : sll( v ) {}
+         explicit union_t( const unsigned long long v ) noexcept : ull( v ) {}
+         explicit union_t( const float v ) noexcept : f( v ) {}
+         explicit union_t( const double v ) noexcept : d( v ) {}
 
-         explicit union_t( const bool v ) noexcept
-            : b( v )
-         {}
-
-         explicit union_t( const char v ) noexcept
-            : c( v )
-         {}
-
-         explicit union_t( const signed char v ) noexcept
-            : sc( v )
-         {}
-
-         explicit union_t( const unsigned char v ) noexcept
-            : uc( v )
-         {}
-
-         explicit union_t( const signed short v ) noexcept
-            : ss( v )
-         {}
-
-         explicit union_t( const unsigned short v ) noexcept
-            : us( v )
-         {}
-
-         explicit union_t( const signed int v ) noexcept
-            : si( v )
-         {}
-
-         explicit union_t( const unsigned int v ) noexcept
-            : ui( v )
-         {}
-
-         explicit union_t( const signed long v ) noexcept
-            : sl( v )
-         {}
-
-         explicit union_t( const unsigned long v ) noexcept
-            : ul( v )
-         {}
-
-         explicit union_t( const signed long long v ) noexcept
-            : sll( v )
-         {}
-
-         explicit union_t( const unsigned long long v ) noexcept
-            : ull( v )
-         {}
-
-         explicit union_t( const float v ) noexcept
-            : f( v )
-         {}
-
-         explicit union_t( const double v ) noexcept
-            : d( v )
-         {}
-
-         template< typename T >
-         [[nodiscard]] T get() const noexcept
-         {
-            if constexpr( std::is_same_v< T, bool > ) {
-               return b;
-            }
-            else if constexpr( std::is_same_v< T, char > ) {
-               return c;
-            }
-            else if constexpr( std::is_same_v< T, signed char > ) {
-               return sc;
-            }
-            else if constexpr( std::is_same_v< T, unsigned char > ) {
-               return uc;
-            }
-            else if constexpr( std::is_same_v< T, signed short > ) {
-               return ss;
-            }
-            else if constexpr( std::is_same_v< T, unsigned short > ) {
-               return us;
-            }
-            else if constexpr( std::is_same_v< T, signed int > ) {
-               return si;
-            }
-            else if constexpr( std::is_same_v< T, unsigned int > ) {
-               return ui;
-            }
-            else if constexpr( std::is_same_v< T, signed long > ) {
-               return sl;
-            }
-            else if constexpr( std::is_same_v< T, unsigned long > ) {
-               return ul;
-            }
-            else if constexpr( std::is_same_v< T, signed long long > ) {
-               return sll;
-            }
-            else if constexpr( std::is_same_v< T, unsigned long long > ) {
-               return ull;
-            }
-            else if constexpr( std::is_same_v< T, float > ) {
-               return f;
-            }
-            else if constexpr( std::is_same_v< T, double > ) {
-               return d;
-            }
-            else {
-               static_assert( internal::dependent_false< T >, "invalid type T" );
-            }
-         }
+         explicit operator bool() const noexcept { return b; }
+         explicit operator char() const noexcept { return c; }
+         explicit operator signed char() const noexcept { return sc; }
+         explicit operator unsigned char() const noexcept { return uc; }
+         explicit operator signed short() const noexcept { return ss; }
+         explicit operator unsigned short() const noexcept { return us; }
+         explicit operator signed int() const noexcept { return si; }
+         explicit operator unsigned int() const noexcept { return ui; }
+         explicit operator signed long() const noexcept { return sl; }
+         explicit operator unsigned long() const noexcept { return ul; }
+         explicit operator signed long long() const noexcept { return sll; }
+         explicit operator unsigned long long() const noexcept { return ull; }
+         explicit operator float() const noexcept { return f; }
+         explicit operator double() const noexcept { return d; }
+         // clang-format on
       };
 
       template< typename, typename = void >
@@ -208,7 +130,7 @@ namespace tao::json::events
 
          [[nodiscard]] static T from_underlying( const union_t& v ) noexcept
          {
-            return v.get< T >();
+            return static_cast< T >( v );
          }
       };
 
@@ -225,7 +147,7 @@ namespace tao::json::events
 
          [[nodiscard]] static T from_underlying( const union_t& v ) noexcept
          {
-            return static_cast< T >( v.get< underlying_t >() );
+            return static_cast< T >( static_cast< underlying_t >( v ) );
          }
       };
 
