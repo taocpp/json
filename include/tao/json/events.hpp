@@ -5,6 +5,7 @@
 #define TAO_JSON_EVENTS_HPP
 
 // Events producers
+#include "events/capture.hpp"
 #include "events/from_file.hpp"
 #include "events/from_input.hpp"
 #include "events/from_stream.hpp"
