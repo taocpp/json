@@ -64,63 +64,63 @@ namespace tao::json::events
    {
       union union_t
       {
-         union_t( const void* v )
+         union_t( const void* v ) noexcept
             : p( v )
          {}
 
-         union_t( const bool v )
+         union_t( const bool v ) noexcept
             : b( v )
          {}
 
-         union_t( const char v )
+         union_t( const char v ) noexcept
             : c( v )
          {}
 
-         union_t( const signed char v )
+         union_t( const signed char v ) noexcept
             : sc( v )
          {}
 
-         union_t( const unsigned char v )
+         union_t( const unsigned char v ) noexcept
             : uc( v )
          {}
 
-         union_t( const signed short v )
+         union_t( const signed short v ) noexcept
             : ss( v )
          {}
 
-         union_t( const unsigned short v )
+         union_t( const unsigned short v ) noexcept
             : us( v )
          {}
 
-         union_t( const signed int v )
+         union_t( const signed int v ) noexcept
             : si( v )
          {}
 
-         union_t( const unsigned int v )
+         union_t( const unsigned int v ) noexcept
             : ui( v )
          {}
 
-         union_t( const signed long v )
+         union_t( const signed long v ) noexcept
             : sl( v )
          {}
 
-         union_t( const unsigned long v )
+         union_t( const unsigned long v ) noexcept
             : ul( v )
          {}
 
-         union_t( const signed long long v )
+         union_t( const signed long long v ) noexcept
             : sll( v )
          {}
 
-         union_t( const unsigned long long v )
+         union_t( const unsigned long long v ) noexcept
             : ull( v )
          {}
 
-         union_t( const float v )
+         union_t( const float v ) noexcept
             : f( v )
          {}
 
-         union_t( const double v )
+         union_t( const double v ) noexcept
             : d( v )
          {}
 
@@ -141,51 +141,53 @@ namespace tao::json::events
          double d;
 
          template< typename T >
-         T get() const
+         [[nodiscard]] T get() const noexcept
          {
             if constexpr( std::is_same_v< T, bool > ) {
                return b;
             }
-            if constexpr( std::is_same_v< T, char > ) {
+            else if constexpr( std::is_same_v< T, char > ) {
                return c;
             }
-            if constexpr( std::is_same_v< T, signed char > ) {
+            else if constexpr( std::is_same_v< T, signed char > ) {
                return sc;
             }
-            if constexpr( std::is_same_v< T, unsigned char > ) {
+            else if constexpr( std::is_same_v< T, unsigned char > ) {
                return uc;
             }
-            if constexpr( std::is_same_v< T, signed short > ) {
+            else if constexpr( std::is_same_v< T, signed short > ) {
                return ss;
             }
-            if constexpr( std::is_same_v< T, unsigned short > ) {
+            else if constexpr( std::is_same_v< T, unsigned short > ) {
                return us;
             }
-            if constexpr( std::is_same_v< T, signed int > ) {
+            else if constexpr( std::is_same_v< T, signed int > ) {
                return si;
             }
-            if constexpr( std::is_same_v< T, unsigned int > ) {
+            else if constexpr( std::is_same_v< T, unsigned int > ) {
                return ui;
             }
-            if constexpr( std::is_same_v< T, signed long > ) {
+            else if constexpr( std::is_same_v< T, signed long > ) {
                return sl;
             }
-            if constexpr( std::is_same_v< T, unsigned long > ) {
+            else if constexpr( std::is_same_v< T, unsigned long > ) {
                return ul;
             }
-            if constexpr( std::is_same_v< T, signed long long > ) {
+            else if constexpr( std::is_same_v< T, signed long long > ) {
                return sll;
             }
-            if constexpr( std::is_same_v< T, unsigned long long > ) {
+            else if constexpr( std::is_same_v< T, unsigned long long > ) {
                return ull;
             }
-            if constexpr( std::is_same_v< T, float > ) {
+            else if constexpr( std::is_same_v< T, float > ) {
                return f;
             }
-            if constexpr( std::is_same_v< T, double > ) {
+            else if constexpr( std::is_same_v< T, double > ) {
                return d;
             }
-            throw "invalid type T";
+            else {
+               throw "invalid type T";
+            }
          }
       };
 
@@ -325,13 +327,15 @@ namespace tao::json::events
               m_producer( []( Consumer& c, const union_t& u ) {
                  events::produce< Traits >( c, traits< T >::from_underlying( u ) );
               } )
-         {}
+         {
+            static_assert( noexcept( traits< T >::to_underlying( v ) ) );
+         }
 
          template< typename T, typename = std::enable_if_t< !traits< T >::value > >
-         value( const T& t ) noexcept
-            : m_value( &t ),
-              m_producer( []( Consumer& c, const union_t& v ) {
-                 events::produce< Traits >( c, *static_cast< const T* >( v.p ) );
+         value( const T& v ) noexcept
+            : m_value( &v ),
+              m_producer( []( Consumer& c, const union_t& u ) {
+                 events::produce< Traits >( c, *static_cast< const T* >( u.p ) );
               } )
          {}
 
