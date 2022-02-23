@@ -12,6 +12,7 @@
 #include "virtual_base.hpp"
 
 #include "../forward.hpp"
+#include "../internal/dependent_false.hpp"
 
 namespace tao::json::events
 {
@@ -64,63 +65,63 @@ namespace tao::json::events
    {
       union union_t
       {
-         union_t( const void* v ) noexcept
+         explicit union_t( const void* v ) noexcept
             : p( v )
          {}
 
-         union_t( const bool v ) noexcept
+         explicit union_t( const bool v ) noexcept
             : b( v )
          {}
 
-         union_t( const char v ) noexcept
+         explicit union_t( const char v ) noexcept
             : c( v )
          {}
 
-         union_t( const signed char v ) noexcept
+         explicit union_t( const signed char v ) noexcept
             : sc( v )
          {}
 
-         union_t( const unsigned char v ) noexcept
+         explicit union_t( const unsigned char v ) noexcept
             : uc( v )
          {}
 
-         union_t( const signed short v ) noexcept
+         explicit union_t( const signed short v ) noexcept
             : ss( v )
          {}
 
-         union_t( const unsigned short v ) noexcept
+         explicit union_t( const unsigned short v ) noexcept
             : us( v )
          {}
 
-         union_t( const signed int v ) noexcept
+         explicit union_t( const signed int v ) noexcept
             : si( v )
          {}
 
-         union_t( const unsigned int v ) noexcept
+         explicit union_t( const unsigned int v ) noexcept
             : ui( v )
          {}
 
-         union_t( const signed long v ) noexcept
+         explicit union_t( const signed long v ) noexcept
             : sl( v )
          {}
 
-         union_t( const unsigned long v ) noexcept
+         explicit union_t( const unsigned long v ) noexcept
             : ul( v )
          {}
 
-         union_t( const signed long long v ) noexcept
+         explicit union_t( const signed long long v ) noexcept
             : sll( v )
          {}
 
-         union_t( const unsigned long long v ) noexcept
+         explicit union_t( const unsigned long long v ) noexcept
             : ull( v )
          {}
 
-         union_t( const float v ) noexcept
+         explicit union_t( const float v ) noexcept
             : f( v )
          {}
 
-         union_t( const double v ) noexcept
+         explicit union_t( const double v ) noexcept
             : d( v )
          {}
 
@@ -186,7 +187,7 @@ namespace tao::json::events
                return d;
             }
             else {
-               throw "invalid type T";
+               static_assert( internal::dependent_false< T >, "invalid type T" );
             }
          }
       };
