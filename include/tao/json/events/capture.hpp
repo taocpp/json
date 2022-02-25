@@ -38,25 +38,37 @@ namespace tao::json::events
    }
 
    template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
-   void produce( ActualConsumer& c, const capture::array< Traits, Consumer >& a )
+   void produce_elements( ActualConsumer& c, const capture::array< Traits, Consumer >& a )
    {
-      c.begin_array( a.size() );
       for( const auto& e : a ) {
          e.produce( c );
          c.element();
       }
+   }
+
+   template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
+   void produce( ActualConsumer& c, const capture::array< Traits, Consumer >& a )
+   {
+      c.begin_array( a.size() );
+      events::produce_elements( c, a );
       c.end_array( a.size() );
+   }
+
+   template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
+   void produce_members( ActualConsumer& c, const capture::object< Traits, Consumer >& o )
+   {
+      for( const auto& m : o ) {
+         c.key( m.key );
+         m.produce( c );
+         c.member();
+      }
    }
 
    template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
    void produce( ActualConsumer& c, const capture::object< Traits, Consumer >& o )
    {
       c.begin_object( o.size() );
-      for( const auto& m : o ) {
-         c.key( m.key );
-         m.produce( c );
-         c.member();
-      }
+      events::produce_members( c, o );
       c.end_object( o.size() );
    }
 
