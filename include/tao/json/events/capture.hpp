@@ -163,6 +163,22 @@ namespace tao::json::events
          }
       };
 
+      namespace internal
+      {
+         template< template< typename... > class Traits, typename Consumer, typename T >
+         void produce_from_underlying( Consumer& c, const union_t& u )
+         {
+            events::produce< Traits >( c, traits< T >::from_underlying( u ) );
+         }
+
+         template< template< typename... > class Traits, typename Consumer, typename T >
+         void produce_from_pointer( Consumer& c, const union_t& u )
+         {
+            events::produce< Traits >( c, *static_cast< const T* >( u.p ) );
+         }
+
+      }  // namespace internal
+
       template< template< typename... > class Traits, typename Consumer >
       class value
       {
@@ -176,9 +192,7 @@ namespace tao::json::events
          template< typename T, typename = std::enable_if_t< traits< T >::value > >
          value( const T v ) noexcept
             : m_value( traits< T >::to_underlying( v ) ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, traits< T >::from_underlying( u ) );
-              } )
+              m_producer( &internal::produce_from_underlying< Traits, Consumer, T > )
          {
             static_assert( noexcept( traits< T >::to_underlying( v ) ) );
          }
@@ -186,16 +200,12 @@ namespace tao::json::events
          template< typename T, typename = std::enable_if_t< !traits< T >::value > >
          value( const T& v ) noexcept
             : m_value( &v ),
-              m_producer( []( Consumer& c, const union_t& u ) {
-                 events::produce< Traits >( c, *static_cast< const T* >( u.p ) );
-              } )
+              m_producer( &internal::produce_from_pointer< Traits, Consumer, T > )
          {}
 
          value( const object< Traits, Consumer >& il ) noexcept
             : m_value( &il ),
-              m_producer( []( Consumer& c, const union_t& v ) {
-                 events::produce( c, *static_cast< const object< Traits, Consumer >* >( v.p ) );
-              } )
+              m_producer( &internal::produce_from_pointer< Traits, Consumer, object< Traits, Consumer > > )
          {}
 
          void produce( Consumer& c ) const
