@@ -7,10 +7,24 @@
 #include "span.hpp"
 
 #include <algorithm>
+#include <cstddef>
 
 namespace tao
 {
    using binary_view = span< const std::byte >;
+
+   template< typename T >
+   [[nodiscard]] binary_view to_binary_view( const T* data, const std::size_t size ) noexcept
+   {
+      static_assert( sizeof( T ) == 1 );
+      return { reinterpret_cast< const std::byte* >( data ), size };
+   }
+
+   template< typename T >
+   [[nodiscard]] binary_view to_binary_view( const T& value ) noexcept
+   {
+      return tao::to_binary_view( std::data( value ), std::size( value ) );
+   }
 
    namespace internal
    {

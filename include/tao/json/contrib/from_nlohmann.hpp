@@ -1,19 +1,19 @@
-// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2022 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_INCLUDE_CONTRIB_NLOHMANN_FROM_VALUE_HPP
-#define TAO_JSON_INCLUDE_CONTRIB_NLOHMANN_FROM_VALUE_HPP
+#ifndef TAO_JSON_INCLUDE_CONTRIB_FROM_NLOHMANN_HPP
+#define TAO_JSON_INCLUDE_CONTRIB_FROM_NLOHMANN_HPP
 
 #include <cstdint>
 #include <stdexcept>
 #include <string>
 
-namespace tao::json::nlohmann
+namespace tao::json::events
 {
    // Events producer from an nlohmann/json value.
 
    template< typename Consumer, typename Value >
-   void from_value( Consumer& consumer, const Value& v )
+   void from_nlohmann( Consumer& consumer, const Value& v )
    {
       switch( v.type() ) {
          case Value::value_t::discarded:
@@ -36,10 +36,13 @@ namespace tao::json::nlohmann
          case Value::value_t::string:
             consumer.string( v.template get_ref< const std::string& >() );
             return;
+         case Value::value_t::binary:
+            consumer.binary( tao::to_binary_view( v.get_binary() ) );
+            return;
          case Value::value_t::array:
             consumer.begin_array();
             for( const auto& e : v ) {
-               tao::json::nlohmann::from_value( consumer, e );
+               tao::json::events::from_nlohmann( consumer, e );
                consumer.element();
             }
             consumer.end_array();
@@ -48,7 +51,7 @@ namespace tao::json::nlohmann
             consumer.begin_object();
             for( typename Value::const_iterator it = v.begin(); it != v.end(); ++it ) {
                consumer.key( it.key() );
-               tao::json::nlohmann::from_value( consumer, it.value() );
+               events::from_nlohmann( consumer, it.value() );
                consumer.member();
             }
             consumer.end_object();
@@ -57,6 +60,6 @@ namespace tao::json::nlohmann
       throw std::logic_error( "invalid value for type()" );  // LCOV_EXCL_LINE
    }
 
-}  // namespace tao::json::nlohmann
+}  // namespace tao::json::events
 
 #endif

@@ -1,20 +1,20 @@
-// Copyright (c) 2016-2018 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2022 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_INCLUDE_CONTRIB_NLOHMANN_TO_VALUE_HPP
-#define TAO_JSON_INCLUDE_CONTRIB_NLOHMANN_TO_VALUE_HPP
+#ifndef TAO_JSON_INCLUDE_CONTRIB_TO_NLOHMANN_HPP
+#define TAO_JSON_INCLUDE_CONTRIB_TO_NLOHMANN_HPP
 
 #include <cstdint>
 #include <string>
 #include <utility>
 #include <vector>
 
-namespace tao::json::nlohmann
+namespace tao::json::events
 {
    // Events consumer to build an nlohmann/json value.
 
    template< typename Value >
-   class to_value
+   class to_nlohmann
    {
    private:
       std::vector< Value > stack_;
@@ -48,6 +48,11 @@ namespace tao::json::nlohmann
          value = v;
       }
 
+      void string( const char* v )
+      {
+         value = v;
+      }
+
       void string( const std::string& v )
       {
          value = v;
@@ -58,8 +63,28 @@ namespace tao::json::nlohmann
          value = std::move( v );
       }
 
+      void string( const std::string_view v )
+      {
+         value = v;
+      }
+
+      void binary( std::vector< std::byte >&& v )
+      {
+         this->binary( tao::to_binary_view( v ) );
+      }
+
+      void binary( const std::vector< std::byte >& v )
+      {
+         this->binary( tao::to_binary_view( v ) );
+      }
+
+      void binary( const tao::binary_view v )
+      {
+         value = { std::begin( v ), std::end( v ) };
+      }
+
       // array
-      void begin_array()
+      void begin_array( const std::size_t /*unused*/ = 0 )
       {
          stack_.push_back( Value::array() );
       }
@@ -69,16 +94,21 @@ namespace tao::json::nlohmann
          stack_.back().push_back( std::move( value ) );
       }
 
-      void end_array()
+      void end_array( const std::size_t /*unused*/ = 0 )
       {
          value = std::move( stack_.back() );
          stack_.pop_back();
       }
 
       // object
-      void begin_object()
+      void begin_object( const std::size_t /*unused*/ = 0 )
       {
          stack_.push_back( Value::object() );
+      }
+
+      void key( const char* v )
+      {
+         keys_.push_back( v );
       }
 
       void key( const std::string& v )
@@ -91,19 +121,24 @@ namespace tao::json::nlohmann
          keys_.push_back( std::move( v ) );
       }
 
+      void key( const std::string_view v )
+      {
+         keys_.push_back( std::string( v ) );
+      }
+
       void member()
       {
          stack_.back().push_back( typename Value::object_t::value_type( std::move( keys_.back() ), std::move( value ) ) );
          keys_.pop_back();
       }
 
-      void end_object()
+      void end_object( const std::size_t /*unused*/ = 0 )
       {
          value = std::move( stack_.back() );
          stack_.pop_back();
       }
    };
 
-}  // namespace tao::json::nlohmann
+}  // namespace tao::json::events
 
 #endif

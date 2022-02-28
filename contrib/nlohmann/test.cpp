@@ -1,12 +1,13 @@
-// Copyright (c) 2016-2020 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2016-2022 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#include "test.hpp"
+#include "../src/test/json/test.hpp"
 
-#include "nlohmann/from_value.hpp"
-#include "nlohmann/json.hpp"
-#include "nlohmann/to_value.hpp"
+#include "json.hpp"
 
+#include <tao/json/binary_view.hpp>
+#include <tao/json/contrib/from_nlohmann.hpp>
+#include <tao/json/contrib/to_nlohmann.hpp>
 #include <tao/json/events/from_string.hpp>
 #include <tao/json/events/to_string.hpp>
 
@@ -14,7 +15,7 @@ namespace tao::json
 {
    void unit_test()
    {
-      tao::json::nlohmann::to_value<::nlohmann::json > value_consumer;
+      tao::json::events::to_nlohmann< nlohmann::json > value_consumer;
       tao::json::events::from_string( value_consumer, "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
 
       const auto& v = value_consumer.value;
@@ -38,11 +39,11 @@ namespace tao::json
       TEST_ASSERT( v[ 7 ].at( "c" ) == "d" );
 
       tao::json::events::to_string output_consumer;
-      tao::json::nlohmann::from_value( output_consumer, v );
+      tao::json::events::from_nlohmann( output_consumer, v );
 
       TEST_ASSERT( output_consumer.value() == "[null,true,false,42,43.0,\"foo\",[1,2,3],{\"a\":\"b\",\"c\":\"d\"}]" );
    }
 
 }  // namespace tao::json
 
-#include "main.hpp"
+#include "../src/test/json/main.hpp"
