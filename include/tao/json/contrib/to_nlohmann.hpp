@@ -1,13 +1,16 @@
 // Copyright (c) 2016-2022 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
-#ifndef TAO_JSON_INCLUDE_CONTRIB_TO_NLOHMANN_HPP
-#define TAO_JSON_INCLUDE_CONTRIB_TO_NLOHMANN_HPP
+#ifndef TAO_JSON_CONTRIB_TO_NLOHMANN_HPP
+#define TAO_JSON_CONTRIB_TO_NLOHMANN_HPP
 
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
+
+#include <tao/json/binary_view.hpp>
 
 namespace tao::json::events
 {
@@ -108,7 +111,7 @@ namespace tao::json::events
 
       void key( const char* v )
       {
-         keys_.push_back( v );
+         keys_.emplace_back( v );
       }
 
       void key( const std::string& v )
@@ -123,7 +126,7 @@ namespace tao::json::events
 
       void key( const std::string_view v )
       {
-         keys_.push_back( std::string( v ) );
+         keys_.emplace_back( v );
       }
 
       void member()
