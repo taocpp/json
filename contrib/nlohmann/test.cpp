@@ -10,13 +10,17 @@
 #include <tao/json/contrib/to_nlohmann.hpp>
 #include <tao/json/events/from_string.hpp>
 #include <tao/json/events/to_string.hpp>
+#include <tao/json/from_string.hpp>
 
 namespace tao::json
 {
    void unit_test()
    {
       tao::json::events::to_nlohmann< nlohmann::json > value_consumer;
-      tao::json::events::from_string( value_consumer, "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
+
+      auto value = tao::json::from_string( "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
+      tao::json::events::from_value( value_consumer, value );
+      // tao::json::events::from_string( value_consumer, "[ null, true, false, 42, 43.0, \"foo\", [ 1, 2, 3 ], { \"a\" : \"b\", \"c\" : \"d\" } ]" );
 
       const auto& v = value_consumer.value;
 

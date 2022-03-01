@@ -83,7 +83,7 @@ namespace tao::json::events
 
       void binary( const tao::binary_view v )
       {
-         value = { std::begin( v ), std::end( v ) };
+         value = v;
       }
 
       // array
