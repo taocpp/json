@@ -71,16 +71,6 @@ namespace tao::json::events
          value = v;
       }
 
-      void binary( std::vector< std::byte >&& v )
-      {
-         this->binary( tao::to_binary_view( v ) );
-      }
-
-      void binary( const std::vector< std::byte >& v )
-      {
-         this->binary( tao::to_binary_view( v ) );
-      }
-
       void binary( const tao::binary_view v )
       {
          value = v;
@@ -107,21 +97,6 @@ namespace tao::json::events
       void begin_object( const std::size_t /*unused*/ = 0 )
       {
          stack_.push_back( Value::object() );
-      }
-
-      void key( const char* v )
-      {
-         keys_.emplace_back( v );
-      }
-
-      void key( const std::string& v )
-      {
-         keys_.push_back( v );
-      }
-
-      void key( std::string&& v )
-      {
-         keys_.push_back( std::move( v ) );
       }
 
       void key( const std::string_view v )
