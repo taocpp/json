@@ -254,6 +254,104 @@ namespace tao::json::events
             produce< Traits >( m_consumer, v );
             return *this;
          }
+
+         template< typename ConsumerBase >
+         assign_t& operator=( const value< Traits, ConsumerBase >& v )
+         {
+            produce< Traits >( m_consumer, v );
+            return *this;
+         }
+      };
+
+      template< template< typename... > class Traits, typename Consumer >
+      class array_t
+      {
+      private:
+         Consumer& m_consumer;
+
+      public:
+         explicit array_t( Consumer& consumer ) noexcept( noexcept( m_consumer.begin_array() ) )
+            : m_consumer( consumer )
+         {
+            m_consumer.begin_array();
+         }
+
+         array_t( const array_t& ) = delete;
+         array_t( array_t&& ) = delete;
+
+         ~array_t()
+         {
+            m_consumer.end_array();
+         }
+
+         array_t& operator=( const array_t& ) = delete;
+         array_t& operator=( array_t&& ) = delete;
+
+         array_t& operator=( const array< Traits, Consumer >& v )
+         {
+            produce_elements< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename ConsumerBase >
+         array_t& operator=( const array< Traits, ConsumerBase >& v )
+         {
+            produce_elements< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename V >
+         void push_back( V&& v )
+         {
+            events::produce< Traits >( m_consumer, std::forward< V >( v ) );
+            m_consumer.element();
+         }
+      };
+
+      template< template< typename... > class Traits, typename Consumer >
+      class object_t
+      {
+      private:
+         Consumer& m_consumer;
+
+      public:
+         explicit object_t( Consumer& consumer ) noexcept( noexcept( m_consumer.begin_object() ) )
+            : m_consumer( consumer )
+         {
+            m_consumer.begin_object();
+         }
+
+         object_t( const object_t& ) = delete;
+         object_t( object_t&& ) = delete;
+
+         ~object_t()
+         {
+            m_consumer.end_object();
+         }
+
+         object_t& operator=( const object_t& ) = delete;
+         object_t& operator=( object_t&& ) = delete;
+
+         object_t& operator=( const object< Traits, Consumer >& v )
+         {
+            produce_members< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename ConsumerBase >
+         object_t& operator=( const object< Traits, ConsumerBase >& v )
+         {
+            produce_members< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename K, typename V >
+         void insert( K&& k, V&& v )
+         {
+            m_consumer.key( std::forward< K >( k ) );
+            events::produce< Traits >( m_consumer, std::forward< V >( v ) );
+            m_consumer.member();
+         }
       };
 
    }  // namespace capture
@@ -262,6 +360,18 @@ namespace tao::json::events
    [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer& c )
    {
       return capture::assign_t< Traits, Consumer >( c );
+   }
+
+   template< template< typename... > class Traits = json::traits, typename Consumer >
+   [[nodiscard]] capture::array_t< Traits, Consumer > array( Consumer& c ) noexcept( noexcept( capture::array_t< Traits, Consumer >( c ) ) )
+   {
+      return capture::array_t< Traits, Consumer >( c );
+   }
+
+   template< template< typename... > class Traits = json::traits, typename Consumer >
+   [[nodiscard]] capture::object_t< Traits, Consumer > object( Consumer& c ) noexcept( noexcept( capture::object_t< Traits, Consumer >( c ) ) )
+   {
+      return capture::object_t< Traits, Consumer >( c );
    }
 
 }  // namespace tao::json::events
