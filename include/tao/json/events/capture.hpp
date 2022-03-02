@@ -393,6 +393,26 @@ namespace tao::json::events
       return capture::object_t< Traits, Consumer >( c );
    }
 
+   template< typename Consumer, template< typename... > class Traits = json::traits >
+   struct assignable
+      : Consumer
+   {
+      using Consumer::Consumer;
+
+      assignable& operator=( const capture::value< Traits, Consumer >& v )
+      {
+         produce< Traits >( *this, v );
+         return *this;
+      }
+
+      template< typename T >
+      assignable& operator=( const T& v )
+      {
+         produce< Traits >( *this, v );
+         return *this;
+      }
+   };
+
 }  // namespace tao::json::events
 
 #endif
