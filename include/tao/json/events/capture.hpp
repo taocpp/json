@@ -302,9 +302,9 @@ namespace tao::json::events
          }
 
          template< typename Container >
-         array_t& operator=( const Container& v )
+         array_t& operator=( const Container& c )
          {
-            for( const auto& e : v ) {
+            for( const auto& e : c ) {
                this->push_back( e );
             }
             return *this;
@@ -352,6 +352,15 @@ namespace tao::json::events
          object_t& operator=( const object< Traits, ConsumerBase >& v )
          {
             produce_members< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename Container >
+         object_t& operator=( const Container& c )
+         {
+            for( const auto& [ k, v ] : c ) {
+               this->insert( k, v );
+            }
             return *this;
          }
 
