@@ -7,6 +7,7 @@
 #include <initializer_list>
 #include <string_view>
 #include <type_traits>
+#include <utility>
 
 #include "produce.hpp"
 
@@ -297,6 +298,15 @@ namespace tao::json::events
          array_t& operator=( const array< Traits, ConsumerBase >& v )
          {
             produce_elements< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename Container >
+         array_t& operator=( const Container& v )
+         {
+            for( const auto& e : v ) {
+               this->push_back( e );
+            }
             return *this;
          }
 
