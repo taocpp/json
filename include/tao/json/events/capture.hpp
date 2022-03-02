@@ -238,7 +238,31 @@ namespace tao::json::events
          {}
       };
 
+      template< template< typename... > class Traits, typename Consumer >
+      class assign_t
+      {
+      private:
+         Consumer& m_consumer;
+
+      public:
+         explicit assign_t( Consumer& consumer ) noexcept
+            : m_consumer( consumer )
+         {}
+
+         assign_t& operator=( const value< Traits, Consumer >& v )
+         {
+            produce< Traits >( m_consumer, v );
+            return *this;
+         }
+      };
+
    }  // namespace capture
+
+   template< template< typename... > class Traits = json::traits, typename Consumer >
+   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer& c )
+   {
+      return capture::assign_t< Traits, Consumer >( c );
+   }
 
 }  // namespace tao::json::events
 
