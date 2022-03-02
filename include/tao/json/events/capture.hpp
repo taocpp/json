@@ -9,36 +9,37 @@
 #include <type_traits>
 
 #include "produce.hpp"
-#include "virtual_base.hpp"
 
 #include "../forward.hpp"
 
 namespace tao::json::events
 {
+   class virtual_base;
+
    namespace capture
    {
-      template< template< typename... > class Traits = json::traits, typename Consumer = virtual_base >
+      template< template< typename... > class Traits = json::traits, typename ConsumerBase = virtual_base >
       class value;
 
-      template< template< typename... > class Traits = json::traits, typename Consumer = virtual_base >
-      using array = std::initializer_list< value< Traits, Consumer > >;
+      template< template< typename... > class Traits = json::traits, typename ConsumerBase = virtual_base >
+      using array = std::initializer_list< value< Traits, ConsumerBase > >;
 
-      template< template< typename... > class Traits, typename Consumer >
+      template< template< typename... > class Traits, typename ConsumerBase >
       struct member;
 
-      template< template< typename... > class Traits = json::traits, typename Consumer = virtual_base >
-      using object = std::initializer_list< member< Traits, Consumer > >;
+      template< template< typename... > class Traits = json::traits, typename ConsumerBase = virtual_base >
+      using object = std::initializer_list< member< Traits, ConsumerBase > >;
 
    }  // namespace capture
 
-   template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
-   void produce( ActualConsumer& c, const capture::value< Traits, Consumer >& v )
+   template< template< typename... > class Traits, typename Consumer, typename ConsumerBase >
+   void produce( Consumer& c, const capture::value< Traits, ConsumerBase >& v )
    {
       v.produce( c );
    }
 
-   template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
-   void produce_elements( ActualConsumer& c, const capture::array< Traits, Consumer >& a )
+   template< template< typename... > class Traits, typename Consumer, typename ConsumerBase >
+   void produce_elements( Consumer& c, const capture::array< Traits, ConsumerBase >& a )
    {
       for( const auto& e : a ) {
          e.produce( c );
@@ -46,16 +47,16 @@ namespace tao::json::events
       }
    }
 
-   template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
-   void produce( ActualConsumer& c, const capture::array< Traits, Consumer >& a )
+   template< template< typename... > class Traits, typename Consumer, typename ConsumerBase >
+   void produce( Consumer& c, const capture::array< Traits, ConsumerBase >& a )
    {
       c.begin_array( a.size() );
       events::produce_elements( c, a );
       c.end_array( a.size() );
    }
 
-   template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
-   void produce_members( ActualConsumer& c, const capture::object< Traits, Consumer >& o )
+   template< template< typename... > class Traits, typename Consumer, typename ConsumerBase >
+   void produce_members( Consumer& c, const capture::object< Traits, ConsumerBase >& o )
    {
       for( const auto& m : o ) {
          c.key( m.key );
@@ -64,8 +65,8 @@ namespace tao::json::events
       }
    }
 
-   template< template< typename... > class Traits, typename ActualConsumer, typename Consumer >
-   void produce( ActualConsumer& c, const capture::object< Traits, Consumer >& o )
+   template< template< typename... > class Traits, typename Consumer, typename ConsumerBase >
+   void produce( Consumer& c, const capture::object< Traits, ConsumerBase >& o )
    {
       c.begin_object( o.size() );
       events::produce_members( c, o );
@@ -179,20 +180,20 @@ namespace tao::json::events
 
       }  // namespace internal
 
-      template< template< typename... > class Traits, typename Consumer >
+      template< template< typename... > class Traits, typename ConsumerBase >
       class value
       {
       private:
          const union_t m_value;
 
-         using producer_t = void( Consumer&, const union_t& );
+         using producer_t = void( ConsumerBase&, const union_t& );
          producer_t* const m_producer;
 
       public:
          template< typename T, typename = std::enable_if_t< traits< T >::value > >
          value( const T v ) noexcept
             : m_value( traits< T >::to_underlying( v ) ),
-              m_producer( &internal::produce_from_underlying< Traits, Consumer, T > )
+              m_producer( &internal::produce_from_underlying< Traits, ConsumerBase, T > )
          {
             static_assert( noexcept( traits< T >::to_underlying( v ) ) );
          }
@@ -200,29 +201,29 @@ namespace tao::json::events
          template< typename T, typename = std::enable_if_t< !traits< T >::value > >
          value( const T& v ) noexcept
             : m_value( &v ),
-              m_producer( &internal::produce_from_pointer< Traits, Consumer, T > )
+              m_producer( &internal::produce_from_pointer< Traits, ConsumerBase, T > )
          {}
 
-         value( const object< Traits, Consumer >& il ) noexcept
+         value( const object< Traits, ConsumerBase >& il ) noexcept
             : m_value( &il ),
-              m_producer( &internal::produce_from_pointer< Traits, Consumer, object< Traits, Consumer > > )
+              m_producer( &internal::produce_from_pointer< Traits, ConsumerBase, object< Traits, ConsumerBase > > )
          {}
 
-         void produce( Consumer& c ) const
+         void produce( ConsumerBase& c ) const
          {
             m_producer( c, m_value );
          }
       };
 
-      template< template< typename... > class Traits, typename Consumer >
+      template< template< typename... > class Traits, typename ConsumerBase >
       struct member
-         : value< Traits, Consumer >
+         : value< Traits, ConsumerBase >
       {
          const std::string_view key;
 
          template< typename T >
          member( const std::string_view k, const T& v ) noexcept
-            : value< Traits, Consumer >( v ),
+            : value< Traits, ConsumerBase >( v ),
               key( k )
          {}
 
@@ -231,8 +232,8 @@ namespace tao::json::events
             : member( Traits< std::decay_t< T > >::template default_key< Traits >::as_string_view(), v )
          {}
 
-         member( const std::string_view k, const object< Traits, Consumer >& il ) noexcept
-            : value< Traits, Consumer >( il ),
+         member( const std::string_view k, const object< Traits, ConsumerBase >& il ) noexcept
+            : value< Traits, ConsumerBase >( il ),
               key( k )
          {}
       };
