@@ -250,14 +250,14 @@ namespace tao::json::events
             : m_consumer( consumer )
          {}
 
-         assign_t& operator=( const value< Traits, Consumer >& v )
+         assign_t& operator+=( const value< Traits, Consumer >& v )
          {
             produce< Traits >( m_consumer, v );
             return *this;
          }
 
          template< typename ConsumerBase >
-         assign_t& operator=( const value< Traits, ConsumerBase >& v )
+         assign_t& operator+=( const value< Traits, ConsumerBase >& v )
          {
             produce< Traits >( m_consumer, v );
             return *this;
@@ -288,26 +288,25 @@ namespace tao::json::events
          array_t& operator=( const array_t& ) = delete;
          array_t& operator=( array_t&& ) = delete;
 
-         array_t& operator=( const array< Traits, Consumer >& v )
+         array_t& operator+=( const array< Traits, Consumer >& v )
          {
             produce_elements< Traits >( m_consumer, v );
             return *this;
          }
 
          template< typename ConsumerBase >
-         array_t& operator=( const array< Traits, ConsumerBase >& v )
+         array_t& operator+=( const array< Traits, ConsumerBase >& v )
          {
             produce_elements< Traits >( m_consumer, v );
             return *this;
          }
 
          template< typename Container >
-         array_t& operator=( const Container& c )
+         void append( const Container& c )
          {
             for( const auto& e : c ) {
                this->push_back( e );
             }
-            return *this;
          }
 
          template< typename V >
@@ -342,26 +341,25 @@ namespace tao::json::events
          object_t& operator=( const object_t& ) = delete;
          object_t& operator=( object_t&& ) = delete;
 
-         object_t& operator=( const object< Traits, Consumer >& v )
+         object_t& operator+=( const object< Traits, Consumer >& v )
          {
             produce_members< Traits >( m_consumer, v );
             return *this;
          }
 
          template< typename ConsumerBase >
-         object_t& operator=( const object< Traits, ConsumerBase >& v )
+         object_t& operator+=( const object< Traits, ConsumerBase >& v )
          {
             produce_members< Traits >( m_consumer, v );
             return *this;
          }
 
          template< typename Container >
-         object_t& operator=( const Container& c )
+         void append( const Container& c )
          {
             for( const auto& [ k, v ] : c ) {
                this->insert( k, v );
             }
-            return *this;
          }
 
          template< typename K, typename V >
@@ -398,26 +396,6 @@ namespace tao::json::events
    {
       return capture::object_t< Traits, Consumer >( c );
    }
-
-   template< typename Consumer, template< typename... > class Traits = json::traits >
-   struct assignable
-      : Consumer
-   {
-      using Consumer::Consumer;
-
-      assignable& operator=( const capture::value< Traits, Consumer >& v )
-      {
-         produce< Traits >( *this, v );
-         return *this;
-      }
-
-      template< typename T >
-      assignable& operator=( const T& v )
-      {
-         produce< Traits >( *this, v );
-         return *this;
-      }
-   };
 
 }  // namespace tao::json::events
 
