@@ -826,7 +826,7 @@ namespace tao::json
    {
       static void assign( basic_value< Traits >& v, const std::map< std::string, basic_value< Traits >, std::less<> >& o )
       {
-         v.set_object( std::move( o ) );
+         v.set_object( o );
       }
 
       static void assign( basic_value< Traits >& v, std::map< std::string, basic_value< Traits >, std::less<> >&& o ) noexcept
