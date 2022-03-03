@@ -250,14 +250,28 @@ namespace tao::json::events
             : m_consumer( consumer )
          {}
 
-         assign_t& operator+=( const value< Traits, Consumer >& v )
+         assign_t& operator=( const value< Traits, Consumer >& v )
          {
             produce< Traits >( m_consumer, v );
             return *this;
          }
 
          template< typename ConsumerBase >
-         assign_t& operator+=( const value< Traits, ConsumerBase >& v )
+         assign_t& operator=( const value< Traits, ConsumerBase >& v )
+         {
+            produce< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename ConsumerBase >
+         assign_t& operator=( const array< Traits, ConsumerBase >& v )
+         {
+            produce< Traits >( m_consumer, v );
+            return *this;
+         }
+
+         template< typename ConsumerBase >
+         assign_t& operator=( const object< Traits, ConsumerBase >& v )
          {
             produce< Traits >( m_consumer, v );
             return *this;
