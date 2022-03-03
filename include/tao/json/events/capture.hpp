@@ -371,6 +371,12 @@ namespace tao::json::events
             events::produce< Traits >( m_consumer, std::forward< V >( v ) );
             m_consumer.member();
          }
+
+         template< typename V >
+         void insert( V&& v )
+         {
+            this->insert( Traits< std::decay_t< V > >::template default_key< Traits >::as_string_view(), std::forward< V >( v ) );
+         }
       };
 
    }  // namespace capture
