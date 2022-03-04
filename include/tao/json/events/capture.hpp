@@ -134,6 +134,21 @@ namespace tao::json::events
       {};
 
       template< typename T >
+      struct traits< T, std::enable_if_t< std::is_pointer_v< std::decay_t< T > > > >
+         : std::true_type
+      {
+         [[nodiscard]] static const void* to_underlying( const T v ) noexcept
+         {
+            return v;
+         }
+
+         [[nodiscard]] static auto from_underlying( const union_t& v ) noexcept
+         {
+            return std::decay_t< T >( v.p );
+         }
+      };
+
+      template< typename T >
       struct traits< T, std::enable_if_t< std::is_arithmetic_v< T > > >
          : std::true_type
       {
