@@ -276,6 +276,16 @@ namespace tao::json::events
             produce< Traits >( m_consumer, v );
             return *this;
          }
+
+         [[nodiscard]] Consumer& consumer() noexcept
+         {
+            return m_consumer;
+         }
+
+         [[nodiscard]] const Consumer& consumer() const noexcept
+         {
+            return m_consumer;
+         }
       };
 
       template< template< typename... > class Traits, typename Consumer >
@@ -328,6 +338,16 @@ namespace tao::json::events
          {
             events::produce< Traits >( m_consumer, std::forward< V >( v ) );
             m_consumer.element();
+         }
+
+         [[nodiscard]] Consumer& consumer() noexcept
+         {
+            return m_consumer;
+         }
+
+         [[nodiscard]] const Consumer& consumer() const noexcept
+         {
+            return m_consumer;
          }
       };
 
@@ -388,6 +408,16 @@ namespace tao::json::events
          void insert( V&& v )
          {
             this->insert( Traits< std::decay_t< V > >::template default_key< Traits >::as_string_view(), std::forward< V >( v ) );
+         }
+
+         [[nodiscard]] Consumer& consumer() noexcept
+         {
+            return m_consumer;
+         }
+
+         [[nodiscard]] const Consumer& consumer() const noexcept
+         {
+            return m_consumer;
          }
       };
 
