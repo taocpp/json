@@ -41,6 +41,7 @@
 #include "events/virtual_base.hpp"
 #include "events/virtual_ref.hpp"
 #include "events/virtual_wrap.hpp"
+#include "events/virtualize.hpp"
 
 // Events other
 #include "events/debug.hpp"
