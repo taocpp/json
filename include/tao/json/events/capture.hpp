@@ -238,14 +238,14 @@ namespace tao::json::events
          const std::string_view key;
 
          template< typename T >
-         member( const std::string_view k, const T& v ) noexcept
-            : value< Traits, ConsumerBase >( v ),
+         member( const std::string_view k, T&& v ) noexcept
+            : value< Traits, ConsumerBase >( std::forward< T >( v ) ),
               key( k )
          {}
 
          template< typename T >
-         member( const T& v ) noexcept
-            : member( Traits< std::decay_t< T > >::template default_key< Traits >::as_string_view(), v )
+         member( T&& v ) noexcept
+            : member( Traits< std::decay_t< T > >::template default_key< Traits >::as_string_view(), std::forward< T >( v ) )
          {}
 
          member( const std::string_view k, const object< Traits, ConsumerBase >& il ) noexcept
