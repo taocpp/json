@@ -439,21 +439,39 @@ namespace tao::json::events
    }  // namespace capture
 
    template< template< typename... > class Traits = traits, typename Consumer >
-   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer&& c )
+   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer& c )
    {
       return capture::assign_t< Traits, Consumer >( c );
    }
 
    template< template< typename... > class Traits = traits, typename Consumer >
-   [[nodiscard]] capture::array_t< Traits, Consumer > array( Consumer&& c ) noexcept( noexcept( capture::array_t< Traits, Consumer >( c ) ) )
+   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer&& c )
+   {
+      return assign< Traits >( c );
+   }
+
+   template< template< typename... > class Traits = traits, typename Consumer >
+   [[nodiscard]] capture::array_t< Traits, Consumer > array( Consumer& c ) noexcept( noexcept( capture::array_t< Traits, Consumer >( c ) ) )
    {
       return capture::array_t< Traits, Consumer >( c );
    }
 
    template< template< typename... > class Traits = traits, typename Consumer >
-   [[nodiscard]] capture::object_t< Traits, Consumer > object( Consumer&& c ) noexcept( noexcept( capture::object_t< Traits, Consumer >( c ) ) )
+   [[nodiscard]] capture::array_t< Traits, Consumer > array( Consumer&& c ) noexcept( noexcept( array< Traits >( c ) ) )
+   {
+      return array< Traits >( c );
+   }
+
+   template< template< typename... > class Traits = traits, typename Consumer >
+   [[nodiscard]] capture::object_t< Traits, Consumer > object( Consumer& c ) noexcept( noexcept( capture::object_t< Traits, Consumer >( c ) ) )
    {
       return capture::object_t< Traits, Consumer >( c );
+   }
+
+   template< template< typename... > class Traits = traits, typename Consumer >
+   [[nodiscard]] capture::object_t< Traits, Consumer > object( Consumer&& c ) noexcept( noexcept( object< Traits >( c ) ) )
+   {
+      return object< Traits >( c );
    }
 
 }  // namespace tao::json::events
