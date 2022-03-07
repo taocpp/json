@@ -17,6 +17,12 @@ namespace tao::json::events
       Traits< std::decay_t< T > >::template produce< Traits >( c, std::forward< T >( t ) );
    }
 
+   template< template< typename... > class Traits = traits, typename Consumer, typename T >
+   void produce( Consumer&& c, T&& t )
+   {
+      produce< Traits >( c, std::forward< T >( t ) );
+   }
+
 }  // namespace tao::json::events
 
 #endif
