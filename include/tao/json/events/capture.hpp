@@ -19,16 +19,16 @@ namespace tao::json::events
 
    namespace capture
    {
-      template< template< typename... > class Traits = json::traits, typename ConsumerBase = virtual_base >
+      template< template< typename... > class Traits = traits, typename ConsumerBase = virtual_base >
       class value;
 
-      template< template< typename... > class Traits = json::traits, typename ConsumerBase = virtual_base >
+      template< template< typename... > class Traits = traits, typename ConsumerBase = virtual_base >
       using array = std::initializer_list< value< Traits, ConsumerBase > >;
 
       template< template< typename... > class Traits, typename ConsumerBase >
       struct member;
 
-      template< template< typename... > class Traits = json::traits, typename ConsumerBase = virtual_base >
+      template< template< typename... > class Traits = traits, typename ConsumerBase = virtual_base >
       using object = std::initializer_list< member< Traits, ConsumerBase > >;
 
    }  // namespace capture
@@ -129,12 +129,12 @@ namespace tao::json::events
       };
 
       template< typename, typename = void >
-      struct traits
+      struct capture_traits
          : std::false_type
       {};
 
       template< typename T >
-      struct traits< T, std::enable_if_t< std::is_pointer_v< std::decay_t< T > > > >
+      struct capture_traits< T, std::enable_if_t< std::is_pointer_v< std::decay_t< T > > > >
          : std::true_type
       {
          [[nodiscard]] static const void* to_underlying( const T v ) noexcept
@@ -149,7 +149,7 @@ namespace tao::json::events
       };
 
       template< typename T >
-      struct traits< T, std::enable_if_t< std::is_arithmetic_v< T > > >
+      struct capture_traits< T, std::enable_if_t< std::is_arithmetic_v< T > > >
          : std::true_type
       {
          [[nodiscard]] static T to_underlying( const T v ) noexcept
@@ -164,7 +164,7 @@ namespace tao::json::events
       };
 
       template< typename T >
-      struct traits< T, std::enable_if_t< std::is_enum_v< T > > >
+      struct capture_traits< T, std::enable_if_t< std::is_enum_v< T > > >
          : std::true_type
       {
          using underlying_t = std::underlying_type_t< T >;
@@ -185,7 +185,7 @@ namespace tao::json::events
          template< template< typename... > class Traits, typename Consumer, typename T >
          void produce_from_underlying( Consumer& c, const union_t& u )
          {
-            events::produce< Traits >( c, traits< T >::from_underlying( u ) );
+            events::produce< Traits >( c, capture_traits< T >::from_underlying( u ) );
          }
 
          template< template< typename... > class Traits, typename Consumer, typename T >
@@ -206,15 +206,15 @@ namespace tao::json::events
          producer_t* const m_producer;
 
       public:
-         template< typename T, typename = std::enable_if_t< traits< T >::value > >
+         template< typename T, typename = std::enable_if_t< capture_traits< T >::value > >
          value( const T v ) noexcept
-            : m_value( traits< T >::to_underlying( v ) ),
+            : m_value( capture_traits< T >::to_underlying( v ) ),
               m_producer( &internal::produce_from_underlying< Traits, ConsumerBase, T > )
          {
-            static_assert( noexcept( traits< T >::to_underlying( v ) ) );
+            static_assert( noexcept( capture_traits< T >::to_underlying( v ) ) );
          }
 
-         template< typename T, typename = std::enable_if_t< !traits< T >::value > >
+         template< typename T, typename = std::enable_if_t< !capture_traits< T >::value > >
          value( const T& v ) noexcept
             : m_value( &v ),
               m_producer( &internal::produce_from_pointer< Traits, ConsumerBase, T > )
@@ -438,19 +438,19 @@ namespace tao::json::events
 
    }  // namespace capture
 
-   template< template< typename... > class Traits = json::traits, typename Consumer >
+   template< template< typename... > class Traits = traits, typename Consumer >
    [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer&& c )
    {
       return capture::assign_t< Traits, Consumer >( c );
    }
 
-   template< template< typename... > class Traits = json::traits, typename Consumer >
+   template< template< typename... > class Traits = traits, typename Consumer >
    [[nodiscard]] capture::array_t< Traits, Consumer > array( Consumer&& c ) noexcept( noexcept( capture::array_t< Traits, Consumer >( c ) ) )
    {
       return capture::array_t< Traits, Consumer >( c );
    }
 
-   template< template< typename... > class Traits = json::traits, typename Consumer >
+   template< template< typename... > class Traits = traits, typename Consumer >
    [[nodiscard]] capture::object_t< Traits, Consumer > object( Consumer&& c ) noexcept( noexcept( capture::object_t< Traits, Consumer >( c ) ) )
    {
       return capture::object_t< Traits, Consumer >( c );
