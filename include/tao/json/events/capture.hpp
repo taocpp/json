@@ -439,13 +439,13 @@ namespace tao::json::events
    }  // namespace capture
 
    template< template< typename... > class Traits = traits, typename Consumer >
-   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer& c )
+   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer& c ) noexcept( noexcept( capture::assign_t< Traits, Consumer >( c ) ) )
    {
       return capture::assign_t< Traits, Consumer >( c );
    }
 
    template< template< typename... > class Traits = traits, typename Consumer >
-   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer&& c )
+   [[nodiscard]] capture::assign_t< Traits, Consumer > assign( Consumer&& c ) noexcept( noexcept( assign< Traits >( c ) ) )
    {
       return assign< Traits >( c );
    }
