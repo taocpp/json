@@ -13,101 +13,6 @@
 
 namespace tao::json
 {
-   namespace events
-   {
-      template< template< typename... > class Traits, typename Consumer >
-      struct array_t
-      {
-         Consumer* c_;
-
-         explicit array_t( Consumer& c ) noexcept( noexcept( c_->begin_array() ) )
-            : c_( &c )
-         {
-            c_->begin_array();
-         }
-
-         array_t( const array_t& ) = delete;
-
-         array_t( array_t&& r ) noexcept
-            : c_( r.c_ )
-         {
-            r.c_ = nullptr;
-         }
-
-         ~array_t()
-         {
-            if( c_ ) {
-               c_->end_array();
-            }
-         }
-
-         void operator=( const array_t& ) = delete;
-         void operator=( array_t&& ) = delete;
-
-         template< typename T >
-         array_t& push_back( T&& v )
-         {
-            assert( c_ );
-            produce< Traits >( *c_, std::forward< T >( v ) );
-            c_->element();
-            return *this;
-         }
-      };
-
-      template< template< typename... > class Traits, typename Consumer >
-      struct object_t
-      {
-         Consumer* c_;
-
-         explicit object_t( Consumer& c ) noexcept( noexcept( c_->begin_object() ) )
-            : c_( &c )
-         {
-            c_->begin_object();
-         }
-
-         object_t( const object_t& ) = delete;
-
-         object_t( object_t&& r ) noexcept
-            : c_( r.c_ )
-         {
-            r.c_ = nullptr;
-         }
-
-         ~object_t()
-         {
-            if( c_ ) {
-               c_->end_object();
-            }
-         }
-
-         void operator=( const object_t& ) = delete;
-         void operator=( object_t&& ) = delete;
-
-         template< typename T >
-         object_t& insert( const std::string& k, T&& v )
-         {
-            assert( c_ );
-            c_->key( k );
-            produce< Traits >( *c_, std::forward< T >( v ) );
-            c_->member();
-            return *this;
-         }
-      };
-
-      template< template< typename... > class Traits, typename Consumer >
-      [[nodiscard]] array_t< Traits, Consumer > array_consumer( Consumer& c ) noexcept( noexcept( array_t< Traits, Consumer >( c ) ) )
-      {
-         return array_t< Traits, Consumer >( c );
-      }
-
-      template< template< typename... > class Traits, typename Consumer >
-      [[nodiscard]] object_t< Traits, Consumer > object_consumer( Consumer& c ) noexcept( noexcept( object_t< Traits, Consumer >( c ) ) )
-      {
-         return object_t< Traits, Consumer >( c );
-      }
-
-   }  // namespace events
-
    struct point
    {
       double x = 1.0;
@@ -120,7 +25,7 @@ namespace tao::json
       template< template< typename... > class Traits, typename Consumer >
       static void produce( Consumer& consumer, const point& data )
       {
-         auto a = events::array_consumer< Traits >( consumer );
+         auto a = events::array< Traits >( consumer );
          a.push_back( data.x );
          a.push_back( data.y );
       }
@@ -140,7 +45,7 @@ namespace tao::json
       template< template< typename... > class Traits, typename Consumer >
       static void produce( Consumer& consumer, const employee& data )
       {
-         auto o = events::object_consumer< Traits >( consumer );
+         auto o = events::object< Traits >( consumer );
          o.insert( "name", data.name );
          if( !data.position.empty() ) {
             o.insert( "position", data.position );
