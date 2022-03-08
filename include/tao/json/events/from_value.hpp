@@ -9,7 +9,7 @@
 #include "../basic_value.hpp"
 #include "../internal/format.hpp"
 
-#include "virtual_ref.hpp"
+#include "virtualize.hpp"
 
 namespace tao::json::events
 {
@@ -89,7 +89,7 @@ namespace tao::json::events
 
          case type::OPAQUE_PTR: {
             const auto& q = v.get_opaque_ptr();
-            virtual_ref ref( consumer );
+            decltype( auto ) ref = events::virtualize( consumer );
             q.producer( ref, q.data );
             return;
          }
@@ -183,7 +183,7 @@ namespace tao::json::events
 
          case type::OPAQUE_PTR: {
             const auto& q = v.get_opaque_ptr();
-            virtual_ref ref( consumer );
+            decltype( auto ) ref = events::virtualize( consumer );
             q.producer( ref, q.data );
             return;
          }
