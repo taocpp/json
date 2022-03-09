@@ -3,6 +3,7 @@
 
 #include "test.hpp"
 
+#include <tao/json/events/capture.hpp>
 #include <tao/json/events/produce.hpp>
 #include <tao/json/from_string.hpp>
 #include <tao/json/produce.hpp>
