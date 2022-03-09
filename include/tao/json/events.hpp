@@ -14,6 +14,7 @@
 #include "events/produce.hpp"
 
 // Events consumers
+#include "events/set_value.hpp"
 #include "events/to_pretty_stream.hpp"
 #include "events/to_stream.hpp"
 #include "events/to_string.hpp"
