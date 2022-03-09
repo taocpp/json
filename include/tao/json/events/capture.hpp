@@ -252,6 +252,9 @@ namespace tao::json::events
             : value< Traits, ConsumerBase >( il ),
               key( k )
          {}
+
+         member( const member& ) = default;
+         member( member&& ) = default;
       };
 
       template< template< typename... > class Traits, typename Consumer >
