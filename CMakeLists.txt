@@ -70,6 +70,7 @@ if(TAOCPP_JSON_INSTALL)
 
   # keep taocpp::json target compatibility
   set_target_properties(taocpp-json PROPERTIES EXPORT_NAME json)
+
   # install and export target
   install(TARGETS taocpp-json EXPORT ${PROJECT_NAME}-targets)
   install(FILES
