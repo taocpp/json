@@ -68,6 +68,8 @@ if(TAOCPP_JSON_INSTALL)
   # Enable version checks in find_package
   write_basic_package_version_file(${PROJECT_NAME}-config-version.cmake COMPATIBILITY SameMajorVersion)
 
+  # keep taocpp::json target compatibility
+  set_target_properties(taocpp-json PROPERTIES EXPORT_NAME json)
   # install and export target
   install(TARGETS taocpp-json EXPORT ${PROJECT_NAME}-targets)
   install(FILES
