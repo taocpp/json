@@ -253,8 +253,8 @@ namespace tao::json::events
               key( k )
          {}
 
-         member( const member& ) = default;
-         member( member&& ) = default;
+         member( const member& ) = delete;
+         member( member&& ) = delete;
       };
 
       template< template< typename... > class Traits, typename Consumer >
