@@ -11,7 +11,12 @@
 #include <string_view>
 #include <type_traits>
 
-#include <tao/pegtl.hpp>
+#include <tao/pegtl/ascii.hpp>
+#include <tao/pegtl/parse.hpp>
+#include <tao/pegtl/rules.hpp>
+#include <tao/pegtl/nothing.hpp>
+#include <tao/pegtl/parse_error.hpp>
+
 #include <tao/pegtl/contrib/integer.hpp>
 
 #include "../../internal/parse_util.hpp"

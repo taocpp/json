@@ -6,6 +6,8 @@
 
 #include "make_events.hpp"
 
+#include <tao/pegtl/internal/file_reader.hpp>
+
 #include <tao/json/from_string.hpp>
 #include <tao/json/to_string.hpp>
 

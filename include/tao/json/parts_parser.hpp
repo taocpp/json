@@ -4,7 +4,14 @@
 #ifndef TAO_JSON_PARTS_PARSER_HPP
 #define TAO_JSON_PARTS_PARSER_HPP
 
-#include <tao/pegtl.hpp>
+#include <tao/pegtl/ascii.hpp>
+#include <tao/pegtl/change_states.hpp>
+#include <tao/pegtl/nothing.hpp>
+#include <tao/pegtl/parse.hpp>
+#include <tao/pegtl/parse_error.hpp>
+#include <tao/pegtl/rules.hpp>
+#include <tao/pegtl/string_input.hpp>
+
 #include <tao/pegtl/contrib/integer.hpp>
 #include <tao/pegtl/contrib/json.hpp>
 

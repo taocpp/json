@@ -15,7 +15,11 @@
 #include <string>
 #include <type_traits>
 
-#include <tao/pegtl.hpp>
+#include <tao/pegtl/ascii.hpp>
+#include <tao/pegtl/memory_input.hpp>
+#include <tao/pegtl/parse.hpp>
+#include <tao/pegtl/rules.hpp>
+
 #include <tao/pegtl/contrib/uri.hpp>
 
 #include "reference.hpp"

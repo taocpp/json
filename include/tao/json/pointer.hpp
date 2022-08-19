@@ -12,7 +12,11 @@
 #include <utility>
 #include <vector>
 
-#include <tao/pegtl.hpp>
+#include <tao/pegtl/ascii.hpp>
+#include <tao/pegtl/memory_input.hpp>
+#include <tao/pegtl/parse.hpp>
+#include <tao/pegtl/rules.hpp>
+#include <tao/pegtl/utf8.hpp>
 
 #include "type.hpp"
 

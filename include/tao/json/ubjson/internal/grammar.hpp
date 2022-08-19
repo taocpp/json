@@ -7,6 +7,12 @@
 #include <cstdint>
 #include <string_view>
 
+#include <tao/pegtl/memory_input.hpp>
+#include <tao/pegtl/parse.hpp>
+#include <tao/pegtl/parse_error.hpp>
+#include <tao/pegtl/rules.hpp>
+#include <tao/pegtl/type_list.hpp>
+
 #include "../../binary_view.hpp"
 #include "../../internal/action.hpp"
 #include "../../internal/endian.hpp"

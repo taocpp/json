@@ -13,7 +13,11 @@
 #include <string_view>
 #include <utility>
 
-#include <tao/pegtl.hpp>
+#include <tao/pegtl/apply_mode.hpp>
+#include <tao/pegtl/parse_error.hpp>
+#include <tao/pegtl/rewind_mode.hpp>
+#include <tao/pegtl/rules.hpp>
+#include <tao/pegtl/type_list.hpp>
 
 #include "major.hpp"
 

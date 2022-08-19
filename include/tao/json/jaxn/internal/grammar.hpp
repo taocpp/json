@@ -6,7 +6,11 @@
 
 #include <cctype>
 
-#include <tao/pegtl.hpp>
+#include <tao/pegtl/ascii.hpp>
+#include <tao/pegtl/parse_error.hpp>
+#include <tao/pegtl/rules.hpp>
+#include <tao/pegtl/utf8.hpp>
+
 #include <tao/pegtl/contrib/abnf.hpp>
 
 namespace tao::json::jaxn::internal
