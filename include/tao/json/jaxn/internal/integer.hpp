@@ -12,10 +12,10 @@
 #include <type_traits>
 
 #include <tao/pegtl/ascii.hpp>
-#include <tao/pegtl/parse.hpp>
-#include <tao/pegtl/rules.hpp>
 #include <tao/pegtl/nothing.hpp>
+#include <tao/pegtl/parse.hpp>
 #include <tao/pegtl/parse_error.hpp>
+#include <tao/pegtl/rules.hpp>
 
 #include <tao/pegtl/contrib/integer.hpp>
 
