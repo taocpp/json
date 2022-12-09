@@ -72,7 +72,8 @@ namespace tao
                                                              std::enable_if_t< !std::is_array_v< Container > >,
                                                              decltype( std::data( std::declval< Container >() ) ),
                                                              decltype( std::size( std::declval< Container >() ) ),
-                                                             std::enable_if_t< std::is_convertible_v< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) > ( * )[], ElementType ( * )[] > > > > = true;
+                                                             std::enable_if_t< std::is_convertible_v< std::remove_pointer_t< decltype( std::data( std::declval< Container& >() ) ) > ( * )[], ElementType ( * )[] > > > >
+         = true;
 
    }  // namespace internal
 

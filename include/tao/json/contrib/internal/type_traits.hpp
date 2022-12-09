@@ -23,7 +23,7 @@ namespace tao::json::internal
    inline constexpr bool use_fourth_ptr_as = !use_first_ptr_as< T, Traits, With... > && !use_third_ptr_as< T, Traits, With... > && std::is_copy_constructible_v< T > && has_as< Traits< T >, basic_value< Traits >, With... >;
 
    template< typename T, template< typename... > class Traits, class Producer >
-   inline constexpr bool use_first_ptr_consume = std::is_move_constructible_v< T >&& has_consume_one< Traits, Producer, T >;
+   inline constexpr bool use_first_ptr_consume = std::is_move_constructible_v< T > && has_consume_one< Traits, Producer, T >;
 
    template< typename T, template< typename... > class Traits, class Producer >
    inline constexpr bool use_second_ptr_consume = !use_first_ptr_consume< T, Traits, Producer > && std::is_default_constructible_v< T > && has_consume_two< Traits, Producer, T >;
