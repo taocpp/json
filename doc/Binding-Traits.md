@@ -189,7 +189,7 @@ If the Traits specialisation for the bound member variable does not implement an
 
 The class template `binding::factory` combines Traits for a set of derived classes to form Traits for a common base class.
 
-The `assign()` and `produce()` methods use RTTI to determine the dynamic type of the pointee and delegate to the approriate derived class' Traits.
+The `assign()` and `produce()` methods use RTTI to determine the dynamic type of the pointee and delegate to the appropriate derived class' Traits.
 
 The `as()` and `consume()` methods expect an encoding as Object with a single member whose key must correspond to one of the types registered with the factory.
 
@@ -234,7 +234,7 @@ private:
 
 Assuming that there are appropriate specialisations of `my_traits` for the classes `fobble` and `fraggle`, i.e. that they implement all functions that are required by the application, and assuming suitable Traits for `std::shared_ptr`, the actual Factory Traits are implemented as follows.
 
-Note that when using the Traits for `std::shared_ptr` and `std::unique_ptr` from `tao/json/contrib/shared_ptr_traits.hpp` and `tao/json/contrib/unique_ptr_traits.hpp`, possibly via `tao/json/contrib/traits.hpp`, then the Traits for a derived clas need not implement an `as()` or `to()` function when said derived class has a constructor that can create an instance from a Value.
+Note that when using the Traits for `std::shared_ptr` and `std::unique_ptr` from `tao/json/contrib/shared_ptr_traits.hpp` and `tao/json/contrib/unique_ptr_traits.hpp`, possibly via `tao/json/contrib/traits.hpp`, then the Traits for a derived class need not implement an `as()` or `to()` function when said derived class has a constructor that can create an instance from a Value.
 
 ```c++
 template<>

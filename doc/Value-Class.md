@@ -367,7 +367,7 @@ const auto w = v.as< std::vector< std::shared_ptr< int > > >();
 When the Type Traits are correctly specialised for a custom type then [a JSON Value can be directly converted into the custom type](Type-Traits.md#convert-value-into-type) with `tao::json::value::as()`.
 
 The function `tao::json::value::optional< T >()` is similar to `tao::json::value::as< T >()`, but it returns a `tao::optional< T >`.
-The return value is an empty optional when the Value on which the method was called is Null, else an optional initalised with the result of a call to `tao::json::value::as< T >()` is returned.
+The return value is an empty optional when the Value on which the method was called is Null, else an optional initialised with the result of a call to `tao::json::value::as< T >()` is returned.
 
 When the Value in question is an Object, the variants of `as()`, `to()` and `optional()` that take an Object key as (additional) argument can be used.
 
