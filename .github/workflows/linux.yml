@@ -29,7 +29,7 @@ jobs:
       CXX: ${{ matrix.compiler }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -60,7 +60,7 @@ jobs:
       CXX: ${{ matrix.compiler }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -93,7 +93,7 @@ jobs:
       CXX: ${{ matrix.compiler }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
@@ -124,7 +124,7 @@ jobs:
       CXX: clang++
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         submodules: recursive
 
