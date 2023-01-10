@@ -145,4 +145,4 @@ int main()
 }
 ```
 
-Copyright (c) 2018-2022 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2023 Dr. Colin Hirsch and Daniel Frey

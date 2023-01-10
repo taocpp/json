@@ -209,4 +209,4 @@ ubjson_to_prety_jaxn
 ubjson_to_prety_json
 ```
 
-Copyright (c) 2018-2022 Dr. Colin Hirsch and Daniel Frey
+Copyright (c) 2018-2023 Dr. Colin Hirsch and Daniel Frey

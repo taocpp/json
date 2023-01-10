@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2022 Dr. Colin Hirsch and Daniel Frey
+// Copyright (c) 2015-2023 Dr. Colin Hirsch and Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #ifndef TAO_JSON_TO_STRING_HPP
