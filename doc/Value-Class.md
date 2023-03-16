@@ -62,7 +62,7 @@ The type of a JSON Value can be queried with the member function `tao::json::val
 A default initialised Value object will enter an explicit uninitialized state and report its type as `type::UNINITIALIZED`, rather than the more common default initialisation to a JSON Null.
 
 The `explicit operator bool()` returns whether the Value contains *any* valid value, including a `NULL_`.
-In other words, it only returns `false` when its `type()` returns `type::UNITIALIZED` (it MUST NOT be called for `type::DISCARDED` or `type::DESTROYED`).
+In other words, it only returns `false` when its `type()` returns `type::UNINITIALIZED` (it MUST NOT be called for `type::DISCARDED` or `type::DESTROYED`).
 
 The function `tao::json::value::reset()` returns a Value to this state from any other type or state (unless `tao::json::type::DESTROYED`).
 
@@ -493,7 +493,7 @@ As usual there are both a const overload that returns a `const value*`, and a no
 The `tao::json::value::optional< T >()` function exists in two versions, one without arguments [explained above](#accessing-values), and one that can take any argument that `tao::json::value::find()` can.
 The latter returns an empty optional when no entry is found; it does *not* return an empty optional when a JSON Null entry is found but throws an exception when the found entry can not be converted to `T` via `tao::json::value::as< T >()`.
 
-The following functions include calls to `tao::json::value::prepare_array()` and `tao::json::value::prepare_object()` which are used on empty (`tao::json::type::UNITIALIZED` or `tao::json::type::DISCARDED`) Values to initialise to an empty array, or empty object, respectively.
+The following functions include calls to `tao::json::value::prepare_array()` and `tao::json::value::prepare_object()` which are used on empty (`tao::json::type::UNINITIALIZED` or `tao::json::type::DISCARDED`) Values to initialise to an empty array, or empty object, respectively.
 
 The `tao::json::value::push_back()` and `tao::json::value::emplace_back()` functions for Arrays, and `tao::json::value::insert()` and `tao::json::value::emplace()` for Objects, again forward to the corresponding functions of the underlying standard container.
 
