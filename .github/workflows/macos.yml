@@ -40,7 +40,7 @@ jobs:
     - working-directory: build/
       run: ctest --config ${{ matrix.build_type }} --output-on-failure
 
-xcode-old:
+  xcode-old:
     strategy:
       fail-fast: false
       matrix:
