@@ -197,7 +197,7 @@ namespace tao::json::events
    template< typename Consumer, template< typename... > class Traits >
    void from_value( Consumer& consumer, basic_value< Traits >&& v )
    {
-      from_value< static_cast< void ( * )( Consumer&, basic_value< Traits > && ) >( &from_value< Consumer, Traits > ), Consumer, Traits >( consumer, std::move( v ) );
+      from_value< static_cast< void ( * )( Consumer&, basic_value< Traits >&& ) >( &from_value< Consumer, Traits > ), Consumer, Traits >( consumer, std::move( v ) );
    }
 
 }  // namespace tao::json::events

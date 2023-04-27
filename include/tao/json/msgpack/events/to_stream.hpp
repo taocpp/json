@@ -159,7 +159,7 @@ namespace tao::json::msgpack::events
       void element() noexcept
       {}
 
-      void end_array()  // NOLINT(readability-convert-member-functions-to-static)
+      void end_array()     // NOLINT(readability-convert-member-functions-to-static)
       {
          assert( false );  // LCOV_EXCL_LINE
       }
@@ -196,7 +196,7 @@ namespace tao::json::msgpack::events
       void member() noexcept
       {}
 
-      void end_object()  // NOLINT(readability-convert-member-functions-to-static)
+      void end_object()    // NOLINT(readability-convert-member-functions-to-static)
       {
          assert( false );  // LCOV_EXCL_LINE
       }
