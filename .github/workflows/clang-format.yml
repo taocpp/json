@@ -19,9 +19,9 @@ jobs:
       with:
         submodules: recursive
 
-    - uses: DoozyX/clang-format-lint-action@v0.15
+    - uses: DoozyX/clang-format-lint-action@v0.16
       with:
         source: './include ./src'
         exclude: './include/tao/json/external'
         extensions: 'hpp,cpp'
-        clangFormatVersion: 15
+        clangFormatVersion: 16
