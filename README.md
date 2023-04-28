@@ -90,7 +90,7 @@ taoJSON is part of [The Art of C++](https://taocpp.github.io/).
 
 ## License
 
-<a href="https://opensource.org/licenses/MIT"><img align="right" src="https://opensource.org/files/OSIApproved.png" width="150" hspace="20" alt="Open Source Initiative"></a>
+<a href="https://opensource.org/licenses/MIT"><img align="right" src="https://opensource.org/wp-content/uploads/2009/06/OSIApproved.svg" width="150" hspace="20" alt="Open Source Initiative"></a>
 
 taoJSON is certified [Open Source] software.
 It may be used for any purpose, including commercial purposes, at absolutely no cost.
