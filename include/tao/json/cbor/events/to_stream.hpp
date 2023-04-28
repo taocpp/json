@@ -95,13 +95,13 @@ namespace tao::json::cbor::events
       void string( const std::string_view v )
       {
          number( internal::major::STRING, v.size() );
-         os.write( v.data(), v.size() );
+         os.write( v.data(), static_cast< std::streamsize >( v.size() ) );
       }
 
       void binary( const tao::binary_view v )
       {
          number( internal::major::BINARY, v.size() );
-         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+         os.write( reinterpret_cast< const char* >( v.data() ), static_cast< std::streamsize >( v.size() ) );
       }
 
       void begin_array()

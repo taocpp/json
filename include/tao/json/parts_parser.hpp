@@ -129,12 +129,12 @@ namespace tao::json
 
          void number( const std::int64_t i )
          {
-            converted = double( i );
+            converted = static_cast< double >( i );
          }
 
          void number( const std::uint64_t u )
          {
-            converted = double( u );
+            converted = static_cast< double >( u );
          }
 
          double converted = 0.0;  // TODO: Remove superfluous initialisation when we manage to shup up the warnings on all compilers.

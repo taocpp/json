@@ -62,7 +62,7 @@ namespace tao::json::ubjson
          if( i < 0 ) {
             throw std::runtime_error( "negative number for unsigned" );
          }
-         return std::uint64_t( i );
+         return static_cast< std::uint64_t >( i );
       }
 
       template< typename Input >

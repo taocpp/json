@@ -28,47 +28,47 @@ namespace tao::json::jaxn::internal
       {
          switch( *in.begin() ) {
             case '"':
-               value.push_back( std::byte( '"' ) );
+               value.push_back( static_cast< std::byte >( '"' ) );
                break;
 
             case '\'':
-               value.push_back( std::byte( '\'' ) );
+               value.push_back( static_cast< std::byte >( '\'' ) );
                break;
 
             case '\\':
-               value.push_back( std::byte( '\\' ) );
+               value.push_back( static_cast< std::byte >( '\\' ) );
                break;
 
             case '/':
-               value.push_back( std::byte( '/' ) );
+               value.push_back( static_cast< std::byte >( '/' ) );
                break;
 
             case 'b':
-               value.push_back( std::byte( '\b' ) );
+               value.push_back( static_cast< std::byte >( '\b' ) );
                break;
 
             case 'f':
-               value.push_back( std::byte( '\f' ) );
+               value.push_back( static_cast< std::byte >( '\f' ) );
                break;
 
             case 'n':
-               value.push_back( std::byte( '\n' ) );
+               value.push_back( static_cast< std::byte >( '\n' ) );
                break;
 
             case 'r':
-               value.push_back( std::byte( '\r' ) );
+               value.push_back( static_cast< std::byte >( '\r' ) );
                break;
 
             case 't':
-               value.push_back( std::byte( '\t' ) );
+               value.push_back( static_cast< std::byte >( '\t' ) );
                break;
 
             case 'v':
-               value.push_back( std::byte( '\v' ) );
+               value.push_back( static_cast< std::byte >( '\v' ) );
                break;
 
             case '0':
-               value.push_back( std::byte( '\0' ) );
+               value.push_back( static_cast< std::byte >( '\0' ) );
                break;
 
             default:

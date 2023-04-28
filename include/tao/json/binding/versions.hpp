@@ -54,7 +54,7 @@ namespace tao::json::binding
             else {
                static_assert( std::is_void_v< V >, "neither V::to() nor V::as() found" );
             }
-            return std::exception_ptr();
+            return {};
          }
          catch( ... ) {
             return std::current_exception();
@@ -96,7 +96,7 @@ namespace tao::json::binding
             auto m = parser.mark();
             V::template consume< Traits >( parser, x );
             (void)m( true );
-            return std::exception_ptr();
+            return {};
          }
          catch( ... ) {
             return std::current_exception();

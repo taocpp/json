@@ -35,19 +35,19 @@ namespace tao::json::msgpack::events
 
       void null()
       {
-         os.put( char( 0xc0 ) );
+         os.put( static_cast< char >( 0xc0 ) );
       }
 
       void boolean( const bool v )
       {
-         os.put( char( 0xc2 ) + char( v ) );
+         os.put( static_cast< char >( 0xc2 ) + static_cast< char >( v ) );
       }
 
       template< typename Integer >
       void number_impl( const unsigned char tag, const std::uint64_t v )
       {
-         os.put( char( tag ) );
-         const Integer x = json::internal::h_to_be( Integer( v ) );
+         os.put( static_cast< char >( tag ) );
+         const Integer x = json::internal::h_to_be( static_cast< Integer >( v ) );
          os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
       }
 
@@ -93,7 +93,7 @@ namespace tao::json::msgpack::events
 
       void number( const double v )
       {
-         os.put( char( 0xcb ) );
+         os.put( static_cast< char >( 0xcb ) );
          const auto x = json::internal::h_to_be( v );
          os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
       }
@@ -101,7 +101,7 @@ namespace tao::json::msgpack::events
       void string( const std::string_view v )
       {
          if( v.size() <= 31 ) {
-            os.put( char( v.size() + 0xa0 ) );
+            os.put( static_cast< char >( v.size() + 0xa0 ) );
          }
          else if( v.size() <= 255 ) {
             number_impl< std::uint8_t >( 0xd9, v.size() );
@@ -115,7 +115,7 @@ namespace tao::json::msgpack::events
          else {
             throw std::runtime_error( "string too long for msgpack" );
          }
-         os.write( v.data(), v.size() );
+         os.write( v.data(), static_cast< std::streamsize >( v.size() ) );
       }
 
       void binary( const tao::binary_view v )
@@ -132,7 +132,7 @@ namespace tao::json::msgpack::events
          else {
             throw std::runtime_error( "binary too long for msgpack" );
          }
-         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+         os.write( reinterpret_cast< const char* >( v.data() ), static_cast< std::streamsize >( v.size() ) );
       }
 
       void begin_array()  // NOLINT(readability-convert-member-functions-to-static)
@@ -143,7 +143,7 @@ namespace tao::json::msgpack::events
       void begin_array( const std::size_t size )
       {
          if( size <= 15 ) {
-            os.put( char( 0x90 + size ) );
+            os.put( static_cast< char >( 0x90 + size ) );
          }
          else if( size <= 65535 ) {
             number_impl< std::uint16_t >( 0xdc, size );
@@ -175,7 +175,7 @@ namespace tao::json::msgpack::events
       void begin_object( const std::size_t size )
       {
          if( size <= 15 ) {
-            os.put( char( 0x80 + size ) );
+            os.put( static_cast< char >( 0x80 + size ) );
          }
          else if( size <= 65535 ) {
             number_impl< std::uint16_t >( 0xde, size );

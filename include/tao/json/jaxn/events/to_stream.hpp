@@ -45,7 +45,7 @@ namespace tao::json::jaxn::events
       {
          if( jaxn::is_identifier( v ) ) {
             next();
-            os.write( v.data(), v.size() );
+            os.write( v.data(), static_cast< std::streamsize >( v.size() ) );
          }
          else {
             string( v );

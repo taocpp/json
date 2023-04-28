@@ -45,17 +45,17 @@ namespace tao::json::ubjson::events
          }
          else if( ( v >= -32768 ) && ( v <= 32767 ) ) {
             os.put( 'I' );
-            const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
+            const std::uint16_t x = json::internal::h_to_be( static_cast< std::uint16_t >( v ) );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else if( ( v >= -2147483648LL ) && ( v <= 2147483647LL ) ) {
             os.put( 'l' );
-            const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
+            const std::uint32_t x = json::internal::h_to_be( static_cast< std::uint32_t >( v ) );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else {
             os.put( 'L' );
-            const std::uint64_t x = json::internal::h_to_be( std::uint64_t( v ) );
+            const std::uint64_t x = json::internal::h_to_be( static_cast< std::uint64_t >( v ) );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
       }
@@ -69,12 +69,12 @@ namespace tao::json::ubjson::events
          }
          else if( v <= 32767 ) {
             os.put( 'I' );
-            const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
+            const std::uint16_t x = json::internal::h_to_be( static_cast< std::uint16_t >( v ) );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else if( v <= 2147483647UL ) {
             os.put( 'l' );
-            const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
+            const std::uint32_t x = json::internal::h_to_be( static_cast< std::uint32_t >( v ) );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else if( v <= 9223372036854775807ULL ) {
@@ -85,7 +85,7 @@ namespace tao::json::ubjson::events
          else {
             os.put( 'H' );
             os.put( 'U' );
-            os.put( char( 19 ) + char( v >= 10000000000000000000ULL ) );
+            os.put( static_cast< char >( 19 ) + static_cast< char >( v >= 10000000000000000000ULL ) );
             os << v;
          }
       }
@@ -105,8 +105,8 @@ namespace tao::json::ubjson::events
          }
          else {
             os.put( 'S' );
-            number( std::uint64_t( v.size() ) );
-            os.write( v.data(), v.size() );
+            number( static_cast< std::uint64_t >( v.size() ) );
+            os.write( v.data(), static_cast< std::streamsize >( v.size() ) );
          }
       }
 
@@ -114,8 +114,8 @@ namespace tao::json::ubjson::events
       {
          // NOTE: UBJSON encodes binary data as 'strongly typed array of uint8 values'.
          os.write( "[$U#", 4 );
-         number( std::uint64_t( v.size() ) );
-         os.write( reinterpret_cast< const char* >( v.data() ), v.size() );
+         number( static_cast< std::uint64_t >( v.size() ) );
+         os.write( reinterpret_cast< const char* >( v.data() ), static_cast< std::streamsize >( v.size() ) );
       }
 
       void begin_array()
@@ -126,7 +126,7 @@ namespace tao::json::ubjson::events
       void begin_array( const std::size_t size )
       {
          os.write( "[#", 2 );
-         number( std::uint64_t( size ) );
+         number( static_cast< std::uint64_t >( size ) );
       }
 
       void element() noexcept
@@ -148,13 +148,13 @@ namespace tao::json::ubjson::events
       void begin_object( const std::size_t size )
       {
          os.write( "{#", 2 );
-         number( std::uint64_t( size ) );
+         number( static_cast< std::uint64_t >( size ) );
       }
 
       void key( const std::string_view v )
       {
-         number( std::uint64_t( v.size() ) );
-         os.write( v.data(), v.size() );
+         number( static_cast< std::uint64_t >( v.size() ) );
+         os.write( v.data(), static_cast< std::streamsize >( v.size() ) );
       }
 
       void member() noexcept

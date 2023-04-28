@@ -27,9 +27,9 @@ namespace tao::json::msgpack::internal
    [[nodiscard]] std::string_view read_string( Input& in )
    {
       const auto b = json::internal::peek_uint8( in );
-      if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
+      if( ( static_cast< std::uint8_t >( format::FIXSTR_MIN ) <= b ) && ( b <= static_cast< std::uint8_t >( format::FIXSTR_MAX ) ) ) {
          in.bump_in_this_line();
-         return json::internal::read_string< U, std::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) );
+         return json::internal::read_string< U, std::string_view >( in, b - static_cast< std::uint8_t >( format::FIXSTR_MIN ) );
       }
       switch( format( b ) ) {
          case format::STR8:
@@ -72,28 +72,28 @@ namespace tao::json::msgpack::internal
       {
          const auto b = in.peek_uint8();
          if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
-            consumer.number( std::uint64_t( b ) );
+            consumer.number( static_cast< std::uint64_t >( b ) );
             in.bump_in_this_line();
             return;
          }
          if( b >= std::uint8_t( format::NEGATIVE_MIN ) ) {
-            consumer.number( std::int64_t( std::int8_t( b ) ) );
+            consumer.number( static_cast< std::int64_t >( static_cast< std::int8_t >( b ) ) );
             in.bump_in_this_line();
             return;
          }
-         if( ( std::uint8_t( format::FIXMAP_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXMAP_MAX ) ) ) {
+         if( ( static_cast< std::uint8_t >( format::FIXMAP_MIN ) <= b ) && ( b <= static_cast< std::uint8_t >( format::FIXMAP_MAX ) ) ) {
             in.bump_in_this_line();
-            parse_object( in, consumer, b - std::uint8_t( format::FIXMAP_MIN ) );
+            parse_object( in, consumer, b - static_cast< std::uint8_t >( format::FIXMAP_MIN ) );
             return;
          }
-         if( ( std::uint8_t( format::FIXARRAY_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXARRAY_MAX ) ) ) {
+         if( ( static_cast< std::uint8_t >( format::FIXARRAY_MIN ) <= b ) && ( b <= static_cast< std::uint8_t >( format::FIXARRAY_MAX ) ) ) {
             in.bump_in_this_line();
-            parse_array( in, consumer, b - std::uint8_t( format::FIXARRAY_MIN ) );
+            parse_array( in, consumer, b - static_cast< std::uint8_t >( format::FIXARRAY_MIN ) );
             return;
          }
-         if( ( std::uint8_t( format::FIXSTR_MIN ) <= b ) && ( b <= std::uint8_t( format::FIXSTR_MAX ) ) ) {
+         if( ( static_cast< std::uint8_t >( format::FIXSTR_MIN ) <= b ) && ( b <= static_cast< std::uint8_t >( format::FIXSTR_MAX ) ) ) {
             in.bump_in_this_line();
-            consumer.string( json::internal::read_string< V, std::string_view >( in, b - std::uint8_t( format::FIXSTR_MIN ) ) );
+            consumer.string( json::internal::read_string< V, std::string_view >( in, b - static_cast< std::uint8_t >( format::FIXSTR_MIN ) ) );
             return;
          }
          switch( format( b ) ) {
@@ -217,14 +217,12 @@ namespace tao::json::msgpack::internal
    template< utf8_mode V >
    struct basic_grammar
       : pegtl::must< data< V >, pegtl::eof >
-   {
-   };
+   {};
 
    template< utf8_mode V >
    struct basic_embedded
       : pegtl::must< data< V > >
-   {
-   };
+   {};
 
    using grammar = basic_grammar< utf8_mode::check >;
    using embedded = basic_embedded< utf8_mode::check >;

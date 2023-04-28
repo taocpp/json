@@ -119,7 +119,7 @@ namespace tao::json::jaxn::internal::integer
       if( input[ 0 ] == '-' ) {
          return convert_hex_negative< Signed >( result, std::string_view( input.data() + 3, input.size() - 3 ) );
       }
-      const auto offset = unsigned( input[ 0 ] == '+' ) + 2;  // The "0x" prefix has length 2.
+      const auto offset = static_cast< unsigned >( input[ 0 ] == '+' ) + 2;  // The "0x" prefix has length 2.
       return convert_hex_positive< Signed >( result, std::string_view( input.data() + offset, input.size() - offset ) );
    }
 

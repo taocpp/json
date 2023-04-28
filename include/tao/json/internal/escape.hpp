@@ -25,7 +25,7 @@ namespace tao::json::internal
             os.write( l, p - l );
             l = ++p;
             os.put( '\\' );
-            os.put( c );
+            os.put( static_cast< char >( c ) );
          }
          else if( c < 32 || c == 127 ) {
             os.write( l, p - l );

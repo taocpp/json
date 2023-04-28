@@ -119,7 +119,7 @@ namespace tao::json::internal
       template< typename Consumer >
       static void apply0( Consumer& consumer )
       {
-         consumer.number( std::uint64_t( 0 ) );
+         consumer.number( static_cast< std::uint64_t >( 0 ) );
       }
    };
 
@@ -129,7 +129,7 @@ namespace tao::json::internal
       template< typename Consumer >
       static void apply0( Consumer& consumer )
       {
-         consumer.number( std::int64_t( 0 ) );
+         consumer.number( static_cast< std::int64_t >( 0 ) );
       }
    };
 

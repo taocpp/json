@@ -60,23 +60,23 @@ namespace tao::json::msgpack
 
       [[nodiscard]] inline std::int64_t test_signed( const std::uint64_t i )
       {
-         if( ( i & ( std::uint64_t( 1 ) << 63 ) ) != 0 ) {
+         if( ( i & ( static_cast< std::uint64_t >( 1 ) << 63 ) ) != 0 ) {
             throw std::runtime_error( "integer overflow for signed" );
          }
-         return std::int64_t( i );
+         return static_cast< std::int64_t >( i );
       }
 
       template< typename Input >
       [[nodiscard]] std::int64_t read_signed( Input& in )
       {
          const auto b = json::internal::peek_uint8( in );
-         if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
+         if( b <= static_cast< std::uint8_t >( format::POSITIVE_MAX ) ) {
             in.bump_in_this_line();
-            return std::int64_t( b );
+            return static_cast< std::int64_t >( b );
          }
-         if( b >= std::uint8_t( format::NEGATIVE_MIN ) ) {
+         if( b >= static_cast< std::uint8_t >( format::NEGATIVE_MIN ) ) {
             in.bump_in_this_line();
-            return std::int64_t( std::int8_t( b ) );
+            return static_cast< std::int64_t >( static_cast< std::int8_t >( b ) );
          }
          switch( format( b ) ) {
             case format::UINT8:
@@ -105,16 +105,16 @@ namespace tao::json::msgpack
          if( i < 0 ) {
             throw std::runtime_error( "negative number for unsigned" );
          }
-         return std::uint64_t( i );
+         return static_cast< std::uint64_t >( i );
       }
 
       template< typename Input >
       [[nodiscard]] std::uint64_t read_unsigned( Input& in )
       {
          const auto b = json::internal::peek_uint8( in );
-         if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
+         if( b <= static_cast< std::uint8_t >( format::POSITIVE_MAX ) ) {
             in.bump_in_this_line();
-            return std::uint64_t( b );
+            return static_cast< std::uint64_t >( b );
          }
          switch( format( b ) ) {
             case format::UINT8:
@@ -155,9 +155,9 @@ namespace tao::json::msgpack
       [[nodiscard]] std::size_t read_container_size( Input& in )
       {
          const auto b = json::internal::peek_uint8( in );
-         if( ( std::uint8_t( Min ) <= b ) && ( b <= std::uint8_t( Max ) ) ) {
+         if( ( static_cast< std::uint8_t >( Min ) <= b ) && ( b <= static_cast< std::uint8_t >( Max ) ) ) {
             in.bump_in_this_line();
-            return state_t( b - std::uint8_t( Min ) );
+            return state_t( b - static_cast< std::uint8_t >( Min ) );
          }
          switch( format( b ) ) {
             case S16:

@@ -1015,7 +1015,7 @@ namespace tao::json
                   }
                   break;
                case HAS_MULTIPLE_OF_DOUBLE:
-                  if( !is_multiple_of( double( v ), m_node->m_multiple_of.d ) ) {
+                  if( !is_multiple_of( static_cast< double >( v ), m_node->m_multiple_of.d ) ) {
                      m_match = false;
                   }
                   break;
@@ -1031,7 +1031,7 @@ namespace tao::json
                   }
                   break;
                case HAS_MULTIPLE_OF_DOUBLE:
-                  if( !is_multiple_of( double( v ), m_node->m_multiple_of.d ) ) {
+                  if( !is_multiple_of( static_cast< double >( v ), m_node->m_multiple_of.d ) ) {
                      m_match = false;
                   }
                   break;

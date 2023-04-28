@@ -27,7 +27,7 @@ namespace tao::json::events
    {
    protected:
       std::ostream& os;
-      bool first;
+      bool first = true;
 
       void next()
       {
@@ -38,8 +38,7 @@ namespace tao::json::events
 
    public:
       explicit to_stream( std::ostream& in_os ) noexcept
-         : os( in_os ),
-           first( true )
+         : os( in_os )
       {}
 
       void null()

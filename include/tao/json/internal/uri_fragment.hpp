@@ -158,7 +158,7 @@ namespace tao::json::internal
                   break;
                default:
                   if( allowed_uri_fragment_characters[ c ] ) {
-                     result += c;
+                     result += static_cast< char >( c );
                   }
                   else {
                      result += '%';

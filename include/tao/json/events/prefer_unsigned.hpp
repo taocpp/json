@@ -19,7 +19,7 @@ namespace tao::json::events
       void number( const std::int64_t v )
       {
          if( v >= 0 ) {
-            Consumer::number( std::uint64_t( v ) );
+            Consumer::number( static_cast< std::uint64_t >( v ) );
          }
          else {
             Consumer::number( v );

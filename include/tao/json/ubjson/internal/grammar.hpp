@@ -245,7 +245,7 @@ namespace tao::json
                case marker::NO_OP:
                   throw pegtl::parse_error( "unsupported ubjson no-op", in );
                default:
-                  throw pegtl::parse_error( "unknown ubjson type " + std::to_string( unsigned( c ) ), in );
+                  throw pegtl::parse_error( "unknown ubjson type " + std::to_string( static_cast< unsigned >( c ) ), in );
             }
          }
 
@@ -391,21 +391,18 @@ namespace tao::json
       };
 
       struct nops
-         : pegtl::star< pegtl::one< char( marker::NO_OP ) > >
-      {
-      };
+         : pegtl::star< pegtl::one< static_cast< char >( marker::NO_OP ) > >
+      {};
 
       template< std::size_t L, utf8_mode V >
       struct basic_grammar
          : pegtl::must< nops, data< L, V >, nops, pegtl::eof >
-      {
-      };
+      {};
 
       template< std::size_t L, utf8_mode V >
       struct basic_embedded
          : pegtl::must< data< L, V > >
-      {
-      };
+      {};
 
       using grammar = basic_grammar< 1 << 24, utf8_mode::check >;
       using embedded = basic_embedded< 1 << 24, utf8_mode::check >;

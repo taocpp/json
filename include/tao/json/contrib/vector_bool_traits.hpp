@@ -22,7 +22,7 @@ namespace tao::json
          v.emplace_array();
          v.get_array().reserve( o.size() );
          for( const auto e : o ) {
-            v.emplace_back( bool( e ) );
+            v.emplace_back( static_cast< bool >( e ) );
          }
       }
 
@@ -31,7 +31,7 @@ namespace tao::json
       {
          c.begin_array( o.size() );
          for( const auto i : o ) {
-            json::events::produce< Traits >( c, bool( i ) );
+            json::events::produce< Traits >( c, static_cast< bool >( i ) );
             c.element();
          }
          c.end_array( o.size() );

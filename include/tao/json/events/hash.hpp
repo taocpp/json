@@ -88,14 +88,14 @@ namespace tao::json::events
       {
          if( v >= 0 ) {
             const auto u = static_cast< std::uint64_t >( v );
-            if( u == v ) {
+            if( static_cast< double >( u ) == v ) {
                number( u );
                return;
             }
          }
          else {
             const auto i = static_cast< std::int64_t >( v );
-            if( i == v ) {
+            if( static_cast< double >( i ) == v ) {
                number( i );
                return;
             }

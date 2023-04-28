@@ -33,7 +33,7 @@ namespace tao::json
                                 T,
                                 decltype( std::declval< T< B > >().null(),
                                           std::declval< T< B > >().boolean( true ),
-                                          std::declval< T< B > >().number( double( 0.0 ) ),
+                                          std::declval< T< B > >().number( static_cast< double >( 0.0 ) ),
                                           std::declval< T< B > >().string( "" ),
                                           std::declval< T< B > >().element(),
                                           std::declval< T< B > >().member(),
