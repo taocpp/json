@@ -34,35 +34,35 @@ namespace tao::json::cbor::events
 
       void null()
       {
-         os.put( char( std::uint8_t( internal::major::OTHER ) + 22 ) );
+         os.put( static_cast< char >( static_cast< std::uint8_t >( internal::major::OTHER ) + 22 ) );
       }
 
       void boolean( const bool v )
       {
-         os.put( char( std::uint8_t( internal::major::OTHER ) + 20 + std::uint8_t( v ) ) );
+         os.put( static_cast< char >( static_cast< std::uint8_t >( internal::major::OTHER ) + 20 + static_cast< std::uint8_t >( v ) ) );
       }
 
       void number( const internal::major m, const std::uint64_t v )
       {
          if( v < 24 ) {
-            os.put( char( std::uint8_t( m ) + v ) );
+            os.put( static_cast< char >( static_cast< std::uint8_t >( m ) + v ) );
          }
          else if( v < 256 ) {
-            os.put( char( std::uint8_t( m ) + 24 ) );
-            os.put( char( v ) );
+            os.put( static_cast< char >( static_cast< std::uint8_t >( m ) + 24 ) );
+            os.put( static_cast< char >( v ) );
          }
          else if( v < 65536 ) {
-            os.put( char( std::uint8_t( m ) + 25 ) );
-            const std::uint16_t x = json::internal::h_to_be( std::uint16_t( v ) );
+            os.put( static_cast< char >( static_cast< std::uint8_t >( m ) + 25 ) );
+            const std::uint16_t x = json::internal::h_to_be( static_cast< std::uint16_t >( v ) );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else if( v < 4294967296ULL ) {
-            os.put( char( std::uint8_t( m ) + 26 ) );
-            const std::uint32_t x = json::internal::h_to_be( std::uint32_t( v ) );
+            os.put( static_cast< char >( static_cast< std::uint8_t >( m ) + 26 ) );
+            const std::uint32_t x = json::internal::h_to_be( static_cast< std::uint32_t >( v ) );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
          else {
-            os.put( char( std::uint8_t( m ) + 27 ) );
+            os.put( static_cast< char >( static_cast< std::uint8_t >( m ) + 27 ) );
             const std::uint64_t x = json::internal::h_to_be( v );
             os.write( reinterpret_cast< const char* >( &x ), sizeof( x ) );
          }
@@ -88,7 +88,7 @@ namespace tao::json::cbor::events
          std::uint64_t n;
          std::memcpy( &n, &v, sizeof( n ) );
          n = json::internal::h_to_be( n );
-         os.put( char( std::uint8_t( internal::major::OTHER ) + 27 ) );
+         os.put( static_cast< char >( static_cast< std::uint8_t >( internal::major::OTHER ) + 27 ) );
          os.write( reinterpret_cast< const char* >( &n ), sizeof( n ) );
       }
 
@@ -106,7 +106,7 @@ namespace tao::json::cbor::events
 
       void begin_array()
       {
-         os.put( char( std::uint8_t( internal::major::ARRAY ) + internal::minor_mask ) );
+         os.put( static_cast< char >( static_cast< std::uint8_t >( internal::major::ARRAY ) + internal::minor_mask ) );
       }
 
       void begin_array( const std::size_t size )
@@ -119,7 +119,7 @@ namespace tao::json::cbor::events
 
       void end_array()
       {
-         os.put( char( 0xff ) );
+         os.put( static_cast< char >( 0xff ) );
       }
 
       void end_array( const std::size_t /*unused*/ ) noexcept
@@ -127,7 +127,7 @@ namespace tao::json::cbor::events
 
       void begin_object()
       {
-         os.put( char( std::uint8_t( internal::major::OBJECT ) + internal::minor_mask ) );
+         os.put( static_cast< char >( static_cast< std::uint8_t >( internal::major::OBJECT ) + internal::minor_mask ) );
       }
 
       void begin_object( const std::size_t size )
@@ -145,7 +145,7 @@ namespace tao::json::cbor::events
 
       void end_object()
       {
-         os.put( char( 0xff ) );
+         os.put( static_cast< char >( 0xff ) );
       }
 
       void end_object( const std::size_t /*unused*/ ) noexcept

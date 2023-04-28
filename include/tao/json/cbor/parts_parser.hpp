@@ -62,10 +62,10 @@ namespace tao::json::cbor
       {
          const auto b = json::internal::peek_uint8( in );
          switch( b ) {
-            case std::uint8_t( major::OTHER ) + 20:
-            case std::uint8_t( major::OTHER ) + 21:
+            case static_cast< std::uint8_t >( major::OTHER ) + 20:
+            case static_cast< std::uint8_t >( major::OTHER ) + 21:
                in.bump_in_this_line( 1 );
-               return bool( b - std::uint8_t( major::OTHER ) - 20 );
+               return static_cast< bool >( b - static_cast< std::uint8_t >( major::OTHER ) - 20 );
             default:
                throw pegtl::parse_error( "expected boolean", in );
          }
@@ -84,8 +84,7 @@ namespace tao::json::cbor
       template< typename... Ts >
       explicit basic_parts_parser( Ts&&... ts )
          : m_input( std::forward< Ts >( ts )... )
-      {
-      }
+      {}
 
       [[nodiscard]] bool empty()
       {
@@ -94,7 +93,7 @@ namespace tao::json::cbor
 
       [[nodiscard]] bool null()
       {
-         if( json::internal::peek_uint8( m_input ) == std::uint8_t( internal::major::OTHER ) + 22 ) {
+         if( json::internal::peek_uint8( m_input ) == static_cast< std::uint8_t >( internal::major::OTHER ) + 22 ) {
             m_input.bump_in_this_line( 1 );
             return true;
          }
@@ -144,7 +143,7 @@ namespace tao::json::cbor
       [[nodiscard]] std::string_view string_view()
       {
          const auto b = json::internal::peek_uint8( m_input );
-         if( b != std::uint8_t( internal::major::STRING ) + internal::minor_mask ) {
+         if( b != static_cast< std::uint8_t >( internal::major::STRING ) + internal::minor_mask ) {
             throw pegtl::parse_error( "expected definitive string", m_input );
          }
          return internal::read_string_1< V, std::string_view >( m_input );
@@ -153,7 +152,7 @@ namespace tao::json::cbor
       [[nodiscard]] tao::binary_view binary_view()
       {
          const auto b = json::internal::peek_uint8( m_input );
-         if( b != std::uint8_t( internal::major::BINARY ) + internal::minor_mask ) {
+         if( b != static_cast< std::uint8_t >( internal::major::BINARY ) + internal::minor_mask ) {
             throw pegtl::parse_error( "expected definitive binary", m_input );
          }
          return internal::read_string_1< utf8_mode::trust, tao::binary_view >( m_input );
@@ -171,7 +170,7 @@ namespace tao::json::cbor
          if( u > 9223372036854775807ULL ) {
             throw pegtl::parse_error( "positive integer overflow", m_input );
          }
-         return std::int64_t( u );
+         return static_cast< std::int64_t >( u );
       }
 
       [[nodiscard]] std::int64_t number_signed_negative()
@@ -180,7 +179,7 @@ namespace tao::json::cbor
          if( u > 9223372036854775808ULL ) {
             throw pegtl::parse_error( "negative integer overflow", m_input );
          }
-         return std::int64_t( ~u );
+         return static_cast< std::int64_t >( ~u );
       }
 
 #if defined( _MSC_VER )
@@ -215,11 +214,11 @@ namespace tao::json::cbor
       {
          const auto b = json::internal::peek_uint8( m_input );
          switch( b ) {
-            case std::uint8_t( internal::major::OTHER ) + 25:
+            case static_cast< std::uint8_t >( internal::major::OTHER ) + 25:
                return internal::read_fp16( m_input );
-            case std::uint8_t( internal::major::OTHER ) + 26:
+            case static_cast< std::uint8_t >( internal::major::OTHER ) + 26:
                return json::internal::read_big_endian_number< float >( m_input + 1 );
-            case std::uint8_t( internal::major::OTHER ) + 27:
+            case static_cast< std::uint8_t >( internal::major::OTHER ) + 27:
                return json::internal::read_big_endian_number< double >( m_input + 1 );
             default:
                throw pegtl::parse_error( "expected floating point number", m_input );

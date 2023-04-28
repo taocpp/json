@@ -5,6 +5,7 @@
 #define TAO_JSON_CONTRIB_DEQUE_TRAITS_HPP
 
 #include <deque>
+#include <vector>
 
 #include "../consume.hpp"
 #include "../forward.hpp"

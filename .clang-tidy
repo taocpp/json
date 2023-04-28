@@ -29,6 +29,7 @@ Checks: >-
   performance-*,
   readability-*,
   -readability-avoid-const-params-in-decls,
+  -readability-function-cognitive-complexity,
   -readability-identifier-length,
   -readability-magic-numbers,
 
