@@ -29,12 +29,12 @@ namespace tao::json::internal
    template<>
    struct to_and_from_le< 1 >
    {
-      [[nodiscard]] static std::uint8_t convert( const std::uint8_t n ) noexcept
+      [[nodiscard]] static std::int8_t convert( const std::int8_t n ) noexcept
       {
          return n;
       }
 
-      [[nodiscard]] static std::int8_t convert( const std::int8_t n ) noexcept
+      [[nodiscard]] static std::uint8_t convert( const std::uint8_t n ) noexcept
       {
          return n;
       }
@@ -178,12 +178,12 @@ namespace tao::json::internal
          return n;
       }
 
-      [[nodiscard]] static std::uint64_t convert( const std::uint64_t n ) noexcept
+      [[nodiscard]] static std::int64_t convert( const std::int64_t n ) noexcept
       {
          return static_cast< std::int64_t >( __builtin_bswap64( n ) );
       }
 
-      [[nodiscard]] static std::int64_t convert( const std::int64_t n ) noexcept
+      [[nodiscard]] static std::uint64_t convert( const std::uint64_t n ) noexcept
       {
          return __builtin_bswap64( n );
       }

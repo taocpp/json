@@ -71,12 +71,12 @@ namespace tao::json::msgpack::internal
       static void parse_unsafe( Input& in, Consumer& consumer )
       {
          const auto b = in.peek_uint8();
-         if( b <= std::uint8_t( format::POSITIVE_MAX ) ) {
+         if( b <= static_cast< std::uint8_t >( format::POSITIVE_MAX ) ) {
             consumer.number( static_cast< std::uint64_t >( b ) );
             in.bump_in_this_line();
             return;
          }
-         if( b >= std::uint8_t( format::NEGATIVE_MIN ) ) {
+         if( b >= static_cast< std::uint8_t >( format::NEGATIVE_MIN ) ) {
             consumer.number( static_cast< std::int64_t >( static_cast< std::int8_t >( b ) ) );
             in.bump_in_this_line();
             return;

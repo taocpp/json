@@ -40,7 +40,7 @@ namespace tao::json::msgpack::events
 
       void boolean( const bool v )
       {
-         os.put( static_cast< char >( 0xc2 ) + static_cast< char >( v ) );
+         os.put( static_cast< char >( v ? 0xc3 : 0xc2 ) );
       }
 
       template< typename Integer >

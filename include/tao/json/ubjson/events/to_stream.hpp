@@ -85,7 +85,7 @@ namespace tao::json::ubjson::events
          else {
             os.put( 'H' );
             os.put( 'U' );
-            os.put( static_cast< char >( 19 ) + static_cast< char >( v >= 10000000000000000000ULL ) );
+            os.put( static_cast< char >( ( v >= 10000000000000000000ULL ) ? 20 : 19 ) );
             os << v;
          }
       }
