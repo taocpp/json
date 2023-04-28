@@ -1,5 +1,13 @@
+# The Art of C++
+# https://github.com/taocpp/json
+
+# Copyright (c) 2016-2023 Daniel Frey
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
+
 Checks: >-
   bugprone-*,
+  -bugprone-easily-swappable-parameters,
   cppcoreguidelines-slicing,
   cppcoreguidelines-special-member-functions,
   google-build-explicit-make-pair,
@@ -10,6 +18,7 @@ Checks: >-
   llvm-*,
   -llvm-namespace-comment,
   misc-*,
+  -misc-no-recursion,
   -misc-non-private-member-variables-in-classes,
   -misc-unused-alias-decls,
   modernize-*,
@@ -20,6 +29,7 @@ Checks: >-
   performance-*,
   readability-*,
   -readability-avoid-const-params-in-decls,
+  -readability-identifier-length,
   -readability-magic-numbers,
 
 CheckOptions:
