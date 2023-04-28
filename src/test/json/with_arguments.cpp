@@ -51,7 +51,7 @@ namespace tao::json
    {
       [[nodiscard]] static type_2 as( const value& /*unused*/, const arg_0& /*unused*/, const arg_0& /*unused*/ )
       {
-         return type_2();
+         return {};
       }
    };
 

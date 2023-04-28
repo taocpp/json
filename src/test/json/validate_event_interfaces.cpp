@@ -73,9 +73,9 @@ namespace tao::json
 
       c->boolean( true );
 
-      c->number( int64_t( 0 ) );
-      c->number( uint64_t( 0 ) );
-      c->number( double( 0 ) );
+      c->number( static_cast< std::int64_t >( 0 ) );
+      c->number( static_cast< std::uint64_t >( 0 ) );
+      c->number( static_cast< double >( 0 ) );
 
       const char* p = "";
       c->string( "" );
@@ -89,15 +89,15 @@ namespace tao::json
       c->binary( xv );
 
       c->begin_array();
-      c->begin_array( std::size_t( 0 ) );
+      c->begin_array( static_cast< std::size_t >( 0 ) );
 
       c->element();
 
       c->end_array();
-      c->end_array( std::size_t( 0 ) );
+      c->end_array( static_cast< std::size_t >( 0 ) );
 
       c->begin_object();
-      c->begin_object( std::size_t( 0 ) );
+      c->begin_object( static_cast< std::size_t >( 0 ) );
 
       c->key( "" );
       c->key( k );
@@ -107,7 +107,7 @@ namespace tao::json
       c->member();
 
       c->end_object();
-      c->end_object( std::size_t( 0 ) );
+      c->end_object( static_cast< std::size_t >( 0 ) );
    }
 
    template< typename Consumer >

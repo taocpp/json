@@ -11,7 +11,7 @@ namespace tao::json::cplusplus::events
    {
    protected:
       std::ostream& os;
-      char buffer[ 32 ];
+      char buffer[ 32 ] = {};
       const std::size_t indent;
       const std::string eol;
 
@@ -26,7 +26,7 @@ namespace tao::json::cplusplus::events
          std::size_t len = current_indent;
          while( len != 0 ) {
             const auto chunk = ( std::min )( indent, sizeof( buffer ) );
-            os.write( buffer, chunk );
+            os.write( buffer, static_cast< std::streamsize >( chunk ) );
             len -= chunk;
          }
       }
@@ -47,7 +47,6 @@ namespace tao::json::cplusplus::events
    public:
       to_pretty_stream( std::ostream& in_os, const std::size_t in_indent )
          : os( in_os ),
-           buffer(),
            indent( in_indent ),
            eol( "\n" )
       {
@@ -113,9 +112,9 @@ namespace tao::json::cplusplus::events
          next();
          os << "tao::binary({ ";
          if( !v.empty() ) {
-            os << "std::byte(" << int( v[ 0 ] ) << ")";
+            os << "std::byte(" << static_cast< int >( v[ 0 ] ) << ")";
             for( std::size_t j = 1; j < v.size(); ++j ) {
-               os << ", std::byte(" << int( v[ j ] ) << ")";
+               os << ", std::byte(" << static_cast< int >( v[ j ] ) << ")";
             }
          }
          os.write( " })", 3 );

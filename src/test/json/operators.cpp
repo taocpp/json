@@ -129,8 +129,8 @@ namespace tao::json
    template< typename N >
    void test_number()
    {
-      const value a( N( 42 ) );
-      const value b( N( 43 ) );
+      const value a( static_cast< N >( 42 ) );
+      const value b( static_cast< N >( 43 ) );
 
       const value pa( &a );
       const value pb( &b );
@@ -140,7 +140,7 @@ namespace tao::json
       test_lt( a, pb );
       test_lt( pa, pb );
 
-      test_lt( N( 42 ), b );
+      test_lt( static_cast< N >( 42 ), b );
       test_lt( 42, b );
       test_lt( 42U, b );
       test_lt( 42.0, b );
@@ -148,7 +148,7 @@ namespace tao::json
       test_lt( value( 42U ), b );
       test_lt( value( 42.0 ), b );
 
-      test_lt( N( 42 ), pb );
+      test_lt( static_cast< N >( 42 ), pb );
       test_lt( 42, pb );
       test_lt( 42U, pb );
       test_lt( 42.0, pb );
@@ -156,7 +156,7 @@ namespace tao::json
       test_lt( value( 42U ), pb );
       test_lt( value( 42.0 ), pb );
 
-      test_lt( a, N( 43 ) );
+      test_lt( a, static_cast< N >( 43 ) );
       test_lt( a, 43 );
       test_lt( a, 43U );
       test_lt( a, 43.0 );
@@ -164,7 +164,7 @@ namespace tao::json
       test_lt( a, value( 43U ) );
       test_lt( a, value( 43.0 ) );
 
-      test_lt( pa, N( 43 ) );
+      test_lt( pa, static_cast< N >( 43 ) );
       test_lt( pa, 43 );
       test_lt( pa, 43U );
       test_lt( pa, 43.0 );

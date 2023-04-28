@@ -42,7 +42,7 @@ namespace tao::json
                throw std::runtime_error( internal::format( "json patch 'test' failed for '", path, '\'', json::message_extension( v ) ) );
             }
             auto t = std::move( v.at( from ) );
-            v.erase( from );
+            v.erase( from );  // NOLINT(clang-analyzer-cplusplus.Move)
             v.insert( path_pointer, std::move( t ) );
          }
          else if( op == "copy" ) {

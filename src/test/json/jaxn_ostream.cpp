@@ -38,7 +38,10 @@ namespace tao::json
       test_simple( INFINITY, "Infinity" );
       test_simple( -INFINITY, "-Infinity" );
       test_simple( "foo", "\"foo\"" );
-      test_simple( std::vector< std::byte >( { std::byte( 1 ), std::byte( 2 ), std::byte( 3 ) } ), "$010203" );
+      test_simple( std::vector< std::byte >( { static_cast< std::byte >( 1 ),
+                                               static_cast< std::byte >( 2 ),
+                                               static_cast< std::byte >( 3 ) } ),
+                   "$010203" );
       test_simple( empty_array, "[]" );
       test_simple( value::array( {} ), "[]" );
       test_simple( value::array( { 1 } ), "[1]" );
@@ -58,7 +61,10 @@ namespace tao::json
       test_pretty( 42, "42" );
       test_pretty( 42.1, "42.1" );
       test_pretty( "foo", "\"foo\"" );
-      test_pretty( std::vector< std::byte >( { std::byte( 1 ), std::byte( 2 ), std::byte( 3 ) } ), "$010203" );
+      test_pretty( std::vector< std::byte >( { static_cast< std::byte >( 1 ),
+                                               static_cast< std::byte >( 2 ),
+                                               static_cast< std::byte >( 3 ) } ),
+                   "$010203" );
       test_pretty( empty_array, "[]" );
       test_pretty( value::array( {} ), "[]" );
       test_pretty( value::array( { 1 } ), "[\n  1\n]" );

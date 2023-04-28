@@ -62,15 +62,15 @@ namespace tao::json
 
       cbor_encode( "\"0\"", "6130" );
 
-      cbor_encode( '"' + std::string( std::size_t( 23 ), 'D' ) + '"', "77" + std::string( std::size_t( 46 ), '4' ) );
-      cbor_encode( '"' + std::string( std::size_t( 24 ), 'D' ) + '"', "7818" + std::string( std::size_t( 48 ), '4' ) );
-      cbor_encode( '"' + std::string( std::size_t( 255 ), 'D' ) + '"', "78ff" + std::string( std::size_t( 510 ), '4' ) );
-      cbor_encode( '"' + std::string( std::size_t( 256 ), 'D' ) + '"', "790100" + std::string( std::size_t( 512 ), '4' ) );
-      cbor_encode( '"' + std::string( std::size_t( 65535 ), 'D' ) + '"', "79ffff" + std::string( std::size_t( 131070 ), '4' ) );
-      cbor_encode( '"' + std::string( std::size_t( 65536 ), 'D' ) + '"', "7a00010000" + std::string( std::size_t( 131072 ), '4' ) );
+      cbor_encode( '"' + std::string( static_cast< std::size_t >( 23 ), 'D' ) + '"', "77" + std::string( static_cast< std::size_t >( 46 ), '4' ) );
+      cbor_encode( '"' + std::string( static_cast< std::size_t >( 24 ), 'D' ) + '"', "7818" + std::string( static_cast< std::size_t >( 48 ), '4' ) );
+      cbor_encode( '"' + std::string( static_cast< std::size_t >( 255 ), 'D' ) + '"', "78ff" + std::string( static_cast< std::size_t >( 510 ), '4' ) );
+      cbor_encode( '"' + std::string( static_cast< std::size_t >( 256 ), 'D' ) + '"', "790100" + std::string( static_cast< std::size_t >( 512 ), '4' ) );
+      cbor_encode( '"' + std::string( static_cast< std::size_t >( 65535 ), 'D' ) + '"', "79ffff" + std::string( static_cast< std::size_t >( 131070 ), '4' ) );
+      cbor_encode( '"' + std::string( static_cast< std::size_t >( 65536 ), 'D' ) + '"', "7a00010000" + std::string( static_cast< std::size_t >( 131072 ), '4' ) );
 
-      //         cbor_encode( '"' + std::string( std::size_t( 4294967295 ), 'D' ) + '"', "7affffffff" + std::string( std::size_t( 8589934590 ), '4' ) );  // Uses 24GB of RAM.
-      //         cbor_encode( '"' + std::string( std::size_t( 4294967296 ), 'D' ) + '"', "7b0000000100000000" + std::string( std::size_t( 8589934592 ), '4' ) );  // Uses 24GB of RAM.
+      //         cbor_encode( '"' + std::string( static_cast< std::size_t >( 4294967295 ), 'D' ) + '"', "7affffffff" + std::string( static_cast< std::size_t >( 8589934590 ), '4' ) );  // Uses 24GB of RAM.
+      //         cbor_encode( '"' + std::string( static_cast< std::size_t >( 4294967296 ), 'D' ) + '"', "7b0000000100000000" + std::string( static_cast< std::size_t >( 8589934592 ), '4' ) );  // Uses 24GB of RAM.
 
       cbor_encode( "[]", "80" );
       cbor_encode( "{}", "a0" );

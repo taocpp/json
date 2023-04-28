@@ -43,7 +43,10 @@ namespace tao::json
       test_exception( v );
       test_hex( v, "\"\"" );
 
-      v = binary{ std::byte( 0 ), std::byte( 255 ), std::byte( 42 ), std::byte( 99 ) };
+      v = binary{ static_cast< std::byte >( 0 ),
+                  static_cast< std::byte >( 255 ),
+                  static_cast< std::byte >( 42 ),
+                  static_cast< std::byte >( 99 ) };
 
       test_base64( v, "\"AP8qYw==\"" );
       test_base64url( v, "\"AP8qYw\"" );

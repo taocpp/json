@@ -19,13 +19,13 @@ namespace tao::json
       : public Consumer
    {
       static_assert( Max >= Min );
-      static_assert( Max <= std::uint64_t( ( std::numeric_limits< std::int64_t >::max )() ), "Max may not be larger than 2^63-1" );
+      static_assert( Max <= static_cast< std::uint64_t >( ( std::numeric_limits< std::int64_t >::max )() ), "Max may not be larger than 2^63-1" );
 
       using Consumer::Consumer;
 
       void number( const std::int64_t v )
       {
-         if( ( v < std::int64_t( Min ) ) || ( v > std::int64_t( Max ) ) ) {
+         if( ( v < static_cast< std::int64_t >( Min ) ) || ( v > static_cast< std::int64_t >( Max ) ) ) {
             throw std::runtime_error( "integer range violated: " + std::to_string( v ) );
          }
          Consumer::number( v );

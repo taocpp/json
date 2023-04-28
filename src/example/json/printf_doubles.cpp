@@ -22,7 +22,7 @@ namespace tao::json::events
          }
          char buffer[ 32 ];
          const std::size_t n = std::snprintf( buffer, sizeof( buffer ), "%0.2f", v );
-         os.write( buffer, n );
+         os.write( buffer, static_cast< std::streamsize >( n ) );
       }
 
       void number( const std::int64_t v )

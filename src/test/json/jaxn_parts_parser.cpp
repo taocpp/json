@@ -138,7 +138,9 @@ namespace tao::json
       }
       {
          jaxn::parts_parser p( "$34.00.32", __FUNCTION__ );
-         const std::vector< std::byte > z = { std::byte( 0x34 ), std::byte( 0x00 ), std::byte( 0x32 ) };
+         const std::vector< std::byte > z = { static_cast< std::byte >( 0x34 ),
+                                              static_cast< std::byte >( 0x00 ),
+                                              static_cast< std::byte >( 0x32 ) };
          TEST_ASSERT( p.binary() == z );
          TEST_ASSERT( p.empty() );
       }
