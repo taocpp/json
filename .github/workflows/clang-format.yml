@@ -19,7 +19,7 @@ jobs:
       with:
         submodules: recursive
 
-    - uses: DoozyX/clang-format-lint-action@v0.16
+    - uses: DoozyX/clang-format-lint-action@v0.16.1
       with:
         source: './include ./src'
         exclude: './include/tao/json/external'
