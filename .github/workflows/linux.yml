@@ -70,7 +70,7 @@ jobs:
       with:
         submodules: recursive
 
-    - run: sudo apt-get update
+    - run: sudo apt-get update -y
 
     - run: sudo apt-get install -y ${{ matrix.compiler }}
 
