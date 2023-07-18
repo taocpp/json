@@ -2,6 +2,8 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/json/
 
 #include <limits>
+#include <memory>
+#include <string>
 
 #include "test.hpp"
 #include "test_events.hpp"
@@ -99,6 +101,38 @@ namespace tao::json
       TEST_ASSERT( w.is_null() );
       TEST_ASSERT( v != w );
       TEST_ASSERT( n != v );
+   }
+
+   struct default_type
+      : std::string
+   {
+      using std::string::string;
+   };
+
+   template<>
+   struct traits< default_type >
+      : traits< std::string >
+   {
+      TAO_JSON_DEFAULT_KEY( "default_key" );
+   };
+
+   void test_default()
+   {
+      const default_type a = "a";
+      const value v1 = { a };
+      TEST_ASSERT( v1.get_object().size() == 1 );
+      TEST_ASSERT( v1.get_object().begin()->first == "default_key" );
+      TEST_ASSERT( v1.get_object().begin()->second == "a" );
+      const auto b = std::make_unique< default_type >( "b" );
+      const value v2 = { b };
+      TEST_ASSERT( v2.get_object().size() == 1 );
+      TEST_ASSERT( v2.get_object().begin()->first == "default_key" );
+      TEST_ASSERT( v2.get_object().begin()->second == "b" );
+      const auto c = std::make_shared< default_type >( "c" );
+      const value v3 = { c };
+      TEST_ASSERT( v3.get_object().size() == 1 );
+      TEST_ASSERT( v3.get_object().begin()->first == "default_key" );
+      TEST_ASSERT( v3.get_object().begin()->second == "c" );
    }
 
    void test_deque()
@@ -284,6 +318,7 @@ namespace tao::json
 
       test_shared();
       test_unique();
+      test_default();
 
       test_deque();
       test_list();

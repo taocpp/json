@@ -116,12 +116,18 @@ namespace tao::json
    template< typename T >
    struct traits< std::shared_ptr< T > >
       : shared_ptr_traits< T >
-   {};
+   {
+      template< template< typename... > class Traits >
+      using default_key = typename Traits< T >::template default_key< Traits >;
+   };
 
    template< typename T >
    struct traits< std::unique_ptr< T > >
       : unique_ptr_traits< T >
-   {};
+   {
+      template< template< typename... > class Traits >
+      using default_key = typename Traits< T >::template default_key< Traits >;
+   };
 
 }  // namespace tao::json
 
