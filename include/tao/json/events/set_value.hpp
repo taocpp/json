@@ -37,9 +37,9 @@ namespace tao::json::events
          keys_.clear();
       }
 
-      void reset( basic_value< Traits >& v ) noexcept
+      void reset( basic_value< Traits > v ) noexcept
       {
-         value_.swap( v );
+         value_ = std::move( v );
          stack_.clear();
          keys_.clear();
       }
