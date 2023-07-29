@@ -30,6 +30,20 @@ namespace tao::json::events
          : value_( v )
       {}
 
+      void reset() noexcept
+      {
+         value_.set_uninitialized();
+         stack_.clear();
+         keys_.clear();
+      }
+
+      void reset( basic_value< Traits >& v ) noexcept
+      {
+         value_.swap( v );
+         stack_.clear();
+         keys_.clear();
+      }
+
       void null() noexcept
       {
          value_.set_null();
