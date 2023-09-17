@@ -2,7 +2,7 @@
 
 A few short indications on how to use this library:
 
-* Requires Clang 5 or GCC 7 (or later) with `-std=c++17`, or Visual Studio 2017, or other compilers with sufficient C++17 support.
+* Requires Clang 7 or GCC 9 (or later) with `-std=c++17`, or Visual Studio 2019, or other compilers with sufficient C++17 support.
 * The library is header-only, to install and use simply copy the directory [`include/tao`](include/tao) to a convenient place and include the file [`include/tao/json.hpp`](include/tao/json.hpp).
 * The generic JSON value class is in [`include/tao/json/value.hpp`](include/tao/json/value.hpp).
 * To parse a JSON string representation to a JSON Value, use one of the functions in [`include/tao/json/from_string.hpp`](include/tao/json/from_string.hpp) or [`include/tao/json/from_file.hpp`](include/tao/json/from_file.hpp).
