@@ -4,9 +4,9 @@
 #ifndef TAO_JSON_CONSUME_FILE_HPP
 #define TAO_JSON_CONSUME_FILE_HPP
 
-#include <tao/pegtl/file_input.hpp>
+#include <filesystem>
 
-#include "internal/filesystem.hpp"
+#include <tao/pegtl/file_input.hpp>
 
 #include "consume.hpp"
 #include "forward.hpp"
@@ -15,14 +15,14 @@
 namespace tao::json
 {
    template< typename T, template< typename... > class Traits = traits >
-   [[nodiscard]] T consume_file( const internal::filesystem::path& path )
+   [[nodiscard]] T consume_file( const std::filesystem::path& path )
    {
       basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( path );
       return consume< T, Traits >( pp );
    }
 
    template< template< typename... > class Traits = traits, typename T >
-   void consume_file( const internal::filesystem::path& path, T& t )
+   void consume_file( const std::filesystem::path& path, T& t )
    {
       basic_parts_parser< pegtl::file_input< pegtl::tracking_mode::lazy > > pp( path );
       consume< Traits >( pp, t );

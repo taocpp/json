@@ -76,7 +76,7 @@ namespace tao::json
                switch( in.peek_char() ) {
                   case '-':
                      in.bump_in_this_line();
-                     if( in.empty() || !sor_value::match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+                     if( in.empty() || !sor_value::match_number< true, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                         throw pegtl::parse_error( "incomplete number", in );
                      }
                      return true;
@@ -320,7 +320,7 @@ namespace tao::json
 
       [[nodiscard]] auto mark()
       {
-         return m_input.template mark< pegtl::rewind_mode::required >();
+         return m_input.template auto_rewind< pegtl::rewind_mode::required >();
       }
 
       template< typename T >

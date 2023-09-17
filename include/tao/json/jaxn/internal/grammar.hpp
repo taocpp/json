@@ -242,7 +242,7 @@ namespace tao::json::jaxn::internal
                    typename... States >
          [[nodiscard]] static bool match_must( Input& in, States&&... st )
          {
-            return Control< must< Rule > >::template match< A, rewind_mode::dontcare, Action, Control >( in, st... );
+            return Control< must< Rule > >::template match< A, rewind_mode::optional, Action, Control >( in, st... );
          }
 
          template< bool NEG,
@@ -299,7 +299,7 @@ namespace tao::json::jaxn::internal
                return Control< must< kw_infinity< NEG > > >::template match< A, M, Action, Control >( in, st... );
 
             case '0':
-               if( !match_zero< NEG, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+               if( !match_zero< NEG, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                   throw pegtl::parse_error( "incomplete number", in );
                }
                return true;
@@ -333,14 +333,14 @@ namespace tao::json::jaxn::internal
 
             case '+':
                in.bump_in_this_line();
-               if( in.empty() || !match_number< false, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+               if( in.empty() || !match_number< false, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                   throw pegtl::parse_error( "incomplete number", in );
                }
                return true;
 
             case '-':
                in.bump_in_this_line();
-               if( in.empty() || !match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+               if( in.empty() || !match_number< true, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                   throw pegtl::parse_error( "incomplete number", in );
                }
                return true;

@@ -33,14 +33,14 @@ namespace tao::json::jaxn
                switch( in.peek_char() ) {
                   case '+':
                      in.bump_in_this_line();
-                     if( in.empty() || !sor_value::match_number< false, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+                     if( in.empty() || !sor_value::match_number< false, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                         throw pegtl::parse_error( "incomplete number", in );
                      }
                      return true;
 
                   case '-':
                      in.bump_in_this_line();
-                     if( in.empty() || !sor_value::match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+                     if( in.empty() || !sor_value::match_number< true, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                         throw pegtl::parse_error( "incomplete number", in );
                      }
                      return true;
@@ -239,9 +239,9 @@ namespace tao::json::jaxn
          pegtl::parse< pegtl::disable< pegtl::must< jaxn::internal::rules::sor_value, json::internal::rules::wss > > >( m_input );
       }
 
-      [[nodiscard]] auto mark()  // noexcept( noexcept( m_input.template mark< pegtl::rewind_mode::required >() ) )
+      [[nodiscard]] auto mark()  // noexcept( noexcept( m_input.template auto_rewind< pegtl::rewind_mode::required >() ) )
       {
-         return m_input.template mark< pegtl::rewind_mode::required >();
+         return m_input.template auto_rewind< pegtl::rewind_mode::required >();
       }
 
       template< typename T >

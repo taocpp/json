@@ -4,18 +4,18 @@
 #ifndef TAO_JSON_CBOR_FROM_FILE_HPP
 #define TAO_JSON_CBOR_FROM_FILE_HPP
 
+#include <filesystem>
 #include <utility>
 
 #include "../events/to_value.hpp"
 #include "../events/transformer.hpp"
-#include "../internal/filesystem.hpp"
 
 #include "events/from_file.hpp"
 
 namespace tao::json::cbor
 {
    template< template< typename... > class Traits, template< typename... > class... Transformers >
-   [[nodiscard]] basic_value< Traits > basic_from_file( const json::internal::filesystem::path& path )
+   [[nodiscard]] basic_value< Traits > basic_from_file( const std::filesystem::path& path )
    {
       json::events::transformer< json::events::to_basic_value< Traits >, Transformers... > consumer;
       events::from_file( consumer, path );
@@ -23,7 +23,7 @@ namespace tao::json::cbor
    }
 
    template< template< typename... > class... Transformers >
-   [[nodiscard]] value from_file( const json::internal::filesystem::path& path )
+   [[nodiscard]] value from_file( const std::filesystem::path& path )
    {
       return basic_from_file< traits, Transformers... >( path );
    }

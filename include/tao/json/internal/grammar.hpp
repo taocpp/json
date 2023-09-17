@@ -166,7 +166,7 @@ namespace tao::json::internal
          [[nodiscard]] static bool match_number( Input& in, States&&... st )
          {
             if( in.peek_char() == '0' ) {
-               if( !match_zero< NEG, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+               if( !match_zero< NEG, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                   throw pegtl::parse_error( "incomplete number", in );
                }
                return true;
@@ -192,7 +192,7 @@ namespace tao::json::internal
 
             case '-':
                in.bump_in_this_line();
-               if( in.empty() || !match_number< true, A, rewind_mode::dontcare, Action, Control >( in, st... ) ) {
+               if( in.empty() || !match_number< true, A, rewind_mode::optional, Action, Control >( in, st... ) ) {
                   throw pegtl::parse_error( "incomplete number", in );
                }
                return true;

@@ -4,9 +4,10 @@
 #ifndef TAO_JSON_EVENTS_FROM_FILE_HPP
 #define TAO_JSON_EVENTS_FROM_FILE_HPP
 
+#include <filesystem>
+
 #include "../internal/action.hpp"
 #include "../internal/errors.hpp"
-#include "../internal/filesystem.hpp"
 #include "../internal/grammar.hpp"
 
 #include <tao/pegtl/file_input.hpp>
@@ -17,7 +18,7 @@ namespace tao::json::events
    // Events producer to parse a file containing a JSON string representation.
 
    template< typename Consumer >
-   void from_file( Consumer& consumer, const internal::filesystem::path& path )
+   void from_file( Consumer& consumer, const std::filesystem::path& path )
    {
       pegtl::file_input< pegtl::tracking_mode::lazy > in( path );
       pegtl::parse< internal::grammar, internal::action, internal::errors >( in, consumer );

@@ -6,7 +6,7 @@
 
 #include "make_events.hpp"
 
-#include <tao/pegtl/internal/file_reader.hpp>
+#include <tao/pegtl/internal/read_file_stdio.hpp>
 
 #include <tao/json/from_string.hpp>
 #include <tao/json/to_string.hpp>
@@ -19,7 +19,7 @@ namespace tao::json
    {
       cbor::events::to_string t;
       test::make_events( t );
-      const auto r = pegtl::internal::file_reader( "tests/taocpp/make_events.cbor" ).read();
+      const auto r = pegtl::internal::read_file_stdio( "tests/taocpp/make_events.cbor" ).read_string();
       TEST_ASSERT( r == t.value() );
    }
 

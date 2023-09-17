@@ -67,7 +67,7 @@ namespace tao::json
          {
             if( in.peek_char() == '-' ) {
                in.bump_in_this_line();
-               if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, pegtl::rewind_mode::dontcare, Action, Control >( in, consumer ) ) {
+               if( in.empty() || !json::internal::rules::sor_value::match_number< true, A, pegtl::rewind_mode::optional, Action, Control >( in, consumer ) ) {
                   throw pegtl::parse_error( "incomplete ubjson high-precision number", in );
                }
                return true;
