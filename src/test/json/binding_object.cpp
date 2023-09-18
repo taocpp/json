@@ -4,6 +4,7 @@
 #include "test.hpp"
 
 #include <tao/json.hpp>
+#include <tao/json/contrib/traits.hpp>
 
 namespace tao::json
 {
@@ -212,7 +213,26 @@ namespace tao::json
       TEST_ASSERT( s.i == 42 );
    }
 
-   // TODO: Test with different for_nothing_value (incl. consistency of size to consumer).
+   struct type_7
+   {
+      std::vector< int > a;
+      std::vector< int > b;
+   };
+
+   template<>
+   struct traits< type_7 >
+      : binding::basic_object< binding::for_unknown_key::fail,
+                               binding::for_nothing_value::suppress,
+                               TAO_JSON_BIND_REQUIRED( "a", &type_7::a ),
+                               TAO_JSON_BIND_OPTIONAL( "b", &type_7::b ) >
+   {};
+
+   void unit_test_7()
+   {
+      const type_7 t;
+      const auto s = produce::to_string( t );
+      TEST_ASSERT( s == "{\"a\":[]}" );
+   }
 
    void unit_test()
    {
@@ -222,6 +242,7 @@ namespace tao::json
       unit_test_4();
       unit_test_5();
       unit_test_6();
+      unit_test_7();
    }
 
 }  // namespace tao::json

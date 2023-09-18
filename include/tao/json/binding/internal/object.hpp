@@ -136,6 +136,12 @@ namespace tao::json::binding::internal
          }
       }
 
+      template< typename A, template< typename... > class Traits, typename C >
+      [[nodiscard]] static bool require_encode( const C& x )
+      {
+         return ( N == for_nothing_value::encode ) || ( A::kind == member_kind::required ) || ( !A::template is_nothing< Traits >( x ) );
+      }
+
 #if defined( _MSC_VER )
 #pragma warning( push )
 #pragma warning( disable : 4127 )
@@ -143,7 +149,7 @@ namespace tao::json::binding::internal
       template< typename A, template< typename... > class Traits, typename C >
       static void assign_member( basic_value< Traits >& v, const C& x )
       {
-         if( ( N == for_nothing_value::encode ) || ( !A::template is_nothing< Traits >( x ) ) ) {
+         if( require_encode< A, Traits >( x ) ) {
             v.try_emplace( A::template key< Traits >(), A::read( x ) );
          }
       }
@@ -199,10 +205,7 @@ namespace tao::json::binding::internal
       template< template< typename... > class Traits, typename C >
       [[nodiscard]] static std::size_t produce_size( const C& x )
       {
-         if constexpr( N == for_nothing_value::encode ) {
-            return sizeof...( As );
-         }
-         return ( std::size_t( !As::template is_nothing< Traits >( x ) ) + ... );
+         return ( std::size_t( require_encode< As, Traits >( x ) ) + ... );
       }
 
 #if defined( _MSC_VER )
@@ -213,7 +216,7 @@ namespace tao::json::binding::internal
       template< typename A, template< typename... > class Traits, typename Consumer, typename C >
       static void produce_member( Consumer& consumer, const C& x )
       {
-         if( ( N == for_nothing_value::encode ) || ( !A::template is_nothing< Traits >( x ) ) ) {
+         if( require_encode< A, Traits >( x ) ) {
             A::template produce_key< Traits >( consumer );
             A::template produce< Traits >( consumer, x );
             consumer.member();
