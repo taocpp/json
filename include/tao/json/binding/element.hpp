@@ -36,12 +36,6 @@ namespace tao::json::binding
             return v.*P;
          }
 
-         template< typename W >
-         static void write( C& v, W&& w ) noexcept( std::is_nothrow_assignable_v< value_t, decltype( std::forward< W > ) > )
-         {
-            v.*P = std::forward< W >( w );
-         }
-
          template< template< typename... > class Traits >
          static void to( const basic_value< Traits >& v, C& x )
          {
