@@ -132,18 +132,18 @@ namespace tao::json::itoa
       return u64toa( n, b );
    }
 
-   inline void i64tos( std::ostream& o, const std::int64_t i )
+   inline void i64tos( std::ostream& os, const std::int64_t i )
    {
       char b[ 24 ];
       const auto* s = i64toa( i, b );
-      o.write( b, s - b );
+      os.write( b, s - b );
    }
 
-   inline void u64tos( std::ostream& o, const std::uint64_t i )
+   inline void u64tos( std::ostream& os, const std::uint64_t i )
    {
       char b[ 24 ];
       const auto* s = u64toa( i, b );
-      o.write( b, s - b );
+      os.write( b, s - b );
    }
 
 }  // namespace tao::json::itoa
