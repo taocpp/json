@@ -4,6 +4,10 @@
 #ifndef TAO_JSON_PARTS_PARSER_HPP
 #define TAO_JSON_PARTS_PARSER_HPP
 
+#include <string>
+#include <string_view>
+#include <vector>
+
 #include <tao/pegtl/ascii.hpp>
 #include <tao/pegtl/change_states.hpp>
 #include <tao/pegtl/nothing.hpp>
