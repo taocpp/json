@@ -6,6 +6,9 @@
 
 #include <cstdint>
 #include <optional>
+#include <string>
+#include <string_view>
+#include <vector>
 
 #include <tao/pegtl/parse.hpp>
 #include <tao/pegtl/parse_error.hpp>

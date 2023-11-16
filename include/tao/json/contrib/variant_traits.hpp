@@ -5,6 +5,7 @@
 #define TAO_JSON_CONTRIB_VARIANT_TRAITS_HPP
 
 #include <array>
+#include <cstdint>
 #include <utility>
 #include <variant>
 

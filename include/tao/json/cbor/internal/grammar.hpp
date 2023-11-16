@@ -12,6 +12,7 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <tao/pegtl/apply_mode.hpp>
 #include <tao/pegtl/parse_error.hpp>
