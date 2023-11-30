@@ -51,6 +51,12 @@ if(TAOCPP_JSON_BUILD_EXAMPLES)
   add_subdirectory(src/example/json)
 endif()
 
+# performance
+option(TAOCPP_JSON_BUILD_PERFORMANCE "Build performance programs" ${TAOCPP_JSON_IS_MAIN_PROJECT})
+if(TAOCPP_JSON_BUILD_PERFORMANCE)
+  add_subdirectory(src/perf/json)
+endif()
+
 option(TAOCPP_JSON_INSTALL "Generate the install target" ${TAOCPP_JSON_IS_MAIN_PROJECT})
 if(TAOCPP_JSON_INSTALL)
   include(CMakePackageConfigHelpers)
