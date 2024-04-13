@@ -116,7 +116,7 @@ namespace tao::json
       TEST_ASSERT( custom_from_string( "\"f\177o\"" ) == value( "f\177o" ) );
 
       // TODO: This is sometimes allowed to allow embedded null-bytes within a null-terminated string. (Modified UTF-8)
-      TEST_THROWS( custom_from_string( "\"f\300\200o\"" ) );          // Codepoint 0x00 as 2 byte UTF-8 - overlong encoding.
+      TEST_THROWS( custom_from_string( "\"f\300\200o\"" ) );  // Codepoint 0x00 as 2 byte UTF-8 - overlong encoding.
 
       TEST_THROWS( custom_from_string( "\"f\300\201o\"" ) );          // Codepoint 0x01 as 2 byte UTF-8 - overlong encoding.
       TEST_THROWS( custom_from_string( "\"f\340\200\201o\"" ) );      // Codepoint 0x01 as 3 byte UTF-8 - overlong encoding.

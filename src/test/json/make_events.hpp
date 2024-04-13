@@ -234,7 +234,8 @@ namespace tao::json::test
       }
       {
          // TODO: More numbers...
-      } {
+      }
+      {
          c.string( "" );
          c.element();
       }
