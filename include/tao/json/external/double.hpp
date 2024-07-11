@@ -63,7 +63,7 @@
    defined(__SH4__) || defined(__alpha__) ||                            \
    defined(_MIPS_ARCH_MIPS32R2) ||                                      \
    defined(__AARCH64EL__) || defined(__aarch64__) ||                    \
-   defined(__EMSCRIPTEN__)
+   defined(__EMSCRIPTEN__) || defined(__loongarch64)
 #define TAO_JSON_DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS 1
 #elif defined(__mc68000__)
 #undef TAO_JSON_DOUBLE_CONVERSION_CORRECT_DOUBLE_OPERATIONS
