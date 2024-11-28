@@ -30,5 +30,6 @@ jobs:
     - working-directory: build/
       run: ctest --output-on-failure
 
-    - working-directory: build/
-      run: bash <(curl -s https://codecov.io/bash)
+    - uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
