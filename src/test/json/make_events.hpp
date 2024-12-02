@@ -234,8 +234,10 @@ namespace tao::json::test
       }
       {
          // TODO: More numbers...
+         // clang-format off
       }
       {
+         // clang-format on
          c.string( "" );
          c.element();
       }
