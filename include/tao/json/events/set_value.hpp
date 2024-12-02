@@ -22,7 +22,14 @@ namespace tao::json::events
    template< template< typename... > class Traits >
    struct set_basic_value
    {
+      static constexpr size_t count_ = 4;
+      struct ArrayElements
+      {
+         basic_value< Traits > array[ count_ ];
+         size_t count = 0;
+      };
       std::vector< basic_value< Traits > > stack_;
+      std::vector< ArrayElements > elements_;
       std::vector< std::string > keys_;
       basic_value< Traits >& value_;
 
@@ -96,29 +103,50 @@ namespace tao::json::events
 
       void begin_array()
       {
-         stack_.emplace_back( empty_array );
+         stack_.push_back( empty_array );
+         elements_.emplace_back();
       }
 
       void begin_array( const std::size_t size )
       {
          begin_array();
+         elements_.back().count = count_ + 1;
          stack_.back().get_array().reserve( size );
       }
 
       void element()
       {
-         stack_.back().emplace_back( std::move( value_ ) );
+         auto& elements = elements_.back();
+         if( elements.count < count_ ) {
+            elements.array[ elements.count ] = std::move( value_ );
+            ++elements.count;
+            return;
+         }
+         auto& a = stack_.back().get_array();
+         if( elements.count == count_ ) {
+            a.reserve( count_ + 1 );
+            for( auto& i : elements.array )
+               a.push_back( std::move( i ) );
+            ++elements.count;
+         }
+         a.push_back( std::move( value_ ) );
       }
 
       void end_array( const std::size_t /*unused*/ = 0 )
       {
-         value_ = std::move( stack_.back() );
+         auto& elements = elements_.back();
+         auto& v = stack_.back();
+         if( elements.count <= count_ )
+            v.get_array().assign( std::make_move_iterator( elements.array ),
+                                  std::make_move_iterator( elements.array + elements.count ) );
+         value_ = std::move( v );
          stack_.pop_back();
+         elements_.pop_back();
       }
 
       void begin_object( const std::size_t /*unused*/ = 0 )
       {
-         stack_.emplace_back( empty_object );
+         stack_.push_back( empty_object );
       }
 
       void key( const std::string_view v )
