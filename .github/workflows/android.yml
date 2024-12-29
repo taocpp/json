@@ -15,24 +15,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image:
-          - r22
         platform:
+          - android-26
           - android-27
-          - android-29
         abi:
           - armeabi-v7a
           - arm64-v8a
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-latest
-
-    container:
-      image: bojoe/cpp-android-ndk-build-env-ubuntu:${{ matrix.image }}
-      options: --user root
+    runs-on: ubuntu:22.04
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
