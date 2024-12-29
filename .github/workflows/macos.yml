@@ -28,7 +28,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
@@ -39,10 +39,10 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - working-directory: build/
-      run: cmake --build . --config ${{ matrix.build_type }}
+      run: cmake --build
 
     - working-directory: build/
-      run: ctest --config ${{ matrix.build_type }} --output-on-failure
+      run: ctest --output-on-failure
