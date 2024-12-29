@@ -2,7 +2,6 @@ name: Code Coverage
 
 on:
   push:
-    branches: [ main ]
     paths-ignore:
       - 'README.md'
       - 'doc/**'

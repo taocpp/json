@@ -2,7 +2,6 @@ name: Sanitizer
 
 on:
   push:
-    branches: [ main ]
     paths-ignore:
       - 'README.md'
       - 'doc/**'
