@@ -28,6 +28,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+    - name: Install Ninja
+      run: brew install ninja
+
     - uses: actions/checkout@v4
       with:
         submodules: recursive
@@ -39,7 +42,7 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+      run: cmake $GITHUB_WORKSPACE -GNinja -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - working-directory: build/
       run: cmake --build .
