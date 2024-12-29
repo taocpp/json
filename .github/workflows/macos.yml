@@ -42,7 +42,7 @@ jobs:
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
     - working-directory: build/
-      run: cmake --build
+      run: cmake --build .
 
     - working-directory: build/
       run: ctest --output-on-failure
