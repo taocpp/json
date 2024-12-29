@@ -16,30 +16,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - xcode: 11
-            build_type: Debug
-            os: macos-11
-          - xcode: 11
-            build_type: Release
-            os: macos-11
-          - xcode: 12
-            build_type: Debug
-            os: macos-11
-          - xcode: 12
-            build_type: Release
-            os: macos-11
-          - xcode: 13
-            build_type: Debug
-            os: macos-12
-          - xcode: 13
-            build_type: Release
-            os: macos-12
-          - xcode: 14
-            build_type: Debug
-            os: macos-12
           - xcode: 14
             build_type: Release
-            os: macos-12
+            os: macos-13
+          - xcode: 15
+            build_type: Release
+            os: macos-14
+          - xcode: 16
+            build_type: Release
+            os: macos-15
     runs-on: ${{ matrix.os }}
 
     steps:
