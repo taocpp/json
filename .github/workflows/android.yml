@@ -23,7 +23,7 @@ jobs:
           - arm64-v8a
         build_type: [Debug, Release]
 
-    runs-on: ubuntu:22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
