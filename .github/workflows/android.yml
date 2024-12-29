@@ -26,6 +26,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install Ninja
+        run: sudo apt-get install ninja-build
+
       - uses: actions/checkout@v4
         with:
           submodules: recursive
