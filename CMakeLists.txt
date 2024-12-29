@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8...3.19)
+cmake_minimum_required(VERSION 3.10)
 
 project(taocpp-json VERSION 1.0.0 LANGUAGES CXX)
 
@@ -12,6 +12,7 @@ include(GNUInstallDirs)
 
 set(TAOCPP_JSON_INSTALL_DOC_DIR "${CMAKE_INSTALL_DOCDIR}/tao/json" CACHE STRING "The installation doc directory")
 set(TAOCPP_JSON_INSTALL_CMAKE_DIR "${CMAKE_INSTALL_DATAROOTDIR}/${PROJECT_NAME}/cmake" CACHE STRING "The installation cmake directory")
+set(TAOCPP_JSON_INSTALL_PKGCONFIG_DIR "${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig" CACHE STRING "The installation pkgconfig directory")
 
 # define a header-only library
 add_library(taocpp-json INTERFACE)
@@ -61,9 +62,16 @@ option(TAOCPP_JSON_INSTALL "Generate the install target" ${TAOCPP_JSON_IS_MAIN_P
 if(TAOCPP_JSON_INSTALL)
   include(CMakePackageConfigHelpers)
 
-  # Make package findable
+  # Make package findable by CMake
   configure_package_config_file(.cmake/taocpp-json-config.cmake.in ${PROJECT_NAME}-config.cmake
     INSTALL_DESTINATION ${TAOCPP_JSON_INSTALL_CMAKE_DIR}
+    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+    NO_SET_AND_CHECK_MACRO
+  )
+
+  # Make package findable by pkg-config
+  configure_package_config_file(.pkg-config/taocpp-json.pc.in ${PROJECT_NAME}.pc
+    INSTALL_DESTINATION ${TAOCPP_JSON_INSTALL_PKGCONFIG_DIR}
     NO_CHECK_REQUIRED_COMPONENTS_MACRO
     NO_SET_AND_CHECK_MACRO
   )
@@ -83,6 +91,10 @@ if(TAOCPP_JSON_INSTALL)
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
     DESTINATION ${TAOCPP_JSON_INSTALL_CMAKE_DIR}
+  )
+  install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+    DESTINATION ${TAOCPP_JSON_INSTALL_PKGCONFIG_DIR}
   )
   install(EXPORT ${PROJECT_NAME}-targets
     NAMESPACE taocpp::
