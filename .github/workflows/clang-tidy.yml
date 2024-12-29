@@ -2,6 +2,7 @@ name: clang-tidy
 
 on:
   push:
+    branches: [ main ]
     paths-ignore:
       - 'README.md'
       - 'doc/**'

@@ -2,6 +2,7 @@ name: Android
 
 on:
   push:
+    branches: [ main ]
     paths-ignore:
       - 'README.md'
       - 'doc/**'
