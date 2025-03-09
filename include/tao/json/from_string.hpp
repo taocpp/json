@@ -14,24 +14,24 @@
 namespace tao::json
 {
    template< template< typename... > class Traits, template< typename... > class... Transformers, typename... Ts >
-   [[nodiscard]] basic_value< Traits > basic_from_string( Ts&&... ts )
+   [[nodiscard]] basic_value< Traits > basic_from_string(Ts&&... ts)
    {
       events::transformer< events::to_basic_value< Traits >, Transformers... > consumer;
-      events::from_string( consumer, std::forward< Ts >( ts )... );
-      return std::move( consumer.value );
+      events::from_string(consumer, std::forward< Ts >(ts)...);
+      return std::move(consumer.value);
    }
 
    template< template< typename... > class... Transformers, typename... Ts >
-   [[nodiscard]] value from_string( Ts&&... ts )
+   [[nodiscard]] value from_string(Ts&&... ts)
    {
-      return basic_from_string< traits, Transformers... >( std::forward< Ts >( ts )... );
+      return basic_from_string< traits, Transformers... >(std::forward< Ts >(ts)...);
    }
 
    inline namespace literals
    {
-      [[nodiscard]] inline value operator"" _json( const char* data, const std::size_t size )
+      [[nodiscard]] inline value operator""_json(const char* data, const std::size_t size)
       {
-         return json::from_string( data, size, "literal" );
+         return json::from_string(data, size, "literal");
       }
 
    }  // namespace literals

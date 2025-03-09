@@ -19,9 +19,9 @@ namespace tao::json
 {
    namespace internal
    {
-      [[nodiscard]] constexpr char unhex_char( const char c ) noexcept
+      [[nodiscard]] constexpr char unhex_char(const char c) noexcept
       {
-         return static_cast< char >( ( c < 'A' ) ? ( c - '0' ) : ( ( c < 'a' ) ? ( c - 'A' + 10 ) : ( c - 'a' + 10 ) ) );
+         return static_cast<char>((c < 'A') ? (c - '0') : ((c < 'a') ? (c - 'A' + 10) : (c - 'a' + 10)));
       }
 
       template< typename V, V... >
@@ -43,7 +43,7 @@ namespace tao::json
       struct unhex_helper< T, vlist< V, Vs... >, C >
          : unhex_helper< T, vlist< V > >
       {
-         static_assert( internal::dependent_false< T >, "digits must occur in pairs" );
+         static_assert(internal::dependent_false< T >, "digits must occur in pairs");
       };
 
       template< typename T, typename V, V... Vs, char C1, char... Cs >
@@ -56,27 +56,27 @@ namespace tao::json
       struct unhex_helper< T, vlist< V, Vs... >, C0, '\'', Cs... >
          : unhex_helper< T, vlist< V > >
       {
-         static_assert( internal::dependent_false< T >, "digit separator only allowed between pairs of digits" );
+         static_assert(internal::dependent_false< T >, "digit separator only allowed between pairs of digits");
       };
 
       template< typename T, typename V, V... Vs, char C0, char C1, char... Cs >
       struct unhex_helper< T, vlist< V, Vs... >, C0, C1, Cs... >
-         : unhex_helper< T, vlist< V, Vs..., V( ( unhex_char( C0 ) << 4 ) + unhex_char( C1 ) ) >, Cs... >
+         : unhex_helper< T, vlist< V, Vs..., V((unhex_char(C0) << 4) + unhex_char(C1)) >, Cs... >
       {
       };
 
       template< typename T, typename V, char C >
       [[nodiscard]] constexpr T unhex()
       {
-         static_assert( internal::dependent_false< T >, "not a hex literal" );
+         static_assert(internal::dependent_false< T >, "not a hex literal");
          return T{};
       }
 
       template< typename T, typename V, char C0, char C1, char... Cs >
       [[nodiscard]] constexpr T unhex()
       {
-         static_assert( C0 == '0', "not a hex literal" );
-         static_assert( C1 == 'x' || C1 == 'X', "not a hex literal" );
+         static_assert(C0 == '0', "not a hex literal");
+         static_assert(C1 == 'x' || C1 == 'X', "not a hex literal");
          return unhex_helper< T, vlist< V >, Cs... >::unhex();
       }
 
@@ -91,7 +91,7 @@ namespace tao::json
    inline namespace literals
    {
       template< char... Cs >
-      [[nodiscard]] std::vector< std::byte > operator"" _binary()
+      [[nodiscard]] std::vector< std::byte > operator""_binary()
       {
          return internal::unhex< std::vector< std::byte >, Cs... >();
       }
