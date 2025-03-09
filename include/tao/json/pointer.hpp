@@ -425,7 +425,7 @@ namespace tao::json
 
    inline namespace literals
    {
-      [[nodiscard]] inline pointer operator"" _json_pointer( const char* data, const std::size_t size )
+      [[nodiscard]] inline pointer operator""_json_pointer( const char* data, const std::size_t size )
       {
          return pointer( { data, size } );
       }
